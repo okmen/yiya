@@ -1,0 +1,54 @@
+2016-11-18 17:55:38,800 [Worker-4] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Collecting project info '/pom.xml' F:\remote\git\yiya\workspace\bbyiya-parent\pom.xml
+2016-11-18 17:55:39,066 [Worker-4] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using NULL lifecycle mapping for MavenProject: com.bbyiya:bbyiya-parent:0.0.1-SNAPSHOT @ F:\remote\git\yiya\workspace\bbyiya-parent\pom.xml.
+2016-11-18 17:55:39,301 [Worker-4] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Imported and configured 1 project(s) in 0 sec
+2016-11-18 17:55:40,504 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using NULL lifecycle mapping for MavenProject: com.bbyiya:bbyiya-parent:0.0.1-SNAPSHOT @ F:\remote\git\yiya\workspace\bbyiya-parent\pom.xml.
+2016-11-18 17:56:20,378 [Worker-2] ERROR o.e.m.c.i.p.ProjectConfigurationManager - Unable to create project from archetype [org.apache.maven.archetypes:maven-archetype-quickstart:RELEASE]
+org.apache.maven.archetype.old.ArchetypeTemplateProcessingException: Directory bbyiya-basic already exists - please run from a clean directory
+	at org.apache.maven.archetype.old.DefaultOldArchetype.createArchetype(DefaultOldArchetype.java:242) ~[archetype-common-2.0-alpha-4.jar:2.0-alpha-4]
+	at org.apache.maven.archetype.generator.DefaultArchetypeGenerator.processOldArchetype(DefaultArchetypeGenerator.java:253) ~[archetype-common-2.0-alpha-4.jar:2.0-alpha-4]
+	at org.apache.maven.archetype.generator.DefaultArchetypeGenerator.generateArchetype(DefaultArchetypeGenerator.java:143) ~[archetype-common-2.0-alpha-4.jar:2.0-alpha-4]
+	at org.apache.maven.archetype.generator.DefaultArchetypeGenerator.generateArchetype(DefaultArchetypeGenerator.java:286) ~[archetype-common-2.0-alpha-4.jar:2.0-alpha-4]
+	at org.apache.maven.archetype.DefaultArchetype.generateProjectFromArchetype(DefaultArchetype.java:69) ~[archetype-common-2.0-alpha-4.jar:2.0-alpha-4]
+	at org.eclipse.m2e.core.internal.project.ProjectConfigurationManager.createArchetypeProjects0(ProjectConfigurationManager.java:770) [org.eclipse.m2e.core_1.5.0.20140606-0033.jar:na]
+	at org.eclipse.m2e.core.internal.project.ProjectConfigurationManager$5.call(ProjectConfigurationManager.java:719) [org.eclipse.m2e.core_1.5.0.20140606-0033.jar:na]
+	at org.eclipse.m2e.core.internal.project.ProjectConfigurationManager$5.call(ProjectConfigurationManager.java:1) [org.eclipse.m2e.core_1.5.0.20140606-0033.jar:na]
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.executeBare(MavenExecutionContext.java:166) [org.eclipse.m2e.core_1.5.0.20140606-0033.jar:na]
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:142) [org.eclipse.m2e.core_1.5.0.20140606-0033.jar:na]
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:96) [org.eclipse.m2e.core_1.5.0.20140606-0033.jar:na]
+	at org.eclipse.m2e.core.internal.embedder.MavenImpl.execute(MavenImpl.java:1348) [org.eclipse.m2e.core_1.5.0.20140606-0033.jar:na]
+	at org.eclipse.m2e.core.internal.project.ProjectConfigurationManager.createArchetypeProjects(ProjectConfigurationManager.java:717) [org.eclipse.m2e.core_1.5.0.20140606-0033.jar:na]
+	at org.eclipse.m2e.core.ui.internal.wizards.MavenProjectWizard$5.doCreateMavenProjects(MavenProjectWizard.java:244) [org.eclipse.m2e.core.ui_1.5.0.20140606-0033.jar:na]
+	at org.eclipse.m2e.core.ui.internal.wizards.AbstactCreateMavenProjectJob$1.doCreateMavenProjects(AbstactCreateMavenProjectJob.java:46) [org.eclipse.m2e.core.ui_1.5.0.20140606-0033.jar:na]
+	at org.eclipse.m2e.core.ui.internal.wizards.AbstractCreateMavenProjectsOperation.run(AbstractCreateMavenProjectsOperation.java:62) [org.eclipse.m2e.core.ui_1.5.0.20140606-0033.jar:na]
+	at org.eclipse.m2e.core.ui.internal.wizards.AbstactCreateMavenProjectJob.runInWorkspace(AbstactCreateMavenProjectJob.java:50) [org.eclipse.m2e.core.ui_1.5.0.20140606-0033.jar:na]
+	at org.eclipse.core.internal.resources.InternalWorkspaceJob.run(InternalWorkspaceJob.java:38) [org.eclipse.core.resources_3.9.1.v20140825-1431.jar:na]
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54) [org.eclipse.core.jobs_3.6.0.v20140424-0053.jar:na]
+2016-11-18 17:57:12,947 [Worker-6] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Collecting project info '/pom.xml' F:\remote\git\yiya\workspace\bbyiya-basic\pom.xml
+2016-11-18 17:57:13,603 [Worker-6] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bbyiya:bbyiya-basic:0.0.1-SNAPSHOT @ F:\remote\git\yiya\workspace\bbyiya-basic\pom.xml.
+2016-11-18 17:57:13,978 [Worker-6] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /bbyiya-basic/src/main/java
+2016-11-18 17:57:13,978 [Worker-6] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /bbyiya-basic/src/test/java
+2016-11-18 17:57:14,592 [Worker-6] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Imported and configured 1 project(s) in 1 sec
+2016-11-18 17:57:15,296 [Worker-1] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bbyiya:bbyiya-basic:0.0.1-SNAPSHOT @ F:\remote\git\yiya\workspace\bbyiya-basic\pom.xml.
+2016-11-18 17:57:15,656 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-11-18 17:57:15,656 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory F:\remote\git\yiya\workspace\bbyiya-basic\src\main\resources
+2016-11-18 17:57:15,671 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-11-18 17:57:15,671 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory F:\remote\git\yiya\workspace\bbyiya-basic\src\test\resources
+2016-11-18 17:57:16,531 [Worker-3] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bbyiya:bbyiya-basic:0.0.1-SNAPSHOT @ F:\remote\git\yiya\workspace\bbyiya-basic\pom.xml.
+2016-11-18 17:57:16,766 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-11-18 17:57:16,766 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory F:\remote\git\yiya\workspace\bbyiya-basic\src\main\resources
+2016-11-18 17:57:16,766 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-11-18 17:57:16,766 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory F:\remote\git\yiya\workspace\bbyiya-basic\src\test\resources
+2016-11-18 17:57:22,939 [Worker-4] INFO  o.e.m.i.launch.MavenLaunchDelegate - F:\remote\git\yiya\workspace\bbyiya-parent
+2016-11-18 17:57:22,939 [Worker-4] INFO  o.e.m.i.launch.MavenLaunchDelegate -  mvn  -B clean
+2016-11-18 17:58:18,936 [Worker-6] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bbyiya:bbyiya-basic:0.0.1-SNAPSHOT @ F:\remote\git\yiya\workspace\bbyiya-basic\pom.xml.
+2016-11-18 17:58:18,982 [Worker-6] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-11-18 17:58:18,998 [Worker-6] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory F:\remote\git\yiya\workspace\bbyiya-basic\src\main\resources
+2016-11-18 17:58:18,998 [Worker-6] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-11-18 17:58:18,998 [Worker-6] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory F:\remote\git\yiya\workspace\bbyiya-basic\src\test\resources
+2016-11-18 17:58:25,608 [Worker-1] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bbyiya:bbyiya-basic:0.0.1-SNAPSHOT @ F:\remote\git\yiya\workspace\bbyiya-basic\pom.xml.
+2016-11-18 17:58:25,655 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-11-18 17:58:25,655 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory F:\remote\git\yiya\workspace\bbyiya-basic\src\main\resources
+2016-11-18 17:58:25,655 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-11-18 17:58:25,655 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory F:\remote\git\yiya\workspace\bbyiya-basic\src\test\resources
+2016-11-18 17:58:32,173 [Worker-5] INFO  o.e.m.i.launch.MavenLaunchDelegate - F:\remote\git\yiya\workspace\bbyiya-basic
+2016-11-18 17:58:32,173 [Worker-5] INFO  o.e.m.i.launch.MavenLaunchDelegate -  mvn  -B clean

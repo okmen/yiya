@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.bbyiya.dao.UUsersMapper;
+import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
 
 
@@ -27,6 +28,5 @@ public class IndexController {
 		}else {
 			return "login";
 		}
-		
 	}
 }

@@ -35,6 +35,10 @@ import javax.crypto.spec.IvParameterSpec;
 
 public class Des {
 
+	/**
+	 * 加密秘钥
+	 */
+	private static final String desKey="@ai8!lk5";
 
 	/**
 	 * 
@@ -66,169 +70,7 @@ public class Des {
 
 	}
 
-	/**
-	 * 加密（过期，不可用）
-	 * String明文输入,String密文输出
-	 * 
-	 * @param strMing
-	 * 
-	 * @return
-	 */
-	@SuppressWarnings("unused")
-	public static String getEncString(String strMing,String strKey) {
-
-		byte[] byteMi = null;
-
-		byte[] byteMing = null;
-
-		String strMi = "";
-
-		try {
-
-			return byte2hex(getEncCode(strMing.getBytes(),strKey));
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-
-		} finally {
-
-			byteMing = null;
-
-			byteMi = null;
-
-		}
-
-		return strMi;
-
-	}
-
-	/**
-	 * 解密（过期，不可用）
-	 * 以String密文输入,String明文输出
-	 * 
-	 * @param strMi
-	 * 
-	 * @return
-	 */
-
-	@SuppressWarnings("unused")
-	public static String getDesString(String strMi,String strKey) {
-
-		byte[] byteMing = null;
-
-		byte[] byteMi = null;
-
-		String strMing = "";
-
-		try {
-
-			return new String(getDesCode(hex2byte(strMi.getBytes()),strKey));
-
-			// byteMing = this.getDesCode(byteMi);
-
-			// strMing = new String(byteMing,"UTF8");
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-
-		} finally {
-
-			byteMing = null;
-
-			byteMi = null;
-
-		}
-
-		return strMing;
-
-	}
-
-	/**
-	 * （过期，不可用）
-	 * 加密 以byte[]明文输入,byte[]密文输出
-	 * 
-	 *
-	 * 
-	 * @param byteS
-	 * 
-	 * @return
-	 */
-
-	private static byte[] getEncCode(byte[] byteS,String strkey) {
-
-		byte[] byteFina = null;
-		String stringKey="@ai8!lk5";
-		if(!"".equals(strkey))
-		{
-			stringKey=strkey;
-		}
-		Cipher cipher;
-
-		try {
-			
-			cipher = Cipher.getInstance("DES");
-			Key key=getKey(stringKey);
-			cipher.init(Cipher.ENCRYPT_MODE, key);
-
-			byteFina = cipher.doFinal(byteS);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-
-		} finally {
-
-			cipher = null;
-
-		}
-
-		return byteFina;
-
-	}
-
-	/**
-	 * 
-	 * 解密以byte[]密文输入,以byte[]明文输出
-	 * 
-	 *
-	 * 
-	 * @param byteD
-	 * 
-	 * @return
-	 */
-	private static byte[] getDesCode(byte[] byteD,String strKey) {
-
-		Cipher cipher;
-		String stringKey="@ai8!lk5";
-		if(!"".equals(strKey))
-		{
-			stringKey=strKey;
-		}
-
-		byte[] byteFina = null;
-
-		try {
-
-			cipher = Cipher.getInstance("DES");
-			Key key=getKey(stringKey);
-			cipher.init(Cipher.DECRYPT_MODE, key);
-
-			byteFina = cipher.doFinal(byteD);
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-
-		} finally {
-
-			cipher = null;
-
-		}
-
-		return byteFina;
-
-	}
+	
 
 	/**
 	 * 
@@ -289,10 +131,6 @@ public class Des {
 	}
 	
 	
-	/**
-	 * 加密秘钥
-	 */
-	private static final String desKey="@ai8!lk5";
 	/**
 	 * 解密 (可用)
 	 * @param message 需要加密的字符串

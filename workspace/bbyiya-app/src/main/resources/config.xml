@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<appSettings>
+	<wapDomain value="m.okwei.com" /><!-- wap域名 -->
+	<currentDomain value="10.10.10.194:8080" /><!-- 当前服务器域名 -->
+	<imgDoman value=""/><!-- 图片域名 -->
+	<imgPathTemp value="F:\imgs\temp\"/> <!-- 图片临时地址 -->
+</appSettings>

@@ -28,6 +28,11 @@
 			<artifactId>bbyiya-common</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+		    <groupId>servlets.com</groupId>
+		    <artifactId>cos</artifactId>
+		    <version>05Nov2002</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>bbyiya-app</finalName>

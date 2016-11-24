@@ -3,15 +3,19 @@ package com.bbyiya.dao;
 import com.bbyiya.model.UUsers;
 
 public interface UUsersMapper {
-    int deleteByPrimaryKey(Long userid);
+	int deleteByPrimaryKey(Long userid);
 
-    int insert(UUsers record);
+	int insert(UUsers record);
 
-    int insertSelective(UUsers record);
+	int insertSelective(UUsers record);
 
-    UUsers selectByPrimaryKey(Long userid);
+	UUsers selectByPrimaryKey(Long userid);
 
-    int updateByPrimaryKeySelective(UUsers record);
+	UUsers getUUsersByUserID(Long userid);
 
-    int updateByPrimaryKey(UUsers record);
+	UUsers getUUsersByUserName(String username);
+
+	int updateByPrimaryKeySelective(UUsers record);
+
+	int updateByPrimaryKey(UUsers record);
 }

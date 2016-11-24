@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>微店网-用户注册</title>
+<title>咿呀科技-用户注册</title>
 <!-- <script type="text/javascript" src="/statics/js/jquery-1.7.1.min.js"></script> -->
 <script type="text/javascript" src="http://base1.okwei.com/js/jquery-1.7.1.min.js"></script>
 </head>

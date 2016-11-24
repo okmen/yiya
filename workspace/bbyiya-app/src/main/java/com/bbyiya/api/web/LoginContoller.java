@@ -62,5 +62,14 @@ public class LoginContoller {
 		return JsonUtil.objectToJsonStr(rq); 
     }
 	
-	
+	@ResponseBody
+    @RequestMapping(value = "/registerAjax")
+    public String registerAjax(String username,String pwd,String phone) throws MapperException
+    {
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.Success);
+		rq.setBasemodle("");
+		rq.setStatusreson("µÇÂ½³É¹¦"); 
+		return JsonUtil.objectToJsonStr(rq); 
+    }
 }

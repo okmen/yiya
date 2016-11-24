@@ -6,12 +6,13 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>微店网-用户登陆</title>
+<title>咿呀-用户登陆</title>
 <script type="text/javascript" src="http://base1.okwei.com/js/jquery-1.7.1.min.js"></script>
 <script type="text/javascript" src="/statics/js/cookieHelper.js"></script>
 <link rel="stylesheet" type="text/css" href="/statics/css/base.css" />
 </head>
 <body>
+	cc:	${isok }
 	<div class="mzh_dljm_right_dl">
 		<ul>
 			<li class="mzh_dljm_left_1" style="margin-bottom: 27px; display: inline;">微店账号登录</li>

@@ -1,45 +1,126 @@
 package com.bbyiya.vo.user;
 
+import java.io.Serializable;
+import java.util.Date;
+
 /**
  * 用户基本信息
  * 用户登陆成功后
  * @author Administrator
  *
  */
-public class LoginSuccessResult implements java.io.Serializable{
+public class LoginSuccessResult  implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
-	private Long userId;
-	private String userName;
-	private String headImg;
-	private String mobilePhone;
-	
-	public Long getUserId() {
-		return userId;
+	private Long userid;
+
+    private String username;
+
+    private String mobilephone;
+
+    private Integer mobilebind;
+
+    private Integer status;
+
+    private Long identity;
+
+    private String userimg;
+
+    private String nickname;
+
+    private String email;
+
+    private Date createtime;
+    private String ticket;
+
+	public Long getUserid() {
+		return userid;
 	}
-	public void setUserId(Long userId) {
-		this.userId = userId;
+
+	public void setUserid(Long userid) {
+		this.userid = userid;
 	}
-	public String getUserName() {
-		return userName;
+
+	public String getUsername() {
+		return username;
 	}
-	public void setUserName(String userName) {
-		this.userName = userName;
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
-	public String getHeadImg() {
-		return headImg;
+
+	public String getMobilephone() {
+		return mobilephone;
 	}
-	public void setHeadImg(String headImg) {
-		this.headImg = headImg;
+
+	public void setMobilephone(String mobilephone) {
+		this.mobilephone = mobilephone;
 	}
-	public String getMobilePhone() {
-		return mobilePhone;
+
+	public Integer getMobilebind() {
+		return mobilebind;
 	}
-	public void setMobilePhone(String mobilePhone) {
-		this.mobilePhone = mobilePhone;
+
+	public void setMobilebind(Integer mobilebind) {
+		this.mobilebind = mobilebind;
 	}
-	
-	
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public Long getIdentity() {
+		return identity;
+	}
+
+	public void setIdentity(Long identity) {
+		this.identity = identity;
+	}
+
+	public String getUserimg() {
+		return userimg;
+	}
+
+	public void setUserimg(String userimg) {
+		this.userimg = userimg;
+	}
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Date getCreatetime() {
+		return createtime;
+	}
+
+	public void setCreatetime(Date createtime) {
+		this.createtime = createtime;
+	}
+
+	public String getTicket() {
+		return ticket;
+	}
+
+	public void setTicket(String ticket) {
+		this.ticket = ticket;
+	}
+    
 	
 	
 }

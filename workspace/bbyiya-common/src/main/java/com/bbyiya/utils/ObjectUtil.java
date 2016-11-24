@@ -325,6 +325,15 @@ public class ObjectUtil {
 		}
 		return 0;
 	}
+	
+	public static Long parseLong(String score) {
+		if (isNotEmpty(score)) {
+			if (isDouble(score)) {
+				return Long.valueOf(score);
+			}
+		}
+		return 0l;
+	}
 
 	public static final Pattern integerPattern = Pattern
 			.compile("^[-\\+]?[\\d]*$");

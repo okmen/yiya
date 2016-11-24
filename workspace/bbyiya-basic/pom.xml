@@ -9,10 +9,14 @@
 	<groupId>com.bbyiya</groupId>
 	<artifactId>bbyiya-basic</artifactId>
 	<packaging>jar</packaging>
-
 	<name>bbyiya-basic</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>
+		<dependency>
+			<groupId>com.bbyiya</groupId>
+			<artifactId>bbyiya-common</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>

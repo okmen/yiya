@@ -135,7 +135,6 @@ public class HttpRequestHelper {
 
 	public static String doGetMethod(String url, Map<String, String> keyValueMap) {
 		HttpClient client = new HttpClient();
-
 		StringBuffer sb = new StringBuffer(url);
 		PostMethod postMethod = null;
 		try {
@@ -171,5 +170,8 @@ public class HttpRequestHelper {
 			}
 		}
 	}
+	
+	
+	
 
 }

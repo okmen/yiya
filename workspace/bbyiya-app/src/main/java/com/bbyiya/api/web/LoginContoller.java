@@ -22,14 +22,21 @@ public class LoginContoller {
 	@Resource(name="userLoginService")
 	private IUserLoginService loginService;
 	
-	
+	/**
+	 * 第三放登陆
+	 * @param headImg
+	 * @param loginType
+	 * @param nickName
+	 * @param openId
+	 * @return
+	 * @throws MapperException
+	 */
 	@ResponseBody
     @RequestMapping(value = "/otherLogin")
     public String otherLogin(String headImg,Short loginType,String nickName,String openId) throws MapperException
     {
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.Success);
-		rq.setBasemodle("");
 		rq.setStatusreson("登陆成功"); 
 		return JsonUtil.objectToJsonStr(rq); 
     }

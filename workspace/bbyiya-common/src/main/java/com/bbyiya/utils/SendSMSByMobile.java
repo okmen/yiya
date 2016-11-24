@@ -2,13 +2,23 @@ package com.bbyiya.utils;
 
 import java.util.HashMap;
 import java.util.Map;
-import com.bbyiya.common.enums.SendMsgEnums;
 
+import net.sf.json.JSONObject;
+
+import com.bbyiya.common.enums.SendMsgEnums;
+/**
+ * 短信发送类
+ * @author Administrator
+ *
+ */
 public class SendSMSByMobile {
 //	static String UID = ConfigUtil.getSingleValue("smsuid");
 //	static String PWD = ConfigUtil.getSingleValue("smspwd");
 //	static String URL = "http://c.kf10000.com/sdk/SMS";
+	
 	/**
+	 * 参考api文档 https://www.yunpian.com/api2.0/sms.html
+	 * 
 	 * 云片网 单条短信发送
 	 */
 	private  static String SINGER_URL=ConfigUtil.getSingleValue("yp_single_url");
@@ -93,12 +103,26 @@ public class SendSMSByMobile {
 	 * @param moblie
 	 * @return
 	 */
-	public static String sendMsg(SendMsgEnums type, String moblie) {
-		String result="";
+	public static String sendSmsReturnJson(SendMsgEnums type, String moblie) {
 		if (type.equals(SendMsgEnums.register)) {
 			String verifyCode = String.valueOf(Math.random()).substring(2, 6);
-			result=sendSMS_yunpian(moblie, "【咿呀科技】您的验证码是"+verifyCode);
+			return sendSMS_yunpian(moblie, "【咿呀科技】您的验证码是"+verifyCode);
 		}
-		return result;
+		return null;
+	}
+	
+	/**
+	 * 短信发送
+	 * @param type SendMsgEnums
+	 * @param moblie
+	 * @return JSONObject （{code:0 发送成功，msg:失败的原因}）
+	 */
+	public static JSONObject sendSmsReturnObject(SendMsgEnums type, String moblie) {
+		if (type.equals(SendMsgEnums.register)) {
+			String verifyCode = String.valueOf(Math.random()).substring(2, 6);
+			String resultString= sendSMS_yunpian(moblie, "【咿呀科技】您的验证码是"+verifyCode);
+			return JSONObject.fromObject(resultString);
+		}
+		return null;
 	}
 }

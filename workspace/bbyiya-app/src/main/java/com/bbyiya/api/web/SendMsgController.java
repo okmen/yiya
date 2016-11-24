@@ -28,7 +28,7 @@ public class SendMsgController {
     public String sendMsg(String phone,String type) throws MapperException
     {
 		ReturnModel rq=new ReturnModel();
-		String result= SendSMSByMobile.sendMsg(SendMsgEnums.register, phone);
+		String result= SendSMSByMobile.sendSmsReturnJson(SendMsgEnums.register, phone);
 		JSONObject model = JSONObject.fromObject(result);
 		if(model!=null){
 			String code=String.valueOf(model.get("code"));
@@ -40,6 +40,7 @@ public class SendMsgController {
 				rq.setStatusreson(String.valueOf(model.get("msg"))); 
 			}
 		}else {
+			rq.setStatu(ReturnStatus.SystemError);
 			rq.setStatusreson(result); 
 		}
 		return JsonUtil.objectToJsonStr(rq); 

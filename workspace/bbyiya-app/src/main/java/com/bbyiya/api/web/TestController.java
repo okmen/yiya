@@ -10,7 +10,7 @@ import com.bbyiya.utils.ObjectUtil;
 
 @Controller
 @RequestMapping(value = "/")
-public class IndexController {
+public class TestController {
 	@Autowired
 	private UUsersMapper userMapper;
 	

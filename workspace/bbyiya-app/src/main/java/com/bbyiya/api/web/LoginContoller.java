@@ -34,23 +34,7 @@ public class LoginContoller {
 		return JsonUtil.objectToJsonStr(rq); 
     }
 	
-	/**
-	 * 短信发送
-	 * @param phone
-	 * @return
-	 * @throws MapperException
-	 */
-	@ResponseBody
-    @RequestMapping(value = "/sendMsg")
-    public String sendMsg(String phone) throws MapperException
-    {
-		ReturnModel rq=new ReturnModel();
-		rq.setStatu(ReturnStatus.Success);
-		
-		SendSMSByMobile.sendMsg(SendMsgEnums.register, phone);
-		rq.setBasemodle("发送成功");
-		return JsonUtil.objectToJsonStr(rq); 
-    }
+
 	
 	/**
 	 * 第三方注册 第二步

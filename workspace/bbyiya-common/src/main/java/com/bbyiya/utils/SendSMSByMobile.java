@@ -1,22 +1,8 @@
 package com.bbyiya.utils;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
-
 import com.bbyiya.common.enums.SendMsgEnums;
-import com.bbyiya.utils.encrypt.MD5Encrypt;
 
 public class SendSMSByMobile {
 //	static String UID = ConfigUtil.getSingleValue("smsuid");
@@ -25,15 +11,15 @@ public class SendSMSByMobile {
 	/**
 	 * 云片网 单条短信发送
 	 */
-	private  static String SINGER_URL="https://sms.yunpian.com/v2/sms/single_send.json";
+	private  static String SINGER_URL=ConfigUtil.getSingleValue("yp_single_url");
 	/**
 	 * 新增模板
 	 */
-	private static String ADD_URL="https://sms.yunpian.com/v2/tpl/add.json";
+	private static String ADD_URL=ConfigUtil.getSingleValue("yp_add_url");
 	/**
 	 * key
 	 */
-	private static String APIKEY="593936c15fcc5c7824407d9953eb2bef";
+	private static String APIKEY=ConfigUtil.getSingleValue("yp_apikey");
 
 	
 	/*

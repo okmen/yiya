@@ -2,6 +2,7 @@ package com.bbyiya.service.impl;
 
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bbyiya.dao.UOtherloginMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.model.UOtherlogin;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IUserLoginService;
 import com.bbyiya.utils.ObjectUtil;
@@ -33,10 +35,72 @@ public class UserLoginService implements IUserLoginService{
 	 * 第三方登陆
 	 * @param param
 	 */
-	public void otherLogin(OtherLoginParam param){
-		
+	public ReturnModel otherLogin(OtherLoginParam param)throws Exception{
+		ReturnModel rq=new ReturnModel();
+		if(param!=null){
+			UOtherlogin others=otherloginMapper.get_UOtherlogin(param);
+			if(others!=null){
+				UUsers user =userDao.selectByPrimaryKey(others.getUserid());
+				LoginSuccessResult loginSuccessResult=loginSuccess(user);
+				if(others.getStatus()!=null&&others.getStatus().intValue()==1){
+					if(user!=null){
+						rq.setStatu(ReturnStatus.Success);
+						rq.setBasemodle(loginSuccessResult);
+					}else {
+						rq.setStatu(ReturnStatus.SystemError);
+						rq.setStatusreson("账号信息有误");
+					}
+				}else {
+					loginSuccessResult.setStatus(0);//为绑定账户（没有设置密码） 
+					rq.setBasemodle(loginSuccessResult);
+				}
+			}else {
+				return otherRegiter(param);
+			}
+		}else {
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("参数不能为空");
+		}
+		return rq;
 	}
 	
+	public ReturnModel otherRegiter(OtherLoginParam param){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.ParamError);
+		if(param!=null){
+			if(ObjectUtil.isEmpty(param.getOpenId())){
+				rq.setStatusreson("openid不能为空");
+				return rq;
+			}
+			if(param.getLoginType()==null){
+				rq.setStatusreson("类型不能为空");
+				return rq;
+			}
+			UUsers model=new UUsers();
+			model.setCreatetime(new Date());
+			model.setStatus(0);
+			if(!ObjectUtil.isEmpty(param.getNickName()) ){
+				model.setNickname(param.getNickName());
+			}
+			if(!ObjectUtil.isEmpty(param.getHeadImg())){
+				model.setUserimg(param.getHeadImg());
+			}
+			userDao.insert(model);
+			
+			UOtherlogin other=new UOtherlogin();
+			other.setOpenid(param.getOpenId());
+			other.setLogintype(param.getLoginType());
+			other.setNickname(model.getNickname());
+			other.setImage(param.getHeadImg());
+			otherloginMapper.insert(other);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("注册成功");
+			rq.setBasemodle(loginSuccess(model));  
+		}else {
+			rq.setStatusreson("参数不能为空");
+		}
+		return rq;
+	}
 	
 	public ReturnModel login(String userno, String pwd) throws Exception {
 		ReturnModel rq = new ReturnModel();
@@ -134,6 +198,8 @@ public class UserLoginService implements IUserLoginService{
 		rq.setBasemodle(model);
 		return rq;
 	}
+	
+	
 	
 	/**
 	 * 

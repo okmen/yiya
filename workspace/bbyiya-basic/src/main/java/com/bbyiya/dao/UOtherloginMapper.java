@@ -1,6 +1,9 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
 import com.bbyiya.model.UOtherlogin;
+import com.bbyiya.vo.user.OtherLoginParam;
 
 public interface UOtherloginMapper {
     int deleteByPrimaryKey(Long id);
@@ -14,4 +17,6 @@ public interface UOtherloginMapper {
     int updateByPrimaryKeySelective(UOtherlogin record);
 
     int updateByPrimaryKey(UOtherlogin record);
+    
+    UOtherlogin get_UOtherlogin(OtherLoginParam param);
 }

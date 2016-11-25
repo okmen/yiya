@@ -6,7 +6,7 @@ public class OtherLoginParam implements java.io.Serializable{
      */
     private static final long serialVersionUID = 1L;
     private String headImg;//头像
-    private Short loginType;//登陆类型
+    private Integer loginType;//登陆类型
     private String nickName;//用户名
     private String openId;//openID第三方登陆的标识
 
@@ -20,12 +20,12 @@ public class OtherLoginParam implements java.io.Serializable{
         this.headImg = headImg;
     }
 
-    public Short getLoginType()
+    public Integer getLoginType()
     {
         return loginType;
     }
 
-    public void setLoginType(Short loginType)
+    public void setLoginType(Integer loginType)
     {
         this.loginType = loginType;
     }

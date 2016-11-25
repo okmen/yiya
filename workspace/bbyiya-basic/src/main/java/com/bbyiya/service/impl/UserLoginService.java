@@ -1,6 +1,7 @@
 package com.bbyiya.service.impl;
 
 
+import java.util.Date;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import com.bbyiya.utils.encrypt.MD5Encrypt;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.vo.user.OtherLoginParam;
+import com.bbyiya.vo.user.RegisterParam;
 
 @Service("userLoginService")
 @Transactional(rollbackFor={RuntimeException.class, Exception.class})
@@ -27,7 +29,10 @@ public class UserLoginService implements IUserLoginService{
 	@Autowired
 	private UUsersMapper userDao;
 	
-	
+	/**
+	 * 第三方登陆
+	 * @param param
+	 */
 	public void otherLogin(OtherLoginParam param){
 		
 	}
@@ -88,10 +93,66 @@ public class UserLoginService implements IUserLoginService{
 			result.setUserimg(user.getUserimg());
 			String s = UUID.randomUUID().toString();
 			String ticket="WD"+s;
-//			RedisUtil.setObject(ticket, result,3600);
+			RedisUtil.setObject(ticket, result,3600);
 			result.setTicket(ticket);
 			return result;
 		}
 		return null;
 	}
+	
+	/**
+	 * 
+	 * 
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	public ReturnModel register(RegisterParam param) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.SystemError);
+		if(param==null||ObjectUtil.isEmpty(param.getPassword()) ){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("参数有误");
+			return rq;
+		}
+		UUsers model=new UUsers();
+		model.setPassword(MD5Encrypt.encrypt(param.getPassword()));
+		model.setCreatetime(new Date());
+		model.setStatus(1);
+		if(!ObjectUtil.isEmpty(param.getUsername()) ){
+			if(!checkUser(param.getUsername(), 1)){
+				rq.setStatusreson("用户名已经存在");
+				return rq;
+			}
+			model.setUsername(param.getUsername()); 
+		}
+		if(!ObjectUtil.isEmpty(param.getMobilephone())){
+			model.setMobilephone(param.getMobilephone());
+		} 
+		userDao.insert(model);
+		rq.setStatu(ReturnStatus.Success);
+		rq.setBasemodle(model);
+		return rq;
+	}
+	
+	/**
+	 * 
+	 * @param userno
+	 * @param type
+	 * @return
+	 */
+	public boolean checkUser(String userno,int type){
+		switch (type) {
+		case 1://
+			UUsers users=userDao.getUUsersByUserName(userno);
+			if(users!=null){
+				return false;
+			}
+			break;
+		default:
+			break;
+		}
+		return true;
+	}
+	
 }

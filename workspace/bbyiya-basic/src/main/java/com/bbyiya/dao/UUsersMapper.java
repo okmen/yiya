@@ -6,6 +6,8 @@ public interface UUsersMapper {
 	int deleteByPrimaryKey(Long userid);
 
 	int insert(UUsers record);
+	
+	int insertReturnKeyId(UUsers record);
 
 	int insertSelective(UUsers record);
 

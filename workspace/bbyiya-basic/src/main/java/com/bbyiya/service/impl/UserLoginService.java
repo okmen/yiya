@@ -85,13 +85,16 @@ public class UserLoginService implements IUserLoginService{
 			if(!ObjectUtil.isEmpty(param.getHeadImg())){
 				model.setUserimg(param.getHeadImg());
 			}
-			userDao.insert(model);
+			userDao.insertReturnKeyId(model);
 			
 			UOtherlogin other=new UOtherlogin();
+			other.setUserid(model.getUserid()); 
 			other.setOpenid(param.getOpenId());
 			other.setLogintype(param.getLoginType());
 			other.setNickname(model.getNickname());
 			other.setImage(param.getHeadImg());
+			other.setStatus(0);
+			other.setCreatetime(new Date()); 
 			otherloginMapper.insert(other);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("注册成功");

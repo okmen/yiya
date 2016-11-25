@@ -3,12 +3,7 @@ package com.bbyiya.dao;
 import com.bbyiya.model.UUsers;
 
 public interface UUsersMapper {
-	/**
-	 * 删除用户
-	 * @param userid
-	 * @return
-	 */
-	int deleteByPrimaryKey(Long userid);
+	
 	/**
 	 * 新增用户
 	 * @param record
@@ -26,11 +21,30 @@ public interface UUsersMapper {
 	
 	UUsers selectByPrimaryKey(Long userid);
 
+	/**
+	 * 根据用户userId获取用户
+	 * @param userid
+	 * @return
+	 */
 	UUsers getUUsersByUserID(Long userid);
 
+	/**
+	 * 根据用户名查询用户
+	 * @param username
+	 * @return
+	 */
 	UUsers getUUsersByUserName(String username);
 
+	/**
+	 * 对局部赋值的字段进行更新 
+	 * @param record
+	 * @return
+	 */
 	int updateByPrimaryKeySelective(UUsers record);
-
+	/**
+	 * 全部字段更新
+	 * @param record
+	 * @return
+	 */
 	int updateByPrimaryKey(UUsers record);
 }

@@ -3,6 +3,7 @@ package com.bbyiya.utils.qiniu;
 import java.io.IOException;
 import java.util.Date;
 
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
@@ -16,11 +17,12 @@ import com.qiniu.util.Auth;
 public class Uploader {
 	
 	// 设置好账号的ACCESS_KEY和SECRET_KEY
-	private String ACCESS_KEY = "vLHbgaYj8mfvPUTpMCYLbAetXh-Cg0Fk0R_FtAN_"; // 这两个登录七牛 账号里面可以找到
-	private String SECRET_KEY = "re1EvlR0FwlSv9YEYlJsHw_WRIcshxhbxilGvmRN";
+	private static String ACCESS_KEY = ConfigUtil.getSingleValue("qiniu_ACCESS_KEY");
+	private static String SECRET_KEY =  ConfigUtil.getSingleValue("qiniu_SECRET_KEY");
 	// 要上传的空间
-	private String bucketname = "yiya"; // 填写新建的那个存储空间对象的名称
-	private String IMAGE_DOMAIN="obbepyhga.bkt.clouddn.com";
+	private static String bucketname = "yiya"; // 填写新建的那个存储空间对象的名称
+	//下载图片域名
+//	private String IMAGE_DOMAIN="obbepyhga.bkt.clouddn.com";
 
 	// 密钥配置
 	Auth auth = Auth.create(ACCESS_KEY, SECRET_KEY);

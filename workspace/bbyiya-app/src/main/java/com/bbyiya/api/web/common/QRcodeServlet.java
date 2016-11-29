@@ -21,13 +21,13 @@ import com.bbyiya.utils.QRCodeUtil;
  *
  */
 @WebServlet("/common/getQRcode")
-public class QRcode extends HttpServlet {
+public class QRcodeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Éú³É¶þÎ¬Âë
 	 */
-	public QRcode() {
+	public QRcodeServlet() {
 		super();
 	}
 

@@ -1,6 +1,9 @@
 package com.bbyiya.utils.qiniu;
 
 import java.io.IOException;
+import java.util.Date;
+
+import com.bbyiya.utils.DateUtil;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
 import com.qiniu.storage.UploadManager;
@@ -13,12 +16,11 @@ import com.qiniu.util.Auth;
 public class Uploader {
 	
 	// 设置好账号的ACCESS_KEY和SECRET_KEY
-	private String ACCESS_KEY = "填写你的AccessKey"; // 这两个登录七牛 账号里面可以找到
-	private String SECRET_KEY = "填写你的SecretKey";
+	private String ACCESS_KEY = "vLHbgaYj8mfvPUTpMCYLbAetXh-Cg0Fk0R_FtAN_"; // 这两个登录七牛 账号里面可以找到
+	private String SECRET_KEY = "re1EvlR0FwlSv9YEYlJsHw_WRIcshxhbxilGvmRN";
 	// 要上传的空间
-	private String bucketname = "test"; // 填写新建的那个存储空间对象的名称
-	
-	
+	private String bucketname = "yiya"; // 填写新建的那个存储空间对象的名称
+	private String IMAGE_DOMAIN="obbepyhga.bkt.clouddn.com";
 
 	// 密钥配置
 	Auth auth = Auth.create(ACCESS_KEY, SECRET_KEY);
@@ -33,11 +35,10 @@ public class Uploader {
 	public void upload(String FilePath) throws IOException {
 		try {
 			// 上传到七牛后保存的文件名
-			String key= "01.jpg";
+			String key= DateUtil.getTimeStr(new Date(), "yyyyMM")+"/"+ DateUtil.getTimeStr(new Date(), "MMddHHmmss")+".jpg" ;// "img_11_7_1.jpg";
 			// 调用put方法上传
 			Response res = uploadManager.put(FilePath, key, getUpToken());
 			// 打印返回的信息
-			System.out.println(res.isOK());
 			System.out.println(res.bodyString());
 		} catch (QiniuException e) {
 			Response r = e.response;

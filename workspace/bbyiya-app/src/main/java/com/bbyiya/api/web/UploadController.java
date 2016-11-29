@@ -23,6 +23,7 @@ import com.bbyiya.utils.ObjectUtil;
 
 
 
+import com.bbyiya.utils.qiniu.Uploader;
 import com.bbyiya.vo.ReturnModel;
 
 import java.io.IOException;
@@ -50,20 +51,26 @@ public class UploadController {
 		int cateInt = ObjectUtil.parseInt(request.getParameter("cate"));
 		int typeInt = ObjectUtil.parseInt(request.getParameter("type"));
 		String file = request.getParameter("file");
-		if (cateInt<=0&&( file == null || "".equals(file))) {// 通过文件形式传输
-			ReturnModel  modle = imgReturnBase64(request);
-			if (modle.getStatu().equals(ReturnStatus.Success)) {
-				file = modle.getStatusreson();
-				Map<String, Object> map = (Map<String, Object>) modle.getBasemodle();
-				if (map != null) {
-					cateInt = ObjectUtil.parseInt(String.valueOf(map.get("cate")));
-					typeInt =ObjectUtil.parseInt(String.valueOf(map.get("type")));
-				}
-			} else {
-				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson(modle.getStatusreson());
-				return JsonUtil.objectToJsonStr(rq);
-			}
+//		if (cateInt<=0&&( file == null || "".equals(file))) {// 通过文件形式传输
+//			ReturnModel  modle = imgReturnBase64(request);
+//			if (modle.getStatu().equals(ReturnStatus.Success)) {
+//				file = modle.getStatusreson();
+//				Map<String, Object> map = (Map<String, Object>) modle.getBasemodle();
+//				if (map != null) {
+//					cateInt = ObjectUtil.parseInt(String.valueOf(map.get("cate")));
+//					typeInt =ObjectUtil.parseInt(String.valueOf(map.get("type")));
+//				}
+//			} else {
+//				rq.setStatu(ReturnStatus.ParamError);
+//				rq.setStatusreson(modle.getStatusreson());
+//				return JsonUtil.objectToJsonStr(rq);
+//			}
+//		}
+		try {
+			new Uploader().upload("C:\\Users\\Administrator\\Desktop\\imgs\\img_11_7_1.jpg");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		rq.setBasemodle(file);
 		return JsonUtil.objectToJsonStr(rq);//HttpRequestHelper.sendGet("", "cate="+cateInt+"&type="+typeInt);

@@ -1,4 +1,4 @@
-package com.bbyiya.api.web;
+package com.bbyiya.api.web.test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

@@ -67,7 +67,7 @@ public class UploadController {
 //			}
 //		}
 		try {
-			new Uploader().upload("C:\\Users\\Administrator\\Desktop\\imgs\\img_11_7_1.jpg");
+			Uploader.uploadReturnUrl("C:\\Users\\Administrator\\Desktop\\imgs\\img_11_7_1.jpg");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

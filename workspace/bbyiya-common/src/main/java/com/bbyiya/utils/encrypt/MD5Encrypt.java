@@ -53,7 +53,6 @@ public class MD5Encrypt {
 			int k = 0;
 			for (int i = 0; i < 16; i++) {// 循环16次，对每个字节进行操作转换
 				byte everyByte = hashCalc[i];
-				System.out.println(everyByte);
 				result[k++] = hexChar[everyByte >>> 4 & 0xf];// 对每个字节的高4位进行处理，逻辑右移，再相与
 				result[k++] = hexChar[everyByte & 0xf];// 低4位转换
 			}
@@ -62,5 +61,26 @@ public class MD5Encrypt {
 			e.printStackTrace();
 		}
 		return s;
+	}
+	
+	
+	public final static String getMessageDigest(byte[] buffer) {
+		char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+		try {
+			MessageDigest mdTemp = MessageDigest.getInstance("MD5");
+			mdTemp.update(buffer);
+			byte[] md = mdTemp.digest();
+			int j = md.length;
+			char str[] = new char[j * 2];
+			int k = 0;
+			for (int i = 0; i < j; i++) {
+				byte byte0 = md[i];
+				str[k++] = hexDigits[byte0 >>> 4 & 0xf];
+				str[k++] = hexDigits[byte0 & 0xf];
+			}
+			return new String(str);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 }

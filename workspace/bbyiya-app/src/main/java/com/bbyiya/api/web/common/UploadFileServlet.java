@@ -11,7 +11,6 @@ import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,10 +24,10 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
-import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.utils.qiniu.Uploader;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
+import com.bbyiya.web.base.UserValidate;
 import com.sdicons.json.mapper.MapperException;
 
 @WebServlet("/uploadfile")
@@ -46,11 +45,7 @@ public class UploadFileServlet extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		ReturnModel rq = new ReturnModel();
-		String ticket = request.getParameter("ticket");
-		LoginSuccessResult userResult=null;
-		if(!ObjectUtil.isEmpty(ticket) ){
-		   userResult=	getLoginUser(ticket);
-		}
+		LoginSuccessResult userResult=UserValidate.getLoginUser(request);
 		if(userResult!=null){
 			rq = upload(request);
 			// 成功上传到本地（临时文件）
@@ -174,15 +169,5 @@ public class UploadFileServlet extends HttpServlet {
 		return rq;
 	}
 
-	public LoginSuccessResult getLoginUser(String  ticket) {
-		Object userObject = RedisUtil.getObject(ticket);
-		if (userObject != null)// 如果存在
-		{
-			RedisUtil.setExpire(ticket, 1800);// 延长时间
-			LoginSuccessResult user = (LoginSuccessResult) userObject;
-			return user;
-		}
-		return null;// 用户过期
-	}
 
 }

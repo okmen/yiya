@@ -2,20 +2,25 @@ package com.bbyiya.web.base;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.user.LoginSuccessResult;
-
+/**
+ * 用户登陆验证（farther class）
+ * @author Administrator
+ *
+ */
 public class SSOController {
 	@Autowired
 	HttpServletRequest request;
-	@Autowired
-	HttpServletResponse response;
-	
+//	@Autowired
+//	HttpServletResponse response;
+	/**
+	 * 用户登陆成功后返回类
+	 */
 	private LoginSuccessResult user;
 	
 	
@@ -25,76 +30,26 @@ public class SSOController {
      */
     public LoginSuccessResult getLoginUser()
     {
-        String tiket = request.getParameter("ticket");
+        String ticket = request.getParameter("ticket");
         // 判断tiekt是否为空
-        if(ObjectUtil.isEmpty(tiket))
+        if(ObjectUtil.isEmpty(ticket))
         {
-            tiket = getCookieByName(request,"ticket");// 获取cookie的tiket的值
-            if(ObjectUtil.isEmpty(tiket))
+        	// 获取cookie的tiket的值
+            ticket = CookieUtils.getCookieByName(request,"ticket");
+            if(ObjectUtil.isEmpty(ticket))
             {
                 return null;
             }
         }
-        Object userObject = RedisUtil.getObject(tiket);
+        Object userObject = RedisUtil.getObject(ticket);
         if(userObject != null)// 如果存在
         {
-            RedisUtil.setExpire(tiket,1800);// 延长时间
+            RedisUtil.setExpire(ticket,1800);// 延长时间
             user = (LoginSuccessResult) userObject;
             return user;
         }
         return null;// 用户过期
     }
     
-	 /**
-     * 直接获取tiekt，没有返回空
-     * 
-     * @return
-     */
-    public String getTiket()
-    {
-        String tiket = request.getParameter("tiket");
-        // 判断tiekt是否为空
-        if(ObjectUtil.isEmpty(tiket))
-        {
-            tiket = getCookieByName(request,"tiket");// 获取cookie的tiket的值
-            return tiket;
-        }
-        else{
-            return tiket;
-        }
-    }
-    
 
-    /**
-     * 获取指定cookie值
-     * 
-     * @param request
-     *            请求实体
-     * @param name
-     *            cookie的键
-     * @return cookie的值
-     */
-    private String getCookieByName(HttpServletRequest request,String name)
-    {
-        Cookie[] cookies = request.getCookies();
-        if(ObjectUtil.isEmpty(name))
-        {
-            return null;
-        }
-        if(cookies != null)
-        {
-            for(Cookie cookie : cookies)
-            {
-                if(name.equals(cookie.getName().trim()))
-                {
-                    return cookie.getValue();
-                }
-            }
-            return null;
-        }
-        else
-        {
-            return null;
-        }
-    }
 }

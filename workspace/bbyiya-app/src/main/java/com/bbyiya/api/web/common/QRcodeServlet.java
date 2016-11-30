@@ -20,7 +20,7 @@ import com.bbyiya.utils.QRCodeUtil;
  * @author Administrator
  *
  */
-@WebServlet("/common/getQRcode")
+@WebServlet("/common/generateQRcode")
 public class QRcodeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 

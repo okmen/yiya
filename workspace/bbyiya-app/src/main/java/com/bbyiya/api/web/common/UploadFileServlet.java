@@ -30,7 +30,7 @@ import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.UserValidate;
 import com.sdicons.json.mapper.MapperException;
 
-@WebServlet("/uploadfile")
+@WebServlet("/common/uploadfile")
 public class UploadFileServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 

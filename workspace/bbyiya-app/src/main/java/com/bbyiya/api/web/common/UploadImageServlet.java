@@ -41,15 +41,13 @@ public class UploadImageServlet  extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		ReturnModel rq = new ReturnModel();
-		// logger.error("UploadImageForChat");
-		rq = upLoadImgModel(request);// upload(request);//
-		// logger.error("out");
+		rq = upLoadImgModel(request);
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
 		try {
 			out.println(JsonUtil.objectToJsonStr(rq));
 		} catch (MapperException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		out.flush();
@@ -81,7 +79,7 @@ public class UploadImageServlet  extends HttpServlet {
 		// 用来限制用户上传文件大小的
 		int maxPostSize = 1 * 100 * 1024 * 1024;
 		try {
-			String imgBasenew = ConfigUtil.getSingleValue("imgUploadBase");// "D://"
+			String imgBasenew = ConfigUtil.getSingleValue("imgPathTemp");// "D://"
 			String uploadPath = "Images/" + DateUtil.getTimeString("yyyyMM") + "/";
 			File f = new File(imgBasenew + uploadPath);
 			if (!f.isDirectory()) {//文件路劲是否存在
@@ -93,18 +91,15 @@ public class UploadImageServlet  extends HttpServlet {
 				f.mkdir();
 			}
 
-			// logger.error("filesPath:"+imgBasenew+uploadPath);
 			mr = new MultipartRequest(request, imgBasenew + uploadPath, maxPostSize, "GBK");
 			Enumeration files = mr.getFileNames();
 			// logger.error("files");
 			String filename = "";
 			String filePath = "";
 			String pathFull = imgBasenew + uploadPath;
-
 			while (files.hasMoreElements()) {
 				filename = (String) files.nextElement();
 				filePath = mr.getFilesystemName(filename);
-
 				InputStream in = null;
 				byte[] data = null;
 				// 读取图片字节数组
@@ -117,8 +112,7 @@ public class UploadImageServlet  extends HttpServlet {
 					e.printStackTrace();
 				}
 				// 对字节数组Base64编码
-				BASE64Encoder encoder = new BASE64Encoder();
-			
+//				BASE64Encoder encoder = new BASE64Encoder();
 				// logger.error("filePath:"+pathFull+filePath);
 				// logger.error(resultMsg.getMsg());
 				// 删除临时文件
@@ -130,7 +124,7 @@ public class UploadImageServlet  extends HttpServlet {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			
+			System.out.println(e);
 		}
 	}
 

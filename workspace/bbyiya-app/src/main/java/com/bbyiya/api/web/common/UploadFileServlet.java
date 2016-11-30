@@ -98,7 +98,7 @@ public class UploadFileServlet extends HttpServlet {
 	private ReturnModel upload(HttpServletRequest request) {
 		ReturnModel rq = new ReturnModel();
 		//
-		String savePath = ConfigUtil.getSingleValue("imgPathTemp");
+		String savePath =  ConfigUtil.getSingleValue("imgPathTemp");
 		File file = new File(savePath);
 		//
 		if (!file.exists() && !file.isDirectory()) {

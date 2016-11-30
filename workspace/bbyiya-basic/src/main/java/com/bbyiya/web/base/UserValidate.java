@@ -1,6 +1,5 @@
 package com.bbyiya.web.base;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import com.bbyiya.utils.ObjectUtil;
@@ -54,8 +53,6 @@ public class UserValidate {
 			return user;
 		}
 		return null;// 用户过期
-	}
-	
-	
+	}	
 	
 }

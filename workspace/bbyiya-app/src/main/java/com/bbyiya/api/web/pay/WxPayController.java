@@ -35,7 +35,7 @@ public class WxPayController  extends SSOController{
 		LoginSuccessResult user= super.getLoginUser();
 		ReturnModel rq=new ReturnModel();
 		if(user!=null){
-			rq= payService.getWeiXinPay_Param(user.getUserid(), orderno, "");
+			rq= payService.getWeiXinPay_Param(user.getUserId(), orderno, "");
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登陆信息已过期，请重新登陆");

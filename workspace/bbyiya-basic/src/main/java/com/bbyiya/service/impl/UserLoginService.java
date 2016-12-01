@@ -153,15 +153,15 @@ public class UserLoginService implements IUserLoginService{
 	private LoginSuccessResult loginSuccess(UUsers user){
 		if(user!=null){
 			LoginSuccessResult result=new LoginSuccessResult();
-			result.setUserid(user.getUserid());
-			result.setUsername(user.getUsername());
-			result.setCreatetime(user.getCreatetime());
+			result.setUserId(user.getUserid());
+			result.setUserName(user.getUsername());
+			result.setCreateTime(user.getCreatetime());
 			result.setEmail(user.getEmail());
 			result.setIdentity(user.getIdentity());
-			result.setMobilebind(user.getMobilebind());
-			result.setMobilephone(user.getMobilephone());
-			result.setNickname(user.getNickname());
-			result.setUserimg(user.getUserimg());
+			result.setMobileBind(user.getMobilebind());
+			result.setMobilePhone(user.getMobilephone());
+			result.setNickName(user.getNickname());
+			result.setHeadImg(user.getUserimg());
 			String s = UUID.randomUUID().toString();
 			String ticket="WD"+s;
 			RedisUtil.setObject(ticket, result,3600);

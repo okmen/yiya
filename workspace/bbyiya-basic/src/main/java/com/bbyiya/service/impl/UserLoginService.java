@@ -68,6 +68,11 @@ public class UserLoginService implements IUserLoginService{
 		return rq;
 	}
 	
+	/**
+	 * 第三方用户注册
+	 * @param param 第三方登陆 成功 返回信息 openid,headImg
+	 * @return
+	 */
 	public ReturnModel otherRegiter(OtherLoginParam param){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.ParamError);
@@ -80,29 +85,29 @@ public class UserLoginService implements IUserLoginService{
 				rq.setStatusreson("类型不能为空");
 				return rq;
 			}
-			UUsers model=new UUsers();
-			model.setCreatetime(new Date());
-			model.setStatus(0);
+			UUsers userModel=new UUsers();
+			userModel.setCreatetime(new Date());
+			userModel.setStatus(0);
 			if(!ObjectUtil.isEmpty(param.getNickName()) ){
-				model.setNickname(param.getNickName());
+				userModel.setNickname(param.getNickName());
 			}
 			if(!ObjectUtil.isEmpty(param.getHeadImg())){
-				model.setUserimg(param.getHeadImg());
+				userModel.setUserimg(param.getHeadImg());
 			}
-			userDao.insertReturnKeyId(model);
+			userDao.insertReturnKeyId(userModel);
 			
 			UOtherlogin other=new UOtherlogin();
-			other.setUserid(model.getUserid()); 
+			other.setUserid(userModel.getUserid()); 
 			other.setOpenid(param.getOpenId());
 			other.setLogintype(param.getLoginType());
-			other.setNickname(model.getNickname());
+			other.setNickname(userModel.getNickname());
 			other.setImage(param.getHeadImg());
 			other.setStatus(0);
 			other.setCreatetime(new Date()); 
 			otherloginMapper.insert(other);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("注册成功");
-			rq.setBasemodle(loginSuccess(model));  
+			rq.setBasemodle(loginSuccess(userModel));  
 		}else {
 			rq.setStatusreson("参数不能为空");
 		}

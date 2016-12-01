@@ -50,7 +50,6 @@ public class UploadFileServlet extends HttpServlet {
 			// 成功上传到本地（临时文件）
 			if (rq.getStatu().equals(ReturnStatus.Success)) {
 				String imgurl = Uploader.uploadReturnUrl(rq.getStatusreson(), 0);
-				String msg=rq.getBasemodle().toString();
 				if (!ObjectUtil.isEmpty(imgurl)) {
 					ImageInfo img = new ImageInfo();
 					img.setUrl(imgurl);
@@ -63,13 +62,12 @@ public class UploadFileServlet extends HttpServlet {
 					rq.setBasemodle(map);
 					File file = new File(rq.getStatusreson());
 					if (file.isFile() && file.exists()){
-						// file.delete();
+						file.delete();
 						rq.setStatusreson("上传成功！");
-						msg+="4：存在图片";
 					}else {
-						msg+="5：不存在图片";
+						rq.setStatu(ReturnStatus.SystemError);
+						rq.setStatusreson("不存在图片");
 					}
-					rq.setStatusreson(msg+";ps:"+rq.getStatusreson());
 						
 				} else {
 					rq.setStatu(ReturnStatus.SystemError);
@@ -102,7 +100,7 @@ public class UploadFileServlet extends HttpServlet {
 	 */
 	private ReturnModel upload(HttpServletRequest request) {
 		ReturnModel rq = new ReturnModel();
-		String logString = "1:开始";
+		
 		//
 		String savePath =System.getProperty("user.dir")+"/"+ConfigUtil.getSingleValue("imgPathTemp");
 		File file = new File(savePath);
@@ -111,9 +109,7 @@ public class UploadFileServlet extends HttpServlet {
 			//
 			file.mkdir();
 		}
-		logString += "2:文件夹完成";
-		//
-		String message = "";
+	
 		try {
 			DiskFileItemFactory factory = new DiskFileItemFactory();
 			ServletFileUpload upload = new ServletFileUpload(factory);
@@ -122,17 +118,18 @@ public class UploadFileServlet extends HttpServlet {
 				return rq;
 			}
 			List<FileItem> list = upload.parseRequest(request);
+			
 			for (FileItem item : list) {
-
 				// 如果fileitem中封装的是普通输入项的数据
-				if (item.isFormField()) {
+				if (item.isFormField()) {//参数
 					String name = item.getFieldName();
 					// 解决普通输入项的数据的中文乱码问题
 					String value = item.getString("UTF-8");
-
+					System.out.println(name+":"+value);
 				} else {// 如果fileitem中封装的是上传文件
 					// 得到上传的文件名称，
 					String filename = item.getName();
+					System.out.println("image:"+filename);
 					if (filename == null || filename.trim().equals("")) {
 						continue;
 					}
@@ -160,19 +157,15 @@ public class UploadFileServlet extends HttpServlet {
 					out.close();
 					// 删除处理文件上传时生成的临时文件
 					item.delete();
-					message = savePath + "/" + filename;
 					rq.setStatu(ReturnStatus.Success);
-					rq.setStatusreson(message);
-					
+					rq.setStatusreson(savePath + "/" + filename);
 				}
 			}
 		} catch (Exception e) {
 			rq.setStatu(ReturnStatus.SystemError);
 			rq.setStatusreson("上传失败");
 			rq.setBasemodle(e);
-			logString+=e.getMessage();
 		}
-		rq.setBasemodle(logString);
 		return rq;
 	}
 

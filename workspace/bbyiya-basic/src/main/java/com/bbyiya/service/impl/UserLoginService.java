@@ -4,6 +4,8 @@ package com.bbyiya.service.impl;
 import java.util.Date;
 import java.util.UUID;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +31,10 @@ public class UserLoginService implements IUserLoginService{
 	private UOtherloginMapper otherloginMapper;
 	@Autowired
 	private UUsersMapper userDao;
-	
+	/**
+	 * 日志对象
+	 */
+	private static Log log = LogFactory.getLog(UserLoginService.class); 
 	/**
 	 * 第三方登陆
 	 * @param param
@@ -120,7 +125,7 @@ public class UserLoginService implements IUserLoginService{
 		}
 		rq.setStatu(ReturnStatus.SystemError);
 		rq.setStatusreson("用户名或密码错误！");
-
+		log.error(userno+"用户名或密码错误"); 
 		return rq;
 	}
 	

@@ -3,7 +3,7 @@
 	<wapDomain value="m.okwei.com" /><!-- wap域名 -->
 	<currentDomain value="10.10.10.194:8080" /><!-- 当前服务器域名 -->
 	<imgDoman value=""/><!-- 图片域名 -->
-	<imgPathTemp value="F:\imgs\temp\images\"/> <!-- 图片临时地址 -->
+	<imgPathTemp value="temp\"/> <!-- 图片临时地址 -->
 	<yp_single_url value="https://sms.yunpian.com/v2/sms/single_send.json"/><!-- 云片  -->
 	<yp_add_url value="https://sms.yunpian.com/v2/tpl/add.json"/><!-- 云片添加模板url -->
 	<yp_apikey value="593936c15fcc5c7824407d9953eb2bef"/><!-- 云片apikey -->

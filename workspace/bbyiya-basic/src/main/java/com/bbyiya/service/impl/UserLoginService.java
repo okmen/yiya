@@ -103,7 +103,7 @@ public class UserLoginService implements IUserLoginService{
 			other.setLogintype(param.getLoginType());
 			other.setNickname(userModel.getNickname());
 			other.setImage(param.getHeadImg());
-			other.setStatus(0);
+			other.setStatus(userModel.getStatus());
 			other.setCreatetime(new Date()); 
 			otherloginMapper.insert(other);
 			rq.setStatu(ReturnStatus.Success);

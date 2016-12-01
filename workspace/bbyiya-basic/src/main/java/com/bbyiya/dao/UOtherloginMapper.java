@@ -1,6 +1,5 @@
 package com.bbyiya.dao;
 
-import java.util.List;
 
 import com.bbyiya.model.UOtherlogin;
 import com.bbyiya.vo.user.OtherLoginParam;
@@ -8,6 +7,11 @@ import com.bbyiya.vo.user.OtherLoginParam;
 public interface UOtherloginMapper {
     int deleteByPrimaryKey(Long id);
 
+    /**
+     * 新增第三方登陆信息
+     * @param record
+     * @return
+     */
     int insert(UOtherlogin record);
 
     int insertSelective(UOtherlogin record);
@@ -17,6 +21,10 @@ public interface UOtherloginMapper {
     int updateByPrimaryKeySelective(UOtherlogin record);
 
     int updateByPrimaryKey(UOtherlogin record);
-    
+    /**
+     * 获取第三方登陆信息 
+     * @param param
+     * @return
+     */
     UOtherlogin get_UOtherlogin(OtherLoginParam param);
 }

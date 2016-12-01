@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bbyiya.dao.UOtherloginMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.user.UserStatusEnum;
 import com.bbyiya.model.UOtherlogin;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IUserLoginService;
@@ -87,7 +88,7 @@ public class UserLoginService implements IUserLoginService{
 			}
 			UUsers userModel=new UUsers();
 			userModel.setCreatetime(new Date());
-			userModel.setStatus(0);
+			userModel.setStatus(Integer.parseInt(UserStatusEnum.noPwd.toString())); 
 			if(!ObjectUtil.isEmpty(param.getNickName()) ){
 				userModel.setNickname(param.getNickName());
 			}

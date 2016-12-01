@@ -162,6 +162,7 @@ public class UserLoginService implements IUserLoginService{
 			result.setMobilePhone(user.getMobilephone());
 			result.setNickName(user.getNickname());
 			result.setHeadImg(user.getUserimg());
+			result.setStatus(user.getStatus()); 
 			String s = UUID.randomUUID().toString();
 			String ticket="WD"+s;
 			RedisUtil.setObject(ticket, result,3600);

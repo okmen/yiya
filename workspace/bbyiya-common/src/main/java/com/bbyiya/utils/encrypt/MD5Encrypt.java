@@ -4,11 +4,13 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class MD5Encrypt {
+	
 	/**
-	 * MD5 加密
+	 * MD5 加密 PS 与Num001结果一致
 	 * @param plainText
 	 * @return
 	 */
+	/*
 	public static String encryption(String plainText) {
 		String re_md5 = new String();
 		try {
@@ -17,7 +19,6 @@ public class MD5Encrypt {
 			byte b[] = md.digest();
 
 			int i;
-
 			StringBuffer buf = new StringBuffer("");
 			for (int offset = 0; offset < b.length; offset++) {
 				i = b[offset];
@@ -34,10 +35,11 @@ public class MD5Encrypt {
 		}
 		return re_md5;
 	}
-	 
+	 */
 	 
 	/**
-	 * 
+	 * Num001
+	 * MD5 加密
 	 * @param source
 	 * @return
 	 */
@@ -63,7 +65,11 @@ public class MD5Encrypt {
 		return s;
 	}
 	
-	
+	/**
+	 * 加密（ 对 byte[]进行加密）
+	 * @param buffer
+	 * @return
+	 */
 	public final static String getMessageDigest(byte[] buffer) {
 		char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 		try {

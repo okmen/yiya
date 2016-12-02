@@ -10,6 +10,7 @@ import com.bbyiya.common.enums.UploadTypeEnum;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.utils.encrypt.MD5Encrypt;
 import com.qiniu.http.Response;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
@@ -51,6 +52,7 @@ public class FileUploadUtils_qiniu {
 			
 			// 上传到七牛后保存的文件名
 			String key = DateUtil.getTimeStr(new Date(), "yyyyMM") + "/" + fileName+suffix;
+			
 //			System.out.println(key);
 			// 调用put方法上传
 			Response res = uploadManager.put(FilePath, key, getUpToken());

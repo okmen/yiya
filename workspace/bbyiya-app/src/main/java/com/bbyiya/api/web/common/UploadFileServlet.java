@@ -19,6 +19,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
+import com.bbyiya.common.enums.UploadTypeEnum;
 import com.bbyiya.common.vo.ImageInfo;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.utils.ConfigUtil;
@@ -49,7 +50,7 @@ public class UploadFileServlet extends HttpServlet {
 			rq = upload(request);
 			// 成功上传到本地（临时文件）
 			if (rq.getStatu().equals(ReturnStatus.Success)) {
-				String imgurl = Uploader.uploadReturnUrl(rq.getStatusreson(), 0);
+				String imgurl = Uploader.uploadReturnUrl(rq.getStatusreson(), UploadTypeEnum.Product);
 				if (!ObjectUtil.isEmpty(imgurl)) {
 					ImageInfo img = new ImageInfo();
 					img.setUrl(imgurl);

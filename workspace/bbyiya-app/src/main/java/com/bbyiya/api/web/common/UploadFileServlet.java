@@ -25,7 +25,7 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
-import com.bbyiya.utils.qiniu.Uploader;
+import com.bbyiya.utils.upload.FileUploadUtils_qiniu;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.UserValidate;
@@ -50,7 +50,7 @@ public class UploadFileServlet extends HttpServlet {
 			rq = upload(request);
 			// 成功上传到本地（临时文件）
 			if (rq.getStatu().equals(ReturnStatus.Success)) {
-				String imgurl = Uploader.uploadReturnUrl(rq.getStatusreson(), UploadTypeEnum.Product);
+				String imgurl = FileUploadUtils_qiniu.uploadReturnUrl(rq.getStatusreson(), UploadTypeEnum.Product);
 				if (!ObjectUtil.isEmpty(imgurl)) {
 					ImageInfo img = new ImageInfo();
 					img.setUrl(imgurl);

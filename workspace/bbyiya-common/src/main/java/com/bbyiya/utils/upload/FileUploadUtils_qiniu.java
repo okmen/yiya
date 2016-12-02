@@ -1,4 +1,4 @@
-package com.bbyiya.utils.qiniu;
+package com.bbyiya.utils.upload;
 
 import java.io.IOException;
 import java.util.Date;
@@ -10,19 +10,12 @@ import com.bbyiya.common.enums.UploadTypeEnum;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
-import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
 
-/**
- * 七牛 文件上传
- * 
- * @author Administrator
- *
- */
-public class Uploader {
-
+public class FileUploadUtils_qiniu {
+	
 	// 设置好账号的ACCESS_KEY和SECRET_KEY
 	private static String ACCESS_KEY = ConfigUtil.getSingleValue("qiniu_ACCESS_KEY");
 	private static String SECRET_KEY = ConfigUtil.getSingleValue("qiniu_SECRET_KEY");
@@ -71,5 +64,4 @@ public class Uploader {
 		}
 		return "";
 	}
-
 }

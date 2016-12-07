@@ -2,13 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.egou</groupId>
-	<artifactId>egou-parent</artifactId>
+	<groupId>com.bbyiya</groupId>
+	<artifactId>bbyiya-parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>parent component</name>
-	<description>egou parent component</description>
-
+	<description>bbyiya parent component</description>
 	<!-- spring 版本信息 -->
 	<properties>
 		<spring.version>4.1.2.RELEASE</spring.version>

@@ -97,12 +97,13 @@ public class LoginContoller extends SSOController {
 	@ResponseBody
 	@RequestMapping(value = "/registerAjax")
 	public String registerAjax(String username, String pwd, String phone,
-			String vcode) throws Exception {
+			String vcode ,String register_token) throws Exception {
 		RegisterParam param = new RegisterParam();
 		param.setUsername(username);
 		param.setPassword(pwd);
 		param.setMobilephone(phone);
 		param.setVcode(vcode);
+		param.setRegister_token(register_token);
 		ReturnModel rq = loginService.register(param);
 		return JsonUtil.objectToJsonStr(rq);
 	}

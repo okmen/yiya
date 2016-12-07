@@ -19,6 +19,8 @@ public class RegisterParam implements Serializable {
 	private String email;
 	
 	private String vcode;
+	
+	private String register_token;
 
 	public String getUsername() {
 		return username;
@@ -74,6 +76,14 @@ public class RegisterParam implements Serializable {
 
 	public void setVcode(String vcode) {
 		this.vcode = vcode;
+	}
+
+	public String getRegister_token() {
+		return register_token;
+	}
+
+	public void setRegister_token(String register_token) {
+		this.register_token = register_token;
 	}
 	
 	

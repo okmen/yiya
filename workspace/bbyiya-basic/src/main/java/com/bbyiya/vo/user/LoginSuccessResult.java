@@ -27,6 +27,9 @@ public class LoginSuccessResult  implements Serializable{
     private String nickName;
     //登陆票据
     private String ticket;
+    
+    //第三方注册标记
+    private String register_token;
     //宝宝信息
     private UChildInfo babyInfo;
 	
@@ -80,6 +83,12 @@ public class LoginSuccessResult  implements Serializable{
 	}
 	public void setBabyInfo(UChildInfo babyInfo) {
 		this.babyInfo = babyInfo;
+	}
+	public String getRegister_token() {
+		return register_token;
+	}
+	public void setRegister_token(String register_token) {
+		this.register_token = register_token;
 	}
 
 	

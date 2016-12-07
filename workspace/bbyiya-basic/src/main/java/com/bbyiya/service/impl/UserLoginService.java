@@ -49,19 +49,15 @@ public class UserLoginService implements IUserLoginService{
 			UOtherlogin others=otherloginMapper.get_UOtherlogin(param);
 			if(others!=null){
 				UUsers user =userDao.selectByPrimaryKey(others.getUserid());
-				LoginSuccessResult loginSuccessResult=loginSuccess(user);
-				if(others.getStatus()!=null&&others.getStatus().intValue()==1){
-					if(user!=null){
-						rq.setStatu(ReturnStatus.Success);
-						rq.setBasemodle(loginSuccessResult);
-					}else {
-						rq.setStatu(ReturnStatus.SystemError);
-						rq.setStatusreson("账号信息有误");
-					}
+				LoginSuccessResult loginSuccessResult=null;
+				if(user!=null){
+					 loginSuccessResult=loginSuccess(user);
 				}else {
-					loginSuccessResult.setStatus(0);//为绑定账户（没有设置密码） 
-					rq.setBasemodle(loginSuccessResult);
+					 loginSuccessResult=new LoginSuccessResult();
+					 loginSuccessResult.setStatus(Integer.parseInt(UserStatusEnum.noPwd.toString())); 
 				}
+				rq.setStatu(ReturnStatus.Success);
+				rq.setBasemodle(loginSuccessResult);
 			}else {
 				return otherRegiter(param);
 			}
@@ -89,29 +85,26 @@ public class UserLoginService implements IUserLoginService{
 				rq.setStatusreson("类型不能为空");
 				return rq;
 			}
-			UUsers userModel=new UUsers();
-			userModel.setCreatetime(new Date());
-			userModel.setStatus(Integer.parseInt(UserStatusEnum.noPwd.toString())); 
-			if(!ObjectUtil.isEmpty(param.getNickName()) ){
-				userModel.setNickname(param.getNickName());
-			}
-			if(!ObjectUtil.isEmpty(param.getHeadImg())){
-				userModel.setUserimg(param.getHeadImg());
-			}
-			userDao.insertReturnKeyId(userModel);
-			
 			UOtherlogin other=new UOtherlogin();
-			other.setUserid(userModel.getUserid()); 
 			other.setOpenid(param.getOpenId());
 			other.setLogintype(param.getLoginType());
-			other.setNickname(userModel.getNickname());
+			other.setNickname(param.getNickName());
 			other.setImage(param.getHeadImg());
-			other.setStatus(userModel.getStatus());
+			other.setStatus(Integer.parseInt(UserStatusEnum.noPwd.toString()));
 			other.setCreatetime(new Date()); 
 			otherloginMapper.insert(other);
+			
+			String s = UUID.randomUUID().toString();
+			String tokent="YA"+s;
+			RedisUtil.setObject(tokent, param,3600);
+			
+			LoginSuccessResult result=new LoginSuccessResult();
+			result.setStatus(Integer.parseInt(UserStatusEnum.noPwd.toString()));
+			result.setRegister_token(tokent); 
+			
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("注册成功");
-			rq.setBasemodle(loginSuccess(userModel));  
+			rq.setBasemodle(result);   
 		}else {
 			rq.setStatusreson("参数不能为空");
 		}
@@ -219,17 +212,25 @@ public class UserLoginService implements IUserLoginService{
 		model.setCreatetime(new Date());
 		model.setStatus(Integer.parseInt(UserStatusEnum.noChirlInfo.toString()));//等待设置宝宝信息
 		if(!ObjectUtil.isEmpty(param.getUsername()) ){
-//			if(!checkUser(param.getUsername(), 1)){
-//				rq.setStatusreson("用户名已经存在");
-//				return rq;
-//			}
 			model.setUsername(param.getUsername()); 
 		}
 		if(!ObjectUtil.isEmpty(param.getMobilephone())){
 			model.setMobilephone(param.getMobilephone());
 			model.setMobilebind(1); 
 		} 
-		userDao.insert(model);
+		if(!ObjectUtil.isEmpty(param.getRegister_token()) ){
+			userDao.insertReturnKeyId(model);
+			OtherLoginParam otherLogin = (OtherLoginParam)RedisUtil.getObject(param.getRegister_token());
+			if(otherLogin!=null&&!ObjectUtil.isEmpty(otherLogin.getOpenId())){
+				UOtherlogin other= otherloginMapper.get_UOtherlogin(otherLogin);
+				if(other!=null){
+					other.setUserid(model.getUserid());
+					otherloginMapper.updateByPrimaryKey(other);
+				}
+			}
+		}else {
+			userDao.insert(model);
+		}
 		rq.setStatu(ReturnStatus.Success);
 		rq.setBasemodle(loginSuccess(model));
 		return rq;

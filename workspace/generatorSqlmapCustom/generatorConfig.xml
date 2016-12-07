@@ -11,8 +11,8 @@
 		</commentGenerator>
 		<!--数据库连接的信息：驱动类、连接地址、用户名、密码 -->
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
-			connectionURL="jdbc:mysql://localhost:3306/bbyiya" userId="root"
-			password="123456">
+			connectionURL="jdbc:mysql://120.27.203.106:3306/bbyiya" userId="root"
+			password="EOA4>z<dVb">
 		</jdbcConnection>
 		<!-- <jdbcConnection driverClass="oracle.jdbc.OracleDriver" connectionURL="jdbc:oracle:thin:@127.0.0.1:1521:yycg" 
 			userId="yycg" password="yycg"> </jdbcConnection> -->
@@ -44,7 +44,7 @@
 			<property name="enableSubPackages" value="false" />
 		</javaClientGenerator>
 		<!-- 指定数据库表 -->
-		<table tableName="u_otherlogin" enableCountByExample="false"
+		<table tableName="V_Code" enableCountByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false"
 			enableSelectByExample="false" selectByExampleQueryId="false"></table>
 

@@ -36,6 +36,12 @@
     from u_users
     where UserName = #{userid,jdbcType=VARCHAR}
   </select>
+  <select id="getUUsersByPhone" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from u_users
+    where MobilePhone = #{phone,jdbcType=VARCHAR}
+  </select>
   <insert id="insert" parameterType="com.bbyiya.model.UUsers" >
     insert into u_users (UserID, UserName, PassWord, 
       MobilePhone, MobileBind, Status, 

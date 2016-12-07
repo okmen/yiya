@@ -8,11 +8,11 @@ public enum UserStatusEnum {
     /**
      * 未设置密码 （未绑定userId的用户）
      */
-    noPwd(0),
+    noPwd(2),
     /**
-     * 无效的用户
+     * 未填写宝宝信息
      */
-    invalid(3);
+    noChirlInfo(3);
 
     private final int Type;
 

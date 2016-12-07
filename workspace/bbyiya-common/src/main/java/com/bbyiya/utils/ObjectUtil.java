@@ -18,7 +18,7 @@ public class ObjectUtil {
 	 * @Description:集合是否为空
 	 * @param @param s
 	 * @param @return
-	 * @return boolean
+	 * @return boolean-
 	 * @throws
 	 * @author xiehz
 	 * @date 2015年4月27日
@@ -523,5 +523,7 @@ public class ObjectUtil {
 		String out = head.toUpperCase() + in.substring(1, in.length());
 		return out;
 	}
+	
+	
 
 }

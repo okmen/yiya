@@ -103,9 +103,11 @@ public class SendSMSByMobile {
 	 * @param moblie
 	 * @return
 	 */
-	public static String sendSmsReturnJson(SendMsgEnums type, String moblie) {
-		if (type.equals(SendMsgEnums.register)) {
+	public static String sendSmsReturnJson(int type, String moblie) {
+		if (type==Integer.parseInt( SendMsgEnums.register.toString())) {
 			String verifyCode = String.valueOf(Math.random()).substring(2, 6);
+			String key=moblie+"-"+type;
+			RedisUtil.setObject(key, verifyCode,120); 
 			return sendSMS_yunpian(moblie, "【咿呀科技】您的验证码是"+verifyCode);
 		}
 		return null;
@@ -120,6 +122,8 @@ public class SendSMSByMobile {
 	public static JSONObject sendSmsReturnObject(SendMsgEnums type, String moblie) {
 		if (type.equals(SendMsgEnums.register)) {
 			String verifyCode = String.valueOf(Math.random()).substring(2, 6);
+			String key=moblie+"-"+Integer.parseInt(type.toString());
+			RedisUtil.setObject(key, verifyCode,120); 
 			String resultString= sendSMS_yunpian(moblie, "【咿呀科技】您的验证码是"+verifyCode);
 			return JSONObject.fromObject(resultString);
 		}

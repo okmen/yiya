@@ -3,11 +3,12 @@ package com.bbyiya.service;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.OtherLoginParam;
 import com.bbyiya.vo.user.RegisterParam;
+import com.bbyiya.vo.user.UChildInfoParam;
 
 public interface IUserLoginService {
 
 	/**
-	 * 用户登陆（用户名密码登陆）
+	 * 用户登陆（手机号/用户名 密码登陆）
 	 * @param userno
 	 * @param pwd
 	 * @return
@@ -22,10 +23,19 @@ public interface IUserLoginService {
 	 */
 	ReturnModel register(RegisterParam param) throws Exception ;
 	/**
+	 * 设置用户的孩子信息
+	 * @param userId
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	ReturnModel addChildInfo(Long userId, UChildInfoParam param) throws Exception;
+	/**
 	 * 第三方登陆（未注册的直接注册登陆）
 	 * @param param
 	 * @return
 	 * @throws Exception
 	 */
 	ReturnModel otherLogin(OtherLoginParam param)throws Exception;
+	
 }

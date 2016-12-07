@@ -34,6 +34,12 @@ public interface UUsersMapper {
 	 * @return
 	 */
 	UUsers getUUsersByUserName(String username);
+	/**
+	 * 根据手机好获取用户
+	 * @param phone
+	 * @return
+	 */
+	UUsers getUUsersByPhone(String phone);
 
 	/**
 	 * 对局部赋值的字段进行更新 

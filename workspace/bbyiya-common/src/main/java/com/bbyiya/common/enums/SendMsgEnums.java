@@ -2,11 +2,11 @@ package com.bbyiya.common.enums;
 
 public enum SendMsgEnums {
 	/**
-     * 用户注册
+     * 用户注册 value= 1
      */
     register(1),
     /**
-     * 用户登陆
+     * 用户登陆 value =2
      */
     login(2);
 

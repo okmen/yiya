@@ -1,6 +1,7 @@
 package com.bbyiya.service;
 
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.vo.user.OtherLoginParam;
 import com.bbyiya.vo.user.RegisterParam;
 import com.bbyiya.vo.user.UChildInfoParam;
@@ -30,6 +31,12 @@ public interface IUserLoginService {
 	 * @throws Exception
 	 */
 	ReturnModel addChildInfo(Long userId, UChildInfoParam param) throws Exception;
+	/**
+	 * 更新用户登陆信息
+	 * @param user 此操作之前的用户登陆信息 the user's loginInfo before
+	 * @return
+	 */
+	LoginSuccessResult updateLoginSuccessResult(LoginSuccessResult user);
 	/**
 	 * 第三方登陆（未注册的直接注册登陆）
 	 * @param param

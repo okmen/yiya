@@ -163,12 +163,12 @@ public class UserLoginService implements IUserLoginService{
 			result.setNickName(user.getNickname());
 			result.setHeadImg(user.getUserimg());
 			result.setStatus(user.getStatus()); 
+			
 			if(user.getStatus().intValue()==Integer.parseInt(UserStatusEnum.ok.toString())){
 				//获取宝宝信息 
 				UChildInfo child=new UChildInfo();
-				
 				result.setBabyInfo(child);
-				
+				result.setHaveBabyInfo(1);//已经填写宝宝信息
 			}
 			String s = UUID.randomUUID().toString();
 			String ticket="WD"+s;
@@ -262,6 +262,16 @@ public class UserLoginService implements IUserLoginService{
 		rq.setBasemodle(param);
 		 
 		return rq;
+	}
+	
+	public LoginSuccessResult updateLoginSuccessResult(LoginSuccessResult user){
+		if(user!=null&&user.getUserId()!=null){
+			UUsers userInfo=userDao.getUUsersByUserID(user.getUserId());
+			if(userInfo!=null){
+				return loginSuccess(userInfo);
+			}
+		}
+		return user;
 	}
 	
 	

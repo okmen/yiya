@@ -75,8 +75,7 @@ public class LoginContoller extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/otherLogin")
-	public String otherLogin(String headImg, String loginType, String nickName,
-			String openId) throws Exception {
+	public String otherLogin(String headImg, String loginType, String nickName, String openId) throws Exception {
 		OtherLoginParam param = new OtherLoginParam();
 		param.setOpenId(openId);
 		param.setLoginType(ObjectUtil.parseInt(loginType));
@@ -96,8 +95,7 @@ public class LoginContoller extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/registerAjax")
-	public String registerAjax(String username, String pwd, String phone,
-			String vcode ,String register_token) throws Exception {
+	public String registerAjax(String username, String pwd, String phone, String vcode, String register_token) throws Exception {
 		RegisterParam param = new RegisterParam();
 		param.setUsername(username);
 		param.setPassword(pwd);
@@ -110,6 +108,7 @@ public class LoginContoller extends SSOController {
 
 	/**
 	 * 设置孩子信息
+	 * 
 	 * @param childInfoJson
 	 * @return
 	 * @throws Exception
@@ -117,22 +116,26 @@ public class LoginContoller extends SSOController {
 	@ResponseBody
 	@RequestMapping(value = "/addChildInfo")
 	public String addChildInfo(String childInfoJson) throws Exception {
-		ReturnModel rq =new ReturnModel();
+		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = this.getLoginUser();
 		if (user == null) {
-//			user=new LoginSuccessResult();
-//			user.setUserId(10l);
+			// user=new LoginSuccessResult();
+			// user.setUserId(10l);
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登陆过期");
 			return JsonUtil.objectToJsonStr(rq);
 		}
-		if(ObjectUtil.isEmpty(childInfoJson)){
+		if (ObjectUtil.isEmpty(childInfoJson)) {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("参数有误");
 			return JsonUtil.objectToJsonStr(rq);
 		}
+		//宝宝信息参数model
 		UChildInfoParam child = (UChildInfoParam) JsonUtil.jsonStrToObject(childInfoJson, UChildInfoParam.class);
-		rq=loginService.addChildInfo(user.getUserId(), child);
+		rq = loginService.addChildInfo(user.getUserId(), child);
+		if(rq.getStatu().equals(ReturnStatus.Success)){//成功 设置宝宝信息 =》 更新用户登陆信息
+			rq.setBasemodle(loginService.updateLoginSuccessResult(user));  
+		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 

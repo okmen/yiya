@@ -10,13 +10,12 @@ import com.bbyiya.common.enums.UploadTypeEnum;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
-import com.bbyiya.utils.encrypt.MD5Encrypt;
 import com.qiniu.http.Response;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
 
 public class FileUploadUtils_qiniu {
-	
+
 	// 设置好账号的ACCESS_KEY和SECRET_KEY
 	private static String ACCESS_KEY = ConfigUtil.getSingleValue("qiniu_ACCESS_KEY");
 	private static String SECRET_KEY = ConfigUtil.getSingleValue("qiniu_SECRET_KEY");
@@ -35,25 +34,25 @@ public class FileUploadUtils_qiniu {
 		return auth.uploadToken(bucketname);
 	}
 
-
 	/**
 	 * 文件上传 并返回url
+	 * 
 	 * @param FilePath 本地路径
-	 * @param type 文件的类型（相册图片、头像等等）
+	 * @param type  文件的类型（相册图片、头像等等）
 	 * @return
 	 * @throws IOException
 	 */
 	public static String uploadReturnUrl(String FilePath, UploadTypeEnum type) throws IOException {
 		try {
-			if(ObjectUtil.isEmpty(FilePath))
+			if (ObjectUtil.isEmpty(FilePath))
 				return "";
-			String suffix=FilePath.substring(FilePath.lastIndexOf(".")); 
+			String suffix = FilePath.substring(FilePath.lastIndexOf("."));
 			String fileName = DateUtil.getTimeStr(new Date(), "HHmmsss") + UUID.randomUUID().toString().replace("-", "");
-			
+
 			// 上传到七牛后保存的文件名
-			String key = DateUtil.getTimeStr(new Date(), "yyyyMM") + "/" + fileName+suffix;
-			
-//			System.out.println(key);
+			String key = DateUtil.getTimeStr(new Date(), "yyyyMM") + "/" + fileName + suffix;
+
+			// System.out.println(key);
 			// 调用put方法上传
 			Response res = uploadManager.put(FilePath, key, getUpToken());
 			JSONObject object = JSONObject.fromObject(res.bodyString());

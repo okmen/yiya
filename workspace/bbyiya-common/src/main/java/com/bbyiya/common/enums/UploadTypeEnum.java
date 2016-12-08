@@ -8,7 +8,16 @@ public enum UploadTypeEnum {
     /**
      * 用户头像
      */
-    HeadImg(2);
+    HeadImg(2),
+    /**
+     * 音乐
+     */
+    Mp3(3),
+    /**
+     * 视频
+     */
+    Vidio(4)
+    ;
 
     private final int Type;
 

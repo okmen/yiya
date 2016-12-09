@@ -27,10 +27,13 @@ public class LoginContoller extends SSOController {
 	@Resource(name = "userLoginService")
 	private IUserLoginService loginService;
 
+	
+	
+	
 	/**
-	 * 账户、用户名、昵称，密码登陆
+	 * 手机号、密码登陆
 	 * 
-	 * @param userno
+	 * @param phone手机号
 	 * @param pwd
 	 * @return
 	 * @throws Exception
@@ -85,7 +88,7 @@ public class LoginContoller extends SSOController {
 	}
 
 	/**
-	 * 注册 ps:用户名密码注册
+	 * 注册 ps:用户名密码,手机号 注册（如果是第三方注册，必须填写register_token）
 	 * 
 	 * @param username
 	 * @param pwd

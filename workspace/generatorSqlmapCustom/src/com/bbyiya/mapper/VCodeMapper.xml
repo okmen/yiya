@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.VCodeMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.VCode" >
+    <id column="CodeID" property="codeid" jdbcType="BIGINT" />
+    <result column="Phone" property="phone" jdbcType="VARCHAR" />
+    <result column="Vcode" property="vcode" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="Type" property="type" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CodeID, Phone, Vcode, CreateTime, Type
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from V_Code
+    where CodeID = #{codeid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from V_Code
+    where CodeID = #{codeid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.VCode" >
+    insert into V_Code (CodeID, Phone, Vcode, 
+      CreateTime, Type)
+    values (#{codeid,jdbcType=BIGINT}, #{phone,jdbcType=VARCHAR}, #{vcode,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{type,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.VCode" >
+    insert into V_Code
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="codeid != null" >
+        CodeID,
+      </if>
+      <if test="phone != null" >
+        Phone,
+      </if>
+      <if test="vcode != null" >
+        Vcode,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+      <if test="type != null" >
+        Type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="codeid != null" >
+        #{codeid,jdbcType=BIGINT},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="vcode != null" >
+        #{vcode,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.VCode" >
+    update V_Code
+    <set >
+      <if test="phone != null" >
+        Phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="vcode != null" >
+        Vcode = #{vcode,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="type != null" >
+        Type = #{type,jdbcType=INTEGER},
+      </if>
+    </set>
+    where CodeID = #{codeid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.VCode" >
+    update V_Code
+    set Phone = #{phone,jdbcType=VARCHAR},
+      Vcode = #{vcode,jdbcType=VARCHAR},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      Type = #{type,jdbcType=INTEGER}
+    where CodeID = #{codeid,jdbcType=BIGINT}
+  </update>
+</mapper>

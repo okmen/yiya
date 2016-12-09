@@ -1,6 +1,7 @@
 package com.bbyiya.vo.user;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class UChildInfo implements Serializable {
 
@@ -11,7 +12,7 @@ public class UChildInfo implements Serializable {
 	//宝宝生日
 	private String birthdayStr;
 	//宝宝生日 date
-	private String birthday;
+	private Date birthday;
 
 	public String getNickName() {
 		return nickName;
@@ -29,13 +30,15 @@ public class UChildInfo implements Serializable {
 		this.birthdayStr = birthdayStr;
 	}
 
-	public String getBirthday() {
+	public Date getBirthday() {
 		return birthday;
 	}
 
-	public void setBirthday(String birthday) {
+	public void setBirthday(Date birthday) {
 		this.birthday = birthday;
 	}
+
+	
 	
 	
 }

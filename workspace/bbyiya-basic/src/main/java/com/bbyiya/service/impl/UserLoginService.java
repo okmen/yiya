@@ -11,13 +11,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.common.enums.SendMsgEnums;
+import com.bbyiya.dao.UChildreninfoMapper;
 import com.bbyiya.dao.UOtherloginMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.user.UserStatusEnum;
+import com.bbyiya.model.UChildreninfo;
 import com.bbyiya.model.UOtherlogin;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IUserLoginService;
+import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.utils.encrypt.MD5Encrypt;
@@ -35,6 +38,8 @@ public class UserLoginService implements IUserLoginService{
 	private UOtherloginMapper otherloginMapper;
 	@Autowired
 	private UUsersMapper userDao;
+	@Autowired
+	private UChildreninfoMapper childMapper;
 	/**
 	 * 日志对象
 	 */
@@ -53,8 +58,7 @@ public class UserLoginService implements IUserLoginService{
 				if(user!=null){
 					 loginSuccessResult=loginSuccess(user);
 				}else {
-					 loginSuccessResult=new LoginSuccessResult();
-					 loginSuccessResult.setStatus(Integer.parseInt(UserStatusEnum.noPwd.toString())); 
+					 return otherRegiter(param);
 				}
 				rq.setStatu(ReturnStatus.Success);
 				rq.setBasemodle(loginSuccessResult);
@@ -85,15 +89,18 @@ public class UserLoginService implements IUserLoginService{
 				rq.setStatusreson("类型不能为空");
 				return rq;
 			}
-			UOtherlogin other=new UOtherlogin();
-			other.setOpenid(param.getOpenId());
-			other.setLogintype(param.getLoginType());
-			other.setNickname(param.getNickName());
-			other.setImage(param.getHeadImg());
-			other.setStatus(Integer.parseInt(UserStatusEnum.noPwd.toString()));
-			other.setCreatetime(new Date()); 
-			otherloginMapper.insert(other);
 			
+			UOtherlogin other= otherloginMapper.get_UOtherlogin(param);// new UOtherlogin();
+			if(other==null){
+				other=new UOtherlogin();
+				other.setOpenid(param.getOpenId());
+				other.setLogintype(param.getLoginType());
+				other.setNickname(param.getNickName());
+				other.setImage(param.getHeadImg());
+				other.setStatus(Integer.parseInt(UserStatusEnum.noPwd.toString()));
+				other.setCreatetime(new Date()); 
+				otherloginMapper.insert(other);
+			}
 			String s = UUID.randomUUID().toString();
 			String tokent="YA"+s;
 			RedisUtil.setObject(tokent, param,3600);
@@ -127,29 +134,28 @@ public class UserLoginService implements IUserLoginService{
 		}
 		rq.setStatu(ReturnStatus.SystemError);
 		rq.setStatusreson("用户名或密码错误！");
-		log.error(userno+"用户名或密码错误"); 
+//		log.error(userno+"用户名或密码错误"); 
 		return rq;
 	}
 	
 	
 	
 	/**
-	 * 获取用户信息
+	 * 手机号/咿呀号  获取用户信息
 	 * @param userno
 	 * @return
 	 */
 	private UUsers getUUser(String userno) {
-		
-		Long userid = ObjectUtil.parseLong(userno);
-		if (userid > 0) {//
-			UUsers user = userDao.selectByPrimaryKey(userid);
-			if (user != null) {
-				return user;
-			}
-		}
 		UUsers user = userDao.getUUsersByPhone(userno);
 		if (user != null) {
 			return user;
+		}
+		Long userid = ObjectUtil.parseLong(userno);
+		if (userid > 0) {//用户咿呀号
+			user = userDao.selectByPrimaryKey(userid);
+			if (user != null) {
+				return user;
+			}
 		}
 		return null;
 	}
@@ -163,15 +169,20 @@ public class UserLoginService implements IUserLoginService{
 			result.setNickName(user.getNickname());
 			result.setHeadImg(user.getUserimg());
 			result.setStatus(user.getStatus()); 
-			
-			if(user.getStatus().intValue()==Integer.parseInt(UserStatusEnum.ok.toString())){
-				//获取宝宝信息 
-				UChildInfo child=new UChildInfo();
-				result.setBabyInfo(child);
-				result.setHaveBabyInfo(1);//已经填写宝宝信息
+			if(user.getStatus().intValue()==Integer.parseInt(UserStatusEnum.ok.toString())){//完成注册 =》设置baby信息
+				UChildreninfo childModel= childMapper.selectByPrimaryKey(user.getUserid());
+				if(childModel!=null){
+					//获取宝宝信息 
+					UChildInfo child= new UChildInfo();
+					child.setBirthdayStr(DateUtil.getTimeStr( childModel.getBirthday(), "yyyy-MM-dd HH:mm:ss")); 
+					child.setBirthday(childModel.getBirthday());
+					child.setNickName(childModel.getNickname()); 
+					result.setBabyInfo(child);
+					result.setHaveBabyInfo(1);//已经填写宝宝信息
+				}
 			}
 			String s = UUID.randomUUID().toString();
-			String ticket="WD"+s;
+			String ticket="YY"+s;
 			RedisUtil.setObject(ticket, result,3600);
 			result.setTicket(ticket);
 			return result;
@@ -250,17 +261,30 @@ public class UserLoginService implements IUserLoginService{
 			rq.setStatusreson("参数有误");
 			return rq;
 		}
-		
-		// 设置用户为完成体状态
-		UUsers user= userDao.getUUsersByUserID(userId);
-		user.setStatus(Integer.parseInt(UserStatusEnum.ok.toString()));
-		userDao.updateByPrimaryKey(user);
-		
-		
+		//保存宝宝信息
+		UChildreninfo childModel=childMapper.selectByPrimaryKey(userId);// 
+		boolean havaBaby=true;
+		if(childModel==null){
+			childModel=new UChildreninfo();
+			havaBaby=false;
+			childModel.setUserid(userId);
+			childModel.setCreatetime(new Date());
+		}
+		childModel.setSex(param.getSex());
+		childModel.setNickname(param.getNickName());
+		childModel.setBirthday(DateUtil.getDateByString("yyyy-mm-dd HH:mm:ss", param.getBirthday()));
+		if(havaBaby){//修改宝宝信息
+			childMapper.updateByPrimaryKey(childModel);
+		}else { //设置宝宝信息
+			childMapper.insert(childModel);
+			// 设置用户为完成体状态
+			UUsers user= userDao.getUUsersByUserID(userId);
+			user.setStatus(Integer.parseInt(UserStatusEnum.ok.toString()));
+			userDao.updateByPrimaryKey(user);
+		}
 		rq.setStatu(ReturnStatus.Success);
 		rq.setStatusreson("成功"); 
-		rq.setBasemodle(param);
-		 
+//		rq.setBasemodle(param);
 		return rq;
 	}
 	

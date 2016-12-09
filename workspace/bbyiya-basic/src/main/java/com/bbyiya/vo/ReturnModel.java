@@ -7,7 +7,7 @@ import com.bbyiya.enums.ReturnStatus;
 
 
 /**
- * ��Ϣ������
+ * 返回类 模型
  * @author Administrator
  *
  */

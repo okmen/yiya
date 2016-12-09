@@ -14,7 +14,8 @@ import org.dom4j.io.SAXReader;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * 获取配置信息  配置文件 config.xml
+ * 获取配置信息 配置文件 config.xml
+ * 
  * @author Administrator
  *
  */
@@ -23,7 +24,7 @@ public class ConfigUtil {
 	 * 配置文件名
 	 */
 	private static final String FILE_NAME = "config.xml";
-	
+
 	private ConfigUtil() {
 	}
 
@@ -64,8 +65,7 @@ public class ConfigUtil {
 	public static String getSingleValue(String arg, String attributeName) {
 		String result = "";
 		try {
-			URL url = Configuration.class.getClassLoader()
-					.getResource(FILE_NAME);
+			URL url = Configuration.class.getClassLoader().getResource(FILE_NAME);
 			String str = url.getFile();
 			// 转换编码
 			str = URLDecoder.decode(str, "utf-8");
@@ -92,8 +92,7 @@ public class ConfigUtil {
 	public static List<Map<String, String>> getMaplist(String parentNodeName) {
 		List<Map<String, String>> maplist = new ArrayList<Map<String, String>>();
 		try {
-			URL url = Configuration.class.getClassLoader()
-					.getResource(FILE_NAME);
+			URL url = Configuration.class.getClassLoader().getResource(FILE_NAME);
 			String str = url.getFile();
 			// 转换编码
 			str = URLDecoder.decode(str, "utf-8");
@@ -109,8 +108,7 @@ public class ConfigUtil {
 						Map<String, String> map = new HashMap<String, String>();
 
 						for (int i = 0; i < ee.attributes().size(); i++) {
-							org.dom4j.Attribute aa = (org.dom4j.Attribute) ee
-									.attributes().get(i);
+							org.dom4j.Attribute aa = (org.dom4j.Attribute) ee.attributes().get(i);
 							map.put(aa.getName(), aa.getValue());
 						}
 						maplist.add(map);

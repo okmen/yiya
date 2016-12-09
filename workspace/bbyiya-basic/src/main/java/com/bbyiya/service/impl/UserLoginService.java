@@ -89,7 +89,6 @@ public class UserLoginService implements IUserLoginService{
 				rq.setStatusreson("类型不能为空");
 				return rq;
 			}
-			
 			UOtherlogin other= otherloginMapper.get_UOtherlogin(param);// new UOtherlogin();
 			if(other==null){
 				other=new UOtherlogin();
@@ -120,22 +119,33 @@ public class UserLoginService implements IUserLoginService{
 	
 	public ReturnModel login(String userno, String pwd) throws Exception {
 		ReturnModel rq = new ReturnModel();
-		if (ObjectUtil.isEmpty(userno) || ObjectUtil.isEmpty(pwd)) {
+		if (ObjectUtil.isEmpty(userno)) {
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("参数有误");
+			rq.setStatusreson("手机号不能为空");
 			return rq;
 		}
-		UUsers user =getUUser(userno); // userDao.getUUsersByPhone(userno);
-		if (user != null && user.getPassword() != null && MD5Encrypt.encrypt(pwd).equals(user.getPassword())) {
-			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("成功");
-			rq.setBasemodle(loginSuccess(user));
+		if (ObjectUtil.isEmpty(pwd)) {
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("密码不能为空");
 			return rq;
 		}
-		rq.setStatu(ReturnStatus.SystemError);
-		rq.setStatusreson("用户名或密码错误！");
-//		log.error(userno+"用户名或密码错误"); 
-		return rq;
+		UUsers user =getUUser(userno);
+		if(user!=null){
+			if (user.getPassword() != null && MD5Encrypt.encrypt(pwd).equals(user.getPassword())) {
+				rq.setStatu(ReturnStatus.Success);
+				rq.setStatusreson("登陆成功");
+				rq.setBasemodle(loginSuccess(user));
+				return rq;
+			}else {
+				rq.setStatu(ReturnStatus.LoginError_1);
+				rq.setStatusreson("密码错误！");
+				return rq;
+			}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError_2);
+			rq.setStatusreson("手机号未注册");
+			return rq;
+		}
 	}
 	
 	
@@ -202,7 +212,7 @@ public class UserLoginService implements IUserLoginService{
 		rq.setStatu(ReturnStatus.SystemError);
 		if(param==null||ObjectUtil.isEmpty(param.getPassword())||ObjectUtil.isEmpty(param.getVcode())||ObjectUtil.isEmpty(param.getMobilephone())){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("参数有误");
+			rq.setStatusreson("参数不全");
 			return rq;
 		}
 		String key=param.getMobilephone()+"-"+Integer.parseInt(SendMsgEnums.register.toString());
@@ -221,7 +231,7 @@ public class UserLoginService implements IUserLoginService{
 		UUsers model=new UUsers();
 		model.setPassword(MD5Encrypt.encrypt(param.getPassword()));
 		model.setCreatetime(new Date());
-		model.setStatus(Integer.parseInt(UserStatusEnum.noChirlInfo.toString()));//等待设置宝宝信息
+		model.setStatus(Integer.parseInt(UserStatusEnum.ok.toString()));//注册完成
 		if(!ObjectUtil.isEmpty(param.getUsername()) ){
 			model.setUsername(param.getUsername()); 
 		}

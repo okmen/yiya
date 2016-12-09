@@ -1,5 +1,10 @@
 package com.bbyiya.api.web;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
@@ -61,14 +66,14 @@ public class LoginContoller extends SSOController {
 			rq.setBasemodle(user);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("请重新登陆！");
+			rq.setStatusreson("登陆过期，请重新登陆！");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
 	/**
-	 * 第三方 登陆注册
-	 * 
+	 * A01第三方登陆、注册
+	 * zy 
 	 * @param headImg
 	 * @param loginType
 	 * @param nickName
@@ -88,6 +93,7 @@ public class LoginContoller extends SSOController {
 	}
 
 	/**
+	 * A06注册（用手机号、密码注册）
 	 * 注册 ps:用户名密码,手机号 注册（如果是第三方注册，必须填写register_token）
 	 * 
 	 * @param username
@@ -110,7 +116,7 @@ public class LoginContoller extends SSOController {
 	}
 
 	/**
-	 * 设置孩子信息
+	 * A08 保存宝宝信息
 	 * 
 	 * @param childInfoJson
 	 * @return
@@ -122,15 +128,13 @@ public class LoginContoller extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = this.getLoginUser();
 		if (user == null) {
-			// user=new LoginSuccessResult();
-			// user.setUserId(10l);
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登陆过期");
+			rq.setStatusreson("登陆过期，请重新登陆！");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		if (ObjectUtil.isEmpty(childInfoJson)) {
-			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("参数有误");
+			rq.setStatu(ReturnStatus.ParamError); 
+			rq.setStatusreson("参数不能为空");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		//宝宝信息参数model
@@ -138,8 +142,44 @@ public class LoginContoller extends SSOController {
 		rq = loginService.addChildInfo(user.getUserId(), child);
 		if(rq.getStatu().equals(ReturnStatus.Success)){//成功 设置宝宝信息 =》 更新用户登陆信息
 			rq.setBasemodle(loginService.updateLoginSuccessResult(user));  
+			rq.setStatusreson("宝宝信息设置成功！");
 		}
 		return JsonUtil.objectToJsonStr(rq);
+	}
+
+	/**
+	 * A08-1 保存宝宝信息
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getrelation")
+	public String getrelation() throws Exception {
+		ReturnModel rq = new ReturnModel();
+//		LoginSuccessResult user = this.getLoginUser();
+//		if (user == null) {
+//			rq.setStatu(ReturnStatus.LoginError);
+//			rq.setStatusreson("登陆过期");
+//			return JsonUtil.objectToJsonStr(rq);
+//		}
+		List<Map<String, Object>> list=new ArrayList<Map<String,Object>>();
+		list.add(getRalation(1, "爸爸"));
+		list.add(getRalation(2, "妈妈"));
+		list.add(getRalation(3, "爷爷"));
+		list.add(getRalation(4, "奶奶"));
+		list.add(getRalation(5, "叔叔"));
+		list.add(getRalation(6, "阿姨"));
+		rq.setBasemodle(list); 
+		rq.setStatu(ReturnStatus.Success);
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	
+	private Map<String, Object> getRalation(int id,String value){
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("id", id);
+		map.put("value", value);
+		return map;
 	}
 
 }

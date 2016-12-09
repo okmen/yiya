@@ -18,7 +18,7 @@ public class LoginSuccessResult  implements Serializable{
     //用户状态
     private Integer status;
     //是否有填写宝宝信息
-    private Integer haveBabyInfo;
+    private int haveBabyInfo;
     /**
      * 用户身份标示
      */
@@ -92,12 +92,13 @@ public class LoginSuccessResult  implements Serializable{
 	public void setRegister_token(String register_token) {
 		this.register_token = register_token;
 	}
-	public Integer getHaveBabyInfo() {
+	public int getHaveBabyInfo() {
 		return haveBabyInfo;
 	}
-	public void setHaveBabyInfo(Integer haveBabyInfo) {
+	public void setHaveBabyInfo(int haveBabyInfo) {
 		this.haveBabyInfo = haveBabyInfo;
 	}
+	
 
 	
 	

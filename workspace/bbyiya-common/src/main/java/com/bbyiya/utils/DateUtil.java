@@ -192,8 +192,7 @@ public class DateUtil {
 	 */
 	public static Date getTimesWeekmorning() {
 		Calendar cal = Calendar.getInstance();
-		cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONDAY),
-				cal.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+		cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONDAY), cal.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
 		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 		return cal.getTime();
 	}
@@ -217,10 +216,8 @@ public class DateUtil {
 	 */
 	public static Date getTimesMonthmorning() {
 		Calendar cal = Calendar.getInstance();
-		cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONDAY),
-				cal.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
-		cal.set(Calendar.DAY_OF_MONTH,
-				cal.getActualMinimum(Calendar.DAY_OF_MONTH));
+		cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONDAY), cal.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMinimum(Calendar.DAY_OF_MONTH));
 		return cal.getTime();
 	}
 
@@ -231,10 +228,8 @@ public class DateUtil {
 	 */
 	public static Date getTimesMonthnight() {
 		Calendar cal = Calendar.getInstance();
-		cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONDAY),
-				cal.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
-		cal.set(Calendar.DAY_OF_MONTH,
-				cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+		cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONDAY), cal.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
 		cal.set(Calendar.HOUR_OF_DAY, 24);
 		return cal.getTime();
 	}
@@ -266,13 +261,51 @@ public class DateUtil {
 	}
 
 	public static boolean isDate(String strDate) {
-		Pattern pattern = Pattern
-				.compile("^((\\d{2}(([02468][048])|([13579][26]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])))))|(\\d{2}(([02468][1235679])|([13579][01345789]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|(1[0-9])|(2[0-8]))))))(\\s(((0?[0-9])|([1-2][0-3]))\\:([0-5]?[0-9])((\\s)|(\\:([0-5]?[0-9])))))?$");
+		Pattern pattern = Pattern.compile("^((\\d{2}(([02468][048])|([13579][26]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])))))|(\\d{2}(([02468][1235679])|([13579][01345789]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|(1[0-9])|(2[0-8]))))))(\\s(((0?[0-9])|([1-2][0-3]))\\:([0-5]?[0-9])((\\s)|(\\:([0-5]?[0-9])))))?$");
 		Matcher m = pattern.matcher(strDate);
 		if (m.matches()) {
 			return true;
 		} else {
 			return false;
 		}
+	}
+
+	/**
+	 * 计算两个日期之间相差的天数
+	 * 
+	 * @param smdate
+	 *            较小的时间
+	 * @param bdate
+	 *            较大的时间
+	 * @return 相差天数
+	 * @throws ParseException
+	 */
+	public static int daysBetween(Date smdate, Date bdate) throws ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		smdate = sdf.parse(sdf.format(smdate));
+		bdate = sdf.parse(sdf.format(bdate));
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(smdate);
+		long time1 = cal.getTimeInMillis();
+		cal.setTime(bdate);
+		long time2 = cal.getTimeInMillis();
+		long between_days = (time2 - time1) / (1000 * 3600 * 24);
+
+		return Integer.parseInt(String.valueOf(between_days));
+	}
+
+	/**
+	 * 字符串的日期格式的计算
+	 */
+	public static int daysBetween(String smdate, String bdate) throws ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(sdf.parse(smdate));
+		long time1 = cal.getTimeInMillis();
+		cal.setTime(sdf.parse(bdate));
+		long time2 = cal.getTimeInMillis();
+		long between_days = (time2 - time1) / (1000 * 3600 * 24);
+
+		return Integer.parseInt(String.valueOf(between_days));
 	}
 }

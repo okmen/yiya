@@ -193,7 +193,7 @@ public class UserLoginService implements IUserLoginService{
 			}
 			String s = UUID.randomUUID().toString();
 			String ticket="YY"+s;
-			RedisUtil.setObject(ticket, result,3600);
+			RedisUtil.setObject(ticket, result,86400);//缓存一天
 			result.setTicket(ticket);
 			return result;
 		}

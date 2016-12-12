@@ -41,8 +41,8 @@ public class MainPageController extends SSOController {
 		if (user != null) {
 			Map<String, Object> mapResult=new HashMap<String, Object>();
 			//每日推荐音乐
-			List<SMusicrecommend> musiclist=musicService.find_SMusicrecommend(user.getUserId());
-			mapResult.put("musiclist", musiclist);
+//			List<SMusicrecommend> musiclist=musicService.find_SMusicrecommend(user.getUserId());
+			mapResult.put("musiclist", ConfigUtil.getMaplist("muscis"));
 			
 			//咿呀说
 			mapResult.put("talks", ConfigUtil.getMaplist("yiyaspeaks")) ;

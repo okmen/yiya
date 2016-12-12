@@ -2,11 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.egou</groupId>
-		<artifactId>egou-parent</artifactId>
+		<groupId>com.bbyiya</groupId>
+		<artifactId>bbyiya-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>com.bbyiya</groupId>
 	<artifactId>bbyiya-cts</artifactId>
 	<packaging>war</packaging>
 	<name>bbyiya-cts Maven Webapp</name>
@@ -17,12 +16,7 @@
 			<artifactId>bbyiya-basic</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>com.bbyiya</groupId>
-			<artifactId>bbyiya-basic</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<classifier>sources</classifier>
-		</dependency>
+		
 		<dependency>
 			<groupId>com.bbyiya</groupId>
 			<artifactId>bbyiya-common</artifactId>

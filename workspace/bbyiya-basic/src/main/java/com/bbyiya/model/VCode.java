@@ -1,8 +1,11 @@
 package com.bbyiya.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class VCode {
+public class VCode  implements Serializable{
+	private static final long serialVersionUID = 1L;
+	
     private Long codeid;
 
     private String phone;

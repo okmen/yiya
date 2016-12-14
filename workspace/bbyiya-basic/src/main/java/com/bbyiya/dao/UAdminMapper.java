@@ -14,4 +14,10 @@ public interface UAdminMapper {
     int updateByPrimaryKeySelective(UAdmin record);
 
     int updateByPrimaryKey(UAdmin record);
+    /**
+     * 获取管理员用户
+     * @param username
+     * @return
+     */
+    UAdmin getUAdminByUsername(String username);
 }

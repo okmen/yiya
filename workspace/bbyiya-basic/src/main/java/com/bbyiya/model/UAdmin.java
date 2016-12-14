@@ -1,8 +1,11 @@
 package com.bbyiya.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class UAdmin {
+public class UAdmin implements Serializable{
+	private static final long serialVersionUID = 1L;
+	
     private Integer adminid;
 
     private String username;

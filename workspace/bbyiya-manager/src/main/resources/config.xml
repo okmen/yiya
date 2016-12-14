@@ -21,4 +21,9 @@
 		<item id="2" title="测试001" imageUrl="http://www.baidu.com"/>
 		<item id="3" title="测试001" imageUrl="http://www.baidu.com"/>
 	</yiyaspeaks>
+	<users>
+	 	<item adminId="1" username="zhangyao" pwd="E10ADC3949BA59ABBE56E057F20F883E" />
+	 	<item adminId="2" username="max" pwd="E10ADC3949BA59ABBE56E057F20F883E" />
+	 	<item adminId="3" username="peter" pwd="E10ADC3949BA59ABBE56E057F20F883E" />
+	</users>
 </appSettings>

@@ -1,20 +1,67 @@
 package com.bbyiya.cts.service.impl;
 
-//import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.cts.service.IUAdminService;
+import com.bbyiya.dao.UAdminMapper;
+import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.model.UAdmin;
+import com.bbyiya.utils.ConfigUtil;
+import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.utils.encrypt.MD5Encrypt;
 import com.bbyiya.vo.ReturnModel;
 
 
 @Service("userAdminService")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
 public class UAdminService implements IUAdminService{
-//	@Autowired private 
+	
+	@Autowired 
+	private UAdminMapper adminMapper;
 	
 	
 	public ReturnModel loginProcess(String username,String pwd){
-		return null;
+		ReturnModel rqModel=new ReturnModel();
+		String pwdMd5=MD5Encrypt.encrypt(pwd);
+		//admin用户不存数据库
+		List<Map<String, String>> users= ConfigUtil.getMaplist("users");
+		if(users!=null&&users.size()>0){
+			for (Map<String, String> map : users) {
+				if(map.get("username").equals(username)&&map.get("pwd").equals(pwdMd5)){
+					UAdmin user=new UAdmin();
+					user.setAdminid(ObjectUtil.parseInt(map.get("adminId")));
+					user.setUsername((map.get("username")));
+					rqModel.setStatu(ReturnStatus.Success);
+					rqModel.setBasemodle(user); 
+					rqModel.setStatusreson("登录成功");
+					return rqModel;
+				}
+			}
+		}
+		rqModel.setStatu(ReturnStatus.LoginError_1);
+		rqModel.setStatusreson("用户名或密码错误");
+		return rqModel;
+		// 存入数据库
+//		UAdmin admin= adminMapper.getUAdminByUsername(username);
+//		if(admin!=null){
+//			if(!admin.getPassword().equals(MD5Encrypt.encrypt(pwd))){
+//				rqModel.setStatu(ReturnStatus.LoginError_1);
+//				rqModel.setStatusreson("登录密码错误");
+//				return rqModel;
+//			}else {
+//				rqModel.setStatu(ReturnStatus.Success);
+//				rqModel.setBasemodle(admin); 
+//				rqModel.setStatusreson("登录成功");
+//			}
+//		}else {
+//			rqModel.setStatu(ReturnStatus.LoginError);
+//			rqModel.setStatusreson("用户名不存在");
+//		}
+//		return rqModel;
 	}
 }

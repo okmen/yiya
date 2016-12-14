@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
-    <wb-module deploy-name="bbyiya-cts">
+    <wb-module deploy-name="bbyiya-manager">
         <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
@@ -11,7 +11,7 @@
         <dependent-module archiveName="bbyiya-common-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/bbyiya-common/bbyiya-common">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <property name="context-root" value="bbyiya-cts"/>
-        <property name="java-output-path" value="/bbyiya-cts/target/classes"/>
+        <property name="context-root" value="bbyiya-manager"/>
+        <property name="java-output-path" value="/bbyiya-manager/target/classes"/>
     </wb-module>
 </project-modules>

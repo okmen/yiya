@@ -47,7 +47,7 @@
 
 	<!-- 扫描com.mybatis包下所有标注@Service的服务组件 -->
 	<context:component-scan base-package="com.bbyiya.service" />
-	
+	<context:component-scan base-package="com.bbyiya.cts.service" />
 	<context:component-scan base-package="com.bbyiya.cts.web" />
 	<!-- 启动Spring MVC的注解功能，完成请求和注解POJO的映射 -->
 	<mvc:annotation-driven>

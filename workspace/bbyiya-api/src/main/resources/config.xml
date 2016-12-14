@@ -10,13 +10,13 @@
 	<qiniu_ACCESS_KEY value="vLHbgaYj8mfvPUTpMCYLbAetXh-Cg0Fk0R_FtAN_"/>
 	<qiniu_SECRET_KEY value="re1EvlR0FwlSv9YEYlJsHw_WRIcshxhbxilGvmRN"/>
 	<qiniu_imagedomain value="http://obbepyhga.bkt.clouddn.com/"/><!-- 图片域名 -->
-	<muscis>
-		<music ReId="1" MusicId="1" LinkUrl="http://www.baidu.com"/>
-		<music ReId="2" MusicId="2" LinkUrl="http://www.baidu.com"/>
-		<music ReId="3" MusicId="3" LinkUrl="http://www.baidu.com"/>
-		<music ReId="4" MusicId="4" LinkUrl="http://www.baidu.com"/>
+	<muscis><!-- 每日推荐 -->
+		<music ReId="1" MusicId="1" LinkUrl="http://obbepyhga.bkt.clouddn.com/201612/1837016cf3b68fc21e44118aee0e22fcb6aca77.mp3"/>
+		<music ReId="2" MusicId="2" LinkUrl="http://obbepyhga.bkt.clouddn.com/201612/1837016cf3b68fc21e44118aee0e22fcb6aca77.mp3"/>
+		<music ReId="3" MusicId="3" LinkUrl="http://obbepyhga.bkt.clouddn.com/201612/1837016cf3b68fc21e44118aee0e22fcb6aca77.mp3"/>
+		<music ReId="4" MusicId="4" LinkUrl="http://obbepyhga.bkt.clouddn.com/201612/1837016cf3b68fc21e44118aee0e22fcb6aca77.mp3"/>
 	</muscis>
-	<yiyaspeaks>
+	<yiyaspeaks><!-- 咿呀说 -->
 		<item id="1" title="测试001" imageUrl="http://www.baidu.com"/>
 		<item id="2" title="测试001" imageUrl="http://www.baidu.com"/>
 		<item id="3" title="测试001" imageUrl="http://www.baidu.com"/>

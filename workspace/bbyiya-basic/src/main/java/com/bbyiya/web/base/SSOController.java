@@ -44,7 +44,7 @@ public class SSOController {
         Object userObject = RedisUtil.getObject(ticket);
         if(userObject != null)// 如果存在
         {
-            RedisUtil.setExpire(ticket,1800);// 延长时间
+            RedisUtil.setExpire(ticket,172800);// 延长时间
             user = (LoginSuccessResult) userObject;
             return user;
         }

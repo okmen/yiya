@@ -5,10 +5,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.cts.service.ICtsMusicService;
+import com.bbyiya.cts.vo.MusicAddParam;
 import com.bbyiya.dao.SMusicsMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.SMusics;
 import com.bbyiya.vo.ReturnModel;
+import com.github.pagehelper.Page;
 
 @Service("ctsMusicService")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
@@ -33,5 +35,10 @@ public class CtsMusicServiceImpl implements ICtsMusicService{
 			rqModel.setStatusreson(e.getMessage());
 		}
 		return rqModel;
+	}
+	
+	public Page<SMusics> find_SMusicsResult(MusicAddParam param,int pageIndex,int pageSize){
+		
+		return null;	
 	}
 }

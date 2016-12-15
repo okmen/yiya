@@ -15,6 +15,11 @@ import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 
+/**
+ * ¿÷ø‚π‹¿Ì
+ * @author Administrator
+ *
+ */
 public class MusicMgtController extends CtsSSOController {
 	@Resource(name = "ctsMusicService")
 	private ICtsMusicService musicService;

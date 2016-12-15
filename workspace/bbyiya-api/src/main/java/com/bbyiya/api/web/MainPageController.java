@@ -42,10 +42,11 @@ public class MainPageController extends SSOController {
 			Map<String, Object> mapResult=new HashMap<String, Object>();
 			//每日推荐音乐
 //			List<SMusicrecommend> musiclist=musicService.find_SMusicrecommend(user.getUserId());
-			mapResult.put("musiclist", ConfigUtil.getMaplist("muscis"));
-			
+			mapResult.put("dailyMusics", ConfigUtil.getMaplist("muscis"));
 			//咿呀说
-			mapResult.put("talks", ConfigUtil.getMaplist("yiyaspeaks")) ;
+			mapResult.put("yiyatalks", ConfigUtil.getMaplist("yiyaspeaks")) ;
+			//每日读物
+			mapResult.put("dailyReads", ConfigUtil.getMaplist("reads")) ;
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(mapResult); 
 			

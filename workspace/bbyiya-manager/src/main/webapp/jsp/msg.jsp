@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@page import="org.apache.struts2.ServletActionContext"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
@@ -9,6 +10,14 @@
 <title>Insert title here</title>
 </head>
 <body>
-登录成功(cc:	${msg })
+	<div style="width: 100%; border: 1px solid red; height: 2000px;">
+		<div style="width: 20%; float: left; border: 1px solid red; height: 100%;">
+
+		</div>
+		<div style="width: 78%; float: right; border: 1px solid red; height: 100%;">
+			登录成功(cc: ${msg })</div>
+	</div>
+	<div style="width: 100%; border: 1px solid red; height: 200px;">底部
+	</div>
 </body>
 </html>

@@ -21,4 +21,10 @@
 		<item id="2" title="测试001" imageUrl="http://www.baidu.com"/>
 		<item id="3" title="测试001" imageUrl="http://www.baidu.com"/>
 	</yiyaspeaks>
+	<reads><!-- 每日读物 -->
+		<item id="1"  title="爸爸的鼾声" summary="【作者】 Raimond Lap 【时期】 1912~1974" content="就像是山上的小火车，。。。"/>
+		<item id="2" title="静夜思" summary="【作者】 李白  【朝代】唐朝 " content="窗前明月光，"/>
+		<item id="3" title="拔河还是" summary="古典文学精选" content="湿哒哒倒萨"/>
+		<item id="4" title="拔河还是" summary="古典文学精选" content="湿哒哒倒萨"/>
+	</reads>
 </appSettings>

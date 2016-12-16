@@ -1,7 +1,6 @@
 package com.bbyiya.api.web;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -55,6 +54,17 @@ public class MainPageController extends SSOController {
 			rq.setStatusreson("登陆过期，请重新登陆！");
 		}
 		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 宝宝大事件
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/bigCaselist")
+	public String bigCaselist() throws Exception {
+		return "";
 	}
 
 }

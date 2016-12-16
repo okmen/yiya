@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.MBigcaseMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.MBigcase" >
+    <id column="CaseId" property="caseid" jdbcType="INTEGER" />
+    <result column="Title" property="title" jdbcType="VARCHAR" />
+    <result column="TypeId" property="typeid" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="ImageDefault" property="imagedefault" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CaseId, Title, TypeId, CreateTime, ImageDefault
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from M_BigCase
+    where CaseId = #{caseid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from M_BigCase
+    where CaseId = #{caseid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.MBigcase" >
+    insert into M_BigCase (CaseId, Title, TypeId, 
+      CreateTime, ImageDefault)
+    values (#{caseid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{typeid,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{imagedefault,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.MBigcase" >
+    insert into M_BigCase
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="caseid != null" >
+        CaseId,
+      </if>
+      <if test="title != null" >
+        Title,
+      </if>
+      <if test="typeid != null" >
+        TypeId,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+      <if test="imagedefault != null" >
+        ImageDefault,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="caseid != null" >
+        #{caseid,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="typeid != null" >
+        #{typeid,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="imagedefault != null" >
+        #{imagedefault,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.MBigcase" >
+    update M_BigCase
+    <set >
+      <if test="title != null" >
+        Title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="typeid != null" >
+        TypeId = #{typeid,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="imagedefault != null" >
+        ImageDefault = #{imagedefault,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where CaseId = #{caseid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.MBigcase" >
+    update M_BigCase
+    set Title = #{title,jdbcType=VARCHAR},
+      TypeId = #{typeid,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      ImageDefault = #{imagedefault,jdbcType=VARCHAR}
+    where CaseId = #{caseid,jdbcType=INTEGER}
+  </update>
+</mapper>

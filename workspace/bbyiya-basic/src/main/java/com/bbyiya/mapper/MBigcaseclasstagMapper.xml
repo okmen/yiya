@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.bbyiya.dao.MBigcasetypevalueMapper" >
-  <resultMap id="BaseResultMap" type="com.bbyiya.model.MBigcasetypevalue" >
-    <id column="ValueId" property="valueid" jdbcType="INTEGER" />
+<mapper namespace="com.bbyiya.dao.MBigcaseclasstagMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.MBigcaseclasstag" >
+    <id column="TagId" property="tagid" jdbcType="INTEGER" />
     <result column="BigCaseTypeId" property="bigcasetypeid" jdbcType="INTEGER" />
     <result column="Value" property="value" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    ValueId, BigCaseTypeId, Value
+    TagId, BigCaseTypeId, Value
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from M_BigCaseTypeValue
-    where ValueId = #{valueid,jdbcType=INTEGER}
+    from M_BigCaseClassTag
+    where TagId = #{tagid,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from M_BigCaseTypeValue
-    where ValueId = #{valueid,jdbcType=INTEGER}
+    delete from M_BigCaseClassTag
+    where TagId = #{tagid,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.bbyiya.model.MBigcasetypevalue" >
-    insert into M_BigCaseTypeValue (ValueId, BigCaseTypeId, Value
+  <insert id="insert" parameterType="com.bbyiya.model.MBigcaseclasstag" >
+    insert into M_BigCaseClassTag (TagId, BigCaseTypeId, Value
       )
-    values (#{valueid,jdbcType=INTEGER}, #{bigcasetypeid,jdbcType=INTEGER}, #{value,jdbcType=VARCHAR}
+    values (#{tagid,jdbcType=INTEGER}, #{bigcasetypeid,jdbcType=INTEGER}, #{value,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.bbyiya.model.MBigcasetypevalue" >
-    insert into M_BigCaseTypeValue
+  <insert id="insertSelective" parameterType="com.bbyiya.model.MBigcaseclasstag" >
+    insert into M_BigCaseClassTag
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="valueid != null" >
-        ValueId,
+      <if test="tagid != null" >
+        TagId,
       </if>
       <if test="bigcasetypeid != null" >
         BigCaseTypeId,
@@ -39,8 +39,8 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="valueid != null" >
-        #{valueid,jdbcType=INTEGER},
+      <if test="tagid != null" >
+        #{tagid,jdbcType=INTEGER},
       </if>
       <if test="bigcasetypeid != null" >
         #{bigcasetypeid,jdbcType=INTEGER},
@@ -50,8 +50,8 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.MBigcasetypevalue" >
-    update M_BigCaseTypeValue
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.MBigcaseclasstag" >
+    update M_BigCaseClassTag
     <set >
       <if test="bigcasetypeid != null" >
         BigCaseTypeId = #{bigcasetypeid,jdbcType=INTEGER},
@@ -60,12 +60,12 @@
         Value = #{value,jdbcType=VARCHAR},
       </if>
     </set>
-    where ValueId = #{valueid,jdbcType=INTEGER}
+    where TagId = #{tagid,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.MBigcasetypevalue" >
-    update M_BigCaseTypeValue
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.MBigcaseclasstag" >
+    update M_BigCaseClassTag
     set BigCaseTypeId = #{bigcasetypeid,jdbcType=INTEGER},
       Value = #{value,jdbcType=VARCHAR}
-    where ValueId = #{valueid,jdbcType=INTEGER}
+    where TagId = #{tagid,jdbcType=INTEGER}
   </update>
 </mapper>

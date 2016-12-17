@@ -14,4 +14,6 @@ public interface MBigcaseMapper {
     int updateByPrimaryKeySelective(MBigcase record);
 
     int updateByPrimaryKey(MBigcase record);
+    
+    
 }

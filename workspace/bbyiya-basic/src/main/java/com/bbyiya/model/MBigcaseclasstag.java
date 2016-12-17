@@ -1,18 +1,18 @@
 package com.bbyiya.model;
 
-public class MBigcasetypevalue {
-    private Integer valueid;
+public class MBigcaseclasstag {
+    private Integer tagid;
 
     private Integer bigcasetypeid;
 
     private String value;
 
-    public Integer getValueid() {
-        return valueid;
+    public Integer getTagid() {
+        return tagid;
     }
 
-    public void setValueid(Integer valueid) {
-        this.valueid = valueid;
+    public void setTagid(Integer tagid) {
+        this.tagid = tagid;
     }
 
     public Integer getBigcasetypeid() {

@@ -1,9 +1,11 @@
 package com.bbyiya.model;
 
-public class MBigcasetype {
+public class MBigcaseclass {
     private Integer typeid;
 
     private String name;
+
+    private Integer count;
 
     public Integer getTypeid() {
         return typeid;
@@ -19,5 +21,13 @@ public class MBigcasetype {
 
     public void setName(String name) {
         this.name = name == null ? null : name.trim();
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
     }
 }

@@ -27,4 +27,20 @@
 		<item id="3" title="拔河还是" summary="古典文学精选" content="湿哒哒倒萨"/>
 		<item id="4" title="拔河还是" summary="古典文学精选" content="湿哒哒倒萨"/>
 	</reads>
+	<timeIntervals><!-- 时期 -->
+		<item start="1" end="7" title="第一周" />
+		<item start="8" end="14" title="第二周" />
+		<item start="15" end="30" title="第1个月" />
+		<item start="31" end="60" title="第2个月" />
+		<item start="61" end="90" title="第3个月" />
+		<item start="91" end="120" title="第4个月" />
+		<item start="121" end="150" title="第5个月" />
+		<item start="151" end="180" title="第6个月" />
+		<item start="181" end="210" title="第7个月" />
+		<item start="211" end="240" title="第8个月" />
+		<item start="241" end="270" title="第9个月" />
+		<item start="271" end="300" title="第10个月" />
+		<item start="301" end="330" title="第11个月" />
+		<item start="331" end="360" title="第12个月" />
+	</timeIntervals>
 </appSettings>

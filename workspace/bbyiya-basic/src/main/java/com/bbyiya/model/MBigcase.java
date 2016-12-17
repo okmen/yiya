@@ -13,6 +13,10 @@ public class MBigcase {
 
     private String imagedefault;
 
+    private Integer startday;
+
+    private Integer endday;
+
     public Integer getCaseid() {
         return caseid;
     }
@@ -51,5 +55,21 @@ public class MBigcase {
 
     public void setImagedefault(String imagedefault) {
         this.imagedefault = imagedefault == null ? null : imagedefault.trim();
+    }
+
+    public Integer getStartday() {
+        return startday;
+    }
+
+    public void setStartday(Integer startday) {
+        this.startday = startday;
+    }
+
+    public Integer getEndday() {
+        return endday;
+    }
+
+    public void setEndday(Integer endday) {
+        this.endday = endday;
     }
 }

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.MBigcasetagMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.MBigcasetag" >
+    <id column="Id" property="id" jdbcType="INTEGER" />
+    <result column="CaseId" property="caseid" jdbcType="INTEGER" />
+    <result column="TagId" property="tagid" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.bbyiya.model.MBigcasetag" extends="BaseResultMap" >
+    <result column="TagContent" property="tagcontent" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Id, CaseId, TagId
+  </sql>
+  <sql id="Blob_Column_List" >
+    TagContent
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from M_BigCaseTag
+    where Id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from M_BigCaseTag
+    where Id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.MBigcasetag" >
+    insert into M_BigCaseTag (Id, CaseId, TagId, 
+      TagContent)
+    values (#{id,jdbcType=INTEGER}, #{caseid,jdbcType=INTEGER}, #{tagid,jdbcType=INTEGER}, 
+      #{tagcontent,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.MBigcasetag" >
+    insert into M_BigCaseTag
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        Id,
+      </if>
+      <if test="caseid != null" >
+        CaseId,
+      </if>
+      <if test="tagid != null" >
+        TagId,
+      </if>
+      <if test="tagcontent != null" >
+        TagContent,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="caseid != null" >
+        #{caseid,jdbcType=INTEGER},
+      </if>
+      <if test="tagid != null" >
+        #{tagid,jdbcType=INTEGER},
+      </if>
+      <if test="tagcontent != null" >
+        #{tagcontent,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.MBigcasetag" >
+    update M_BigCaseTag
+    <set >
+      <if test="caseid != null" >
+        CaseId = #{caseid,jdbcType=INTEGER},
+      </if>
+      <if test="tagid != null" >
+        TagId = #{tagid,jdbcType=INTEGER},
+      </if>
+      <if test="tagcontent != null" >
+        TagContent = #{tagcontent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.bbyiya.model.MBigcasetag" >
+    update M_BigCaseTag
+    set CaseId = #{caseid,jdbcType=INTEGER},
+      TagId = #{tagid,jdbcType=INTEGER},
+      TagContent = #{tagcontent,jdbcType=LONGVARCHAR}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.MBigcasetag" >
+    update M_BigCaseTag
+    set CaseId = #{caseid,jdbcType=INTEGER},
+      TagId = #{tagid,jdbcType=INTEGER}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,110 +1,154 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bbyiya.dao.MBigcaseMapper">
-  <resultMap id="BaseResultMap" type="com.bbyiya.model.MBigcase">
-    <id column="CaseId" jdbcType="INTEGER" property="caseid" />
-    <result column="Title" jdbcType="VARCHAR" property="title" />
-    <result column="TypeId" jdbcType="INTEGER" property="typeid" />
-    <result column="CreateTime" jdbcType="TIMESTAMP" property="createtime" />
-    <result column="ImageDefault" jdbcType="VARCHAR" property="imagedefault" />
-    <result column="StartDay" jdbcType="INTEGER" property="startday" />
-    <result column="EndDay" jdbcType="INTEGER" property="endday" />
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.MBigcaseMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.MBigcase" >
+    <id column="CaseId" property="caseid" jdbcType="INTEGER" />
+    <result column="Title" property="title" jdbcType="VARCHAR" />
+    <result column="TypeId" property="typeid" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="ImageDefault" property="imagedefault" jdbcType="VARCHAR" />
+    <result column="StartDay" property="startday" jdbcType="INTEGER" />
+    <result column="EndDay" property="endday" jdbcType="INTEGER" />
+    <result column="Summary" property="summary" jdbcType="LONGVARCHAR" />
+    <result column="ForDay" property="forday" jdbcType="INTEGER" />
   </resultMap>
-  <sql id="Base_Column_List">
-    CaseId, Title, TypeId, CreateTime, ImageDefault, StartDay, EndDay
+   <resultMap id="BaseResultExpMap" type="com.bbyiya.vo.bigcase.BigcaseResult" >
+    <id column="CaseId" property="caseid" jdbcType="INTEGER" />
+    <result column="Title" property="title" jdbcType="VARCHAR" />
+    <result column="TypeId" property="typeid" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="ImageDefault" property="imagedefault" jdbcType="VARCHAR" />
+    <result column="StartDay" property="startday" jdbcType="INTEGER" />
+    <result column="EndDay" property="endday" jdbcType="INTEGER" />
+    <result column="Summary" property="summary" jdbcType="LONGVARCHAR" />
+    <result column="ForDay" property="forday" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CaseId, Title, TypeId, CreateTime, ImageDefault, StartDay, EndDay ,Summary
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from M_BigCase
     where CaseId = #{caseid,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from M_BigCase
-    where CaseId = #{caseid,jdbcType=INTEGER}
+  <select id="findMBigcaseList" resultMap="BaseResultMap" ><!-- 获取宝宝大事件列表 -->
+    select 
+    <include refid="Base_Column_List" />
+    from M_BigCase
+    where ForDay &gt;= #{start,jdbcType=INTEGER} and ForDay &lt;= #{end,jdbcType=INTEGER}  
+  </select>
+  <select id="findMBigcaseResultList" resultMap="BaseResultExpMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from M_BigCase
+    where ForDay &gt;= #{start,jdbcType=INTEGER} and ForDay &lt;= #{end,jdbcType=INTEGER}  
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from M_BigCase  where CaseId = #{caseid,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.bbyiya.model.MBigcase">
+  <insert id="insert" parameterType="com.bbyiya.model.MBigcase" >
     insert into M_BigCase (CaseId, Title, TypeId, 
       CreateTime, ImageDefault, StartDay, 
-      EndDay)
+      EndDay, Summary)
     values (#{caseid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{typeid,jdbcType=INTEGER}, 
       #{createtime,jdbcType=TIMESTAMP}, #{imagedefault,jdbcType=VARCHAR}, #{startday,jdbcType=INTEGER}, 
-      #{endday,jdbcType=INTEGER})
+      #{endday,jdbcType=INTEGER}, #{summary,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.bbyiya.model.MBigcase">
+  <insert id="insertSelective" parameterType="com.bbyiya.model.MBigcase" >
     insert into M_BigCase
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="caseid != null">
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="caseid != null" >
         CaseId,
       </if>
-      <if test="title != null">
+      <if test="title != null" >
         Title,
       </if>
-      <if test="typeid != null">
+      <if test="typeid != null" >
         TypeId,
       </if>
-      <if test="createtime != null">
+      <if test="createtime != null" >
         CreateTime,
       </if>
-      <if test="imagedefault != null">
+      <if test="imagedefault != null" >
         ImageDefault,
       </if>
-      <if test="startday != null">
+      <if test="startday != null" >
         StartDay,
       </if>
-      <if test="endday != null">
+      <if test="endday != null" >
         EndDay,
       </if>
+      <if test="summary != null" >
+        Summary,
+      </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="caseid != null">
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="caseid != null" >
         #{caseid,jdbcType=INTEGER},
       </if>
-      <if test="title != null">
+      <if test="title != null" >
         #{title,jdbcType=VARCHAR},
       </if>
-      <if test="typeid != null">
+      <if test="typeid != null" >
         #{typeid,jdbcType=INTEGER},
       </if>
-      <if test="createtime != null">
+      <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
       </if>
-      <if test="imagedefault != null">
+      <if test="imagedefault != null" >
         #{imagedefault,jdbcType=VARCHAR},
       </if>
-      <if test="startday != null">
+      <if test="startday != null" >
         #{startday,jdbcType=INTEGER},
       </if>
-      <if test="endday != null">
+      <if test="endday != null" >
         #{endday,jdbcType=INTEGER},
+      </if>
+      <if test="summary != null" >
+        #{summary,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.MBigcase">
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.MBigcase" >
     update M_BigCase
-    <set>
-      <if test="title != null">
+    <set >
+      <if test="title != null" >
         Title = #{title,jdbcType=VARCHAR},
       </if>
-      <if test="typeid != null">
+      <if test="typeid != null" >
         TypeId = #{typeid,jdbcType=INTEGER},
       </if>
-      <if test="createtime != null">
+      <if test="createtime != null" >
         CreateTime = #{createtime,jdbcType=TIMESTAMP},
       </if>
-      <if test="imagedefault != null">
+      <if test="imagedefault != null" >
         ImageDefault = #{imagedefault,jdbcType=VARCHAR},
       </if>
-      <if test="startday != null">
+      <if test="startday != null" >
         StartDay = #{startday,jdbcType=INTEGER},
       </if>
-      <if test="endday != null">
+      <if test="endday != null" >
         EndDay = #{endday,jdbcType=INTEGER},
+      </if>
+      <if test="summary != null" >
+        Summary = #{summary,jdbcType=LONGVARCHAR},
       </if>
     </set>
     where CaseId = #{caseid,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.MBigcase">
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.bbyiya.model.MBigcase" >
+    update M_BigCase
+    set Title = #{title,jdbcType=VARCHAR},
+      TypeId = #{typeid,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      ImageDefault = #{imagedefault,jdbcType=VARCHAR},
+      StartDay = #{startday,jdbcType=INTEGER},
+      EndDay = #{endday,jdbcType=INTEGER},
+      Summary = #{summary,jdbcType=LONGVARCHAR}
+    where CaseId = #{caseid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.MBigcase" >
     update M_BigCase
     set Title = #{title,jdbcType=VARCHAR},
       TypeId = #{typeid,jdbcType=INTEGER},
@@ -112,95 +156,6 @@
       ImageDefault = #{imagedefault,jdbcType=VARCHAR},
       StartDay = #{startday,jdbcType=INTEGER},
       EndDay = #{endday,jdbcType=INTEGER}
-    where CaseId = #{caseid,jdbcType=INTEGER}
-  </update>
-  <resultMap id="BaseResultMap" type="com.bbyiya.model.MBigcase">
-    <id column="CaseId" jdbcType="INTEGER" property="caseid" />
-    <result column="Title" jdbcType="VARCHAR" property="title" />
-    <result column="TypeId" jdbcType="INTEGER" property="typeid" />
-    <result column="CreateTime" jdbcType="TIMESTAMP" property="createtime" />
-    <result column="ImageDefault" jdbcType="VARCHAR" property="imagedefault" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    CaseId, Title, TypeId, CreateTime, ImageDefault
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from M_BigCase
-    where CaseId = #{caseid,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from M_BigCase
-    where CaseId = #{caseid,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.bbyiya.model.MBigcase">
-    insert into M_BigCase (CaseId, Title, TypeId, 
-      CreateTime, ImageDefault)
-    values (#{caseid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{typeid,jdbcType=INTEGER}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{imagedefault,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.bbyiya.model.MBigcase">
-    insert into M_BigCase
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="caseid != null">
-        CaseId,
-      </if>
-      <if test="title != null">
-        Title,
-      </if>
-      <if test="typeid != null">
-        TypeId,
-      </if>
-      <if test="createtime != null">
-        CreateTime,
-      </if>
-      <if test="imagedefault != null">
-        ImageDefault,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="caseid != null">
-        #{caseid,jdbcType=INTEGER},
-      </if>
-      <if test="title != null">
-        #{title,jdbcType=VARCHAR},
-      </if>
-      <if test="typeid != null">
-        #{typeid,jdbcType=INTEGER},
-      </if>
-      <if test="createtime != null">
-        #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="imagedefault != null">
-        #{imagedefault,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.MBigcase">
-    update M_BigCase
-    <set>
-      <if test="title != null">
-        Title = #{title,jdbcType=VARCHAR},
-      </if>
-      <if test="typeid != null">
-        TypeId = #{typeid,jdbcType=INTEGER},
-      </if>
-      <if test="createtime != null">
-        CreateTime = #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="imagedefault != null">
-        ImageDefault = #{imagedefault,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where CaseId = #{caseid,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.MBigcase">
-    update M_BigCase
-    set Title = #{title,jdbcType=VARCHAR},
-      TypeId = #{typeid,jdbcType=INTEGER},
-      CreateTime = #{createtime,jdbcType=TIMESTAMP},
-      ImageDefault = #{imagedefault,jdbcType=VARCHAR}
     where CaseId = #{caseid,jdbcType=INTEGER}
   </update>
 </mapper>

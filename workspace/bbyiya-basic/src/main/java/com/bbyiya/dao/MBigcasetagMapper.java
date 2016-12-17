@@ -1,5 +1,9 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.MBigcasetag;
 
 public interface MBigcasetagMapper {
@@ -16,4 +20,10 @@ public interface MBigcasetagMapper {
     int updateByPrimaryKeyWithBLOBs(MBigcasetag record);
 
     int updateByPrimaryKey(MBigcasetag record);
+    /**
+     * 根据大事件Id获取标签
+     * @param caseId
+     * @return
+     */
+    List<MBigcasetag> findBigCaseTagByCaseId(@Param("caseId")Integer caseId);
 }

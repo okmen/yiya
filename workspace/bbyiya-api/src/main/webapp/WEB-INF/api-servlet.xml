@@ -32,6 +32,7 @@
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="mapperLocations" value="classpath:com/bbyiya/mapper/*.xml" />
+		<property name="configLocation" value="classpath:pageHelper-config.xml" />
 	</bean>
 	<!-- 自动扫描 将Mapper接口生成代理注入到Spring -->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer"

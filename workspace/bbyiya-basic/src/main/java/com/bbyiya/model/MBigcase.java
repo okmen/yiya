@@ -1,8 +1,11 @@
 package com.bbyiya.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class MBigcase {
+public class MBigcase implements Serializable{
+	private static final long serialVersionUID = 1L;
+	
     private Integer caseid;
 
     private String title;
@@ -16,6 +19,9 @@ public class MBigcase {
     private Integer startday;
 
     private Integer endday;
+
+    private String summary;
+    private Integer forday;
 
     public Integer getCaseid() {
         return caseid;
@@ -72,4 +78,22 @@ public class MBigcase {
     public void setEndday(Integer endday) {
         this.endday = endday;
     }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary == null ? null : summary.trim();
+    }
+
+	public Integer getForday() {
+		return forday;
+	}
+
+	public void setForday(Integer forday) {
+		this.forday = forday;
+	}
+    
+    
 }

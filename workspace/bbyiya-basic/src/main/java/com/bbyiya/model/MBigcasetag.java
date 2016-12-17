@@ -1,6 +1,11 @@
 package com.bbyiya.model;
 
-public class MBigcasetag {
+import java.io.Serializable;
+
+public class MBigcasetag implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+	
     private Integer id;
 
     private Integer caseid;

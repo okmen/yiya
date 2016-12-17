@@ -20,10 +20,8 @@
     where TypeId = #{typeid,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.MBigcaseclass" >
-    insert into M_BigCaseClass (TypeId, Name, Count
-      )
-    values (#{typeid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{count,jdbcType=INTEGER}
-      )
+    insert into M_BigCaseClass (TypeId, Name, Count)
+    values (#{typeid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{count,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.MBigcaseclass" >
     insert into M_BigCaseClass

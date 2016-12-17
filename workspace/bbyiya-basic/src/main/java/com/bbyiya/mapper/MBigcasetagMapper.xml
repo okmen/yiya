@@ -5,23 +5,22 @@
     <id column="Id" property="id" jdbcType="INTEGER" />
     <result column="CaseId" property="caseid" jdbcType="INTEGER" />
     <result column="TagId" property="tagid" jdbcType="INTEGER" />
-  </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="com.bbyiya.model.MBigcasetag" extends="BaseResultMap" >
     <result column="TagContent" property="tagcontent" jdbcType="LONGVARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    Id, CaseId, TagId
+    Id, CaseId, TagId,TagContent
   </sql>
-  <sql id="Blob_Column_List" >
-    TagContent
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
     from M_BigCaseTag
     where Id = #{id,jdbcType=INTEGER}
+  </select>
+   <select id="findBigCaseTagByCaseId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from M_BigCaseTag
+    where CaseId = #{caseId,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from M_BigCaseTag

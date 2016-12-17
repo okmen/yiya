@@ -1,6 +1,7 @@
 package com.bbyiya.service;
 
 import com.bbyiya.vo.bigcase.BigcaseResult;
+import com.bbyiya.vo.bigcase.BigcasesummaryResult;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.github.pagehelper.PageInfo;
 
@@ -26,4 +27,11 @@ public interface IBigCaseService {
 	 * @return
 	 */
 	PageInfo<BigcaseResult> find_MBigcaseResultPage(LoginSuccessResult user, int pageIndex, int pageSize);
+	/**
+	 * 获取阶段总览
+	 * @param timeId 阶段Id
+	 * @return
+	 */
+	BigcasesummaryResult getBigcasesummaryResult(int timeId);
+	
 }

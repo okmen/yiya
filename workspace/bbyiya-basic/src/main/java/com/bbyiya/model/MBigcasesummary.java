@@ -1,6 +1,10 @@
 package com.bbyiya.model;
 
-public class MBigcasesummary {
+import java.io.Serializable;
+
+public class MBigcasesummary implements Serializable{
+	private static final long serialVersionUID = 1L;
+	
     private Integer id;
 
     private Integer stageid;

@@ -25,6 +25,7 @@ import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.bigcase.BigcaseResult;
 import com.bbyiya.vo.bigcase.BigcaseTagResult;
+import com.bbyiya.vo.bigcase.BigcasesummaryResult;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
 import com.github.pagehelper.PageHelper;
@@ -177,6 +178,16 @@ public class BigCaseServiceImpl implements IBigCaseService {
 		return null;
 	}
 
+	/**
+	 * 获取阶段总览
+	 * @param timeId
+	 * @return
+	 */
+	public BigcasesummaryResult getBigcasesummaryResult(int timeId){
+		//TODO
+		return null;
+	}
+	
 	/**
 	 * 大事件标签列表（列表及详情）
 	 * 

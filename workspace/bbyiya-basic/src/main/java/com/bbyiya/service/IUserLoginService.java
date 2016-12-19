@@ -45,4 +45,14 @@ public interface IUserLoginService {
 	 */
 	ReturnModel otherLogin(OtherLoginParam param)throws Exception;
 	
+	/**
+	 * 用户修改登录密码 （通过手机号）
+	 * @param mobile 手机号
+	 * @param vcode 验证码
+	 * @param pwd 新密码
+	 * @return
+	 */
+	ReturnModel updatePWD(String mobile,String vcode,String pwd);
+	
+	
 }

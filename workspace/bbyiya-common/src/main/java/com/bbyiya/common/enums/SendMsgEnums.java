@@ -6,9 +6,15 @@ public enum SendMsgEnums {
      */
     register(1),
     /**
+     * 找回密码（重置密码）
+     */
+    backPwd(2),
+    /**
      * 用户登陆 value =2
      */
-    login(2);
+    login(3)
+    
+    ;
 
     private final int Type;
 

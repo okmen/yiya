@@ -30,16 +30,19 @@ public class SSOController {
      */
     public LoginSuccessResult getLoginUser()
     {
-        String ticket = request.getParameter("ticket");
-        // 判断tiekt是否为空
-        if(ObjectUtil.isEmpty(ticket))
-        {
-        	// 获取cookie的tiket的值
-            ticket = CookieUtils.getCookieByName(request,"ticket");
-            if(ObjectUtil.isEmpty(ticket))
-            {
-                return null;
-            }
+        String ticket =request.getHeader("ticket");
+        if(ObjectUtil.isEmpty(ticket)){
+        	 ticket= request.getParameter("ticket");
+        	 // 判断tiekt是否为空
+             if(ObjectUtil.isEmpty(ticket))
+             {
+             	// 获取cookie的tiket的值
+                 ticket = CookieUtils.getCookieByName(request,"ticket");
+                 if(ObjectUtil.isEmpty(ticket))
+                 {
+                     return null;
+                 }
+             }
         }
         Object userObject = RedisUtil.getObject(ticket);
         if(userObject != null)// 如果存在

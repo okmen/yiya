@@ -6,6 +6,7 @@ import java.util.Map;
 import net.sf.json.JSONObject;
 
 import com.bbyiya.common.enums.SendMsgEnums;
+import com.bbyiya.common.vo.ResultMsg;
 /**
  * 短信发送类
  * @author Administrator
@@ -104,11 +105,17 @@ public class SendSMSByMobile {
 	 * @return
 	 */
 	public static String sendSmsReturnJson(int type, String moblie) {
-		if (type==Integer.parseInt( SendMsgEnums.register.toString())) {
+		if (type>=0) {
 			String verifyCode = String.valueOf(Math.random()).substring(2, 6);
 			String key=moblie+"-"+type;
 			RedisUtil.setObject(key, verifyCode,120); 
-			return sendSMS_yunpian(moblie, "【咿呀科技】您的验证码是"+verifyCode);
+			String content="";
+			if(type==Integer.parseInt(SendMsgEnums.register.toString())){
+				content= "【咿呀科技】您的注册验证码是"+verifyCode ;
+			}else if (type==Integer.parseInt(SendMsgEnums.backPwd.toString())) {
+				content= "【咿呀科技】您的验证码是"+verifyCode ;
+			}
+			return sendSMS_yunpian(moblie, content);
 		}
 		return null;
 	}
@@ -128,5 +135,32 @@ public class SendSMSByMobile {
 			return JSONObject.fromObject(resultString);
 		}
 		return null;
+	}
+	
+	/**
+	 * 验证码验证
+	 * @param mobile
+	 * @param vcode
+	 * @param type
+	 * @return
+	 */
+	public static ResultMsg validateCode(String mobile,String vcode,SendMsgEnums type){
+		ResultMsg result=new ResultMsg();
+		String key = mobile + "-" + Integer.parseInt(type.toString());
+		Object obj = RedisUtil.getObject(key);
+		if (ObjectUtil.isEmpty(obj) || ObjectUtil.isEmpty(String.valueOf(obj))) {
+			result.setStatus(-1);
+			result.setMsg("验证码已失效");
+			return result;
+		}
+		String vcode2 = String.valueOf(obj);
+		if (!vcode.equals(vcode2)) {
+			RedisUtil.delete(key);
+			result.setStatus(-1);
+			result.setMsg("验证码有误");
+			return result;
+		}
+		result.setStatus(1); 
+		return result;
 	}
 }

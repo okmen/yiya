@@ -47,6 +47,11 @@ public class SendMsgController {
 			}
 		}
 		String result= SendSMSByMobile.sendSmsReturnJson(codeType, phone);
+		if(ObjectUtil.isEmpty(result)){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("²ÎÊýÓÐÎó");
+			return JsonUtil.objectToJsonStr(rq);
+		}
 		JSONObject model = JSONObject.fromObject(result);
 		if(model!=null){
 			String code=String.valueOf(model.get("code"));

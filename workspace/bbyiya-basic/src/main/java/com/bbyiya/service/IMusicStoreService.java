@@ -3,6 +3,7 @@ package com.bbyiya.service;
 import java.util.List;
 
 import com.bbyiya.model.SMusicrecommend;
+import com.bbyiya.vo.user.LoginSuccessResult;
 
 /**
  * 音乐库
@@ -16,5 +17,5 @@ public interface IMusicStoreService {
 	 * @param userId
 	 * @return
 	 */
-	List<SMusicrecommend> find_SMusicrecommend(Long userId);
+	List<SMusicrecommend> find_SMusicrecommend(LoginSuccessResult user);
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.common.enums.SendMsgEnums;
+import com.bbyiya.common.vo.ResultMsg;
 import com.bbyiya.dao.UChildreninfoMapper;
 import com.bbyiya.dao.UOtherloginMapper;
 import com.bbyiya.dao.UUsersMapper;
@@ -22,6 +23,7 @@ import com.bbyiya.service.IUserLoginService;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
+import com.bbyiya.utils.SendSMSByMobile;
 import com.bbyiya.utils.encrypt.MD5Encrypt;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
@@ -72,7 +74,24 @@ public class UserLoginService implements IUserLoginService {
 		}
 		return rq;
 	}
-
+ 
+	public ReturnModel updatePWD(String mobile,String vcode,String pwd){
+		ReturnModel rq=new ReturnModel();
+		ResultMsg vResult= SendSMSByMobile.validateCode(mobile, vcode, SendMsgEnums.backPwd);
+		if(vResult.getStatus()!=1){
+			rq.setStatu(ReturnStatus.VcodeError_1);
+			rq.setStatusreson(vResult.getMsg()); 
+			return rq;
+		}
+		UUsers users= userDao.getUUsersByPhone(mobile);
+		users.setPassword(MD5Encrypt.encrypt(pwd));
+		userDao.updateByPrimaryKeySelective(users);
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("成功");
+		rq.setBasemodle(loginSuccess(users));  
+		return rq;
+	}
+	
 	/**
 	 * 第三方用户注册
 	 * 
@@ -92,8 +111,7 @@ public class UserLoginService implements IUserLoginService {
 				rq.setStatusreson("类型不能为空");
 				return rq;
 			}
-			UOtherlogin other = otherloginMapper.get_UOtherlogin(param);// new
-																		// UOtherlogin();
+			UOtherlogin other = otherloginMapper.get_UOtherlogin(param);
 			if (other == null) {
 				other = new UOtherlogin();
 				other.setOpenid(param.getOpenId());
@@ -188,8 +206,10 @@ public class UserLoginService implements IUserLoginService {
 				if (childModel != null) {
 					// 获取宝宝信息
 					UChildInfo child = new UChildInfo();
-					child.setBirthdayStr(DateUtil.getTimeStr(childModel.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
-					child.setBirthday(childModel.getBirthday());
+					if(childModel.getBirthday()!=null){
+						child.setBirthdayStr(DateUtil.getTimeStr(childModel.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
+						child.setBirthday(childModel.getBirthday());
+					}
 					child.setNickName(childModel.getNickname());
 					result.setBabyInfo(child);
 					result.setHaveBabyInfo(1);// 已经填写宝宝信息
@@ -254,7 +274,7 @@ public class UserLoginService implements IUserLoginService {
 				}
 			}
 		} else {
-			userDao.insert(model);
+			userDao.insertReturnKeyId(model);
 		}
 		rq.setStatu(ReturnStatus.Success);
 		rq.setBasemodle(loginSuccess(model));
@@ -286,20 +306,27 @@ public class UserLoginService implements IUserLoginService {
 			childModel.setCreatetime(new Date());
 		}
 		childModel.setSex(param.getSex());
-		childModel.setNickname(param.getNickName());
-		childModel.setBirthday(DateUtil.getDateByString("yyyy-mm-dd HH:mm:ss", param.getBirthday()));
+		if(!ObjectUtil.isEmpty(param.getNickName())){
+			childModel.setNickname(param.getNickName());
+		}
+		if(!ObjectUtil.isEmpty(param.getBirthday())){
+			childModel.setBirthday(DateUtil.getDateByString("yyyy-mm-dd HH:mm:ss", param.getBirthday()));
+		}else if(!havaBaby&&ObjectUtil.isEmpty(param.getBirthday())){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("宝宝生日信息不能为空");
+			return rq;
+		}
 		if (havaBaby) {// 修改宝宝信息
 			childMapper.updateByPrimaryKey(childModel);
 		} else { // 设置宝宝信息
 			childMapper.insert(childModel);
-			// 设置用户为完成体状态
-			UUsers user = userDao.getUUsersByUserID(userId);
-			user.setStatus(Integer.parseInt(UserStatusEnum.ok.toString()));
-			userDao.updateByPrimaryKey(user);
+//			// 设置用户为完成体状态
+//			UUsers user = userDao.getUUsersByUserID(userId);
+//			user.setStatus(Integer.parseInt(UserStatusEnum.ok.toString()));
+//			userDao.updateByPrimaryKey(user);
 		}
 		rq.setStatu(ReturnStatus.Success);
 		rq.setStatusreson("成功");
-		// rq.setBasemodle(param);
 		return rq;
 	}
 

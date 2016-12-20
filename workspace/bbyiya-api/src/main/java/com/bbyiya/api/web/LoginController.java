@@ -1,6 +1,9 @@
 package com.bbyiya.api.web;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
@@ -186,7 +189,9 @@ public class LoginController extends SSOController {
 			rq.setStatusreson("µÇÂ½¹ýÆÚ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
-		rq.setBasemodle(ConfigUtil.getMaplist("relations")); 
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("relations", ConfigUtil.getMaplist("relations"));
+		rq.setBasemodle(map); 
 		rq.setStatu(ReturnStatus.Success);
 		return JsonUtil.objectToJsonStr(rq);
 	}

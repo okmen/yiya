@@ -1,5 +1,6 @@
 package com.bbyiya.service;
 
+import com.bbyiya.model.UUserresponses;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.UChildInfoParam;
 import com.bbyiya.vo.user.UUserInfoParam;
@@ -36,4 +37,10 @@ public interface IUserInfoMgtService {
 	 * @param param
 	 */
 	ReturnModel editUUsers(Long userId,UUserInfoParam param);
+	/**
+	 * 用户意见反馈
+	 * @param param
+	 * @return
+	 */
+	ReturnModel add_UUserresponses(UUserresponses param);
 }

@@ -11,9 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bbyiya.common.enums.SendMsgEnums;
 import com.bbyiya.common.vo.ResultMsg;
 import com.bbyiya.dao.UChildreninfoMapper;
+import com.bbyiya.dao.UUserresponsesMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.UChildreninfo;
+import com.bbyiya.model.UUserresponses;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IUserInfoMgtService;
 import com.bbyiya.service.IUserLoginService;
@@ -32,41 +34,42 @@ public class UserInfoMgtServiceImpl implements IUserInfoMgtService {
 	private UUsersMapper userDao;
 	@Autowired
 	private UChildreninfoMapper childMapper;
-
+	@Autowired
+	private UUserresponsesMapper resposeMapper;
+	
 	@Resource(name = "userLoginService")
 	private IUserLoginService loginService;
 
-	
 	public ReturnModel updatePWD(String mobile, String vcode, String pwd) {
 		ReturnModel rq = new ReturnModel();
-		//参数验证=========step1=====================
-		if(ObjectUtil.isEmpty(vcode)){
+		// 参数验证=========step1=====================
+		if (ObjectUtil.isEmpty(vcode)) {
 			rq.setStatu(ReturnStatus.VcodeError_2);
 			rq.setStatusreson("验证码不能为空！");
 			return rq;
 		}
-		if(ObjectUtil.isEmpty(pwd)){
+		if (ObjectUtil.isEmpty(pwd)) {
 			rq.setStatu(ReturnStatus.ParamError);
 			rq.setStatusreson("新密码不能为空！");
 			return rq;
 		}
-		//----------------------------------
-		//手机验证码验证
+		// ----------------------------------
+		// 手机验证码验证
 		ResultMsg vResult = SendSMSByMobile.validateCode(mobile, vcode, SendMsgEnums.backPwd);
 		if (vResult.getStatus() != 1) {
 			rq.setStatu(ReturnStatus.VcodeError_1);
 			rq.setStatusreson(vResult.getMsg());
 			return rq;
 		}
-		//重置密码
+		// 重置密码
 		UUsers users = userDao.getUUsersByPhone(mobile);
-		if(users!=null){
+		if (users != null) {
 			users.setPassword(MD5Encrypt.encrypt(pwd));
 			userDao.updateByPrimaryKeySelective(users);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("成功");
 			rq.setBasemodle(loginService.loginSuccess(users));
-		}else {
+		} else {
 			rq.setStatu(ReturnStatus.SystemError);
 			rq.setStatusreson("该手机号未注册！");
 		}
@@ -115,29 +118,43 @@ public class UserInfoMgtServiceImpl implements IUserInfoMgtService {
 		}
 		return rq;
 	}
-	
-	public ReturnModel editUUsers(Long userId,UUserInfoParam param){
-		ReturnModel rq=new ReturnModel();
-		UUsers user= userDao.getUUsersByUserID(userId);
-		if(user!=null){
-			if(!ObjectUtil.isEmpty(param.getHeadImg())){
+
+	public ReturnModel editUUsers(Long userId, UUserInfoParam param) {
+		ReturnModel rq = new ReturnModel();
+		UUsers user = userDao.getUUsersByUserID(userId);
+		if (user != null) {
+			if (!ObjectUtil.isEmpty(param.getHeadImg())) {
 				user.setUserimg(param.getHeadImg());
 			}
-			if(!ObjectUtil.isEmpty(param.getNickName())){
+			if (!ObjectUtil.isEmpty(param.getNickName())) {
 				user.setNickname(param.getNickName());
 			}
-			if(!ObjectUtil.isEmpty(param.getSign())){
+			if (!ObjectUtil.isEmpty(param.getSign())) {
 				user.setSign(param.getSign());
 			}
-			if(!ObjectUtil.isEmpty(param.getBirthday())){
-				user.setBirthday(DateUtil.getDateByString("yyyy-MM-dd", param.getBirthday()));  
+			if (!ObjectUtil.isEmpty(param.getBirthday())) {
+				user.setBirthday(DateUtil.getDateByString("yyyy-MM-dd", param.getBirthday()));
 			}
 			userDao.updateByPrimaryKeySelective(user);
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("修改成功！"); 
-		}else {
+			rq.setStatusreson("修改成功！");
+		} else {
 			rq.setStatu(ReturnStatus.SystemError);
 			rq.setStatusreson("用户不存在！");
+		}
+		return rq;
+	}
+
+	public ReturnModel add_UUserresponses(UUserresponses param) {
+		ReturnModel rq = new ReturnModel();
+		if (param == null || ObjectUtil.isEmpty(param.getUserid()) || ObjectUtil.isEmpty(param.getContent())) {
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("参数有误");
+		} else {
+			param.setCreatetime(new Date());
+			resposeMapper.insert(param);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("反馈提交成功！");
 		}
 		return rq;
 	}

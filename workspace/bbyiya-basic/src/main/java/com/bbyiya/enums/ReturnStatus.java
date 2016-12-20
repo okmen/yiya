@@ -33,7 +33,13 @@ public enum ReturnStatus {
 	/**
 	 * 验证码失效
 	 */
-	VcodeError_1(101);
+	VcodeError_1(101),
+	/**
+	 * 验证码错误
+	 */
+	VcodeError_2(102)
+	
+	;
 
 	private final int step;
 

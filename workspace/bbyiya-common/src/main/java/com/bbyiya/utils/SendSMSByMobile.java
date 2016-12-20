@@ -110,11 +110,12 @@ public class SendSMSByMobile {
 			String key=moblie+"-"+type;
 			RedisUtil.setObject(key, verifyCode,120); 
 			String content="";
-			if(type==Integer.parseInt(SendMsgEnums.register.toString())){
-				content= "【咿呀科技】您的注册验证码是"+verifyCode ;
-			}else if (type==Integer.parseInt(SendMsgEnums.backPwd.toString())) {
-				content= "【咿呀科技】您的验证码是"+verifyCode ;
-			}
+//			if(type==Integer.parseInt(SendMsgEnums.register.toString())){
+//				content= "【咿呀科技】您的注册验证码是"+verifyCode ;
+//			}else if (type==Integer.parseInt(SendMsgEnums.backPwd.toString())) {
+//				content= "【咿呀科技】您的验证码是"+verifyCode ;
+//			} 
+			content= "【咿呀科技】您的验证码是"+verifyCode ;
 			return sendSMS_yunpian(moblie, content);
 		}
 		return null;

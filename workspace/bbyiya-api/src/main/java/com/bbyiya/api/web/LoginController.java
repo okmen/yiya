@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.service.IUserInfoMgtService;
 import com.bbyiya.service.IUserLoginService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.vo.user.OtherLoginParam;
@@ -31,7 +33,9 @@ public class LoginController extends SSOController {
 	 */
 	@Resource(name = "userLoginService")
 	private IUserLoginService loginService; 
-
+	
+	@Resource(name = "userInfoMgtService")
+	private IUserInfoMgtService userMgtService; 
 	
 	
 	
@@ -64,6 +68,7 @@ public class LoginController extends SSOController {
 		if (user != null) {
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(user);
+			RedisUtil.setExpire(super.getTicket(), 604800);// 延长时间
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登陆过期，请重新登陆！");
@@ -139,8 +144,9 @@ public class LoginController extends SSOController {
 		}
 		//宝宝信息参数model
 		UChildInfoParam child = (UChildInfoParam) JsonUtil.jsonStrToObject(childInfoJson, UChildInfoParam.class);
-		rq = loginService.addChildInfo(user.getUserId(), child);
+		rq = userMgtService.addOrEdit_UChildreninfo(user.getUserId(), child);
 		if(rq.getStatu().equals(ReturnStatus.Success)){//成功 设置宝宝信息 =》 更新用户登陆信息
+			user.setTicket(super.getTicket()); 
 			rq.setBasemodle(loginService.updateLoginSuccessResult(user));  
 			rq.setStatusreson("宝宝信息设置成功！");
 		}

@@ -1,10 +1,10 @@
 package com.bbyiya.service;
 
+import com.bbyiya.model.UUsers;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.vo.user.OtherLoginParam;
 import com.bbyiya.vo.user.RegisterParam;
-import com.bbyiya.vo.user.UChildInfoParam;
 
 public interface IUserLoginService {
 
@@ -24,14 +24,6 @@ public interface IUserLoginService {
 	 */
 	ReturnModel register(RegisterParam param) throws Exception ;
 	/**
-	 * 设置用户的孩子信息
-	 * @param userId
-	 * @param param
-	 * @return
-	 * @throws Exception
-	 */
-	ReturnModel addChildInfo(Long userId, UChildInfoParam param) throws Exception;
-	/**
 	 * 更新用户登陆信息
 	 * @param user 此操作之前的用户登陆信息 the user's loginInfo before
 	 * @return
@@ -46,13 +38,11 @@ public interface IUserLoginService {
 	ReturnModel otherLogin(OtherLoginParam param)throws Exception;
 	
 	/**
-	 * 用户修改登录密码 （通过手机号）
-	 * @param mobile 手机号
-	 * @param vcode 验证码
-	 * @param pwd 新密码
+	 * 返回登陆信息
+	 * @param user
 	 * @return
 	 */
-	ReturnModel updatePWD(String mobile,String vcode,String pwd);
+	LoginSuccessResult loginSuccess(UUsers user) ;
 	
 	
 }

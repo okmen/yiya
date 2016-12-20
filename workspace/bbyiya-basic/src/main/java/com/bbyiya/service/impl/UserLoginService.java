@@ -30,7 +30,6 @@ import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.vo.user.OtherLoginParam;
 import com.bbyiya.vo.user.RegisterParam;
 import com.bbyiya.vo.user.UChildInfo;
-import com.bbyiya.vo.user.UChildInfoParam;
 
 @Service("userLoginService")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
@@ -41,10 +40,11 @@ public class UserLoginService implements IUserLoginService {
 	private UUsersMapper userDao;
 	@Autowired
 	private UChildreninfoMapper childMapper;
+
 	/**
 	 * 日志对象
 	 */
-	private static Log log = LogFactory.getLog(UserLoginService.class);
+	// private static Log log = LogFactory.getLog(UserLoginService.class);
 
 	/**
 	 * 第三方登陆
@@ -74,24 +74,7 @@ public class UserLoginService implements IUserLoginService {
 		}
 		return rq;
 	}
- 
-	public ReturnModel updatePWD(String mobile,String vcode,String pwd){
-		ReturnModel rq=new ReturnModel();
-		ResultMsg vResult= SendSMSByMobile.validateCode(mobile, vcode, SendMsgEnums.backPwd);
-		if(vResult.getStatus()!=1){
-			rq.setStatu(ReturnStatus.VcodeError_1);
-			rq.setStatusreson(vResult.getMsg()); 
-			return rq;
-		}
-		UUsers users= userDao.getUUsersByPhone(mobile);
-		users.setPassword(MD5Encrypt.encrypt(pwd));
-		userDao.updateByPrimaryKeySelective(users);
-		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("成功");
-		rq.setBasemodle(loginSuccess(users));  
-		return rq;
-	}
-	
+
 	/**
 	 * 第三方用户注册
 	 * 
@@ -151,7 +134,7 @@ public class UserLoginService implements IUserLoginService {
 			rq.setStatusreson("密码不能为空");
 			return rq;
 		}
-		UUsers user = getUUser(userno);
+		UUsers user = this.getUUser(userno);
 		if (user != null) {
 			if (user.getPassword() != null && MD5Encrypt.encrypt(pwd).equals(user.getPassword())) {
 				rq.setStatu(ReturnStatus.Success);
@@ -177,6 +160,7 @@ public class UserLoginService implements IUserLoginService {
 	 * @return
 	 */
 	private UUsers getUUser(String userno) {
+		// 通过手机号获取用户信息
 		UUsers user = userDao.getUUsersByPhone(userno);
 		if (user != null) {
 			return user;
@@ -191,7 +175,10 @@ public class UserLoginService implements IUserLoginService {
 		return null;
 	}
 
-	private LoginSuccessResult loginSuccess(UUsers user) {
+	/**
+	 * 返回用户登陆信息
+	 */
+	public LoginSuccessResult loginSuccess(UUsers user) {
 		if (user != null) {
 			LoginSuccessResult result = new LoginSuccessResult();
 			result.setUserId(user.getUserid());
@@ -206,13 +193,61 @@ public class UserLoginService implements IUserLoginService {
 				if (childModel != null) {
 					// 获取宝宝信息
 					UChildInfo child = new UChildInfo();
-					if(childModel.getBirthday()!=null){
+					if (childModel.getBirthday() != null) {
 						child.setBirthdayStr(DateUtil.getTimeStr(childModel.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
 						child.setBirthday(childModel.getBirthday());
 					}
 					child.setNickName(childModel.getNickname());
 					result.setBabyInfo(child);
 					result.setHaveBabyInfo(1);// 已经填写宝宝信息
+				}
+			}
+			String s = UUID.randomUUID().toString();
+			String ticket = "YY" + s;
+			RedisUtil.setObject(ticket, result, 604800);// 缓存一周
+			result.setTicket(ticket);
+			return result;
+		}
+		return null;
+	}
+
+	/**
+	 * 登录信息更新
+	 * 
+	 * @param user
+	 * @param ticket_Old
+	 * @return
+	 */
+	public LoginSuccessResult loginSuccess(UUsers user, String ticket_Old) {
+		if (user != null) {
+			LoginSuccessResult result = new LoginSuccessResult();
+			result.setUserId(user.getUserid());
+			result.setIdentity(user.getIdentity());
+			result.setMobilePhone(user.getMobilephone());
+			result.setNickName(user.getNickname());
+			result.setHeadImg(user.getUserimg());
+			result.setStatus(user.getStatus());
+			// 完成注册// =》设置baby信息
+			if (user.getStatus().intValue() == Integer.parseInt(UserStatusEnum.ok.toString())) {
+				UChildreninfo childModel = childMapper.selectByPrimaryKey(user.getUserid());
+				if (childModel != null) {
+					// 获取宝宝信息
+					UChildInfo child = new UChildInfo();
+					if (childModel.getBirthday() != null) {
+						child.setBirthdayStr(DateUtil.getTimeStr(childModel.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
+						child.setBirthday(childModel.getBirthday());
+					}
+					child.setNickName(childModel.getNickname());
+					result.setBabyInfo(child);
+					result.setHaveBabyInfo(1);// 已经填写宝宝信息
+				}
+			}
+			if (!ObjectUtil.isEmpty(ticket_Old)) {
+				LoginSuccessResult old_loginUser = (LoginSuccessResult) RedisUtil.getObject(ticket_Old);
+				if (old_loginUser != null) {
+					RedisUtil.setObject(ticket_Old, result, 86400);// 缓存一天
+					result.setTicket(ticket_Old);
+					return result;
 				}
 			}
 			String s = UUID.randomUUID().toString();
@@ -225,7 +260,7 @@ public class UserLoginService implements IUserLoginService {
 	}
 
 	/**
-	 * 
+	 * 用户注册-》设置密码
 	 * 
 	 * @param param
 	 * @return
@@ -239,17 +274,11 @@ public class UserLoginService implements IUserLoginService {
 			rq.setStatusreson("参数不全");
 			return rq;
 		}
-		String key = param.getMobilephone() + "-" + Integer.parseInt(SendMsgEnums.register.toString());
-		Object obj = RedisUtil.getObject(key);
-		if (ObjectUtil.isEmpty(obj) || ObjectUtil.isEmpty(String.valueOf(obj))) {
-			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("验证码已失效");
-			return rq;
-		}
-		String vcode = String.valueOf(obj);
-		if (!vcode.equals(param.getVcode())) {
-			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("验证码有误");
+		// 手机验证码验证
+		ResultMsg vResult = SendSMSByMobile.validateCode(param.getMobilephone(), param.getVcode(), SendMsgEnums.register);
+		if (vResult.getStatus() != 1) {
+			rq.setStatu(ReturnStatus.VcodeError_1);
+			rq.setStatusreson(vResult.getMsg());
 			return rq;
 		}
 		UUsers model = new UUsers();
@@ -281,60 +310,11 @@ public class UserLoginService implements IUserLoginService {
 		return rq;
 	}
 
-	/**
-	 * 设置孩子信息
-	 * 
-	 * @param userId
-	 * @param param
-	 * @return
-	 * @throws Exception
-	 */
-	public ReturnModel addChildInfo(Long userId, UChildInfoParam param) throws Exception {
-		ReturnModel rq = new ReturnModel();
-		if (param == null) {
-			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("参数有误");
-			return rq;
-		}
-		// 保存宝宝信息
-		UChildreninfo childModel = childMapper.selectByPrimaryKey(userId);//
-		boolean havaBaby = true;
-		if (childModel == null) {
-			childModel = new UChildreninfo();
-			havaBaby = false;
-			childModel.setUserid(userId);
-			childModel.setCreatetime(new Date());
-		}
-		childModel.setSex(param.getSex());
-		if(!ObjectUtil.isEmpty(param.getNickName())){
-			childModel.setNickname(param.getNickName());
-		}
-		if(!ObjectUtil.isEmpty(param.getBirthday())){
-			childModel.setBirthday(DateUtil.getDateByString("yyyy-mm-dd HH:mm:ss", param.getBirthday()));
-		}else if(!havaBaby&&ObjectUtil.isEmpty(param.getBirthday())){
-			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("宝宝生日信息不能为空");
-			return rq;
-		}
-		if (havaBaby) {// 修改宝宝信息
-			childMapper.updateByPrimaryKey(childModel);
-		} else { // 设置宝宝信息
-			childMapper.insert(childModel);
-//			// 设置用户为完成体状态
-//			UUsers user = userDao.getUUsersByUserID(userId);
-//			user.setStatus(Integer.parseInt(UserStatusEnum.ok.toString()));
-//			userDao.updateByPrimaryKey(user);
-		}
-		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("成功");
-		return rq;
-	}
-
 	public LoginSuccessResult updateLoginSuccessResult(LoginSuccessResult user) {
 		if (user != null && user.getUserId() != null) {
 			UUsers userInfo = userDao.getUUsersByUserID(user.getUserId());
 			if (userInfo != null) {
-				return loginSuccess(userInfo);
+				return loginSuccess(userInfo, user.getTicket());
 			}
 		}
 		return user;

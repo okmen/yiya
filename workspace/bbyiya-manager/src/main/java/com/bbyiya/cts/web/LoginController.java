@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.cts.service.IUAdminService;
+import com.bbyiya.cts.vo.admin.AdminLoginSuccessResult;
 import com.bbyiya.enums.ReturnStatus;
-import com.bbyiya.model.UAdmin;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
@@ -42,7 +42,7 @@ public class LoginController  extends CtsSSOController{
 	 */
 	@RequestMapping(value = "/loginsuccess")
 	public  String loginsuccess(Model model) throws Exception {
-		UAdmin user= this.getLoginUser();
+		AdminLoginSuccessResult user= this.getLoginUser();
 		if(user!=null){
 			model.addAttribute("msg", user.getUsername());
 		}else {
@@ -68,6 +68,7 @@ public class LoginController  extends CtsSSOController{
 			String ticket=UUID.randomUUID().toString();
 			RedisUtil.setObject(ticket, rqModel.getBasemodle(), 3600);
 			CookieUtils.addCookie(response, token, ticket, 3600);
+			rqModel.setStatusreson(ticket); 
 		}else {
 			String ticket= CookieUtils.getCookieByName(request, token);
 			if(!ObjectUtil.isEmpty(ticket)){

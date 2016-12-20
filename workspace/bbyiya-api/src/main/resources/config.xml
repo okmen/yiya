@@ -51,4 +51,7 @@
 		<item id="5" value="叔叔"/>
 		<item id="6" value="阿姨"/>
 	</relations>
+	<users>
+		<item adminId="1" username="zhangyao" pwd="E10ADC3949BA59ABBE56E057F20F883E" />
+	</users>
 </appSettings>

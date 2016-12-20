@@ -2,17 +2,20 @@ package com.bbyiya.cts.service.impl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.cts.service.IUAdminService;
+import com.bbyiya.cts.vo.admin.AdminLoginSuccessResult;
 import com.bbyiya.dao.UAdminMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.UAdmin;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.utils.encrypt.MD5Encrypt;
 import com.bbyiya.vo.ReturnModel;
 
@@ -37,7 +40,7 @@ public class UAdminService implements IUAdminService{
 					user.setAdminid(ObjectUtil.parseInt(map.get("adminId")));
 					user.setUsername((map.get("username")));
 					rqModel.setStatu(ReturnStatus.Success);
-					rqModel.setBasemodle(user); 
+					rqModel.setBasemodle(getAdminLoginSuccessResult(user)); 
 					rqModel.setStatusreson("登录成功");
 					return rqModel;
 				}
@@ -63,5 +66,15 @@ public class UAdminService implements IUAdminService{
 //			rqModel.setStatusreson("用户名不存在");
 //		}
 //		return rqModel;
+	}
+	
+	public AdminLoginSuccessResult getAdminLoginSuccessResult(UAdmin user){
+		if(user!=null){
+			AdminLoginSuccessResult loginSuccess=new AdminLoginSuccessResult();
+			loginSuccess.setAdminid(user.getAdminid());
+			loginSuccess.setUsername(user.getUsername()); 
+			return loginSuccess;
+		}
+		return null;
 	}
 }

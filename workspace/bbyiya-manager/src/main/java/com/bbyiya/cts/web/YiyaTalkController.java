@@ -7,11 +7,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bbyiya.cts.vo.MusicAddParam;
+import com.bbyiya.cts.vo.admin.AdminLoginSuccessResult;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.MYiyabanner;
-import com.bbyiya.model.SMusics;
-import com.bbyiya.model.UAdmin;
 import com.bbyiya.service.IYiyaTalkService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
@@ -34,7 +32,7 @@ public class YiyaTalkController extends CtsSSOController {
 	@RequestMapping(value = "/addOrEdit_TalkBanner")
 	public String addOrEdit_TalkBanner(Model model, String talkbannerJson) throws Exception {
 		ReturnModel rqModel = new ReturnModel();
-		UAdmin user = this.getLoginUser();
+		AdminLoginSuccessResult user = this.getLoginUser();
 		if (user != null) {
 			if (!ObjectUtil.isEmpty(talkbannerJson)) {
 				MYiyabanner param = (MYiyabanner) JsonUtil.jsonStrToObject(talkbannerJson, MYiyabanner.class);

@@ -12,28 +12,33 @@ public class LoginSuccessResult  implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private Long userId;
-	
+	 //头像
+    private String headImg;
+    //昵称
+    private String nickName;
     //用户手机
     private String mobilePhone;
+    //用户签名
+    private String sign;
+    //用户生日
+    private String birthday;
+    
     //用户状态
     private Integer status;
+    
+    
     //是否有填写宝宝信息
     private int haveBabyInfo;
+    //宝宝信息
+    private UChildInfo babyInfo;
     /**
      * 用户身份标示
      */
     private Long identity;
-    //头像
-    private String headImg;
-    //昵称
-    private String nickName;
     //登陆票据
     private String ticket;
-    
     //第三方注册标记
     private String register_token;
-    //宝宝信息
-    private UChildInfo babyInfo;
 	
 	
 	public Long getUserId() {
@@ -97,6 +102,18 @@ public class LoginSuccessResult  implements Serializable{
 	}
 	public void setHaveBabyInfo(int haveBabyInfo) {
 		this.haveBabyInfo = haveBabyInfo;
+	}
+	public String getSign() {
+		return sign;
+	}
+	public void setSign(String sign) {
+		this.sign = sign;
+	}
+	public String getBirthday() {
+		return birthday;
+	}
+	public void setBirthday(String birthday) {
+		this.birthday = birthday;
 	}
 	
 

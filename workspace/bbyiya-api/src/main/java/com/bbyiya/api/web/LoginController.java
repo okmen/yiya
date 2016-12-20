@@ -1,9 +1,5 @@
 package com.bbyiya.api.web;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -14,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.service.IUserInfoMgtService;
 import com.bbyiya.service.IUserLoginService;
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
@@ -40,8 +37,8 @@ public class LoginController extends SSOController {
 	
 	
 	/**
+	 * A05登陆（手机号、密码登陆）
 	 * 手机号、密码登陆
-	 * 
 	 * @param phone手机号
 	 * @param pwd
 	 * @return
@@ -55,8 +52,27 @@ public class LoginController extends SSOController {
 	}
 
 	/**
+	 * A02退出登录
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/outLogin")
+	public String outLogin() throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user=super.getLoginUser();
+		if(user!=null){
+			RedisUtil.delete(super.getTicket());
+		} 
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("成功！");
+		return JsonUtil.objectToJsonStr(rq);
+	}
+
+	
+	/**
+	 * A07获取用户登陆信息
 	 * 获取登陆信息
-	 * 
 	 * @return
 	 * @throws Exception
 	 */
@@ -67,7 +83,9 @@ public class LoginController extends SSOController {
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
 			rq.setStatu(ReturnStatus.Success);
-			rq.setBasemodle(user);
+			rq.setBasemodle(user); 
+//			user.setTicket(super.getTicket());
+//			rq.setBasemodle(loginService.updateLoginSuccessResult(user));
 			RedisUtil.setExpire(super.getTicket(), 604800);// 延长时间
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
@@ -77,7 +95,7 @@ public class LoginController extends SSOController {
 	}
 
 	/**
-	 * A01第三方登陆、注册
+	 * A01 第三方登陆、注册
 	 * zy 
 	 * @param headImg
 	 * @param loginType
@@ -162,30 +180,17 @@ public class LoginController extends SSOController {
 	@RequestMapping(value = "/getrelation")
 	public String getrelation() throws Exception {
 		ReturnModel rq = new ReturnModel();
-//		LoginSuccessResult user = this.getLoginUser();
-//		if (user == null) {
-//			rq.setStatu(ReturnStatus.LoginError);
-//			rq.setStatusreson("登陆过期");
-//			return JsonUtil.objectToJsonStr(rq);
-//		}
-		List<Map<String, Object>> list=new ArrayList<Map<String,Object>>();
-		list.add(getRalation(1, "爸爸"));
-		list.add(getRalation(2, "妈妈"));
-		list.add(getRalation(3, "爷爷"));
-		list.add(getRalation(4, "奶奶"));
-		list.add(getRalation(5, "叔叔"));
-		list.add(getRalation(6, "阿姨"));
-		rq.setBasemodle(list); 
+		LoginSuccessResult user = this.getLoginUser();
+		if (user == null) {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登陆过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		rq.setBasemodle(ConfigUtil.getMaplist("relations")); 
 		rq.setStatu(ReturnStatus.Success);
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	
-	private Map<String, Object> getRalation(int id,String value){
-		Map<String, Object> map=new HashMap<String, Object>();
-		map.put("id", id);
-		map.put("value", value);
-		return map;
-	}
 
 }

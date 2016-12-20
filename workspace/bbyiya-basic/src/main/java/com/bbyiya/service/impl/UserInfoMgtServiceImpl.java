@@ -23,6 +23,7 @@ import com.bbyiya.utils.SendSMSByMobile;
 import com.bbyiya.utils.encrypt.MD5Encrypt;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.UChildInfoParam;
+import com.bbyiya.vo.user.UUserInfoParam;
 
 @Service("userInfoMgtService")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
@@ -111,6 +112,32 @@ public class UserInfoMgtServiceImpl implements IUserInfoMgtService {
 			// TODO: handle exception
 			rq.setStatu(ReturnStatus.SystemError);
 			rq.setStatusreson(e.getMessage());
+		}
+		return rq;
+	}
+	
+	public ReturnModel editUUsers(Long userId,UUserInfoParam param){
+		ReturnModel rq=new ReturnModel();
+		UUsers user= userDao.getUUsersByUserID(userId);
+		if(user!=null){
+			if(!ObjectUtil.isEmpty(param.getHeadImg())){
+				user.setUserimg(param.getHeadImg());
+			}
+			if(!ObjectUtil.isEmpty(param.getNickName())){
+				user.setNickname(param.getNickName());
+			}
+			if(!ObjectUtil.isEmpty(param.getSign())){
+				user.setSign(param.getSign());
+			}
+			if(!ObjectUtil.isEmpty(param.getBirthday())){
+				user.setBirthday(DateUtil.getDateByString("yyyy-MM-dd", param.getBirthday()));  
+			}
+			userDao.updateByPrimaryKeySelective(user);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("修改成功！"); 
+		}else {
+			rq.setStatu(ReturnStatus.SystemError);
+			rq.setStatusreson("用户不存在！");
 		}
 		return rq;
 	}

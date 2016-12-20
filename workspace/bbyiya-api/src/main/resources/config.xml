@@ -43,4 +43,12 @@
 		<item id="13" start="301" end="330" title="第11个月" />
 		<item id="14" start="331" end="360" title="第12个月" />
 	</timeIntervals>
+	<relations>
+		<item id="1" value="爸爸"/>
+		<item id="2" value="妈妈"/>
+		<item id="3" value="爷爷"/>
+		<item id="4" value="奶奶"/>
+		<item id="5" value="叔叔"/>
+		<item id="6" value="阿姨"/>
+	</relations>
 </appSettings>

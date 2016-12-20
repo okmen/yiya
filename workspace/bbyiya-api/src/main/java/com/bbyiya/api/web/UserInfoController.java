@@ -14,6 +14,7 @@ import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.vo.user.UChildInfoParam;
+import com.bbyiya.vo.user.UUserInfoParam;
 import com.bbyiya.web.base.SSOController;
 
 @Controller
@@ -40,7 +41,7 @@ public class UserInfoController extends SSOController {
 	}
 	
 	/**
-	 * 
+	 * A08 保存宝宝信息
 	 * @param childInfoJson
 	 * @return
 	 * @throws Exception
@@ -69,4 +70,39 @@ public class UserInfoController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	/**
+	 * 用户信息修改
+	 * @param mobile
+	 * @param vcode
+	 * @param pwd
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/updateUserInfo")
+	public String updateUserInfo(String userInfoJsonStr) throws Exception {
+		ReturnModel rq = new ReturnModel(); 
+		LoginSuccessResult user=super.getLoginUser();
+		if(user==null||user.getUserId()==null||user.getUserId()<=0){
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期，请重新登录");
+			return JsonUtil.objectToJsonStr(rq); 
+		}
+		if(ObjectUtil.isEmpty(userInfoJsonStr)){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("参数不能为空！");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		UUserInfoParam param= (UUserInfoParam)JsonUtil.jsonStrToObject(userInfoJsonStr, UUserInfoParam.class);
+		if(param!=null){
+			rq=userMgtService.editUUsers(user.getUserId(), param);
+			user.setTicket(super.getTicket()); 
+			loginService.updateLoginSuccessResult(user);
+		}else {
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("参数格式不正确！");
+		}
+		return JsonUtil.objectToJsonStr(rq); 
+	}
+	
 }

@@ -3,8 +3,8 @@ package com.bbyiya.service.impl;
 import java.util.Date;
 import java.util.UUID;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+//import org.apache.commons.logging.Log;
+//import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -180,28 +180,7 @@ public class UserLoginService implements IUserLoginService {
 	 */
 	public LoginSuccessResult loginSuccess(UUsers user) {
 		if (user != null) {
-			LoginSuccessResult result = new LoginSuccessResult();
-			result.setUserId(user.getUserid());
-			result.setIdentity(user.getIdentity());
-			result.setMobilePhone(user.getMobilephone());
-			result.setNickName(user.getNickname());
-			result.setHeadImg(user.getUserimg());
-			result.setStatus(user.getStatus());
-			// 完成注册// =》设置baby信息
-			if (user.getStatus().intValue() == Integer.parseInt(UserStatusEnum.ok.toString())) {
-				UChildreninfo childModel = childMapper.selectByPrimaryKey(user.getUserid());
-				if (childModel != null) {
-					// 获取宝宝信息
-					UChildInfo child = new UChildInfo();
-					if (childModel.getBirthday() != null) {
-						child.setBirthdayStr(DateUtil.getTimeStr(childModel.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
-						child.setBirthday(childModel.getBirthday());
-					}
-					child.setNickName(childModel.getNickname());
-					result.setBabyInfo(child);
-					result.setHaveBabyInfo(1);// 已经填写宝宝信息
-				}
-			}
+			LoginSuccessResult result = getLoginSuccessResult_Common(user);
 			String s = UUID.randomUUID().toString();
 			String ticket = "YY" + s;
 			RedisUtil.setObject(ticket, result, 604800);// 缓存一周
@@ -209,6 +188,37 @@ public class UserLoginService implements IUserLoginService {
 			return result;
 		}
 		return null;
+	}
+
+	
+	private LoginSuccessResult getLoginSuccessResult_Common(UUsers user) {
+		LoginSuccessResult result = new LoginSuccessResult();
+		result.setUserId(user.getUserid());
+		result.setIdentity(user.getIdentity());
+		result.setMobilePhone(user.getMobilephone());
+		result.setNickName(user.getNickname());
+		result.setHeadImg(user.getUserimg());
+		result.setStatus(user.getStatus());
+		result.setSign(user.getSign());
+		if (!ObjectUtil.isEmpty(user.getBirthday())) {
+			result.setBirthday(DateUtil.getTimeStr(user.getBirthday(), "yyyy-MM-dd"));
+		}
+		// 完成注册// =》设置baby信息
+		if (user.getStatus().intValue() == Integer.parseInt(UserStatusEnum.ok.toString())) {
+			UChildreninfo childModel = childMapper.selectByPrimaryKey(user.getUserid());
+			if (childModel != null) {
+				// 获取宝宝信息
+				UChildInfo child = new UChildInfo();
+				if (childModel.getBirthday() != null) {
+					child.setBirthdayStr(DateUtil.getTimeStr(childModel.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
+					child.setBirthday(childModel.getBirthday());
+				}
+				child.setNickName(childModel.getNickname());
+				result.setBabyInfo(child);
+				result.setHaveBabyInfo(1);// 已经填写宝宝信息
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -220,28 +230,7 @@ public class UserLoginService implements IUserLoginService {
 	 */
 	public LoginSuccessResult loginSuccess(UUsers user, String ticket_Old) {
 		if (user != null) {
-			LoginSuccessResult result = new LoginSuccessResult();
-			result.setUserId(user.getUserid());
-			result.setIdentity(user.getIdentity());
-			result.setMobilePhone(user.getMobilephone());
-			result.setNickName(user.getNickname());
-			result.setHeadImg(user.getUserimg());
-			result.setStatus(user.getStatus());
-			// 完成注册// =》设置baby信息
-			if (user.getStatus().intValue() == Integer.parseInt(UserStatusEnum.ok.toString())) {
-				UChildreninfo childModel = childMapper.selectByPrimaryKey(user.getUserid());
-				if (childModel != null) {
-					// 获取宝宝信息
-					UChildInfo child = new UChildInfo();
-					if (childModel.getBirthday() != null) {
-						child.setBirthdayStr(DateUtil.getTimeStr(childModel.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
-						child.setBirthday(childModel.getBirthday());
-					}
-					child.setNickName(childModel.getNickname());
-					result.setBabyInfo(child);
-					result.setHaveBabyInfo(1);// 已经填写宝宝信息
-				}
-			}
+			LoginSuccessResult result = getLoginSuccessResult_Common(user);
 			if (!ObjectUtil.isEmpty(ticket_Old)) {
 				LoginSuccessResult old_loginUser = (LoginSuccessResult) RedisUtil.getObject(ticket_Old);
 				if (old_loginUser != null) {
@@ -285,9 +274,6 @@ public class UserLoginService implements IUserLoginService {
 		model.setPassword(MD5Encrypt.encrypt(param.getPassword()));
 		model.setCreatetime(new Date());
 		model.setStatus(Integer.parseInt(UserStatusEnum.ok.toString()));// 注册完成
-		if (!ObjectUtil.isEmpty(param.getUsername())) {
-			model.setUsername(param.getUsername());
-		}
 		if (!ObjectUtil.isEmpty(param.getMobilephone())) {
 			model.setMobilephone(param.getMobilephone());
 			model.setMobilebind(1);

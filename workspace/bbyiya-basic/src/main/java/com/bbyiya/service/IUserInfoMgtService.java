@@ -2,6 +2,7 @@ package com.bbyiya.service;
 
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.UChildInfoParam;
+import com.bbyiya.vo.user.UUserInfoParam;
 
 /**
  * 用户信息处理类
@@ -28,4 +29,11 @@ public interface IUserInfoMgtService {
 	 * @throws Exception
 	 */
 	ReturnModel addOrEdit_UChildreninfo(Long userId, UChildInfoParam param);
+	
+	/**
+	 * 修改用户资料
+	 * @param userId
+	 * @param param
+	 */
+	ReturnModel editUUsers(Long userId,UUserInfoParam param);
 }

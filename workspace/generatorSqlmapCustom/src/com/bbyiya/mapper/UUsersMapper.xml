@@ -13,7 +13,7 @@
     <result column="Email" property="email" jdbcType="VARCHAR" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="Sign" property="sign" jdbcType="VARCHAR" />
-     <result column="Birthday" property="birthday" jdbcType="DATE" />
+    <result column="Birthday" property="birthday" jdbcType="DATE" />
   </resultMap>
   <sql id="Base_Column_List" >
     UserID, PassWord, MobilePhone, MobileBind, Status, Identity, UserImg, NickName, Email, 
@@ -25,25 +25,11 @@
     from u_users
     where UserID = #{userid,jdbcType=BIGINT}
   </select>
-  <select id="getUUsersByUserID" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from u_users
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from u_users
     where UserID = #{userid,jdbcType=BIGINT}
-  </select>
-   <select id="getUUsersByUserName" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
-    <include refid="Base_Column_List" />
-    from u_users
-    where UserName = #{userid,jdbcType=VARCHAR}
-  </select>
-  <select id="getUUsersByPhone" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
-    <include refid="Base_Column_List" />
-    from u_users
-    where MobilePhone = #{phone,jdbcType=VARCHAR}
-  </select>
-   <insert id="insert" parameterType="com.bbyiya.model.UUsers" >
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.UUsers" >
     insert into u_users (UserID, PassWord, MobilePhone, 
       MobileBind, Status, Identity, 
       UserImg, NickName, Email, 

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.MYiyabannerMapper">
+	<resultMap id="BaseResultMap" type="com.bbyiya.model.MYiyabanner">
+		<id column="Id" property="id" jdbcType="INTEGER" />
+		<result column="Title" property="title" jdbcType="VARCHAR" />
+		<result column="ImageUrl" property="imageurl" jdbcType="VARCHAR" />
+		<result column="WapUrl" property="wapurl" jdbcType="VARCHAR" />
+		<result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+		<result column="IsOn" property="ison" jdbcType="INTEGER" />
+		<result column="StartTime" property="starttime" jdbcType="TIMESTAMP" />
+		<result column="EndTime" property="endtime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		Id, Title, ImageUrl, WapUrl, CreateTime, IsOn, StartTime, EndTime
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from M_YiyaBanner
+		where Id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from M_YiyaBanner
+		where Id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.bbyiya.model.MYiyabanner">
+		insert into M_YiyaBanner (Id, Title, ImageUrl,
+		WapUrl, CreateTime, IsOn,
+		StartTime, EndTime)
+		values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR},
+		#{imageurl,jdbcType=VARCHAR},
+		#{wapurl,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{ison,jdbcType=INTEGER},
+		#{starttime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="com.bbyiya.model.MYiyabanner">
+		insert into M_YiyaBanner
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				Id,
+			</if>
+			<if test="title != null">
+				Title,
+			</if>
+			<if test="imageurl != null">
+				ImageUrl,
+			</if>
+			<if test="wapurl != null">
+				WapUrl,
+			</if>
+			<if test="createtime != null">
+				CreateTime,
+			</if>
+			<if test="ison != null">
+				IsOn,
+			</if>
+			<if test="starttime != null">
+				StartTime,
+			</if>
+			<if test="endtime != null">
+				EndTime,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="title != null">
+				#{title,jdbcType=VARCHAR},
+			</if>
+			<if test="imageurl != null">
+				#{imageurl,jdbcType=VARCHAR},
+			</if>
+			<if test="wapurl != null">
+				#{wapurl,jdbcType=VARCHAR},
+			</if>
+			<if test="createtime != null">
+				#{createtime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="ison != null">
+				#{ison,jdbcType=INTEGER},
+			</if>
+			<if test="starttime != null">
+				#{starttime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="endtime != null">
+				#{endtime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.MYiyabanner">
+		update M_YiyaBanner
+		<set>
+			<if test="title != null">
+				Title = #{title,jdbcType=VARCHAR},
+			</if>
+			<if test="imageurl != null">
+				ImageUrl = #{imageurl,jdbcType=VARCHAR},
+			</if>
+			<if test="wapurl != null">
+				WapUrl = #{wapurl,jdbcType=VARCHAR},
+			</if>
+			<if test="createtime != null">
+				CreateTime = #{createtime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="ison != null">
+				IsOn = #{ison,jdbcType=INTEGER},
+			</if>
+			<if test="starttime != null">
+				StartTime = #{starttime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="endtime != null">
+				EndTime = #{endtime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where Id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.bbyiya.model.MYiyabanner">
+		update M_YiyaBanner
+		set Title = #{title,jdbcType=VARCHAR},
+		ImageUrl = #{imageurl,jdbcType=VARCHAR},
+		WapUrl = #{wapurl,jdbcType=VARCHAR},
+		CreateTime = #{createtime,jdbcType=TIMESTAMP},
+		IsOn = #{ison,jdbcType=INTEGER},
+		StartTime = #{starttime,jdbcType=TIMESTAMP},
+		EndTime = #{endtime,jdbcType=TIMESTAMP}
+		where Id = #{id,jdbcType=INTEGER}
+	</update>
+</mapper>

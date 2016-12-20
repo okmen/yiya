@@ -11,15 +11,15 @@
 	<qiniu_SECRET_KEY value="re1EvlR0FwlSv9YEYlJsHw_WRIcshxhbxilGvmRN"/>
 	<qiniu_imagedomain value="http://obbepyhga.bkt.clouddn.com/"/><!-- 图片域名 -->
 	<muscis><!-- 每日推荐 -->
-		<music reId="1" musicId="1" name="" author="" linkUrl="http://obbepyhga.bkt.clouddn.com/201612/1837016cf3b68fc21e44118aee0e22fcb6aca77.mp3"/>
-		<music reId="2" musicId="2" name="" author="" linkUrl="http://obbepyhga.bkt.clouddn.com/201612/1837016cf3b68fc21e44118aee0e22fcb6aca77.mp3"/>
-		<music reId="3" musicId="3" name="" author="" linkUrl="http://obbepyhga.bkt.clouddn.com/201612/1837016cf3b68fc21e44118aee0e22fcb6aca77.mp3"/>
-		<music reId="4" musicId="4" name="" author="" linkUrl="http://obbepyhga.bkt.clouddn.com/201612/1837016cf3b68fc21e44118aee0e22fcb6aca77.mp3"/>
+		<music reId="1" musicId="1" name="老男孩" author="筷子兄弟" linkUrl="http://obbepyhga.bkt.clouddn.com/201612/1837016cf3b68fc21e44118aee0e22fcb6aca77.mp3"/>
+		<music reId="2" musicId="2" name="秋日私语" author="dsdjkls" linkUrl="http://obbepyhga.bkt.clouddn.com/201612/1837016cf3b68fc21e44118aee0e22fcb6aca77.mp3"/>
+		<music reId="3" musicId="3" name="两只老虎" author="2dad" linkUrl="http://obbepyhga.bkt.clouddn.com/201612/1837016cf3b68fc21e44118aee0e22fcb6aca77.mp3"/>
+		<music reId="4" musicId="4" name="诡诞" author="ss" linkUrl="http://obbepyhga.bkt.clouddn.com/201612/1837016cf3b68fc21e44118aee0e22fcb6aca77.mp3"/>
 	</muscis>
 	<yiyaspeaks><!-- 咿呀说 -->
-		<item id="1" title="测试001" imageUrl="http://www.baidu.com"/>
-		<item id="2" title="测试001" imageUrl="http://www.baidu.com"/>
-		<item id="3" title="测试001" imageUrl="http://www.baidu.com"/>
+		<item id="1" title="测试001" imageUrl="http://www.baidu.com" wapUrl="http://www.baidu.com" />
+		<item id="2" title="测试001" imageUrl="http://www.baidu.com" wapUrl="http://www.baidu.com" />
+		<item id="3" title="测试001" imageUrl="http://www.baidu.com" wapUrl="http://www.baidu.com" />
 	</yiyaspeaks>
 	<reads><!-- 每日读物 -->
 		<item id="1"  title="爸爸的鼾声" summary="【作者】 Raimond Lap 【时期】 1912~1974" content="就像是山上的小火车，。。。"/>

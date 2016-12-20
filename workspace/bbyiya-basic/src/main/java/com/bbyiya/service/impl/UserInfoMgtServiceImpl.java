@@ -106,7 +106,7 @@ public class UserInfoMgtServiceImpl implements IUserInfoMgtService {
 			if (!ObjectUtil.isEmpty(param.getBirthday())) {
 				childModel.setBirthday(DateUtil.getDateByString("yyyy-mm-dd HH:mm:ss", param.getBirthday()));
 			} else if (!havaBaby && ObjectUtil.isEmpty(param.getBirthday())) {
-				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatu(ReturnStatus.ParamError_1);
 				rq.setStatusreson("宝宝生日信息不能为空");
 				return rq;
 			}
@@ -145,7 +145,7 @@ public class UserInfoMgtServiceImpl implements IUserInfoMgtService {
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("修改成功！");
 		} else {
-			rq.setStatu(ReturnStatus.SystemError);
+			rq.setStatu(ReturnStatus.SystemError_1);
 			rq.setStatusreson("用户不存在！");
 		}
 		return rq;

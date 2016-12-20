@@ -95,8 +95,8 @@ public class UserInfoController extends SSOController {
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		if (ObjectUtil.isEmpty(userInfoJsonStr)) {
-			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("参数不能为空！");
+			rq.setStatu(ReturnStatus.ParamError_1);
+			rq.setStatusreson("参数不全/参数为空！");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		UUserInfoParam param = (UUserInfoParam) JsonUtil.jsonStrToObject(userInfoJsonStr, UUserInfoParam.class);

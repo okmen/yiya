@@ -2,6 +2,7 @@ package com.bbyiya.api.web;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.model.SMusicrecommend;
 import com.bbyiya.service.IBigCaseService;
 import com.bbyiya.service.IMusicStoreService;
 import com.bbyiya.service.impl.BigCaseServiceImpl;
@@ -56,8 +58,8 @@ public class MainPageController extends SSOController {
 		if (user != null) {
 			Map<String, Object> mapResult=new HashMap<String, Object>();
 			//每日推荐音乐
-//			List<SMusicrecommend> musiclist=musicService.find_SMusicrecommend(user.getUserId());
-			mapResult.put("dailyMusics", ConfigUtil.getMaplist("muscis"));
+			List<SMusicrecommend> musiclist=musicService.find_SMusicrecommend(user);
+			mapResult.put("dailyMusics",musiclist); // ConfigUtil.getMaplist("muscis")
 			//咿呀说
 			mapResult.put("yiyatalks", ConfigUtil.getMaplist("yiyaspeaks")) ;
 			//每日读物

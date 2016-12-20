@@ -37,7 +37,7 @@ public class MusicStoreServiceImpl implements IMusicStoreService {
 		List<SMusicrecommend> list = null;
 		if (user != null && user.getBabyInfo() != null) {
 			try {
-				//获取宝宝当前第几天
+				// 获取宝宝当前第几天
 				int days = DateUtil.daysBetween(user.getBabyInfo().getBirthday(), new Date());
 				list = sMusicrecommendMapper.findSMusicrecommendByDay(days);
 				if (list != null && list.size() > 0) {
@@ -49,26 +49,27 @@ public class MusicStoreServiceImpl implements IMusicStoreService {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}else {
+		} else {
 			return findDayMusicDefault();
 		}
 		return list;
 	}
-	
+
 	/**
 	 * 获取每日音乐推荐 默认列表
+	 * 
 	 * @return
 	 */
-	public List<SMusicrecommend> findDayMusicDefault(){
+	public List<SMusicrecommend> findDayMusicDefault() {
 		List<SMusicrecommend> list = new ArrayList<SMusicrecommend>();
 		List<Map<String, String>> maplist = ConfigUtil.getMaplist("muscis");
 		if (maplist != null && maplist.size() > 0) {
 			for (Map<String, String> map : maplist) {
 				SMusicrecommend mo = new SMusicrecommend();
-				mo.setMusicid(ObjectUtil.parseInt(map.get("MusicId")));
-				mo.setLinkurl(map.get("LinkUrl"));
-				mo.setName(map.get("Name"));
-				mo.setAuthor(map.get("Author"));
+				mo.setMusicid(ObjectUtil.parseInt(map.get("musicId")));
+				mo.setLinkurl(map.get("linkUrl"));
+				mo.setName(map.get("name"));
+				mo.setAuthor(map.get("author"));
 				list.add(mo);
 			}
 		}

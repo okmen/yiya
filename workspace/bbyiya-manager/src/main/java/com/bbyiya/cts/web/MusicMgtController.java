@@ -2,6 +2,7 @@ package com.bbyiya.cts.web;
 
 import javax.annotation.Resource;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,12 +21,14 @@ import com.bbyiya.vo.ReturnModel;
  * @author Administrator
  *
  */
+@Controller
+@RequestMapping(value = "/music")
 public class MusicMgtController extends CtsSSOController {
 	@Resource(name = "ctsMusicService")
 	private ICtsMusicService musicService;
 
 	/**
-	 * ¿÷ø‚ÃÌº”°¢–ﬁ∏ƒ “Ù¿÷
+	 * Music 01 ¿÷ø‚-–¬‘ˆ/–ﬁ∏ƒ“Ù¿÷
 	 * 
 	 * @param model
 	 * @param musicJson
@@ -33,7 +36,7 @@ public class MusicMgtController extends CtsSSOController {
 	 * @throws Exception
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/musicAdd")
+	@RequestMapping(value = "/addOrEdit_music")
 	public String musicAdd(Model model, String musicJson) throws Exception {
 		ReturnModel rqModel = new ReturnModel();
 		AdminLoginSuccessResult user = this.getLoginUser();

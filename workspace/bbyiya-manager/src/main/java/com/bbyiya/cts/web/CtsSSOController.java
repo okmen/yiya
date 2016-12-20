@@ -15,7 +15,7 @@ public class CtsSSOController {
 	@Autowired
 	HttpServletRequest request;
 	/**
-	 * cookie缓存名
+	 * 管理员登录 cookie缓存名
 	 */
 	protected static String token="token_user";
 	 /**

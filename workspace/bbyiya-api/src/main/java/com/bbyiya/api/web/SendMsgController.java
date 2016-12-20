@@ -40,14 +40,14 @@ public class SendMsgController {
 			if(codeType==(Integer.parseInt(SendMsgEnums.register.toString()))){
 				UUsers user= userDao.getUUsersByPhone(phone);
 				if(user!=null){
-					rq.setStatu(ReturnStatus.SystemError);
+					rq.setStatu(ReturnStatus.VcodeError_3);
 					rq.setStatusreson("手机号已经注册！");
 					return JsonUtil.objectToJsonStr(rq); 
 				}
 			}else if (codeType==(Integer.parseInt(SendMsgEnums.backPwd.toString()))) {
 				UUsers user= userDao.getUUsersByPhone(phone);
 				if(user==null){
-					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatu(ReturnStatus.VcodeError_4);
 					rq.setStatusreson("手机号未注册！");
 					return JsonUtil.objectToJsonStr(rq); 
 				}

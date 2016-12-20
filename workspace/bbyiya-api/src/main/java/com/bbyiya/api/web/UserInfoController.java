@@ -76,7 +76,7 @@ public class UserInfoController extends SSOController {
 	}
 
 	/**
-	 * 用户信息修改
+	 * A10 修改用户信息
 	 * 
 	 * @param mobile
 	 * @param vcode

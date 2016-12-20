@@ -16,6 +16,7 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.SMusicrecommend;
 import com.bbyiya.service.IBigCaseService;
 import com.bbyiya.service.IMusicStoreService;
+import com.bbyiya.service.IYiyaTalkService;
 import com.bbyiya.service.impl.BigCaseServiceImpl;
 import com.bbyiya.service.impl.BigCaseServiceImpl.BigCaseTime;
 import com.bbyiya.utils.ConfigUtil;
@@ -23,6 +24,7 @@ import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.bigcase.BigcaseResult;
+import com.bbyiya.vo.talks.YiyaTalkBannerModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
 import com.github.pagehelper.PageInfo;
@@ -45,6 +47,8 @@ public class MainPageController extends SSOController {
 	@Resource(name = "bigCaseService")
 	private IBigCaseService bigcaseService;
 	
+	@Resource(name = "yiyaTalkService")
+	private IYiyaTalkService talkService;
 	/**
 	 * M01主页
 	 * @return  a咿呀说，b今日音乐
@@ -59,9 +63,14 @@ public class MainPageController extends SSOController {
 			Map<String, Object> mapResult=new HashMap<String, Object>();
 			//每日推荐音乐
 			List<SMusicrecommend> musiclist=musicService.find_SMusicrecommend(user);
-			mapResult.put("dailyMusics",musiclist); // ConfigUtil.getMaplist("muscis")
+			mapResult.put("dailyMusics",musiclist); // 静态文件 ConfigUtil.getMaplist("muscis")
 			//咿呀说
-			mapResult.put("yiyatalks", ConfigUtil.getMaplist("yiyaspeaks")) ;
+			List<YiyaTalkBannerModel> talks=talkService.find_talkBanners();
+			if(talks!=null&&talks.size()>0){
+				mapResult.put("yiyatalks", talks) ;
+			}else { 
+				mapResult.put("yiyatalks", ConfigUtil.getMaplist("yiyaspeaks")) ;
+			}
 			//每日读物
 			mapResult.put("dailyReads", ConfigUtil.getMaplist("reads")) ;
 			rq.setStatu(ReturnStatus.Success);

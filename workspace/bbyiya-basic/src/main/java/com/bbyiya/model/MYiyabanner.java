@@ -13,11 +13,13 @@ public class MYiyabanner {
 
     private Date createtime;
 
-    private Integer ison;
-
     private Date starttime;
 
     private Date endtime;
+
+    private Integer ison;
+
+    private Integer sort;
 
     public Integer getId() {
         return id;
@@ -59,14 +61,6 @@ public class MYiyabanner {
         this.createtime = createtime;
     }
 
-    public Integer getIson() {
-        return ison;
-    }
-
-    public void setIson(Integer ison) {
-        this.ison = ison;
-    }
-
     public Date getStarttime() {
         return starttime;
     }
@@ -81,5 +75,21 @@ public class MYiyabanner {
 
     public void setEndtime(Date endtime) {
         this.endtime = endtime;
+    }
+
+    public Integer getIson() {
+        return ison;
+    }
+
+    public void setIson(Integer ison) {
+        this.ison = ison;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 }

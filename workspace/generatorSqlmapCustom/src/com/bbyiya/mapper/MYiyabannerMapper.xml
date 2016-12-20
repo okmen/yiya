@@ -7,12 +7,13 @@
     <result column="ImageUrl" property="imageurl" jdbcType="VARCHAR" />
     <result column="WapUrl" property="wapurl" jdbcType="VARCHAR" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
-    <result column="IsOn" property="ison" jdbcType="INTEGER" />
     <result column="StartTime" property="starttime" jdbcType="TIMESTAMP" />
     <result column="EndTime" property="endtime" jdbcType="TIMESTAMP" />
+    <result column="IsOn" property="ison" jdbcType="INTEGER" />
+    <result column="Sort" property="sort" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    Id, Title, ImageUrl, WapUrl, CreateTime, IsOn, StartTime, EndTime
+    Id, Title, ImageUrl, WapUrl, CreateTime, StartTime, EndTime, IsOn, Sort
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -26,11 +27,13 @@
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.MYiyabanner" >
     insert into M_YiyaBanner (Id, Title, ImageUrl, 
-      WapUrl, CreateTime, IsOn, 
-      StartTime, EndTime)
+      WapUrl, CreateTime, StartTime, 
+      EndTime, IsOn, Sort
+      )
     values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{imageurl,jdbcType=VARCHAR}, 
-      #{wapurl,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{ison,jdbcType=INTEGER}, 
-      #{starttime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP})
+      #{wapurl,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{starttime,jdbcType=TIMESTAMP}, 
+      #{endtime,jdbcType=TIMESTAMP}, #{ison,jdbcType=INTEGER}, #{sort,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.MYiyabanner" >
     insert into M_YiyaBanner
@@ -50,14 +53,17 @@
       <if test="createtime != null" >
         CreateTime,
       </if>
-      <if test="ison != null" >
-        IsOn,
-      </if>
       <if test="starttime != null" >
         StartTime,
       </if>
       <if test="endtime != null" >
         EndTime,
+      </if>
+      <if test="ison != null" >
+        IsOn,
+      </if>
+      <if test="sort != null" >
+        Sort,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -76,14 +82,17 @@
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
       </if>
-      <if test="ison != null" >
-        #{ison,jdbcType=INTEGER},
-      </if>
       <if test="starttime != null" >
         #{starttime,jdbcType=TIMESTAMP},
       </if>
       <if test="endtime != null" >
         #{endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ison != null" >
+        #{ison,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -102,14 +111,17 @@
       <if test="createtime != null" >
         CreateTime = #{createtime,jdbcType=TIMESTAMP},
       </if>
-      <if test="ison != null" >
-        IsOn = #{ison,jdbcType=INTEGER},
-      </if>
       <if test="starttime != null" >
         StartTime = #{starttime,jdbcType=TIMESTAMP},
       </if>
       <if test="endtime != null" >
         EndTime = #{endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ison != null" >
+        IsOn = #{ison,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null" >
+        Sort = #{sort,jdbcType=INTEGER},
       </if>
     </set>
     where Id = #{id,jdbcType=INTEGER}
@@ -120,9 +132,10 @@
       ImageUrl = #{imageurl,jdbcType=VARCHAR},
       WapUrl = #{wapurl,jdbcType=VARCHAR},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
-      IsOn = #{ison,jdbcType=INTEGER},
       StartTime = #{starttime,jdbcType=TIMESTAMP},
-      EndTime = #{endtime,jdbcType=TIMESTAMP}
+      EndTime = #{endtime,jdbcType=TIMESTAMP},
+      IsOn = #{ison,jdbcType=INTEGER},
+      Sort = #{sort,jdbcType=INTEGER}
     where Id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

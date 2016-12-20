@@ -44,6 +44,13 @@ public class SendMsgController {
 					rq.setStatusreson("手机号已经注册！");
 					return JsonUtil.objectToJsonStr(rq); 
 				}
+			}else if (codeType==(Integer.parseInt(SendMsgEnums.backPwd.toString()))) {
+				UUsers user= userDao.getUUsersByPhone(phone);
+				if(user==null){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("手机号未注册！");
+					return JsonUtil.objectToJsonStr(rq); 
+				}
 			}
 		}
 		String result= SendSMSByMobile.sendSmsReturnJson(codeType, phone);

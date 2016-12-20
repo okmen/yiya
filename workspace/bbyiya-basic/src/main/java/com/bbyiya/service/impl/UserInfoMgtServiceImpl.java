@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.common.enums.MsgStatusEnums;
 import com.bbyiya.common.enums.SendMsgEnums;
 import com.bbyiya.common.vo.ResultMsg;
 import com.bbyiya.dao.UChildreninfoMapper;
@@ -56,8 +57,13 @@ public class UserInfoMgtServiceImpl implements IUserInfoMgtService {
 		// ----------------------------------
 		// 手机验证码验证
 		ResultMsg vResult = SendSMSByMobile.validateCode(mobile, vcode, SendMsgEnums.backPwd);
-		if (vResult.getStatus() != 1) {
-			rq.setStatu(ReturnStatus.VcodeError_1);
+		if (vResult.getStatus() != Integer.parseInt(MsgStatusEnums.ok.toString())) {
+			//验证码失效
+			if(vResult.getStatus()==Integer.parseInt(MsgStatusEnums.invalid.toString())){
+				rq.setStatu(ReturnStatus.VcodeError_1);
+			}else {
+				rq.setStatu(ReturnStatus.VcodeError_2);
+			}
 			rq.setStatusreson(vResult.getMsg());
 			return rq;
 		}

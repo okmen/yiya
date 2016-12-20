@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.enums.ReturnStatus;
-import com.bbyiya.model.MBigcase;
-import com.bbyiya.model.SMusicrecommend;
 import com.bbyiya.service.IBigCaseService;
 import com.bbyiya.service.IMusicStoreService;
 import com.bbyiya.service.impl.BigCaseServiceImpl;
@@ -27,6 +25,11 @@ import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
 import com.github.pagehelper.PageInfo;
 
+/**
+ * appÖ÷Ò³ÐÅÏ¢
+ * @author Administrator
+ *
+ */
 @Controller
 @RequestMapping(value = "/index")
 public class MainPageController extends SSOController {

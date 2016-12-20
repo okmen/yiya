@@ -56,23 +56,20 @@ public class RedisUtil {
 	 */
 	private static void initialPool() {
 
-			JedisPoolConfig config = new JedisPoolConfig();
-			config.setMaxActive(MAX_ACTIVE);
-			config.setMaxIdle(MAX_IDLE);
-			config.setMaxWait(MAX_WAIT);
-			config.setTestOnBorrow(TEST_ON_BORROW);
-			config.setTestOnReturn(TEST_ON_RETURN);
-			try{
-				jedisPool = new JedisPool(config, ADDR_ARRAY, PORT, TIMEOUT);
-				Jedis js=jedisPool.getResource();
-				jedisPool.returnResource(js);
-			}
-			catch(Exception ex)
-			{
-				jedisPool = new JedisPool(config, ADDR_ARRAY, PORT, TIMEOUT, AUTH);
-			}
-		
-		
+		JedisPoolConfig config = new JedisPoolConfig();
+		config.setMaxActive(MAX_ACTIVE);
+		config.setMaxIdle(MAX_IDLE);
+		config.setMaxWait(MAX_WAIT);
+		config.setTestOnBorrow(TEST_ON_BORROW);
+		config.setTestOnReturn(TEST_ON_RETURN);
+		try {
+			jedisPool = new JedisPool(config, ADDR_ARRAY, PORT, TIMEOUT);
+			Jedis js = jedisPool.getResource();
+			jedisPool.returnResource(js);
+		} catch (Exception ex) {
+			jedisPool = new JedisPool(config, ADDR_ARRAY, PORT, TIMEOUT, AUTH);
+		}
+
 	}
 
 	/**
@@ -127,7 +124,6 @@ public class RedisUtil {
 		try {
 			jedis.set(key, value);
 		} catch (Exception e) {
-//			logger.error("setString(key,value) error : " + e);
 		} finally {
 			if (jedis != null)
 				returnResource(jedis);
@@ -150,7 +146,7 @@ public class RedisUtil {
 		try {
 			jedis.setex(key, seconds, value);
 		} catch (Exception e) {
-//			logger.error("setString(key,seconds,value) error : " + e);
+			// logger.error("setString(key,seconds,value) error : " + e);
 		} finally {
 			if (jedis != null)
 				returnResource(jedis);
@@ -172,7 +168,7 @@ public class RedisUtil {
 			String value = jedis.get(key);
 			return value;
 		} catch (Exception e) {
-//			logger.error("getString(key) error : " + e);
+			// logger.error("getString(key) error : " + e);
 			return null;
 		} finally {
 			if (jedis != null)
@@ -185,7 +181,7 @@ public class RedisUtil {
 		try {
 			jedis.set(key, value);
 		} catch (Exception e) {
-//			logger.error("setByte(byte,value) error : " + e);
+			// logger.error("setByte(byte,value) error : " + e);
 		} finally {
 			if (jedis != null)
 				returnResource(jedis);
@@ -197,7 +193,7 @@ public class RedisUtil {
 		try {
 			jedis.setex(key, seconds, value);
 		} catch (Exception e) {
-//			logger.error("setByte(byte,value,seconds) error : " + e);
+			// logger.error("setByte(byte,value,seconds) error : " + e);
 		} finally {
 			if (jedis != null)
 				returnResource(jedis);
@@ -210,7 +206,7 @@ public class RedisUtil {
 			byte[] value = jedis.get(key);
 			return value;
 		} catch (Exception e) {
-//			logger.error("getByte(key) error : " + e);
+			// logger.error("getByte(key) error : " + e);
 			return null;
 		} finally {
 			if (jedis != null)
@@ -219,13 +215,14 @@ public class RedisUtil {
 	}
 
 	public static void setObject(String key, Object value) {
-		if(value==null)
+		if (value == null)
 			return;
 		Jedis jedis = getJedis();
 		try {
 			jedis.set(key.getBytes(), SerializeUtil.serialize(value));
+			
 		} catch (Exception e) {
-//			logger.error("setObject(byte,value) error : " + e);
+			// logger.error("setObject(byte,value) error : " + e);
 		} finally {
 			if (jedis != null)
 				returnResource(jedis);
@@ -233,13 +230,13 @@ public class RedisUtil {
 	}
 
 	public static void setObject(String key, Object value, int seconds) {
-		if(value==null)
+		if (value == null)
 			return;
 		Jedis jedis = getJedis();
 		try {
 			jedis.setex(key.getBytes(), seconds, SerializeUtil.serialize(value));
 		} catch (Exception e) {
-//			logger.error("setObject(byte,value,seconds) error : " + e);
+			// logger.error("setObject(byte,value,seconds) error : " + e);
 		} finally {
 			if (jedis != null)
 				returnResource(jedis);
@@ -264,7 +261,7 @@ public class RedisUtil {
 		try {
 			return jedis.del(key);
 		} catch (Exception e) {
-//			logger.error("delString(key) error : " + e);
+			// logger.error("delString(key) error : " + e);
 			return null;
 		} finally {
 			if (jedis != null)
@@ -277,7 +274,7 @@ public class RedisUtil {
 		try {
 			return jedis.del(key);
 		} catch (Exception e) {
-//			logger.error("delString(key) error : " + e);
+			// logger.error("delString(key) error : " + e);
 			return null;
 		} finally {
 			if (jedis != null)
@@ -298,7 +295,7 @@ public class RedisUtil {
 			if (obj != null)
 				jedis.expire(key.getBytes(), secondes);
 		} catch (Exception e) {
-//			logger.error("setExpire(key) error : " + e);
+			// logger.error("setExpire(key) error : " + e);
 		}
 		// 释放连接
 		finally {
@@ -313,7 +310,7 @@ public class RedisUtil {
 			if (key != null)
 				jedis.expire(key, secondes);
 		} catch (Exception e) {
-//			logger.error("setExpire(key) error : " + e);
+			// logger.error("setExpire(key) error : " + e);
 		}
 		// 释放连接
 		finally {

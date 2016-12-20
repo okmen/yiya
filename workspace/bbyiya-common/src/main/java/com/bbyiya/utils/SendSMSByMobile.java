@@ -5,6 +5,7 @@ import java.util.Map;
 
 import net.sf.json.JSONObject;
 
+import com.bbyiya.common.enums.MsgStatusEnums;
 import com.bbyiya.common.enums.SendMsgEnums;
 import com.bbyiya.common.vo.ResultMsg;
 /**
@@ -108,14 +109,8 @@ public class SendSMSByMobile {
 		if (type>=0) {
 			String verifyCode = String.valueOf(Math.random()).substring(2, 6);
 			String key=moblie+"-"+type;
-			RedisUtil.setObject(key, verifyCode,120); 
-			String content="";
-//			if(type==Integer.parseInt(SendMsgEnums.register.toString())){
-//				content= "【咿呀科技】您的注册验证码是"+verifyCode ;
-//			}else if (type==Integer.parseInt(SendMsgEnums.backPwd.toString())) {
-//				content= "【咿呀科技】您的验证码是"+verifyCode ;
-//			} 
-			content= "【咿呀科技】您的验证码是"+verifyCode ;
+			RedisUtil.setObject(key, verifyCode,300); 
+			String content="【咿呀科技】您的验证码是"+verifyCode ;
 			return sendSMS_yunpian(moblie, content);
 		}
 		return null;
@@ -131,7 +126,7 @@ public class SendSMSByMobile {
 		if (type.equals(SendMsgEnums.register)) {
 			String verifyCode = String.valueOf(Math.random()).substring(2, 6);
 			String key=moblie+"-"+Integer.parseInt(type.toString());
-			RedisUtil.setObject(key, verifyCode,120); 
+			RedisUtil.setObject(key, verifyCode,300); 
 			String resultString= sendSMS_yunpian(moblie, "【咿呀科技】您的验证码是"+verifyCode);
 			return JSONObject.fromObject(resultString);
 		}
@@ -148,20 +143,29 @@ public class SendSMSByMobile {
 	public static ResultMsg validateCode(String mobile,String vcode,SendMsgEnums type){
 		ResultMsg result=new ResultMsg();
 		String key = mobile + "-" + Integer.parseInt(type.toString());
-		Object obj = RedisUtil.getObject(key);
-		if (ObjectUtil.isEmpty(obj) || ObjectUtil.isEmpty(String.valueOf(obj))) {
-			result.setStatus(-1);
+		String vcode_old =String.valueOf( RedisUtil.getObject(key));
+		if (ObjectUtil.isEmpty(vcode_old)) {
+			result.setStatus(Integer.parseInt(MsgStatusEnums.invalid.toString()));
 			result.setMsg("验证码已失效");
 			return result;
 		}
-		String vcode2 = String.valueOf(obj);
-		if (!vcode.equals(vcode2)) {
-			RedisUtil.delete(key);
-			result.setStatus(-1);
+		if (!vcode.equals(vcode_old)) {
+			//验证码 5次错误将过期
+			String keyCount="keyConnt_"+key;
+			int count=ObjectUtil.parseInt(String.valueOf(RedisUtil.getObject(keyCount)));
+			count++;
+			if(count>=5){
+				RedisUtil.delete(key);
+				result.setStatus(Integer.parseInt(MsgStatusEnums.invalid.toString()));
+				result.setMsg("验证码已失效");
+				return result;
+			}
+			RedisUtil.setObject(keyCount, count, 3600); 
+			result.setStatus(Integer.parseInt(MsgStatusEnums.wrong.toString()));
 			result.setMsg("验证码有误");
 			return result;
 		}
-		result.setStatus(1); 
+		result.setStatus(Integer.parseInt(MsgStatusEnums.ok.toString()));
 		return result;
 	}
 }

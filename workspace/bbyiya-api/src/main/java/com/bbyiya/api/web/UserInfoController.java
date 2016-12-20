@@ -30,7 +30,7 @@ public class UserInfoController extends SSOController {
 	/**
 	 * A09 找回密码（重置密码）
 	 * 
-	 * @param mobile
+	 * @param phone
 	 * @param vcode
 	 * @param pwd
 	 * @return
@@ -38,8 +38,8 @@ public class UserInfoController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/updatePwd")
-	public String updatePwd(String mobile, String vcode, String pwd) throws Exception {
-		return JsonUtil.objectToJsonStr(userMgtService.updatePWD(mobile, vcode, pwd));
+	public String updatePwd(String phone, String vcode, String pwd) throws Exception {
+		return JsonUtil.objectToJsonStr(userMgtService.updatePWD(phone, vcode, pwd));
 	}
 
 	/**
@@ -67,8 +67,8 @@ public class UserInfoController extends SSOController {
 		// 宝宝信息参数model
 		UChildInfoParam child = (UChildInfoParam) JsonUtil.jsonStrToObject(childInfoJson, UChildInfoParam.class);
 		rq = userMgtService.addOrEdit_UChildreninfo(user.getUserId(), child);
-		if (rq.getStatu().equals(ReturnStatus.Success)) {// 成功 设置宝宝信息 =》
-															// 更新用户登陆信息
+		if (rq.getStatu().equals(ReturnStatus.Success)) {
+			// 成功 设置宝宝信息 =》更新用户登陆信息
 			rq.setBasemodle(loginService.updateLoginSuccessResult(user));
 			rq.setStatusreson("宝宝信息设置成功！");
 		}

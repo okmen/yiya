@@ -110,8 +110,7 @@ public class SendSMSByMobile {
 			String verifyCode = String.valueOf(Math.random()).substring(2, 6);
 			String key=moblie+"-"+type;
 			RedisUtil.setObject(key, verifyCode,300); 
-			String content="【咿呀科技】您的验证码是"+verifyCode ;
-			return sendSMS_yunpian(moblie, content);
+			return sendSMS_yunpian(moblie, "【咿呀科技】您的验证码是"+verifyCode);
 		}
 		return null;
 	}

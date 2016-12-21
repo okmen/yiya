@@ -9,34 +9,36 @@
 		<result column="Name" property="name" jdbcType="VARCHAR" />
 		<result column="Author" property="author" jdbcType="VARCHAR" />
 		<result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+		<result column="Duration" property="duration" jdbcType="VARCHAR" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		ReId, MusicId, LinkUrl, ForDay
+		ReId, MusicId, LinkUrl, ForDay, Name, Author, CreateTime, Duration
 	</sql>
-	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
-		parameterType="java.lang.Integer">
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
 		select
 		<include refid="Base_Column_List" />
 		from S_MusicRecommend
 		where ReId = #{reid,jdbcType=INTEGER}
 	</select>
-	<select id="findSMusicrecommendByDay" resultMap="BaseResultMap"
-		parameterType="java.lang.Integer">
+	<select id="findSMusicrecommendByDay" resultMap="BaseResultMap" parameterType="java.lang.Integer">
 		select
 		<include refid="Base_Column_List" />
 		from S_MusicRecommend
 		where ForDay = #{day,jdbcType=INTEGER}
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-		delete from S_MusicRecommend
+		delete from
+		S_MusicRecommend
 		where ReId = #{reid,jdbcType=INTEGER}
 	</delete>
 	<insert id="insert" parameterType="com.bbyiya.model.SMusicrecommend">
 		insert into S_MusicRecommend (ReId, MusicId, LinkUrl,
-		ForDay)
+		ForDay, Name, Author,
+		CreateTime, Duration)
 		values (#{reid,jdbcType=INTEGER}, #{musicid,jdbcType=INTEGER},
 		#{linkurl,jdbcType=VARCHAR},
-		#{forday,jdbcType=INTEGER})
+		#{forday,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR},
+		#{createtime,jdbcType=TIMESTAMP}, #{duration,jdbcType=VARCHAR})
 	</insert>
 	<insert id="insertSelective" parameterType="com.bbyiya.model.SMusicrecommend">
 		insert into S_MusicRecommend
@@ -53,6 +55,18 @@
 			<if test="forday != null">
 				ForDay,
 			</if>
+			<if test="name != null">
+				Name,
+			</if>
+			<if test="author != null">
+				Author,
+			</if>
+			<if test="createtime != null">
+				CreateTime,
+			</if>
+			<if test="duration != null">
+				Duration,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="reid != null">
@@ -66,6 +80,18 @@
 			</if>
 			<if test="forday != null">
 				#{forday,jdbcType=INTEGER},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="author != null">
+				#{author,jdbcType=VARCHAR},
+			</if>
+			<if test="createtime != null">
+				#{createtime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="duration != null">
+				#{duration,jdbcType=VARCHAR},
 			</if>
 		</trim>
 	</insert>
@@ -81,6 +107,18 @@
 			<if test="forday != null">
 				ForDay = #{forday,jdbcType=INTEGER},
 			</if>
+			<if test="name != null">
+				Name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="author != null">
+				Author = #{author,jdbcType=VARCHAR},
+			</if>
+			<if test="createtime != null">
+				CreateTime = #{createtime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="duration != null">
+				Duration = #{duration,jdbcType=VARCHAR},
+			</if>
 		</set>
 		where ReId = #{reid,jdbcType=INTEGER}
 	</update>
@@ -88,7 +126,11 @@
 		update S_MusicRecommend
 		set MusicId = #{musicid,jdbcType=INTEGER},
 		LinkUrl = #{linkurl,jdbcType=VARCHAR},
-		ForDay = #{forday,jdbcType=INTEGER}
+		ForDay = #{forday,jdbcType=INTEGER},
+		Name = #{name,jdbcType=VARCHAR},
+		Author = #{author,jdbcType=VARCHAR},
+		CreateTime = #{createtime,jdbcType=TIMESTAMP},
+		Duration = #{duration,jdbcType=VARCHAR}
 		where ReId = #{reid,jdbcType=INTEGER}
 	</update>
 </mapper>

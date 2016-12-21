@@ -3,6 +3,7 @@ package com.bbyiya.service;
 import java.util.List;
 
 import com.bbyiya.model.SMusicrecommend;
+import com.bbyiya.vo.music.DailyMusicResult;
 import com.bbyiya.vo.user.LoginSuccessResult;
 
 /**
@@ -18,4 +19,10 @@ public interface IMusicStoreService {
 	 * @return
 	 */
 	List<SMusicrecommend> find_SMusicrecommend(LoginSuccessResult user);
+	/**
+	 * app 首页每日音乐推荐
+	 * @param user
+	 * @return
+	 */
+	List<DailyMusicResult> find_dailyMusiclist(LoginSuccessResult user);
 }

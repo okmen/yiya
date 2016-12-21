@@ -1,5 +1,9 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.SDailyreads;
 
 public interface SDailyreadsMapper {
@@ -16,4 +20,10 @@ public interface SDailyreadsMapper {
     int updateByPrimaryKeyWithBLOBs(SDailyreads record);
 
     int updateByPrimaryKey(SDailyreads record);
+    /**
+     * 获取每日读物
+     * @param forday
+     * @return
+     */
+    List<SDailyreads> findDailyReadslist(@Param("forDay") Integer forday);
 }

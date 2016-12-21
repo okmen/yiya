@@ -10,28 +10,38 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.dao.SDailyreadsMapper;
+import com.bbyiya.dao.SReadsMapper;
+import com.bbyiya.dao.SReadstypesMapper;
 import com.bbyiya.model.SDailyreads;
+import com.bbyiya.model.SReads;
+import com.bbyiya.model.SReadstypes;
 import com.bbyiya.service.IReadsMgtService;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
-import com.bbyiya.vo.reads.DailyReadResult;
+import com.bbyiya.vo.reads.ReadsResult;
 import com.bbyiya.vo.user.LoginSuccessResult;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 @Service("readsMgtService")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
 public class ReadsMgtServiceImpl implements IReadsMgtService {
 	@Autowired
 	private SDailyreadsMapper dailyreadsMapper;
-
-	public List<DailyReadResult> find_DailyReadResultlist(LoginSuccessResult user) {
+	@Autowired
+	private SReadstypesMapper readstypesMapper;
+	@Autowired
+	private SReadsMapper readsMapper;
+	
+	public List<ReadsResult> find_DailyReadResultlist(LoginSuccessResult user) {
 		if (user != null && user.getBabyInfo() != null) {
 			try {
 				int days = DateUtil.daysBetween(user.getBabyInfo().getBirthday(), new Date());
 				List<SDailyreads> list = dailyreadsMapper.findDailyReadslist(days);
 				if(list!=null&&list.size()>0){
-					List<DailyReadResult> results=new ArrayList<DailyReadResult>();
+					List<ReadsResult> results=new ArrayList<ReadsResult>();
 					for (SDailyreads daliy : list) {
-						DailyReadResult mo=new DailyReadResult();
+						ReadsResult mo=new ReadsResult();
 						mo.setTitle(daliy.getTitle());
 						mo.setContent(daliy.getContent());
 						mo.setSummary(daliy.getSummary());
@@ -46,5 +56,15 @@ public class ReadsMgtServiceImpl implements IReadsMgtService {
 			}
 		}
 		return null;
+	}
+	
+	public List<SReadstypes> find_SReadstypeslist(){
+		return readstypesMapper.findReadsTypelist();
+	}
+	
+	public PageInfo<ReadsResult> find_SReadsPageInfo(int readType,int index,int size){
+		PageHelper.startPage(index, size);
+		List<ReadsResult> list=readsMapper.findSReadsByTypeId(readType);
+		return new PageInfo<ReadsResult>(list);
 	}
 }

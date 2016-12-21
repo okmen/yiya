@@ -11,14 +11,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.dao.SMusicrecommendMapper;
+import com.bbyiya.dao.SMusicsMapper;
+import com.bbyiya.dao.SMusicttypeMapper;
 import com.bbyiya.dao.UChildreninfoMapper;
 import com.bbyiya.model.SMusicrecommend;
+import com.bbyiya.model.SMusicttype;
 import com.bbyiya.service.IMusicStoreService;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
-import com.bbyiya.vo.music.DailyMusicResult;
+import com.bbyiya.vo.music.MusicResult;
 import com.bbyiya.vo.user.LoginSuccessResult;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 @Service("musicStoreService")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
@@ -28,14 +33,47 @@ public class MusicStoreServiceImpl implements IMusicStoreService {
 	private UChildreninfoMapper childMapper;
 	@Autowired
 	private SMusicrecommendMapper sMusicrecommendMapper;
-
+	@Autowired
+	private SMusicsMapper musicsMapper;
+	@Autowired
+	private SMusicttypeMapper musicttypeMapper;
 	
-	public  List<DailyMusicResult> find_dailyMusiclist(LoginSuccessResult user) {
-		List<SMusicrecommend> dailList=find_SMusicrecommend(user);
-		if(dailList!=null&&dailList.size()>0){
-			List<DailyMusicResult> results=new ArrayList<DailyMusicResult>();
+	
+
+	public List<MusicResult> find_dailyMusiclist(LoginSuccessResult user) {
+		List<SMusicrecommend> dailList = find_SMusicrecommend(user);
+		if (dailList != null && dailList.size() > 0) {
+			return exchange_list_SMusicrecommendToDailyMusicResult(dailList);
+		} else {
+			return findDayMusicDefault();
+		}
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public PageInfo<MusicResult> find_MusicResult(int typeId,int index,int size){ 
+		PageHelper.startPage(index, size);
+		List<MusicResult> list=musicsMapper.findMusiclistByTypeId(typeId);
+		PageInfo<MusicResult> reuslt=new PageInfo<MusicResult>(list); 
+		return reuslt;
+	}
+	
+	public List<SMusicttype> fint_SMusicttypelist(){
+		return musicttypeMapper.findMusictTypeAll();
+	}
+
+	/**
+	 * 列表类型转换 （SMusicrecommend change to DailyMusicResult ）
+	 * @param dailList
+	 * @return
+	 */
+	public List<MusicResult> exchange_list_SMusicrecommendToDailyMusicResult(List<SMusicrecommend> dailList) {
+		if (dailList != null && dailList.size() > 0) {
+			List<MusicResult> results = new ArrayList<MusicResult>();
 			for (SMusicrecommend rec : dailList) {
-				DailyMusicResult mo=new DailyMusicResult();
+				MusicResult mo = new MusicResult();
 				mo.setAuthor(rec.getAuthor());
 				mo.setName(rec.getName());
 				mo.setMusicId(rec.getReid());
@@ -43,11 +81,10 @@ public class MusicStoreServiceImpl implements IMusicStoreService {
 				results.add(mo);
 			}
 			return results;
-		}else {
-			return findDayMusicDefault();
 		}
+		return null;
 	}
-	
+
 	/**
 	 * 每日音乐 推荐
 	 * 
@@ -62,28 +99,25 @@ public class MusicStoreServiceImpl implements IMusicStoreService {
 				list = sMusicrecommendMapper.findSMusicrecommendByDay(days);
 				if (list != null && list.size() > 0) {
 					return list;
-				} 
+				}
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		} 
+		}
 		return list;
 	}
-	
-	
 
 	/**
 	 * 获取每日音乐推荐 默认列表
 	 * 
 	 * @return
 	 */
-	public List<DailyMusicResult> findDayMusicDefault() {
-		List<DailyMusicResult> list = new ArrayList<DailyMusicResult>();
+	public List<MusicResult> findDayMusicDefault() {
+		List<MusicResult> list = new ArrayList<MusicResult>();
 		List<Map<String, String>> maplist = ConfigUtil.getMaplist("muscis");
 		if (maplist != null && maplist.size() > 0) {
 			for (Map<String, String> map : maplist) {
-				DailyMusicResult mo = new DailyMusicResult();
+				MusicResult mo = new MusicResult();
 				mo.setMusicId(ObjectUtil.parseInt(map.get("musicId")));
 				mo.setLinkUrl(map.get("linkUrl"));
 				mo.setName(map.get("name"));

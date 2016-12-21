@@ -7,7 +7,7 @@ import java.io.Serializable;
  * @author Administrator
  *
  */
-public class DailyReadResult implements Serializable {
+public class ReadsResult implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	

@@ -9,9 +9,19 @@
 		<result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
 		<result column="MusicType" property="musictype" jdbcType="INTEGER" />
 		<result column="Duration" property="duration" jdbcType="VARCHAR" />
+		<result column="Author" property="author" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="MusicResult" type="com.bbyiya.vo.music.MusicResult">
+		<id column="MusicId" property="musicId" jdbcType="INTEGER" />
+		<result column="Name" property="name" jdbcType="VARCHAR" />
+		<result column="DownloadUrl" property="linkUrl" jdbcType="VARCHAR" />
+		<result column="ImageUrl" property="defaultImg" jdbcType="VARCHAR" />
+		<result column="Duration" property="duration" jdbcType="VARCHAR" />
+		<result column="Author" property="author" jdbcType="VARCHAR" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		MusicId, Name, DownloadUrl, ImageUrl, CreateTime, MusicType, Duration
+		MusicId, Name, DownloadUrl, ImageUrl, CreateTime,
+		MusicType, Duration,Author
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">
@@ -20,18 +30,26 @@
 		from S_Musics
 		where MusicId = #{musicid,jdbcType=INTEGER}
 	</select>
+	<select id="findMusiclistByTypeId" resultMap="MusicResult"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from S_Musics
+		where MusicType = #{typeId,jdbcType=INTEGER}
+	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-		delete from S_Musics
+		delete from
+		S_Musics
 		where MusicId = #{musicid,jdbcType=INTEGER}
 	</delete>
 	<insert id="insert" parameterType="com.bbyiya.model.SMusics">
 		insert into S_Musics (MusicId, Name, DownloadUrl,
 		ImageUrl, CreateTime, MusicType,
-		Duration)
+		Duration, Author)
 		values (#{musicid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
 		#{downloadurl,jdbcType=VARCHAR},
 		#{imageurl,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{musictype,jdbcType=INTEGER},
-		#{duration,jdbcType=VARCHAR})
+		#{duration,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR})
 	</insert>
 	<insert id="insertSelective" parameterType="com.bbyiya.model.SMusics">
 		insert into S_Musics
@@ -57,6 +75,9 @@
 			<if test="duration != null">
 				Duration,
 			</if>
+			<if test="author != null">
+				Author,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="musicid != null">
@@ -79,6 +100,9 @@
 			</if>
 			<if test="duration != null">
 				#{duration,jdbcType=VARCHAR},
+			</if>
+			<if test="author != null">
+				#{author,jdbcType=VARCHAR},
 			</if>
 		</trim>
 	</insert>
@@ -103,6 +127,9 @@
 			<if test="duration != null">
 				Duration = #{duration,jdbcType=VARCHAR},
 			</if>
+			<if test="author != null">
+				Author = #{author,jdbcType=VARCHAR},
+			</if>
 		</set>
 		where MusicId = #{musicid,jdbcType=INTEGER}
 	</update>
@@ -113,7 +140,8 @@
 		ImageUrl = #{imageurl,jdbcType=VARCHAR},
 		CreateTime = #{createtime,jdbcType=TIMESTAMP},
 		MusicType = #{musictype,jdbcType=INTEGER},
-		Duration = #{duration,jdbcType=VARCHAR}
+		Duration = #{duration,jdbcType=VARCHAR},
+		Author = #{author,jdbcType=VARCHAR}
 		where MusicId = #{musicid,jdbcType=INTEGER}
 	</update>
 </mapper>

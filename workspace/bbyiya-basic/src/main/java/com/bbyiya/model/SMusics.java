@@ -17,6 +17,8 @@ public class SMusics {
 
     private String duration;
 
+    private String author;
+
     public Integer getMusicid() {
         return musicid;
     }
@@ -71,5 +73,13 @@ public class SMusics {
 
     public void setDuration(String duration) {
         this.duration = duration == null ? null : duration.trim();
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author == null ? null : author.trim();
     }
 }

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.SReadstypesMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.SReadstypes" >
+    <id column="ReadTypeId" property="readtypeid" jdbcType="INTEGER" />
+    <result column="Name" property="name" jdbcType="VARCHAR" />
+    <result column="Sort" property="sort" jdbcType="INTEGER" />
+    <result column="Des" property="des" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ReadTypeId, Name, Sort, Des
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from S_ReadsTypes
+    where ReadTypeId = #{readtypeid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from S_ReadsTypes
+    where ReadTypeId = #{readtypeid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.SReadstypes" >
+    insert into S_ReadsTypes (ReadTypeId, Name, Sort, 
+      Des)
+    values (#{readtypeid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, 
+      #{des,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.SReadstypes" >
+    insert into S_ReadsTypes
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="readtypeid != null" >
+        ReadTypeId,
+      </if>
+      <if test="name != null" >
+        Name,
+      </if>
+      <if test="sort != null" >
+        Sort,
+      </if>
+      <if test="des != null" >
+        Des,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="readtypeid != null" >
+        #{readtypeid,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="des != null" >
+        #{des,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.SReadstypes" >
+    update S_ReadsTypes
+    <set >
+      <if test="name != null" >
+        Name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        Sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="des != null" >
+        Des = #{des,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ReadTypeId = #{readtypeid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.SReadstypes" >
+    update S_ReadsTypes
+    set Name = #{name,jdbcType=VARCHAR},
+      Sort = #{sort,jdbcType=INTEGER},
+      Des = #{des,jdbcType=VARCHAR}
+    where ReadTypeId = #{readtypeid,jdbcType=INTEGER}
+  </update>
+</mapper>

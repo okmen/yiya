@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.enums.ReturnStatus;
-import com.bbyiya.model.SMusicrecommend;
 import com.bbyiya.service.IBigCaseService;
 import com.bbyiya.service.IMusicStoreService;
 import com.bbyiya.service.IReadsMgtService;
@@ -25,8 +24,8 @@ import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.bigcase.BigcaseResult;
-import com.bbyiya.vo.music.DailyMusicResult;
-import com.bbyiya.vo.reads.DailyReadResult;
+import com.bbyiya.vo.music.MusicResult;
+import com.bbyiya.vo.reads.ReadsResult;
 import com.bbyiya.vo.talks.YiyaTalkBannerModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
@@ -68,7 +67,7 @@ public class MainPageController extends SSOController {
 		if (user != null) {
 			Map<String, Object> mapResult=new HashMap<String, Object>();
 			//每日推荐音乐
-			List<DailyMusicResult> musiclist=musicService.find_dailyMusiclist(user);
+			List<MusicResult> musiclist=musicService.find_dailyMusiclist(user);
 			mapResult.put("dailyMusics",musiclist); // 静态文件 ConfigUtil.getMaplist("muscis")
 			//咿呀说
 			List<YiyaTalkBannerModel> talks=talkService.find_talkBanners();
@@ -78,7 +77,7 @@ public class MainPageController extends SSOController {
 				mapResult.put("yiyatalks", ConfigUtil.getMaplist("yiyaspeaks")) ;
 			}
 			//每日读物
-			List<DailyReadResult> dailyReads=readService.find_DailyReadResultlist(user);
+			List<ReadsResult> dailyReads=readService.find_DailyReadResultlist(user);
 			if(dailyReads!=null&&dailyReads.size()>0){
 				mapResult.put("dailyReads", dailyReads) ;
 			}else {

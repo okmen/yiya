@@ -2,7 +2,7 @@ package com.bbyiya.vo.music;
 
 import java.io.Serializable;
 
-public class DailyMusicResult implements Serializable {
+public class MusicResult implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

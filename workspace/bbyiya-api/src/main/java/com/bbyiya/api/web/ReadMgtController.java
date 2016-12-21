@@ -10,13 +10,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.enums.ReturnStatus;
-import com.bbyiya.model.SMusicttype;
 import com.bbyiya.model.SReadstypes;
-import com.bbyiya.service.IMusicStoreService;
 import com.bbyiya.service.IReadsMgtService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.vo.ReturnModel;
-import com.bbyiya.vo.music.MusicResult;
 import com.bbyiya.vo.reads.ReadsResult;
 import com.bbyiya.web.base.SSOController;
 import com.github.pagehelper.PageInfo;

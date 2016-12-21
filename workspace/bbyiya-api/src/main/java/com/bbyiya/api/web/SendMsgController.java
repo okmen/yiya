@@ -75,4 +75,13 @@ public class SendMsgController {
 		}
 		return JsonUtil.objectToJsonStr(rq); 
     }
+	
+	@ResponseBody
+    @RequestMapping(value = "/addItems")
+    public String add() throws MapperException
+    {
+		ReturnModel rq=new ReturnModel();
+		SendSMSByMobile.addTemp_yunpian();
+		return JsonUtil.objectToJsonStr(rq); 
+    }
 }

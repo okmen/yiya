@@ -13,7 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bbyiya.dao.MBigcaseMapper;
 import com.bbyiya.dao.MBigcaseclasstagMapper;
 import com.bbyiya.dao.MBigcasetagMapper;
+import com.bbyiya.dao.MBigcaseuserimgsMapper;
 import com.bbyiya.dao.UChildreninfoMapper;
+import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.MBigcase;
 import com.bbyiya.model.MBigcaseclasstag;
 import com.bbyiya.model.MBigcasetag;
@@ -23,8 +25,10 @@ import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
+import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.bigcase.BigcaseResult;
 import com.bbyiya.vo.bigcase.BigcaseTagResult;
+import com.bbyiya.vo.bigcase.BigcaseUserImgVO;
 import com.bbyiya.vo.bigcase.BigcasesummaryResult;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
@@ -43,6 +47,8 @@ public class BigCaseServiceImpl implements IBigCaseService {
 	@Autowired
 	private MBigcasetagMapper bigCaseMapper;
 
+	@Autowired
+	private MBigcaseuserimgsMapper imgMapper;
 	/**
 	 * 大事件列表
 	 * 
@@ -167,7 +173,7 @@ public class BigCaseServiceImpl implements IBigCaseService {
 					List<BigcaseResult> relist = bigcaseMapper.findMBigcaseResultList(timeParam.getStart(), day);
 					PageInfo<BigcaseResult> pageInfo = new PageInfo<BigcaseResult>(relist);
 					for (BigcaseResult mo : pageInfo.getList()) {
-						mo.setTaglist(getBigcaseTagResultlist(mo.getCaseid()));
+						mo.setTaglist(getBigcaseTagResultlist(mo.getCaseId()));
 					}
 					return pageInfo;
 				}
@@ -178,16 +184,37 @@ public class BigCaseServiceImpl implements IBigCaseService {
 		return null;
 	}
 
+	
+	public ReturnModel getBigcaseDetails(LoginSuccessResult user, Integer caseId) {
+		ReturnModel rqModel=new ReturnModel();
+		BigcaseResult caseResult=bigcaseMapper.getMBigcaseResultByCaseId(caseId);
+		if(caseResult!=null){
+			caseResult.setTaglist(getBigcaseTagResultlist(caseId)); 
+			//TODO 预留字段，目前用户图片保存在客户端
+//			List<BigcaseUserImgVO> imgs= imgMapper.findMBigCaseImgsByCaseId(caseId, user.getUserId());
+//			if(imgs!=null&&imgs.size()>0){
+//				caseResult.setImglist(imgs);
+//			} 
+			rqModel.setStatu(ReturnStatus.Success);
+			rqModel.setBasemodle(caseResult); 
+		}else {
+			rqModel.setStatu(ReturnStatus.SystemError);
+			rqModel.setStatusreson("找不到相应的事件！");
+		} 
+		return rqModel;
+	}
+
 	/**
 	 * 获取阶段总览
+	 * 
 	 * @param timeId
 	 * @return
 	 */
-	public BigcasesummaryResult getBigcasesummaryResult(int timeId){
-		//TODO
+	public BigcasesummaryResult getBigcasesummaryResult(int timeId) {
+		// TODO
 		return null;
 	}
-	
+
 	/**
 	 * 大事件标签列表（列表及详情）
 	 * 
@@ -216,8 +243,9 @@ public class BigCaseServiceImpl implements IBigCaseService {
 				}
 				tagResults.add(model);
 			}
-			if(tagResults!=null&&tagResults.size()>0){
-				RedisUtil.setObject(key, tagResults,36000); 
+			if (tagResults != null && tagResults.size() > 0) {
+				// TODO 缓存
+				// RedisUtil.setObject(key, tagResults,36000);
 			}
 			return tagResults;
 		}

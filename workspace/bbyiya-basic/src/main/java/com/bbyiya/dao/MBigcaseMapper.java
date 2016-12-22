@@ -22,6 +22,12 @@ public interface MBigcaseMapper {
     int updateByPrimaryKey(MBigcase record);
     
     /**
+     * 获取大事件详情
+     * @param caseid
+     * @return
+     */
+    BigcaseResult getMBigcaseResultByCaseId(Integer caseid);
+    /**
      * 获取大事件列表
      * @param start
      * @param end

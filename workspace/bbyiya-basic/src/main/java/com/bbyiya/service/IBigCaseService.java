@@ -1,5 +1,6 @@
 package com.bbyiya.service;
 
+import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.bigcase.BigcaseResult;
 import com.bbyiya.vo.bigcase.BigcasesummaryResult;
 import com.bbyiya.vo.user.LoginSuccessResult;
@@ -33,5 +34,12 @@ public interface IBigCaseService {
 	 * @return
 	 */
 	BigcasesummaryResult getBigcasesummaryResult(int timeId);
-	
+	/**
+	 * 大事件详情
+	 * zy
+	 * @param user
+	 * @param caseId
+	 * @return
+	 */
+	ReturnModel getBigcaseDetails(LoginSuccessResult user, Integer caseId);
 }

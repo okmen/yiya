@@ -13,15 +13,11 @@
     <result column="ForDay" property="forday" jdbcType="INTEGER" />
   </resultMap>
    <resultMap id="BaseResultExpMap" type="com.bbyiya.vo.bigcase.BigcaseResult" >
-    <id column="CaseId" property="caseid" jdbcType="INTEGER" />
+    <id column="CaseId" property="caseId" jdbcType="INTEGER" />
     <result column="Title" property="title" jdbcType="VARCHAR" />
-    <result column="TypeId" property="typeid" jdbcType="INTEGER" />
-    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
-    <result column="ImageDefault" property="imagedefault" jdbcType="VARCHAR" />
-    <result column="StartDay" property="startday" jdbcType="INTEGER" />
-    <result column="EndDay" property="endday" jdbcType="INTEGER" />
+    <result column="TypeId" property="typeId" jdbcType="INTEGER" />
+    <result column="ImageDefault" property="imageDefault" jdbcType="VARCHAR" />
     <result column="Summary" property="summary" jdbcType="LONGVARCHAR" />
-    <result column="ForDay" property="forday" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     CaseId, Title, TypeId, CreateTime, ImageDefault, StartDay, EndDay ,Summary
@@ -43,6 +39,12 @@
     <include refid="Base_Column_List" />
     from M_BigCase
     where ForDay &gt;= #{start,jdbcType=INTEGER} and ForDay &lt;= #{end,jdbcType=INTEGER}  
+  </select>
+  <select id="getMBigcaseResultByCaseId" resultMap="BaseResultExpMap" parameterType="java.lang.Integer">
+    select 
+    <include refid="Base_Column_List" />
+    from M_BigCase
+    where CaseId = #{caseid,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from M_BigCase  where CaseId = #{caseid,jdbcType=INTEGER}

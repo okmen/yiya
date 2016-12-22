@@ -37,7 +37,7 @@ public class BigcaseController extends SSOController {
 	 * @throws Exception
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/bigCaselists")
+	@RequestMapping(value = "/bigCaselist")
 	public String bigCaselist(@RequestParam(required = false, defaultValue = "1") int index, @RequestParam(required = false, defaultValue = "4") int size) throws Exception {
 		ReturnModel rqModel = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
@@ -65,11 +65,11 @@ public class BigcaseController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/eventDetail")
-	public String eventDetail(@RequestParam(required = false, defaultValue = "0") int id ) throws Exception {
+	public String eventDetail(@RequestParam(required = false, defaultValue = "0") int caseId ) throws Exception {
 		ReturnModel rqModel = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null&&user.getUserId()!=null) {
-			rqModel=bigcaseService.getBigcaseDetails(user, id);
+			rqModel=bigcaseService.getBigcaseDetails(user, caseId);
 		}
 		return JsonUtil.objectToJsonStr(rqModel);
 	} 

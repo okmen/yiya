@@ -28,10 +28,8 @@ import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.bigcase.BigcaseResult;
 import com.bbyiya.vo.bigcase.BigcaseTagResult;
-import com.bbyiya.vo.bigcase.BigcaseUserImgVO;
 import com.bbyiya.vo.bigcase.BigcasesummaryResult;
 import com.bbyiya.vo.user.LoginSuccessResult;
-import com.bbyiya.web.base.SSOController;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
@@ -49,15 +47,7 @@ public class BigCaseServiceImpl implements IBigCaseService {
 
 	@Autowired
 	private MBigcaseuserimgsMapper imgMapper;
-	/**
-	 * 大事件列表
-	 * 
-	 * @param userId
-	 * @param pageIndex
-	 * @param pageSize
-	 * @return
-	 */
-	// TODO
+	
 	public PageInfo<MBigcase> find_MBigcasePage(Long userId, int pageIndex, int pageSize) {
 		UChildreninfo child = childMapper.selectByPrimaryKey(userId);
 		if (child != null) {
@@ -65,7 +55,6 @@ public class BigCaseServiceImpl implements IBigCaseService {
 				int day = DateUtil.daysBetween(child.getBirthday(), new Date());
 				BigCaseTime timeParam = getStartAndEndDay(day);
 				if (timeParam != null) {
-					// TODO 进行缓存处理
 					PageHelper.startPage(pageIndex, pageSize);
 					List<MBigcase> relist = bigcaseMapper.findMBigcaseList(timeParam.getStart(), timeParam.getEnd());
 					PageInfo<MBigcase> pageInfo = new PageInfo<MBigcase>(relist);
@@ -79,14 +68,7 @@ public class BigCaseServiceImpl implements IBigCaseService {
 		return null;
 	}
 
-	/**
-	 * 获取大事件列表(PS：根据阶段获取列表)
-	 * 
-	 * @param userId
-	 * @param isCurrent
-	 * @param timeId
-	 * @return
-	 */
+	
 	public List<MBigcase> find_MBigcaselist(LoginSuccessResult user, boolean isCurrent, int timeId) {
 		BigCaseTime timeParam = null;
 		if (isCurrent) {
@@ -117,50 +99,7 @@ public class BigCaseServiceImpl implements IBigCaseService {
 		return null;
 	}
 
-	// public PageInfo<BigcaseResult> find_MBigcaseResultPage(Long userId, int
-	// pageIndex, int pageSize) {
-	// UChildreninfo child = childMapper.selectByPrimaryKey(userId);
-	// if (child != null) {
-	// try {
-	// int day = DateUtil.daysBetween(child.getBirthday(), new Date());
-	// BigCaseTime timeParam = getStartAndEndDay(day);
-	// if (timeParam != null) {
-	// // TODO 进行缓存处理
-	// PageHelper.startPage(pageIndex, pageSize);
-	// List<BigcaseResult> relist =
-	// bigcaseMapper.findMBigcaseResultList(timeParam.getStart(),
-	// timeParam.getEnd());
-	// PageInfo<BigcaseResult> pageInfo = new PageInfo<BigcaseResult>(relist);
-	// for (BigcaseResult mo : pageInfo.getList()) {
-	// List<MBigcaseclasstag> classtags =
-	// tagMapper.findTagsByClassId(mo.getTypeid());
-	// List<MBigcasetag> tags =
-	// bigCaseMapper.findBigCaseTagByCaseId(mo.getCaseid());
-	// if (tags != null && tags.size() > 0) {
-	// List<BigcaseTagResult> tagResults = new ArrayList<BigcaseTagResult>();
-	// for (MBigcasetag tag : tags) {
-	// BigcaseTagResult model = new BigcaseTagResult();
-	// model.setCaseId(mo.getCaseid());
-	// model.setTagId(tag.getId());
-	// model.setTagContent(tag.getTagcontent());
-	// for (MBigcaseclasstag ctag : classtags) {
-	// if (tag.getTagid().intValue() == ctag.getTagid().intValue()) {
-	// model.setTagName(ctag.getValue());
-	// }
-	// }
-	// tagResults.add(model);
-	// }
-	// mo.setTaglist(tagResults);
-	// }
-	// }
-	// return pageInfo;
-	// }
-	// } catch (ParseException e) {
-	// e.printStackTrace();
-	// }
-	// }
-	// return null;
-	// }
+	
 
 	public PageInfo<BigcaseResult> find_MBigcaseResultPage(LoginSuccessResult user, int pageIndex, int pageSize) {
 		if (user.getBabyInfo() != null) {
@@ -168,7 +107,7 @@ public class BigCaseServiceImpl implements IBigCaseService {
 				int day = DateUtil.daysBetween(user.getBabyInfo().getBirthday(), new Date());
 				BigCaseTime timeParam = getStartAndEndDay(day);
 				if (timeParam != null) {
-					// TODO 进行缓存处理
+				
 					PageHelper.startPage(pageIndex, pageSize);
 					List<BigcaseResult> relist = bigcaseMapper.findMBigcaseResultList(timeParam.getStart(), day);
 					PageInfo<BigcaseResult> pageInfo = new PageInfo<BigcaseResult>(relist);
@@ -190,37 +129,22 @@ public class BigCaseServiceImpl implements IBigCaseService {
 		BigcaseResult caseResult=bigcaseMapper.getMBigcaseResultByCaseId(caseId);
 		if(caseResult!=null){
 			caseResult.setTaglist(getBigcaseTagResultlist(caseId)); 
-			//TODO 预留字段，目前用户图片保存在客户端
-//			List<BigcaseUserImgVO> imgs= imgMapper.findMBigCaseImgsByCaseId(caseId, user.getUserId());
-//			if(imgs!=null&&imgs.size()>0){
-//				caseResult.setImglist(imgs);
-//			} 
 			rqModel.setStatu(ReturnStatus.Success);
 			rqModel.setBasemodle(caseResult); 
 		}else {
 			rqModel.setStatu(ReturnStatus.SystemError);
-			rqModel.setStatusreson("找不到相应的事件！");
+			rqModel.setStatusreson("找不到相应的事件");
 		} 
 		return rqModel;
 	}
 
-	/**
-	 * 获取阶段总览
-	 * 
-	 * @param timeId
-	 * @return
-	 */
+
 	public BigcasesummaryResult getBigcasesummaryResult(int timeId) {
 		// TODO
 		return null;
 	}
 
-	/**
-	 * 大事件标签列表（列表及详情）
-	 * 
-	 * @param caseId
-	 * @return
-	 */
+	
 	public List<BigcaseTagResult> getBigcaseTagResultlist(Integer caseId) {
 		String key = "caseTag_id_" + caseId;
 		List<BigcaseTagResult> list = (List<BigcaseTagResult>) RedisUtil.getObject(key);
@@ -244,7 +168,7 @@ public class BigCaseServiceImpl implements IBigCaseService {
 				tagResults.add(model);
 			}
 			if (tagResults != null && tagResults.size() > 0) {
-				// TODO 缓存
+				//TODO 缓存信息
 				// RedisUtil.setObject(key, tagResults,36000);
 			}
 			return tagResults;
@@ -252,19 +176,14 @@ public class BigCaseServiceImpl implements IBigCaseService {
 		return null;
 	}
 
-	/**
-	 * 获取宝宝当前属于哪个时间段
-	 * 
-	 * @param theday
-	 * @return
-	 */
+	
 	public BigCaseTime getStartAndEndDay(int theday) {
 		BigCaseTime result = new BigCaseTime();
 		List<Map<String, String>> timelist = ConfigUtil.getMaplist("timeIntervals");
 		for (Map<String, String> map : timelist) {
 			int start = ObjectUtil.parseInt(map.get("start"));
 			int end = ObjectUtil.parseInt(map.get("end"));
-			if (theday >= start && theday <= end) {// 找到这个时期
+			if (theday >= start && theday <= end) {
 				result.setStart(start);
 				result.setEnd(end);
 				result.setTimeId(ObjectUtil.parseInt(map.get("id")));
@@ -274,12 +193,6 @@ public class BigCaseServiceImpl implements IBigCaseService {
 		return null;
 	}
 
-	/**
-	 * 通过时期Id获取起止时间
-	 * 
-	 * @param timeId
-	 * @return
-	 */
 	public BigCaseTime getStartAndEndDayById(int timeId) {
 		BigCaseTime result = new BigCaseTime();
 		List<Map<String, String>> timelist = ConfigUtil.getMaplist("timeIntervals");
@@ -287,7 +200,7 @@ public class BigCaseServiceImpl implements IBigCaseService {
 			int start = ObjectUtil.parseInt(map.get("start"));
 			int end = ObjectUtil.parseInt(map.get("end"));
 			int id = ObjectUtil.parseInt(map.get("id"));
-			if (id == timeId) {// 找到这个时期
+			if (id == timeId) {
 				result.setStart(start);
 				result.setEnd(end);
 				return result;

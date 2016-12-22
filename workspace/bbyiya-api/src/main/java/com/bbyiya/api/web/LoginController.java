@@ -1,6 +1,5 @@
 package com.bbyiya.api.web;
 
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,6 +7,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.enums.ReturnStatus;
@@ -87,8 +87,6 @@ public class LoginController extends SSOController {
 		if (user != null) {
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(user); 
-//			user.setTicket(super.getTicket());
-//			rq.setBasemodle(loginService.updateLoginSuccessResult(user));
 			RedisUtil.setExpire(super.getTicket(), 604800);// 延长时间
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
@@ -109,10 +107,19 @@ public class LoginController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/otherLogin")
-	public String otherLogin(String headImg, String loginType, String nickName, String openId) throws Exception {
+	public String otherLogin(String headImg, @RequestParam(required = false, defaultValue = "2")int loginType, String nickName, String openId) throws Exception {
+		headImg=ObjectUtil.urlDecoder_decode(headImg, "");//URLDecoder.decode(headImg,"UTF-8");
+		nickName=ObjectUtil.urlDecoder_decode(nickName, "");//URLDecoder.decode(nickName,"UTF-8");
+		openId=ObjectUtil.urlDecoder_decode(openId, "");//URLDecoder.decode(openId,"UTF-8");
+		if(!ObjectUtil.validSqlStr(headImg)||!ObjectUtil.validSqlStr(nickName)||!ObjectUtil.validSqlStr(openId)){
+			ReturnModel rqModel=new ReturnModel();
+			rqModel.setStatu(ReturnStatus.ParamError_2);
+			rqModel.setStatusreson("参数有非法字符");
+			return JsonUtil.objectToJsonStr(rqModel);
+		}
 		OtherLoginParam param = new OtherLoginParam();
 		param.setOpenId(openId);
-		param.setLoginType(ObjectUtil.parseInt(loginType));
+		param.setLoginType(loginType);
 		param.setNickName(nickName);
 		param.setHeadImg(headImg);
 		return JsonUtil.objectToJsonStr(loginService.otherLogin(param));

@@ -127,6 +127,9 @@ public class UserInfoController extends SSOController {
 			rq.setStatusreson("登录过期，请重新登录");
 			return JsonUtil.objectToJsonStr(rq);
 		}
+		if(!ObjectUtil.isEmpty(content)){
+			content=ObjectUtil.urlDecoder_decode(content, "");
+		}
 		UUserresponses param = new UUserresponses();
 		param.setUserid(user.getUserId());
 		param.setContent(content);

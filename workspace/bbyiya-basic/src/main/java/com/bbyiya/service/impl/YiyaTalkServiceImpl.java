@@ -25,7 +25,7 @@ public class YiyaTalkServiceImpl implements IYiyaTalkService{
 	/**
 	 * 首页 咿呀说 banner 缓存KEY  
 	 */
-	private static String kEY_TALKS_BANNER="YIYA_TALK_BANNERS";
+	private static String kEY_TALKS_BANNER="YIYA_TALK_BANNERS_temp";
 	
 	public List<YiyaTalkBannerModel> find_talkBanners(){
 		List<YiyaTalkBannerModel> result=(List<YiyaTalkBannerModel>)RedisUtil.getObject(kEY_TALKS_BANNER);
@@ -41,7 +41,7 @@ public class YiyaTalkServiceImpl implements IYiyaTalkService{
 					mo.setWapUrl(bb.getWapurl());
 					result.add(mo);
 				}
-				RedisUtil.setObject(kEY_TALKS_BANNER, result, 600);
+//				RedisUtil.setObject(kEY_TALKS_BANNER, result, 600);
 			}
 		}
 		return result;

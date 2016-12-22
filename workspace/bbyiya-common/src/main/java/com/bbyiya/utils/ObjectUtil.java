@@ -1,12 +1,13 @@
 package com.bbyiya.utils;
 
-
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URLDecoder;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -191,8 +192,7 @@ public class ObjectUtil {
 		StringBuilder keys = new StringBuilder();
 		try {
 			for (T t2 : t) {
-				methodName = "get" + keyName.substring(0, 1).toUpperCase()
-						+ keyName.substring(1);
+				methodName = "get" + keyName.substring(0, 1).toUpperCase() + keyName.substring(1);
 				Method method = t2.getClass().getDeclaredMethod(methodName);
 				Object res = method.invoke(t2);
 				if (null != res) {
@@ -325,7 +325,7 @@ public class ObjectUtil {
 		}
 		return 0;
 	}
-	
+
 	public static Long parseLong(String score) {
 		if (isNotEmpty(score)) {
 			if (isDouble(score)) {
@@ -335,8 +335,7 @@ public class ObjectUtil {
 		return 0l;
 	}
 
-	public static final Pattern integerPattern = Pattern
-			.compile("^[-\\+]?[\\d]*$");
+	public static final Pattern integerPattern = Pattern.compile("^[-\\+]?[\\d]*$");
 
 	/**
 	 * 
@@ -355,8 +354,7 @@ public class ObjectUtil {
 	 * 
 	 * @return
 	 */
-	public static final Pattern floatPattern = Pattern
-			.compile("^[-\\+]?[.\\d]*$");
+	public static final Pattern floatPattern = Pattern.compile("^[-\\+]?[.\\d]*$");
 
 	/**
 	 * 判断是否为浮点数，包括double和float
@@ -422,8 +420,7 @@ public class ObjectUtil {
 	/**
 	 * 数字和字母混合
 	 */
-	public static final Pattern numberAlphaPattern = Pattern
-			.compile("^[A-Za-z0-9]+$");
+	public static final Pattern numberAlphaPattern = Pattern.compile("^[A-Za-z0-9]+$");
 
 	public static boolean isNumberAlphaFix(String str) {
 		return numberAlphaPattern.matcher(str).matches();
@@ -467,8 +464,7 @@ public class ObjectUtil {
 	 * @return void
 	 * @throws
 	 */
-	public static void setProperty(Object bean, String propertyName,
-			Object value) {
+	public static void setProperty(Object bean, String propertyName, Object value) {
 		PropertyDescriptor pd;
 		try {
 			pd = new PropertyDescriptor(propertyName, bean.getClass());
@@ -494,8 +490,7 @@ public class ObjectUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Object fatherToChild(Object father, Object child)
-			throws Exception {
+	public static Object fatherToChild(Object father, Object child) throws Exception {
 		if (!(child.getClass().getSuperclass() == father.getClass())) {
 			throw new Exception("child不是father的子类");
 		}
@@ -506,8 +501,7 @@ public class ObjectUtil {
 			Class type = f.getType();
 			String nameString = upperHeadChar(f.getName());
 			if (!"SerialVersionUID".equals(nameString)) {
-				Method m = fatherClass.getMethod("get"
-						+ upperHeadChar(f.getName()));// 方法getDeleteDate
+				Method m = fatherClass.getMethod("get" + upperHeadChar(f.getName()));// 方法getDeleteDate
 				Object obj = m.invoke(father);// 取出属性值
 				f.set(child, obj);
 			}
@@ -523,7 +517,53 @@ public class ObjectUtil {
 		String out = head.toUpperCase() + in.substring(1, in.length());
 		return out;
 	}
-	
-	
 
+	// 过滤 ‘
+	// ORACLE 注解 -- /**/
+	// 关键字过滤 update ,delete
+	static String reg = "(?:')|(?:--)|(/\\*(?:.|[\\n\\r])*?\\*/)|" + "(\\b(select|update|and|or|delete|insert|trancate|char|into|substr|ascii|declare|exec|count|master|into|drop|execute)\\b)";
+
+	static Pattern sqlPattern = Pattern.compile(reg, Pattern.CASE_INSENSITIVE);
+
+	/***************************************************************************
+	 * 参数校验 URLDecoder.decode(param,"UTF-8")
+	 * 
+	 * @param str
+	 *            return true没有危险，false有风险
+	 */
+	public static boolean validSqlStr(String str) {
+		if (sqlPattern.matcher(str).find()) {
+			// logger.error("未能通过过滤器：p=" + p);
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * 有空格
+	 * 
+	 * @param s
+	 * @return
+	 */
+	public static boolean hasKongge(String s) {
+		int i = s.indexOf(" ");
+		if (i == -1)
+			return true;
+		return false;
+	}
+	
+	/**
+	 * URL参数解码
+	 * @param paramStr
+	 * @param enc 解码方式 默认 utf-8
+	 * @return
+	 */
+	public static String urlDecoder_decode(String paramStr ,String enc){
+		try {
+			return URLDecoder.decode(paramStr,isEmpty(enc)?"UTF-8":enc); 
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			return paramStr;
+		}
+	}
 }

@@ -2,16 +2,22 @@ package com.bbyiya.model;
 
 import java.util.Date;
 
-public class SReads {
+public class SDailyreads {
     private Integer id;
 
     private String title;
 
     private String summary;
 
-    private Integer typeid;
+    private Integer forday;
 
     private Date createtime;
+
+    private Date updatetime;
+
+    private Integer sourcetype;
+
+    private String sourceurl;
 
     private String content;
 
@@ -39,12 +45,12 @@ public class SReads {
         this.summary = summary == null ? null : summary.trim();
     }
 
-    public Integer getTypeid() {
-        return typeid;
+    public Integer getForday() {
+        return forday;
     }
 
-    public void setTypeid(Integer typeid) {
-        this.typeid = typeid;
+    public void setForday(Integer forday) {
+        this.forday = forday;
     }
 
     public Date getCreatetime() {
@@ -53,6 +59,30 @@ public class SReads {
 
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
+    }
+
+    public Date getUpdatetime() {
+        return updatetime;
+    }
+
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
+    }
+
+    public Integer getSourcetype() {
+        return sourcetype;
+    }
+
+    public void setSourcetype(Integer sourcetype) {
+        this.sourcetype = sourcetype;
+    }
+
+    public String getSourceurl() {
+        return sourceurl;
+    }
+
+    public void setSourceurl(String sourceurl) {
+        this.sourceurl = sourceurl == null ? null : sourceurl.trim();
     }
 
     public String getContent() {

@@ -117,7 +117,7 @@ public class UserLoginService implements IUserLoginService {
 			rq.setStatusreson("注册成功");
 			rq.setBasemodle(result);
 		} else {
-			rq.setStatusreson("参数不能为空");
+			rq.setStatusreson("参数有误");
 		}
 		return rq;
 	}
@@ -127,6 +127,11 @@ public class UserLoginService implements IUserLoginService {
 		if (ObjectUtil.isEmpty(userno)) {
 			rq.setStatu(ReturnStatus.ParamError);
 			rq.setStatusreson("手机号不能为空");
+			return rq;
+		}
+		if(!ObjectUtil.isNumberAlphaFix(userno)){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("参数有非法字符！");
 			return rq;
 		}
 		if (ObjectUtil.isEmpty(pwd)) {
@@ -261,6 +266,11 @@ public class UserLoginService implements IUserLoginService {
 		if (param == null || ObjectUtil.isEmpty(param.getPassword()) || ObjectUtil.isEmpty(param.getVcode()) || ObjectUtil.isEmpty(param.getMobilephone())) {
 			rq.setStatu(ReturnStatus.ParamError);
 			rq.setStatusreson("参数不全");
+			return rq;
+		}
+		if(!ObjectUtil.validSqlStr(param.getPassword())){
+			rq.setStatu(ReturnStatus.ParamError_2);
+			rq.setStatusreson("密码包含有非法字符！");
 			return rq;
 		}
 		// 手机验证码验证

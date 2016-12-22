@@ -1,5 +1,7 @@
 package com.bbyiya.service.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Date;
 
 import javax.annotation.Resource;
@@ -43,6 +45,11 @@ public class UserInfoMgtServiceImpl implements IUserInfoMgtService {
 
 	public ReturnModel updatePWD(String mobile, String vcode, String pwd) {
 		ReturnModel rq = new ReturnModel();
+		if(!ObjectUtil.isNumberAlphaFix(mobile)){
+			rq.setStatu(ReturnStatus.VcodeError_2);
+			rq.setStatusreson("请填写正确的手机号！");
+			return rq;
+		}
 		// 参数验证=========step1=====================
 		if (ObjectUtil.isEmpty(vcode)) {
 			rq.setStatu(ReturnStatus.VcodeError_2);
@@ -52,6 +59,11 @@ public class UserInfoMgtServiceImpl implements IUserInfoMgtService {
 		if (ObjectUtil.isEmpty(pwd)) {
 			rq.setStatu(ReturnStatus.ParamError);
 			rq.setStatusreson("新密码不能为空！");
+			return rq;
+		}
+		if(!ObjectUtil.validSqlStr(pwd)){
+			rq.setStatu(ReturnStatus.ParamError_2);
+			rq.setStatusreson("新密码包含有危险字符，请重新设置！");
 			return rq;
 		}
 		// ----------------------------------
@@ -101,6 +113,11 @@ public class UserInfoMgtServiceImpl implements IUserInfoMgtService {
 			}
 			childModel.setSex(param.getSex());
 			if (!ObjectUtil.isEmpty(param.getNickName())) {
+				if(!ObjectUtil.validSqlStr(ObjectUtil.urlDecoder_decode(param.getNickName(), ""))){ 
+					rq.setStatu(ReturnStatus.ParamError_2);
+					rq.setStatusreson("宝宝昵称有非法字符");
+					return rq;
+				}
 				childModel.setNickname(param.getNickName());
 			}
 			if (!ObjectUtil.isEmpty(param.getBirthday())) {
@@ -120,7 +137,7 @@ public class UserInfoMgtServiceImpl implements IUserInfoMgtService {
 		} catch (Exception e) {
 			// TODO: handle exception
 			rq.setStatu(ReturnStatus.SystemError);
-			rq.setStatusreson(e.getMessage());
+			rq.setStatusreson("请检查宝宝信息是否有非法字符！");
 		}
 		return rq;
 	}
@@ -130,12 +147,30 @@ public class UserInfoMgtServiceImpl implements IUserInfoMgtService {
 		UUsers user = userDao.getUUsersByUserID(userId);
 		if (user != null) {
 			if (!ObjectUtil.isEmpty(param.getHeadImg())) {
+				if(!ObjectUtil.validSqlStr(param.getHeadImg())){
+					rq.setStatu(ReturnStatus.ParamError_2);
+					rq.setStatusreson("有危险参数,请重新设置！");
+					return rq;
+				}
 				user.setUserimg(param.getHeadImg());
 			}
 			if (!ObjectUtil.isEmpty(param.getNickName())) {
+				param.setNickName(ObjectUtil.urlDecoder_decode(param.getNickName(), ""));
+				
+				if(!ObjectUtil.validSqlStr(param.getNickName())){
+					rq.setStatu(ReturnStatus.ParamError_2);
+					rq.setStatusreson("有危险参数,请重新设置！");
+					return rq;
+				}
 				user.setNickname(param.getNickName());
 			}
 			if (!ObjectUtil.isEmpty(param.getSign())) {
+				param.setSign(ObjectUtil.urlDecoder_decode(param.getSign(), ""));
+				if(!ObjectUtil.validSqlStr(param.getSign())){
+					rq.setStatu(ReturnStatus.ParamError_2);
+					rq.setStatusreson("有危险参数,请重新设置！");
+					return rq;
+				}
 				user.setSign(param.getSign());
 			}
 			if (!ObjectUtil.isEmpty(param.getBirthday())) {
@@ -157,6 +192,11 @@ public class UserInfoMgtServiceImpl implements IUserInfoMgtService {
 			rq.setStatu(ReturnStatus.ParamError);
 			rq.setStatusreson("参数有误");
 		} else {
+			if(!ObjectUtil.validSqlStr(param.getContent())){
+				rq.setStatu(ReturnStatus.ParamError_2);
+				rq.setStatusreson("参数有危险字符，请重新填写！");
+				return rq;
+			}
 			param.setCreatetime(new Date());
 			resposeMapper.insert(param);
 			rq.setStatu(ReturnStatus.Success);

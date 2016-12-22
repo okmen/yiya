@@ -9,7 +9,7 @@ public class SDailyreads {
 
     private String summary;
 
-    private Date forday;
+    private Integer forday;
 
     private Date createtime;
 
@@ -45,11 +45,11 @@ public class SDailyreads {
         this.summary = summary == null ? null : summary.trim();
     }
 
-    public Date getForday() {
+    public Integer getForday() {
         return forday;
     }
 
-    public void setForday(Date forday) {
+    public void setForday(Integer forday) {
         this.forday = forday;
     }
 

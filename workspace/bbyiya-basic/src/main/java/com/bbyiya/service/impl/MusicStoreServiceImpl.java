@@ -78,6 +78,7 @@ public class MusicStoreServiceImpl implements IMusicStoreService {
 				mo.setName(rec.getName());
 				mo.setMusicId(rec.getReid());
 				mo.setLinkUrl(rec.getLinkurl());
+				mo.setDefaultImg(rec.getPic()); 
 				results.add(mo);
 			}
 			return results;

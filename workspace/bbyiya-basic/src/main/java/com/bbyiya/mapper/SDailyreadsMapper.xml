@@ -5,7 +5,7 @@
 		<id column="id" property="id" jdbcType="INTEGER" />
 		<result column="Title" property="title" jdbcType="VARCHAR" />
 		<result column="Summary" property="summary" jdbcType="VARCHAR" />
-		<result column="ForDay" property="forday" jdbcType="TIMESTAMP" />
+		<result column="ForDay" property="forday" jdbcType="INTEGER" />
 		<result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
 		<result column="UpdateTime" property="updatetime" jdbcType="TIMESTAMP" />
 		<result column="SourceType" property="sourcetype" jdbcType="INTEGER" />
@@ -13,26 +13,25 @@
 		<result column="Content" property="content" jdbcType="LONGVARCHAR" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, Title, Summary, ForDay, CreateTime, UpdateTime, SourceType,
-		SourceUrl, Content
+		id, Title, Summary, ForDay, CreateTime, UpdateTime,SourceType,SourceUrl, Content
 	</sql>
-	<sql id="Blob_Column_List">
-		Content
-	</sql>
-	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
 		select
 		<include refid="Base_Column_List" />
 		from S_DailyReads
 		where id = #{id,jdbcType=INTEGER}
 	</select>
-	<select id="findDailyReadslist" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+	<select id="findDailyReadslist" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
 		select
 		<include refid="Base_Column_List" />
 		from S_DailyReads
 		where ForDay = #{forDay,jdbcType=INTEGER}
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-		delete from S_DailyReads
+		delete from
+		S_DailyReads
 		where id = #{id,jdbcType=INTEGER}
 	</delete>
 	<insert id="insert" parameterType="com.bbyiya.model.SDailyreads">
@@ -42,7 +41,7 @@
 		)
 		values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR},
 		#{summary,jdbcType=VARCHAR},
-		#{forday,jdbcType=TIMESTAMP}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP},
+		#{forday,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP},
 		#{sourcetype,jdbcType=INTEGER}, #{sourceurl,jdbcType=VARCHAR},
 		#{content,jdbcType=LONGVARCHAR}
 		)
@@ -89,7 +88,7 @@
 				#{summary,jdbcType=VARCHAR},
 			</if>
 			<if test="forday != null">
-				#{forday,jdbcType=TIMESTAMP},
+				#{forday,jdbcType=INTEGER},
 			</if>
 			<if test="createtime != null">
 				#{createtime,jdbcType=TIMESTAMP},
@@ -118,7 +117,7 @@
 				Summary = #{summary,jdbcType=VARCHAR},
 			</if>
 			<if test="forday != null">
-				ForDay = #{forday,jdbcType=TIMESTAMP},
+				ForDay = #{forday,jdbcType=INTEGER},
 			</if>
 			<if test="createtime != null">
 				CreateTime = #{createtime,jdbcType=TIMESTAMP},
@@ -142,7 +141,7 @@
 		update S_DailyReads
 		set Title = #{title,jdbcType=VARCHAR},
 		Summary = #{summary,jdbcType=VARCHAR},
-		ForDay = #{forday,jdbcType=TIMESTAMP},
+		ForDay = #{forday,jdbcType=INTEGER},
 		CreateTime = #{createtime,jdbcType=TIMESTAMP},
 		UpdateTime = #{updatetime,jdbcType=TIMESTAMP},
 		SourceType = #{sourcetype,jdbcType=INTEGER},
@@ -154,7 +153,7 @@
 		update S_DailyReads
 		set Title = #{title,jdbcType=VARCHAR},
 		Summary = #{summary,jdbcType=VARCHAR},
-		ForDay = #{forday,jdbcType=TIMESTAMP},
+		ForDay = #{forday,jdbcType=INTEGER},
 		CreateTime = #{createtime,jdbcType=TIMESTAMP},
 		UpdateTime = #{updatetime,jdbcType=TIMESTAMP},
 		SourceType = #{sourcetype,jdbcType=INTEGER},

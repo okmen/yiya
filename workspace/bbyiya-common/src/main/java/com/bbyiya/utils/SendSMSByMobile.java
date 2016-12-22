@@ -111,6 +111,8 @@ public class SendSMSByMobile {
 			String key=moblie+"-"+type;
 			RedisUtil.setObject(key, verifyCode,300); 
 			return sendSMS_yunpian(moblie, "【咿呀科技】您的验证码是"+verifyCode);
+			
+//			return sendSMS_yunpian(moblie, "【咿呀科技】"+verifyCode+"（验证码），"+5+"分钟内有效。如非本人操作，请忽略本短信。"+verifyCode);
 		}
 		return null;
 	}

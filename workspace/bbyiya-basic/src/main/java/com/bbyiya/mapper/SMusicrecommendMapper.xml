@@ -10,17 +10,21 @@
 		<result column="Author" property="author" jdbcType="VARCHAR" />
 		<result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
 		<result column="Duration" property="duration" jdbcType="VARCHAR" />
+		<result column="Pic" property="pic" jdbcType="VARCHAR" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		ReId, MusicId, LinkUrl, ForDay, Name, Author, CreateTime, Duration
+		ReId, MusicId, LinkUrl, ForDay, Name, Author, CreateTime,
+		Duration, Pic
 	</sql>
-	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
 		select
 		<include refid="Base_Column_List" />
 		from S_MusicRecommend
 		where ReId = #{reid,jdbcType=INTEGER}
 	</select>
-	<select id="findSMusicrecommendByDay" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+	<select id="findSMusicrecommendByDay" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
 		select
 		<include refid="Base_Column_List" />
 		from S_MusicRecommend
@@ -34,11 +38,14 @@
 	<insert id="insert" parameterType="com.bbyiya.model.SMusicrecommend">
 		insert into S_MusicRecommend (ReId, MusicId, LinkUrl,
 		ForDay, Name, Author,
-		CreateTime, Duration)
+		CreateTime, Duration, Pic
+		)
 		values (#{reid,jdbcType=INTEGER}, #{musicid,jdbcType=INTEGER},
 		#{linkurl,jdbcType=VARCHAR},
 		#{forday,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR},
-		#{createtime,jdbcType=TIMESTAMP}, #{duration,jdbcType=VARCHAR})
+		#{createtime,jdbcType=TIMESTAMP}, #{duration,jdbcType=VARCHAR},
+		#{pic,jdbcType=VARCHAR}
+		)
 	</insert>
 	<insert id="insertSelective" parameterType="com.bbyiya.model.SMusicrecommend">
 		insert into S_MusicRecommend
@@ -67,6 +74,9 @@
 			<if test="duration != null">
 				Duration,
 			</if>
+			<if test="pic != null">
+				Pic,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="reid != null">
@@ -92,6 +102,9 @@
 			</if>
 			<if test="duration != null">
 				#{duration,jdbcType=VARCHAR},
+			</if>
+			<if test="pic != null">
+				#{pic,jdbcType=VARCHAR},
 			</if>
 		</trim>
 	</insert>
@@ -119,6 +132,9 @@
 			<if test="duration != null">
 				Duration = #{duration,jdbcType=VARCHAR},
 			</if>
+			<if test="pic != null">
+				Pic = #{pic,jdbcType=VARCHAR},
+			</if>
 		</set>
 		where ReId = #{reid,jdbcType=INTEGER}
 	</update>
@@ -130,7 +146,8 @@
 		Name = #{name,jdbcType=VARCHAR},
 		Author = #{author,jdbcType=VARCHAR},
 		CreateTime = #{createtime,jdbcType=TIMESTAMP},
-		Duration = #{duration,jdbcType=VARCHAR}
+		Duration = #{duration,jdbcType=VARCHAR},
+		Pic = #{pic,jdbcType=VARCHAR}
 		where ReId = #{reid,jdbcType=INTEGER}
 	</update>
 </mapper>

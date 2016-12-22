@@ -2,6 +2,7 @@ package com.bbyiya.api.web;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -31,7 +32,7 @@ public class BigcaseController extends SSOController {
 	private IBigCaseService bigcaseService;
 
 	/**
-	 * 宝宝大事件
+	 * M02 主页-宝宝大事件
 	 * 
 	 * @return
 	 * @throws Exception
@@ -58,7 +59,7 @@ public class BigcaseController extends SSOController {
 		return JsonUtil.objectToJsonStr(rqModel);
 	}
 	/**
-	 * 大事件详情
+	 * M03 大事件详情
 	 * @param id
 	 * @return
 	 * @throws Exception
@@ -71,6 +72,45 @@ public class BigcaseController extends SSOController {
 		if (user != null&&user.getUserId()!=null) {
 			rqModel=bigcaseService.getBigcaseDetails(user, caseId);
 		}
+		return JsonUtil.objectToJsonStr(rqModel);
+	} 
+	
+	/**
+	 * M05 我的收藏-添加收藏
+	 * @param caseId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/addCollect")
+	public String addCollect(@RequestParam(required = false, defaultValue = "0") int caseId ) throws Exception {
+		ReturnModel rqModel = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null&&user.getUserId()!=null) {
+			rqModel=bigcaseService.addCollection(user.getUserId(), caseId);
+		}else {
+			rqModel.setStatu(ReturnStatus.LoginError);
+		} 
+		return JsonUtil.objectToJsonStr(rqModel);
+	} 
+	
+	/**
+	 * M04 我的收藏-大事件列表
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getCollectlist")
+	public String getCollectlist() throws Exception {
+		ReturnModel rqModel = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null&&user.getUserId()!=null) {
+			List<BigcaseResult> list=bigcaseService.find_MBigcasecollectlist(user.getUserId());
+			rqModel.setStatu(ReturnStatus.Success);
+			rqModel.setBasemodle(list); 
+		}else {
+			rqModel.setStatu(ReturnStatus.LoginError);
+		} 
 		return JsonUtil.objectToJsonStr(rqModel);
 	} 
 }

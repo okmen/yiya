@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.MBigcasecollectMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.MBigcasecollect" >
+    <id column="CollectId" property="collectid" jdbcType="BIGINT" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="CaseId" property="caseid" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CollectId, UserId, CaseId, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from M_BigCaseCollect
+    where CollectId = #{collectid,jdbcType=BIGINT}
+  </select>
+  <select id="findMBigCaseCollect" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from M_BigCaseCollect
+    where UserId = #{userId,jdbcType=BIGINT} order by CollectId desc
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from M_BigCaseCollect
+    where CollectId = #{collectid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.MBigcasecollect" >
+    insert into M_BigCaseCollect (CollectId, UserId, CaseId, 
+      CreateTime)
+    values (#{collectid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{caseid,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.MBigcasecollect" >
+    insert into M_BigCaseCollect
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="collectid != null" >
+        CollectId,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="caseid != null" >
+        CaseId,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="collectid != null" >
+        #{collectid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="caseid != null" >
+        #{caseid,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.MBigcasecollect" >
+    update M_BigCaseCollect
+    <set >
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="caseid != null" >
+        CaseId = #{caseid,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where CollectId = #{collectid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.MBigcasecollect" >
+    update M_BigCaseCollect
+    set UserId = #{userid,jdbcType=BIGINT},
+      CaseId = #{caseid,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where CollectId = #{collectid,jdbcType=BIGINT}
+  </update>
+</mapper>

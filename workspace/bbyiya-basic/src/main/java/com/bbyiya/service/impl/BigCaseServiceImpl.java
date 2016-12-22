@@ -12,12 +12,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.dao.MBigcaseMapper;
 import com.bbyiya.dao.MBigcaseclasstagMapper;
+import com.bbyiya.dao.MBigcasecollectMapper;
 import com.bbyiya.dao.MBigcasetagMapper;
 import com.bbyiya.dao.MBigcaseuserimgsMapper;
 import com.bbyiya.dao.UChildreninfoMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.MBigcase;
 import com.bbyiya.model.MBigcaseclasstag;
+import com.bbyiya.model.MBigcasecollect;
 import com.bbyiya.model.MBigcasetag;
 import com.bbyiya.model.UChildreninfo;
 import com.bbyiya.service.IBigCaseService;
@@ -47,6 +49,9 @@ public class BigCaseServiceImpl implements IBigCaseService {
 
 	@Autowired
 	private MBigcaseuserimgsMapper imgMapper;
+	
+	@Autowired
+	private MBigcasecollectMapper collectMapper;
 	
 	public PageInfo<MBigcase> find_MBigcasePage(Long userId, int pageIndex, int pageSize) {
 		UChildreninfo child = childMapper.selectByPrimaryKey(userId);
@@ -138,7 +143,53 @@ public class BigCaseServiceImpl implements IBigCaseService {
 		return rqModel;
 	}
 
-
+	public ReturnModel addCollection(Long userid, Integer caseId){
+		ReturnModel rqModel=new ReturnModel();
+		List<MBigcasecollect> coList=collectMapper.findMBigCaseCollect(userid);
+		if(coList!=null&&coList.size()>0){
+			for (MBigcasecollect cc : coList) {
+				if(cc.getCaseid().intValue()==caseId){
+					rqModel.setStatu(ReturnStatus.ParamError);
+					rqModel.setStatusreson("您已经收藏了该条记录！");
+					return rqModel;
+				}
+			}
+		}
+		MBigcase bigcase= bigcaseMapper.selectByPrimaryKey(caseId);
+		if(bigcase!=null){
+			MBigcasecollect model=new MBigcasecollect();
+			model.setCaseid(caseId);
+			model.setUserid(userid);
+			model.setCreatetime(new Date());
+			try {
+				collectMapper.insert(model);
+				rqModel.setStatu(ReturnStatus.Success);
+				rqModel.setStatusreson("收藏成功！");
+			} catch (Exception e) {
+				// TODO: handle exception
+				rqModel.setStatu(ReturnStatus.SystemError);
+				rqModel.setStatusreson("收藏失败");
+			}
+		}else {
+			rqModel.setStatu(ReturnStatus.ParamError_1);
+			rqModel.setStatusreson("不存在的大事件");
+		}
+		return rqModel;
+	}
+	
+	public List<BigcaseResult> find_MBigcasecollectlist(Long userId){
+		List<BigcaseResult> results=new ArrayList<BigcaseResult>();
+		List<MBigcasecollect> list=collectMapper.findMBigCaseCollect(userId);
+		if(list!=null&&list.size()>0){
+			for (MBigcasecollect mod : list) {
+				BigcaseResult caseMod= bigcaseMapper.getMBigcaseResultByCaseId(mod.getCaseid());
+				caseMod.setTaglist(getBigcaseTagResultlist(mod.getCaseid())); 
+				results.add(caseMod);
+			}
+		}
+		return results;
+	}
+	
 	public BigcasesummaryResult getBigcasesummaryResult(int timeId) {
 		// TODO
 		return null;

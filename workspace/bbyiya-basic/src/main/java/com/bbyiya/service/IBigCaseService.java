@@ -1,5 +1,7 @@
 package com.bbyiya.service;
 
+import java.util.List;
+
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.bigcase.BigcaseResult;
 import com.bbyiya.vo.bigcase.BigcasesummaryResult;
@@ -42,4 +44,18 @@ public interface IBigCaseService {
 	 * @return
 	 */
 	ReturnModel getBigcaseDetails(LoginSuccessResult user, Integer caseId);
+	/**
+	 * 添加收藏(大事件的收藏)
+	 * zy
+	 * @param userid
+	 * @param caseId
+	 * @return
+	 */
+	ReturnModel addCollection(Long userid, Integer caseId);
+	/**
+	 * 获取收藏列表
+	 * @param userId
+	 * @return
+	 */
+	List<BigcaseResult> find_MBigcasecollectlist(Long userId);
 }

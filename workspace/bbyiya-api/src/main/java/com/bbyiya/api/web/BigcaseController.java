@@ -40,7 +40,7 @@ public class BigcaseController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/bigCaselist")
-	public String bigCaselist(@RequestParam(required = false, defaultValue = "1") int index, @RequestParam(required = false, defaultValue = "4") int size) throws Exception {
+	public String bigCaselist(@RequestParam(required = false, defaultValue = "0") int timeId) throws Exception {
 		ReturnModel rqModel = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
@@ -56,7 +56,7 @@ public class BigcaseController extends SSOController {
 //			result.put("bigcase", resultInfo);
 //			rqModel.setStatu(ReturnStatus.Success);
 //			rqModel.setBasemodle(result);
-			rqModel=bigcaseService.find_MBigcaseResultIndexPage(user);
+			rqModel=bigcaseService.find_MBigcaseResultIndexPage(user,timeId);
 		}
 		return JsonUtil.objectToJsonStr(rqModel);
 	}

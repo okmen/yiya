@@ -136,17 +136,30 @@ public class BigCaseServiceImpl implements IBigCaseService {
 //		return null;
 //	}
 
-	public ReturnModel find_MBigcaseResultIndexPage(LoginSuccessResult user) {
+	public ReturnModel find_MBigcaseResultIndexPage(LoginSuccessResult user,Integer timeId) {
 		ReturnModel rq = new ReturnModel();
 		if (user.getBabyInfo() != null) {
 			try {
-				// 宝宝周期
+				// 宝宝多大了 
 				int day = DateUtil.daysBetween(user.getBabyInfo().getBirthday(), new Date());
-				BigCaseTime timeParam = getStartAndEndDay(day);
+				//指定起止时间
+				BigCaseTime timeParam=getStartAndEndDayById(timeId);
+				if(timeId<=0){
+					timeParam=getStartAndEndDay(day);
+				}
+				int currentStageBigTime=0;
+				if(timeParam.getEnd()>=day&&timeParam.getStart()<=day){//宝宝正好处于该阶段=》有阶段预览功能
+					currentStageBigTime=timeParam.getEnd();
+					timeParam.setEnd(day); 
+				}else if (day<timeParam.getStart()) {//超出宝宝当前所处阶段 ，只能看阶段总览，不给看大事件
+					rq.setStatu(ReturnStatus.Success);
+					rq.setBasemodle(null);
+					return rq;
+				}
 				// 最新大事件+当前时期以往的大事件
-				List<BigcaseResult> relist = bigcaseMapper.findMBigcaseResultList(timeParam.getStart(), day);
+				List<BigcaseResult> relist = bigcaseMapper.findMBigcaseResultList(timeParam.getStart(), timeParam.getEnd());
 				// 大事件预告
-				List<BigcaseResult> relist_front = bigcaseMapper.findMBigcaseResultList(day + 1, timeParam.getEnd());
+				List<BigcaseResult> relist_front = bigcaseMapper.findMBigcaseResultList(timeParam.getEnd() + 1, currentStageBigTime);
 				// 我的大事件收藏
 				List<MBigcasecollect> list = collectMapper.findMBigCaseCollect(user.getUserId());
 				int count = 0, currenIndex = 0;

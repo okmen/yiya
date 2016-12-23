@@ -36,7 +36,7 @@ public interface IBigCaseService {
 	 * @param user
 	 * @return
 	 */
-	 ReturnModel find_MBigcaseResultIndexPage(LoginSuccessResult user);
+	 ReturnModel find_MBigcaseResultIndexPage(LoginSuccessResult user,Integer timeId);
 	/**
 	 * 获取阶段总览
 	 * @param timeId 阶段Id

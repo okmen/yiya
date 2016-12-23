@@ -11,7 +11,6 @@ public class BigcaseResult implements Serializable {
 	private String title;
 	private Integer typeId;
 	private String imageDefault;
-
 	private String summary;
 
 	// 大事件标签列表
@@ -22,6 +21,9 @@ public class BigcaseResult implements Serializable {
 	private int readCount;
 	// 同类的大事件数量
 	private int groupCount;
+	//是否收藏
+	private int isCollected;
+	private int isRead;
 	
 	public Integer getCaseId() {
 		return caseId;
@@ -93,6 +95,22 @@ public class BigcaseResult implements Serializable {
 
 	public void setSummary(String summary) {
 		this.summary = summary;
+	}
+
+	public int getIsCollected() {
+		return isCollected;
+	}
+
+	public void setIsCollected(int isCollected) {
+		this.isCollected = isCollected;
+	}
+
+	public int getIsRead() {
+		return isRead;
+	}
+
+	public void setIsRead(int isRead) {
+		this.isRead = isRead;
 	}
 
 }

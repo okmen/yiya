@@ -23,19 +23,26 @@ public interface IBigCaseService {
 	 */
 //	PageInfo<BigcaseResult> find_MBigcaseResultPage(Long userId, int pageIndex, int pageSize);
 	/**
-	 * 宝宝大事件首页列表
+	 * 宝宝大事件首页列表-带分页
 	 * @param user
 	 * @param pageIndex
 	 * @param pageSize
 	 * @return
 	 */
-	PageInfo<BigcaseResult> find_MBigcaseResultPage(LoginSuccessResult user, int pageIndex, int pageSize);
+//	PageInfo<BigcaseResult> find_MBigcaseResultPage(LoginSuccessResult user, int pageIndex, int pageSize);
+	/**
+	 * 首页- 宝宝大事件
+	 * zy(2016-12-23)
+	 * @param user
+	 * @return
+	 */
+	 ReturnModel find_MBigcaseResultIndexPage(LoginSuccessResult user);
 	/**
 	 * 获取阶段总览
 	 * @param timeId 阶段Id
 	 * @return
 	 */
-	BigcasesummaryResult getBigcasesummaryResult(int timeId);
+	 List<BigcasesummaryResult> getBigcasesummaryResult(int timeId);
 	/**
 	 * 大事件详情
 	 * zy
@@ -52,6 +59,13 @@ public interface IBigCaseService {
 	 * @return
 	 */
 	ReturnModel addCollection(Long userid, Integer caseId);
+	/**
+	 * 取消收藏
+	 * @param userid
+	 * @param caseId
+	 * @return
+	 */
+	ReturnModel deleCollection(Long userid, Integer caseId);
 	/**
 	 * 获取收藏列表
 	 * @param userId

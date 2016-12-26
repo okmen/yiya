@@ -1,6 +1,6 @@
 package com.bbyiya.web.base;
 
-import javax.servlet.http.Cookie;
+//import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.user.LoginSuccessResult;
+import com.bbyiya.baseUtils.CookieUtils;
 
 /**
  * 用户登陆验证（farther class）
@@ -29,16 +30,12 @@ public class SSOController {
 	 * 微店用户
 	 */
 	public LoginSuccessResult getLoginUser() {
-		String ticket = request.getHeader("ticket");
+		String ticket = getTicket();
 		if (ObjectUtil.isEmpty(ticket)) {
-			ticket = request.getParameter("ticket");
-			// 判断tiekt是否为空
+			// 获取cookie的tiket的值
+			ticket = CookieUtils.getCookieByName(request, "ticket");
 			if (ObjectUtil.isEmpty(ticket)) {
-				// 获取cookie的tiket的值
-				ticket = CookieUtils.getCookieByName(request, "ticket");
-				if (ObjectUtil.isEmpty(ticket)) {
-					return null;
-				}
+				return null;
 			}
 		}
 		Object userObject = RedisUtil.getObject(ticket);
@@ -51,7 +48,32 @@ public class SSOController {
 	}
 
 	/**
+	 * 
+	 * @param request
+	 * @return
+	 */
+	public static LoginSuccessResult getLoginUser(HttpServletRequest request) {
+		String ticket = getTicket(request);
+		// 判断tiekt是否为空
+		if (ObjectUtil.isEmpty(ticket)) {
+			ticket = CookieUtils.getCookieByName(request, "ticket");// 获取cookie的tiket的值
+			if (ObjectUtil.isEmpty(ticket)) {
+				return null;
+			}
+		}
+		Object userObject = RedisUtil.getObject(ticket);
+		if (userObject != null)// 如果存在
+		{
+			RedisUtil.setExpire(ticket, 1800);// 延长时间
+			LoginSuccessResult user = (LoginSuccessResult) userObject;
+			return user;
+		}
+		return null;// 用户过期
+	}
+
+	/**
 	 * 获取用户登录Ticket
+	 * 
 	 * @return
 	 */
 	public String getTicket() {
@@ -62,4 +84,11 @@ public class SSOController {
 		return ticket;
 	}
 
+	public static String getTicket(HttpServletRequest request) {
+		String ticket = request.getHeader("ticket");
+		if (ObjectUtil.isEmpty(ticket)) {
+			ticket = request.getParameter("ticket");
+		}
+		return ticket;
+	}
 }

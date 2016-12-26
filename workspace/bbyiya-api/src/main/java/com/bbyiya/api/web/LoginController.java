@@ -49,7 +49,10 @@ public class LoginController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/loginAjax")
-	public String loginAjax(String phone, String pwd) throws Exception {
+	public String loginAjax(String phone, String pwd,String ppp) throws Exception {
+		if(ObjectUtil.isEmpty(pwd)){
+			pwd=ppp;
+		}
 		ReturnModel rq = loginService.login(phone, pwd);
 		return JsonUtil.objectToJsonStr(rq);
 	}

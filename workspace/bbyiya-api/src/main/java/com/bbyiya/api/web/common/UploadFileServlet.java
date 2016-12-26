@@ -29,7 +29,7 @@ import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.upload.FileUploadUtils_qiniu;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
-import com.bbyiya.web.base.UserValidate;
+import com.bbyiya.web.base.SSOController;
 import com.sdicons.json.mapper.MapperException;
 
 @WebServlet("/common/uploadfile")
@@ -46,7 +46,7 @@ public class UploadFileServlet extends HttpServlet {
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ReturnModel rq = new ReturnModel();
-		LoginSuccessResult userResult = UserValidate.getLoginUser(request);
+		LoginSuccessResult userResult = SSOController.getLoginUser(request);
 		if (userResult != null) {
 //			rq = upload(request);
 			try {

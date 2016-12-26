@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.PPostmodelMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.PPostmodel" >
+    <id column="PostModelId" property="postmodelid" jdbcType="INTEGER" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="Type" property="type" jdbcType="INTEGER" />
+    <result column="Name" property="name" jdbcType="VARCHAR" />
+    <result column="Amount" property="amount" jdbcType="DECIMAL" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    PostModelId, UserId, Type, Name, Amount, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from P_PostModel
+    where PostModelId = #{postmodelid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from P_PostModel
+    where PostModelId = #{postmodelid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.PPostmodel" >
+    insert into P_PostModel (PostModelId, UserId, Type, 
+      Name, Amount, CreateTime
+      )
+    values (#{postmodelid,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{type,jdbcType=INTEGER}, 
+      #{name,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL}, #{createtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.PPostmodel" >
+    insert into P_PostModel
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="postmodelid != null" >
+        PostModelId,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="type != null" >
+        Type,
+      </if>
+      <if test="name != null" >
+        Name,
+      </if>
+      <if test="amount != null" >
+        Amount,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="postmodelid != null" >
+        #{postmodelid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PPostmodel" >
+    update P_PostModel
+    <set >
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="type != null" >
+        Type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        Name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null" >
+        Amount = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where PostModelId = #{postmodelid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PPostmodel" >
+    update P_PostModel
+    set UserId = #{userid,jdbcType=BIGINT},
+      Type = #{type,jdbcType=INTEGER},
+      Name = #{name,jdbcType=VARCHAR},
+      Amount = #{amount,jdbcType=DECIMAL},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where PostModelId = #{postmodelid,jdbcType=INTEGER}
+  </update>
+</mapper>

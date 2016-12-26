@@ -18,7 +18,7 @@ import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.ReturnModel;
-import com.bbyiya.web.base.CookieUtils;
+import com.bbyiya.baseUtils.CookieUtils;
 
 
 @Controller

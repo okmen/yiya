@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.bbyiya.cts.vo.admin.AdminLoginSuccessResult;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
-import com.bbyiya.web.base.CookieUtils;
+import com.bbyiya.baseUtils.CookieUtils;
 /**
  * manager用户登录验证基类
  * @author Administrator

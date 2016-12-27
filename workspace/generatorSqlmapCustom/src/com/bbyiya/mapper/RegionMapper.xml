@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.RProvinceMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.RProvince" >
+    <id column="Code" property="code" jdbcType="INTEGER" />
+    <result column="Province" property="province" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Code, Province
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from R_Province
+    where Code = #{code,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from R_Province
+    where Code = #{code,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.RProvince" >
+    insert into R_Province (Code, Province)
+    values (#{code,jdbcType=INTEGER}, #{province,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.RProvince" >
+    insert into R_Province
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="code != null" >
+        Code,
+      </if>
+      <if test="province != null" >
+        Province,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="code != null" >
+        #{code,jdbcType=INTEGER},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.RProvince" >
+    update R_Province
+    <set >
+      <if test="province != null" >
+        Province = #{province,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where Code = #{code,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.RProvince" >
+    update R_Province
+    set Province = #{province,jdbcType=VARCHAR}
+    where Code = #{code,jdbcType=INTEGER}
+  </update>
+</mapper>

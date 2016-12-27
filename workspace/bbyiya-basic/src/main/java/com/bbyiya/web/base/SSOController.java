@@ -18,7 +18,7 @@ import com.bbyiya.baseUtils.CookieUtils;
  */
 public class SSOController {
 	@Autowired
-	HttpServletRequest request;
+	public HttpServletRequest request;
 	// @Autowired
 	// HttpServletResponse response;
 	/**

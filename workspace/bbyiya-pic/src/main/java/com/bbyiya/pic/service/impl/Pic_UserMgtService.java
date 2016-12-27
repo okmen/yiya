@@ -1,7 +1,6 @@
-package com.bbyiyia.pic.service.impl;
+package com.bbyiya.pic.service.impl;
 
 import java.util.Date;
-import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -15,13 +14,12 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.user.UserStatusEnum;
 import com.bbyiya.model.UOtherlogin;
 import com.bbyiya.model.UUsers;
+import com.bbyiya.pic.service.IPic_UserMgtService;
 import com.bbyiya.service.IUserLoginService;
 import com.bbyiya.utils.ObjectUtil;
-import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.vo.user.OtherLoginParam;
-import com.bbyiyia.pic.service.IPic_UserMgtService;
 
 @Service("pic_userMgtService")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })

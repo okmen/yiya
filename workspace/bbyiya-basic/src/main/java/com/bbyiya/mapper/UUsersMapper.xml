@@ -55,6 +55,18 @@
       #{createtime,jdbcType=TIMESTAMP}, #{sign,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}
       )
   </insert>
+  <insert id="insertReturnKeyId" useGeneratedKeys="true" keyProperty="userid" parameterType="com.bbyiya.model.UUsers" >
+    insert into u_users (UserID, PassWord, MobilePhone, 
+      MobileBind, Status, Identity, 
+      UserImg, NickName, Email, 
+      CreateTime, Sign, Birthday
+      )
+    values (#{userid,jdbcType=BIGINT}, #{password,jdbcType=VARCHAR}, #{mobilephone,jdbcType=VARCHAR}, 
+      #{mobilebind,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{identity,jdbcType=BIGINT}, 
+      #{userimg,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{sign,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}
+      )
+  </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.UUsers" >
     insert into u_users
     <trim prefix="(" suffix=")" suffixOverrides="," >

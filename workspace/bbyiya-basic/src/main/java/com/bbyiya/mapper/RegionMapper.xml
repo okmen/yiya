@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.RegionMapper" >
+  <resultMap id="ProvinceResultMap" type="com.bbyiya.model.RProvince" ><!-- province Model -->
+    <id column="Code" property="code" jdbcType="INTEGER" />
+    <result column="Province" property="province" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="CityResultMap" type="com.bbyiya.model.RCity" ><!-- city Model -->
+    <id column="Code" property="code" jdbcType="INTEGER" />
+    <result column="City" property="city" jdbcType="VARCHAR" />
+    <result column="ProvinceCode" property="provincecode" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="AreaResultMap" type="com.bbyiya.model.RAreas" ><!-- area Model -->
+    <id column="Code" property="code" jdbcType="INTEGER" />
+    <result column="Area" property="area" jdbcType="VARCHAR" />
+    <result column="CityCode" property="citycode" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Provice_columns" >
+    Code, Province
+  </sql>
+  <sql id="City_Columns" >
+    Code, City, ProvinceCode
+  </sql>
+  <sql id="Area_Columns" >
+    Code, Area, CityCode
+  </sql>
+  <select id="getProvinceByCode" resultMap="ProvinceResultMap" parameterType="java.lang.Integer" ><!-- 根据省Code获取省  -->
+    select 
+    <include refid="Provice_columns" />
+    from R_Province
+    where Code = #{code,jdbcType=INTEGER}
+  </select>
+  <select id="findProvincelistAll" resultMap="ProvinceResultMap" ><!-- 获取所有省  -->
+    select 
+    <include refid="Provice_columns" />
+    from R_Province
+  </select>
+  <select id="findCitylistBy_ProvinceCode" resultMap="CityResultMap" ><!-- 根据省级Code获取市级列表 -->
+    select 
+    <include refid="City_Columns" />
+    from R_City where ProvinceCode=#{provinceCode,jdbcType=INTEGER}
+  </select>
+  <select id="findArealistBy_CityCode" resultMap="AreaResultMap" ><!-- 根据市级Code获取区级列表 -->
+    select 
+    <include refid="Area_Columns" />
+    from R_Areas where CityCode=#{cityCode,jdbcType=INTEGER}
+  </select>
+  
+</mapper>

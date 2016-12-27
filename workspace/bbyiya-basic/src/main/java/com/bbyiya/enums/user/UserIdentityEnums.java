@@ -8,7 +8,13 @@ public enum UserIdentityEnums {
     /**
      * 顶级分销人
      */
-    topUser(4);
+    topUser(4),
+    
+    /**
+     * 业务员
+     */
+    salesman(8)
+    ;
 
     private final int Type;
 

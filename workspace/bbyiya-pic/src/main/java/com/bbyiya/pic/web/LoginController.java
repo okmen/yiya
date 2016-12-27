@@ -2,19 +2,20 @@ package com.bbyiya.pic.web;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bbyiya.dao.RegionMapper;
 import com.bbyiya.enums.ReturnStatus;
-import com.bbyiya.service.IUserLoginService;
+import com.bbyiya.pic.service.IPic_UserMgtService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.OtherLoginParam;
 import com.bbyiya.web.base.SSOController;
-import com.bbyiyia.pic.service.IPic_UserMgtService;
 
 @Controller
 @RequestMapping(value = "/login")
@@ -24,6 +25,9 @@ public class LoginController  extends SSOController {
 	 */
 	@Resource(name = "pic_userMgtService")
 	private IPic_UserMgtService loginService; 
+	
+	@Autowired
+	private RegionMapper regionMapper;
 	
 	/**
 	 * µÚÈý·½µÇÂ¼
@@ -53,4 +57,15 @@ public class LoginController  extends SSOController {
 		param.setHeadImg(headImg);
 		return JsonUtil.objectToJsonStr(loginService.otherLogin(param));
 	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value = "/area")
+	public String area(String province,String city,String area) throws Exception {
+		if(!ObjectUtil.isEmpty(province)){
+			return JsonUtil.objectToJsonStr(regionMapper.getProvinceByCode(ObjectUtil.parseInt(province)));
+		}
+		return JsonUtil.objectToJsonStr(regionMapper.findProvincelistAll());
+	}
+	
 }

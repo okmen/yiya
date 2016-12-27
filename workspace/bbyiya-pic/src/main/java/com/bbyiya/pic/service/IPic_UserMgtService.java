@@ -1,4 +1,4 @@
-package com.bbyiyia.pic.service;
+package com.bbyiya.pic.service;
 
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.OtherLoginParam;

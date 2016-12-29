@@ -9,6 +9,8 @@ public class PProductstyleproperty {
 
     private Long standardvalueid;
 
+    private Long productid;
+
     public Long getId() {
         return id;
     }
@@ -39,5 +41,13 @@ public class PProductstyleproperty {
 
     public void setStandardvalueid(Long standardvalueid) {
         this.standardvalueid = standardvalueid;
+    }
+
+    public Long getProductid() {
+        return productid;
+    }
+
+    public void setProductid(Long productid) {
+        this.productid = productid;
     }
 }

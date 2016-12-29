@@ -49,12 +49,31 @@ public class ProductController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/productlist")
-	public String productlist(@RequestParam(required = false, defaultValue = "0") long uid) throws Exception {
+	public String product(@RequestParam(required = false, defaultValue = "0") long uid) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(productService.findProductList(uid));   
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	/**
+	 * P03 产品详情/相册详情
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/pro")
+	public String productlist(@RequestParam(required = false, defaultValue = "0") long pid) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(productService.getProductResult(pid));   
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

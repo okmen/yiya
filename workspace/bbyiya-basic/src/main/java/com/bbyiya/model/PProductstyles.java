@@ -12,9 +12,9 @@ public class PProductstyles {
 
     private String defaultimg;
 
-    private BigDecimal oldprice;
+    private Double oldprice;
 
-    private BigDecimal price;
+    private Double price;
 
     private Integer status;
 
@@ -56,23 +56,25 @@ public class PProductstyles {
         this.defaultimg = defaultimg == null ? null : defaultimg.trim();
     }
 
-    public BigDecimal getOldprice() {
-        return oldprice;
-    }
+  
 
-    public void setOldprice(BigDecimal oldprice) {
-        this.oldprice = oldprice;
-    }
+    public Double getOldprice() {
+		return oldprice;
+	}
 
-    public BigDecimal getPrice() {
-        return price;
-    }
+	public void setOldprice(Double oldprice) {
+		this.oldprice = oldprice;
+	}
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
+	public Double getPrice() {
+		return price;
+	}
 
-    public Integer getStatus() {
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
+	public Integer getStatus() {
         return status;
     }
 

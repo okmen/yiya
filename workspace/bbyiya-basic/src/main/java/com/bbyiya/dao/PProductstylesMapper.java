@@ -1,5 +1,7 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
 import com.bbyiya.model.PProductstyles;
 
 public interface PProductstylesMapper {
@@ -14,4 +16,10 @@ public interface PProductstylesMapper {
     int updateByPrimaryKeySelective(PProductstyles record);
 
     int updateByPrimaryKey(PProductstyles record);
+    /**
+     * 获取款式列表
+     * @param productId
+     * @return
+     */
+    List<PProductstyles> findStylesByProductId(Long productId);
 }

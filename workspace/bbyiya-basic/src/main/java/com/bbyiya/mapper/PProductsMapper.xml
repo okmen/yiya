@@ -34,6 +34,12 @@
     from P_Products
     where UserId = #{branchUserId,jdbcType=BIGINT} and Status=1
   </select>
+  <select id="getProductResultByProductId" resultMap="ProductResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from P_Products
+    where ProductId = #{productid,jdbcType=BIGINT}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from P_Products
     where ProductId = #{productid,jdbcType=BIGINT}

@@ -6,9 +6,10 @@
     <result column="StyleId" property="styleid" jdbcType="BIGINT" />
     <result column="StandardId" property="standardid" jdbcType="BIGINT" />
     <result column="StandardValueId" property="standardvalueid" jdbcType="BIGINT" />
+    <result column="ProductId" property="productid" jdbcType="BIGINT" />
   </resultMap>
   <sql id="Base_Column_List" >
-    Id, StyleId, StandardId, StandardValueId
+    Id, StyleId, StandardId, StandardValueId, ProductId
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -22,9 +23,9 @@
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.PProductstyleproperty" >
     insert into P_ProductStyleProperty (Id, StyleId, StandardId, 
-      StandardValueId)
+      StandardValueId, ProductId)
     values (#{id,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, #{standardid,jdbcType=BIGINT}, 
-      #{standardvalueid,jdbcType=BIGINT})
+      #{standardvalueid,jdbcType=BIGINT}, #{productid,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PProductstyleproperty" >
     insert into P_ProductStyleProperty
@@ -41,6 +42,9 @@
       <if test="standardvalueid != null" >
         StandardValueId,
       </if>
+      <if test="productid != null" >
+        ProductId,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -54,6 +58,9 @@
       </if>
       <if test="standardvalueid != null" >
         #{standardvalueid,jdbcType=BIGINT},
+      </if>
+      <if test="productid != null" >
+        #{productid,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -69,6 +76,9 @@
       <if test="standardvalueid != null" >
         StandardValueId = #{standardvalueid,jdbcType=BIGINT},
       </if>
+      <if test="productid != null" >
+        ProductId = #{productid,jdbcType=BIGINT},
+      </if>
     </set>
     where Id = #{id,jdbcType=BIGINT}
   </update>
@@ -76,7 +86,8 @@
     update P_ProductStyleProperty
     set StyleId = #{styleid,jdbcType=BIGINT},
       StandardId = #{standardid,jdbcType=BIGINT},
-      StandardValueId = #{standardvalueid,jdbcType=BIGINT}
+      StandardValueId = #{standardvalueid,jdbcType=BIGINT},
+      ProductId = #{productid,jdbcType=BIGINT}
     where Id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -7,13 +7,26 @@
     <result column="IsAuto" property="isauto" jdbcType="INTEGER" />
     <result column="UserId" property="userid" jdbcType="BIGINT" />
   </resultMap>
+   <resultMap id="StandardResultMap" type="com.bbyiya.vo.product.ProductStandardResult" >
+    <id column="StandardValueId" property="standardId" jdbcType="BIGINT" />
+    <result column="StandardValue" property="standardName" jdbcType="VARCHAR" />
+  </resultMap>
   <sql id="Base_Column_List" >
     StandardId, StandardName, IsAuto, UserId
+  </sql>
+  <sql id="StandardResult_Column_List" >
+    StandardValueId, StandardValue
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from P_Standards
+    where StandardId = #{standardid,jdbcType=BIGINT}
+  </select>
+  <select id="findStandardResult" resultMap="StandardResultMap" parameterType="java.lang.Long" ><!-- 根据属性ID获取属性值列表 -->
+    select 
+    <include refid="StandardResult_Column_List" />
+    from P_StandardValues
     where StandardId = #{standardid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >

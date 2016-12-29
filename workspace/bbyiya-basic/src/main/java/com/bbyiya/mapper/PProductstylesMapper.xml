@@ -23,6 +23,12 @@
     from P_ProductStyles
     where StyleId = #{styleid,jdbcType=BIGINT}
   </select>
+  <select id="findStylesByProductId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from P_ProductStyles
+    where ProductId = #{productId,jdbcType=BIGINT}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from P_ProductStyles
     where StyleId = #{styleid,jdbcType=BIGINT}

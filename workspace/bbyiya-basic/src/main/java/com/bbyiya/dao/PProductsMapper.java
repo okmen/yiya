@@ -23,4 +23,6 @@ public interface PProductsMapper {
      * @return
      */
     List<ProductResult> findProductResultByBranchUserId(Long branchUserId); 
+    
+    ProductResult getProductResultByProductId(Long productid);
 }

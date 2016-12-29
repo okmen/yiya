@@ -8,21 +8,31 @@
     <result column="Title" property="title" jdbcType="VARCHAR" />
     <result column="OldPrice" property="oldprice" jdbcType="DECIMAL" />
     <result column="Price" property="price" jdbcType="DECIMAL" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="PostModelId" property="postmodelid" jdbcType="INTEGER" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="UpdateTime" property="updatetime" jdbcType="TIMESTAMP" />
-    <result column="Status" property="status" jdbcType="INTEGER" />
-    <result column="Type" property="type" jdbcType="INTEGER" />
-    <result column="PostModelId" property="postmodelid" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ProductResultMap" type="com.bbyiya.vo.product.ProductResult" >
+    <id column="ProductId" property="productId" jdbcType="BIGINT" />
+    <result column="UserId" property="branchUserId" jdbcType="BIGINT" />
+    <result column="Title" property="title" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    ProductId, UserId, DefaultImg, Title, OldPrice, Price, CreateTime, UpdateTime, Status, 
-    Type, PostModelId
+    ProductId, UserId, DefaultImg, Title, OldPrice, Price, Status, PostModelId, CreateTime, 
+    UpdateTime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from P_Products
     where ProductId = #{productid,jdbcType=BIGINT}
+  </select>
+  <select id="findProductResultByBranchUserId" resultMap="ProductResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from P_Products
+    where UserId = #{branchUserId,jdbcType=BIGINT} and Status=1
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from P_Products
@@ -31,12 +41,12 @@
   <insert id="insert" parameterType="com.bbyiya.model.PProducts" >
     insert into P_Products (ProductId, UserId, DefaultImg, 
       Title, OldPrice, Price, 
-      CreateTime, UpdateTime, Status, 
-      Type, PostModelId)
+      Status, PostModelId, CreateTime, 
+      UpdateTime)
     values (#{productid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{defaultimg,jdbcType=VARCHAR}, 
       #{title,jdbcType=VARCHAR}, #{oldprice,jdbcType=DECIMAL}, #{price,jdbcType=DECIMAL}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, 
-      #{type,jdbcType=INTEGER}, #{postmodelid,jdbcType=INTEGER})
+      #{status,jdbcType=INTEGER}, #{postmodelid,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{updatetime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PProducts" >
     insert into P_Products
@@ -59,20 +69,17 @@
       <if test="price != null" >
         Price,
       </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="postmodelid != null" >
+        PostModelId,
+      </if>
       <if test="createtime != null" >
         CreateTime,
       </if>
       <if test="updatetime != null" >
         UpdateTime,
-      </if>
-      <if test="status != null" >
-        Status,
-      </if>
-      <if test="type != null" >
-        Type,
-      </if>
-      <if test="postmodelid != null" >
-        PostModelId,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -94,20 +101,17 @@
       <if test="price != null" >
         #{price,jdbcType=DECIMAL},
       </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="postmodelid != null" >
+        #{postmodelid,jdbcType=INTEGER},
+      </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatetime != null" >
         #{updatetime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="status != null" >
-        #{status,jdbcType=INTEGER},
-      </if>
-      <if test="type != null" >
-        #{type,jdbcType=INTEGER},
-      </if>
-      <if test="postmodelid != null" >
-        #{postmodelid,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -129,20 +133,17 @@
       <if test="price != null" >
         Price = #{price,jdbcType=DECIMAL},
       </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="postmodelid != null" >
+        PostModelId = #{postmodelid,jdbcType=INTEGER},
+      </if>
       <if test="createtime != null" >
         CreateTime = #{createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatetime != null" >
         UpdateTime = #{updatetime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="status != null" >
-        Status = #{status,jdbcType=INTEGER},
-      </if>
-      <if test="type != null" >
-        Type = #{type,jdbcType=INTEGER},
-      </if>
-      <if test="postmodelid != null" >
-        PostModelId = #{postmodelid,jdbcType=INTEGER},
       </if>
     </set>
     where ProductId = #{productid,jdbcType=BIGINT}
@@ -154,11 +155,10 @@
       Title = #{title,jdbcType=VARCHAR},
       OldPrice = #{oldprice,jdbcType=DECIMAL},
       Price = #{price,jdbcType=DECIMAL},
-      CreateTime = #{createtime,jdbcType=TIMESTAMP},
-      UpdateTime = #{updatetime,jdbcType=TIMESTAMP},
       Status = #{status,jdbcType=INTEGER},
-      Type = #{type,jdbcType=INTEGER},
-      PostModelId = #{postmodelid,jdbcType=INTEGER}
+      PostModelId = #{postmodelid,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      UpdateTime = #{updatetime,jdbcType=TIMESTAMP}
     where ProductId = #{productid,jdbcType=BIGINT}
   </update>
 </mapper>

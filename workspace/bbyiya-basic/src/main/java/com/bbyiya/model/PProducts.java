@@ -16,15 +16,13 @@ public class PProducts {
 
     private BigDecimal price;
 
+    private Integer status;
+
+    private Integer postmodelid;
+
     private Date createtime;
 
     private Date updatetime;
-
-    private Integer status;
-
-    private Integer type;
-
-    private Integer postmodelid;
 
     public Long getProductid() {
         return productid;
@@ -74,6 +72,22 @@ public class PProducts {
         this.price = price;
     }
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Integer getPostmodelid() {
+        return postmodelid;
+    }
+
+    public void setPostmodelid(Integer postmodelid) {
+        this.postmodelid = postmodelid;
+    }
+
     public Date getCreatetime() {
         return createtime;
     }
@@ -88,29 +102,5 @@ public class PProducts {
 
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public Integer getPostmodelid() {
-        return postmodelid;
-    }
-
-    public void setPostmodelid(Integer postmodelid) {
-        this.postmodelid = postmodelid;
     }
 }

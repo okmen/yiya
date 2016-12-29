@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <appSettings>
-	
+	<scenelist><!-- 每日推荐 -->
+		<item id="1" title="scene1" content="haisajdaljk" tips="" imageUrl="" />
+		<item id="2" title="scene2" content="haisajdaljk" tips="" imageUrl="" />
+		<item id="3" title="scene3" content="haisajdaljk" tips="" imageUrl="" />
+		<item id="4" title="scene14" content="haisajdaljk" tips="" imageUrl="" />
+		<item id="5" title="scene1" content="haisajdaljk" tips="" imageUrl="" />
+		<item id="6" title="scene1" content="haisajdaljk" tips="" imageUrl="" />
+		<item id="7" title="scene1" content="haisajdaljk" tips="" imageUrl="" />
+		<item id="8" title="scene1" content="haisajdaljk" tips="" imageUrl="" />
+		<item id="9" title="scene1" content="haisajdaljk" tips="" imageUrl="" />
+		<item id="10" title="scene1" content="haisajdaljk" tips="" imageUrl="" />
+		<item id="11" title="scene1" content="haisajdaljk" tips="" imageUrl="" />
+		<item id="12" title="scene1" content="haisajdaljk" tips="" imageUrl="" />
+		<item id="13" title="scene1" content="haisajdaljk" tips="" imageUrl="" />
+		<item id="14" title="scene1" content="haisajdaljk" tips="" imageUrl="" />
+		<item id="15" title="scene1" content="haisajdaljk" tips="" imageUrl="" />
+		<item id="16" title="scene1" content="haisajdaljk" tips="" imageUrl="" />
+	</scenelist>
 </appSettings>

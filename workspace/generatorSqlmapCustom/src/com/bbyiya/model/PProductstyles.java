@@ -3,14 +3,14 @@ package com.bbyiya.model;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class PProducts {
+public class PProductstyles {
+    private Long styleid;
+
     private Long productid;
 
     private Long userid;
 
     private String defaultimg;
-
-    private String title;
 
     private BigDecimal oldprice;
 
@@ -18,11 +18,19 @@ public class PProducts {
 
     private Integer status;
 
-    private Integer postmodelid;
+    private Integer isdefault;
 
     private Date createtime;
 
     private Date updatetime;
+
+    public Long getStyleid() {
+        return styleid;
+    }
+
+    public void setStyleid(Long styleid) {
+        this.styleid = styleid;
+    }
 
     public Long getProductid() {
         return productid;
@@ -46,14 +54,6 @@ public class PProducts {
 
     public void setDefaultimg(String defaultimg) {
         this.defaultimg = defaultimg == null ? null : defaultimg.trim();
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title == null ? null : title.trim();
     }
 
     public BigDecimal getOldprice() {
@@ -80,12 +80,12 @@ public class PProducts {
         this.status = status;
     }
 
-    public Integer getPostmodelid() {
-        return postmodelid;
+    public Integer getIsdefault() {
+        return isdefault;
     }
 
-    public void setPostmodelid(Integer postmodelid) {
-        this.postmodelid = postmodelid;
+    public void setIsdefault(Integer isdefault) {
+        this.isdefault = isdefault;
     }
 
     public Date getCreatetime() {

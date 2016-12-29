@@ -30,7 +30,7 @@ public class LoginController  extends SSOController {
 	private RegionMapper regionMapper;
 	
 	/**
-	 * 第三方登录
+	 * A01 第三方登陆、注册
 	 * @param headImg
 	 * @param loginType
 	 * @param nickName
@@ -55,17 +55,8 @@ public class LoginController  extends SSOController {
 		param.setLoginType(loginType);
 		param.setNickName(nickName);
 		param.setHeadImg(headImg);
-		return JsonUtil.objectToJsonStr(loginService.otherLogin(param));
-	}
-	
-	
-	@ResponseBody
-	@RequestMapping(value = "/area")
-	public String area(String province,String city,String area) throws Exception {
-		if(!ObjectUtil.isEmpty(province)){
-			return JsonUtil.objectToJsonStr(regionMapper.getProvinceByCode(ObjectUtil.parseInt(province)));
-		}
-		return JsonUtil.objectToJsonStr(regionMapper.findProvincelistAll());
+		ReturnModel rqModel=loginService.otherLogin(param);
+		return JsonUtil.objectToJsonStr(rqModel);
 	}
 	
 }

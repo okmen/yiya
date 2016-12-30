@@ -16,6 +16,12 @@
   <sql id="Base_Column_List" >
     AddrId, UserId, Reciver, Phone, Province, City, Area, StreetDetail, PostCode, IsDefault
   </sql>
+  <select id="get_UUserAddressByKeyId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from U_UserAddress
+    where AddrId = #{addressId,jdbcType=BIGINT}
+  </select>
   <select id="find_UUserAddressByUserId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -27,6 +33,16 @@
     where AddrId = #{addrid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.UUseraddress" >
+    insert into U_UserAddress (AddrId, UserId, Reciver, 
+      Phone, Province, City, 
+      Area, StreetDetail, PostCode, 
+      IsDefault)
+    values (#{addrid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{reciver,jdbcType=VARCHAR}, 
+      #{phone,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, 
+      #{area,jdbcType=INTEGER}, #{streetdetail,jdbcType=VARCHAR}, #{postcode,jdbcType=VARCHAR}, 
+      #{isdefault,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="AddrId" parameterType="com.bbyiya.model.UUseraddress" >
     insert into U_UserAddress (AddrId, UserId, Reciver, 
       Phone, Province, City, 
       Area, StreetDetail, PostCode, 

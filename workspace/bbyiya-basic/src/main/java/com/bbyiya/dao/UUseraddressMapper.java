@@ -5,6 +5,13 @@ import java.util.List;
 import com.bbyiya.model.UUseraddress;
 
 public interface UUseraddressMapper {
+	
+	/**
+	 * 获取用户收货地址
+	 * @param addressId
+	 * @return
+	 */
+	UUseraddress get_UUserAddressByKeyId(Long addressId);
 	/**
 	 * 删除
 	 * @param addrid
@@ -19,6 +26,12 @@ public interface UUseraddressMapper {
     int insert(UUseraddress record);
 
     int insertSelective(UUseraddress record);
+    /**
+     * 
+     * @param record
+     * @return
+     */
+    int insertReturnId(UUseraddress record);
 
     /**
      * 修改改动的字段

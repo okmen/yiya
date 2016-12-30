@@ -528,8 +528,8 @@ public class ObjectUtil {
 	/***************************************************************************
 	 * 参数校验 URLDecoder.decode(param,"UTF-8")
 	 * 
-	 * @param str
-	 *            return true没有危险，false有风险
+	 * @param str  
+	 * @return true没有危险，false有风险
 	 */
 	public static boolean validSqlStr(String str) {
 		if (sqlPattern.matcher(str).find()) {

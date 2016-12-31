@@ -2,13 +2,11 @@ package com.bbyiya.pic.web;
 
 import javax.annotation.Resource;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bbyiya.dao.RegionMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.pic.service.IPic_UserMgtService;
 import com.bbyiya.utils.JsonUtil;
@@ -26,8 +24,7 @@ public class LoginController  extends SSOController {
 	@Resource(name = "pic_userMgtService")
 	private IPic_UserMgtService loginService; 
 	
-	@Autowired
-	private RegionMapper regionMapper;
+
 	
 	/**
 	 * A01 µÚÈý·½µÇÂ½¡¢×¢²á

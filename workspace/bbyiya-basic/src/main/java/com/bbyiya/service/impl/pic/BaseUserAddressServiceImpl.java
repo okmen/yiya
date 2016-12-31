@@ -51,7 +51,25 @@ public class BaseUserAddressServiceImpl implements IBaseUserAddressService{
 				UUseraddress temp=addressMapper.get_UUserAddressByKeyId(address.getAddrid());
 				if(temp!=null){
 					addressMapper.updateByPrimaryKeySelective(address);
-					rq.setBasemodle(address); 
+					if(!ObjectUtil.isEmpty(address.getReciver()) ){
+						temp.setReciver(address.getReciver());
+					}
+					if(!ObjectUtil.isEmpty(address.getPhone()) ){
+						temp.setPhone(address.getPhone());
+					}
+					if(!ObjectUtil.isEmpty(address.getProvince()) ){
+						temp.setProvince(address.getProvince());
+					}
+					if(!ObjectUtil.isEmpty(address.getCity()) ){
+						temp.setCity(address.getCity());
+					}
+					if(!ObjectUtil.isEmpty(address.getArea()) ){
+						temp.setArea(address.getArea());
+					}
+					if(!ObjectUtil.isEmpty(address.getStreetdetail()) ){
+						temp.setStreetdetail(address.getStreetdetail());
+					} 
+					rq.setBasemodle(temp); 
 					rq.setStatu(ReturnStatus.Success);
 					return rq;
 				}else {

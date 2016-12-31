@@ -53,7 +53,6 @@ public class RegionController extends SSOController {
 		default:
 			break;
 		}
-
 		return JsonUtil.objectToJsonStr(rq);
 	}
 }

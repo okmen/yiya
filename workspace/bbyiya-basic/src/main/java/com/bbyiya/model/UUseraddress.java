@@ -1,6 +1,10 @@
 package com.bbyiya.model;
 
-public class UUseraddress {
+import java.io.Serializable;
+
+public class UUseraddress implements Serializable{
+	private static final long serialVersionUID = 1L;
+	
     private Long addrid;
 
     private Long userid;

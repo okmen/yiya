@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.OUserordersMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.OUserorders" >
+    <id column="UserOrderId" property="userorderid" jdbcType="VARCHAR" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="TotalPrice" property="totalprice" jdbcType="DECIMAL" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="BranchUserId" property="branchuserid" jdbcType="BIGINT" />
+    <result column="OrderAddressId" property="orderaddressid" jdbcType="BIGINT" />
+    <result column="PayId" property="payid" jdbcType="VARCHAR" />
+    <result column="Remark" property="remark" jdbcType="VARCHAR" />
+    <result column="OrderTime" property="ordertime" jdbcType="TIMESTAMP" />
+    <result column="PayTime" property="paytime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    UserOrderId, UserId, TotalPrice, Status, BranchUserId, OrderAddressId, PayId, Remark, 
+    OrderTime, PayTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from O_UserOrders
+    where UserOrderId = #{userorderid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from O_UserOrders
+    where UserOrderId = #{userorderid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.OUserorders" >
+    insert into O_UserOrders (UserOrderId, UserId, TotalPrice, 
+      Status, BranchUserId, OrderAddressId, 
+      PayId, Remark, OrderTime, 
+      PayTime)
+    values (#{userorderid,jdbcType=VARCHAR}, #{userid,jdbcType=BIGINT}, #{totalprice,jdbcType=DECIMAL}, 
+      #{status,jdbcType=INTEGER}, #{branchuserid,jdbcType=BIGINT}, #{orderaddressid,jdbcType=BIGINT}, 
+      #{payid,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{ordertime,jdbcType=TIMESTAMP}, 
+      #{paytime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.OUserorders" >
+    insert into O_UserOrders
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userorderid != null" >
+        UserOrderId,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="totalprice != null" >
+        TotalPrice,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="branchuserid != null" >
+        BranchUserId,
+      </if>
+      <if test="orderaddressid != null" >
+        OrderAddressId,
+      </if>
+      <if test="payid != null" >
+        PayId,
+      </if>
+      <if test="remark != null" >
+        Remark,
+      </if>
+      <if test="ordertime != null" >
+        OrderTime,
+      </if>
+      <if test="paytime != null" >
+        PayTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userorderid != null" >
+        #{userorderid,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="totalprice != null" >
+        #{totalprice,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="branchuserid != null" >
+        #{branchuserid,jdbcType=BIGINT},
+      </if>
+      <if test="orderaddressid != null" >
+        #{orderaddressid,jdbcType=BIGINT},
+      </if>
+      <if test="payid != null" >
+        #{payid,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="ordertime != null" >
+        #{ordertime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paytime != null" >
+        #{paytime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.OUserorders" >
+    update O_UserOrders
+    <set >
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="totalprice != null" >
+        TotalPrice = #{totalprice,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="branchuserid != null" >
+        BranchUserId = #{branchuserid,jdbcType=BIGINT},
+      </if>
+      <if test="orderaddressid != null" >
+        OrderAddressId = #{orderaddressid,jdbcType=BIGINT},
+      </if>
+      <if test="payid != null" >
+        PayId = #{payid,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        Remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="ordertime != null" >
+        OrderTime = #{ordertime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paytime != null" >
+        PayTime = #{paytime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where UserOrderId = #{userorderid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.OUserorders" >
+    update O_UserOrders
+    set UserId = #{userid,jdbcType=BIGINT},
+      TotalPrice = #{totalprice,jdbcType=DECIMAL},
+      Status = #{status,jdbcType=INTEGER},
+      BranchUserId = #{branchuserid,jdbcType=BIGINT},
+      OrderAddressId = #{orderaddressid,jdbcType=BIGINT},
+      PayId = #{payid,jdbcType=VARCHAR},
+      Remark = #{remark,jdbcType=VARCHAR},
+      OrderTime = #{ordertime,jdbcType=TIMESTAMP},
+      PayTime = #{paytime,jdbcType=TIMESTAMP}
+    where UserOrderId = #{userorderid,jdbcType=VARCHAR}
+  </update>
+</mapper>

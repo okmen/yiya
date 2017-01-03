@@ -1,5 +1,7 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
 import com.bbyiya.model.OOrderproducts;
 
 public interface OOrderproductsMapper {
@@ -14,4 +16,10 @@ public interface OOrderproductsMapper {
     int updateByPrimaryKeySelective(OOrderproducts record);
 
     int updateByPrimaryKey(OOrderproducts record);
+    /**
+     * 获取订单产品列表
+     * @param userOrderId
+     * @return
+     */
+    List<OOrderproducts>  findOProductsByOrderId(String userOrderId);
 }

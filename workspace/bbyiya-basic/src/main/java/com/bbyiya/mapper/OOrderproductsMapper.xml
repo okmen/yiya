@@ -24,6 +24,12 @@
     from O_OrderProducts
     where OrderProductId = #{orderproductid,jdbcType=VARCHAR}
   </select>
+  <select id="findOProductsByOrderId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from O_OrderProducts
+    where UserOrderId = #{userOrderId,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from O_OrderProducts
     where OrderProductId = #{orderproductid,jdbcType=VARCHAR}

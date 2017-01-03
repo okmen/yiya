@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.OPayforuserorderMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.OPayforuserorder" >
+    <id column="PayId" property="payid" jdbcType="VARCHAR" />
+    <result column="UserOrderId" property="userorderid" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    PayId, UserOrderId, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from O_PayForUserOrder
+    where PayId = #{payid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from O_PayForUserOrder
+    where PayId = #{payid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.OPayforuserorder" >
+    insert into O_PayForUserOrder (PayId, UserOrderId, CreateTime
+      )
+    values (#{payid,jdbcType=VARCHAR}, #{userorderid,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.OPayforuserorder" >
+    insert into O_PayForUserOrder
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="payid != null" >
+        PayId,
+      </if>
+      <if test="userorderid != null" >
+        UserOrderId,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="payid != null" >
+        #{payid,jdbcType=VARCHAR},
+      </if>
+      <if test="userorderid != null" >
+        #{userorderid,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.OPayforuserorder" >
+    update O_PayForUserOrder
+    <set >
+      <if test="userorderid != null" >
+        UserOrderId = #{userorderid,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where PayId = #{payid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.OPayforuserorder" >
+    update O_PayForUserOrder
+    set UserOrderId = #{userorderid,jdbcType=VARCHAR},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where PayId = #{payid,jdbcType=VARCHAR}
+  </update>
+</mapper>

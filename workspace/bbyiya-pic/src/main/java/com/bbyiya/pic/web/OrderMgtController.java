@@ -1,7 +1,9 @@
 package com.bbyiya.pic.web;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -11,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.pic.service.IPic_UserMgtService;
+import com.bbyiya.pic.vo.order.SubmitOrderParam;
 import com.bbyiya.pic.vo.order.SubmitOrderProductParam;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
 import com.bbyiya.utils.ConfigUtil;
@@ -25,13 +29,13 @@ import com.bbyiya.web.base.SSOController;
 @Controller
 @RequestMapping(value = "/order")
 public class OrderMgtController extends SSOController {
-	
+
 	@Resource(name = "baseOrderMgtServiceImpl")
-	private IBaseOrderMgtService orderMgtService; 
-	
-	
+	private IBaseOrderMgtService orderMgtService;
+
 	/**
 	 * O01 提交订单（购买）
+	 * 
 	 * @param addrId
 	 * @param productJsonStr
 	 * @return
@@ -39,33 +43,42 @@ public class OrderMgtController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/submitOrder")
-	public String submitOrder(@RequestParam(required = false, defaultValue = "0") long addrId, String productJsonStr) throws Exception {
+	public String submitOrder(@RequestParam(required = false, defaultValue = "0") long addrId, String remark, String productJsonStr) throws Exception {
 		ReturnModel rq = new ReturnModel();
-		LoginSuccessResult user= super.getLoginUser();
-		if(user!=null&&user.getUserId()!=null&&user.getUserId()>0){
-			if(!ObjectUtil.isEmpty(productJsonStr)){
-				SubmitOrderProductParam param=(SubmitOrderProductParam)JsonUtil.jsonStrToObject(productJsonStr, SubmitOrderProductParam.class);
-				if(param!=null){
-					rq.setBasemodle(getOrderNo(user.getUserId())); 
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null && user.getUserId() != null && user.getUserId() > 0) {
+			if (!ObjectUtil.isEmpty(productJsonStr)) {
+				SubmitOrderProductParam param = (SubmitOrderProductParam) JsonUtil.jsonStrToObject(productJsonStr, SubmitOrderProductParam.class);
+				if (param != null) {
+					OOrderproducts product = new OOrderproducts();
+					product.setProductid(param.getProductId());
+					product.setStyleid(param.getStyleId());
+					product.setCount(param.getCount());
+					product.setSalesuserid(0l);
+					rq = orderMgtService.submitOrder_singleProduct(user.getUserId(), addrId, remark, product);
 				}
 			}
 			rq.setStatu(ReturnStatus.Success);
 			
-		}else {
+		} else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	
-	
-	public String getOrderNo(Long userId){
-		if(userId==null)
-			userId=1l;
-		long temp=userId%100000;
-		DecimalFormat df=new DecimalFormat("0000");
-	    String str2=df.format(temp);
-		String timeStr=DateUtil.getTimeStr(new Date(), "yyyyMMdd"+str2+"HHmmSSS");
-		return timeStr;
+
+	@ResponseBody
+	@RequestMapping(value = "/getOrderInfo")
+	public String getOrderInfo(String payOrderId) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null && user.getUserId() != null && user.getUserId() > 0) {
+
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
 	}
+
 }

@@ -1,6 +1,5 @@
 package com.bbyiya.model;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 public class OUserorders {

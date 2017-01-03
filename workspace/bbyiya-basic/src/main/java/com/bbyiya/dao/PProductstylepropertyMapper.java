@@ -3,6 +3,7 @@ package com.bbyiya.dao;
 import java.util.List;
 
 import com.bbyiya.model.PProductstyleproperty;
+import com.bbyiya.vo.product.StyleProperty;
 
 public interface PProductstylepropertyMapper {
     int deleteByPrimaryKey(Long id);
@@ -22,4 +23,10 @@ public interface PProductstylepropertyMapper {
      * @return
      */
     List<PProductstyleproperty> findStylePropertyByProductId(Long productId);
+    /**
+     * 获取款式属性列表
+     * @param styleId
+     * @return
+     */
+    List<StyleProperty> findPropertyByStyleId(Long styleId);
 }

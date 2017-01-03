@@ -8,14 +8,31 @@
     <result column="StandardValueId" property="standardvalueid" jdbcType="BIGINT" />
     <result column="ProductId" property="productid" jdbcType="BIGINT" />
   </resultMap>
+  <resultMap id="StyleResultMap" type="com.bbyiya.vo.product.StyleProperty" >
+    <result column="StyleId" property="styleId" jdbcType="BIGINT" />
+    <result column="StandardId" property="standardId" jdbcType="BIGINT" />
+    <result column="StandardValueId" property="standardValueId" jdbcType="BIGINT" />
+    <result column="ProductId" property="productId" jdbcType="BIGINT" />
+    <result column="StandardName" property="standardName" jdbcType="VARCHAR" />
+    <result column="StandardValue" property="standardValue" jdbcType="VARCHAR" />
+  </resultMap>
   <sql id="Base_Column_List" >
     Id, StyleId, StandardId, StandardValueId, ProductId
+  </sql>
+  <sql id="style_Column_list" >
+    StyleId, StandardId, StandardValueId, ProductId,StandardName,StandardValue
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from P_ProductStyleProperty
     where Id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="findPropertyByStyleId" resultMap="StyleResultMap" parameterType="java.lang.Long" ><!-- 获取款式属性列表 -->
+    select  a.StyleId, a.StandardId, a.StandardValueId, a.ProductId,b.StandardName,c.StandardValue
+    from P_ProductStyleProperty as a,P_Standards as b ,P_StandardValues as c 
+    where StyleId=#{styleId,jdbcType=BIGINT} and a.StandardId=b.StandardId and a.StandardValueId=c.StandardValueId
+   	order by a.StandardId asc
   </select>
   <select id="findStylePropertyByProductId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 

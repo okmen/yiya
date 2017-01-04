@@ -20,11 +20,11 @@ import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.encrypt.MD5Encrypt;
 
 /**
- * 微信 公众号支付
+ * 微信 app支付
  * @author Administrator
  *
  */
-public class WxPayUtils {
+public class WxAppPayUtils {
 
 	/**
 	 * 时间串

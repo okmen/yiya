@@ -72,8 +72,8 @@ public class WeiXinPayUtil {
 			String timeStamp = String.valueOf(genTimeStamp()) ;
 			
 			List<NameValuePair> packageParams = new LinkedList<NameValuePair>();
-			packageParams.add(new BasicNameValuePair("appid",WeiXinPayAppConfig.APPID_NEW));
-			packageParams.add(new BasicNameValuePair("partnerid",WeiXinPayAppConfig.PARNER_NEW));// 商户号
+			packageParams.add(new BasicNameValuePair("appid",WeiXinPayAppConfig.APPID));
+			packageParams.add(new BasicNameValuePair("partnerid",WeiXinPayAppConfig.PARNER));// 商户号
 			packageParams.add(new BasicNameValuePair("prepayid", prepay_id));
 			packageParams.add(new BasicNameValuePair("package", "Sign=WXPay"));
 			packageParams.add(new BasicNameValuePair("noncestr", nonceStr));
@@ -82,8 +82,8 @@ public class WeiXinPayUtil {
 			
 			
 			Map<String, String> map_param=new HashMap<String, String>();
-			map_param.put("appid", WeiXinPayAppConfig.APPID_NEW);
-			map_param.put("partnerId", WeiXinPayAppConfig.PARNER_NEW);
+			map_param.put("appid", WeiXinPayAppConfig.APPID);
+			map_param.put("partnerId", WeiXinPayAppConfig.PARNER);
 			map_param.put("prepayId", prepay_id);
 			map_param.put("package", "Sign=WXPay");
 			map_param.put("nonceStr", nonceStr);
@@ -118,8 +118,8 @@ public class WeiXinPayUtil {
 			formatter.applyPattern(pattern);
 			String totalFee = formatter.format(totalprice * 100);
             List<NameValuePair> packageParams = new LinkedList<NameValuePair>();
-			packageParams.add(new BasicNameValuePair("appid", WeiXinPayAppConfig.APPID_NEW));
-			packageParams.add(new BasicNameValuePair("mch_id", WeiXinPayAppConfig.PARNER_NEW));//商户号
+			packageParams.add(new BasicNameValuePair("appid", WeiXinPayAppConfig.APPID));
+			packageParams.add(new BasicNameValuePair("mch_id", WeiXinPayAppConfig.PARNER));//商户号
 //			packageParams.add(new BasicNameValuePair("device_info", "10000100"));//设备号
 			packageParams.add(new BasicNameValuePair("nonce_str", nonceStr));
 			Map<String, String>map=WeiXinUtil.getOrderTitle(typeState, orderNo);

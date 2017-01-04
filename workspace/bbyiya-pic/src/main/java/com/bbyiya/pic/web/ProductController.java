@@ -114,7 +114,6 @@ public class ProductController extends SSOController {
 	public String getIndex(Long userId,Long productId){
 		int temp=1000;
 		long index=userId%temp;
-		
 		String key="user_work_index_"+index;
 		Map<Long, Map<Long, Integer>> map= (Map<Long, Map<Long, Integer>>)RedisUtil.getObject(key);
 		int val=1;

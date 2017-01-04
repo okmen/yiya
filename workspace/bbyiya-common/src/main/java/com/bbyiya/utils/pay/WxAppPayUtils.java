@@ -123,7 +123,7 @@ public class WxAppPayUtils {
 		String entityString = genProductArgs(ipStr, totalPrice, orderNo, nonceStr);
 //		String msgString = WeiXinUtil.httpPost(urlString, entityString);
 		String msgString=HttpRequestHelper.sendPost(urlString, entityString);
-		Map<String, Object> map = WeiXinUtil.xml2Map(msgString);
+		Map<String, Object> map = WxUtil.xml2Map(msgString);
 		return map;
 	}
 

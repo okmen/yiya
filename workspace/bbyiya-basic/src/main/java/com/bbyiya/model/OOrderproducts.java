@@ -1,8 +1,11 @@
 package com.bbyiya.model;
 
-import java.math.BigDecimal;
+import java.io.Serializable;
 
-public class OOrderproducts {
+
+public class OOrderproducts implements Serializable{
+	private static final long serialVersionUID = 1L;
+	
     private String orderproductid;
 
     private String userorderid;

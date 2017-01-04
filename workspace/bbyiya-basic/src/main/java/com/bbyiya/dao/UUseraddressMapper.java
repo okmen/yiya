@@ -2,6 +2,8 @@ package com.bbyiya.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.UUseraddress;
 
 public interface UUseraddressMapper {
@@ -11,7 +13,7 @@ public interface UUseraddressMapper {
 	 * @param addressId
 	 * @return
 	 */
-	UUseraddress get_UUserAddressByKeyId(Long addressId);
+	UUseraddress get_UUserAddressByKeyId(@Param("addressId") Long addressId);
 	/**
 	 * 删除
 	 * @param addrid

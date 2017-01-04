@@ -3,6 +3,7 @@
 <mapper namespace="com.bbyiya.dao.OPayorderMapper" >
   <resultMap id="BaseResultMap" type="com.bbyiya.model.OPayorder" >
     <id column="PayId" property="payid" jdbcType="VARCHAR" />
+    <result column="UserOrderId" property="userorderid" jdbcType="VARCHAR" />
     <result column="UserId" property="userid" jdbcType="BIGINT" />
     <result column="Status" property="status" jdbcType="INTEGER" />
     <result column="TotalPrice" property="totalprice" jdbcType="DECIMAL" />
@@ -10,7 +11,7 @@
     <result column="PayTime" property="paytime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    PayId, UserId, Status, TotalPrice, CreateTime, PayTime
+    PayId, UserOrderId, UserId, Status, TotalPrice, CreateTime, PayTime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -22,19 +23,22 @@
     delete from O_PayOrder
     where PayId = #{payid,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.bbyiya.model.OPayorder" >
-    insert into O_PayOrder (PayId, UserId, Status, 
-      TotalPrice, CreateTime, PayTime
-      )
-    values (#{payid,jdbcType=VARCHAR}, #{userid,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, 
-      #{totalprice,jdbcType=DECIMAL}, #{createtime,jdbcType=TIMESTAMP}, #{paytime,jdbcType=TIMESTAMP}
-      )
+ <insert id="insert" parameterType="com.bbyiya.model.OPayorder" >
+    insert into O_PayOrder (PayId, UserOrderId, UserId, 
+      Status, TotalPrice, CreateTime, 
+      PayTime)
+    values (#{payid,jdbcType=VARCHAR}, #{userorderid,jdbcType=VARCHAR}, #{userid,jdbcType=BIGINT}, 
+      #{status,jdbcType=INTEGER}, #{totalprice,jdbcType=DECIMAL}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{paytime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.OPayorder" >
     insert into O_PayOrder
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="payid != null" >
         PayId,
+      </if>
+      <if test="userorderid != null" >
+        UserOrderId,
       </if>
       <if test="userid != null" >
         UserId,
@@ -56,6 +60,9 @@
       <if test="payid != null" >
         #{payid,jdbcType=VARCHAR},
       </if>
+      <if test="userorderid != null" >
+        #{userorderid,jdbcType=VARCHAR},
+      </if>
       <if test="userid != null" >
         #{userid,jdbcType=BIGINT},
       </if>
@@ -76,6 +83,9 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.OPayorder" >
     update O_PayOrder
     <set >
+      <if test="userorderid != null" >
+        UserOrderId = #{userorderid,jdbcType=VARCHAR},
+      </if>
       <if test="userid != null" >
         UserId = #{userid,jdbcType=BIGINT},
       </if>
@@ -96,7 +106,8 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.OPayorder" >
     update O_PayOrder
-    set UserId = #{userid,jdbcType=BIGINT},
+    set UserOrderId = #{userorderid,jdbcType=VARCHAR},
+      UserId = #{userid,jdbcType=BIGINT},
       Status = #{status,jdbcType=INTEGER},
       TotalPrice = #{totalprice,jdbcType=DECIMAL},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},

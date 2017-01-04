@@ -12,8 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.baseUtils.GenUtils;
 import com.bbyiya.dao.OOrderaddressMapper;
+import com.bbyiya.dao.OOrderproductdetailsMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
-import com.bbyiya.dao.OPayforuserorderMapper;
+//import com.bbyiya.dao.OPayforuserorderMapper;
 import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PProductsMapper;
@@ -24,8 +25,9 @@ import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.OOrderaddress;
+import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproducts;
-import com.bbyiya.model.OPayforuserorder;
+//import com.bbyiya.model.OPayforuserorder;
 import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PProducts;
@@ -35,10 +37,12 @@ import com.bbyiya.model.RCity;
 import com.bbyiya.model.RProvince;
 import com.bbyiya.model.UUseraddress;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
+import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.RegionVo;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.order.UserOrderParam;
+import com.bbyiya.vo.order.UserOrderResult;
 import com.bbyiya.vo.product.StyleProperty;
 
 @Service("baseOrderMgtServiceImpl")
@@ -65,8 +69,10 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	private OUserordersMapper userOrdersMapper;//订单
 	@Autowired
 	private OPayorderMapper payOrderMapper;//支付单
+//	@Autowired
+//	private OPayforuserorderMapper payForOrderMapper;//支付单-订单 关系 暂时不用此表， 
 	@Autowired
-	private OPayforuserorderMapper payForOrderMapper;//支付单-订单 关系
+	private OOrderproductdetailsMapper odetailMapper;//产品图片集合
 	
 
 //	/**
@@ -132,80 +138,80 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 //		return rq;
 //	}
 
-	public ReturnModel submitOrder(Long userId, Long addrId, String remark, List<OOrderproducts> prolist) {
-		ReturnModel rq = new ReturnModel();
-		try {
-			Map<String, UserOrderParam> orderlist = getUserOrderParamList(addrId, remark, prolist);
-			if (orderlist != null && orderlist.size() > 0) {
-				String payId=GenUtils.getOrderNo(userId);
-				Double totalPrice_pay=0d; 
-				for (UserOrderParam param : orderlist.values()) {
-					// 用户订单号（订单号）
-					String userOrderId = GenUtils.getOrderNo(userId);
-					// 用户订单
-					Date ordertime = new Date();
-					OUserorders userOrder = new OUserorders();
-					userOrder.setUserorderid(userOrderId);
-					userOrder.setBranchuserid(param.getBranchUserId());
-					userOrder.setUserid(userId);// 买家userId
-					userOrder.setBranchuserid(param.getBranchUserId());// 分销商userId
-					userOrder.setRemark(param.getRemark());
-					userOrder.setOrdertime(ordertime);
-					userOrder.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
-					long orderAddrId = getOrderAddressId(param.getAddrId());
-					if (orderAddrId > 0) {
-						userOrder.setOrderaddressid(param.getAddrId());
-					} else {
-						rq.setStatu(ReturnStatus.OrderError);
-						rq.setStatusreson("订单收货地址生成有误");
-						return rq;
-					}
-					if (param.getProlist() != null && param.getProlist().size() > 0) {
-						Double totalPrice = 0d;
-						for (OOrderproducts pp : param.getProlist()) {
-							// 获取产品信息
-							PProducts products = productsMapper.selectByPrimaryKey(pp.getProductid());
-							PProductstyles styles = styleMapper.selectByPrimaryKey(pp.getStyleid());
-							if (products != null && styles != null) {
-//								productOrderId_result=GenUtils.getOrderNo(userId);
-								pp.setOrderproductid(GenUtils.getOrderNo(userId));// 产品订单编号
-								pp.setUserorderid(userOrderId);// 用户订单号
-								pp.setBuyeruserid(userId);
-								oproductMapper.insert(pp);
-								// 价格和
-								totalPrice += styles.getPrice() * pp.getCount();
-							} else {
-								throw new Exception("找不到相应的产品！");
-							}
-						}
-						userOrder.setTotalprice(totalPrice);
-						userOrdersMapper.insert(userOrder);
-						addPayForUserOrder(payId, userOrderId); //插入支付单-用户订单 关系
-						totalPrice_pay+=totalPrice;
-					} else {
-						rq.setStatu(ReturnStatus.ParamError);
-						rq.setStatusreson("产品产生有误");
-						return rq;
-					}
-				}
-				addPayOrder(userId, payId, totalPrice_pay); //插入支付订单记录
-				rq.setStatu(ReturnStatus.Success);
-				Map<String, Object> mapResult=new HashMap<String, Object>();
-				mapResult.put("payId", payId);
-				rq.setBasemodle(mapResult); 
-			} else {
-				rq.setStatu(ReturnStatus.OrderError_1);
-				rq.setStatusreson("订单参数有误");
-				return rq;
-			}
-
-		} catch (Exception e) {
-			// TODO: handle exception
-			rq.setStatu(ReturnStatus.SystemError);
-			rq.setStatusreson(e.getMessage());
-		}
-		return rq;
-	}
+//	public ReturnModel submitOrder(Long userId, Long addrId, String remark, List<OOrderproducts> prolist) {
+//		ReturnModel rq = new ReturnModel();
+//		try {
+//			Map<String, UserOrderParam> orderlist = getUserOrderParamList(addrId, remark, prolist);
+//			if (orderlist != null && orderlist.size() > 0) {
+//				String payId=GenUtils.getOrderNo(userId);
+//				Double totalPrice_pay=0d; 
+//				for (UserOrderParam param : orderlist.values()) {
+//					// 用户订单号（订单号）
+//					String userOrderId = GenUtils.getOrderNo(userId);
+//					// 用户订单
+//					Date ordertime = new Date();
+//					OUserorders userOrder = new OUserorders();
+//					userOrder.setUserorderid(userOrderId);
+//					userOrder.setBranchuserid(param.getBranchUserId());
+//					userOrder.setUserid(userId);// 买家userId
+//					userOrder.setBranchuserid(param.getBranchUserId());// 分销商userId
+//					userOrder.setRemark(param.getRemark());
+//					userOrder.setOrdertime(ordertime);
+//					userOrder.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
+//					long orderAddrId = getOrderAddressId(param.getAddrId());
+//					if (orderAddrId > 0) {
+//						userOrder.setOrderaddressid(param.getAddrId());
+//					} else {
+//						rq.setStatu(ReturnStatus.OrderError);
+//						rq.setStatusreson("订单收货地址生成有误");
+//						return rq;
+//					}
+//					if (param.getProlist() != null && param.getProlist().size() > 0) {
+//						Double totalPrice = 0d;
+//						for (OOrderproducts pp : param.getProlist()) {
+//							// 获取产品信息
+//							PProducts products = productsMapper.selectByPrimaryKey(pp.getProductid());
+//							PProductstyles styles = styleMapper.selectByPrimaryKey(pp.getStyleid());
+//							if (products != null && styles != null) {
+////								productOrderId_result=GenUtils.getOrderNo(userId);
+//								pp.setOrderproductid(GenUtils.getOrderNo(userId));// 产品订单编号
+//								pp.setUserorderid(userOrderId);// 用户订单号
+//								pp.setBuyeruserid(userId);
+//								oproductMapper.insert(pp);
+//								// 价格和
+//								totalPrice += styles.getPrice() * pp.getCount();
+//							} else {
+//								throw new Exception("找不到相应的产品！");
+//							}
+//						}
+//						userOrder.setTotalprice(totalPrice);
+//						userOrdersMapper.insert(userOrder);
+//						addPayForUserOrder(payId, userOrderId); //插入支付单-用户订单 关系
+//						totalPrice_pay+=totalPrice;
+//					} else {
+//						rq.setStatu(ReturnStatus.ParamError);
+//						rq.setStatusreson("产品产生有误");
+//						return rq;
+//					}
+//				}
+//				addPayOrder(userId, payId, totalPrice_pay); //插入支付订单记录
+//				rq.setStatu(ReturnStatus.Success);
+//				Map<String, Object> mapResult=new HashMap<String, Object>();
+//				mapResult.put("payId", payId);
+//				rq.setBasemodle(mapResult); 
+//			} else {
+//				rq.setStatu(ReturnStatus.OrderError_1);
+//				rq.setStatusreson("订单参数有误");
+//				return rq;
+//			}
+//
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//			rq.setStatu(ReturnStatus.SystemError);
+//			rq.setStatusreson(e.getMessage());
+//		}
+//		return rq;
+//	}
 	
 	/**
 	 * 用户订单，产品订单 共用（一个订单对应一个产品 ）
@@ -218,16 +224,22 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	public ReturnModel submitOrder_singleProduct(Long userId, Long addrId, String remark, OOrderproducts product) {
 		ReturnModel rq = new ReturnModel();
 		try {
+			long orderAddrId = getOrderAddressId(addrId);
+			if(orderAddrId<=0){
+				rq.setStatu(ReturnStatus.OrderError);
+				rq.setStatusreson("订单收货地址生成有误");
+				return rq;
+			}
 			List<OOrderproducts> prolist=new ArrayList<OOrderproducts>();
 			prolist.add(product);
-			Map<String, UserOrderParam> orderlist = getUserOrderParamList(addrId, remark, prolist);
+			Map<String, UserOrderParam> orderlist = getUserOrderParamList(orderAddrId, remark, prolist);
 			if (orderlist != null && orderlist.size() > 0) {
 				String payId=GenUtils.getOrderNo(userId);
 				String orderId="";
 				Double totalPrice_pay=0d; 
 				for (UserOrderParam param : orderlist.values()) {
 					// 用户订单号（订单号）
-					String userOrderId = GenUtils.getOrderNo(userId);
+					String userOrderId = payId;//GenUtils.getOrderNo(userId);
 					orderId=userOrderId;
 					// 用户订单
 					Date ordertime = new Date();
@@ -239,14 +251,8 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					userOrder.setRemark(param.getRemark());
 					userOrder.setOrdertime(ordertime);
 					userOrder.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
-					long orderAddrId = getOrderAddressId(param.getAddrId());
-					if (orderAddrId > 0) {
-						userOrder.setOrderaddressid(param.getAddrId());
-					} else {
-						rq.setStatu(ReturnStatus.OrderError);
-						rq.setStatusreson("订单收货地址生成有误");
-						return rq;
-					}
+					userOrder.setOrderaddressid(orderAddrId);
+					userOrder.setPayid(payId); //会写支付单号
 					if (param.getProlist() != null && param.getProlist().size() > 0) {
 						Double totalPrice = 0d;
 						for (OOrderproducts pp : param.getProlist()) {
@@ -266,7 +272,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 						}
 						userOrder.setTotalprice(totalPrice);
 						userOrdersMapper.insert(userOrder);
-						addPayForUserOrder(payId, userOrderId); //插入支付单-用户订单 关系
+					
 						totalPrice_pay+=totalPrice;
 					} else {
 						rq.setStatu(ReturnStatus.ParamError);
@@ -274,13 +280,14 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 						return rq;
 					}
 				}
-				addPayOrder(userId, payId, totalPrice_pay); //插入支付订单记录
+				addPayOrder(userId, payId,payId, totalPrice_pay); //插入支付订单记录
 				rq.setStatu(ReturnStatus.Success);
 				Map<String, Object> mapResult=new HashMap<String, Object>();
 				mapResult.put("payId", payId);
 				mapResult.put("orderId", orderId);
 				mapResult.put("productId", product.getProductid());
 				mapResult.put("styleId", product.getStyleid());
+				mapResult.put("totalPrice", totalPrice_pay);
 				rq.setBasemodle(mapResult); 
 			} else {
 				rq.setStatu(ReturnStatus.OrderError_1);
@@ -296,18 +303,97 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		return rq;
 	}
 	
-	public Map<String, Object> getResultStr(String payId){
-		OPayforuserorder payforuserorder= payForOrderMapper.selectByPrimaryKey(payId);
-		if(payforuserorder!=null){
-			OUserorders userorders= userOrdersMapper.selectByPrimaryKey(payforuserorder.getUserorderid());
-			if(userorders!=null){
-				 List<OOrderproducts> prolist= oproductMapper.findOProductsByOrderId(userorders.getUserorderid());
-				 if(prolist!=null&&prolist.size()>0){
-					 
-				 }
+	/**
+	 * 去支付
+	 * @param orderId
+	 * @return
+	 */
+	public ReturnModel getPayOrderByOrderId(String orderId){
+		ReturnModel rq=new ReturnModel();
+		OUserorders userorder=userOrdersMapper.selectByPrimaryKey(orderId);
+		if(userorder!=null){
+			if(userorder.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
+				OPayorder order= payOrderMapper.selectByPrimaryKey(userorder.getPayid()); 
+				if(order!=null){
+					if(order.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
+						List<OOrderproducts> proList= oproductMapper.findOProductsByOrderId(orderId);
+						if(proList!=null&&proList.size()>0){
+							Map<String, Object> mapResult=new HashMap<String, Object>();
+							mapResult.put("payId", order.getPayid());
+							mapResult.put("orderId", orderId);
+							mapResult.put("productId", proList.get(0).getProductid());
+							mapResult.put("styleId", proList.get(0).getStyleid());
+							mapResult.put("totalPrice", order.getTotalprice() );
+							rq.setBasemodle(mapResult); 
+							rq.setStatu(ReturnStatus.Success);
+						}
+					}
+				}
+			}else {
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson("订单不在此操作有效的状态！");
+				return rq;
 			}
 		}
-		return null;
+		return rq;
+	}
+	
+	public ReturnModel saveOrderImages(String orderId,List<OOrderproductdetails> imagelist){
+		ReturnModel rq=new ReturnModel();
+		OOrderproducts oProduct= oproductMapper.selectByPrimaryKey(orderId);
+		if(oProduct!=null){
+			Date nowtime=new Date();
+			//用户订单
+			OUserorders userorders= userOrdersMapper.selectByPrimaryKey(orderId);
+			if(userorders!=null){
+				if(userorders.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.payed.toString())){
+					//插入订单产品 图片集合
+					for (OOrderproductdetails de : imagelist) {
+						de.setOrderproductid(orderId);
+						de.setCreatetime(nowtime);
+						odetailMapper.insert(de);
+					}
+					//修改订单状态
+					userorders.setStatus(Integer.parseInt( OrderStatusEnum.waitFoSend.toString()));
+					userOrdersMapper.updateByPrimaryKeySelective(userorders);
+					
+					rq.setStatu(ReturnStatus.Success);
+					rq.setStatusreson("ok"); 
+				}else {
+					rq.setStatu(ReturnStatus.SystemError_1);
+					rq.setStatusreson("订单非已支付状态！");
+				}
+			}else {
+				rq.setStatu(ReturnStatus.SystemError_1);
+				rq.setStatusreson("找不到相应的订单！");
+			}
+		}else {
+			rq.setStatu(ReturnStatus.SystemError_1);
+			rq.setStatusreson("找不到相应的订单产品！");
+		}
+		return rq;
+	}
+	
+	
+	public ReturnModel findOrderlist(Long userId){
+		ReturnModel rq=new ReturnModel();
+		List<OUserorders> userorders= userOrdersMapper.findOrderByUserId(userId);
+		if(userorders!=null&&userorders.size()>0){
+			List<UserOrderResult> resultlist=new ArrayList<UserOrderResult>();
+			for (OUserorders oo : userorders) {
+				UserOrderResult model=new UserOrderResult();
+				model.setUserOrderId(oo.getUserorderid());
+				model.setTotalprice(oo.getTotalprice()); 
+				model.setStatus(oo.getStatus()); 
+				model.setOrderTimeStr(DateUtil.getTimeStr(oo.getOrdertime(), "yyyy-MM-dd")); 
+				List<OOrderproducts> proList= oproductMapper.findOProductsByOrderId(oo.getUserorderid());
+				model.setProlist(proList);
+				resultlist.add(model);
+			}
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(resultlist); 
+		}
+		return rq;
 	}
 	
 	/**
@@ -316,9 +402,10 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	 * @param payId
 	 * @param totalPrice
 	 */
-	public void addPayOrder(Long userId,String payId,Double totalPrice) {
+	public void addPayOrder(Long userId,String payId,String userOrderId, Double totalPrice) {
 		OPayorder payorder=new OPayorder();
 		payorder.setPayid(payId);
+		payorder.setUserorderid(userOrderId); 
 		payorder.setUserid(userId);
 		payorder.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
 		payorder.setTotalprice(totalPrice);
@@ -326,22 +413,21 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		payOrderMapper.insert(payorder);
 	}
 	
-	/**
-	 * 新增支付单-用户订单 关系
-	 * @param payId
-	 * @param userOrderId
-	 */
-	public void addPayForUserOrder(String payId,String userOrderId) {
-		OPayforuserorder model=new OPayforuserorder();
-		model.setPayid(payId);
-		model.setUserorderid(userOrderId);
-		model.setCreatetime(new Date());
-		payForOrderMapper.insert(model); 
-	}
+//	/**
+//	 * 新增支付单-用户订单 关系
+//	 * @param payId
+//	 * @param userOrderId
+//	 */
+//	public void addPayForUserOrder(String payId,String userOrderId) {
+//		OPayforuserorder model=new OPayforuserorder();
+//		model.setPayid(payId);
+//		model.setUserorderid(userOrderId);
+//		model.setCreatetime(new Date());
+//		payForOrderMapper.insert(model); 
+//	}
 
 	/**
 	 * 订单拆分
-	 * 
 	 * @param addrId
 	 * @param remark
 	 * @param prolist
@@ -397,9 +483,9 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		List<StyleProperty> list = propertyMapper.findPropertyByStyleId(styleId);
 		if (list != null && list.size() > 0) {
 			for (StyleProperty property : list) {
-				result += property.getStandardValue() + "|";
+				result += property.getStandardValue() + "-";
 			}
-			result.substring(0, result.length() - 1);
+			result=result.substring(0, result.lastIndexOf("-")); 
 		}
 		return result;
 	}
@@ -456,6 +542,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	 */
 	public List<RegionVo> findRegionAll() {
 		String keyString = "regionList_all";
+		@SuppressWarnings("unchecked")
 		List<RegionVo> resultList = (List<RegionVo>) RedisUtil.getObject(keyString);// new  ArrayList<RegionVo>();
 		if (resultList != null && resultList.size() > 0) {
 			return resultList;
@@ -491,6 +578,9 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					}
 				}
 			}
+		}
+		if(resultList!=null&&resultList.size()>0){
+			RedisUtil.setObject(keyString, resultList, 3600); 
 		}
 		return resultList;
 	}

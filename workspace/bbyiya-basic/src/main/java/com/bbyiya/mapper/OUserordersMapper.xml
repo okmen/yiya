@@ -23,9 +23,15 @@
     from O_UserOrders
     where UserOrderId = #{userorderid,jdbcType=VARCHAR}
   </select>
+  <select id="findOrderByUserId" resultMap="BaseResultMap"  ><!-- 获取用户的订单列表 -->
+    select 
+    <include refid="Base_Column_List" />
+    from O_UserOrders
+    where UserId = #{userId,jdbcType=BIGINT}  order by OrderTime desc
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from O_UserOrders
-    where UserOrderId = #{userorderid,jdbcType=VARCHAR}
+    where UserId = #{userId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.OUserorders" >
     insert into O_UserOrders (UserOrderId, UserId, TotalPrice, 

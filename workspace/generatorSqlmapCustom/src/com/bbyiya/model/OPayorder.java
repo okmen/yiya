@@ -6,6 +6,8 @@ import java.util.Date;
 public class OPayorder {
     private String payid;
 
+    private String userorderid;
+
     private Long userid;
 
     private Integer status;
@@ -22,6 +24,14 @@ public class OPayorder {
 
     public void setPayid(String payid) {
         this.payid = payid == null ? null : payid.trim();
+    }
+
+    public String getUserorderid() {
+        return userorderid;
+    }
+
+    public void setUserorderid(String userorderid) {
+        this.userorderid = userorderid == null ? null : userorderid.trim();
     }
 
     public Long getUserid() {

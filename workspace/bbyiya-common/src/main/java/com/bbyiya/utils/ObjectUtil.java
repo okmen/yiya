@@ -494,13 +494,16 @@ public class ObjectUtil {
 		if (!(child.getClass().getSuperclass() == father.getClass())) {
 			throw new Exception("child不是father的子类");
 		}
+		@SuppressWarnings("rawtypes")
 		Class fatherClass = father.getClass();
 		Field ff[] = fatherClass.getDeclaredFields();
 		for (int i = 0; i < ff.length; i++) {
 			Field f = ff[i];// 取出每一个属性，如deleteDate
+			@SuppressWarnings({ "unused", "rawtypes" })
 			Class type = f.getType();
 			String nameString = upperHeadChar(f.getName());
 			if (!"SerialVersionUID".equals(nameString)) {
+				@SuppressWarnings("unchecked")
 				Method m = fatherClass.getMethod("get" + upperHeadChar(f.getName()));// 方法getDeleteDate
 				Object obj = m.invoke(father);// 取出属性值
 				f.set(child, obj);

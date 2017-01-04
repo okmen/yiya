@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.OOrderproductdetailsMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.OOrderproductdetails" >
+    <id column="OProductDetailId" property="oproductdetailid" jdbcType="BIGINT" />
+    <result column="OrderProductId" property="orderproductid" jdbcType="VARCHAR" />
+    <result column="PrintNo" property="printno" jdbcType="VARCHAR" />
+    <result column="Position" property="position" jdbcType="INTEGER" />
+    <result column="ImageUrl" property="imageurl" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    OProductDetailId, OrderProductId, PrintNo, Position, ImageUrl, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from O_OrderProductDetails
+    where OProductDetailId = #{oproductdetailid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from O_OrderProductDetails
+    where OProductDetailId = #{oproductdetailid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.OOrderproductdetails" >
+    insert into O_OrderProductDetails (OProductDetailId, OrderProductId, 
+      PrintNo, Position, ImageUrl, 
+      CreateTime)
+    values (#{oproductdetailid,jdbcType=BIGINT}, #{orderproductid,jdbcType=VARCHAR}, 
+      #{printno,jdbcType=VARCHAR}, #{position,jdbcType=INTEGER}, #{imageurl,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.OOrderproductdetails" >
+    insert into O_OrderProductDetails
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="oproductdetailid != null" >
+        OProductDetailId,
+      </if>
+      <if test="orderproductid != null" >
+        OrderProductId,
+      </if>
+      <if test="printno != null" >
+        PrintNo,
+      </if>
+      <if test="position != null" >
+        Position,
+      </if>
+      <if test="imageurl != null" >
+        ImageUrl,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="oproductdetailid != null" >
+        #{oproductdetailid,jdbcType=BIGINT},
+      </if>
+      <if test="orderproductid != null" >
+        #{orderproductid,jdbcType=VARCHAR},
+      </if>
+      <if test="printno != null" >
+        #{printno,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null" >
+        #{position,jdbcType=INTEGER},
+      </if>
+      <if test="imageurl != null" >
+        #{imageurl,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.OOrderproductdetails" >
+    update O_OrderProductDetails
+    <set >
+      <if test="orderproductid != null" >
+        OrderProductId = #{orderproductid,jdbcType=VARCHAR},
+      </if>
+      <if test="printno != null" >
+        PrintNo = #{printno,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null" >
+        Position = #{position,jdbcType=INTEGER},
+      </if>
+      <if test="imageurl != null" >
+        ImageUrl = #{imageurl,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where OProductDetailId = #{oproductdetailid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.OOrderproductdetails" >
+    update O_OrderProductDetails
+    set OrderProductId = #{orderproductid,jdbcType=VARCHAR},
+      PrintNo = #{printno,jdbcType=VARCHAR},
+      Position = #{position,jdbcType=INTEGER},
+      ImageUrl = #{imageurl,jdbcType=VARCHAR},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where OProductDetailId = #{oproductdetailid,jdbcType=BIGINT}
+  </update>
+</mapper>

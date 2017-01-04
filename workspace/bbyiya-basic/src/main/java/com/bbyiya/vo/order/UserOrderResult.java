@@ -9,17 +9,13 @@ public class UserOrderResult implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String userOrderId;
-	
 	private String payId;
-
 	private Double totalprice;
-
 	private Integer status;
-
 	private Long branchUserId;
-
 	private String remark;
-
+	private String orderTimeStr;
+	private String shareUrl;
 	private List<OOrderproducts> prolist;
 
 	public String getUserOrderId() {
@@ -77,6 +73,21 @@ public class UserOrderResult implements Serializable {
 	public void setProlist(List<OOrderproducts> prolist) {
 		this.prolist = prolist;
 	}
-	
-	
+
+	public String getOrderTimeStr() {
+		return orderTimeStr;
+	}
+
+	public void setOrderTimeStr(String orderTimeStr) {
+		this.orderTimeStr = orderTimeStr;
+	}
+
+	public String getShareUrl() {
+		return shareUrl;
+	}
+
+	public void setShareUrl(String shareUrl) {
+		this.shareUrl = shareUrl;
+	}
+
 }

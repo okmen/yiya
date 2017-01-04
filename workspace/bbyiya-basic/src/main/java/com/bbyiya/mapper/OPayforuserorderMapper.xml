@@ -15,6 +15,12 @@
     from O_PayForUserOrder
     where PayId = #{payid,jdbcType=VARCHAR}
   </select>
+  <select id="getPayOrderByUserOrderId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from O_PayOrder
+    where UserOrderId = #{userOrderId,jdbcType=VARCHAR} order by CreateTime desc
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from O_PayForUserOrder
     where PayId = #{payid,jdbcType=VARCHAR}

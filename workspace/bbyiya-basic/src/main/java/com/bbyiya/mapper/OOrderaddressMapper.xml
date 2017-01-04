@@ -37,7 +37,7 @@
       #{city,jdbcType=VARCHAR}, #{district,jdbcType=VARCHAR}, #{streetdetail,jdbcType=VARCHAR}, 
       #{createtime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="OrderAddressId" parameterType="com.bbyiya.model.OOrderaddress" >
+  <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="orderaddressid" parameterType="com.bbyiya.model.OOrderaddress" >
     insert into O_OrderAddress (OrderAddressId, UserId, Reciver, 
       Phone, PostCode, Province, 
       City, District, StreetDetail, 

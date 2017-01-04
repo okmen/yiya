@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <appSettings>
+	<qiniu_ACCESS_KEY value="vLHbgaYj8mfvPUTpMCYLbAetXh-Cg0Fk0R_FtAN_"/>
+	<qiniu_SECRET_KEY value="re1EvlR0FwlSv9YEYlJsHw_WRIcshxhbxilGvmRN"/>
+	<qiniu_imagedomain value="http://obbepyhga.bkt.clouddn.com/"/><!-- 图片域名 -->
 	<scenelist><!-- 每日推荐 -->
 		<item id="1" title="scene1" content="haisajdaljk" tips="" imageUrl="" />
 		<item id="2" title="scene2" content="haisajdaljk" tips="" imageUrl="" />

@@ -1,10 +1,11 @@
 package com.bbyiya.model;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 public class OPayorder {
     private String payid;
+
+    private String userorderid;
 
     private Long userid;
 
@@ -24,6 +25,14 @@ public class OPayorder {
         this.payid = payid == null ? null : payid.trim();
     }
 
+    public String getUserorderid() {
+        return userorderid;
+    }
+
+    public void setUserorderid(String userorderid) {
+        this.userorderid = userorderid == null ? null : userorderid.trim();
+    }
+
     public Long getUserid() {
         return userid;
     }
@@ -40,7 +49,7 @@ public class OPayorder {
         this.status = status;
     }
 
-   
+  
 
     public Double getTotalprice() {
 		return totalprice;

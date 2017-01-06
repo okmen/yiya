@@ -37,4 +37,13 @@ public interface IBaseOrderMgtService {
 	 * @return
 	 */
 	ReturnModel findOrderlist(Long userId);
+	
+	/**
+	 * 支付订单成功处理
+	 * @param payId
+	 * @return
+	 */
+	boolean paySuccessProcess(String payId);
+	
+	
 }

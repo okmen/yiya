@@ -2,10 +2,14 @@ package com.bbyiya.utils.pay;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.ConnectException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -16,11 +20,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+
+import com.sdicons.json.validator.impl.predicates.Str;
 
 public class WxUtil {
 	/**
@@ -101,6 +109,50 @@ public class WxUtil {
 		}
 		return result;
 	}
+	
+	//请求方法  
+    public static String httpsRequest(String requestUrl, String outputStr) {  
+          try {  
+               
+              URL url = new URL(requestUrl);  
+              HttpURLConnection conn = (HttpURLConnection) url.openConnection();  
+              
+              conn.setDoOutput(true);  
+              conn.setDoInput(true);  
+              conn.setUseCaches(false);  
+              // 设置请求方式（GET/POST）  
+              conn.setRequestMethod("POST");  
+              conn.setRequestProperty("content-type", "application/x-www-form-urlencoded");  
+              // 当outputStr不为null时向输出流写数据  
+              if (null != outputStr) {  
+                  OutputStream outputStream = conn.getOutputStream();  
+                  // 注意编码格式  
+                  outputStream.write(outputStr.getBytes("UTF-8"));  
+                  outputStream.close();  
+              }  
+              // 从输入流读取返回内容  
+              InputStream inputStream = conn.getInputStream();  
+              InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "utf-8");  
+              BufferedReader bufferedReader = new BufferedReader(inputStreamReader);  
+              String str = null;  
+              StringBuffer buffer = new StringBuffer();  
+              while ((str = bufferedReader.readLine()) != null) {  
+                  buffer.append(str);  
+              }  
+              // 释放资源  
+              bufferedReader.close();  
+              inputStreamReader.close();  
+              inputStream.close();  
+              inputStream = null;  
+              conn.disconnect();  
+              return buffer.toString();  
+          } catch (ConnectException ce) {  
+              System.out.println("连接超时：{}"+ ce);  
+          } catch (Exception e) {  
+              System.out.println("https请求异常：{}"+ e);  
+          }  
+          return null;  
+    }  
 
 	public static Map<String, Object> xml2Map(String xml) {
 		try {
@@ -208,4 +260,16 @@ public class WxUtil {
 		return getPackage(list);
 	}
 
+	
+	public static String toXml(List<NameValuePair> params) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<xml>");
+		for (int i = 0; i < params.size(); i++) {
+			sb.append("<" + params.get(i).getName() + ">");
+			sb.append(params.get(i).getValue());
+			sb.append("</" + params.get(i).getName() + ">");
+		}
+		sb.append("</xml>");
+		return sb.toString();
+	}
 }

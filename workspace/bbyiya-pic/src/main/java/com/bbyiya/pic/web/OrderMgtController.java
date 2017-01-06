@@ -101,7 +101,9 @@ public class OrderMgtController extends SSOController {
 						OOrderproductdetails item = new OOrderproductdetails();
 						item.setOrderproductid(param.getOrderId());
 						item.setPrintno(pp.getPrintNo());
-						item.setPosition(ObjectUtil.parseInt(pp.getPrintNo().substring(pp.getPrintNo().lastIndexOf("-"), pp.getPrintNo().length())));
+						String printNo=pp.getPrintNo();
+						item.setPosition(ObjectUtil.parseInt(printNo.substring(printNo.lastIndexOf("-")+1, printNo.length())));
+						item.setImageurl(pp.getImageUrl()); 
 						images.add(item);
 					}
 					rq = orderMgtService.saveOrderImages(param.getOrderId(), images);

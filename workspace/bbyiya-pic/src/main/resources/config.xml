@@ -21,6 +21,6 @@
 		<item id="15" title="scene1" content="haisajdaljk" tips="" imageUrl="" />
 		<item id="16" title="scene1" content="haisajdaljk" tips="" imageUrl="" />
 	</scenelist>
-	<wxBackUrl  value="https://api.bbyiya.net/"/><!-- 微信支付回写地址 -->
+	<wxBackUrl  value="https://api.bbyiya.net/login/outLogin"/><!-- 微信支付回写地址 -->
 	<wxQuery value="https://api.mch.weixin.qq.com/pay/orderquery"/><!-- 微信订单查询 -->
 </appSettings>

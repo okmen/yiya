@@ -26,6 +26,7 @@ public class LoginSuccessResult  implements Serializable{
     //用户状态
     private Integer status;
     
+    private Integer isTester;
     
     //是否有填写宝宝信息
     private int haveBabyInfo;
@@ -114,6 +115,12 @@ public class LoginSuccessResult  implements Serializable{
 	}
 	public void setBirthday(String birthday) {
 		this.birthday = birthday;
+	}
+	public Integer getIsTester() {
+		return isTester;
+	}
+	public void setIsTester(Integer isTester) {
+		this.isTester = isTester;
 	}
 	
 

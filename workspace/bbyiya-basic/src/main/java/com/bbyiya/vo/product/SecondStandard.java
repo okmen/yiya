@@ -1,6 +1,8 @@
 package com.bbyiya.vo.product;
 
 import java.io.Serializable;
+import java.util.List;
+
 
 public class SecondStandard  implements Serializable{
 
@@ -9,6 +11,7 @@ public class SecondStandard  implements Serializable{
     private String standardname;
     private Long styleId;
     private Double price;
+    private List<String> detailImgs;
 	public Long getStandardId() {
 		return standardId;
 	}
@@ -32,6 +35,12 @@ public class SecondStandard  implements Serializable{
 	}
 	public void setPrice(Double price) {
 		this.price = price;
+	}
+	public List<String> getDetailImgs() {
+		return detailImgs;
+	}
+	public void setDetailImgs(List<String> detailImgs) {
+		this.detailImgs = detailImgs;
 	}
     
 }

@@ -21,6 +21,12 @@
 		from u_otherlogin
 		where Id = #{id,jdbcType=BIGINT}
 	</select>
+	<select id="getWxloginByUserId" resultMap="BaseResultMap" >
+		select
+		<include refid="Base_Column_List" />
+		from u_otherlogin
+		where UserId = #{userId,jdbcType=BIGINT} and LoginType=2 
+	</select>
 	<select id="get_UOtherlogin" resultMap="BaseResultMap"
 		parameterType="com.bbyiya.vo.user.OtherLoginParam">
 		select

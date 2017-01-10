@@ -17,6 +17,7 @@
     <id column="ProductId" property="productId" jdbcType="BIGINT" />
     <result column="UserId" property="branchUserId" jdbcType="BIGINT" />
     <result column="Title" property="title" jdbcType="VARCHAR" />
+    <result column="DefaultImg" property="defaultImg" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     ProductId, UserId, DefaultImg, Title, OldPrice, Price, Status, PostModelId, CreateTime, 

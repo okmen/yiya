@@ -1,6 +1,8 @@
 package com.bbyiya.dao;
 
 
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.UOtherlogin;
 import com.bbyiya.vo.user.OtherLoginParam;
 
@@ -27,4 +29,10 @@ public interface UOtherloginMapper {
      * @return
      */
     UOtherlogin get_UOtherlogin(OtherLoginParam param);
+    /**
+     * 获取用户微信登录
+     * @param userid
+     * @return
+     */
+    UOtherlogin getWxloginByUserId(@Param("userId") Long userid);
 }

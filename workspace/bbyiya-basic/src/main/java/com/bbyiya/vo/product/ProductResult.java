@@ -10,7 +10,8 @@ public class ProductResult implements Serializable{
 	private Long productId;
 	private String title;
 	private Long branchUserId;
-	
+	private String defaultImg;
+	private List<String> desImgs;
 	private List<ProductStandardResult> propertyList;
 	
 	
@@ -37,6 +38,18 @@ public class ProductResult implements Serializable{
 	}
 	public void setPropertyList(List<ProductStandardResult> propertyList) {
 		this.propertyList = propertyList;
+	}
+	public String getDefaultImg() {
+		return defaultImg;
+	}
+	public void setDefaultImg(String defaultImg) {
+		this.defaultImg = defaultImg;
+	}
+	public List<String> getDesImgs() {
+		return desImgs;
+	}
+	public void setDesImgs(List<String> desImgs) {
+		this.desImgs = desImgs;
 	}
 	
 	

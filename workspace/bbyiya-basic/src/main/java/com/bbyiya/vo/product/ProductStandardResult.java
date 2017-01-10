@@ -10,6 +10,8 @@ public class ProductStandardResult implements Serializable{
 	private Long  standardId;
 
     private String standardName;
+    
+    private List<String> backgroundImgs;
 
     private List<SecondStandard> subList;
     
@@ -35,6 +37,12 @@ public class ProductStandardResult implements Serializable{
 	}
 	public void setSubList(List<SecondStandard> subList) {
 		this.subList = subList;
+	}
+	public List<String> getBackgroundImgs() {
+		return backgroundImgs;
+	}
+	public void setBackgroundImgs(List<String> backgroundImgs) {
+		this.backgroundImgs = backgroundImgs;
 	}
 
 

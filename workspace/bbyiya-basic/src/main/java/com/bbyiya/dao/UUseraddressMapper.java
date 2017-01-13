@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.bbyiya.model.UUseraddress;
+import com.bbyiya.vo.user.UUserAddressResult;
 
 public interface UUseraddressMapper {
 	
@@ -14,6 +15,12 @@ public interface UUseraddressMapper {
 	 * @return
 	 */
 	UUseraddress get_UUserAddressByKeyId(@Param("addressId") Long addressId);
+	/**
+	 * 获取用户收货地址
+	 * @param addressId
+	 * @return
+	 */
+	UUserAddressResult get_UUserAddressResultByKeyId(@Param("addressId") Long addressId);
 	/**
 	 * 删除
 	 * @param addrid
@@ -53,5 +60,5 @@ public interface UUseraddressMapper {
      * @param userId
      * @return
      */
-    List<UUseraddress> find_UUserAddressByUserId(Long userId);
+    List<UUserAddressResult> find_UUserAddressByUserId(Long userId);
 }

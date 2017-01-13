@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.UUsertesterwxMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.UUsertesterwx" >
+    <id column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="Type" property="type" jdbcType="INTEGER" />
+    <result column="Sort" property="sort" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    UserId, Status, Type, Sort, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from U_UserTesterWx
+    where UserId = #{userid,jdbcType=BIGINT}
+  </select>
+  <select id="getMaxSort" resultType="java.lang.Integer" >
+    SELECT MAX(sort) from U_UserTesterWx where Type=1;
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from U_UserTesterWx
+    where UserId = #{userid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.UUsertesterwx" >
+    insert into U_UserTesterWx (UserId, Status, Type, 
+      Sort, CreateTime)
+    values (#{userid,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, 
+      #{sort,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.UUsertesterwx" >
+    insert into U_UserTesterWx
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="type != null" >
+        Type,
+      </if>
+      <if test="sort != null" >
+        Sort,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.UUsertesterwx" >
+    update U_UserTesterWx
+    <set >
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        Type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null" >
+        Sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where UserId = #{userid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.UUsertesterwx" >
+    update U_UserTesterWx
+    set Status = #{status,jdbcType=INTEGER},
+      Type = #{type,jdbcType=INTEGER},
+      Sort = #{sort,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where UserId = #{userid,jdbcType=BIGINT}
+  </update>
+</mapper>

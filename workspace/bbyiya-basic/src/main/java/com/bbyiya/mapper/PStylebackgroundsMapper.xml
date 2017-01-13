@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.PStylebackgroundsMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.PStylebackgrounds" >
+    <id column="Id" property="id" jdbcType="INTEGER" />
+    <result column="StyleId" property="styleid" jdbcType="BIGINT" />
+    <result column="BackgroundImg" property="backgroundimg" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Id, StyleId, BackgroundImg
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from P_StyleBackgrounds
+    where Id = #{id,jdbcType=INTEGER}
+  </select>
+   <select id="findBacksByStyleId" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from P_StyleBackgrounds
+    where StyleId = #{styleId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from P_StyleBackgrounds
+    where Id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.PStylebackgrounds" >
+    insert into P_StyleBackgrounds (Id, StyleId, BackgroundImg
+      )
+    values (#{id,jdbcType=INTEGER}, #{styleid,jdbcType=BIGINT}, #{backgroundimg,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.PStylebackgrounds" >
+    insert into P_StyleBackgrounds
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        Id,
+      </if>
+      <if test="styleid != null" >
+        StyleId,
+      </if>
+      <if test="backgroundimg != null" >
+        BackgroundImg,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="styleid != null" >
+        #{styleid,jdbcType=BIGINT},
+      </if>
+      <if test="backgroundimg != null" >
+        #{backgroundimg,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PStylebackgrounds" >
+    update P_StyleBackgrounds
+    <set >
+      <if test="styleid != null" >
+        StyleId = #{styleid,jdbcType=BIGINT},
+      </if>
+      <if test="backgroundimg != null" >
+        BackgroundImg = #{backgroundimg,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PStylebackgrounds" >
+    update P_StyleBackgrounds
+    set StyleId = #{styleid,jdbcType=BIGINT},
+      BackgroundImg = #{backgroundimg,jdbcType=VARCHAR}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

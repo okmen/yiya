@@ -50,4 +50,5 @@
 		<item id="5" value="叔叔"/>
 		<item id="6" value="阿姨"/>
 	</relations>
+	<yiya_pic_url value="http://mpic.bbyiya.com/"/><!-- yiya-pic地址 --> 
 </appSettings>

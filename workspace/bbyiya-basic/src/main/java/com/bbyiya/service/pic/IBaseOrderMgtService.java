@@ -45,5 +45,7 @@ public interface IBaseOrderMgtService {
 	 */
 	boolean paySuccessProcess(String payId);
 	
+	String getStylePropertyStr(Long styleId);
+	
 	
 }

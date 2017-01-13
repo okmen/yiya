@@ -10,13 +10,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.dao.UOtherloginMapper;
 import com.bbyiya.dao.UUsersMapper;
+import com.bbyiya.dao.UUsertesterwxMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.user.UserStatusEnum;
 import com.bbyiya.model.UOtherlogin;
 import com.bbyiya.model.UUsers;
+import com.bbyiya.model.UUsertesterwx;
 import com.bbyiya.pic.service.IPic_UserMgtService;
 import com.bbyiya.service.IUserLoginService;
+//import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.vo.user.OtherLoginParam;
@@ -31,6 +35,9 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 	@Resource(name = "userLoginService")
 	private IUserLoginService baseLoginService;
 
+	@Autowired
+	private UUsertesterwxMapper testerMapper;
+	
 	/**
 	 * µ⁄»˝∑Ωµ«¬Ω
 	 * 
@@ -46,6 +53,12 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 					LoginSuccessResult loginSuccessResult = null;
 					if (user != null) {
 						loginSuccessResult = baseLoginService.loginSuccess(user);
+						//≤‚ ‘’À∫≈
+						UUsertesterwx testerUsertesterwx= testerMapper.selectByPrimaryKey(user.getUserid());
+						if(testerUsertesterwx!=null&&testerUsertesterwx.getStatus().intValue()==1){
+							loginSuccessResult.setIsTester(1); 
+						}
+						
 					} else {
 						return otherRegiter(param);
 					}
@@ -61,6 +74,7 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 		} catch (Exception e) {
 			rq.setStatu(ReturnStatus.SystemError);
 			rq.setStatusreson("◊¢≤· ß∞‹£°");
+			RedisUtil.setObject("register:", e); 
 		}
 		return rq;
 	}
@@ -88,8 +102,14 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 				UUsers userModel = new UUsers();
 				userModel.setCreatetime(new Date());
 				userModel.setStatus(Integer.parseInt(UserStatusEnum.noPwd.toString()));
+				if(!ObjectUtil.isEmpty(param.getNickName())){
+					userModel.setNickname(param.getNickName());
+				}
+				if(!ObjectUtil.isEmpty(param.getHeadImg())){
+					userModel.setUserimg(param.getHeadImg());
+				} 
 				userDao.insertReturnKeyId(userModel);
-
+				
 				other = new UOtherlogin();
 				other.setUserid(userModel.getUserid());
 				other.setOpenid(param.getOpenId());
@@ -99,7 +119,25 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 				other.setStatus(Integer.parseInt(UserStatusEnum.noPwd.toString()));
 				other.setCreatetime(new Date());
 				otherloginMapper.insert(other);
+				
 				LoginSuccessResult result = baseLoginService.loginSuccess(userModel);
+				
+//				//TODO º”»ÎµΩ≤‚ ‘”√ªß
+//				if(!ObjectUtil.isEmpty(param.getNickName())&&param.getNickName().contains(ConfigUtil.getSingleValue("testerNickname"))){
+//					//≤‚ ‘’À∫≈
+//					int count=testerMapper.getMaxSort(); 
+//					if(count<1000){
+//						count+=1;
+//						UUsertesterwx tester=new UUsertesterwx();
+//						tester.setUserid(userModel.getUserid());
+//						tester.setSort(count);
+//						tester.setType(1);
+//						tester.setStatus(1);
+//						tester.setCreatetime(new Date());
+//						testerMapper.insert(tester);
+//						result.setIsTester(1); 
+//					}
+//				}
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("◊¢≤·≥…π¶");
 				rq.setBasemodle(result);

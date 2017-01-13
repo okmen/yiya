@@ -1,6 +1,8 @@
 package com.bbyiya.pic.web;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -24,6 +26,7 @@ import com.bbyiya.web.base.SSOController;
 public class ProductController extends SSOController {
 	@Resource(name="baseProductServiceImpl")
 	private IBaseProductService productService;
+	
 	/**
 	 * P01 场景列表
 	 * @param type
@@ -33,12 +36,25 @@ public class ProductController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/scenelist")
-	public String area(@RequestParam(required = false, defaultValue = "0") int type, String code) throws Exception {
+	public String area(String productId) throws Exception {
 		ReturnModel rq = new ReturnModel();
-		LoginSuccessResult user= super.getLoginUser();
+		LoginSuccessResult user= super.getLoginUser(); 
 		if(user!=null){
 			rq.setStatu(ReturnStatus.Success);
-			rq.setBasemodle(ConfigUtil.getMaplist("scenelist")); 
+			List<Map<String, String>> mapList=ConfigUtil.getMaplist("scenelist");
+			if(mapList!=null&mapList.size()>0){
+				List<Map<String, String>> mapreuList=new ArrayList<Map<String,String>>();
+				for (Map<String, String> map : mapList) {
+					if(map.get("productId").equals(productId)){
+						mapreuList.add(map);
+					}
+				}
+				if(mapreuList!=null&&mapreuList.size()>0){
+					rq.setBasemodle(mapreuList); 
+				}else {
+					rq.setBasemodle(mapList); 
+				}
+			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
@@ -65,6 +81,7 @@ public class ProductController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
 	/**
 	 * P03 产品详情/相册详情
 	 * @return
@@ -84,6 +101,48 @@ public class ProductController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	/**
+	 * P05 预览信息
+	 * @param styleId
+	 * @param ids
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/preview")
+	public String preview(@RequestParam(required = false, defaultValue = "0") long styleId, Integer[] ids) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq= productService.find_previewsImg(styleId,ids); 
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 获取款式详情
+	 * @param styleId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getStyleInfo")
+	public String getStyleInfo(@RequestParam(required = false, defaultValue = "0") long styleId) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=productService.getStyleInfo(styleId);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 	/**
 	 * 获取制作唯一号
 	 * @param pid
@@ -111,7 +170,7 @@ public class ProductController extends SSOController {
 	 * @param productId
 	 * @return
 	 */
-	public String getIndex(Long userId,Long productId){
+	private String getIndex(Long userId,Long productId){
 		int temp=1000;
 		long index=userId%temp;
 		String key="user_work_index_"+index;

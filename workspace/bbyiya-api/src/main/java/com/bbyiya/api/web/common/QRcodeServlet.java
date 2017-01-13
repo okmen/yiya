@@ -13,10 +13,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bbyiya.utils.ConfigUtil;
+import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.QRCodeUtil;
 
 /**
  * 生成二维码
+ * 
  * @author Administrator
  *
  */
@@ -37,46 +40,55 @@ public class QRcodeServlet extends HttpServlet {
 	}
 
 	// 响应Get请求
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		//规则定义二维码
-		String url=request.getParameter("urlstr");
-		String content="http://www.baidu.com";
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// 规则定义二维码
+		String content = "";
+		int type = ObjectUtil.parseInt(request.getParameter("t"));
+		switch (type) {
+		case 1:// 获取
+			content = ConfigUtil.getSingleValue("yiya_pic_url");
+			break;
+		default:
+			String url = request.getParameter("urlstr");
+			if (!ObjectUtil.isEmpty(url)) {
+				content = url;
+			}
+			break;
+		}
 		encoderQRCode(content, 0, response);
 	}
 
 	// 响应Post请求
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 	}
 
 	/**
 	 * 生成二维码
+	 * 
 	 * @param content
 	 * @param size
 	 * @param response
 	 */
-	public void encoderQRCode(String content, int size,
-			HttpServletResponse response) {
+	public void encoderQRCode(String content, int size, HttpServletResponse response) {
 		try {
 			if (size <= 0)
 				size = 8;
-			BufferedImage bufImg = QRCodeUtil.createImage(content, "", true); 
+			BufferedImage bufImg = QRCodeUtil.createImage(content, "", true);
 			// 生成二维码QRCode图片
 			ImageIO.write(bufImg, "jpg", response.getOutputStream());
 		} catch (Exception e) {
 
 		}
 	}
-	
-	
+
 	/**
 	 * 获取完整的url
+	 * 
 	 * @param request
 	 * @return
 	 */
-	private String getUrl(HttpServletRequest request){
+	private String getUrl(HttpServletRequest request) {
 		String urlString = request.getParameter("url");
 		Map<String, String[]> map = request.getParameterMap();
 		Set keSet = map.entrySet();

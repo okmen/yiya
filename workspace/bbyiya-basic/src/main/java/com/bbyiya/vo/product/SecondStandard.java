@@ -2,6 +2,9 @@ package com.bbyiya.vo.product;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
+
+import com.sdicons.json.validator.impl.predicates.Str;
 
 
 public class SecondStandard  implements Serializable{
@@ -12,6 +15,10 @@ public class SecondStandard  implements Serializable{
     private Long styleId;
     private Double price;
     private List<String> detailImgs;
+    
+//    private List<Map<String, String>> backgroundImgs; 
+    
+
 	public Long getStandardId() {
 		return standardId;
 	}
@@ -42,5 +49,7 @@ public class SecondStandard  implements Serializable{
 	public void setDetailImgs(List<String> detailImgs) {
 		this.detailImgs = detailImgs;
 	}
+	
+	
     
 }

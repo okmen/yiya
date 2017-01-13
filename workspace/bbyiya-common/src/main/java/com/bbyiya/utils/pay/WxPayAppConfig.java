@@ -11,15 +11,13 @@ public class WxPayAppConfig {
 	/**
 	 * 商户号
 	 */
-	public static String PARNER = "1427250602 ";//"1427265002"; //
+	public static String PARNER = "1427265002"; //
 	/**
 	 * 微信分配的公众账号ID
 	 */
-	public static String APPID = "wxcc101e7b17ed868e";//"wxfcd7fab4005cb1ee"; //
+	public static String APPID = "wxfcd7fab4005cb1ee"; //
 
-	// key
-//	public static String APPKEY = "Yqz3GDIJbISJkMHNMrDJnZk3sgSrdjRFe25xYHZJUcXndHgvCmEgZ8RKyrrYNLk3FAOilEheSySlgwjP5AavKgCy01nrQQT0h3wX1R6t7ipXKOw0PKdwBxPrqyRsXnOJ";// paysignkey(非appkey)
-	public static String AppSecret= "af5357b12453ed6a0ae6aba1eb64c3dd";// "8cdfc6f23d3b8e99dd596cb377b7bca4";
+	public static String AppSecret= "ca66f91ef5b24cc7b34514dfe41c9e8c";
 	/**
 	 * 异步通知地址
 	 */

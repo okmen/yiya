@@ -1,6 +1,5 @@
 package com.bbyiya.utils.pay;
 
-import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,7 +13,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.bbyiya.common.vo.ResultMsg;
-import com.bbyiya.utils.HttpRequestHelper;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.encrypt.MD5Encrypt;
@@ -122,6 +120,7 @@ public class WxAppPayUtils {
 		String urlString = WxPayAppConfig.WX_URL;
 		String entityString = genProductArgs(ipStr, totalPrice, orderNo, nonceStr);
 		String msgString = WxUtil.httpsRequest(urlString, entityString);
+		System.out.println(msgString); 
 //		String msgString=HttpRequestHelper.sendPost(urlString, entityString);
 		Map<String, Object> map = WxUtil.xml2Map(msgString);
 		return map;
@@ -138,7 +137,7 @@ public class WxAppPayUtils {
 			packageParams.add(new BasicNameValuePair("mch_id", WxPayAppConfig.PARNER));// 商户号
 
 			packageParams.add(new BasicNameValuePair("nonce_str", nonceStr));
-			packageParams.add(new BasicNameValuePair("body", "order:" + orderNo));// "订单:"+orderNo
+			packageParams.add(new BasicNameValuePair("body", "yiya-order:" + orderNo));// "订单:"+orderNo
 			packageParams.add(new BasicNameValuePair("attach", "order:" + orderNo));
 			packageParams.add(new BasicNameValuePair("out_trade_no", orderNo));
 			packageParams.add(new BasicNameValuePair("total_fee", totalFee));
@@ -151,8 +150,9 @@ public class WxAppPayUtils {
 			String sign = genPackageSign(packageParams);
 
 			packageParams.add(new BasicNameValuePair("sign", sign));
+			System.out.println(sign);
 			String xmlstring = WxUtil.toXml(packageParams);
-
+			System.out.println(xmlstring);
 			return xmlstring;
 
 		} catch (Exception e) {

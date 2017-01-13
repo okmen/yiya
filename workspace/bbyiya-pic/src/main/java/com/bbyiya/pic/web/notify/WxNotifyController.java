@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
-import java.util.TreeMap;
+//import java.util.TreeMap;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +24,7 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.pay.ParamUtils;
-import com.bbyiya.utils.pay.WxPayAppConfig;
+//import com.bbyiya.utils.pay.WxPayAppConfig;
 import com.bbyiya.utils.pay.WxPayConfig;
 import com.bbyiya.utils.pay.WxPayUtils;
 import com.bbyiya.utils.pay.WxUtil;
@@ -74,13 +74,12 @@ public class WxNotifyController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
-	private String queryWxOrder(String transaction_id, String out_trade_no) {
-
+	private String queryWxOrder(String transaction_id, String payId) {
 		List<NameValuePair> paramlist = new ArrayList<NameValuePair>();
 		paramlist.add(new BasicNameValuePair("appid", WxPayConfig.APPID));
 		paramlist.add(new BasicNameValuePair("mch_id", WxPayConfig.PARNER));
 		paramlist.add(new BasicNameValuePair("nonce_str", WxPayUtils.genNonceStr()));
-		paramlist.add(new BasicNameValuePair("out_trade_no", out_trade_no));
+		paramlist.add(new BasicNameValuePair("out_trade_no", payId));
 		paramlist.add(new BasicNameValuePair("transaction_id", transaction_id));
 		String sign = WxPayUtils.genPackageSign(paramlist);
 		paramlist.add(new BasicNameValuePair("sign", sign));
@@ -90,7 +89,12 @@ public class WxNotifyController {
 		if (WxPayUtils.isWXsign(map, WxPayConfig.AppSecret)) {
 			if (map != null && map.get("return_code").equals("SUCCESS") && map.get("result_code").equals("SUCCESS") && map.get("trade_state").equals("SUCCESS")) {
 				// »áÐ´¶©µ¥×´Ì¬ TODO »ØÐ´¶©µ¥×´Ì¬
-				
+				boolean paySuccess = orderMgtService.paySuccessProcess(payId);
+				if (paySuccess) {
+					return "success";
+				} else {
+					return "error";
+				}
 			}
 		}
 		return "success";

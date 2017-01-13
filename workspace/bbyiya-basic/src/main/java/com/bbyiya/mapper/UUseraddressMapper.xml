@@ -13,6 +13,18 @@
     <result column="PostCode" property="postcode" jdbcType="VARCHAR" />
     <result column="IsDefault" property="isdefault" jdbcType="INTEGER" />
   </resultMap>
+  <resultMap id="UUserAddressResultMap" type="com.bbyiya.vo.user.UUserAddressResult" >
+    <id column="AddrId" property="addrid" jdbcType="BIGINT" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="Reciver" property="reciver" jdbcType="VARCHAR" />
+    <result column="Phone" property="phone" jdbcType="VARCHAR" />
+    <result column="Province" property="province" jdbcType="INTEGER" />
+    <result column="City" property="city" jdbcType="INTEGER" />
+    <result column="Area" property="area" jdbcType="INTEGER" />
+    <result column="StreetDetail" property="streetdetail" jdbcType="VARCHAR" />
+    <result column="PostCode" property="postcode" jdbcType="VARCHAR" />
+    <result column="IsDefault" property="isdefault" jdbcType="INTEGER" />
+  </resultMap>
   <sql id="Base_Column_List" >
     AddrId, UserId, Reciver, Phone, Province, City, Area, StreetDetail, PostCode, IsDefault
   </sql>
@@ -22,7 +34,13 @@
     from U_UserAddress
     where AddrId = #{addressId,jdbcType=BIGINT}
   </select>
-  <select id="find_UUserAddressByUserId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="get_UUserAddressResultByKeyId" resultMap="UUserAddressResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from U_UserAddress
+    where AddrId = #{addressId,jdbcType=BIGINT}
+  </select>
+  <select id="find_UUserAddressByUserId" resultMap="UUserAddressResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from U_UserAddress
@@ -42,7 +60,7 @@
       #{area,jdbcType=INTEGER}, #{streetdetail,jdbcType=VARCHAR}, #{postcode,jdbcType=VARCHAR}, 
       #{isdefault,jdbcType=INTEGER})
   </insert>
-  <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="AddrId" parameterType="com.bbyiya.model.UUseraddress" >
+  <insert id="insertReturnId"  useGeneratedKeys="true" keyProperty="AddrId" parameterType="com.bbyiya.model.UUseraddress" >
     insert into U_UserAddress (AddrId, UserId, Reciver, 
       Phone, Province, City, 
       Area, StreetDetail, PostCode, 

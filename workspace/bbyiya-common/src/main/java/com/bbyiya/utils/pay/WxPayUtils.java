@@ -60,7 +60,7 @@ public class WxPayUtils {
 	 * @param ip
 	 * @return
 	 */
-	public static ResultMsg getWxPayParam(String orderNo, String prepay_id, double totalPrice, String ip) {
+	public static ResultMsg getWxPayParam(String orderNo, String openid, String prepay_id, double totalPrice, String ip) {
 		ResultMsg msgResult = new ResultMsg();
 		if (ObjectUtil.isEmpty(orderNo) || ObjectUtil.isEmpty(ip)) {
 			msgResult.setStatus(-2);
@@ -71,7 +71,7 @@ public class WxPayUtils {
 			// 随机字符串
 			String nonceStr = genNonceStr();
 			if (ObjectUtil.isEmpty(prepay_id)) {
-				Map<String, Object> map = doInBackground(ip, totalPrice, orderNo, nonceStr);
+				Map<String, Object> map = doInBackground(ip, openid, totalPrice, orderNo, nonceStr);
 				if (map != null) {
 					if (map.get("return_code").equals("SUCCESS")) {
 						Object prepayID = map.get("prepay_id");
@@ -79,13 +79,12 @@ public class WxPayUtils {
 							prepay_id = map.get("prepay_id").toString();
 						} else {
 							msgResult.setStatus(-1);
-							String str = new String(map.get("err_code_des").toString().getBytes("iso8859_1"), "GB2312");
-							msgResult.setMsg(str);
+//							String str = new String(map.get("err_code_des").toString().getBytes("iso8859_1"), "GB2312");
+							msgResult.setMsg(map.get("err_code_des").toString());
 							return msgResult;
 						}
 					} else {
 						msgResult.setStatus(-1);
-//						String str = java.net.URLDecoder.decode(map.get("return_msg").toString(), "UTF-8");//new String(map.get("return_msg").toString().getBytes("utf-8"), "GB2312");
 						msgResult.setMsg(JsonUtil.objectToJsonStr(map));//map.get("return_msg").toString()
 						return msgResult; 
 					}
@@ -127,9 +126,9 @@ public class WxPayUtils {
 		return msgResult;
 	}
 
-	private static Map<String, Object> doInBackground(String ipStr, double totalPrice, String orderNo, String nonceStr) {
+	private static Map<String, Object> doInBackground(String ipStr, String openId, double totalPrice, String orderNo, String nonceStr) {
 		String urlString = WxPayConfig.WX_URL;
-		String entityString = genProductArgs(ipStr, totalPrice, orderNo, nonceStr);
+		String entityString = genProductArgs(ipStr,openId, totalPrice, orderNo, nonceStr);
 		 String msgString = WxUtil.httpsRequest(urlString, entityString);
 //		String msgString = HttpRequestHelper.sendPost(urlString, entityString);
 		Map<String, Object> map = WxUtil.xml2Map(msgString);
@@ -137,7 +136,7 @@ public class WxPayUtils {
 		return map;
 	}
 
-	private static String genProductArgs(String ipStr, double totalprice, String orderNo, String nonceStr) {
+	private static String genProductArgs(String ipStr, String openId, double totalprice, String orderNo, String nonceStr) {
 		try {
 			String pattern = "#0";
 			DecimalFormat formatter = new DecimalFormat();
@@ -148,7 +147,7 @@ public class WxPayUtils {
 			packageParams.add(new BasicNameValuePair("mch_id", WxPayConfig.PARNER));// 商户号
 
 			packageParams.add(new BasicNameValuePair("nonce_str", nonceStr));
-			packageParams.add(new BasicNameValuePair("body", "12pic"));// "订单:"+orderNo
+			packageParams.add(new BasicNameValuePair("body", "yiya-12pic"));// "订单:"+orderNo
 			// packageParams.add(new BasicNameValuePair("attach", "order:" +
 			// orderNo));
 			packageParams.add(new BasicNameValuePair("out_trade_no", orderNo));
@@ -159,7 +158,7 @@ public class WxPayUtils {
 			// orderNo));
 			packageParams.add(new BasicNameValuePair("notify_url", WxPayConfig.NOTIFY_URL));
 			packageParams.add(new BasicNameValuePair("trade_type", "JSAPI"));
-
+			packageParams.add(new BasicNameValuePair("openid", openId));
 			String sign = genPackageSign(packageParams);
 			
 			packageParams.add(new BasicNameValuePair("sign", sign));
@@ -200,26 +199,26 @@ public class WxPayUtils {
 		return packageSign;
 	}
 
-	public static String createSign(SortedMap<String, String> packageParams) {
-		StringBuffer sb = new StringBuffer();
-		Set es = packageParams.entrySet();
-		Iterator it = es.iterator();
-		while (it.hasNext()) {
-			Map.Entry entry = (Map.Entry) it.next();
-			String k = (String) entry.getKey();
-			String v = (String) entry.getValue();
-			if (null != v && !"".equals(v) && !"sign".equals(k)
-					&& !"key".equals(k)) {
-				sb.append(k + "=" + v + "&");
-			}
-		}
-		sb.append("key=" + WxPayConfig.AppSecret);
-		System.out.println("md5 sb:" + sb);
-		String sign ="";// MD5Util.MD5Encode(sb.toString(), this.charset).toUpperCase();				
-		sign = MD5Encrypt.encrypt(sb.toString()).toUpperCase();
-		return sign;
-
-	}
+//	public static String createSign(SortedMap<String, String> packageParams) {
+//		StringBuffer sb = new StringBuffer();
+//		Set es = packageParams.entrySet();
+//		Iterator it = es.iterator();
+//		while (it.hasNext()) {
+//			Map.Entry entry = (Map.Entry) it.next();
+//			String k = (String) entry.getKey();
+//			String v = (String) entry.getValue();
+//			if (null != v && !"".equals(v) && !"sign".equals(k)
+//					&& !"key".equals(k)) {
+//				sb.append(k + "=" + v + "&");
+//			}
+//		}
+//		sb.append("key=" + WxPayConfig.AppSecret);
+//		System.out.println("md5 sb:" + sb);
+//		String sign ="";// MD5Util.MD5Encode(sb.toString(), this.charset).toUpperCase();				
+//		sign = MD5Encrypt.encrypt(sb.toString()).toUpperCase();
+//		return sign;
+//
+//	}
 	
 	public static boolean isWXsign(SortedMap<String, String> paramMap,String key){			
 		StringBuffer sb = new StringBuffer();
@@ -240,7 +239,7 @@ public class WxPayUtils {
 			}
 		}
 		sb.append("key=" + key);
-		System.out.println("md5 sb:" + sb);			
+//		System.out.println("md5 sb:" + sb);			
 		String sign = MD5Encrypt.encrypt(sb.toString()).toUpperCase();
 
         return sign.equals(checkSign);     

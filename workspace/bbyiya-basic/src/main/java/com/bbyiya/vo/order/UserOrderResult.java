@@ -3,6 +3,7 @@ package com.bbyiya.vo.order;
 import java.io.Serializable;
 import java.util.List;
 
+import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproducts;
 
 public class UserOrderResult implements Serializable {
@@ -17,6 +18,8 @@ public class UserOrderResult implements Serializable {
 	private String orderTimeStr;
 	private String shareUrl;
 	private List<OOrderproducts> prolist;
+	
+	private OOrderaddress orderAddress;
 
 	public String getUserOrderId() {
 		return userOrderId;
@@ -90,4 +93,13 @@ public class UserOrderResult implements Serializable {
 		this.shareUrl = shareUrl;
 	}
 
+	public OOrderaddress getOrderAddress() {
+		return orderAddress;
+	}
+
+	public void setOrderAddress(OOrderaddress orderAddress) {
+		this.orderAddress = orderAddress;
+	}
+
+	
 }

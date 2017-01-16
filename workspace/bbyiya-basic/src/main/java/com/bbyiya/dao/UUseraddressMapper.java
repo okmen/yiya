@@ -22,6 +22,12 @@ public interface UUseraddressMapper {
 	 */
 	UUserAddressResult get_UUserAddressResultByKeyId(@Param("addressId") Long addressId);
 	/**
+	 * 获取用户默认收货地址
+	 * @param userId
+	 * @return
+	 */
+	UUserAddressResult get_UUserAddressDefault(@Param("userId")Long userId);
+	/**
 	 * 删除
 	 * @param addrid
 	 * @return

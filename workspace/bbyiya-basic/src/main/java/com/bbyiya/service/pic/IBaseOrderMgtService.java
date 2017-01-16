@@ -37,6 +37,13 @@ public interface IBaseOrderMgtService {
 	 * @return
 	 */
 	ReturnModel findOrderlist(Long userId);
+	/**
+	 * 订单详情
+	 * @param userId
+	 * @param orderId
+	 * @return
+	 */
+	ReturnModel getOrderInfo(Long userId, String orderId) ;
 	
 	/**
 	 * 支付订单成功处理
@@ -45,6 +52,11 @@ public interface IBaseOrderMgtService {
 	 */
 	boolean paySuccessProcess(String payId);
 	
+	/**
+	 * 获取款式 属性名称-值
+	 * @param styleId
+	 * @return （中款-横版）
+	 */
 	String getStylePropertyStr(Long styleId);
 	
 	

@@ -199,7 +199,6 @@ public class LoginController extends SSOController {
 		}else { 
 			return  "/index";//"redirect:http://localhost:9191/";
 		}
-//		return JsonUtil.objectToJsonStr(rqModel);
 	}
 
 }

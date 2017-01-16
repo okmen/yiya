@@ -20,8 +20,19 @@ public interface IBaseProductService {
 	 * @return
 	 */
 	ProductResult getProductResult(Long producId);
-	
+	/**
+	 * 获取款式背景图片
+	 * @param styleId
+	 * @param ids
+	 * @return
+	 */
 	ReturnModel find_previewsImg(long styleId,Integer[] ids);
+	/**
+	 * 获取预览款式背景图列表
+	 * @param styleId
+	 * @return
+	 */
+	ReturnModel find_previewsImg(long styleId);
 	/**
 	 * 获取款式列表
 	 * @param styleId

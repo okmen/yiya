@@ -38,6 +38,8 @@ public class RegionServiceImpl implements IRegionService {
 		}
 		return "";
 	}
+	
+	
 
 	/**
 	 * All regionlist Gets a list of all regions (provinces, cities and
@@ -48,8 +50,7 @@ public class RegionServiceImpl implements IRegionService {
 	public List<RegionVo> findRegionAll() {
 		String keyString = "regionList_all";
 		@SuppressWarnings("unchecked")
-		List<RegionVo> resultList = (List<RegionVo>) RedisUtil.getObject(keyString);// new
-																					// ArrayList<RegionVo>();
+		List<RegionVo> resultList = (List<RegionVo>) RedisUtil.getObject(keyString);
 		if (resultList != null && resultList.size() > 0) {
 			return resultList;
 		} else {

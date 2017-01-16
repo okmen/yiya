@@ -160,5 +160,26 @@ public class OrderMgtController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-
+	
+	/**
+	 * O05 支付详情
+	 * @param orderId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getOrderInfo")
+	public String getOrderInfo(String orderId) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			rq = orderMgtService.getOrderInfo(user.getUserId(),orderId);
+		} else { 
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	
 }

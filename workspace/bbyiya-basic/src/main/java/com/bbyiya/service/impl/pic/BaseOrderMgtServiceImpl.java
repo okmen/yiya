@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +38,7 @@ import com.bbyiya.model.RAreas;
 import com.bbyiya.model.RCity;
 import com.bbyiya.model.RProvince;
 import com.bbyiya.model.UUseraddress;
+import com.bbyiya.service.IRegionService;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
@@ -53,6 +56,9 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	private UUseraddressMapper addressMapper;// 用户收货地址
 	@Autowired
 	private RegionMapper regionMapper;// 区域
+
+	@Resource(name = "regionServiceImpl")
+	private IRegionService regionService;
 	/*--------------------产品模块注解---------------------------------*/
 	@Autowired
 	private PProductsMapper productsMapper;
@@ -73,8 +79,6 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 
 	@Autowired
 	private OOrderproductdetailsMapper odetailMapper;// 产品图片集合
-
-	
 
 	/**
 	 * 用户订单，产品订单 共用（一个订单对应一个产品 ）
@@ -260,6 +264,30 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		return rq;
 	}
 
+	public ReturnModel getOrderInfo(Long userId, String orderId) {
+		ReturnModel rq=new ReturnModel();
+		OUserorders orderInfo=userOrdersMapper.selectByPrimaryKey(orderId);
+		if(orderInfo!=null){
+			UserOrderResult model = new UserOrderResult();
+			model.setUserOrderId(orderInfo.getUserorderid());
+			model.setTotalprice(orderInfo.getTotalprice());
+			model.setStatus(orderInfo.getStatus());
+			model.setOrderTimeStr(DateUtil.getTimeStr(orderInfo.getOrdertime(), "yyyy-MM-dd"));
+			List<OOrderproducts> proList = oproductMapper.findOProductsByOrderId(orderInfo.getUserorderid());
+			model.setProlist(proList);
+			OOrderaddress addr= orderaddressMapper.selectByPrimaryKey(orderInfo.getOrderaddressid());
+			if(addr!=null){
+				model.setOrderAddress(addr);
+			}
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(model);
+		}else { 
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("不存在此订单");
+		}
+		return rq;
+	}
+
 	/**
 	 * 新增支付单
 	 * 
@@ -359,9 +387,9 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				orderAddress.setUserid(addr.getUserid());
 				orderAddress.setPhone(addr.getPhone());
 				orderAddress.setReciver(addr.getReciver());
-				orderAddress.setCity(getName(addr.getCity()));
-				orderAddress.setProvince(getName(addr.getProvince()));
-				orderAddress.setDistrict(getName(addr.getArea()));
+				orderAddress.setCity(regionService.getName(addr.getCity()));
+				orderAddress.setProvince(regionService.getName(addr.getProvince()));
+				orderAddress.setDistrict(regionService.getName(addr.getArea()));
 				orderAddress.setStreetdetail(addr.getStreetdetail());
 				orderAddress.setCreatetime(new Date());
 				orderaddressMapper.insertReturnId(orderAddress);
@@ -378,16 +406,16 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	 *            // region's code
 	 * @return
 	 */
-	public String getName(Integer code) {
-		if (code != null && code > 0) {
-			for (RegionVo vo : findRegionAll()) {
-				if (vo.getCode().intValue() == code.intValue()) {
-					return vo.getCodeName();
-				}
-			}
-		}
-		return "";
-	}
+	// public String getName(Integer code) {
+	// if (code != null && code > 0) {
+	// for (RegionVo vo : findRegionAll()) {
+	// if (vo.getCode().intValue() == code.intValue()) {
+	// return vo.getCodeName();
+	// }
+	// }
+	// }
+	// return "";
+	// }
 
 	/**
 	 * All regionlist Gets a list of all regions (provinces, cities and
@@ -395,51 +423,54 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	 * 
 	 * @return
 	 */
-	public List<RegionVo> findRegionAll() {
-		String keyString = "regionList_all";
-		@SuppressWarnings("unchecked")
-		List<RegionVo> resultList = (List<RegionVo>) RedisUtil.getObject(keyString);// new
-																					// ArrayList<RegionVo>();
-		if (resultList != null && resultList.size() > 0) {
-			return resultList;
-		} else {
-			resultList = new ArrayList<RegionVo>();
-		}
-		List<RProvince> provincelist = regionMapper.findProvincelistAll();
-		if (provincelist != null && provincelist.size() > 0) {
-			for (RProvince pp : provincelist) {
-				RegionVo vo = new RegionVo();
-				vo.setCode(pp.getCode());
-				vo.setCodeName(pp.getProvince());
-				vo.setStep(1);
-				resultList.add(vo);
-				List<RCity> citylist = regionMapper.findCitylistBy_ProvinceCode(pp.getCode());
-				if (citylist != null && citylist.size() > 0) {
-					for (RCity cc : citylist) {
-						RegionVo vo_cc = new RegionVo();
-						vo_cc.setCode(cc.getCode());
-						vo_cc.setCodeName(cc.getCity());
-						vo_cc.setStep(2);
-						resultList.add(vo_cc);
-						List<RAreas> arealist = regionMapper.findArealistBy_CityCode(cc.getCode());
-						if (arealist != null && arealist.size() > 0) {
-							for (RAreas aa : arealist) {
-								RegionVo vo_aa = new RegionVo();
-								vo_aa.setCode(aa.getCode());
-								vo_aa.setCodeName(aa.getArea());
-								vo_aa.setStep(3);
-								resultList.add(vo_aa);
-							}
-						}
-					}
-				}
-			}
-		}
-		if (resultList != null && resultList.size() > 0) {
-			RedisUtil.setObject(keyString, resultList, 3600);
-		}
-		return resultList;
-	}
+	// public List<RegionVo> findRegionAll() {
+	// String keyString = "regionList_all";
+	// @SuppressWarnings("unchecked")
+	// List<RegionVo> resultList = (List<RegionVo>)
+	// RedisUtil.getObject(keyString);// new
+	// // ArrayList<RegionVo>();
+	// if (resultList != null && resultList.size() > 0) {
+	// return resultList;
+	// } else {
+	// resultList = new ArrayList<RegionVo>();
+	// }
+	// List<RProvince> provincelist = regionMapper.findProvincelistAll();
+	// if (provincelist != null && provincelist.size() > 0) {
+	// for (RProvince pp : provincelist) {
+	// RegionVo vo = new RegionVo();
+	// vo.setCode(pp.getCode());
+	// vo.setCodeName(pp.getProvince());
+	// vo.setStep(1);
+	// resultList.add(vo);
+	// List<RCity> citylist =
+	// regionMapper.findCitylistBy_ProvinceCode(pp.getCode());
+	// if (citylist != null && citylist.size() > 0) {
+	// for (RCity cc : citylist) {
+	// RegionVo vo_cc = new RegionVo();
+	// vo_cc.setCode(cc.getCode());
+	// vo_cc.setCodeName(cc.getCity());
+	// vo_cc.setStep(2);
+	// resultList.add(vo_cc);
+	// List<RAreas> arealist =
+	// regionMapper.findArealistBy_CityCode(cc.getCode());
+	// if (arealist != null && arealist.size() > 0) {
+	// for (RAreas aa : arealist) {
+	// RegionVo vo_aa = new RegionVo();
+	// vo_aa.setCode(aa.getCode());
+	// vo_aa.setCodeName(aa.getArea());
+	// vo_aa.setStep(3);
+	// resultList.add(vo_aa);
+	// }
+	// }
+	// }
+	// }
+	// }
+	// }
+	// if (resultList != null && resultList.size() > 0) {
+	// RedisUtil.setObject(keyString, resultList, 3600);
+	// }
+	// return resultList;
+	// }
 
 	// TODO 订单处理状态
 	public boolean paySuccessProcess(String payId) {

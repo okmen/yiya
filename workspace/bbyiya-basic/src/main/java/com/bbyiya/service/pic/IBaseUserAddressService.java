@@ -18,10 +18,13 @@ public interface IBaseUserAddressService {
 	 * @return
 	 */
 	ReturnModel addOrEdit_UserAddressReturnAddressId(UUseraddress address);
+	
 	/**
-	 * 获取用户收货地址信息
-	 * @param addressId
+	 * 获取用户收货地址信息 
+	 * @param userId 
+	 * @param addressId(当 addressId=null 获取用户默认收货地址)
 	 * @return
 	 */
-	UUserAddressResult getUserAddressResult(Long addressId);
+	UUserAddressResult getUserAddressResult(Long userId, Long addressId);
+	
 }

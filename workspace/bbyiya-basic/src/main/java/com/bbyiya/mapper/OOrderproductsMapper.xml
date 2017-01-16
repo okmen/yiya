@@ -24,7 +24,7 @@
     from O_OrderProducts
     where OrderProductId = #{orderproductid,jdbcType=VARCHAR}
   </select>
-  <select id="findOProductsByOrderId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="findOProductsByOrderId" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />
     from O_OrderProducts

@@ -5,6 +5,7 @@ import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.dao.UUseraddressMapper;
@@ -47,7 +48,7 @@ public class UserInfoMgtController extends SSOController {
 				address.setUserid(user.getUserId());
 				rq = addressService.addOrEdit_UserAddressReturnAddressId(address);
 				if(rq.getStatu().equals(ReturnStatus.Success)){
-					rq.setBasemodle(addressService.getUserAddressResult((Long)rq.getBasemodle()));
+					rq.setBasemodle(addressService.getUserAddressResult(user.getUserId(), (Long)rq.getBasemodle()));
 				}
 			} else {
 				rq.setStatu(ReturnStatus.ParamError);
@@ -68,13 +69,12 @@ public class UserInfoMgtController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getUserAddress")
-	public String getUserAddress(Long addrid) throws Exception {
+	public String getUserAddress(@RequestParam(required = false, defaultValue = "0") long addrid) throws Exception {
 		LoginSuccessResult user = super.getLoginUser();
 		ReturnModel rq = new ReturnModel();
 		if (user != null) {
 			rq.setStatu(ReturnStatus.Success);
-			rq.setBasemodle(addressService.getUserAddressResult(addrid)); 
-			
+			rq.setBasemodle(addressService.getUserAddressResult(user.getUserId(),addrid)); 		
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("µÇÂ¼¹ýÆÚ");

@@ -2,6 +2,8 @@ package com.bbyiya.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.OOrderproducts;
 
 public interface OOrderproductsMapper {
@@ -21,5 +23,5 @@ public interface OOrderproductsMapper {
      * @param userOrderId
      * @return
      */
-    List<OOrderproducts>  findOProductsByOrderId(String userOrderId);
+    List<OOrderproducts>  findOProductsByOrderId(@Param("userOrderId")String userOrderId);
 }

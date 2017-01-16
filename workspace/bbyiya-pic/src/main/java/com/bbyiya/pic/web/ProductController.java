@@ -1,21 +1,23 @@
 package com.bbyiya.pic.web;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bbyiya.dao.PScenesMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.model.PScenes;
 import com.bbyiya.service.pic.IBaseProductService;
-import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.JsonUtil;
+import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
@@ -26,6 +28,8 @@ import com.bbyiya.web.base.SSOController;
 public class ProductController extends SSOController {
 	@Resource(name="baseProductServiceImpl")
 	private IBaseProductService productService;
+	@Autowired
+	private PScenesMapper sceneMapper;
 	
 	/**
 	 * P01 场景列表
@@ -41,20 +45,9 @@ public class ProductController extends SSOController {
 		LoginSuccessResult user= super.getLoginUser(); 
 		if(user!=null){
 			rq.setStatu(ReturnStatus.Success);
-			List<Map<String, String>> mapList=ConfigUtil.getMaplist("scenelist");
-			if(mapList!=null&mapList.size()>0){
-				List<Map<String, String>> mapreuList=new ArrayList<Map<String,String>>();
-				for (Map<String, String> map : mapList) {
-					if(map.get("productId").equals(productId)){
-						mapreuList.add(map);
-					}
-				}
-				if(mapreuList!=null&&mapreuList.size()>0){
-					rq.setBasemodle(mapreuList); 
-				}else {
-					rq.setBasemodle(mapList); 
-				}
-			}
+			List<PScenes> scenelist=sceneMapper.findScenesByProductId(ObjectUtil.parseLong(productId)); 
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(scenelist);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
@@ -109,13 +102,27 @@ public class ProductController extends SSOController {
 	 * @return
 	 * @throws Exception
 	 */
+//	@ResponseBody
+//	@RequestMapping(value = "/preview")
+//	public String preview(@RequestParam(required = false, defaultValue = "0") long styleId,  Integer[] ids) throws Exception {
+//		ReturnModel rq = new ReturnModel();
+//		LoginSuccessResult user= super.getLoginUser();
+//		if(user!=null){
+//			rq= productService.find_previewsImg(styleId,ids); 
+//		}else {
+//			rq.setStatu(ReturnStatus.LoginError);
+//			rq.setStatusreson("登录过期");
+//		}
+//		return JsonUtil.objectToJsonStr(rq);
+//	}
+	
 	@ResponseBody
 	@RequestMapping(value = "/preview")
-	public String preview(@RequestParam(required = false, defaultValue = "0") long styleId, Integer[] ids) throws Exception {
+	public String preview(@RequestParam(required = false, defaultValue = "0") long styleId) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq= productService.find_previewsImg(styleId,ids); 
+			rq= productService.find_previewsImg(styleId); 
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

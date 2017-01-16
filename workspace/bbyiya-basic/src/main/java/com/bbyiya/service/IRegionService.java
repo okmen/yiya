@@ -1,5 +1,6 @@
 package com.bbyiya.service;
 
+
 public interface IRegionService {
 
 	/**
@@ -8,4 +9,5 @@ public interface IRegionService {
 	 * @return
 	 */
 	String getName(Integer code);
+	
 }

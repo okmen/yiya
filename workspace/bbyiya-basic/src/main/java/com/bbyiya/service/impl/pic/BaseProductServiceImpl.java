@@ -95,7 +95,7 @@ public class BaseProductServiceImpl implements IBaseProductService {
 		Map<Long, Integer> map = new HashMap<Long, Integer>();
 		boolean isOk = false;
 		for (PProductstyleproperty pro : productProperyList) {
-			if (result.getStandardId().longValue() == pro.getStandardid().longValue()) {
+			if (result.getStandardId().longValue() == pro.getStandardvalueid().longValue()) {
 				isOk = true;
 				if (!map.containsKey(pro.getStyleid())) {
 					map.put(pro.getStyleid(), 1);
@@ -134,6 +134,8 @@ public class BaseProductServiceImpl implements IBaseProductService {
 		}
 		return result;
 	}
+	
+	 
 	
 	public ReturnModel getStyleInfo(Long styleId){
 		ReturnModel rq=new ReturnModel();
@@ -183,6 +185,18 @@ public class BaseProductServiceImpl implements IBaseProductService {
 		Map<String, Object> map=new HashMap<String, Object>();
 		map.put("backgrounds", backgrounds);
 		map.put("sceneBacks", scenenbacksMaps);
+		rq.setBasemodle(map);
+		rq.setStatu(ReturnStatus.Success);
+		return rq;
+	}
+	
+	public ReturnModel find_previewsImg(long styleId){
+		ReturnModel rq=new ReturnModel();
+		//根据款式获取制作背景图 
+		List<PStylebackgrounds> backgrounds=stylebackgroundsMapper.findBacksByStyleId(styleId);
+		
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("backgrounds", backgrounds);
 		rq.setBasemodle(map);
 		rq.setStatu(ReturnStatus.Success);
 		return rq;

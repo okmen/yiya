@@ -22,6 +22,7 @@ import com.bbyiya.common.vo.ResultMsg;
 import com.bbyiya.utils.HttpRequestHelper;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.utils.encrypt.MD5Encrypt;
 
 /**
@@ -68,6 +69,8 @@ public class WxPayUtils {
 			return msgResult;
 		}
 		try {
+			String key_prepayId="prepay_id_"+orderNo;
+			prepay_id=RedisUtil.getString(key_prepayId);
 			// 随机字符串
 			String nonceStr = genNonceStr();
 			if (ObjectUtil.isEmpty(prepay_id)) {
@@ -77,9 +80,9 @@ public class WxPayUtils {
 						Object prepayID = map.get("prepay_id");
 						if (prepayID != null) {
 							prepay_id = map.get("prepay_id").toString();
+							RedisUtil.setString(key_prepayId, prepay_id); 
 						} else {
 							msgResult.setStatus(-1);
-//							String str = new String(map.get("err_code_des").toString().getBytes("iso8859_1"), "GB2312");
 							msgResult.setMsg(map.get("err_code_des").toString());
 							return msgResult;
 						}
@@ -98,22 +101,23 @@ public class WxPayUtils {
 			String timeStamp = String.valueOf(genTimeStamp());
 
 			List<NameValuePair> packageParams = new LinkedList<NameValuePair>();
-			packageParams.add(new BasicNameValuePair("appid", WxPayConfig.APPID));
-			packageParams.add(new BasicNameValuePair("partnerid", WxPayConfig.PARNER));// 商户号
+			packageParams.add(new BasicNameValuePair("appid", WxPayAppConfig.APPID));
+			packageParams.add(new BasicNameValuePair("partnerid", WxPayAppConfig.PARNER));// 商户号
 			packageParams.add(new BasicNameValuePair("prepayid", prepay_id));
-			packageParams.add(new BasicNameValuePair("package", "Sign=WXPay"));
+			packageParams.add(new BasicNameValuePair("package",  "prepay_id="+prepay_id));
 			packageParams.add(new BasicNameValuePair("noncestr", nonceStr));
 			packageParams.add(new BasicNameValuePair("timestamp", timeStamp));
 			String sign = genPackageSign(packageParams);
 
 			Map<String, String> map_param = new HashMap<String, String>();
-			map_param.put("appid", WxPayConfig.APPID);
-			map_param.put("partnerId", WxPayConfig.PARNER);
-			map_param.put("prepayId", prepay_id);
-			map_param.put("package", "Sign=WXPay");
+			map_param.put("appId", WxPayConfig.APPID);
+//			map_param.put("partnerId", WxPayConfig.PARNER);
+//			map_param.put("prepayId", prepay_id);
+			map_param.put("package", "prepay_id="+prepay_id);
 			map_param.put("nonceStr", nonceStr);
-			map_param.put("timeStamp", timeStamp);
-			map_param.put("sign", sign);
+			map_param.put("timeStamp", timeStamp); 
+			map_param.put("signType", "MD5");
+			map_param.put("paySign", sign);
 
 			msgResult.setStatus(1);
 			msgResult.setMsg(JsonUtil.objectToJsonStr(map_param));

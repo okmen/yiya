@@ -30,9 +30,10 @@ public class PayController extends SSOController {
 	private OPayorderMapper payMapper;
 	@Autowired
 	private UOtherloginMapper otherMapper;
+	
 	/**
-	 * 获取微信支付参数
-	 *  
+	 * P01 获取微信支付参数
+	 * 
 	 * @return
 	 * @throws MapperException 
 	 */

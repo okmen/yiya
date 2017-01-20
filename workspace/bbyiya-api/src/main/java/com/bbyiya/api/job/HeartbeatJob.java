@@ -2,10 +2,12 @@ package com.bbyiya.api.job;
 
 import java.util.Date;
 
+
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
+import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.HttpRequestHelper;
 import com.bbyiya.utils.RedisUtil;
 
@@ -16,9 +18,9 @@ public class HeartbeatJob extends QuartzJobBean {
 	}
 
 	private void work() {
-		String a=send_app();
-		String b=send_mpic();
-		RedisUtil.setObject("timer-send", b); 
+		send_app();
+		send_mpic();
+		RedisUtil.setObject("timer-send", DateUtil.getTimeStr(new Date(), "yyyy-MM-dd HH:mm:ss"));  
 	}
 
 	private String send_app() {

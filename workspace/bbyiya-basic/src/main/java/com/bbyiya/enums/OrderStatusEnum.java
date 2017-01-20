@@ -20,7 +20,11 @@ public enum OrderStatusEnum {
     /**
      * 用户已收货
      */
-    recived(4)
+    recived(4),
+    /**
+     * 等待影楼确认
+     */
+    waitforconf(5)
     ;
 
     private final int Type;

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.dao.RegionMapper;
+import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -56,6 +57,7 @@ public class RegionController extends SSOController {
 		default:
 			break;
 		}
+		rq.setStatu(ReturnStatus.Success);  
 		return JsonUtil.objectToJsonStr(rq);
 	}
 }

@@ -14,7 +14,7 @@ public class OPayorder {
 
     private Integer status;
 
-    private Double totalprice;
+    private BigDecimal totalprice;
 
     private Date createtime;
 
@@ -62,18 +62,15 @@ public class OPayorder {
         this.status = status;
     }
 
-   
-    
+    public BigDecimal getTotalprice() {
+        return totalprice;
+    }
 
-    public Double getTotalprice() {
-		return totalprice;
-	}
+    public void setTotalprice(BigDecimal totalprice) {
+        this.totalprice = totalprice;
+    }
 
-	public void setTotalprice(Double totalprice) {
-		this.totalprice = totalprice;
-	}
-
-	public Date getCreatetime() {
+    public Date getCreatetime() {
         return createtime;
     }
 

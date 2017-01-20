@@ -96,26 +96,11 @@ public class ProductController extends SSOController {
 	}
 	
 	/**
-	 * P05 预览信息
+	 * 
 	 * @param styleId
-	 * @param ids
 	 * @return
 	 * @throws Exception
 	 */
-//	@ResponseBody
-//	@RequestMapping(value = "/preview")
-//	public String preview(@RequestParam(required = false, defaultValue = "0") long styleId,  Integer[] ids) throws Exception {
-//		ReturnModel rq = new ReturnModel();
-//		LoginSuccessResult user= super.getLoginUser();
-//		if(user!=null){
-//			rq= productService.find_previewsImg(styleId,ids); 
-//		}else {
-//			rq.setStatu(ReturnStatus.LoginError);
-//			rq.setStatusreson("登录过期");
-//		}
-//		return JsonUtil.objectToJsonStr(rq);
-//	}
-	
 	@ResponseBody
 	@RequestMapping(value = "/preview")
 	public String preview(@RequestParam(required = false, defaultValue = "0") long styleId) throws Exception {

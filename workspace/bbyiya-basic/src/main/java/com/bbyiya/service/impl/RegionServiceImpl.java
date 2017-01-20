@@ -30,7 +30,8 @@ public class RegionServiceImpl implements IRegionService {
 	 */
 	public String getName(Integer code) {
 		if (code != null && code > 0) {
-			for (RegionVo vo : findRegionAll()) {
+			List<RegionVo> list = findRegionAll();
+			for (RegionVo vo : list) {
 				if (vo.getCode().intValue() == code.intValue()) {
 					return vo.getCodeName();
 				}
@@ -38,8 +39,6 @@ public class RegionServiceImpl implements IRegionService {
 		}
 		return "";
 	}
-	
-	
 
 	/**
 	 * All regionlist Gets a list of all regions (provinces, cities and

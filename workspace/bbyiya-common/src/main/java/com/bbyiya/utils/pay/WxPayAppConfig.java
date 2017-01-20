@@ -21,7 +21,7 @@ public class WxPayAppConfig {
 	/**
 	 * 异步通知地址
 	 */
-	public static String NOTIFY_URL = ConfigUtil.getSingleValue("wxBackUrl"); 
+	public static String NOTIFY_URL = ConfigUtil.getSingleValue("wxAppBackUrl"); 
 									
 	/** 
 	 * 调取微信统一支付 url

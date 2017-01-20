@@ -28,7 +28,7 @@ public class WxAppPayUtils {
 	 * 时间串
 	 * @return
 	 */
-	private static long genTimeStamp() {
+	public static long genTimeStamp() {
 		return System.currentTimeMillis() / 1000;
 	}
 
@@ -37,7 +37,7 @@ public class WxAppPayUtils {
 	 * 
 	 * @return
 	 */
-	private static String genNonceStr() {
+	public static String genNonceStr() {
 		Random random = new Random();
 		return MD5Encrypt.getMessageDigest(String.valueOf(random.nextInt(10000)).getBytes()).toUpperCase();
 	}
@@ -115,12 +115,49 @@ public class WxAppPayUtils {
 		}
 		return msgResult;
 	}
+	
+	/**
+	 * 获取微信APP支付 参数 
+	 * @param prepay_id 预付单Id
+	 * @param nonceStr
+	 * @param timeStamp
+	 * @return
+	 */
+	public static Map<String, String> get_payParam(String prepay_id,String nonceStr,String timeStamp){
+		List<NameValuePair> packageParams = new LinkedList<NameValuePair>();
+		packageParams.add(new BasicNameValuePair("appid", WxPayAppConfig.APPID));
+		packageParams.add(new BasicNameValuePair("partnerid", WxPayAppConfig.PARNER));// 商户号
+		packageParams.add(new BasicNameValuePair("prepayid", prepay_id));
+		packageParams.add(new BasicNameValuePair("package", "Sign=WXPay"));
+		packageParams.add(new BasicNameValuePair("noncestr", nonceStr));
+		packageParams.add(new BasicNameValuePair("timestamp", timeStamp));
+		String sign = genPackageSign(packageParams);
 
-	private static Map<String, Object> doInBackground(String ipStr, double totalPrice, String orderNo, String nonceStr) {
+		Map<String, String> map_param = new HashMap<String, String>();
+		map_param.put("appid", WxPayAppConfig.APPID);
+		map_param.put("partnerId", WxPayAppConfig.PARNER);
+		map_param.put("prepayId", prepay_id);
+		map_param.put("package", "Sign=WXPay");
+		map_param.put("nonceStr", nonceStr);
+		map_param.put("timeStamp", timeStamp);
+		map_param.put("sign", sign);
+		return map_param;
+	}
+	
+	
+	/**
+	 * 统一下单 获取预付单信息
+	 * @param ipStr
+	 * @param totalPrice
+	 * @param orderNo
+	 * @param nonceStr
+	 * @return
+	 */
+	public static Map<String, Object> doInBackground(String ipStr, double totalPrice, String orderNo, String nonceStr) {
 		String urlString = WxPayAppConfig.WX_URL;
 		String entityString = genProductArgs(ipStr, totalPrice, orderNo, nonceStr);
 		String msgString = WxUtil.httpsRequest(urlString, entityString);
-		System.out.println(msgString); 
+//		System.out.println(msgString); 
 //		String msgString=HttpRequestHelper.sendPost(urlString, entityString);
 		Map<String, Object> map = WxUtil.xml2Map(msgString);
 		return map;
@@ -135,14 +172,12 @@ public class WxAppPayUtils {
 			List<NameValuePair> packageParams = new LinkedList<NameValuePair>();
 			packageParams.add(new BasicNameValuePair("appid", WxPayAppConfig.APPID));
 			packageParams.add(new BasicNameValuePair("mch_id", WxPayAppConfig.PARNER));// 商户号
-
 			packageParams.add(new BasicNameValuePair("nonce_str", nonceStr));
 			packageParams.add(new BasicNameValuePair("body", "yiya-order:" + orderNo));// "订单:"+orderNo
 			packageParams.add(new BasicNameValuePair("attach", "order:" + orderNo));
 			packageParams.add(new BasicNameValuePair("out_trade_no", orderNo));
 			packageParams.add(new BasicNameValuePair("total_fee", totalFee));
 			packageParams.add(new BasicNameValuePair("spbill_create_ip", ipStr));
-
 			packageParams.add(new BasicNameValuePair("product_id", "order:" + orderNo));
 			packageParams.add(new BasicNameValuePair("notify_url", WxPayAppConfig.NOTIFY_URL));
 			packageParams.add(new BasicNameValuePair("trade_type", "APP"));
@@ -150,9 +185,9 @@ public class WxAppPayUtils {
 			String sign = genPackageSign(packageParams);
 
 			packageParams.add(new BasicNameValuePair("sign", sign));
-			System.out.println(sign);
+//			System.out.println(sign);
 			String xmlstring = WxUtil.toXml(packageParams);
-			System.out.println(xmlstring);
+//			System.out.println(xmlstring);
 			return xmlstring;
 
 		} catch (Exception e) {
@@ -163,7 +198,7 @@ public class WxAppPayUtils {
 	}
 
 	/**
-	 * 生成签名
+	 * APP支付 生成签名 
 	 */
 	private static String genPackageSign(List<NameValuePair> params) {
 		Collections.sort(params, new Comparator<NameValuePair>() {
@@ -182,27 +217,9 @@ public class WxAppPayUtils {
 		}
 		sb.append("key=");
 		sb.append(WxPayAppConfig.AppSecret);
-		String packageSign = MD5Encrypt.getMessageDigest(sb.toString().getBytes()).toUpperCase();// .getMessageDigest(sb.toString().getBytes()).toUpperCase();
+		String packageSign = MD5Encrypt.getMessageDigest(sb.toString().getBytes()).toUpperCase();
 		return packageSign;
 	}
 
-	
-//	private static String toXml(List<NameValuePair> params) {
-//		StringBuilder sb = new StringBuilder();
-//		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-//		sb.append("<xml>");
-//		for (int i = 0; i < params.size(); i++) {
-//			sb.append("<" + params.get(i).getName() + ">");
-//			sb.append(params.get(i).getValue());
-//			sb.append("</" + params.get(i).getName() + ">");
-//		}
-//		sb.append("</xml>");
-//		try {
-//			return new String(sb.toString().getBytes(), "ISO8859-1");
-//		} catch (UnsupportedEncodingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		return "";
-//	}
+
 }

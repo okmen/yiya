@@ -188,8 +188,8 @@ public class UserLoginService implements IUserLoginService {
 			LoginSuccessResult result = getLoginSuccessResult_Common(user);
 			String s = UUID.randomUUID().toString();
 			String ticket = "YY" + s;
-			RedisUtil.setObject(ticket, result, 604800);// 缓存一周
-			result.setTicket(ticket);
+			RedisUtil.setObject(ticket, result, 86400);// 缓存一天
+			result.setTicket(ticket); 
 			return result;
 		}
 		return null;

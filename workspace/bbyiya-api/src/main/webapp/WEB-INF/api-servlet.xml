@@ -79,7 +79,7 @@
 		<property name="jobDetail" ref="HeartbeatJobDetail" />
 		<!-- 每个300s触发 -->
 		<!--<property name="cronExpression" value="0 0/20 20 * * ?" /> -->
-		<property name="cronExpression" value="0 0/9 * * * ?" />
+		<property name="cronExpression" value="0 0/30 * * * ?" />
 	</bean>
 	<!-- 定义核心调度器 -->
 	<bean id="scheduler"

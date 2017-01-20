@@ -17,15 +17,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+
+import java.util.Set;
+import java.util.SortedMap;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+
+import com.bbyiya.utils.encrypt.MD5Encrypt;
 
 
 public class WxUtil {
@@ -152,6 +158,11 @@ public class WxUtil {
           return null;  
     }  
 
+    /**
+     * xmlStr 转化成map
+     * @param xml
+     * @return
+     */
 	public static Map<String, Object> xml2Map(String xml) {
 		try {
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -258,7 +269,11 @@ public class WxUtil {
 		return getPackage(list);
 	}
 
-	
+	/**
+	 * 获取xml String
+	 * @param params
+	 * @return
+	 */
 	public static String toXml(List<NameValuePair> params) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<xml>");
@@ -269,5 +284,35 @@ public class WxUtil {
 		}
 		sb.append("</xml>");
 		return sb.toString();
+	}
+	
+	/**
+	 * 验证签名
+	 * @param paramMap
+	 * @param key
+	 * @return
+	 */
+	public static boolean isWXsign(SortedMap<String, String> paramMap,String key){			
+		StringBuffer sb = new StringBuffer();
+		String checkSign="";
+		Set es = paramMap.entrySet();
+		Iterator it = es.iterator();
+		while (it.hasNext()) {
+			Map.Entry entry = (Map.Entry) it.next();
+			String k = (String) entry.getKey();
+			String v = (String) entry.getValue();
+			if (null != v && !"".equals(v) && !"sign".equals(k)
+					&& !"key".equals(k)) {
+				sb.append(k + "=" + v + "&");
+			}
+			if("sign".equals(k))
+			{
+				checkSign = v;
+			}
+		}
+		sb.append("key=" + key);		
+		String sign = MD5Encrypt.encrypt(sb.toString()).toUpperCase();
+
+        return sign.equals(checkSign);     
 	}
 }

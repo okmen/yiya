@@ -482,8 +482,10 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					if (userorders != null) {
 						if (userorders.getStatus().intValue() == Integer.parseInt(OrderStatusEnum.noPay.toString())) {
 							userorders.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
+							userorders.setPaytime(new Date());
 							userOrdersMapper.updateByPrimaryKeySelective(userorders);
 							payOrder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
+							payOrder.setPaytime(new Date()); 
 							payOrderMapper.updateByPrimaryKeySelective(payOrder);
 							return true;
 						}

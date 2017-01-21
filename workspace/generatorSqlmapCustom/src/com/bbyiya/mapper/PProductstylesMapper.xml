@@ -14,14 +14,8 @@
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="UpdateTime" property="updatetime" jdbcType="TIMESTAMP" />
   </resultMap>
-  <resultMap id="StyleVOResultMap" type="com.bbyiya.vo.product.PProductStyleResult" >
-    <id column="StyleId" property="styleId" jdbcType="BIGINT" />
-    <result column="ProductId" property="productId" jdbcType="BIGINT" />
-    <result column="Price" property="price" jdbcType="DECIMAL" />
-    <result column="PropertyStr" property="propertyStr" jdbcType="VARCHAR" />
-  </resultMap>
   <sql id="Base_Column_List" >
-     StyleId, ProductId, UserId, DefaultImg, OldPrice, Price, Status, IsDefault, PropertyStr, 
+    StyleId, ProductId, UserId, DefaultImg, OldPrice, Price, Status, IsDefault, PropertyStr, 
     CreateTime, UpdateTime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
@@ -30,23 +24,11 @@
     from P_ProductStyles
     where StyleId = #{styleid,jdbcType=BIGINT}
   </select>
-  <select id="findStylesByProductId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from P_ProductStyles
-    where ProductId = #{productId,jdbcType=BIGINT}
-  </select>
-  <select id="findStylesResultByProductId" resultMap="StyleVOResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from P_ProductStyles
-    where ProductId = #{productId,jdbcType=BIGINT}
-  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from P_ProductStyles
     where StyleId = #{styleid,jdbcType=BIGINT}
   </delete>
- <insert id="insert" parameterType="com.bbyiya.model.PProductstyles" >
+  <insert id="insert" parameterType="com.bbyiya.model.PProductstyles" >
     insert into P_ProductStyles (StyleId, ProductId, UserId, 
       DefaultImg, OldPrice, Price, 
       Status, IsDefault, PropertyStr, 

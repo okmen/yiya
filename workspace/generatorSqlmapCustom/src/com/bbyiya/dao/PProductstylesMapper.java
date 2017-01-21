@@ -1,9 +1,6 @@
 package com.bbyiya.dao;
 
-import java.util.List;
-
 import com.bbyiya.model.PProductstyles;
-import com.bbyiya.vo.product.PProductStyleResult;
 
 public interface PProductstylesMapper {
     int deleteByPrimaryKey(Long styleid);
@@ -17,16 +14,4 @@ public interface PProductstylesMapper {
     int updateByPrimaryKeySelective(PProductstyles record);
 
     int updateByPrimaryKey(PProductstyles record);
-    /**
-     * 获取款式列表
-     * @param productId
-     * @return
-     */
-    List<PProductstyles> findStylesByProductId(Long productId);
-    /**
-     * 获取款式列表 前端展示用
-     * @param productId
-     * @return
-     */
-    List<PProductStyleResult> findStylesResultByProductId(Long productId);
 }

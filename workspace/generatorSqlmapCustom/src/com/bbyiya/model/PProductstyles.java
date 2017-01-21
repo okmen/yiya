@@ -1,10 +1,9 @@
 package com.bbyiya.model;
 
-import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
-public class PProductstyles implements Serializable{
-	private static final long serialVersionUID = 1L;
+public class PProductstyles {
     private Long styleid;
 
     private Long productid;
@@ -13,9 +12,9 @@ public class PProductstyles implements Serializable{
 
     private String defaultimg;
 
-    private Double oldprice;
+    private BigDecimal oldprice;
 
-    private Double price;
+    private BigDecimal price;
 
     private Integer status;
 
@@ -59,25 +58,23 @@ public class PProductstyles implements Serializable{
         this.defaultimg = defaultimg == null ? null : defaultimg.trim();
     }
 
-   
+    public BigDecimal getOldprice() {
+        return oldprice;
+    }
 
-    public Double getOldprice() {
-		return oldprice;
-	}
+    public void setOldprice(BigDecimal oldprice) {
+        this.oldprice = oldprice;
+    }
 
-	public void setOldprice(Double oldprice) {
-		this.oldprice = oldprice;
-	}
+    public BigDecimal getPrice() {
+        return price;
+    }
 
-	public Double getPrice() {
-		return price;
-	}
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
 
-	public void setPrice(Double price) {
-		this.price = price;
-	}
-
-	public Integer getStatus() {
+    public Integer getStatus() {
         return status;
     }
 

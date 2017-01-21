@@ -3,28 +3,13 @@ package com.bbyiya.pic.web.notify;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+
 import java.util.SortedMap;
-//import java.util.TreeMap;
-
-
-
-
-
-
-
-
-
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,9 +20,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bbyiya.dao.EErrorsMapper;
 import com.bbyiya.model.EErrors;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
-import com.bbyiya.utils.ConfigUtil;
-import com.bbyiya.utils.pay.ParamUtils;
-//import com.bbyiya.utils.pay.WxPayAppConfig;
 import com.bbyiya.utils.pay.WxPayConfig;
 import com.bbyiya.utils.pay.WxPayUtils;
 import com.bbyiya.utils.pay.WxUtil;
@@ -51,25 +33,17 @@ public class WxNotifyController {
 	@Autowired
 	private EErrorsMapper errorMapper;
 	
-	
+	/**
+	 * 订单主动查询
+	 * @param request
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/wxPayQuery", method = { RequestMethod.POST, RequestMethod.GET })
 	public String wxPayQuery(HttpServletRequest request){
 		String result="1";
 		String payId=request.getParameter("payId");
-		String nonce_str= WxPayUtils.genNonceStr();
-		List<NameValuePair> paramlist = new ArrayList<NameValuePair>();
-		paramlist.add(new BasicNameValuePair("appid", WxPayConfig.APPID));
-		paramlist.add(new BasicNameValuePair("mch_id", WxPayConfig.PARNER));
-		paramlist.add(new BasicNameValuePair("nonce_str",nonce_str));
-		paramlist.add(new BasicNameValuePair("out_trade_no",payId )); 
-		paramlist.add(new BasicNameValuePair("sign_type", "MD5"));
-		String sign=WxPayUtils.genPackageSign(paramlist);
-		
-		paramlist.add(new BasicNameValuePair("sign ", sign));
-		String xmlstring = WxUtil.toXml(paramlist);
-		String msgString = WxUtil.httpsRequest(ConfigUtil.getSingleValue("wxQuery"), xmlstring);
-		Map<String, Object> mapResult = WxUtil.xml2Map(msgString);
+		SortedMap<String, String> mapResult=WxPayUtils.queryWxOrder("", payId);
 		if (mapResult != null) {
 			if (mapResult.get("return_code").equals("SUCCESS")) {
 				if(mapResult.get("result_code").equals("SUCCESS")){//
@@ -79,7 +53,7 @@ public class WxNotifyController {
 				}
 			}
 		}
-		result+="result="+msgString;
+		
 		return result; 	
 	}
 	
@@ -101,7 +75,7 @@ public class WxNotifyController {
 		try {
 			
 			String xmlStr = readReqStr(request);
-			SortedMap<String, String> notifymap = ParamUtils.xml2Map(xmlStr);
+			SortedMap<String, String> notifymap = WxUtil.xmlToMap(xmlStr);
 			if (notifymap == null || notifymap.size() < 1) {
 				msg+="2,xml="+xmlStr;
 				addlog(msg);
@@ -135,19 +109,20 @@ public class WxNotifyController {
 	}
 
 	private String queryWxOrder(String transaction_id, String payId) {
-		List<NameValuePair> paramlist = new ArrayList<NameValuePair>();
-		paramlist.add(new BasicNameValuePair("appid", WxPayConfig.APPID));
-		paramlist.add(new BasicNameValuePair("mch_id", WxPayConfig.PARNER));
-		paramlist.add(new BasicNameValuePair("nonce_str", WxPayUtils.genNonceStr()));
-		paramlist.add(new BasicNameValuePair("out_trade_no", payId));
-		paramlist.add(new BasicNameValuePair("transaction_id", transaction_id));
-		
-		/*-------------------------------------------------------------*/
-		String sign = WxPayUtils.genPackageSign(paramlist);
-		paramlist.add(new BasicNameValuePair("sign", sign));
-		String xmlstring = WxUtil.toXml(paramlist);
-		String xmlResult = WxUtil.httpsRequest("https://api.mch.weixin.qq.com/pay/orderquery", xmlstring);
-		SortedMap<String, String> map = ParamUtils.xml2Map(xmlResult);
+//		List<NameValuePair> paramlist = new ArrayList<NameValuePair>();
+//		paramlist.add(new BasicNameValuePair("appid", WxPayConfig.APPID));
+//		paramlist.add(new BasicNameValuePair("mch_id", WxPayConfig.PARNER));
+//		paramlist.add(new BasicNameValuePair("nonce_str", WxPayUtils.genNonceStr()));
+//		paramlist.add(new BasicNameValuePair("out_trade_no", payId));
+//		paramlist.add(new BasicNameValuePair("transaction_id", transaction_id));
+//		
+//		/*-------------------------------------------------------------*/
+//		String sign = WxPayUtils.genPackageSign(paramlist);
+//		paramlist.add(new BasicNameValuePair("sign", sign));
+//		String xmlstring = WxUtil.toXml(paramlist);
+//		String xmlResult = WxUtil.httpsRequest("https://api.mch.weixin.qq.com/pay/orderquery", xmlstring);
+//		SortedMap<String, String> map = ParamUtils.xml2Map(xmlResult);
+		SortedMap<String, String> map=WxPayUtils.queryWxOrder(transaction_id, payId);
 		if (WxUtil.isWXsign(map, WxPayConfig.AppSecret)) {
 			if (map != null && map.get("return_code").equals("SUCCESS") && map.get("result_code").equals("SUCCESS") && map.get("trade_state").equals("SUCCESS")) {
 				// 会写订单状态 TODO 回写订单状态
@@ -163,7 +138,11 @@ public class WxNotifyController {
 	}
 
 	
-	
+	/**
+	 * 接受xml参数 
+	 * @param request
+	 * @return
+	 */
 	public static String readReqStr(HttpServletRequest request) {
 		BufferedReader reader = null;
 		StringBuilder sb = new StringBuilder();

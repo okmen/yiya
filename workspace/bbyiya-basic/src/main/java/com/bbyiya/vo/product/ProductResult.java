@@ -3,6 +3,7 @@ package com.bbyiya.vo.product;
 import java.io.Serializable;
 import java.util.List;
 
+
 public class ProductResult implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -13,8 +14,14 @@ public class ProductResult implements Serializable{
 	private String defaultImg;
 	private List<String> desImgs;
 	private List<ProductStandardResult> propertyList;
+	private List<PProductStyleResult> styleslist;
 	
-	
+	public List<PProductStyleResult> getStyleslist() {
+		return styleslist;
+	}
+	public void setStyleslist(List<PProductStyleResult> styleslist) {
+		this.styleslist = styleslist;
+	}
 	public Long getProductId() {
 		return productId;
 	}

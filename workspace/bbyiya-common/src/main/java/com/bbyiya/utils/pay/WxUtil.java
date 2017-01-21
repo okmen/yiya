@@ -24,6 +24,7 @@ import java.util.Map;
 
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -182,6 +183,26 @@ public class WxUtil {
 		}
 		return null;
 	}
+	
+	public static SortedMap<String, String> xmlToMap(String xml) {
+		try {
+			SortedMap<String, String> sortedMap= new TreeMap<String, String>();
+			Document document = DocumentHelper.parseText(xml);
+			Element root=	document.getRootElement();
+			
+			List<Element> list=root.elements();
+			if(list!=null&&list.size()>0)
+			{
+				for (Element element : list) {
+					sortedMap.put(element.getName(), element.getText());	
+				}
+			}
+			return sortedMap;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	/**
 	 * 将参数打包
@@ -315,4 +336,28 @@ public class WxUtil {
 
         return sign.equals(checkSign);     
 	}
+	
+//	public static boolean isWXsign(Map<String, Object> paramMap,String key){			
+//		StringBuffer sb = new StringBuffer();
+//		String checkSign="";
+//		Set es = paramMap.entrySet();
+//		Iterator it = es.iterator();
+//		while (it.hasNext()) {
+//			Map.Entry entry = (Map.Entry) it.next();
+//			String k = (String) entry.getKey();
+//			String v = (String) entry.getValue();
+//			if (null != v && !"".equals(v) && !"sign".equals(k)
+//					&& !"key".equals(k)) {
+//				sb.append(k + "=" + v + "&");
+//			}
+//			if("sign".equals(k))
+//			{
+//				checkSign = v;
+//			}
+//		}
+//		sb.append("key=" + key);		
+//		String sign = MD5Encrypt.encrypt(sb.toString()).toUpperCase();
+//
+//        return sign.equals(checkSign);     
+//	}
 }

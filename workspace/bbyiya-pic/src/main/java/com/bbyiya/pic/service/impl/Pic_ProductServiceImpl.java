@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +20,7 @@ import com.bbyiya.enums.pic.MyProductStatusEnum;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PProductdetails;
+import com.bbyiya.model.PProducts;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.service.IPic_ProductService;
 import com.bbyiya.pic.vo.product.MyProductParam;
@@ -166,12 +166,36 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		if (user != null) {
 			MyProductResultVo myproduct= myMapper.getMyProductResultVo(cartId);
 			if(myproduct!=null){
+				PProducts product=productsMapper.selectByPrimaryKey(myproduct.getProductid());
+				if(product!=null){
+					myproduct.setDescription(product.getDescription()); 
+				}
 				List<PMyproductdetails> list=myDetaiMapper.findMyProductdetails(cartId);
 				myproduct.setDetailslist(list);
 				rq.setBasemodle(myproduct);
 			}
 		}
 		rq.setStatu(ReturnStatus.Success); 
+		return rq;
+	}
+	
+	public ReturnModel del_myProductDetail(Long userId, Long dpId) {
+		ReturnModel rq = new ReturnModel();
+		UUsers user = usersMapper.getUUsersByUserID(userId);
+		if (user != null) {
+			PMyproductdetails detail= myDetaiMapper.selectByPrimaryKey(dpId);
+			if(detail!=null){
+				PMyproducts myproduct= myMapper.selectByPrimaryKey(detail.getCartid());
+				if(myproduct!=null&&myproduct.getUserid()!=null&&myproduct.getUserid().longValue()==userId){
+					myDetaiMapper.deleteByPrimaryKey(dpId);
+					rq.setStatu(ReturnStatus.Success);
+					rq.setStatusreson("É¾³ý³É¹¦£¡");
+					return rq;
+				}
+			}
+		}
+		rq.setStatu(ReturnStatus.ParamError);
+		rq.setStatusreson("É¾³ýÊ§°Ü");
 		return rq;
 	}
 }

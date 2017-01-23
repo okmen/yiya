@@ -8,7 +8,7 @@ public class SubmitOrderProductParam implements Serializable{
 	private Long productId;
 	private Long  styleId;
 	private Integer  count;
-	
+	private Long cartId;
 	
 	public Long getProductId() {
 		return productId;
@@ -27,6 +27,12 @@ public class SubmitOrderProductParam implements Serializable{
 	}
 	public void setCount(Integer count) {
 		this.count = count;
+	}
+	public Long getCartId() {
+		return cartId;
+	}
+	public void setCartId(Long cartId) {
+		this.cartId = cartId;
 	}
 	
 	

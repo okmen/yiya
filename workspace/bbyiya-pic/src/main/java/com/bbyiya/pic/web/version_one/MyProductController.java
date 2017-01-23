@@ -91,4 +91,18 @@ public class MyProductController  extends SSOController{
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	@ResponseBody
+	@RequestMapping(value = "/dele")
+	public String dele(@RequestParam(required = false, defaultValue = "0") long pdid) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=proService.del_myProductDetail(user.getUserId(), pdid);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("µÇÂ¼¹ýÆÚ");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 }

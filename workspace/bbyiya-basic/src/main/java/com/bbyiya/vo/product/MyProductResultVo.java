@@ -11,7 +11,7 @@ public class MyProductResultVo extends PMyproducts{
 	private int count;
 	//是否下单
 	private int isOrder;
-	
+	private String description;
 	private List<PMyproductdetails> detailslist;
 	
 	public int getCount() {
@@ -31,6 +31,12 @@ public class MyProductResultVo extends PMyproducts{
 	}
 	public void setDetailslist(List<PMyproductdetails> detailslist) {
 		this.detailslist = detailslist;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	
 

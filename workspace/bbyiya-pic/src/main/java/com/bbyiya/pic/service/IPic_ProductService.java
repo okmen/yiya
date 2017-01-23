@@ -31,4 +31,11 @@ public interface IPic_ProductService {
 	 * @return
 	 */
 	ReturnModel getMyProductInfo(Long userId, Long cartId);
+	/**
+	 * 删除我的作品图片
+	 * @param userId
+	 * @param dpId
+	 * @return
+	 */
+	ReturnModel del_myProductDetail(Long userId, Long dpId);
 }

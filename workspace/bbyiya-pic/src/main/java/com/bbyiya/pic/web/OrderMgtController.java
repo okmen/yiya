@@ -2,17 +2,21 @@ package com.bbyiya.pic.web;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproducts;
+import com.bbyiya.model.PMyproducts;
 import com.bbyiya.pic.vo.order.OrderPhotoParam;
 import com.bbyiya.pic.vo.order.SaveOrderPhotoParam;
 import com.bbyiya.pic.vo.order.SubmitOrderProductParam;
@@ -29,6 +33,8 @@ public class OrderMgtController extends SSOController {
 
 	@Resource(name = "baseOrderMgtServiceImpl")
 	private IBaseOrderMgtService orderMgtService;
+	@Autowired
+	private PMyproductsMapper myMapper;
 
 	/**
 	 * O01 提交订单（购买）
@@ -53,6 +59,20 @@ public class OrderMgtController extends SSOController {
 					product.setCount(param.getCount());
 					product.setSalesuserid(0l);
 					rq = orderMgtService.submitOrder_singleProduct(user.getUserId(), addrId, remark, product);
+					if (param.getCartId() != null && param.getCartId() > 0) {
+						PMyproducts myPro = myMapper.selectByPrimaryKey(param.getCartId());
+						if (myPro != null) {
+							if (rq.getStatu().equals(ReturnStatus.Success)) {
+								Map<String, Object> map = (Map<String, Object>) rq.getBasemodle();
+								if (map != null) {
+									String orderId = String.valueOf(map.get("orderId"));
+									myPro.setOrderno(orderId);
+									myMapper.updateByPrimaryKey(myPro);
+								}
+							}
+						}
+					}
+
 				}
 			}
 			rq.setStatu(ReturnStatus.Success);
@@ -101,9 +121,9 @@ public class OrderMgtController extends SSOController {
 						OOrderproductdetails item = new OOrderproductdetails();
 						item.setOrderproductid(param.getOrderId());
 						item.setPrintno(pp.getPrintNo());
-						String printNo=pp.getPrintNo();
-						item.setPosition(ObjectUtil.parseInt(printNo.substring(printNo.lastIndexOf("-")+1, printNo.length())));
-						item.setImageurl(pp.getImageUrl()); 
+						String printNo = pp.getPrintNo();
+						item.setPosition(ObjectUtil.parseInt(printNo.substring(printNo.lastIndexOf("-") + 1, printNo.length())));
+						item.setImageurl(pp.getImageUrl());
 						images.add(item);
 					}
 					rq = orderMgtService.saveOrderImages(param.getOrderId(), images);
@@ -160,9 +180,10 @@ public class OrderMgtController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	
+
 	/**
 	 * O05 支付详情
+	 * 
 	 * @param orderId
 	 * @return
 	 * @throws Exception
@@ -173,13 +194,12 @@ public class OrderMgtController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			rq = orderMgtService.getOrderInfo(user.getUserId(),orderId);
-		} else { 
+			rq = orderMgtService.getOrderInfo(user.getUserId(), orderId);
+		} else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	
-	
+
 }

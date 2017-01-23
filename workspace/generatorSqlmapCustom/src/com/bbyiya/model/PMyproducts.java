@@ -1,11 +1,8 @@
 package com.bbyiya.model;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public class PMyproducts implements Serializable{
-	private static final long serialVersionUID = 1L;
-	
+public class PMyproducts {
     private Long cartid;
 
     private Long userid;
@@ -21,6 +18,7 @@ public class PMyproducts implements Serializable{
     private Date createtime;
 
     private Integer status;
+
     private String phone;
 
     private String orderno;
@@ -89,20 +87,19 @@ public class PMyproducts implements Serializable{
         this.status = status;
     }
 
-	public String getPhone() {
-		return phone;
-	}
+    public String getPhone() {
+        return phone;
+    }
 
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
+    public void setPhone(String phone) {
+        this.phone = phone == null ? null : phone.trim();
+    }
 
-	public String getOrderno() {
-		return orderno;
-	}
+    public String getOrderno() {
+        return orderno;
+    }
 
-	public void setOrderno(String orderno) {
-		this.orderno = orderno;
-	}
-    
+    public void setOrderno(String orderno) {
+        this.orderno = orderno == null ? null : orderno.trim();
+    }
 }

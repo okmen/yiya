@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.bbyiya.dao.PMyproductsMapper" >
-  <sql id="Base_Column_List" >
-     CartId, UserId, Title, Author, ProductId, StyleId, CreateTime, Status, Phone, OrderNo
-  </sql>
   <resultMap id="BaseResultMap" type="com.bbyiya.model.PMyproducts" >
     <id column="CartId" property="cartid" jdbcType="BIGINT" />
     <result column="UserId" property="userid" jdbcType="BIGINT" />
@@ -13,45 +10,23 @@
     <result column="StyleId" property="styleid" jdbcType="BIGINT" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="Status" property="status" jdbcType="INTEGER" />
-     <result column="Phone" property="phone" jdbcType="VARCHAR" />
+    <result column="Phone" property="phone" jdbcType="VARCHAR" />
     <result column="OrderNo" property="orderno" jdbcType="VARCHAR" />
   </resultMap>
-  <!-- 我的作品返回model -->
-  <resultMap id="MyProductResultVO" type="com.bbyiya.vo.product.MyProductResultVo" extends="BaseResultMap">  
-  </resultMap>  
- 
+  <sql id="Base_Column_List" >
+    CartId, UserId, Title, Author, ProductId, StyleId, CreateTime, Status, Phone, OrderNo
+  </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from P_MyProducts
     where CartId = #{cartid,jdbcType=BIGINT}
   </select>
-  <select id="getMyProductResultVo" resultMap="MyProductResultVO" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from P_MyProducts
-    where CartId = #{cartid,jdbcType=BIGINT}
-  </select>
-  <select id="findMyProductslist" resultMap="MyProductResultVO" >
-    select <include refid="Base_Column_List" />
-    from P_MyProducts
-    where UserId = #{userId,jdbcType=BIGINT} and Status=#{status,jdbcType=INTEGER}
-  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from P_MyProducts
     where CartId = #{cartid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.PMyproducts" >
-    insert into P_MyProducts (CartId, UserId, Title, 
-      Author, ProductId, StyleId, 
-      CreateTime, Status, Phone, 
-      OrderNo)
-    values (#{cartid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
-      #{author,jdbcType=VARCHAR}, #{productid,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, 
-      #{orderno,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="cartid" parameterType="com.bbyiya.model.PMyproducts" >
     insert into P_MyProducts (CartId, UserId, Title, 
       Author, ProductId, StyleId, 
       CreateTime, Status, Phone, 

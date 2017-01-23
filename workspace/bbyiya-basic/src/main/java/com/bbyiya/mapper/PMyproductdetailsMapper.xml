@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.PMyproductdetailsMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.PMyproductdetails" >
+    <id column="PdId" property="pdid" jdbcType="BIGINT" />
+    <result column="CartId" property="cartid" jdbcType="BIGINT" />
+    <result column="SceneId" property="sceneid" jdbcType="INTEGER" />
+    <result column="ImgUrl" property="imgurl" jdbcType="VARCHAR" />
+    <result column="Content" property="content" jdbcType="VARCHAR" />
+    <result column="Sort" property="sort" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    PdId, CartId, SceneId, ImgUrl, Content, Sort, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from P_MyProductDetails
+    where PdId = #{pdid,jdbcType=BIGINT}
+  </select>
+  <select id="getMaxSort"  resultType="java.lang.Integer" >
+    select MAX(Sort) from P_MyProductDetails
+    where CartId = #{cartId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from P_MyProductDetails
+    where PdId = #{pdid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.PMyproductdetails" >
+    insert into P_MyProductDetails (PdId, CartId, SceneId, 
+      ImgUrl, Content, Sort, 
+      CreateTime)
+    values (#{pdid,jdbcType=BIGINT}, #{cartid,jdbcType=BIGINT}, #{sceneid,jdbcType=INTEGER}, 
+      #{imgurl,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproductdetails" >
+    insert into P_MyProductDetails
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="pdid != null" >
+        PdId,
+      </if>
+      <if test="cartid != null" >
+        CartId,
+      </if>
+      <if test="sceneid != null" >
+        SceneId,
+      </if>
+      <if test="imgurl != null" >
+        ImgUrl,
+      </if>
+      <if test="content != null" >
+        Content,
+      </if>
+      <if test="sort != null" >
+        Sort,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="pdid != null" >
+        #{pdid,jdbcType=BIGINT},
+      </if>
+      <if test="cartid != null" >
+        #{cartid,jdbcType=BIGINT},
+      </if>
+      <if test="sceneid != null" >
+        #{sceneid,jdbcType=INTEGER},
+      </if>
+      <if test="imgurl != null" >
+        #{imgurl,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PMyproductdetails" >
+    update P_MyProductDetails
+    <set >
+      <if test="cartid != null" >
+        CartId = #{cartid,jdbcType=BIGINT},
+      </if>
+      <if test="sceneid != null" >
+        SceneId = #{sceneid,jdbcType=INTEGER},
+      </if>
+      <if test="imgurl != null" >
+        ImgUrl = #{imgurl,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        Content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        Sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where PdId = #{pdid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PMyproductdetails" >
+    update P_MyProductDetails
+    set CartId = #{cartid,jdbcType=BIGINT},
+      SceneId = #{sceneid,jdbcType=INTEGER},
+      ImgUrl = #{imgurl,jdbcType=VARCHAR},
+      Content = #{content,jdbcType=VARCHAR},
+      Sort = #{sort,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where PdId = #{pdid,jdbcType=BIGINT}
+  </update>
+</mapper>

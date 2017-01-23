@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.PMyproductsMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.PMyproducts" >
+    <id column="CartId" property="cartid" jdbcType="BIGINT" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="Title" property="title" jdbcType="VARCHAR" />
+    <result column="Author" property="author" jdbcType="VARCHAR" />
+    <result column="ProductId" property="productid" jdbcType="BIGINT" />
+    <result column="StyleId" property="styleid" jdbcType="BIGINT" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CartId, UserId, Title, Author, ProductId, StyleId, CreateTime, Status
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from P_MyProducts
+    where CartId = #{cartid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from P_MyProducts
+    where CartId = #{cartid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.PMyproducts" >
+    insert into P_MyProducts (CartId, UserId, Title, 
+      Author, ProductId, StyleId, 
+      CreateTime, Status)
+    values (#{cartid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
+      #{author,jdbcType=VARCHAR}, #{productid,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproducts" >
+    insert into P_MyProducts
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="cartid != null" >
+        CartId,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="title != null" >
+        Title,
+      </if>
+      <if test="author != null" >
+        Author,
+      </if>
+      <if test="productid != null" >
+        ProductId,
+      </if>
+      <if test="styleid != null" >
+        StyleId,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="cartid != null" >
+        #{cartid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="productid != null" >
+        #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="styleid != null" >
+        #{styleid,jdbcType=BIGINT},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PMyproducts" >
+    update P_MyProducts
+    <set >
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="title != null" >
+        Title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        Author = #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="productid != null" >
+        ProductId = #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="styleid != null" >
+        StyleId = #{styleid,jdbcType=BIGINT},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where CartId = #{cartid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PMyproducts" >
+    update P_MyProducts
+    set UserId = #{userid,jdbcType=BIGINT},
+      Title = #{title,jdbcType=VARCHAR},
+      Author = #{author,jdbcType=VARCHAR},
+      ProductId = #{productid,jdbcType=BIGINT},
+      StyleId = #{styleid,jdbcType=BIGINT},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      Status = #{status,jdbcType=INTEGER}
+    where CartId = #{cartid,jdbcType=BIGINT}
+  </update>
+</mapper>

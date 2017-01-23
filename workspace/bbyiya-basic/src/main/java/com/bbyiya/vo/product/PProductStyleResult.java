@@ -10,6 +10,7 @@ public class PProductStyleResult implements Serializable {
 	private Long productId;
 	private String propertyStr;
 	private Double price;
+	private String defaultImg;
 	private List<String> detailImgs;
 	public Long getStyleId() {
 		return styleId;
@@ -40,6 +41,12 @@ public class PProductStyleResult implements Serializable {
 	}
 	public void setProductId(Long productId) {
 		this.productId = productId;
+	}
+	public String getDefaultImg() {
+		return defaultImg;
+	}
+	public void setDefaultImg(String defaultImg) {
+		this.defaultImg = defaultImg;
 	}
 	
 	

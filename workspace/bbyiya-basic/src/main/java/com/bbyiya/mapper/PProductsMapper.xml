@@ -12,16 +12,32 @@
     <result column="PostModelId" property="postmodelid" jdbcType="INTEGER" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="UpdateTime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="Description" property="description" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ProductBaseVo" type="com.bbyiya.vo.product.ProductBaseVo" >
+    <id column="ProductId" property="productId" jdbcType="BIGINT" />
+    <result column="UserId" property="branchUserId" jdbcType="BIGINT" />
+    <result column="Title" property="title" jdbcType="VARCHAR" />
+    <result column="DefaultImg" property="defaultImg" jdbcType="VARCHAR" />
+    <result column="Description" property="description" jdbcType="VARCHAR" />
   </resultMap>
   <resultMap id="ProductResultMap" type="com.bbyiya.vo.product.ProductResult" >
     <id column="ProductId" property="productId" jdbcType="BIGINT" />
     <result column="UserId" property="branchUserId" jdbcType="BIGINT" />
     <result column="Title" property="title" jdbcType="VARCHAR" />
     <result column="DefaultImg" property="defaultImg" jdbcType="VARCHAR" />
+    <result column="Description" property="description" jdbcType="VARCHAR" />
+  </resultMap>
+   <resultMap id="ProductSampleVo" type="com.bbyiya.vo.product.ProductSampleVo" >
+    <id column="ProductId" property="productId" jdbcType="BIGINT" />
+    <result column="UserId" property="branchUserId" jdbcType="BIGINT" />
+    <result column="Title" property="title" jdbcType="VARCHAR" />
+    <result column="DefaultImg" property="defaultImg" jdbcType="VARCHAR" />
+    <result column="Description" property="description" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     ProductId, UserId, DefaultImg, Title, OldPrice, Price, Status, PostModelId, CreateTime, 
-    UpdateTime
+    UpdateTime, Description
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -41,6 +57,12 @@
     from P_Products
     where ProductId = #{productid,jdbcType=BIGINT}
   </select>
+   <select id="getProductBaseVoByProId" resultMap="ProductSampleVo" parameterType="java.lang.Long" ><!-- 获取产品基本信息 -->
+    select 
+    <include refid="Base_Column_List" />
+    from P_Products
+    where ProductId = #{productid,jdbcType=BIGINT}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from P_Products
     where ProductId = #{productid,jdbcType=BIGINT}
@@ -49,11 +71,11 @@
     insert into P_Products (ProductId, UserId, DefaultImg, 
       Title, OldPrice, Price, 
       Status, PostModelId, CreateTime, 
-      UpdateTime)
+      UpdateTime, Description)
     values (#{productid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{defaultimg,jdbcType=VARCHAR}, 
       #{title,jdbcType=VARCHAR}, #{oldprice,jdbcType=DECIMAL}, #{price,jdbcType=DECIMAL}, 
       #{status,jdbcType=INTEGER}, #{postmodelid,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
-      #{updatetime,jdbcType=TIMESTAMP})
+      #{updatetime,jdbcType=TIMESTAMP}, #{description,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PProducts" >
     insert into P_Products
@@ -88,6 +110,9 @@
       <if test="updatetime != null" >
         UpdateTime,
       </if>
+      <if test="description != null" >
+        Description,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="productid != null" >
@@ -119,6 +144,9 @@
       </if>
       <if test="updatetime != null" >
         #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -152,6 +180,9 @@
       <if test="updatetime != null" >
         UpdateTime = #{updatetime,jdbcType=TIMESTAMP},
       </if>
+      <if test="description != null" >
+        Description = #{description,jdbcType=VARCHAR},
+      </if>
     </set>
     where ProductId = #{productid,jdbcType=BIGINT}
   </update>
@@ -165,7 +196,8 @@
       Status = #{status,jdbcType=INTEGER},
       PostModelId = #{postmodelid,jdbcType=INTEGER},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
-      UpdateTime = #{updatetime,jdbcType=TIMESTAMP}
+      UpdateTime = #{updatetime,jdbcType=TIMESTAMP},
+      Description = #{description,jdbcType=VARCHAR}
     where ProductId = #{productid,jdbcType=BIGINT}
   </update>
 </mapper>

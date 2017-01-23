@@ -1,5 +1,9 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.PProductdetails;
 
 public interface PProductdetailsMapper {
@@ -14,4 +18,11 @@ public interface PProductdetailsMapper {
     int updateByPrimaryKeySelective(PProductdetails record);
 
     int updateByPrimaryKey(PProductdetails record);
+    
+    /**
+     * 获取产品样本图列表
+     * @param productId
+     * @return
+     */
+    List<PProductdetails> findDetailsByProductId(@Param("productId") Long productId);
 }

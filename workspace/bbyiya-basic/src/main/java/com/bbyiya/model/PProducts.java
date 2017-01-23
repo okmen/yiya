@@ -1,9 +1,11 @@
 package com.bbyiya.model;
 
-import java.math.BigDecimal;
+import java.io.Serializable;
 import java.util.Date;
 
-public class PProducts {
+public class PProducts implements Serializable{
+	private static final long serialVersionUID = 1L;
+	
     private Long productid;
 
     private Long userid;
@@ -12,9 +14,9 @@ public class PProducts {
 
     private String title;
 
-    private BigDecimal oldprice;
+    private Double oldprice;
 
-    private BigDecimal price;
+    private Double price;
 
     private Integer status;
 
@@ -23,6 +25,8 @@ public class PProducts {
     private Date createtime;
 
     private Date updatetime;
+
+    private String description;
 
     public Long getProductid() {
         return productid;
@@ -56,23 +60,25 @@ public class PProducts {
         this.title = title == null ? null : title.trim();
     }
 
-    public BigDecimal getOldprice() {
-        return oldprice;
-    }
+   
 
-    public void setOldprice(BigDecimal oldprice) {
-        this.oldprice = oldprice;
-    }
+    public Double getOldprice() {
+		return oldprice;
+	}
 
-    public BigDecimal getPrice() {
-        return price;
-    }
+	public void setOldprice(Double oldprice) {
+		this.oldprice = oldprice;
+	}
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
+	public Double getPrice() {
+		return price;
+	}
 
-    public Integer getStatus() {
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
+	public Integer getStatus() {
         return status;
     }
 
@@ -102,5 +108,13 @@ public class PProducts {
 
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description == null ? null : description.trim();
     }
 }

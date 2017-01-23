@@ -18,6 +18,7 @@
     <id column="StyleId" property="styleId" jdbcType="BIGINT" />
     <result column="ProductId" property="productId" jdbcType="BIGINT" />
     <result column="Price" property="price" jdbcType="DECIMAL" />
+    <result column="DefaultImg" property="defaultImg" jdbcType="VARCHAR" />
     <result column="PropertyStr" property="propertyStr" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >

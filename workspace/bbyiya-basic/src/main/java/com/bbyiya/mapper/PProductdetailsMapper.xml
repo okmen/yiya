@@ -18,6 +18,12 @@
     from P_ProductDetails
     where DetailId = #{detailid,jdbcType=BIGINT}
   </select>
+  <select id="findDetailsByProductId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from P_ProductDetails
+    where ProductId = #{productId,jdbcType=BIGINT} order by Position ASC
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from P_ProductDetails
     where DetailId = #{detailid,jdbcType=BIGINT}

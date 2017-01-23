@@ -1,5 +1,7 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 import com.bbyiya.model.PMyproductdetails;
@@ -23,5 +25,11 @@ public interface PMyproductdetailsMapper {
      * @return
      */
     Integer getMaxSort(@Param("cartId")Long cartId);
+    /**
+     * 获取作品的图片列表
+     * @param cartid
+     * @return
+     */
+    List<PMyproductdetails> findMyProductdetails(@Param("cartId")Long cartid);
     
 }

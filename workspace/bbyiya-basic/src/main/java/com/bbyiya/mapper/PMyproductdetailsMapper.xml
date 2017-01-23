@@ -19,6 +19,12 @@
     from P_MyProductDetails
     where PdId = #{pdid,jdbcType=BIGINT}
   </select>
+  <select id="findMyProductdetails" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from P_MyProductDetails
+    where CartId = #{cartId,jdbcType=BIGINT} order by Sort asc
+  </select>
   <select id="getMaxSort"  resultType="java.lang.Integer" >
     select MAX(Sort) from P_MyProductDetails
     where CartId = #{cartId,jdbcType=BIGINT}

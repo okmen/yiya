@@ -16,7 +16,11 @@ public interface UUsersMapper {
 	 * @return
 	 */
 	int insertReturnKeyId(UUsers record);
-
+	/**
+	 * 
+	 * @param record
+	 * @return
+	 */
 	int insertSelective(UUsers record);
 	
 	UUsers selectByPrimaryKey(Long userid);

@@ -5,6 +5,7 @@ import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.dao.PMyproductdetailsMapper;
@@ -43,6 +44,46 @@ public class MyProductController  extends SSOController{
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("参数有误");
 			}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 我的作品列表
+	 * @param myproductJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/mylist")
+	public String myProlist() throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=proService.findMyProlist(user.getUserId());
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 我的作品详情
+	 * @param cartId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/details")
+	public String details(@RequestParam(required = false, defaultValue = "0") long cartId) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=proService.getMyProductInfo(user.getUserId(),cartId); 
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

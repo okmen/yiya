@@ -18,4 +18,17 @@ public interface IPic_ProductService {
 	 * @return
 	 */
 	ReturnModel saveOrEdit_MyProducts(Long userId, MyProductParam param);
+	/**
+	 * 我的作品列表
+	 * @param userId
+	 * @return
+	 */
+	ReturnModel findMyProlist(Long userId);
+	/**
+	 * 获取作品详情
+	 * @param userId
+	 * @param cartId
+	 * @return
+	 */
+	ReturnModel getMyProductInfo(Long userId, Long cartId);
 }

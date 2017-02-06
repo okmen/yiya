@@ -85,11 +85,12 @@ public class MyProductController  extends SSOController{
 		if(user!=null){
 			rq=proService.getMyProductInfo(user.getUserId(),cartId); 
 		}else {
-			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ýÆÚ");
+			rq=proService.getMyProductInfo(cartId);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	
 	
 	@ResponseBody
 	@RequestMapping(value = "/dele")

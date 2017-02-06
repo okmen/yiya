@@ -19,6 +19,7 @@ import com.bbyiya.dao.OOrderproductsMapper;
 //import com.bbyiya.dao.OPayforuserorderMapper;
 import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.OUserordersMapper;
+import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PProductsMapper;
 import com.bbyiya.dao.PProductstylepropertyMapper;
 import com.bbyiya.dao.PProductstylesMapper;
@@ -32,6 +33,7 @@ import com.bbyiya.model.OOrderproducts;
 //import com.bbyiya.model.OPayforuserorder;
 import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.OUserorders;
+import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PProducts;
 import com.bbyiya.model.PProductstyles;
 import com.bbyiya.model.RAreas;
@@ -80,6 +82,9 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	@Autowired
 	private OOrderproductdetailsMapper odetailMapper;// 产品图片集合
 
+	@Autowired
+	private PMyproductsMapper myproductMapper;//我的作品
+	
 	/**
 	 * 用户订单，产品订单 共用（一个订单对应一个产品 ）
 	 * 
@@ -278,6 +283,10 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			OOrderaddress addr= orderaddressMapper.selectByPrimaryKey(orderInfo.getOrderaddressid());
 			if(addr!=null){
 				model.setOrderAddress(addr);
+			}
+			PMyproducts myproduct= myproductMapper.getMyProductByOrderNo(orderId);
+			if(myproduct!=null){
+				model.setCartId(myproduct.getCartid()); 
 			}
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(model);

@@ -8,6 +8,8 @@ import com.bbyiya.model.PMyproductdetails;
 
 public interface PMyproductdetailsMapper {
     int deleteByPrimaryKey(Long pdid);
+    
+    int deleteByCartId(@Param("cartId") Long cartId);
 
     int insert(PMyproductdetails record);
 

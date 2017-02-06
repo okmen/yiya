@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.PStylecoordinateMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.PStylecoordinate" >
+    <id column="Id" property="id" jdbcType="BIGINT" />
+    <result column="StyleId" property="styleid" jdbcType="BIGINT" />
+    <result column="NoCoordId" property="nocoordid" jdbcType="INTEGER" />
+    <result column="PicCoordId" property="piccoordid" jdbcType="INTEGER" />
+    <result column="WordCoordId" property="wordcoordid" jdbcType="INTEGER" />
+    <result column="Type" property="type" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Id, StyleId, NoCoordId, PicCoordId, WordCoordId, Type
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from P_StyleCoordinate
+    where Id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from P_StyleCoordinate
+    where Id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.PStylecoordinate" >
+    insert into P_StyleCoordinate (Id, StyleId, NoCoordId, 
+      PicCoordId, WordCoordId, Type
+      )
+    values (#{id,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, #{nocoordid,jdbcType=INTEGER}, 
+      #{piccoordid,jdbcType=INTEGER}, #{wordcoordid,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.PStylecoordinate" >
+    insert into P_StyleCoordinate
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        Id,
+      </if>
+      <if test="styleid != null" >
+        StyleId,
+      </if>
+      <if test="nocoordid != null" >
+        NoCoordId,
+      </if>
+      <if test="piccoordid != null" >
+        PicCoordId,
+      </if>
+      <if test="wordcoordid != null" >
+        WordCoordId,
+      </if>
+      <if test="type != null" >
+        Type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="styleid != null" >
+        #{styleid,jdbcType=BIGINT},
+      </if>
+      <if test="nocoordid != null" >
+        #{nocoordid,jdbcType=INTEGER},
+      </if>
+      <if test="piccoordid != null" >
+        #{piccoordid,jdbcType=INTEGER},
+      </if>
+      <if test="wordcoordid != null" >
+        #{wordcoordid,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PStylecoordinate" >
+    update P_StyleCoordinate
+    <set >
+      <if test="styleid != null" >
+        StyleId = #{styleid,jdbcType=BIGINT},
+      </if>
+      <if test="nocoordid != null" >
+        NoCoordId = #{nocoordid,jdbcType=INTEGER},
+      </if>
+      <if test="piccoordid != null" >
+        PicCoordId = #{piccoordid,jdbcType=INTEGER},
+      </if>
+      <if test="wordcoordid != null" >
+        WordCoordId = #{wordcoordid,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        Type = #{type,jdbcType=INTEGER},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PStylecoordinate" >
+    update P_StyleCoordinate
+    set StyleId = #{styleid,jdbcType=BIGINT},
+      NoCoordId = #{nocoordid,jdbcType=INTEGER},
+      PicCoordId = #{piccoordid,jdbcType=INTEGER},
+      WordCoordId = #{wordcoordid,jdbcType=INTEGER},
+      Type = #{type,jdbcType=INTEGER}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

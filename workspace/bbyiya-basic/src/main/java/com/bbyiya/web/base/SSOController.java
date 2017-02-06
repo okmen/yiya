@@ -48,7 +48,7 @@ public class SSOController {
 		if (userObject != null)// 如果存在
 		{
 			user = (LoginSuccessResult) userObject;
-			RedisUtil.setExpire(ticket, 86400);// 延长时间
+//			RedisUtil.setExpire(ticket, 86400);// 延长时间
 			return user;
 		}
 		return null;// 用户过期

@@ -24,6 +24,24 @@ public interface PMyproductsMapper {
 
 	PMyproducts selectByPrimaryKey(Long cartid);
 
+	/**
+	 * 根据我的作品Id获取我的作品
+	 * @param cartid
+	 * @return
+	 */
+	MyProductResultVo getMyProductResultVo(Long cartid);
+	/**
+	 * 根据订单编号获取我的作品
+	 * @param orderno
+	 * @return
+	 */
+	PMyproducts getMyProductByOrderNo(@Param("orderNo")String orderno);
+
+	/**
+	 * 更新操作
+	 * @param record
+	 * @return
+	 */
 	int updateByPrimaryKeySelective(PMyproducts record);
 
 	int updateByPrimaryKey(PMyproducts record);
@@ -36,5 +54,5 @@ public interface PMyproductsMapper {
 	 * @return
 	 */
 	List<MyProductResultVo> findMyProductslist(@Param("userId") Long userId, @Param("status") Integer status);
-	MyProductResultVo getMyProductResultVo(Long cartid);
+
 }

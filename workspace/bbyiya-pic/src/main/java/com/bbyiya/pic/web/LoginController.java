@@ -208,7 +208,7 @@ public class LoginController extends SSOController {
 		}
 		RedisUtil.setObject("loginlogs", logs, 6000);
 		if (rqModel.getStatu().equals(ReturnStatus.Success)) {
-			return "redirect:" + ConfigUtil.getSingleValue("loginbackurl") + "?ticket=" + ((LoginSuccessResult) rqModel.getBasemodle()).getTicket();
+			return "redirect:" + ConfigUtil.getSingleValue("loginbackurl") ;//+ "?ticket=" + ((LoginSuccessResult) rqModel.getBasemodle()).getTicket();
 		} else {
 			return "/index";// "redirect:http://localhost:9191/";
 		}

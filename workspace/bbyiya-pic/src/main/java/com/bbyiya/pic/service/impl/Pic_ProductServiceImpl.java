@@ -14,6 +14,8 @@ import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PProductdetailsMapper;
 import com.bbyiya.dao.PProductsMapper;
+import com.bbyiya.dao.PStylecoordinateMapper;
+import com.bbyiya.dao.PStylecoordinateitemMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
@@ -21,6 +23,8 @@ import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PProductdetails;
 import com.bbyiya.model.PProducts;
+import com.bbyiya.model.PStylecoordinate;
+import com.bbyiya.model.PStylecoordinateitem;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.service.IPic_ProductService;
 import com.bbyiya.pic.vo.product.MyProductParam;
@@ -45,6 +49,11 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 
 	@Autowired
 	private UUsersMapper usersMapper;
+
+	@Autowired
+	private PStylecoordinateMapper styleCoordMapper;
+	@Autowired
+	private PStylecoordinateitemMapper styleCoordItemMapper;
 
 	public ReturnModel getProductSamples(Long productId) {
 		ReturnModel rq = new ReturnModel();
@@ -75,20 +84,27 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					// 更新用户作品基本信息
 					myMapper.updateByPrimaryKeySelective(myproducts);
 					if (param.getDetails() != null && param.getDetails().size() > 0) {
-						int maxSort = myDetaiMapper.getMaxSort(param.getCartid());
+						myDetaiMapper.deleteByCartId(param.getCartid());
+						int maxSort = 0;// myDetaiMapper.getMaxSort(param.getCartid());
 						for (PMyproductdetails de : param.getDetails()) {
-							if (de.getPdid() != null && de.getPdid() > 0) {
-								PMyproductdetails temp = myDetaiMapper.selectByPrimaryKey(de.getPdid());
-								if (temp != null) {
-									de.setCreatetime(new Date());
-									myDetaiMapper.updateByPrimaryKeySelective(de);
-								}
-							} else {
-								maxSort++;
-								de.setCreatetime(new Date());
+							de.setCartid(param.getCartid());
+							// if (de.getPdid() != null && de.getPdid() > 0) {
+							// PMyproductdetails temp =
+							// myDetaiMapper.selectByPrimaryKey(de.getPdid());
+							// if (temp != null) {
+							// de.setCreatetime(new Date());
+							// myDetaiMapper.updateByPrimaryKeySelective(de);
+							// }
+							// } else {
+							// if(!ObjectUtil.isEmpty(de.getImgurl())){
+							de.setCreatetime(new Date());
+							if (de.getSort() == null) {
 								de.setSort(maxSort);// 设置排序
-								myDetaiMapper.insert(de);
 							}
+							myDetaiMapper.insert(de);
+							// }
+							maxSort++;
+							// }
 						}
 					}
 				}
@@ -103,10 +119,12 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				myMapper.insertReturnId(myproduct);
 				cartIdTemp = myproduct.getCartid();
 				if (param.getDetails() != null && param.getDetails().size() > 0) {
-					int sort = 1;
+					int sort = 0;
 					for (PMyproductdetails de : param.getDetails()) {
 						de.setCreatetime(new Date());
-						de.setSort(sort);// 设置排序
+						if (de.getSort() == null) {
+							de.setSort(sort);// 设置排序
+						}
 						de.setCartid(myproduct.getCartid());
 						myDetaiMapper.insert(de);
 						sort++;
@@ -135,8 +153,24 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			List<MyProductResultVo> mylist = myMapper.findMyProductslist(userId, Integer.parseInt(MyProductStatusEnum.ok.toString()));
 			if (mylist != null && mylist.size() > 0) {
 				for (MyProductResultVo item : mylist) {
-					item.setCount(1);// TODO 缺少产品图片数量
+
+					PProducts products = productsMapper.selectByPrimaryKey(item.getProductid());
+					if (products != null) {
+						item.setHeadImg(products.getDefaultimg());
+					}
+					// 作品详情（图片集合）
+					List<PMyproductdetails> detailslist = myDetaiMapper.findMyProductdetails(item.getCartid());
+					int i = 0;
+					if (detailslist != null && detailslist.size() > 0) {
+						for (PMyproductdetails dd : detailslist) {
+							if (!ObjectUtil.isEmpty(dd.getImgurl())) {
+								i++;
+							}
+						}
+					}
+					item.setCount(i);
 				}
+
 				list.addAll(mylist);
 			}
 			// 我的订单列表
@@ -145,10 +179,13 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				for (MyProductResultVo oo : myOrderlist) {
 					oo.setIsOrder(1);
 					oo.setCount(12);
+					PProducts products = productsMapper.selectByPrimaryKey(oo.getProductid());
+					if (products != null) {
+						oo.setHeadImg(products.getDefaultimg());
+					}
 				}
 				list.addAll(myOrderlist);
 			}
-
 			rq.setBasemodle(list);
 		}
 		rq.setStatu(ReturnStatus.Success);
@@ -164,29 +201,45 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		ReturnModel rq = new ReturnModel();
 		UUsers user = usersMapper.getUUsersByUserID(userId);
 		if (user != null) {
-			MyProductResultVo myproduct= myMapper.getMyProductResultVo(cartId);
-			if(myproduct!=null){
-				PProducts product=productsMapper.selectByPrimaryKey(myproduct.getProductid());
-				if(product!=null){
-					myproduct.setDescription(product.getDescription()); 
+			MyProductResultVo myproduct = myMapper.getMyProductResultVo(cartId);
+			if (myproduct != null) {
+				PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
+				if (product != null) {
+					myproduct.setDescription(product.getDescription());
 				}
-				List<PMyproductdetails> list=myDetaiMapper.findMyProductdetails(cartId);
+				List<PMyproductdetails> list = myDetaiMapper.findMyProductdetails(cartId);
 				myproduct.setDetailslist(list);
 				rq.setBasemodle(myproduct);
 			}
 		}
-		rq.setStatu(ReturnStatus.Success); 
+		rq.setStatu(ReturnStatus.Success);
 		return rq;
 	}
-	
+
+	public ReturnModel getMyProductInfo(Long cartId) {
+		ReturnModel rq = new ReturnModel();
+		MyProductResultVo myproduct = myMapper.getMyProductResultVo(cartId);
+		if (myproduct != null) {
+			PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
+			if (product != null) {
+				myproduct.setDescription(product.getDescription());
+			}
+			List<PMyproductdetails> list = myDetaiMapper.findMyProductdetails(cartId);
+			myproduct.setDetailslist(list);
+			rq.setBasemodle(myproduct);
+		}
+		rq.setStatu(ReturnStatus.Success);
+		return rq;
+	}
+
 	public ReturnModel del_myProductDetail(Long userId, Long dpId) {
 		ReturnModel rq = new ReturnModel();
 		UUsers user = usersMapper.getUUsersByUserID(userId);
 		if (user != null) {
-			PMyproductdetails detail= myDetaiMapper.selectByPrimaryKey(dpId);
-			if(detail!=null){
-				PMyproducts myproduct= myMapper.selectByPrimaryKey(detail.getCartid());
-				if(myproduct!=null&&myproduct.getUserid()!=null&&myproduct.getUserid().longValue()==userId){
+			PMyproductdetails detail = myDetaiMapper.selectByPrimaryKey(dpId);
+			if (detail != null) {
+				PMyproducts myproduct = myMapper.selectByPrimaryKey(detail.getCartid());
+				if (myproduct != null && myproduct.getUserid() != null && myproduct.getUserid().longValue() == userId) {
 					myDetaiMapper.deleteByPrimaryKey(dpId);
 					rq.setStatu(ReturnStatus.Success);
 					rq.setStatusreson("删除成功！");
@@ -196,6 +249,29 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		}
 		rq.setStatu(ReturnStatus.ParamError);
 		rq.setStatusreson("删除失败");
+		return rq;
+	}
+
+	public ReturnModel getStyleCoordResult(Long styleId) {
+		ReturnModel rq = new ReturnModel();
+		List<PStylecoordinate> list = styleCoordMapper.findlistByStyleId(styleId);
+		if (list != null && list.size() > 0) {
+			List<Map<String, Object>> arrayList = new ArrayList<Map<String, Object>>();
+
+			for (PStylecoordinate ss : list) {
+				Map<String, Object> map = new HashMap<String, Object>();
+				PStylecoordinateitem w_no = styleCoordItemMapper.selectByPrimaryKey(ss.getNocoordid().longValue());
+				map.put("number", w_no);
+				PStylecoordinateitem w_pic = styleCoordItemMapper.selectByPrimaryKey(ss.getPiccoordid().longValue());
+				map.put("pic", w_pic);
+				PStylecoordinateitem w_word = styleCoordItemMapper.selectByPrimaryKey(ss.getWordcoordid().longValue());
+				map.put("words", w_word);
+				map.put("type", ss.getType());
+				arrayList.add(map);
+			}
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(arrayList);
+		}
 		return rq;
 	}
 }

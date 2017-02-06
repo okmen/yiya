@@ -32,10 +32,23 @@ public interface IPic_ProductService {
 	 */
 	ReturnModel getMyProductInfo(Long userId, Long cartId);
 	/**
+	 * 作品详情
+	 * @param cartId
+	 * @return
+	 */
+	ReturnModel getMyProductInfo(Long cartId);
+	/**
 	 * 删除我的作品图片
 	 * @param userId
 	 * @param dpId
 	 * @return
 	 */
 	ReturnModel del_myProductDetail(Long userId, Long dpId);
+	
+	/**
+	 * 
+	 * @param styleId
+	 * @return
+	 */
+	ReturnModel getStyleCoordResult(Long styleId);
 }

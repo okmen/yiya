@@ -74,12 +74,11 @@ public class Pic_PayMgtServiceImpl implements IPic_PayMgtService {
 					rq.setStatusreson("系统错误");
 					return rq;
 				}
-
-				String timeStamp = String.valueOf(WxPayUtils.genTimeStamp());
-				Map<String, String> resultMap = WxPayUtils.get_payParam(prepay_id, nonceStr, timeStamp);
-				rq.setStatu(ReturnStatus.Success);
-				rq.setBasemodle(JsonUtil.objectToJsonStr(resultMap));
 			}
+			String timeStamp = String.valueOf(WxPayUtils.genTimeStamp());
+			Map<String, String> resultMap = WxPayUtils.get_payParam(prepay_id, nonceStr, timeStamp);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(JsonUtil.objectToJsonStr(resultMap));
 		} catch (Exception e) {
 			// TODO: handle exception
 			rq.setStatu(ReturnStatus.SystemError);
@@ -133,12 +132,12 @@ public class Pic_PayMgtServiceImpl implements IPic_PayMgtService {
 					rq.setStatusreson("系统错误");
 					return rq;
 				}
-
-				String timeStamp = String.valueOf(WxAppPayUtils.genTimeStamp());
-				Map<String, String> resultMap = WxAppPayUtils.get_payParam(prepay_id, nonceStr, timeStamp);
-				rq.setStatu(ReturnStatus.Success);
-				rq.setBasemodle(JsonUtil.objectToJsonStr(resultMap));
 			}
+			
+			String timeStamp = String.valueOf(WxAppPayUtils.genTimeStamp());
+			Map<String, String> resultMap = WxAppPayUtils.get_payParam(prepay_id, nonceStr, timeStamp);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(JsonUtil.objectToJsonStr(resultMap));
 		} catch (Exception e) {
 			// TODO: handle exception
 			rq.setStatu(ReturnStatus.SystemError);

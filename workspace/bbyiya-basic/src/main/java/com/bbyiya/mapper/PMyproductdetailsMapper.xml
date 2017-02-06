@@ -33,6 +33,10 @@
     delete from P_MyProductDetails
     where PdId = #{pdid,jdbcType=BIGINT}
   </delete>
+  <delete id="deleteByCartId" ><!-- 删除某个作品的所有图片 -->
+    delete from P_MyProductDetails
+    where CartId = #{cartId,jdbcType=BIGINT}
+  </delete>
   <insert id="insert" parameterType="com.bbyiya.model.PMyproductdetails" >
     insert into P_MyProductDetails (PdId, CartId, SceneId, 
       ImgUrl, Content, Sort, 

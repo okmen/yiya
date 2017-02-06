@@ -26,16 +26,22 @@
     from P_MyProducts
     where CartId = #{cartid,jdbcType=BIGINT}
   </select>
-  <select id="getMyProductResultVo" resultMap="MyProductResultVO" parameterType="java.lang.Long" >
+  <select id="getMyProductResultVo" resultMap="MyProductResultVO" parameterType="java.lang.Long" ><!-- 主键获取作品 -->
     select 
     <include refid="Base_Column_List" />
     from P_MyProducts
     where CartId = #{cartid,jdbcType=BIGINT}
   </select>
-  <select id="findMyProductslist" resultMap="MyProductResultVO" >
+  <select id="getMyProductByOrderNo" resultMap="BaseResultMap"  ><!-- 通过订单号获取作品 -->
+    select 
+    <include refid="Base_Column_List" />
+    from P_MyProducts
+    where OrderNo = #{orderNo,jdbcType=VARCHAR}
+  </select>
+  <select id="findMyProductslist" resultMap="MyProductResultVO" ><!-- 通过 UserId ，Status 获取作品列表 -->
     select <include refid="Base_Column_List" />
     from P_MyProducts
-    where UserId = #{userId,jdbcType=BIGINT} and Status=#{status,jdbcType=INTEGER}
+    where UserId = #{userId,jdbcType=BIGINT} and Status=#{status,jdbcType=INTEGER} order by  CartId desc 
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from P_MyProducts

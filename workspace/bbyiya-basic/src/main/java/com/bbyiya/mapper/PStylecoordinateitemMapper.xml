@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.PStylecoordinateitemMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.PStylecoordinateitem" >
+    <id column="CoordId" property="coordid" jdbcType="BIGINT" />
+    <result column="PointLeft" property="pointleft" jdbcType="DECIMAL" />
+    <result column="PointTop" property="pointtop" jdbcType="DECIMAL" />
+    <result column="PointHight" property="pointhight" jdbcType="DECIMAL" />
+    <result column="PointWidth" property="pointwidth" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CoordId, PointLeft, PointTop, PointHight, PointWidth
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from P_StyleCoordinateItem
+    where CoordId = #{coordid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from P_StyleCoordinateItem
+    where CoordId = #{coordid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.PStylecoordinateitem" >
+    insert into P_StyleCoordinateItem (CoordId, PointLeft, PointTop, 
+      PointHight, PointWidth)
+    values (#{coordid,jdbcType=BIGINT}, #{pointleft,jdbcType=DECIMAL}, #{pointtop,jdbcType=DECIMAL}, 
+      #{pointhight,jdbcType=DECIMAL}, #{pointwidth,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.PStylecoordinateitem" >
+    insert into P_StyleCoordinateItem
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="coordid != null" >
+        CoordId,
+      </if>
+      <if test="pointleft != null" >
+        PointLeft,
+      </if>
+      <if test="pointtop != null" >
+        PointTop,
+      </if>
+      <if test="pointhight != null" >
+        PointHight,
+      </if>
+      <if test="pointwidth != null" >
+        PointWidth,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="coordid != null" >
+        #{coordid,jdbcType=BIGINT},
+      </if>
+      <if test="pointleft != null" >
+        #{pointleft,jdbcType=DECIMAL},
+      </if>
+      <if test="pointtop != null" >
+        #{pointtop,jdbcType=DECIMAL},
+      </if>
+      <if test="pointhight != null" >
+        #{pointhight,jdbcType=DECIMAL},
+      </if>
+      <if test="pointwidth != null" >
+        #{pointwidth,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PStylecoordinateitem" >
+    update P_StyleCoordinateItem
+    <set >
+      <if test="pointleft != null" >
+        PointLeft = #{pointleft,jdbcType=DECIMAL},
+      </if>
+      <if test="pointtop != null" >
+        PointTop = #{pointtop,jdbcType=DECIMAL},
+      </if>
+      <if test="pointhight != null" >
+        PointHight = #{pointhight,jdbcType=DECIMAL},
+      </if>
+      <if test="pointwidth != null" >
+        PointWidth = #{pointwidth,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where CoordId = #{coordid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PStylecoordinateitem" >
+    update P_StyleCoordinateItem
+    set PointLeft = #{pointleft,jdbcType=DECIMAL},
+      PointTop = #{pointtop,jdbcType=DECIMAL},
+      PointHight = #{pointhight,jdbcType=DECIMAL},
+      PointWidth = #{pointwidth,jdbcType=DECIMAL}
+    where CoordId = #{coordid,jdbcType=BIGINT}
+  </update>
+</mapper>

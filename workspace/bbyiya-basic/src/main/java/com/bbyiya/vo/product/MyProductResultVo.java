@@ -9,6 +9,7 @@ public class MyProductResultVo extends PMyproducts{
 	private static final long serialVersionUID = 1L;
 	//产品数量
 	private int count;
+	private String headImg;
 	//是否下单
 	private int isOrder;
 	private String description;
@@ -37,6 +38,12 @@ public class MyProductResultVo extends PMyproducts{
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	public String getHeadImg() {
+		return headImg;
+	}
+	public void setHeadImg(String headImg) {
+		this.headImg = headImg;
 	}
 	
 

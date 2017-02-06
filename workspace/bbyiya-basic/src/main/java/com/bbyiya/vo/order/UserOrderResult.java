@@ -17,6 +17,7 @@ public class UserOrderResult implements Serializable {
 	private String remark;
 	private String orderTimeStr;
 	private String shareUrl;
+	private Long cartId;
 	private List<OOrderproducts> prolist;
 	
 	private OOrderaddress orderAddress;
@@ -99,6 +100,14 @@ public class UserOrderResult implements Serializable {
 
 	public void setOrderAddress(OOrderaddress orderAddress) {
 		this.orderAddress = orderAddress;
+	}
+
+	public Long getCartId() {
+		return cartId;
+	}
+
+	public void setCartId(Long cartId) {
+		this.cartId = cartId;
 	}
 
 	

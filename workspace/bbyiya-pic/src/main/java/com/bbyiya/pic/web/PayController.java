@@ -25,53 +25,55 @@ public class PayController extends SSOController {
 
 	@Resource(name = "pic_payMgtService")
 	private IPic_PayMgtService payService;
-	
+
 	// @Autowired
 	// private OPayorderMapper payMapper;
 	@Autowired
 	private UOtherloginMapper otherMapper;
-	
+
 	/**
 	 * P01 获取微信支付参数
 	 * 
 	 * @return
-	 * @throws MapperException 
+	 * @throws MapperException
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getWxPayParam")
 	public String getWxPayParam(String payId) throws MapperException {
-		ReturnModel rq=new ReturnModel();
-		LoginSuccessResult user=super.getLoginUser();
-		if(user!=null){
-			UOtherlogin otherlogin= otherMapper.getWxloginByUserId(user.getUserId());
-			if(otherlogin!=null){
-				String ipAddres=super.getIpStr();
-				rq=payService.getWxPayParam(payId, otherlogin.getOpenid(), ipAddres);
-//				OPayorder payorder= payMapper.selectByPrimaryKey(payId);
-//				if(payorder!=null){
-//					if(payorder.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
-//						ResultMsg msg= WxPayUtils.getWxPayParam(payId, otherlogin.getOpenid(), "", payorder.getTotalprice(), ipAddres);
-//						if(msg.getStatus()==1){
-//							rq.setStatu(ReturnStatus.Success);
-//							rq.setBasemodle(msg.getMsg());
-//						}else {
-//							rq.setStatu(ReturnStatus.SystemError);
-//							rq.setStatusreson(msg.getMsg());
-//						}
-//					}
-//				}
-			}else {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			UOtherlogin otherlogin = otherMapper.getWxloginByUserId(user.getUserId());
+			if (otherlogin != null) {
+				String ipAddres = super.getIpStr();
+				rq = payService.getWxPayParam(payId, otherlogin.getOpenid(), ipAddres);
+				// OPayorder payorder= payMapper.selectByPrimaryKey(payId);
+				// if(payorder!=null){
+				// if(payorder.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
+				// ResultMsg msg= WxPayUtils.getWxPayParam(payId,
+				// otherlogin.getOpenid(), "", payorder.getTotalprice(),
+				// ipAddres);
+				// if(msg.getStatus()==1){
+				// rq.setStatu(ReturnStatus.Success);
+				// rq.setBasemodle(msg.getMsg());
+				// }else {
+				// rq.setStatu(ReturnStatus.SystemError);
+				// rq.setStatusreson(msg.getMsg());
+				// }
+				// }
+				// }
+			} else {
 				rq.setStatu(ReturnStatus.SystemError);
 				rq.setStatusreson("微信未登录");
 			}
-			
-		}		
-		return JsonUtil.objectToJsonStr(rq); 
+
+		}
+		return JsonUtil.objectToJsonStr(rq);
 	}
-	
-	
+
 	/**
 	 * APP 获取微信支付参数
+	 * 
 	 * @param payId
 	 * @return
 	 * @throws MapperException
@@ -79,32 +81,14 @@ public class PayController extends SSOController {
 	@ResponseBody
 	@RequestMapping(value = "/getWxAPPPayParam")
 	public String getWxAPPPayParam(String payId) throws MapperException {
-		ReturnModel rq=new ReturnModel();
-		LoginSuccessResult user=super.getLoginUser();
-		if(user!=null){
-			UOtherlogin otherlogin= otherMapper.getWxloginByUserId(user.getUserId());
-			if(otherlogin!=null){
-				String ipAddres=super.getIpStr();
-				rq=payService.getWxAppPayParam(payId, ipAddres);
-//				OPayorder payorder= payMapper.selectByPrimaryKey(payId);
-//				if(payorder!=null){
-//					if(payorder.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
-//						ResultMsg msg= WxAppPayUtils.getWxPayParam(payId, "", payorder.getTotalprice(), ipAddres);
-//						if(msg.getStatus()==1){
-//							rq.setStatu(ReturnStatus.Success);
-//							rq.setBasemodle(msg.getMsg());
-//						}else {
-//							rq.setStatu(ReturnStatus.SystemError);
-//							rq.setStatusreson(msg.getMsg());
-//						}
-//					}
-//				}
-			}else {
-				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("微信未登录");
-			}
-			
-		}		
-		return JsonUtil.objectToJsonStr(rq); 
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			String ipAddres = super.getIpStr();
+			rq = payService.getWxAppPayParam(payId, ipAddres);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+		}
+		return JsonUtil.objectToJsonStr(rq);
 	}
 }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.pic.dao.IMyProductsDao" >
+  <sql id="Base_Column_List" >
+     CartId, UserId, Title, Author, ProductId, StyleId, CreateTime, Status, Phone, OrderNo
+  </sql>
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.PMyproducts" >
+    <id column="CartId" property="cartid" jdbcType="BIGINT" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="Title" property="title" jdbcType="VARCHAR" />
+    <result column="Author" property="author" jdbcType="VARCHAR" />
+    <result column="ProductId" property="productid" jdbcType="BIGINT" />
+    <result column="StyleId" property="styleid" jdbcType="BIGINT" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+     <result column="Phone" property="phone" jdbcType="VARCHAR" />
+    <result column="OrderNo" property="orderno" jdbcType="VARCHAR" />
+  </resultMap>
+  <!-- 我的作品返回model -->
+  <resultMap id="MyProductResultVO" type="com.bbyiya.pic.vo.product.MyProductsResult" extends="BaseResultMap">  
+  </resultMap>  
+ 
+  <select id="getMyProductResultVo" resultMap="MyProductResultVO" parameterType="java.lang.Long" ><!-- 主键获取作品 -->
+    select 
+    <include refid="Base_Column_List" />
+    from P_MyProducts
+    where CartId = #{cartid,jdbcType=BIGINT}
+  </select>
+</mapper>

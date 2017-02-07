@@ -26,8 +26,12 @@ import com.bbyiya.model.PProducts;
 import com.bbyiya.model.PStylecoordinate;
 import com.bbyiya.model.PStylecoordinateitem;
 import com.bbyiya.model.UUsers;
+import com.bbyiya.pic.dao.IMyProductsDao;
 import com.bbyiya.pic.service.IPic_ProductService;
+import com.bbyiya.pic.utils.RedisCommons;
 import com.bbyiya.pic.vo.product.MyProductParam;
+import com.bbyiya.pic.vo.product.MyProductsDetailsResult;
+import com.bbyiya.pic.vo.product.MyProductsResult;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.product.MyProductResultVo;
@@ -54,6 +58,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private PStylecoordinateMapper styleCoordMapper;
 	@Autowired
 	private PStylecoordinateitemMapper styleCoordItemMapper;
+	/*----------------pic-dao----------------*/
+	@Autowired
+	private IMyProductsDao myProductsDao;
 
 	public ReturnModel getProductSamples(Long productId) {
 		ReturnModel rq = new ReturnModel();
@@ -109,14 +116,18 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					}
 				}
 			} else {// 新增
-				PMyproducts myproduct = new PMyproducts();
-				myproduct.setAuthor(param.getAuthor());
-				myproduct.setTitle(param.getTitle());
-				myproduct.setUserid(userId);
-				myproduct.setProductid(param.getProductid());
-				myproduct.setCreatetime(new Date());
-				myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.ok.toString()));
-				myMapper.insertReturnId(myproduct);
+				
+				PMyproducts myproduct= myMapper.getMyProductsByProductId(userId, param.getProductid(), Integer.parseInt(MyProductStatusEnum.ok.toString()));
+				if(myproduct==null){
+					myproduct = new PMyproducts();
+					myproduct.setAuthor(param.getAuthor());
+					myproduct.setTitle(param.getTitle());
+					myproduct.setUserid(userId);
+					myproduct.setProductid(param.getProductid());
+					myproduct.setCreatetime(new Date());
+					myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.ok.toString()));
+					myMapper.insertReturnId(myproduct);
+				}
 				cartIdTemp = myproduct.getCartid();
 				if (param.getDetails() != null && param.getDetails().size() > 0) {
 					int sort = 0;
@@ -192,6 +203,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		return rq;
 	}
 
+	
 	/**
 	 * 我的作品详情
 	 * 
@@ -201,14 +213,34 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		ReturnModel rq = new ReturnModel();
 		UUsers user = usersMapper.getUUsersByUserID(userId);
 		if (user != null) {
-			MyProductResultVo myproduct = myMapper.getMyProductResultVo(cartId);
+			MyProductsResult myproduct = myProductsDao.getMyProductResultVo(cartId);
 			if (myproduct != null) {
 				PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
 				if (product != null) {
 					myproduct.setDescription(product.getDescription());
 				}
 				List<PMyproductdetails> list = myDetaiMapper.findMyProductdetails(cartId);
-				myproduct.setDetailslist(list);
+				if(list!=null&&list.size()>0){
+					String base_code=RedisCommons.getIndex(userId, myproduct.getProductid());
+					List<MyProductsDetailsResult> arrayList=new ArrayList<MyProductsDetailsResult>();
+					int i=1;
+					for (PMyproductdetails dd : list) {
+						MyProductsDetailsResult vo=new MyProductsDetailsResult();
+						vo.setCartid(dd.getCartid());
+						vo.setContent(dd.getContent());
+						vo.setCreatetime(dd.getCreatetime());
+						vo.setImgurl(dd.getImgurl());
+						vo.setPdid(dd.getPdid());
+						vo.setSceneid(dd.getSceneid());
+						vo.setSort(dd.getSort());
+						
+						vo.setPrintcode(base_code+"-"+String.format("%02d", dd.getSceneid())+"-"+String.format("%02d", i));//TODO 打印编号
+						arrayList.add(vo);
+						i++;
+					}
+					myproduct.setDetailslist(arrayList);
+				}
+//				myproduct.setDetailslist(list);
 				rq.setBasemodle(myproduct);
 			}
 		}

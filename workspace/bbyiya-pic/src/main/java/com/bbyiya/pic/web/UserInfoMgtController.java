@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.UUseraddress;
-import com.bbyiya.service.IRegionService;
+//import com.bbyiya.service.IRegionService;
 import com.bbyiya.service.pic.IBaseUserAddressService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
-import com.bbyiya.vo.user.UUserAddressResult;
+//import com.bbyiya.vo.user.UUserAddressResult;
 import com.bbyiya.web.base.SSOController;
 
 @Controller

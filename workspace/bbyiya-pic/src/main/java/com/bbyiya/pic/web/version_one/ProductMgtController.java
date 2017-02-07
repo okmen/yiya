@@ -1,25 +1,12 @@
 package com.bbyiya.pic.web.version_one;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.apache.tools.ant.taskdefs.Nice;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-
-
-
-
-
-
-
 
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.pic.service.IPic_ProductService;

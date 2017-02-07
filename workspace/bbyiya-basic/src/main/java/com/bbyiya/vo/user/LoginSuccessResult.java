@@ -36,6 +36,9 @@ public class LoginSuccessResult  implements Serializable{
      * 用户身份标示
      */
     private Long identity;
+    
+    private int isEmployee;
+    private int isBranchBussiness;
     //登陆票据
     private String ticket;
     //第三方注册标记
@@ -121,6 +124,18 @@ public class LoginSuccessResult  implements Serializable{
 	}
 	public void setIsTester(Integer isTester) {
 		this.isTester = isTester;
+	}
+	public int getIsEmployee() {
+		return isEmployee;
+	}
+	public void setIsEmployee(int isEmployee) {
+		this.isEmployee = isEmployee;
+	}
+	public int getIsBranchBussiness() {
+		return isBranchBussiness;
+	}
+	public void setIsBranchBussiness(int isBranchBussiness) {
+		this.isBranchBussiness = isBranchBussiness;
 	}
 	
 

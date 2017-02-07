@@ -54,5 +54,13 @@ public interface PMyproductsMapper {
 	 * @return
 	 */
 	List<MyProductResultVo> findMyProductslist(@Param("userId") Long userId, @Param("status") Integer status);
+	/**
+	 * 
+	 * @param userId
+	 * @param productId
+	 * @param status
+	 * @return
+	 */
+	PMyproducts getMyProductsByProductId(@Param("userId") Long userId,@Param("productId")Long productId, @Param("status") Integer status);
 
 }

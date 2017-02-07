@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.pic.MyProductStatusEnum;
 import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.PMyproducts;
@@ -67,9 +68,10 @@ public class OrderMgtController extends SSOController {
 								if (map != null) {
 									String orderId = String.valueOf(map.get("orderId"));
 									myPro.setOrderno(orderId);
+									myPro.setStatus(Integer.parseInt(MyProductStatusEnum.ordered.toString())); 
 									myMapper.updateByPrimaryKey(myPro);
 								}
-							}
+							} 
 						}
 					}
 

@@ -74,7 +74,6 @@ public class OrderMgtController extends SSOController {
 							} 
 						}
 					}
-
 				}
 			}
 			rq.setStatu(ReturnStatus.Success);

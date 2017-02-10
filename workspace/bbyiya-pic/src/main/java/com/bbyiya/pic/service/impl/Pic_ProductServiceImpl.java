@@ -14,6 +14,7 @@ import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PProductdetailsMapper;
 import com.bbyiya.dao.PProductsMapper;
+import com.bbyiya.dao.PScenesMapper;
 import com.bbyiya.dao.PStylecoordinateMapper;
 import com.bbyiya.dao.PStylecoordinateitemMapper;
 import com.bbyiya.dao.UUsersMapper;
@@ -23,9 +24,11 @@ import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PProductdetails;
 import com.bbyiya.model.PProducts;
+import com.bbyiya.model.PScenes;
 import com.bbyiya.model.PStylecoordinate;
 import com.bbyiya.model.PStylecoordinateitem;
 import com.bbyiya.model.UUsers;
+import com.bbyiya.pic.dao.IMyProductDetailsDao;
 import com.bbyiya.pic.dao.IMyProductsDao;
 import com.bbyiya.pic.service.IPic_ProductService;
 import com.bbyiya.pic.utils.RedisCommons;
@@ -58,9 +61,14 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private PStylecoordinateMapper styleCoordMapper;
 	@Autowired
 	private PStylecoordinateitemMapper styleCoordItemMapper;
+	@Autowired
+	private PScenesMapper sceneMapper;
+	
 	/*----------------pic-dao----------------*/
 	@Autowired
 	private IMyProductsDao myProductsDao;
+	@Autowired
+	private IMyProductDetailsDao mydetailDao;
 
 	public ReturnModel getProductSamples(Long productId) {
 		ReturnModel rq = new ReturnModel();
@@ -116,9 +124,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					}
 				}
 			} else {// 新增
-				
-				PMyproducts myproduct= myMapper.getMyProductsByProductId(userId, param.getProductid(), Integer.parseInt(MyProductStatusEnum.ok.toString()));
-				if(myproduct==null){
+
+				PMyproducts myproduct = myMapper.getMyProductsByProductId(userId, param.getProductid(), Integer.parseInt(MyProductStatusEnum.ok.toString()));
+				if (myproduct == null) {
 					myproduct = new PMyproducts();
 					myproduct.setAuthor(param.getAuthor());
 					myproduct.setTitle(param.getTitle());
@@ -164,7 +172,6 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			List<MyProductResultVo> mylist = myMapper.findMyProductslist(userId, Integer.parseInt(MyProductStatusEnum.ok.toString()));
 			if (mylist != null && mylist.size() > 0) {
 				for (MyProductResultVo item : mylist) {
-
 					PProducts products = productsMapper.selectByPrimaryKey(item.getProductid());
 					if (products != null) {
 						item.setHeadImg(products.getDefaultimg());
@@ -181,7 +188,6 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					}
 					item.setCount(i);
 				}
-
 				list.addAll(mylist);
 			}
 			// 我的订单列表
@@ -203,7 +209,6 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		return rq;
 	}
 
-	
 	/**
 	 * 我的作品详情
 	 * 
@@ -219,28 +224,16 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				if (product != null) {
 					myproduct.setDescription(product.getDescription());
 				}
-				List<PMyproductdetails> list = myDetaiMapper.findMyProductdetails(cartId);
-				if(list!=null&&list.size()>0){
-					String base_code=RedisCommons.getIndex(userId, myproduct.getProductid());
-					List<MyProductsDetailsResult> arrayList=new ArrayList<MyProductsDetailsResult>();
-					int i=1;
-					for (PMyproductdetails dd : list) {
-						MyProductsDetailsResult vo=new MyProductsDetailsResult();
-						vo.setCartid(dd.getCartid());
-						vo.setContent(dd.getContent());
-						vo.setCreatetime(dd.getCreatetime());
-						vo.setImgurl(dd.getImgurl());
-						vo.setPdid(dd.getPdid());
-						vo.setSceneid(dd.getSceneid());
-						vo.setSort(dd.getSort());
-						
-						vo.setPrintcode(base_code+"-"+String.format("%02d", dd.getSceneid())+"-"+String.format("%02d", i));//TODO 打印编号
-						arrayList.add(vo);
+				List<MyProductsDetailsResult> arrayList =  mydetailDao.findMyProductDetailsResult(cartId);
+				if (arrayList != null && arrayList.size() > 0) {
+					String base_code = userId + "-" + myproduct.getCartid();
+					int i = 1;
+					for (MyProductsDetailsResult dd : arrayList) {
+						dd.setPrintcode(base_code + "-" + String.format("%02d", dd.getSceneid()) + "-" + String.format("%02d", i));																										// 打印编号				
 						i++;
 					}
 					myproduct.setDetailslist(arrayList);
 				}
-//				myproduct.setDetailslist(list);
 				rq.setBasemodle(myproduct);
 			}
 		}
@@ -250,19 +243,33 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 
 	public ReturnModel getMyProductInfo(Long cartId) {
 		ReturnModel rq = new ReturnModel();
-		MyProductResultVo myproduct = myMapper.getMyProductResultVo(cartId);
+//		MyProductResultVo myproduct = myMapper.getMyProductResultVo(cartId);
+		MyProductsResult myproduct=myProductsDao.getMyProductResultVo(cartId);
 		if (myproduct != null) {
 			PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
 			if (product != null) {
 				myproduct.setDescription(product.getDescription());
+			}			
+//			List<PMyproductdetails> list = myDetaiMapper.findMyProductdetails(cartId);
+			List<MyProductsDetailsResult> list=mydetailDao.findMyProductDetailsResult(cartId);
+			if(list!=null&&list.size()>0){
+				for (MyProductsDetailsResult detail : list) {
+					PScenes scene= sceneMapper.selectByPrimaryKey(detail.getSceneid().longValue());
+					if(scene!=null){
+						detail.setSceneDescription(scene.getContent());
+						detail.setSceneTitle(scene.getTitle()); 
+					}
+				}
 			}
-			List<PMyproductdetails> list = myDetaiMapper.findMyProductdetails(cartId);
 			myproduct.setDetailslist(list);
 			rq.setBasemodle(myproduct);
 		}
+	
 		rq.setStatu(ReturnStatus.Success);
 		return rq;
 	}
+	
+	
 
 	public ReturnModel del_myProductDetail(Long userId, Long dpId) {
 		ReturnModel rq = new ReturnModel();
@@ -299,6 +306,20 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				PStylecoordinateitem w_word = styleCoordItemMapper.selectByPrimaryKey(ss.getWordcoordid().longValue());
 				map.put("words", w_word);
 				map.put("type", ss.getType());
+
+				Map<String, Object> mapWord=new HashMap<String, Object>();
+				if(styleId%2==1){
+					mapWord.put("size", 33);
+					mapWord.put("color", "#595857");
+					mapWord.put("lineHeight", 55);
+					mapWord.put("letterSpacing", 5);
+				}else {
+					mapWord.put("size", 29);
+					mapWord.put("color", "#595857");
+					mapWord.put("lineHeight", 40);
+					mapWord.put("letterSpacing", 0);
+				}
+				map.put("word-mod", mapWord);
 				arrayList.add(map);
 			}
 			rq.setStatu(ReturnStatus.Success);

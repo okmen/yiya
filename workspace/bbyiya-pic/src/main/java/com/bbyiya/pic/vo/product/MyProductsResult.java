@@ -7,13 +7,26 @@ import com.bbyiya.model.PMyproducts;
 public class MyProductsResult extends PMyproducts{
 
 	private static final long serialVersionUID = 1L;
-	//产品数量
+	//作品图片数量
 	private int count;
+	//作品默认图片
 	private String headImg;
 	//是否下单
 	private int isOrder;
+	/**
+	 * 相册的描述（）
+	 */
 	private String description;
+	/**
+	 * 分享页不同相册的小图标
+	 */
+	private String sharepageLcon;
+	/**
+	 * 作品详细图片
+	 */
 	private List<MyProductsDetailsResult> detailslist;
+	
+	
 	public int getCount() {
 		return count;
 	}
@@ -43,6 +56,12 @@ public class MyProductsResult extends PMyproducts{
 	}
 	public void setDetailslist(List<MyProductsDetailsResult> detailslist) {
 		this.detailslist = detailslist;
+	}
+	public String getSharepageLcon() {
+		return sharepageLcon;
+	}
+	public void setSharepageLcon(String sharepageLcon) {
+		this.sharepageLcon = sharepageLcon;
 	}
 	
 	

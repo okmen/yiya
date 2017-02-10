@@ -102,6 +102,28 @@ public class LoginController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	/**
+	 * 中转页
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/transfer")
+	public String transferPage() throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(user);
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登陆过期，请重新登陆！");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	
 
 	/**
 	 * 测试码验证

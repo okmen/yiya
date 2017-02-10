@@ -15,7 +15,7 @@ import com.bbyiya.utils.upload.FileUploadUtils_qiniu;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
-import com.sdicons.json.validator.impl.predicates.Content;
+//import com.sdicons.json.validator.impl.predicates.Content;
 
 @Controller
 @RequestMapping(value = "/upload")
@@ -39,22 +39,22 @@ public class UploadController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-	@ResponseBody
-	@RequestMapping(value = "/pic")
-	public String pic(String content,int x,int y) throws Exception {
-		PicUtil tt = new PicUtil();  
-		  
-        BufferedImage d = tt.loadImageLocal("C:\\Users\\Administrator\\Desktop\\temp\\1.JPG");  
-//      BufferedImage b = tt.loadImageLocal("E:\\文件(word,excel,pdf,ppt.txt)\\zte-logo.png");  
-         tt.writeImageLocal("C:\\Users\\Administrator\\Desktop\\temp\\11.JPG",tt.modifyImage(d,content,x,y)  
-        //往图片上写文件  
-         );   
-  
-        //tt.writeImageLocal("D:\\cc.jpg", tt.modifyImagetogeter(b, d));  
-        //将多张图片合在一起  
-        System.out.println("success"); 
-		return "";
-	}
+//	@ResponseBody
+//	@RequestMapping(value = "/pic")
+//	public String pic(String content,int x,int y) throws Exception {
+//		PicUtil tt = new PicUtil();  
+//		  
+//        BufferedImage d = tt.loadImageLocal("C:\\Users\\Administrator\\Desktop\\temp\\1.JPG");  
+////      BufferedImage b = tt.loadImageLocal("E:\\文件(word,excel,pdf,ppt.txt)\\zte-logo.png");  
+//         tt.writeImageLocal("C:\\Users\\Administrator\\Desktop\\temp\\11.JPG",tt.modifyImage(d,content,x,y)  
+//        //往图片上写文件  
+//         );   
+//  
+//        //tt.writeImageLocal("D:\\cc.jpg", tt.modifyImagetogeter(b, d));  
+//        //将多张图片合在一起  
+//        System.out.println("success"); 
+//		return "";
+//	}
 	
 	
 }

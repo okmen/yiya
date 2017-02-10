@@ -153,7 +153,12 @@ public class MyProductController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	
+	/**
+	 * 我的作品，分享页
+	 * @param cartId
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/sharedetails")
 	public String sharedetails(@RequestParam(required = false, defaultValue = "0") long cartId) throws Exception {

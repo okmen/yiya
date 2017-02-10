@@ -148,15 +148,25 @@ public class MyProductController extends SSOController {
 		if (user != null) {
 			rq = proService.getMyProductInfo(user.getUserId(), cartId);
 		} else {//·ÇµÇÂ¼·ÖÏíÒ³
-			String key="shareurl0210-cartid-"+cartId;
-			rq=(ReturnModel)RedisUtil.getObject(key);
-			if(rq==null||!rq.getStatu().equals(ReturnStatus.Success)){
-				rq = proService.getMyProductInfo(cartId);
-				if(ReturnStatus.Success.equals(rq.getStatu())){
-					RedisUtil.setObject(key, rq, 60000);
-				} 
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("Î´µÇÂ¼"); 
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/sharedetails")
+	public String sharedetails(@RequestParam(required = false, defaultValue = "0") long cartId) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		String key = "shareurl0210-cartid-" + cartId;
+		rq = (ReturnModel) RedisUtil.getObject(key);
+		if (rq == null || !rq.getStatu().equals(ReturnStatus.Success)) {
+			rq = proService.getMyProductInfo(cartId);
+			if (ReturnStatus.Success.equals(rq.getStatu())) {
+				RedisUtil.setObject(key, rq, 60000);
 			}
 		}
+
 		return JsonUtil.objectToJsonStr(rq);
 	}
 

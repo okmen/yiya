@@ -1,11 +1,7 @@
 package com.bbyiya.model;
 
-import java.io.Serializable;
 
-
-public class OOrderproducts implements Serializable{
-	private static final long serialVersionUID = 1L;
-	
+public class OOrderproducts {
     private String orderproductid;
 
     private String userorderid;
@@ -27,6 +23,8 @@ public class OOrderproducts implements Serializable{
     private String propertystr;
 
     private Integer count;
+
+    private String productimg;
 
     public String getOrderproductid() {
         return orderproductid;
@@ -76,8 +74,7 @@ public class OOrderproducts implements Serializable{
         this.producttitle = producttitle == null ? null : producttitle.trim();
     }
 
-  
-
+   
     public Double getPrice() {
 		return price;
 	}
@@ -116,5 +113,13 @@ public class OOrderproducts implements Serializable{
 
     public void setCount(Integer count) {
         this.count = count;
+    }
+
+    public String getProductimg() {
+        return productimg;
+    }
+
+    public void setProductimg(String productimg) {
+        this.productimg = productimg == null ? null : productimg.trim();
     }
 }

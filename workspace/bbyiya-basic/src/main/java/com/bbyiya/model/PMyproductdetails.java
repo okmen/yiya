@@ -1,8 +1,10 @@
 package com.bbyiya.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class PMyproductdetails {
+public class PMyproductdetails implements Serializable{
+	private static final long serialVersionUID = 1L;
     private Long pdid;
 
     private Long cartid;

@@ -13,10 +13,11 @@
     <result column="SalesUserId" property="salesuserid" jdbcType="BIGINT" />
     <result column="PropertyStr" property="propertystr" jdbcType="VARCHAR" />
     <result column="Count" property="count" jdbcType="INTEGER" />
+    <result column="ProductImg" property="productimg" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     OrderProductId, UserOrderId, ProductId, StyleId, BuyerUserId, ProductTitle, Price, 
-    BranchUserId, SalesUserId, PropertyStr, Count
+    BranchUserId, SalesUserId, PropertyStr, Count,ProductImg
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -38,11 +39,13 @@
     insert into O_OrderProducts (OrderProductId, UserOrderId, ProductId, 
       StyleId, BuyerUserId, ProductTitle, 
       Price, BranchUserId, SalesUserId, 
-      PropertyStr, Count)
+      PropertyStr, Count, ProductImg
+      )
     values (#{orderproductid,jdbcType=VARCHAR}, #{userorderid,jdbcType=VARCHAR}, #{productid,jdbcType=BIGINT}, 
       #{styleid,jdbcType=BIGINT}, #{buyeruserid,jdbcType=BIGINT}, #{producttitle,jdbcType=VARCHAR}, 
       #{price,jdbcType=DECIMAL}, #{branchuserid,jdbcType=BIGINT}, #{salesuserid,jdbcType=BIGINT}, 
-      #{propertystr,jdbcType=VARCHAR}, #{count,jdbcType=INTEGER})
+      #{propertystr,jdbcType=VARCHAR}, #{count,jdbcType=INTEGER}, #{productimg,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.OOrderproducts" >
     insert into O_OrderProducts
@@ -80,6 +83,9 @@
       <if test="count != null" >
         Count,
       </if>
+      <if test="productimg != null" >
+        ProductImg,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="orderproductid != null" >
@@ -114,6 +120,9 @@
       </if>
       <if test="count != null" >
         #{count,jdbcType=INTEGER},
+      </if>
+      <if test="productimg != null" >
+        #{productimg,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -150,6 +159,9 @@
       <if test="count != null" >
         Count = #{count,jdbcType=INTEGER},
       </if>
+      <if test="productimg != null" >
+        ProductImg = #{productimg,jdbcType=VARCHAR},
+      </if>
     </set>
     where OrderProductId = #{orderproductid,jdbcType=VARCHAR}
   </update>
@@ -164,7 +176,8 @@
       BranchUserId = #{branchuserid,jdbcType=BIGINT},
       SalesUserId = #{salesuserid,jdbcType=BIGINT},
       PropertyStr = #{propertystr,jdbcType=VARCHAR},
-      Count = #{count,jdbcType=INTEGER}
+      Count = #{count,jdbcType=INTEGER},
+      ProductImg = #{productimg,jdbcType=VARCHAR}
     where OrderProductId = #{orderproductid,jdbcType=VARCHAR}
   </update>
 </mapper>

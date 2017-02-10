@@ -136,7 +136,12 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 								pp.setOrderproductid(userOrderId);// 产品订单编号
 								pp.setUserorderid(userOrderId);// 用户订单号
 								pp.setBuyeruserid(userId);
-								oproductMapper.insert(pp);
+								if(!ObjectUtil.isEmpty(styles.getDefaultimg())){
+									pp.setProductimg(styles.getDefaultimg()); 
+								}else {
+									pp.setProductimg(products.getDefaultimg()); 
+								}
+								oproductMapper.insert(pp); 
 								// 价格和
 								totalPrice += styles.getPrice() * pp.getCount();
 							} else {

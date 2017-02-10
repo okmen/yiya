@@ -1,8 +1,10 @@
 package com.bbyiya.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class OUserorders {
+public class OUserorders implements Serializable{
+	private static final long serialVersionUID = 1L;
     private String userorderid;
 
     private Long userid;

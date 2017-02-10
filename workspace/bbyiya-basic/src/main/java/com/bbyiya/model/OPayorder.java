@@ -1,71 +1,69 @@
 package com.bbyiya.model;
 
-import java.math.BigDecimal;
+import java.io.Serializable;
 import java.util.Date;
 
-public class OPayorder {
-    private String payid;
+public class OPayorder implements Serializable {
+	private static final long serialVersionUID = 1L;
+	private String payid;
 
-    private String userorderid;
+	private String userorderid;
 
-    private Long userid;
+	private Long userid;
 
-    private String prepayid;
+	private String prepayid;
 
-    private Integer status;
+	private Integer status;
 
-    private Double totalprice;
+	private Double totalprice;
 
-    private Date createtime;
+	private Date createtime;
 
-    private Date paytime;
+	private Date paytime;
 
-    private Date prepaytime;
+	private Date prepaytime;
 
-    public String getPayid() {
-        return payid;
-    }
+	public String getPayid() {
+		return payid;
+	}
 
-    public void setPayid(String payid) {
-        this.payid = payid == null ? null : payid.trim();
-    }
+	public void setPayid(String payid) {
+		this.payid = payid == null ? null : payid.trim();
+	}
 
-    public String getUserorderid() {
-        return userorderid;
-    }
+	public String getUserorderid() {
+		return userorderid;
+	}
 
-    public void setUserorderid(String userorderid) {
-        this.userorderid = userorderid == null ? null : userorderid.trim();
-    }
+	public void setUserorderid(String userorderid) {
+		this.userorderid = userorderid == null ? null : userorderid.trim();
+	}
 
-    public Long getUserid() {
-        return userid;
-    }
+	public Long getUserid() {
+		return userid;
+	}
 
-    public void setUserid(Long userid) {
-        this.userid = userid;
-    }
+	public void setUserid(Long userid) {
+		this.userid = userid;
+	}
 
-    public String getPrepayid() {
-        return prepayid;
-    }
+	public String getPrepayid() {
+		return prepayid;
+	}
 
-    public void setPrepayid(String prepayid) {
-        this.prepayid = prepayid == null ? null : prepayid.trim();
-    }
+	public void setPrepayid(String prepayid) {
+		this.prepayid = prepayid == null ? null : prepayid.trim();
+	}
 
-    public Integer getStatus() {
-        return status;
-    }
+	public Integer getStatus() {
+		return status;
+	}
 
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
 
-   
-    
-
-    public Double getTotalprice() {
+	public Double getTotalprice() {
 		return totalprice;
 	}
 
@@ -74,26 +72,26 @@ public class OPayorder {
 	}
 
 	public Date getCreatetime() {
-        return createtime;
-    }
+		return createtime;
+	}
 
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
-    }
+	public void setCreatetime(Date createtime) {
+		this.createtime = createtime;
+	}
 
-    public Date getPaytime() {
-        return paytime;
-    }
+	public Date getPaytime() {
+		return paytime;
+	}
 
-    public void setPaytime(Date paytime) {
-        this.paytime = paytime;
-    }
+	public void setPaytime(Date paytime) {
+		this.paytime = paytime;
+	}
 
-    public Date getPrepaytime() {
-        return prepaytime;
-    }
+	public Date getPrepaytime() {
+		return prepaytime;
+	}
 
-    public void setPrepaytime(Date prepaytime) {
-        this.prepaytime = prepaytime;
-    }
+	public void setPrepaytime(Date prepaytime) {
+		this.prepaytime = prepaytime;
+	}
 }

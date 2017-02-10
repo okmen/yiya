@@ -86,7 +86,7 @@ public class RegionServiceImpl implements IRegionService {
 			}
 		}
 		if (resultList != null && resultList.size() > 0) {
-			RedisUtil.setObject(keyString, resultList, 3600);
+			RedisUtil.setObject(keyString, resultList);
 		}
 		return resultList;
 	}

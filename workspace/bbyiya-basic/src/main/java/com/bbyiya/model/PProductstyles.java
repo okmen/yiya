@@ -22,6 +22,7 @@ public class PProductstyles implements Serializable{
     private Integer isdefault;
 
     private String propertystr;
+    private String description;
 
     private Date createtime;
 
@@ -115,5 +116,12 @@ public class PProductstyles implements Serializable{
 
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
+    }
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description == null ? null : description.trim();
     }
 }

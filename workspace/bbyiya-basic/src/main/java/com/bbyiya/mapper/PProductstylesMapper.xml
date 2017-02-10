@@ -10,6 +10,7 @@
     <result column="Price" property="price" jdbcType="DECIMAL" />
     <result column="Status" property="status" jdbcType="INTEGER" />
     <result column="IsDefault" property="isdefault" jdbcType="INTEGER" />
+    <result column="Description" property="description" jdbcType="VARCHAR" />
     <result column="PropertyStr" property="propertystr" jdbcType="VARCHAR" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="UpdateTime" property="updatetime" jdbcType="TIMESTAMP" />
@@ -20,9 +21,10 @@
     <result column="Price" property="price" jdbcType="DECIMAL" />
     <result column="DefaultImg" property="defaultImg" jdbcType="VARCHAR" />
     <result column="PropertyStr" property="propertyStr" jdbcType="VARCHAR" />
+    <result column="Description" property="description" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-     StyleId, ProductId, UserId, DefaultImg, OldPrice, Price, Status, IsDefault, PropertyStr, 
+     StyleId, ProductId, UserId, DefaultImg, OldPrice, Price, Status, IsDefault, PropertyStr, Description,
     CreateTime, UpdateTime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
@@ -49,13 +51,15 @@
   </delete>
  <insert id="insert" parameterType="com.bbyiya.model.PProductstyles" >
     insert into P_ProductStyles (StyleId, ProductId, UserId, 
-      DefaultImg, OldPrice, Price, 
-      Status, IsDefault, PropertyStr, 
-      CreateTime, UpdateTime)
+      DefaultImg, PropertyStr, OldPrice, 
+      Price, Status, IsDefault, 
+      Description, CreateTime, UpdateTime
+      )
     values (#{styleid,jdbcType=BIGINT}, #{productid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, 
-      #{defaultimg,jdbcType=VARCHAR}, #{oldprice,jdbcType=DECIMAL}, #{price,jdbcType=DECIMAL}, 
-      #{status,jdbcType=INTEGER}, #{isdefault,jdbcType=INTEGER}, #{propertystr,jdbcType=VARCHAR}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP})
+      #{defaultimg,jdbcType=VARCHAR}, #{propertystr,jdbcType=VARCHAR}, #{oldprice,jdbcType=DECIMAL}, 
+      #{price,jdbcType=DECIMAL}, #{status,jdbcType=INTEGER}, #{isdefault,jdbcType=INTEGER}, 
+      #{description,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PProductstyles" >
     insert into P_ProductStyles
@@ -72,6 +76,9 @@
       <if test="defaultimg != null" >
         DefaultImg,
       </if>
+      <if test="propertystr != null" >
+        PropertyStr,
+      </if>
       <if test="oldprice != null" >
         OldPrice,
       </if>
@@ -84,8 +91,8 @@
       <if test="isdefault != null" >
         IsDefault,
       </if>
-      <if test="propertystr != null" >
-        PropertyStr,
+      <if test="description != null" >
+        Description,
       </if>
       <if test="createtime != null" >
         CreateTime,
@@ -107,6 +114,9 @@
       <if test="defaultimg != null" >
         #{defaultimg,jdbcType=VARCHAR},
       </if>
+      <if test="propertystr != null" >
+        #{propertystr,jdbcType=VARCHAR},
+      </if>
       <if test="oldprice != null" >
         #{oldprice,jdbcType=DECIMAL},
       </if>
@@ -119,8 +129,8 @@
       <if test="isdefault != null" >
         #{isdefault,jdbcType=INTEGER},
       </if>
-      <if test="propertystr != null" >
-        #{propertystr,jdbcType=VARCHAR},
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
@@ -142,6 +152,9 @@
       <if test="defaultimg != null" >
         DefaultImg = #{defaultimg,jdbcType=VARCHAR},
       </if>
+      <if test="propertystr != null" >
+        PropertyStr = #{propertystr,jdbcType=VARCHAR},
+      </if>
       <if test="oldprice != null" >
         OldPrice = #{oldprice,jdbcType=DECIMAL},
       </if>
@@ -154,8 +167,8 @@
       <if test="isdefault != null" >
         IsDefault = #{isdefault,jdbcType=INTEGER},
       </if>
-      <if test="propertystr != null" >
-        PropertyStr = #{propertystr,jdbcType=VARCHAR},
+      <if test="description != null" >
+        Description = #{description,jdbcType=VARCHAR},
       </if>
       <if test="createtime != null" >
         CreateTime = #{createtime,jdbcType=TIMESTAMP},
@@ -171,11 +184,12 @@
     set ProductId = #{productid,jdbcType=BIGINT},
       UserId = #{userid,jdbcType=BIGINT},
       DefaultImg = #{defaultimg,jdbcType=VARCHAR},
+      PropertyStr = #{propertystr,jdbcType=VARCHAR},
       OldPrice = #{oldprice,jdbcType=DECIMAL},
       Price = #{price,jdbcType=DECIMAL},
       Status = #{status,jdbcType=INTEGER},
       IsDefault = #{isdefault,jdbcType=INTEGER},
-      PropertyStr = #{propertystr,jdbcType=VARCHAR},
+      Description = #{description,jdbcType=VARCHAR},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
       UpdateTime = #{updatetime,jdbcType=TIMESTAMP}
     where StyleId = #{styleid,jdbcType=BIGINT}

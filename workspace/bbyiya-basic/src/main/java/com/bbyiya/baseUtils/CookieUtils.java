@@ -78,10 +78,9 @@ public class CookieUtils {
 					return cookie.getValue();
 				}
 			}
-			return null;
-		} else {
-			return null;
-		}
+		} 
+		return null;
+		
 	}
 	
 }

@@ -210,8 +210,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	}
 
 	/**
-	 * 我的作品详情
-	 * 
+	 * 我的作品详情 （用户操作页 ）
+	 *  需要登录
 	 * @return
 	 */
 	public ReturnModel getMyProductInfo(Long userId, Long cartId) {
@@ -241,6 +241,10 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		return rq;
 	}
 
+	/**
+	 * 前端 作品详情 （分享页 ）
+	 * 
+	 */
 	public ReturnModel getMyProductInfo(Long cartId) {
 		ReturnModel rq = new ReturnModel();
 //		MyProductResultVo myproduct = myMapper.getMyProductResultVo(cartId);

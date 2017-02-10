@@ -108,19 +108,14 @@ public class LoginController extends SSOController {
 	 * @return
 	 * @throws Exception
 	 */
-	@ResponseBody
 	@RequestMapping(value = "/transfer")
 	public String transferPage() throws Exception {
-		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			rq.setStatu(ReturnStatus.Success);
-			rq.setBasemodle(user);
+			return "redirect:"+ ConfigUtil.getSingleValue("loginbackurl") ;//+ "?ticket=" + ((LoginSuccessResult) rqModel.getBasemodle()).getTicket();	
 		} else {
-			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登陆过期，请重新登陆！");
-		}
-		return JsonUtil.objectToJsonStr(rq);
+			return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin&response_type=code&scope=snsapi_base#wechat_redirect" ;	
+		}		
 	}
 	
 	

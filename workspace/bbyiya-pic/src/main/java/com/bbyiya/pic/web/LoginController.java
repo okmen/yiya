@@ -77,7 +77,7 @@ public class LoginController extends SSOController {
 		param.setHeadImg(headImg);
 		ReturnModel rqModel = loginService.otherLogin(param);
 		if (ReturnStatus.Success.equals(rqModel.getStatu()) && !ObjectUtil.isEmpty(rqModel.getBasemodle())) {
-			addLoginLog(rqModel.getBasemodle());
+			addLoginLogAndCookie(rqModel.getBasemodle());
 		}
 		return JsonUtil.objectToJsonStr(rqModel);
 	}
@@ -104,7 +104,7 @@ public class LoginController extends SSOController {
 	}
 	
 	/**
-	 * 中转页
+	 * 登录 中转页
 	 * @return
 	 * @throws Exception
 	 */
@@ -177,7 +177,6 @@ public class LoginController extends SSOController {
 	 */
 	@RequestMapping(value = "/wxLogin")
 	public String wxLogin(String code, String state) throws Exception {
-
 		if (ObjectUtil.isEmpty(code)) {
 			code = request.getParameter("code");
 		}
@@ -207,7 +206,7 @@ public class LoginController extends SSOController {
 					param.setHeadImg(String.valueOf(userJson.get("headimgurl")));
 					rqModel = loginService.otherLogin(param);
 					if (ReturnStatus.Success.equals(rqModel.getStatu()) && !ObjectUtil.isEmpty(rqModel.getBasemodle())) {
-						addLoginLog(rqModel.getBasemodle());
+						addLoginLogAndCookie(rqModel.getBasemodle());
 					}
 					logs += "rqModel=" + JsonUtil.objectToJsonStr(rqModel);
 				} else {
@@ -231,7 +230,7 @@ public class LoginController extends SSOController {
 		}
 	}
 
-	private void addLoginLog(Object obj) {
+	private void addLoginLogAndCookie(Object obj) {
 		try {
 			LoginSuccessResult user = (LoginSuccessResult) obj;
 			if (user != null) {
@@ -244,7 +243,8 @@ public class LoginController extends SSOController {
 				loginLogs.setSourcetype(1);// 12photo
 				loginLogMapper.insert(loginLogs);
 				
-				CookieUtils.addCookie(response, PHOTO_TOKEN, user.getTicket(),86400); 
+//				CookieUtils.addCookie( response, PHOTO_TOKEN, user.getTicket(),86400); 
+				CookieUtils.addCookieBySessionId(request, response,user.getTicket(),86400); 
 			}
 		} catch (Exception e) {
 			// TODO: handle exception

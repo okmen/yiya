@@ -1,23 +1,26 @@
 package com.bbyiya.model;
 
-public class RProvince {
-    private Integer code;
+import java.io.Serializable;
 
-    private String province;
+public class RProvince implements Serializable {
+	private static final long serialVersionUID = 1L;
+	private Integer code;
 
-    public Integer getCode() {
-        return code;
-    }
+	private String province;
 
-    public void setCode(Integer code) {
-        this.code = code;
-    }
+	public Integer getCode() {
+		return code;
+	}
 
-    public String getProvince() {
-        return province;
-    }
+	public void setCode(Integer code) {
+		this.code = code;
+	}
 
-    public void setProvince(String province) {
-        this.province = province == null ? null : province.trim();
-    }
+	public String getProvince() {
+		return province;
+	}
+
+	public void setProvince(String province) {
+		this.province = province == null ? null : province.trim();
+	}
 }

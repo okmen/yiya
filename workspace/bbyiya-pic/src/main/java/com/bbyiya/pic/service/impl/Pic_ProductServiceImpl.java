@@ -31,7 +31,6 @@ import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.dao.IMyProductDetailsDao;
 import com.bbyiya.pic.dao.IMyProductsDao;
 import com.bbyiya.pic.service.IPic_ProductService;
-import com.bbyiya.pic.utils.RedisCommons;
 import com.bbyiya.pic.vo.product.MyProductParam;
 import com.bbyiya.pic.vo.product.MyProductsDetailsResult;
 import com.bbyiya.pic.vo.product.MyProductsResult;
@@ -100,28 +99,22 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					myMapper.updateByPrimaryKeySelective(myproducts);
 					if (param.getDetails() != null && param.getDetails().size() > 0) {
 						myDetaiMapper.deleteByCartId(param.getCartid());
-						int maxSort = 0;// myDetaiMapper.getMaxSort(param.getCartid());
+						int maxSort = 0;
 						for (PMyproductdetails de : param.getDetails()) {
 							de.setCartid(param.getCartid());
-							// if (de.getPdid() != null && de.getPdid() > 0) {
-							// PMyproductdetails temp =
-							// myDetaiMapper.selectByPrimaryKey(de.getPdid());
-							// if (temp != null) {
-							// de.setCreatetime(new Date());
-							// myDetaiMapper.updateByPrimaryKeySelective(de);
-							// }
-							// } else {
-							// if(!ObjectUtil.isEmpty(de.getImgurl())){
+							
 							de.setCreatetime(new Date());
 							if (de.getSort() == null) {
 								de.setSort(maxSort);// 设置排序
 							}
 							myDetaiMapper.insert(de);
-							// }
 							maxSort++;
-							// }
 						}
 					}
+				}else {
+					rq.setStatu(ReturnStatus.SystemError_1);
+					rq.setStatusreson("没有权限编辑别人的作品");
+					return rq;
 				}
 			} else {// 新增
 
@@ -219,7 +212,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		UUsers user = usersMapper.getUUsersByUserID(userId);
 		if (user != null) {
 			MyProductsResult myproduct = myProductsDao.getMyProductResultVo(cartId);
-			if (myproduct != null) {
+			if (myproduct != null&&myproduct.getUserid().longValue()==userId) {
 				PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
 				if (product != null) {
 					myproduct.setDescription(product.getDescription());
@@ -235,6 +228,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					myproduct.setDetailslist(arrayList);
 				}
 				rq.setBasemodle(myproduct);
+			}else {
+				rq.setStatu(ReturnStatus.SystemError_1);
+				rq.setStatusreson("不可编辑的作品");
 			}
 		}
 		rq.setStatu(ReturnStatus.Success);

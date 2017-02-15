@@ -1,6 +1,9 @@
 package com.bbyiya.model;
 
-public class RCity {
+import java.io.Serializable;
+
+public class RCity  implements Serializable {
+	private static final long serialVersionUID = 1L;
     private Integer code;
 
     private String city;

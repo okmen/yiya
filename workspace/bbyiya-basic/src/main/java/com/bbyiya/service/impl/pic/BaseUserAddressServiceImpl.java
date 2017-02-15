@@ -150,10 +150,13 @@ public class BaseUserAddressServiceImpl implements IBaseUserAddressService {
 				}
 			} else {
 				List<UUserAddressResult> list = addressMapper.find_UUserAddressByUserId(address.getUserid());
-				if (list == null || list.size() <= 0) {
+				if (list != null && list.size() > 0) {
+					address.setAddrid(list.get(0).getAddrid());  
+					addressMapper.updateByPrimaryKeySelective(address);
+				}else {
 					address.setIsdefault(1);
+					addressMapper.insertReturnId(address);
 				}
-				addressMapper.insertReturnId(address);
 				rq.setStatu(ReturnStatus.Success);
 				rq.setBasemodle(address.getAddrid());
 			}

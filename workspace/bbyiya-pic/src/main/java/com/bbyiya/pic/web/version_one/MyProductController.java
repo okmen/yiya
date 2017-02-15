@@ -163,12 +163,12 @@ public class MyProductController extends SSOController {
 	@RequestMapping(value = "/sharedetails")
 	public String sharedetails(@RequestParam(required = false, defaultValue = "0") long cartId) throws Exception {
 		ReturnModel rq = new ReturnModel();
-		String key = "shareurl0210-cartid-" + cartId;
+		String key = "shareurl02142-cartid-" + cartId;
 		rq = (ReturnModel) RedisUtil.getObject(key);
 		if (rq == null || !rq.getStatu().equals(ReturnStatus.Success)) {
 			rq = proService.getMyProductInfo(cartId);
 			if (ReturnStatus.Success.equals(rq.getStatu())) {
-				RedisUtil.setObject(key, rq, 60000);
+				RedisUtil.setObject(key, rq, 3600);
 			}
 		}
 

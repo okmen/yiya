@@ -19,6 +19,7 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.pic.service.IPic_ProductService;
 import com.bbyiya.pic.vo.product.MyProductParam;
+import com.bbyiya.pic.web.common.Json2Objects;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
@@ -47,7 +48,7 @@ public class MyProductController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			MyProductParam param = getParams(myproductJson);// (MyProductParam) JsonUtil.jsonStrToObject(myproductJson, MyProductParam.class);
+			MyProductParam param = Json2Objects.getParam_MyProductParam(myproductJson);// (MyProductParam) JsonUtil.jsonStrToObject(myproductJson, MyProductParam.class);
 			if (param != null) {
 				rq = proService.saveOrEdit_MyProducts(user.getUserId(), param);
 			} else {
@@ -61,56 +62,7 @@ public class MyProductController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
-	/**
-	 * 保存参数对象转化
-	 * @param result
-	 * @return
-	 */
-	private MyProductParam getParams(String result) {
-		JSONObject model = JSONObject.fromObject(result);
-		if (model != null) {
-			MyProductParam param = new MyProductParam();
-			param.setProductid(ObjectUtil.parseLong(String.valueOf(model.get("productid"))));
-			param.setTitle(String.valueOf(model.get("title")));
-			param.setAuthor(String.valueOf(model.get("author")));
-			param.setCartid(ObjectUtil.parseLong(String.valueOf(model.get("cartid"))));
-			JSONArray details = new JSONArray().fromObject(String.valueOf(model.get("details")));
-			if(details!=null&&details.size()>0){
-				List<PMyproductdetails> detailsList=new ArrayList<PMyproductdetails>();
-				for (int i = 0; i < details.size(); i++) {
-					JSONObject dd = details.getJSONObject(i);//
-					PMyproductdetails mo=new PMyproductdetails();
-					String content=String.valueOf(dd.get("content"));
-					if(!ObjectUtil.isEmpty(content)&&!content.equals("null")){
-						mo.setContent(content);
-					}
-					int scenid=ObjectUtil.parseInt(String.valueOf(dd.get("sceneid")));
-					if(scenid>0){
-						mo.setSceneid(scenid); 
-					}
-					if(dd.get("imgurl")!=null){
-						String url=String.valueOf(dd.get("imgurl"));
-						if(!ObjectUtil.isEmpty(url)&&!url.equals("null")){
-							mo.setImgurl(url); 
-						}	
-					}
-					int sort=ObjectUtil.parseInt(String.valueOf(dd.get("sort")));
-					if(sort>0){
-						mo.setSort(sort); 
-					}
-					long pdid=ObjectUtil.parseLong(String.valueOf(dd.get("pdid")));
-					if(pdid>0){
-						mo.setPdid(pdid); 
-					}
-					detailsList.add(mo);
-				}
-				param.setDetails(detailsList); 
-			}
-			return param;
-		}
-		return null;
-		
-	}
+	
 
 	/**
 	 * 我的作品列表

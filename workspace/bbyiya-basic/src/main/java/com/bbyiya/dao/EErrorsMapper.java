@@ -1,5 +1,7 @@
 package com.bbyiya.dao;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.EErrors;
 
 public interface EErrorsMapper {
@@ -14,4 +16,11 @@ public interface EErrorsMapper {
     int updateByPrimaryKeySelective(EErrors record);
 
     int updateByPrimaryKey(EErrors record);
+    /**
+     * 新增错误记录
+     * @param classname
+     * @param msg
+     * @return
+     */
+    int addError(@Param("classname")String classname,@Param("msg")String msg);
 }

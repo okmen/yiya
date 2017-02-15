@@ -105,7 +105,6 @@ public class OrderMgtController extends SSOController {
 					rq.setStatusreson("参数不全");
 					return JsonUtil.objectToJsonStr(rq);
 				}
-				// List<OrderPhotoParam> list = param.getImageList();
 				if (param.getImageList() != null && param.getImageList().size() > 0) {
 					if (param.getImageList().size() < 12) {
 						rq.setStatu(ReturnStatus.ParamError_1);

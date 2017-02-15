@@ -25,6 +25,12 @@
     values (#{logid,jdbcType=BIGINT}, #{classname,jdbcType=VARCHAR}, #{msg,jdbcType=VARCHAR}
       )
   </insert>
+  <insert id="addError" ><!-- 新增log 错误记录 -->
+    insert into E_Errors (ClassName, Msg
+      )
+    values (#{classname,jdbcType=VARCHAR}, #{msg,jdbcType=VARCHAR}
+      )
+  </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.EErrors" >
     insert into E_Errors
     <trim prefix="(" suffix=")" suffixOverrides="," >

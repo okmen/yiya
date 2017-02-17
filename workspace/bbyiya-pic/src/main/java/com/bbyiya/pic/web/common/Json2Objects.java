@@ -45,6 +45,10 @@ public class Json2Objects {
 				if(city!=null&&city>0){
 					param.setCity(city);
 				}
+				Integer district=ObjectUtil.parseInt(String.valueOf(model.get("district")));
+				if(district!=null&&district>0){
+					param.setDistrict(district);
+				}
 				return param;
 			}
 		} catch (Exception e) {

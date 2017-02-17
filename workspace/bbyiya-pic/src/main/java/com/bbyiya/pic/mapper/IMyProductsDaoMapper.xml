@@ -26,4 +26,10 @@
     from P_MyProducts
     where CartId = #{cartid,jdbcType=BIGINT}
   </select>
+  <!-- 通过 UserId ，ProductId, Status 获取作品 -->
+  <select id="getMyProductResultByProductId" resultMap="MyProductResultVO" >
+    select <include refid="Base_Column_List" />
+    from P_MyProducts
+    where UserId = #{userId,jdbcType=BIGINT} and ProductId=#{productId,jdbcType=BIGINT} and Status=#{status,jdbcType=INTEGER} order by  CartId desc 
+  </select>
 </mapper>

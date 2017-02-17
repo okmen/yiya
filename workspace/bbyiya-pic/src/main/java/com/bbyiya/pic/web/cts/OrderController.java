@@ -1,5 +1,10 @@
 package com.bbyiya.pic.web.cts;
 
+import java.util.Calendar;
+//import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
@@ -7,11 +12,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.pic.service.IPic_OrderMgtService;
 import com.bbyiya.pic.vo.order.SearchOrderParam;
-//import com.bbyiya.pic.vo.product.MyProductParam;
-//import com.bbyiya.pic.web.common.Json2Objects;
+import com.bbyiya.pic.vo.order.UserOrderResultVO;
+import com.bbyiya.utils.DateUtil;
+import com.bbyiya.utils.FileUtils;
 import com.bbyiya.utils.JsonUtil;
+import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.utils.upload.FileDownloadUtils;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
@@ -30,12 +39,22 @@ public class OrderController  extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/findOrderlist")
-	public String findOrderlist(String myproductJson) throws Exception {
+	public String findOrderlist(String myproductJson,String isDownload,String fileDir) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
 			SearchOrderParam param= (SearchOrderParam)JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
 			rq=orderService.find_orderList(param);
+			if(ObjectUtil.parseInt(isDownload)>0){
+				if(ObjectUtil.isEmpty(fileDir)){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("请输入要保存到本地的文件路径");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				if(rq.getStatu().equals(ReturnStatus.Success)){
+					downloadImg((List<UserOrderResultVO>)rq.getBasemodle(),fileDir);
+				}
+			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
@@ -44,4 +63,62 @@ public class OrderController  extends SSOController {
 	}
 	
 
+	//TODO
+	public void downloadImg(List<UserOrderResultVO> orderlist,String basePath){
+		try {
+			FileUtils.isDirExists(basePath);
+		} catch (Exception e) {
+			basePath="D:\\orderImgs\\";
+			FileUtils.isDirExists(basePath);
+		}
+
+		for (UserOrderResultVO order : orderlist) {
+			Calendar c1 = new GregorianCalendar();
+			c1.setTime(order.getPaytime());
+			c1.set(Calendar.HOUR_OF_DAY, 18);
+			c1.set(Calendar.MINUTE, 0);
+			c1.set(Calendar.SECOND, 0);
+			Calendar c2 = new GregorianCalendar();
+			c2.setTime(order.getPaytime());
+			if(c2.getTime().getTime()>c1.getTime().getTime()){
+				c2.set(Calendar.DAY_OF_MONTH, 1);
+			}
+			String file_temp=DateUtil.getTimeStr(c2.getTime(), "MMdd");
+			
+			
+			//创建文件夹
+			FileUtils.isDirExists(basePath+"\\"+file_temp);
+			FileUtils.isDirExists(basePath+"\\"+file_temp+"\\"+order.getUserorderid());;
+			int i=1;
+			for (OOrderproductdetails detail : order.getImglist()) {
+				String file_dir=basePath+"\\"+file_temp+"\\"+order.getUserorderid();
+				String fileFull_name=file_dir+"\\"+i+".jpg";
+				if(!FileUtils.isFileExists(fileFull_name)){
+					try {
+						FileDownloadUtils.download(detail.getImageurl(),fileFull_name);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				i++;
+			}
+			
+		}
+	}
+
+	
+
+	@ResponseBody
+	@RequestMapping(value = "/download")
+	public String download(String fileDir,String fileName, String urlStr) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		String basePath=fileDir;
+		String pathString=basePath+fileName;//DateUtil.getTimeStr(new Date(), "yyyyMMddHHmmss")+".jpg";
+		FileDownloadUtils.download(urlStr,pathString);
+		rq.setStatu(ReturnStatus.Success);
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	
 }

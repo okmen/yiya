@@ -23,6 +23,11 @@
 		select
 		<include refid="Base_Column_List" />
 		from P_MyProductDetails
-		where CartId = #{cartId,jdbcType=BIGINT} order by Sort asc
+		where CartId = #{cartId,jdbcType=BIGINT} order
+		by Sort asc
 	</select>
+	<delete id="deleMyProductDetailsByCartId" ><!-- 根据作品Id删除我的作品 -->
+		delete from P_MyProductDetails
+		where CartId = #{cartId,jdbcType=BIGINT}
+	</delete>
 </mapper>

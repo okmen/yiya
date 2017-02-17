@@ -7,11 +7,18 @@ import com.bbyiya.vo.ReturnModel;
 public interface IPic_ProductService {
 	
 	/**
-	 * 获取产品样本详情
+	 * 获取产品样本详情（旧版）
 	 * @param productId
 	 * @return
 	 */
 	ReturnModel getProductSamples(Long productId) ;
+	/**
+	 * 获取作品样本列表
+	 * 2017-02-17 
+	 * @param productId
+	 * @return
+	 */
+	ReturnModel getProductSamplelist(Long productId) ;
 	/**
 	 * 保存用户的作品 save user's product 
 	 * @param param
@@ -19,20 +26,34 @@ public interface IPic_ProductService {
 	 */
 	ReturnModel saveOrEdit_MyProducts(Long userId, MyProductParam param);
 	/**
+	 * 修改我的作品(只修改 ，不做新增)
+	 * @param userId
+	 * @param param
+	 * @return
+	 */
+	ReturnModel Edit_MyProducts(Long userId, MyProductParam param);
+	/**
 	 * 我的作品列表
 	 * @param userId
 	 * @return
 	 */
 	ReturnModel findMyProlist(Long userId);
 	/**
-	 * 获取作品详情
+	 * 作品详情 - 通过userId，cartId 获取
 	 * @param userId
 	 * @param cartId
 	 * @return
 	 */
 	ReturnModel getMyProductInfo(Long userId, Long cartId);
 	/**
-	 * 作品详情
+	 * 作品详情 - 通过userId，productId 获取编辑作品详情
+	 * @param userId
+	 * @param productId
+	 * @return
+	 */
+	ReturnModel getMyProductByProductId(Long userId, Long productId);
+	/**
+	 * 作品详情 -分享页用
 	 * @param cartId
 	 * @return
 	 */
@@ -44,9 +65,16 @@ public interface IPic_ProductService {
 	 * @return
 	 */
 	ReturnModel del_myProductDetail(Long userId, Long dpId);
+	/**
+	 * 根据cartId 删除我的作品
+	 * @param userId
+	 * @param cartId
+	 * @return
+	 */
+	ReturnModel deleMyProduct(Long userId, Long cartId);
 	
 	/**
-	 * 
+	 * 获取款式图片作品
 	 * @param styleId
 	 * @return
 	 */

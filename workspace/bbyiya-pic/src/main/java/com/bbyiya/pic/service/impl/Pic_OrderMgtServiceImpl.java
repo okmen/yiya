@@ -6,8 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.dao.OOrderaddressMapper;
+import com.bbyiya.dao.OOrderproductdetailsMapper;
+import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.model.OOrderaddress;
+import com.bbyiya.model.OOrderproductdetails;
+import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.pic.dao.IPic_OrderMgtDao;
 import com.bbyiya.pic.service.IPic_OrderMgtService;
 import com.bbyiya.pic.vo.order.SearchOrderParam;
@@ -22,6 +28,12 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 	private OUserordersMapper userOrdersMapper;
 	@Autowired
 	private IPic_OrderMgtDao orderDao;
+	@Autowired
+	private OOrderproductsMapper orderProductMapper;
+	@Autowired
+	private OOrderproductdetailsMapper detailMapper;
+	@Autowired
+	private OOrderaddressMapper addressMapper;
 	/**
 	 * 获取订单列表
 	 * @param userId
@@ -37,6 +49,26 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 		if(param==null)
 			param=new SearchOrderParam();
 		List<UserOrderResultVO> list=orderDao.findUserOrders(param);
+		if(list!=null&&list.size()>0){
+			for (UserOrderResultVO order : list) {
+				OOrderaddress address= addressMapper.selectByPrimaryKey(order.getOrderaddressid());
+				if(address!=null){
+					order.setAddress(address);
+				} 
+				List<OOrderproducts> proList= orderProductMapper.findOProductsByOrderId(order.getUserorderid());
+				if(proList!=null&&proList.size()>0){
+					for (OOrderproducts pro : proList) {
+						List<OOrderproductdetails> detailslist= orderDao.findOrderProductDetailsByProductOrderId(pro.getOrderproductid());
+						if(detailslist!=null&&detailslist.size()>0){
+							for (OOrderproductdetails dd : detailslist) {
+								dd.setImageurl("http://pic.bbyiya.com/"+dd.getImageurl()); 
+							}
+						}
+						order.setImglist(detailslist); 
+					}
+				}
+			}
+		}
 		rq.setStatu(ReturnStatus.Success);
 		rq.setBasemodle(list); 
 		return rq;

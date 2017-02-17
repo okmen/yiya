@@ -17,6 +17,17 @@
     UserOrderId, UserId, TotalPrice, Status, BranchUserId, OrderAddressId, PayId, Remark, 
     OrderTime, PayTime
   </sql>
+  <resultMap id="OProductDetailMap" type="com.bbyiya.model.OOrderproductdetails" >
+    <id column="OProductDetailId" property="oproductdetailid" jdbcType="BIGINT" />
+    <result column="OrderProductId" property="orderproductid" jdbcType="VARCHAR" />
+    <result column="PrintNo" property="printno" jdbcType="VARCHAR" />
+    <result column="Position" property="position" jdbcType="INTEGER" />
+    <result column="ImageUrl" property="imageurl" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="OOrderproductdetails_Column_List" >
+    OProductDetailId, OrderProductId, PrintNo, Position, ImageUrl, CreateTime
+  </sql>
   <!-- 用户订单结果类Result -->
   <resultMap id="UserOrderResult" type="com.bbyiya.pic.vo.order.UserOrderResultVO" extends="BaseResultMap">  
   </resultMap>  
@@ -33,5 +44,11 @@
         AND Status = #{status,jdbcType=INTEGER}
     </if>
      order by OrderTime desc
+  </select>
+   <!-- 搜索订单图片列表  -->
+   <select id="findOrderProductDetailsByProductOrderId" resultMap="OProductDetailMap"  >
+    select  <include refid="OOrderproductdetails_Column_List" />
+    from O_OrderProductDetails where OrderProductId=#{orderProductId,jdbcType=VARCHAR}  
+    order by Position asc
   </select>
 </mapper>

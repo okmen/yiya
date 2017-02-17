@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.pic.dao.IPic_ProductDao" >
+   <resultMap id="PProductsamplesMap" type="com.bbyiya.model.PProductsamples" >
+    <id column="SampleId" property="sampleid" jdbcType="INTEGER" />
+    <result column="ProductId" property="productid" jdbcType="BIGINT" />
+    <result column="SampleImg" property="sampleimg" jdbcType="VARCHAR" />
+    <result column="CartId" property="cartid" jdbcType="BIGINT" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="PProductsamples_Column_List" >
+    SampleId, ProductId, SampleImg, CartId, CreateTime, Status
+  </sql>
+  <!-- 相册样本结果 -->
+  <resultMap id="ProductSampleResultVO" type="com.bbyiya.pic.vo.product.ProductSampleResultVO" extends="PProductsamplesMap">  
+  </resultMap>  
+   
+   <!-- 搜索相册样本列表  -->
+  <select id="findProductSamplesByProductId" resultMap="ProductSampleResultVO"  >
+    select  <include refid="PProductsamples_Column_List" />
+    from P_ProductSamples where ProductId=#{productId,jdbcType=BIGINT}  
+  </select>
+ 
+  
+</mapper>

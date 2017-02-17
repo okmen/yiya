@@ -2,28 +2,39 @@ package com.bbyiya.pic.web.version_one;
 
 import java.util.Date;
 
-import net.sf.json.JSONObject;
+
+
+
+
+import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.dao.EErrorsMapper;
 import com.bbyiya.dao.UBranchinfotempMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.UBranchinfotemp;
+import com.bbyiya.pic.service.IPic_BranchMgtService;
+import com.bbyiya.pic.service.IPic_ProductService;
 import com.bbyiya.pic.web.common.Json2Objects;
 //import com.bbyiya.model.UUseraddress;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
 
 
 @Controller
 @RequestMapping(value = "/ibs/branch")
 public class BranchMgtController extends SSOController {
+	@Resource(name = "pic_BranchMgtService")
+	private IPic_BranchMgtService branchService;
+	
 	@Autowired
 	private UBranchinfotempMapper tempMapper;
 	@Autowired
@@ -78,45 +89,19 @@ public class BranchMgtController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-
-//	/**
-//	 * 供应商报名页申请
-//	 * @param addrJson
-//	 * @return
-//	 */
-//	private UBranchinfotemp getParams(String addrJson) {
-//		try {
-//			JSONObject model = JSONObject.fromObject(addrJson);
-//			if (model != null) {
-//				UBranchinfotemp param = new UBranchinfotemp();
-//				String contactname=String.valueOf(model.get("contactname"));
-//				if(!ObjectUtil.isEmpty(contactname)&&!"null".equals(contactname)){
-//					param.setContactname(contactname);
-//				}
-//				String companyname=String.valueOf(model.get("companyname"));
-//				if(!ObjectUtil.isEmpty(companyname)&&!"null".equals(companyname)){
-//					param.setCompanyname(companyname);;
-//				}
-//				String phone=String.valueOf(model.get("phone"));
-//				if(!ObjectUtil.isEmpty(phone)&&!"null".equals(phone)){
-//					param.setPhone(phone);
-//				}
-//				Integer province=ObjectUtil.parseInt(String.valueOf(model.get("province")));
-//				if(province!=null&&province>0){
-//					param.setProvince(province);
-//				}
-//				Integer city=ObjectUtil.parseInt(String.valueOf(model.get("city")));
-//				if(city!=null&&city>0){
-//					param.setCity(city);
-//				}
-//				return param;
-//			}
-//		} catch (Exception e) {
-//			// TODO: handle exception
-//			logger.addError(this.getClass().getName(), e.getMessage()); 
-//		}
-//		return null;
-//		
-//	}
+	/**
+	 * 根据地区获取代理金额
+	 * @param province
+	 * @param city
+	 * @param district
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getBranchAreaPrice")
+	public String getBranchAreaPrice(String province,String city,String district) throws Exception {
+		ReturnModel rq = branchService.getBranchAreaPrice(ObjectUtil.parseInt(province) , ObjectUtil.parseInt(city), ObjectUtil.parseInt(district));
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	
 }

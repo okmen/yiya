@@ -1,4 +1,4 @@
-package com.bbyiya.pic.web.common;
+package com.bbyiya.pic.utils;
 
 import java.util.ArrayList;
 import java.util.List;

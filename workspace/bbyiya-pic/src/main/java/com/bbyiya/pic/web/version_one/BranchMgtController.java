@@ -4,14 +4,11 @@ import java.util.Date;
 
 
 
-
-
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.dao.EErrorsMapper;
@@ -19,13 +16,10 @@ import com.bbyiya.dao.UBranchinfotempMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.UBranchinfotemp;
 import com.bbyiya.pic.service.IPic_BranchMgtService;
-import com.bbyiya.pic.service.IPic_ProductService;
-import com.bbyiya.pic.web.common.Json2Objects;
-//import com.bbyiya.model.UUseraddress;
+import com.bbyiya.pic.utils.Json2Objects;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
-import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
 
 

@@ -19,8 +19,8 @@ import com.bbyiya.dao.UUsertesterwxMapper;
 import com.bbyiya.enums.LoginTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.ULoginlogs;
-import com.bbyiya.model.UUsertesterwx;
 import com.bbyiya.pic.service.IPic_UserMgtService;
+import com.bbyiya.pic.utils.WxPublicUtils;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.HttpRequestHelper;
 import com.bbyiya.utils.JsonUtil;
@@ -112,7 +112,7 @@ public class LoginController extends SSOController {
 	public String transferPage() throws Exception {
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			return "redirect:"+ ConfigUtil.getSingleValue("loginbackurl") ;//+ "?ticket=" + ((LoginSuccessResult) rqModel.getBasemodle()).getTicket();	
+			return "redirect:"+ ConfigUtil.getSingleValue("loginbackurl") ;
 		} else {
 			return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin&response_type=code&scope=snsapi_base#wechat_redirect" ;	
 		}		
@@ -127,47 +127,48 @@ public class LoginController extends SSOController {
 	 * @return
 	 * @throws Exception
 	 */
-	@ResponseBody
-	@RequestMapping(value = "/checkTesterCode")
-	public String checkLoginCode(String testcode) throws Exception {
-		ReturnModel rqModel = new ReturnModel();
-		String code = ConfigUtil.getSingleValue("testcode", "value");
-		int count = ObjectUtil.parseInt(ConfigUtil.getSingleValue("testcode", "count"));
-		Integer usCount = (Integer) RedisUtil.getObject("testCode_" + code);
-		if (usCount != null && usCount > count) {
-			rqModel.setStatu(ReturnStatus.SystemError);
-			rqModel.setStatusreson("不好意思，今天的邀请人数已经满了！");
-			return JsonUtil.objectToJsonStr(rqModel);
-		} else {
-			usCount = usCount == null ? 0 : usCount;
-		}
-		if (!code.equals(testcode)) {
-			rqModel.setStatu(ReturnStatus.SystemError);
-			rqModel.setStatusreson("邀请码错误！");
-			return JsonUtil.objectToJsonStr(rqModel);
-		}
-		LoginSuccessResult user = super.getLoginUser();
-		if (user != null && (user.getIsTester() == null || user.getIsTester() != 1)) {
-			UUsertesterwx tester = new UUsertesterwx();
-			tester.setUserid(user.getUserId());
-			tester.setCreatetime(new Date());
-			Integer countIndex = testMapper.getMaxSort();
-			tester.setSort((countIndex == null ? 0 : countIndex) + 1);
-			tester.setType(1);
-			tester.setStatus(1);
-			testMapper.insert(tester);
-			user.setIsTester(1);
-			// 重新设置用户的登录缓存信息
-			RedisUtil.setObject(super.getTicket(), user, 1800);
-			rqModel.setStatu(ReturnStatus.Success);
-			rqModel.setBasemodle(user);
-			// 邀请码数量缓存
-			RedisUtil.setObject("testCode_" + code, usCount + 1);
-		}
-		// loginService.otherLogin(param);
-		return JsonUtil.objectToJsonStr(rqModel);
-	}
+//	@ResponseBody
+//	@RequestMapping(value = "/checkTesterCode")
+//	public String checkLoginCode(String testcode) throws Exception {
+//		ReturnModel rqModel = new ReturnModel();
+//		String code = ConfigUtil.getSingleValue("testcode", "value");
+//		int count = ObjectUtil.parseInt(ConfigUtil.getSingleValue("testcode", "count"));
+//		Integer usCount = (Integer) RedisUtil.getObject("testCode_" + code);
+//		if (usCount != null && usCount > count) {
+//			rqModel.setStatu(ReturnStatus.SystemError);
+//			rqModel.setStatusreson("不好意思，今天的邀请人数已经满了！");
+//			return JsonUtil.objectToJsonStr(rqModel);
+//		} else {
+//			usCount = usCount == null ? 0 : usCount;
+//		}
+//		if (!code.equals(testcode)) {
+//			rqModel.setStatu(ReturnStatus.SystemError);
+//			rqModel.setStatusreson("邀请码错误！");
+//			return JsonUtil.objectToJsonStr(rqModel);
+//		}
+//		LoginSuccessResult user = super.getLoginUser();
+//		if (user != null && (user.getIsTester() == null || user.getIsTester() != 1)) {
+//			UUsertesterwx tester = new UUsertesterwx();
+//			tester.setUserid(user.getUserId());
+//			tester.setCreatetime(new Date());
+//			Integer countIndex = testMapper.getMaxSort();
+//			tester.setSort((countIndex == null ? 0 : countIndex) + 1);
+//			tester.setType(1);
+//			tester.setStatus(1);
+//			testMapper.insert(tester);
+//			user.setIsTester(1);
+//			// 重新设置用户的登录缓存信息
+//			RedisUtil.setObject(super.getTicket(), user, 1800);
+//			rqModel.setStatu(ReturnStatus.Success);
+//			rqModel.setBasemodle(user);
+//			// 邀请码数量缓存
+//			RedisUtil.setObject("testCode_" + code, usCount + 1);
+//		}
+//		// loginService.otherLogin(param);
+//		return JsonUtil.objectToJsonStr(rqModel);
+//	}
 
+	String access_token;
 	/**
 	 * 微信登录
 	 * 
@@ -189,7 +190,7 @@ public class LoginController extends SSOController {
 		ReturnModel rqModel = new ReturnModel();
 		if (model != null) {
 			String openid = String.valueOf(model.get("openid"));
-			String access_token = String.valueOf(model.get("access_token"));
+			access_token = String.valueOf(model.get("access_token"));
 
 			if (!ObjectUtil.isEmpty(openid) && !ObjectUtil.isEmpty(access_token) && !"null".equals(openid) && !"null".equals(access_token)) {
 
@@ -226,9 +227,11 @@ public class LoginController extends SSOController {
 		if (rqModel.getStatu().equals(ReturnStatus.Success)) {
 			return "redirect:" + ConfigUtil.getSingleValue("loginbackurl") ;//+ "?ticket=" + ((LoginSuccessResult) rqModel.getBasemodle()).getTicket();
 		} else {
-			return "/index";// "redirect:http://localhost:9191/";
+			return "/index";
 		}
 	}
+	
+
 
 	private void addLoginLogAndCookie(Object obj) {
 		try {
@@ -242,14 +245,14 @@ public class LoginController extends SSOController {
 				loginLogs.setNickname(user.getNickName()); 
 				loginLogs.setSourcetype(1);// 12photo
 				loginLogMapper.insert(loginLogs);
-				
-//				CookieUtils.addCookie( response, PHOTO_TOKEN, user.getTicket(),86400); 
 				CookieUtils.addCookieBySessionId(request, response,user.getTicket(),86400); 
+				WxPublicUtils.setAccessToken(user.getUserId(),access_token);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
 
 	}
+	
 
 }

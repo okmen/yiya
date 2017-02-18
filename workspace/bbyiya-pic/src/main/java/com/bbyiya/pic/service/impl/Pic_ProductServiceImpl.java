@@ -332,39 +332,54 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		return rq;
 	}
 	
+	private MyProductsResult getMyProductsResult(MyProductsResult myproduct,Long userId, Long productId){
+		if(myproduct==null){
+			myproduct =new MyProductsResult();
+			myproduct.setUserid(userId);
+			myproduct.setProductid(productId);
+			PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
+			if (product != null) {
+				myproduct.setDescription(product.getDescription());
+			}
+		}
+		List<MyProductsDetailsResult> imglist = new ArrayList<MyProductsDetailsResult>();
+		for (int i = 0; i < 12; i++) {
+			MyProductsDetailsResult dd = new MyProductsDetailsResult();
+			dd.setSort(i);
+			imglist.add(dd);
+		}
+		myproduct.setDetailslist(imglist);
+		return myproduct;
+	}
+	
 	public ReturnModel getMyProductByProductId(Long userId, Long productId) {
 		ReturnModel rq = new ReturnModel();
 		UUsers user = usersMapper.getUUsersByUserID(userId);
 		if (user != null) {
-//			PMyproducts productInfo = myMapper.getMyProductsByProductId(userId, productId, Integer.parseInt(MyProductStatusEnum.ok.toString()));
-			
-			MyProductsResult myproduct = myProductsDao.getMyProductResultByProductId(userId, productId, Integer.parseInt(MyProductStatusEnum.ok.toString()));
-			
-			if (myproduct != null&&myproduct.getUserid().longValue()==userId) {
+			//我的作品
+			MyProductsResult myproduct = myProductsDao.getMyProductResultByProductId(userId, productId, Integer.parseInt(MyProductStatusEnum.ok.toString()));	
+			if (myproduct != null && myproduct.getUserid().longValue() == userId) {
 				PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
 				if (product != null) {
 					myproduct.setDescription(product.getDescription());
 				}
-				List<MyProductsDetailsResult> arrayList =  mydetailDao.findMyProductDetailsResult(myproduct.getCartid());
+				List<MyProductsDetailsResult> arrayList = mydetailDao.findMyProductDetailsResult(myproduct.getCartid());
 				if (arrayList != null && arrayList.size() > 0) {
 					String base_code = userId + "-" + myproduct.getCartid();
 					int i = 1;
 					for (MyProductsDetailsResult dd : arrayList) {
-						dd.setPrintcode(base_code + "-" + String.format("%02d", dd.getSceneid()) + "-" + String.format("%02d", i));																										// 打印编号				
+						if(dd.getSceneid()!=null&&dd.getSceneid()>0){
+							dd.setPrintcode(base_code + "-" + String.format("%02d", dd.getSceneid()) + "-" + String.format("%02d", i)); // 打印编号								
+						}
 						i++;
 					}
 					myproduct.setDetailslist(arrayList);
+				} else {
+					myproduct=getMyProductsResult(myproduct,userId,productId);
 				}
 				rq.setBasemodle(myproduct);
 			}else {
-				myproduct=new MyProductsResult();
-				List<MyProductsDetailsResult> imglist=new ArrayList<MyProductsDetailsResult>();
-				for(int i=0;i<12;i++){
-					MyProductsDetailsResult dd=new MyProductsDetailsResult();
-					dd.setSort(i);
-					imglist.add(dd);
-				}
-				myproduct.setDetailslist(imglist); 
+				myproduct=getMyProductsResult(myproduct,userId,productId);
 				rq.setBasemodle(myproduct);
 			}
 		}
@@ -372,6 +387,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		return rq;
 	}
 
+	
+	
 	/**
 	 * 前端 作品详情 （分享页 ）
 	 * 

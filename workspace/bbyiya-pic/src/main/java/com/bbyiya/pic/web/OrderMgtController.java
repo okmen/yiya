@@ -22,6 +22,7 @@ import com.bbyiya.pic.vo.order.OrderPhotoParam;
 import com.bbyiya.pic.vo.order.SaveOrderPhotoParam;
 import com.bbyiya.pic.vo.order.SubmitOrderProductParam;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -202,4 +203,32 @@ public class OrderMgtController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
+	/**
+	 * 权限验证
+	 * @param code
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/checkCode")
+	public String checkCode(String code) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			String codeNum=ConfigUtil.getSingleValue("testcodeNum");
+			if(codeNum.equals(code)){
+				rq.setStatu(ReturnStatus.Success);
+				rq.setStatusreson("验证成功"); 
+//				user.setIsTester(1);
+//				rq.setBasemodle(user); 
+			}else{
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson("验证失败"); 
+			}
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 }

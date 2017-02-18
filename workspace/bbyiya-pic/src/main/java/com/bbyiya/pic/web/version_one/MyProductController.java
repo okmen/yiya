@@ -75,9 +75,7 @@ public class MyProductController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			MyProductParam param = Json2Objects.getParam_MyProductParam(myproductJson);// (MyProductParam)
-																						// JsonUtil.jsonStrToObject(myproductJson,
-																						// MyProductParam.class);
+			MyProductParam param = Json2Objects.getParam_MyProductParam(myproductJson);
 			if (param != null) {
 				if (param.getDetails() != null && param.getDetails().size() > 12) {
 					rq.setStatu(ReturnStatus.ParamError);
@@ -178,6 +176,7 @@ public class MyProductController extends SSOController {
 				RedisUtil.setObject(key, rq, 3600);
 			}
 		}
+		//‰Ø¿¿¡ø
 		myproductCount(cartId);
 		return JsonUtil.objectToJsonStr(rq);
 	}

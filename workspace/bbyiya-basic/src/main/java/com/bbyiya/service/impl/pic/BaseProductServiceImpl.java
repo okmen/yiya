@@ -79,7 +79,7 @@ public class BaseProductServiceImpl implements IBaseProductService {
 	public ProductResult getProductResult(Long productId) {
 		ProductResult result = productsMapper.getProductResultByProductId(productId);
 		List<PProductStyleResult> styleList = styleMapper.findStylesResultByProductId(productId);
-		if (styleList != null) {
+		if (result!=null&& styleList != null) {
 			for (PProductStyleResult style : styleList) {
 				//款式介绍图集
 				List<PProductstyledes> desImgs = styleDesMapper.findImgsByStyleId(style.getStyleId());

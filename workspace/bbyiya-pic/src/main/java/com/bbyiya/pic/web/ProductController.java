@@ -20,6 +20,7 @@ import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.product.ProductResult;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
 
@@ -67,7 +68,15 @@ public class ProductController extends SSOController {
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			rq.setStatu(ReturnStatus.Success);
-			rq.setBasemodle(productService.findProductList(uid));   
+			String key="productlistAll";
+			List<ProductResult> list=(List<ProductResult>)RedisUtil.getObject(key);
+			if(list==null||list.size()<=0){
+				list=productService.findProductList(uid);
+				if(list!=null&&list.size()>0){
+					RedisUtil.setObject(key, list, 600); 
+				}
+			}
+			rq.setBasemodle(list);    
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("µÇÂ¼¹ýÆÚ");

@@ -1,4 +1,4 @@
-package com.bbyiya.api.web;
+package com.bbyiya.pic.web.common;
 
 import net.sf.json.JSONObject;
 
@@ -74,15 +74,6 @@ public class SendMsgController {
 			rq.setStatu(ReturnStatus.SystemError);
 			rq.setStatusreson(result); 
 		}
-		return JsonUtil.objectToJsonStr(rq); 
-    }
-	
-	@ResponseBody
-    @RequestMapping(value = "/addItems")
-    public String add() throws MapperException
-    {
-		ReturnModel rq=new ReturnModel();
-		SendSMSByMobile.addTemp_yunpian();
 		return JsonUtil.objectToJsonStr(rq); 
     }
 }

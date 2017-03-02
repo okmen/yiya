@@ -3,7 +3,6 @@ package com.bbyiya.dao;
 import java.util.List;
 
 import com.bbyiya.model.PProducts;
-import com.bbyiya.vo.product.ProductBaseVo;
 import com.bbyiya.vo.product.ProductResult;
 import com.bbyiya.vo.product.ProductSampleVo;
 

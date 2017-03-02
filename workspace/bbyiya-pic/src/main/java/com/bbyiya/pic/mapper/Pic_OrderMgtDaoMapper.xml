@@ -40,6 +40,12 @@
     <if test="orderNo != null" >
         AND UserOrderId LIKE  CONCAT('%', #{orderNo,jdbcType=VARCHAR},'%' )  
     </if>
+    <if test="startTimeStr != null" ><!--  #{startTime,jdbcType=TIMESTAMP}  -->
+        AND PayTime &gt;= #{startTimeStr,jdbcType=VARCHAR}
+    </if>
+    <if test="endTimeStr != null" ><!-- #{endTime,jdbcType=TIMESTAMP}  -->
+        AND PayTime &lt;= #{endTimeStr,jdbcType=VARCHAR}
+    </if>
     <if test="status != null" >
         AND Status = #{status,jdbcType=INTEGER}
     </if>

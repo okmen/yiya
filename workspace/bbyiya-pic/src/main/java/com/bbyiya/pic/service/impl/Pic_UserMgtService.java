@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.common.enums.SendMsgEnums;
+import com.bbyiya.common.vo.ResultMsg;
 import com.bbyiya.dao.UOtherloginMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.dao.UUsertesterwxMapper;
@@ -21,6 +23,8 @@ import com.bbyiya.service.IUserLoginService;
 //import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
+import com.bbyiya.utils.SendSMSByMobile;
+import com.bbyiya.utils.encrypt.MD5Encrypt;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.vo.user.OtherLoginParam;
@@ -122,22 +126,6 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 				
 				LoginSuccessResult result = baseLoginService.loginSuccess(userModel);
 				
-//				//TODO 加入到测试用户
-//				if(!ObjectUtil.isEmpty(param.getNickName())&&param.getNickName().contains(ConfigUtil.getSingleValue("testerNickname"))){
-//					//测试账号
-//					int count=testerMapper.getMaxSort(); 
-//					if(count<1000){
-//						count+=1;
-//						UUsertesterwx tester=new UUsertesterwx();
-//						tester.setUserid(userModel.getUserid());
-//						tester.setSort(count);
-//						tester.setType(1);
-//						tester.setStatus(1);
-//						tester.setCreatetime(new Date());
-//						testerMapper.insert(tester);
-//						result.setIsTester(1); 
-//					}
-//				}
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("注册成功");
 				rq.setBasemodle(result);
@@ -169,5 +157,39 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 			rq.setStatusreson("参数有误");
 		}
 		return rq;
+	}
+	
+	
+	public ReturnModel setPwd(Long userId,String pwd,String phone,String vcode){
+		ReturnModel rq=new ReturnModel();
+		if(ObjectUtil.isEmpty(pwd)){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("密码不能为空");
+			return rq;
+		}
+		ResultMsg msgResult= SendSMSByMobile.validateCode(phone, vcode, SendMsgEnums.register);
+		if(msgResult.getStatus()==1){
+			UUsers userPhone=userDao.getUUsersByPhone(phone);
+			if(userPhone!=null&&userPhone.getUserid().longValue()!=userId){
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson("该手机号已经绑定其他用户！");
+				return rq;
+			}
+			UUsers user= userDao.getUUsersByUserID(userId);
+			if(user!=null){
+				user.setMobilephone(phone);
+				user.setStatus(Integer.parseInt(UserStatusEnum.ok.toString())); 
+				user.setPassword(MD5Encrypt.encrypt(pwd)); 
+				userDao.updateByPrimaryKey(user);
+				LoginSuccessResult result = baseLoginService.getLoginSuccessResult_Common(user);
+				rq.setStatu(ReturnStatus.Success); 
+				rq.setBasemodle(result); 
+			}else {
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson("系统错误");
+			}
+		}
+		return rq;
+		
 	}
 }

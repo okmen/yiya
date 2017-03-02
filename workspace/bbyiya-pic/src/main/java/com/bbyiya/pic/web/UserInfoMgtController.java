@@ -5,19 +5,27 @@ import javax.annotation.Resource;
 
 
 
+
+
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bbyiya.baseUtils.CookieUtils;
 import com.bbyiya.dao.EErrorsMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.UUseraddress;
+import com.bbyiya.pic.service.IPic_UserMgtService;
 import com.bbyiya.pic.utils.Json2Objects;
 import com.bbyiya.service.pic.IBaseUserAddressService;
 import com.bbyiya.utils.JsonUtil;
+import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
@@ -34,6 +42,11 @@ public class UserInfoMgtController extends SSOController {
 	private UUseraddressMapper userAddressMapper;
 	@Autowired
 	private EErrorsMapper logger;
+	/**
+	 * 登陆、注册 service
+	 */
+	@Resource(name = "pic_userMgtService")
+	private IPic_UserMgtService loginService;
 	/**
 	 * A02 新增/编辑 收货地址
 	 * 
@@ -88,5 +101,33 @@ public class UserInfoMgtController extends SSOController {
 	}
 	
 	
+	/**
+	 * 绑定手机
+	 * @param vcode
+	 * @param phone
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/setPwd")
+	public String setPwd(String vcode ,String phone,String pwd) throws Exception {
+		LoginSuccessResult user = super.getLoginUser();
+		ReturnModel rq = new ReturnModel();
+		if (user != null) {
+			rq=loginService.setPwd(user.getUserId(), pwd, phone, vcode);
+			if(rq.getStatu().equals(ReturnStatus.Success)){
+				String ticket= CookieUtils.getCookieBySessionId(request);
+				if(!ObjectUtil.isEmpty(ticket)){
+					 RedisUtil.setObject(ticket, rq.getBasemodle(), 86400); 
+					 rq.setStatusreson("设置成功！");
+					 return JsonUtil.objectToJsonStr(rq); 
+				}
+			}
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	
 }

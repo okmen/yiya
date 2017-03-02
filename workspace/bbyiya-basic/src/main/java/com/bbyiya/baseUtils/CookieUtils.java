@@ -65,7 +65,7 @@ public class CookieUtils {
 	}
 	
 	/**
-	 * 
+	 * 通过session获取ticket
 	 * @param request
 	 * @return
 	 */

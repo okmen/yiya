@@ -72,7 +72,15 @@ public class Json2Objects {
 			param.setTitle(String.valueOf(model.get("title")));
 			param.setAuthor(String.valueOf(model.get("author")));
 			param.setCartid(ObjectUtil.parseLong(String.valueOf(model.get("cartid"))));
-			JSONArray details = new JSONArray().fromObject(String.valueOf(model.get("details")));
+			String detailString=String.valueOf(model.get("details"));
+			if(ObjectUtil.isEmpty(detailString)||detailString.equals("null"))
+				return param;
+			JSONArray details=null;
+			try {
+				 details = new JSONArray().fromObject(detailString);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
 			if(details!=null&&details.size()>0){
 				List<PMyproductdetails> detailsList=new ArrayList<PMyproductdetails>();
 				for (int i = 0; i < details.size(); i++) {

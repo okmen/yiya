@@ -2,16 +2,16 @@ package com.bbyiya.enums.user;
 
 public enum UserIdentityEnums {
 	/**
-     * 分销商/影楼
+     * 代理商
      */
-    branch(2),
+    agent(2),
     /**
-     * 顶级分销人
+     * 影楼
      */
-    topUser(4),
+    branch(4),
     
     /**
-     * 业务员
+     * 影楼分销人员
      */
     salesman(8)
     ;

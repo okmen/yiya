@@ -11,4 +11,13 @@ public interface IPic_UserMgtService {
 	 * @return
 	 */
 	ReturnModel otherLogin(OtherLoginParam param);
+	/**
+	 * °ó¶¨ÊÖ»úºÅ
+	 * @param userId
+	 * @param pwd
+	 * @param phone
+	 * @param vcode
+	 * @return
+	 */
+	ReturnModel setPwd(Long userId,String pwd,String phone,String vcode);
 }

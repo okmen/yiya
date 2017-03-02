@@ -196,7 +196,7 @@ public class UserLoginService implements IUserLoginService {
 	}
 
 	
-	private LoginSuccessResult getLoginSuccessResult_Common(UUsers user) {
+	public LoginSuccessResult getLoginSuccessResult_Common(UUsers user) {
 		LoginSuccessResult result = new LoginSuccessResult();
 		result.setUserId(user.getUserid());
 		result.setIdentity(user.getIdentity());

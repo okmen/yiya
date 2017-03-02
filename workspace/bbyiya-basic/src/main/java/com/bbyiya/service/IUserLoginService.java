@@ -43,6 +43,12 @@ public interface IUserLoginService {
 	 * @return
 	 */
 	LoginSuccessResult loginSuccess(UUsers user) ;
+	/**
+	 * 返回登录信息（不做缓存）
+	 * @param user
+	 * @return
+	 */
+	LoginSuccessResult getLoginSuccessResult_Common(UUsers user);
 	
 	
 }

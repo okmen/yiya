@@ -1,6 +1,21 @@
 package com.bbyiya.pic.utils;
 
+import java.security.DigestException;
+import java.util.HashMap;
+
+import java.util.Map;
+
+
+import net.sf.json.JSONObject;
+
+import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.utils.HttpRequestHelper;
+import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
+import com.bbyiya.utils.encrypt.Sha1Encrypt;
+import com.bbyiya.utils.pay.WxPayConfig;
+import com.bbyiya.utils.pay.WxPayUtils;
+import com.bbyiya.vo.ReturnModel;
 /**
  * 微信公众号 全局文件
  * @author Administrator
@@ -33,4 +48,48 @@ public class WxPublicUtils {
 		return RedisUtil.getString(aCCESS_TOKEN_BASE + userId);
 	}
 	
+	
+	public static ReturnModel getWxConfig(String accessToken,String webUrl){
+		ReturnModel rqModel=new ReturnModel();
+		String url="https://api.weixin.qq.com/cgi-bin/ticket/getticket";
+		String postResult= HttpRequestHelper.sendPost(url, "access_token="+accessToken+"&type=jsapi");
+		JSONObject model = JSONObject.fromObject(postResult);
+		if(model!=null) {
+			int errCode=ObjectUtil.parseInt(String.valueOf(model.get("errcode")));
+			String ticket=String.valueOf(model.get("ticket"));
+			if(errCode==0&&!ObjectUtil.isEmpty(ticket)) {
+				Map<String, Object> packageParams = new HashMap<String, Object>();
+				packageParams.put("nonce_str", WxPayUtils.genNonceStr());// 随机字符串
+				packageParams.put("timestamp", WxPayUtils.genTimeStamp());
+				packageParams.put("jsapi_ticket", ticket);
+				packageParams.put("url", webUrl);
+				try {
+					String sign= Sha1Encrypt.SHA1(packageParams);
+					Map<String, Object> result=new HashMap<String, Object>();
+					result.put("appId", WxPayConfig.APPID);
+					result.put("timestamp", WxPayUtils.genTimeStamp());
+					result.put("nonceStr", WxPayUtils.genNonceStr());
+					result.put("signature", sign);
+					result.put("jsApiList",null);
+					rqModel.setStatu(ReturnStatus.Success);
+					rqModel.setBasemodle(result);
+					
+				} catch (DigestException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					rqModel.setStatu(ReturnStatus.SystemError);
+					rqModel.setBasemodle(e);
+				}
+			}else {
+				rqModel.setStatu(ReturnStatus.SystemError);
+				rqModel.setStatusreson("ticket获取失败");
+				rqModel.setBasemodle(postResult);
+			}
+		}else {
+			rqModel.setStatu(ReturnStatus.SystemError);
+			rqModel.setStatusreson("ticket获取失败");
+			rqModel.setBasemodle(postResult);
+		}
+		return rqModel;
+	}
 }

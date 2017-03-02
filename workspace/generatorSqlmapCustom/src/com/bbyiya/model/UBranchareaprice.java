@@ -1,5 +1,6 @@
 package com.bbyiya.model;
 
+import java.math.BigDecimal;
 
 public class UBranchareaprice {
     private Integer code;
@@ -8,7 +9,7 @@ public class UBranchareaprice {
 
     private Integer step;
 
-    private Double price;
+    private BigDecimal price;
 
     public Integer getCode() {
         return code;
@@ -34,11 +35,11 @@ public class UBranchareaprice {
         this.step = step;
     }
 
-    public Double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 }

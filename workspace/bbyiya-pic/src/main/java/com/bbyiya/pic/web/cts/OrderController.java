@@ -1,6 +1,7 @@
 package com.bbyiya.pic.web.cts;
 
 import java.util.Calendar;
+import java.util.Date;
 //import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -39,11 +40,30 @@ public class OrderController  extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/findOrderlist")
-	public String findOrderlist(String myproductJson,String isDownload,String fileDir) throws Exception {
+	public String findOrderlist(String myproductJson,String isDownload,String fileDir,int daycount) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
+			Calendar c1 = new GregorianCalendar();
+			Date nowtime=new Date();
+			c1.setTime(nowtime);
+			c1.set(Calendar.HOUR_OF_DAY, 14);
+			c1.set(Calendar.MINUTE, 0);
+			c1.set(Calendar.SECOND, 0);
+			Calendar c2 = new GregorianCalendar();
+			c2.setTime(nowtime);
+			c2.set(Calendar.HOUR_OF_DAY, 14);
+			c2.set(Calendar.MINUTE, 0);
+			c2.set(Calendar.SECOND, 0);
+			c2.set(Calendar.DATE,daycount); 
+			
 			SearchOrderParam param= (SearchOrderParam)JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
+			param.setStartTime(c2.getTime());
+			param.setEndTime(c1.getTime()); 
+			param.setStartTimeStr(DateUtil.getTimeStr(param.getStartTime(), "yyyy-MM-dd HH:mm:ss"));
+			param.setEndTimeStr(DateUtil.getTimeStr(param.getEndTime(), "yyyy-MM-dd HH:mm:ss")); 
+			System.out.println(param.getStartTimeStr() );
+			System.out.println(param.getEndTimeStr() );
 			rq=orderService.find_orderList(param);
 			if(ObjectUtil.parseInt(isDownload)>0){
 				if(ObjectUtil.isEmpty(fileDir)){
@@ -62,6 +82,19 @@ public class OrderController  extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+//	@ResponseBody
+//	@RequestMapping(value = "/aa")
+//	public String findOrderlist(String fileDir) throws Exception {
+//		ReturnModel rq = new ReturnModel();
+//		LoginSuccessResult user = super.getLoginUser();
+//		if (user != null) {
+//			FileDownloadUtils.setDPI(fileDir);
+//		} else {
+//			rq.setStatu(ReturnStatus.LoginError);
+//			rq.setStatusreson("登录过期");
+//		}
+//		return JsonUtil.objectToJsonStr(rq);
+//	}
 
 	//TODO
 	public void downloadImg(List<UserOrderResultVO> orderlist,String basePath){
@@ -85,7 +118,6 @@ public class OrderController  extends SSOController {
 			}
 			String file_temp=DateUtil.getTimeStr(c2.getTime(), "MMdd");
 			
-			
 			//创建文件夹
 			FileUtils.isDirExists(basePath+"\\"+file_temp);
 			FileUtils.isDirExists(basePath+"\\"+file_temp+"\\"+order.getUserorderid());;
@@ -96,6 +128,8 @@ public class OrderController  extends SSOController {
 				if(!FileUtils.isFileExists(fileFull_name)){
 					try {
 						FileDownloadUtils.download(detail.getImageurl(),fileFull_name);
+						FileDownloadUtils.setDPI(fileFull_name);
+//						System.out.println(fileFull_name); 
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -109,16 +143,6 @@ public class OrderController  extends SSOController {
 
 	
 
-	@ResponseBody
-	@RequestMapping(value = "/download")
-	public String download(String fileDir,String fileName, String urlStr) throws Exception {
-		ReturnModel rq = new ReturnModel();
-		String basePath=fileDir;
-		String pathString=basePath+fileName;//DateUtil.getTimeStr(new Date(), "yyyyMMddHHmmss")+".jpg";
-		FileDownloadUtils.download(urlStr,pathString);
-		rq.setStatu(ReturnStatus.Success);
-		return JsonUtil.objectToJsonStr(rq);
-	}
-	
+
 	
 }

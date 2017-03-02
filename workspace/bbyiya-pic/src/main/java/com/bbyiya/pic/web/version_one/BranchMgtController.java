@@ -44,6 +44,7 @@ public class BranchMgtController extends SSOController {
 	public String companySubmit( String companyJson) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		try {
+			
 			UBranchinfotemp model= Json2Objects.getParam_UBranchinfotemp(companyJson);// (UBranchinfotemp)JsonUtil.jsonStrToObject(companyJson, UBranchinfotemp.class);
 			if(model!=null){
 				if(ObjectUtil.isEmpty(model.getPhone())){

@@ -27,7 +27,6 @@ import com.bbyiya.model.PScenebacks;
 import com.bbyiya.model.PStylebackgrounds;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
 import com.bbyiya.service.pic.IBaseProductService;
-import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.product.PProductStyleResult;
 import com.bbyiya.vo.product.ProductResult;
@@ -58,20 +57,20 @@ public class BaseProductServiceImpl implements IBaseProductService {
 
 	public List<ProductResult> findProductList(Long userId) {
 		List<ProductResult> results = productsMapper.findProductResultByBranchUserId(userId);
-		if (results != null && results.size() > 0) {
-			List<Map<String, String>> imgList = ConfigUtil.getMaplist("productDesimgs");
-			if (imgList != null && imgList.size() > 0) {
-				for (ProductResult pro : results) {
-					List<String> imgs = new ArrayList<String>();
-					for (Map<String, String> map : imgList) {
-						if (String.valueOf(pro.getProductId()).equals(map.get("productId"))) {
-							imgs.add(map.get("imageUrl"));
-						}
-					}
-					pro.setDesImgs(imgs);
-				}
-			}
-		}
+//		if (results != null && results.size() > 0) {
+//			List<Map<String, String>> imgList = ConfigUtil.getMaplist("productDesimgs");
+//			if (imgList != null && imgList.size() > 0) {
+//				for (ProductResult pro : results) {
+//					List<String> imgs = new ArrayList<String>();
+//					for (Map<String, String> map : imgList) {
+//						if (String.valueOf(pro.getProductId()).equals(map.get("productId"))) {
+//							imgs.add(map.get("imageUrl"));
+//						}
+//					}
+//					pro.setDesImgs(imgs);
+//				}
+//			}
+//		}
 		return results;
 	}
 

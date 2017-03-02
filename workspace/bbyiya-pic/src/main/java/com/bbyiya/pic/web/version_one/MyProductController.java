@@ -168,12 +168,12 @@ public class MyProductController extends SSOController {
 	@RequestMapping(value = "/sharedetails")
 	public String sharedetails(@RequestParam(required = false, defaultValue = "0") long cartId) throws Exception {
 		ReturnModel rq = new ReturnModel();
-		String key = "shareurl02142-cartid-" + cartId;
+		String key = "shareurl02201-cartid-" + cartId;
 		rq = (ReturnModel) RedisUtil.getObject(key);
 		if (rq == null || !rq.getStatu().equals(ReturnStatus.Success)) {
 			rq = proService.getMyProductInfo(cartId);
 			if (ReturnStatus.Success.equals(rq.getStatu())) {
-				RedisUtil.setObject(key, rq, 3600);
+				RedisUtil.setObject(key, rq, 900);
 			}
 		}
 		//浏览量
@@ -223,13 +223,18 @@ public class MyProductController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
+	
+	/**
+	 * 
+	 */
+	private static String cART_REDIS_BASE="yiya_myproduct21070217";
 	/**
 	 * 记录作品的浏览量
 	 * @param cartId
 	 */
 	public void myproductCount(Long cartId) {
-		String keyName = "yiya_myproduct21070217";
-		Map<Long, Integer> map = (Map<Long, Integer>) RedisUtil.getObject(keyName);
+		
+		Map<Long, Integer> map = (Map<Long, Integer>) RedisUtil.getObject(cART_REDIS_BASE);
 		if (map == null) {
 			map = new HashMap<Long, Integer>();
 		}
@@ -246,6 +251,26 @@ public class MyProductController extends SSOController {
 			count=1;
 		}
 		map.put(cartId, count);
-		RedisUtil.setObject(keyName, map); 
+		RedisUtil.setObject(cART_REDIS_BASE, map); 
+	}
+	
+	
+	/**
+	 * 作品浏览量
+	 * @param cartId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getmyProductShowsCount")
+	public int getmyProductShowsCount(@RequestParam(required = false, defaultValue = "0") long cartId) throws Exception {
+//		String keyName = "yiya_myproduct21070217";
+		Map<Long, Integer> map = (Map<Long, Integer>) RedisUtil.getObject(cART_REDIS_BASE);
+		if(map!=null){
+			if(map.containsKey(cartId)){
+				return map.get(cartId);
+			}
+		}
+		return 0;
 	}
 }

@@ -168,7 +168,7 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 			return rq;
 		}
 		ResultMsg msgResult= SendSMSByMobile.validateCode(phone, vcode, SendMsgEnums.register);
-		if(msgResult.getStatus()==1){
+		if(msgResult.getStatus()==1) {
 			UUsers userPhone=userDao.getUUsersByPhone(phone);
 			if(userPhone!=null&&userPhone.getUserid().longValue()!=userId){
 				rq.setStatu(ReturnStatus.SystemError);
@@ -188,6 +188,9 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 				rq.setStatu(ReturnStatus.SystemError);
 				rq.setStatusreson("ÏµÍ³´íÎó");
 			}
+		}else {
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson(msgResult.getMsg()); 
 		}
 		return rq;
 		

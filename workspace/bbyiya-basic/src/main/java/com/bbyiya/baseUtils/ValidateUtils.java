@@ -18,6 +18,7 @@ public class ValidateUtils {
 	 * @return
 	 */
 	public static boolean isIdentity(Long userIdentity,UserIdentityEnums type){
+		userIdentity=userIdentity==null?0:userIdentity;
 		long b=ObjectUtil.parseLong(type.toString());
 		return b==(userIdentity&b);
 	}

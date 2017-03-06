@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.RAreaplansagentpriceMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.RAreaplansagentprice" >
+    <id column="AreaId" property="areaid" jdbcType="INTEGER" />
+    <result column="Step" property="step" jdbcType="INTEGER" />
+    <result column="AgentAmount" property="agentamount" jdbcType="DECIMAL" />
+    <result column="PrepayAmount" property="prepayamount" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    AreaId, Step, AgentAmount, PrepayAmount
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from R_AreaPlansAgentPrice
+    where AreaId = #{areaid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from R_AreaPlansAgentPrice
+    where AreaId = #{areaid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.RAreaplansagentprice" >
+    insert into R_AreaPlansAgentPrice (AreaId, Step, AgentAmount, 
+      PrepayAmount)
+    values (#{areaid,jdbcType=INTEGER}, #{step,jdbcType=INTEGER}, #{agentamount,jdbcType=DECIMAL}, 
+      #{prepayamount,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertResultId" useGeneratedKeys="true" keyProperty="AreaId" parameterType="com.bbyiya.model.RAreaplansagentprice" >
+    insert into R_AreaPlansAgentPrice (AreaId, Step, AgentAmount, 
+      PrepayAmount)
+    values (#{areaid,jdbcType=INTEGER}, #{step,jdbcType=INTEGER}, #{agentamount,jdbcType=DECIMAL}, 
+      #{prepayamount,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.RAreaplansagentprice" >
+    insert into R_AreaPlansAgentPrice
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="areaid != null" >
+        AreaId,
+      </if>
+      <if test="step != null" >
+        Step,
+      </if>
+      <if test="agentamount != null" >
+        AgentAmount,
+      </if>
+      <if test="prepayamount != null" >
+        PrepayAmount,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="areaid != null" >
+        #{areaid,jdbcType=INTEGER},
+      </if>
+      <if test="step != null" >
+        #{step,jdbcType=INTEGER},
+      </if>
+      <if test="agentamount != null" >
+        #{agentamount,jdbcType=DECIMAL},
+      </if>
+      <if test="prepayamount != null" >
+        #{prepayamount,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.RAreaplansagentprice" >
+    update R_AreaPlansAgentPrice
+    <set >
+      <if test="step != null" >
+        Step = #{step,jdbcType=INTEGER},
+      </if>
+      <if test="agentamount != null" >
+        AgentAmount = #{agentamount,jdbcType=DECIMAL},
+      </if>
+      <if test="prepayamount != null" >
+        PrepayAmount = #{prepayamount,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where AreaId = #{areaid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.RAreaplansagentprice" >
+    update R_AreaPlansAgentPrice
+    set Step = #{step,jdbcType=INTEGER},
+      AgentAmount = #{agentamount,jdbcType=DECIMAL},
+      PrepayAmount = #{prepayamount,jdbcType=DECIMAL}
+    where AreaId = #{areaid,jdbcType=INTEGER}
+  </update>
+</mapper>

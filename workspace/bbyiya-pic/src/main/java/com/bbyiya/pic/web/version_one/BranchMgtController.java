@@ -4,6 +4,10 @@ import java.util.Date;
 
 
 
+
+
+
+
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +18,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bbyiya.dao.EErrorsMapper;
 import com.bbyiya.dao.UBranchinfotempMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.user.UserStatusEnum;
+import com.bbyiya.model.UAgentapply;
+import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UBranchinfotemp;
 import com.bbyiya.pic.service.IPic_BranchMgtService;
 import com.bbyiya.pic.utils.Json2Objects;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
 
 
@@ -96,6 +104,99 @@ public class BranchMgtController extends SSOController {
 	@RequestMapping(value = "/getBranchAreaPrice")
 	public String getBranchAreaPrice(String province,String city,String district) throws Exception {
 		ReturnModel rq = branchService.getBranchAreaPrice(ObjectUtil.parseInt(province) , ObjectUtil.parseInt(city), ObjectUtil.parseInt(district));
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	
+	/**
+	 *  代理商申请
+	 * @param agentJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/agentApply")
+	public String agentApply(String agentJson) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(user.getStatus()!=null&&user.getStatus().intValue()==Integer.parseInt(UserStatusEnum.ok.toString())){
+				try {
+					UAgentapply applyInfo=(UAgentapply)JsonUtil.jsonStrToObject(agentJson, UAgentapply.class);
+					rq =branchService.applyAgent(user.getUserId(), applyInfo);
+				} catch (Exception e) {
+					// TODO: handle exception
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("参数有误");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+			}else {
+				rq.setStatu(ReturnStatus.LoginError_2);
+				rq.setStatusreson("未完成注册");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 *  分店申请
+	 * @param agentJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/branchApply")
+	public String branchApply(String branchJson) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(user.getStatus()!=null&&user.getStatus().intValue()==Integer.parseInt(UserStatusEnum.ok.toString())){
+				try {
+					UBranches applyInfo=(UBranches)JsonUtil.jsonStrToObject(branchJson, UBranches.class);
+					rq =branchService.applyBranch(user.getUserId(), applyInfo);
+				} catch (Exception e) {
+					// TODO: handle exception
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("参数有误");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+			}else {
+				rq.setStatu(ReturnStatus.LoginError_2);
+				rq.setStatusreson("未完成注册");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 获取代理单元（根据县区判断代理单元）
+	 * @param areaCode
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getAgentAreas")
+	public String getAgentAreas(Integer areaCode) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=branchService.getAgentArea(areaCode);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	

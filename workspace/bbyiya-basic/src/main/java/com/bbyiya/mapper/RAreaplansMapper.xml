@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.RAreaplansMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.RAreaplans" >
+    <id column="AreaCode" property="areacode" jdbcType="INTEGER" />
+    <result column="AreaName" property="areaname" jdbcType="VARCHAR" />
+    <result column="AreaId" property="areaid" jdbcType="INTEGER" />
+    <result column="IsAgent" property="isagent" jdbcType="INTEGER" />
+    <result column="AgentUserId" property="agentuserid" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    AreaCode, AreaName, AreaId, IsAgent, AgentUserId
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from R_Areaplans
+    where AreaCode = #{areacode,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from R_Areaplans
+    where AreaCode = #{areacode,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.RAreaplans" >
+    insert into R_Areaplans (AreaCode, AreaName, AreaId, 
+      IsAgent, AgentUserId)
+    values (#{areacode,jdbcType=INTEGER}, #{areaname,jdbcType=VARCHAR}, #{areaid,jdbcType=INTEGER}, 
+      #{isagent,jdbcType=INTEGER}, #{agentuserid,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.RAreaplans" >
+    insert into R_Areaplans
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="areacode != null" >
+        AreaCode,
+      </if>
+      <if test="areaname != null" >
+        AreaName,
+      </if>
+      <if test="areaid != null" >
+        AreaId,
+      </if>
+      <if test="isagent != null" >
+        IsAgent,
+      </if>
+      <if test="agentuserid != null" >
+        AgentUserId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="areacode != null" >
+        #{areacode,jdbcType=INTEGER},
+      </if>
+      <if test="areaname != null" >
+        #{areaname,jdbcType=VARCHAR},
+      </if>
+      <if test="areaid != null" >
+        #{areaid,jdbcType=INTEGER},
+      </if>
+      <if test="isagent != null" >
+        #{isagent,jdbcType=INTEGER},
+      </if>
+      <if test="agentuserid != null" >
+        #{agentuserid,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.RAreaplans" >
+    update R_Areaplans
+    <set >
+      <if test="areaname != null" >
+        AreaName = #{areaname,jdbcType=VARCHAR},
+      </if>
+      <if test="areaid != null" >
+        AreaId = #{areaid,jdbcType=INTEGER},
+      </if>
+      <if test="isagent != null" >
+        IsAgent = #{isagent,jdbcType=INTEGER},
+      </if>
+      <if test="agentuserid != null" >
+        AgentUserId = #{agentuserid,jdbcType=BIGINT},
+      </if>
+    </set>
+    where AreaCode = #{areacode,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.RAreaplans" >
+    update R_Areaplans
+    set AreaName = #{areaname,jdbcType=VARCHAR},
+      AreaId = #{areaid,jdbcType=INTEGER},
+      IsAgent = #{isagent,jdbcType=INTEGER},
+      AgentUserId = #{agentuserid,jdbcType=BIGINT}
+    where AreaCode = #{areacode,jdbcType=INTEGER}
+  </update>
+</mapper>

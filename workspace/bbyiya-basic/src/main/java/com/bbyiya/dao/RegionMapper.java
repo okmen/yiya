@@ -16,6 +16,18 @@ public interface RegionMapper {
 	 */
     RProvince getProvinceByCode(Integer code);
     /**
+     * 查找市
+     * @param code
+     * @return
+     */
+    RCity getCityByCode(Integer code);
+    /**
+     * 查找区县
+     * @param code
+     * @return
+     */
+    RAreas getAreaByCode(Integer code);
+    /**
      * 获取所有省
      * @return
      */

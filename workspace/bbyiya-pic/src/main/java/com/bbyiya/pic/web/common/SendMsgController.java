@@ -40,7 +40,7 @@ public class SendMsgController {
 		if(!ObjectUtil.isEmpty(type)){
 			if(codeType==(Integer.parseInt(SendMsgEnums.register.toString()))){
 				UUsers user= userDao.getUUsersByPhone(phone);
-				if(user!=null&&user.getStatus()!=null&&user.getStatus().intValue()!=Integer.parseInt(UserStatusEnum.ok.toString())){
+				if(user!=null&&user.getStatus()!=null&&user.getStatus().intValue()==Integer.parseInt(UserStatusEnum.ok.toString())){
 					rq.setStatu(ReturnStatus.VcodeError_3); 
 					rq.setStatusreson("手机号已经注册！");
 					return JsonUtil.objectToJsonStr(rq); 

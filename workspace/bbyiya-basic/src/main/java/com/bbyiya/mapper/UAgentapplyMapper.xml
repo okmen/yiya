@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.UAgentapplyMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.UAgentapply" >
+    <id column="AgentUserId" property="agentuserid" jdbcType="BIGINT" />
+    <result column="AgentCompanyName" property="agentcompanyname" jdbcType="VARCHAR" />
+    <result column="ContactName" property="contactname" jdbcType="VARCHAR" />
+    <result column="Phone" property="phone" jdbcType="VARCHAR" />
+    <result column="Province" property="province" jdbcType="INTEGER" />
+    <result column="City" property="city" jdbcType="INTEGER" />
+    <result column="Area" property="area" jdbcType="INTEGER" />
+    <result column="StreetDetail" property="streetdetail" jdbcType="VARCHAR" />
+    <result column="IdCard" property="idcard" jdbcType="VARCHAR" />
+    <result column="BusinessLicense" property="businesslicense" jdbcType="VARCHAR" />
+    <result column="BusinessScope" property="businessscope" jdbcType="VARCHAR" />
+    <result column="ShopImg" property="shopimg" jdbcType="VARCHAR" />
+    <result column="TeamImg" property="teamimg" jdbcType="VARCHAR" />
+    <result column="Remark" property="remark" jdbcType="VARCHAR" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    AgentUserId, AgentCompanyName, ContactName, Phone, Province, City, Area, StreetDetail, 
+    IdCard, BusinessLicense, BusinessScope, ShopImg, TeamImg, Remark, Status, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from U_AgentApply
+    where AgentUserId = #{agentuserid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from U_AgentApply
+    where AgentUserId = #{agentuserid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.UAgentapply" >
+    insert into U_AgentApply (AgentUserId, AgentCompanyName, ContactName, 
+      Phone, Province, City, 
+      Area, StreetDetail, IdCard, 
+      BusinessLicense, BusinessScope, ShopImg, 
+      TeamImg, Remark, Status, 
+      CreateTime)
+    values (#{agentuserid,jdbcType=BIGINT}, #{agentcompanyname,jdbcType=VARCHAR}, #{contactname,jdbcType=VARCHAR}, 
+      #{phone,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, 
+      #{area,jdbcType=INTEGER}, #{streetdetail,jdbcType=VARCHAR}, #{idcard,jdbcType=VARCHAR}, 
+      #{businesslicense,jdbcType=VARCHAR}, #{businessscope,jdbcType=VARCHAR}, #{shopimg,jdbcType=VARCHAR}, 
+      #{teamimg,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.UAgentapply" >
+    insert into U_AgentApply
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="agentuserid != null" >
+        AgentUserId,
+      </if>
+      <if test="agentcompanyname != null" >
+        AgentCompanyName,
+      </if>
+      <if test="contactname != null" >
+        ContactName,
+      </if>
+      <if test="phone != null" >
+        Phone,
+      </if>
+      <if test="province != null" >
+        Province,
+      </if>
+      <if test="city != null" >
+        City,
+      </if>
+      <if test="area != null" >
+        Area,
+      </if>
+      <if test="streetdetail != null" >
+        StreetDetail,
+      </if>
+      <if test="idcard != null" >
+        IdCard,
+      </if>
+      <if test="businesslicense != null" >
+        BusinessLicense,
+      </if>
+      <if test="businessscope != null" >
+        BusinessScope,
+      </if>
+      <if test="shopimg != null" >
+        ShopImg,
+      </if>
+      <if test="teamimg != null" >
+        TeamImg,
+      </if>
+      <if test="remark != null" >
+        Remark,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="agentuserid != null" >
+        #{agentuserid,jdbcType=BIGINT},
+      </if>
+      <if test="agentcompanyname != null" >
+        #{agentcompanyname,jdbcType=VARCHAR},
+      </if>
+      <if test="contactname != null" >
+        #{contactname,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=INTEGER},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=INTEGER},
+      </if>
+      <if test="area != null" >
+        #{area,jdbcType=INTEGER},
+      </if>
+      <if test="streetdetail != null" >
+        #{streetdetail,jdbcType=VARCHAR},
+      </if>
+      <if test="idcard != null" >
+        #{idcard,jdbcType=VARCHAR},
+      </if>
+      <if test="businesslicense != null" >
+        #{businesslicense,jdbcType=VARCHAR},
+      </if>
+      <if test="businessscope != null" >
+        #{businessscope,jdbcType=VARCHAR},
+      </if>
+      <if test="shopimg != null" >
+        #{shopimg,jdbcType=VARCHAR},
+      </if>
+      <if test="teamimg != null" >
+        #{teamimg,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.UAgentapply" >
+    update U_AgentApply
+    <set >
+      <if test="agentcompanyname != null" >
+        AgentCompanyName = #{agentcompanyname,jdbcType=VARCHAR},
+      </if>
+      <if test="contactname != null" >
+        ContactName = #{contactname,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        Phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        Province = #{province,jdbcType=INTEGER},
+      </if>
+      <if test="city != null" >
+        City = #{city,jdbcType=INTEGER},
+      </if>
+      <if test="area != null" >
+        Area = #{area,jdbcType=INTEGER},
+      </if>
+      <if test="streetdetail != null" >
+        StreetDetail = #{streetdetail,jdbcType=VARCHAR},
+      </if>
+      <if test="idcard != null" >
+        IdCard = #{idcard,jdbcType=VARCHAR},
+      </if>
+      <if test="businesslicense != null" >
+        BusinessLicense = #{businesslicense,jdbcType=VARCHAR},
+      </if>
+      <if test="businessscope != null" >
+        BusinessScope = #{businessscope,jdbcType=VARCHAR},
+      </if>
+      <if test="shopimg != null" >
+        ShopImg = #{shopimg,jdbcType=VARCHAR},
+      </if>
+      <if test="teamimg != null" >
+        TeamImg = #{teamimg,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        Remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where AgentUserId = #{agentuserid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.UAgentapply" >
+    update U_AgentApply
+    set AgentCompanyName = #{agentcompanyname,jdbcType=VARCHAR},
+      ContactName = #{contactname,jdbcType=VARCHAR},
+      Phone = #{phone,jdbcType=VARCHAR},
+      Province = #{province,jdbcType=INTEGER},
+      City = #{city,jdbcType=INTEGER},
+      Area = #{area,jdbcType=INTEGER},
+      StreetDetail = #{streetdetail,jdbcType=VARCHAR},
+      IdCard = #{idcard,jdbcType=VARCHAR},
+      BusinessLicense = #{businesslicense,jdbcType=VARCHAR},
+      BusinessScope = #{businessscope,jdbcType=VARCHAR},
+      ShopImg = #{shopimg,jdbcType=VARCHAR},
+      TeamImg = #{teamimg,jdbcType=VARCHAR},
+      Remark = #{remark,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where AgentUserId = #{agentuserid,jdbcType=BIGINT}
+  </update>
+</mapper>

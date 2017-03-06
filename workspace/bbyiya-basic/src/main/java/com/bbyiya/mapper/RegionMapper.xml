@@ -24,10 +24,22 @@
   <sql id="Area_Columns" >
     Code, Area, CityCode
   </sql>
-  <select id="getProvinceByCode" resultMap="ProvinceResultMap" parameterType="java.lang.Integer" ><!-- 根据省Code获取省  -->
+  <select id="getProvinceByCode" resultMap="ProvinceResultMap" parameterType="java.lang.Integer" ><!-- 根据Code获取省  -->
     select 
     <include refid="Provice_columns" />
     from R_Province
+    where Code = #{code,jdbcType=INTEGER}
+  </select>
+  <select id="getCityByCode" resultMap="CityResultMap" parameterType="java.lang.Integer" ><!-- 根据Code获取 市  -->
+    select 
+    <include refid="City_Columns" />
+    from R_City
+    where Code = #{code,jdbcType=INTEGER}
+  </select>
+  <select id="getAreaByCode" resultMap="AreaResultMap" parameterType="java.lang.Integer" ><!-- 根据Code获取 县区  -->
+    select 
+    <include refid="Area_Columns" />
+    from R_Areas
     where Code = #{code,jdbcType=INTEGER}
   </select>
   <select id="findProvincelistAll" resultMap="ProvinceResultMap" ><!-- 获取所有省  -->

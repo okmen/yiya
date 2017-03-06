@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.pic.dao.IPic_AgentAreaDao" >
+  <resultMap id="RAreaplansMap" type="com.bbyiya.model.RAreaplans" >
+    <id column="AreaCode" property="areacode" jdbcType="INTEGER" />
+    <result column="AreaName" property="areaname" jdbcType="VARCHAR" />
+    <result column="AreaId" property="areaid" jdbcType="INTEGER" />
+    <result column="IsAgent" property="isagent" jdbcType="INTEGER" />
+    <result column="AgentUserId" property="agentuserid" jdbcType="BIGINT" />
+  </resultMap>
+  <resultMap id="RAreaplansAgentpriceMap" type="com.bbyiya.model.RAreaplansagentprice" >
+    <id column="AreaId" property="areaid" jdbcType="INTEGER" />
+    <result column="Step" property="step" jdbcType="INTEGER" />
+    <result column="AgentAmount" property="agentamount" jdbcType="DECIMAL" />
+    <result column="PrepayAmount" property="prepayamount" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="RAreaplans_Column_List" >
+    AreaCode, AreaName, AreaId, IsAgent, AgentUserId
+  </sql>
+  <sql id="RAreaplansAgentprice_Column_List" >
+    AreaId, Step, AgentAmount, PrepayAmount
+  </sql>
+  <select id="findRAreaplansByAreaId" resultMap="RAreaplansMap"  ><!-- 通过代理单元Id获取 代理区县 -->
+    select 
+    <include refid="RAreaplans_Column_List" />
+    from R_Areaplans
+    where AreaId = #{areaId,jdbcType=INTEGER}
+  </select>
+</mapper>

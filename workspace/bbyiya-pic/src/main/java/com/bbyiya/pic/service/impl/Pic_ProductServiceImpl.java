@@ -137,7 +137,11 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					return rq;
 				}
 			} else {// ÐÂÔö
-
+				if(param.getProductid()==null||param.getProductid()<=0){
+					rq.setStatu(ReturnStatus.Success);
+					rq.setStatusreson("");
+					return rq;
+				}
 				PMyproducts myproduct = myMapper.getMyProductsByProductId(userId, param.getProductid(), Integer.parseInt(MyProductStatusEnum.ok.toString()));
 				if (myproduct == null) {
 					myproduct = new PMyproducts();

@@ -199,5 +199,30 @@ public class BranchMgtController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	/**
+	 * 判断用户代理商申请状态
+	 * @param type
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getApplyStatus")
+	public String getApplyStatus(Integer type) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(type!=null&&type==1){
+				rq=branchService.getAgentApplyStatusModel(user.getUserId());
+			}else {
+				rq=branchService.getBranchApplyStatusModel(user.getUserId());
+			}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 	
 }

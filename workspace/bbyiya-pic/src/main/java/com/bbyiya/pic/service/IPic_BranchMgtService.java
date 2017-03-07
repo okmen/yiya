@@ -53,4 +53,8 @@ public interface IPic_BranchMgtService {
 	 * @return
 	 */
 	ReturnModel getAgentArea(Integer areaCode);
+	
+	ReturnModel getAgentApplyStatusModel(Long agentUserId);
+	
+	ReturnModel getBranchApplyStatusModel(Long agentUserId);
 }

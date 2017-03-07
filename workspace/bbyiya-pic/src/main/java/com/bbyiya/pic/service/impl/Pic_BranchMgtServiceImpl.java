@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.dao.RAreaplansMapper;
 import com.bbyiya.dao.RAreaplansagentpriceMapper;
 import com.bbyiya.dao.RegionMapper;
@@ -25,7 +24,6 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.AgentStatusEnum;
 import com.bbyiya.enums.pic.BranchStatusEnum;
 import com.bbyiya.enums.user.UserIdentityEnums;
-import com.bbyiya.enums.user.UserStatusEnum;
 import com.bbyiya.model.RAreaplans;
 import com.bbyiya.model.RAreaplansagentprice;
 import com.bbyiya.model.RAreas;
@@ -33,9 +31,9 @@ import com.bbyiya.model.UAgentapply;
 import com.bbyiya.model.UAgents;
 import com.bbyiya.model.UBranchareaprice;
 import com.bbyiya.model.UBranches;
-import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.dao.IPic_AgentAreaDao;
 import com.bbyiya.pic.service.IPic_BranchMgtService;
+import com.bbyiya.service.IBaseUserCommonService;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -43,11 +41,14 @@ import com.bbyiya.vo.ReturnModel;
 @Service("pic_BranchMgtService")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
 public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
+	@Resource(name = "regionServiceImpl")
+	private IRegionService regionService;
+	//用户公共模块
+	@Resource(name = "baseUserCommon")
+	private IBaseUserCommonService userBasic;
 	
 	@Autowired
 	private UBranchareapriceMapper branchAreaMapper;
-	@Resource(name = "regionServiceImpl")
-	private IRegionService regionService;
 	//区域表
 	@Autowired
 	private RegionMapper regionMapper;
@@ -288,7 +289,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			apply.setStatus(status);
 			branchesMapper.updateByPrimaryKeySelective(apply);
 			if(status==Integer.parseInt(BranchStatusEnum.ok.toString())){
-				updateUserIdentity(branchUserId,UserIdentityEnums.branch); 
+				userBasic.addUserIdentity(branchUserId,UserIdentityEnums.branch); 
 			}
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("审核成功");
@@ -299,21 +300,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		return rq;
 	}
 	
-	/**
-	 * 更新用户身份标识
-	 * @param userId
-	 * @param identity
-	 */
-	public void updateUserIdentity(Long userId,UserIdentityEnums identity){
-		UUsers users=usersMapper.selectByPrimaryKey(userId);
-		if(users!=null){
-			long ident=users.getIdentity()==null?0:users.getIdentity();
-			if(!ValidateUtils.isIdentity(ident, identity)){
-				users.setIdentity(ident+Long.parseLong(identity.toString()));
-				usersMapper.updateByPrimaryKeySelective(users);
-			}
-		}
-	}
+
 
 	/**
 	 * 代理商通过审核，录入代理商信息、代理商影楼信息，代理商身份标识
@@ -336,7 +323,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			agentInfo.setProcesstime(new Date());
 			agentsMapper.insert(agentInfo);
 			//更新代理身份标识
-			updateUserIdentity(apply.getAgentuserid(),UserIdentityEnums.agent); 
+			userBasic.addUserIdentity(apply.getAgentuserid(),UserIdentityEnums.agent); 
 			
 			//影楼录入
 			UBranches branch= branchesMapper.selectByPrimaryKey(apply.getAgentuserid());
@@ -362,8 +349,60 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			branch.setProcesstime(new Date());
 			branchesMapper.insert(branch);	
 			//更新代理身份标识
-			updateUserIdentity(apply.getAgentuserid(),UserIdentityEnums.branch);  
+			userBasic.addUserIdentity(apply.getAgentuserid(),UserIdentityEnums.branch);  
 		}
+	}
+	
+	public ReturnModel getAgentApplyStatusModel(Long agentUserId){
+		Map<String, Object> map=new HashMap<String, Object>();
+		UAgentapply agentapply= agentapplyMapper.selectByPrimaryKey(agentUserId);
+		if(agentapply!=null){
+			map.put("isApplyed", 1);
+			map.put("status", agentapply.getStatus());
+			if(agentapply.getStatus()!=null){
+				if(agentapply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.ok.toString())){
+					map.put("msg", "已经成为代理商");
+				}else if (agentapply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.applying.toString())) {
+					map.put("msg", "申请中");
+				}else if (agentapply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.no.toString())) {
+					map.put("msg", "申请不通过。");
+				}
+			}else {
+				map.put("msg", "申请中");
+			}
+		}else {
+			map.put("isApplyed", 0);
+		}
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.Success);
+		rq.setBasemodle(map);
+		return rq;
+	}
+	
+	public ReturnModel getBranchApplyStatusModel(Long branchUserId){
+		Map<String, Object> map=new HashMap<String, Object>();
+		UBranches branch= branchesMapper.selectByPrimaryKey(branchUserId);
+		if(branch!=null){
+			map.put("isApplyed", 1);
+			map.put("status", branch.getStatus());
+			if(branch.getStatus()!=null){
+				if(branch.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.ok.toString())){
+					map.put("msg", "已经成为代理商");
+				}else if (branch.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.applying.toString())) {
+					map.put("msg", "申请中");
+				}else if (branch.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.no.toString())) {
+					map.put("msg", "申请不通过。");
+				}
+			}else {
+				map.put("msg", "申请中");
+			}
+		}else {
+			map.put("isApplyed", 0);
+		}
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.Success);
+		rq.setBasemodle(map);
+		return rq;
 	}
 	
 	public ReturnModel getAgentArea(Integer areaCode){

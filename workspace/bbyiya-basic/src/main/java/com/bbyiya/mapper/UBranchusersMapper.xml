@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.UBranchusersMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.UBranchusers" >
+    <id column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="Name" property="name" jdbcType="VARCHAR" />
+    <result column="Phone" property="phone" jdbcType="VARCHAR" />
+    <result column="BranchUserId" property="branchuserid" jdbcType="BIGINT" />
+    <result column="AgentUserId" property="agentuserid" jdbcType="BIGINT" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    UserId, Name, Phone, BranchUserId, AgentUserId, Status, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from U_BranchUsers
+    where UserId = #{userid,jdbcType=BIGINT}
+  </select>
+  <select id="findMemberslistByBranchUserId" resultMap="BaseResultMap"  ><!-- 获取影楼内部员工列表 通过影楼userId  -->
+    select 
+    <include refid="Base_Column_List" />
+    from U_BranchUsers
+    where BranchUserId = #{branchUserId,jdbcType=BIGINT}
+  </select>
+  <select id="findMemberslistByAgentUserId" resultMap="BaseResultMap"  ><!-- 获取影楼内部员工列表 通过代理商userId  -->
+    select 
+    <include refid="Base_Column_List" />
+    from U_BranchUsers
+    where AgentUserId = #{agentUserId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from U_BranchUsers
+    where UserId = #{userid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.UBranchusers" >
+    insert into U_BranchUsers (UserId, Name, Phone, 
+      BranchUserId, AgentUserId, Status, 
+      CreateTime)
+    values (#{userid,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
+      #{branchuserid,jdbcType=BIGINT}, #{agentuserid,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.UBranchusers" >
+    insert into U_BranchUsers
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="name != null" >
+        Name,
+      </if>
+      <if test="phone != null" >
+        Phone,
+      </if>
+      <if test="branchuserid != null" >
+        BranchUserId,
+      </if>
+      <if test="agentuserid != null" >
+        AgentUserId,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="branchuserid != null" >
+        #{branchuserid,jdbcType=BIGINT},
+      </if>
+      <if test="agentuserid != null" >
+        #{agentuserid,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.UBranchusers" >
+    update U_BranchUsers
+    <set >
+      <if test="name != null" >
+        Name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        Phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="branchuserid != null" >
+        BranchUserId = #{branchuserid,jdbcType=BIGINT},
+      </if>
+      <if test="agentuserid != null" >
+        AgentUserId = #{agentuserid,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where UserId = #{userid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.UBranchusers" >
+    update U_BranchUsers
+    set Name = #{name,jdbcType=VARCHAR},
+      Phone = #{phone,jdbcType=VARCHAR},
+      BranchUserId = #{branchuserid,jdbcType=BIGINT},
+      AgentUserId = #{agentuserid,jdbcType=BIGINT},
+      Status = #{status,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where UserId = #{userid,jdbcType=BIGINT}
+  </update>
+</mapper>

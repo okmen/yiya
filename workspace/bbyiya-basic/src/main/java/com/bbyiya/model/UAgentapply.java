@@ -8,6 +8,8 @@ public class UAgentapply {
     private String agentcompanyname;
 
     private String contactname;
+    
+    private String username;
 
     private String phone;
 
@@ -162,4 +164,13 @@ public class UAgentapply {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+    
 }

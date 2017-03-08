@@ -5,6 +5,7 @@
     <id column="AgentUserId" property="agentuserid" jdbcType="BIGINT" />
     <result column="AgentCompanyName" property="agentcompanyname" jdbcType="VARCHAR" />
     <result column="ContactName" property="contactname" jdbcType="VARCHAR" />
+    <result column="UserName" property="username" jdbcType="VARCHAR" />
     <result column="Phone" property="phone" jdbcType="VARCHAR" />
     <result column="Province" property="province" jdbcType="INTEGER" />
     <result column="City" property="city" jdbcType="INTEGER" />
@@ -15,8 +16,8 @@
     <result column="ProcessTime" property="processtime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    AgentUserId, AgentCompanyName, ContactName, Phone, Province, City, Area, StreetDetail, 
-    Status, CreateTime, ProcessTime
+    AgentUserId, AgentCompanyName, ContactName, UserName, Phone, Province, City, Area, 
+    StreetDetail, Status, CreateTime, ProcessTime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -30,13 +31,15 @@
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.UAgents" >
     insert into U_Agents (AgentUserId, AgentCompanyName, ContactName, 
-      Phone, Province, City, 
-      Area, StreetDetail, Status, 
-      CreateTime, ProcessTime)
+      UserName, Phone, Province, 
+      City, Area, StreetDetail, 
+      Status, CreateTime, ProcessTime
+      )
     values (#{agentuserid,jdbcType=BIGINT}, #{agentcompanyname,jdbcType=VARCHAR}, #{contactname,jdbcType=VARCHAR}, 
-      #{phone,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, 
-      #{area,jdbcType=INTEGER}, #{streetdetail,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{processtime,jdbcType=TIMESTAMP})
+      #{username,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, 
+      #{city,jdbcType=INTEGER}, #{area,jdbcType=INTEGER}, #{streetdetail,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{processtime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.UAgents" >
     insert into U_Agents
@@ -49,6 +52,9 @@
       </if>
       <if test="contactname != null" >
         ContactName,
+      </if>
+      <if test="username != null" >
+        UserName,
       </if>
       <if test="phone != null" >
         Phone,
@@ -85,6 +91,9 @@
       <if test="contactname != null" >
         #{contactname,jdbcType=VARCHAR},
       </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
       <if test="phone != null" >
         #{phone,jdbcType=VARCHAR},
       </if>
@@ -120,6 +129,9 @@
       <if test="contactname != null" >
         ContactName = #{contactname,jdbcType=VARCHAR},
       </if>
+      <if test="username != null" >
+        UserName = #{username,jdbcType=VARCHAR},
+      </if>
       <if test="phone != null" >
         Phone = #{phone,jdbcType=VARCHAR},
       </if>
@@ -151,6 +163,7 @@
     update U_Agents
     set AgentCompanyName = #{agentcompanyname,jdbcType=VARCHAR},
       ContactName = #{contactname,jdbcType=VARCHAR},
+      UserName = #{username,jdbcType=VARCHAR},
       Phone = #{phone,jdbcType=VARCHAR},
       Province = #{province,jdbcType=INTEGER},
       City = #{city,jdbcType=INTEGER},

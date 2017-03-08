@@ -109,10 +109,15 @@ public class LoginController extends SSOController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/transfer")
-	public String transferPage() throws Exception {
+	public String transferPage(String m) throws Exception {
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			return "redirect:"+ ConfigUtil.getSingleValue("loginbackurl") ;
+			int mtype=ObjectUtil.parseInt(m);
+			if(mtype==1){
+				return "redirect:"+ ConfigUtil.getSingleValue("loginbackurl_test") ;
+			}else {
+				return "redirect:"+ ConfigUtil.getSingleValue("loginbackurl") ;
+			}
 		} else {
 			return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin&response_type=code&scope=snsapi_base#wechat_redirect" ;	
 		}		

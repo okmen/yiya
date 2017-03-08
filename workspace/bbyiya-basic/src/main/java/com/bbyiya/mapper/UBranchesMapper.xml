@@ -6,6 +6,7 @@
     <result column="BranchCompanyName" property="branchcompanyname" jdbcType="VARCHAR" />
     <result column="AgentUserId" property="agentuserid" jdbcType="BIGINT" />
     <result column="UserName" property="username" jdbcType="VARCHAR" />
+    <result column="ContactName" property="contactname" jdbcType="VARCHAR" />
     <result column="Phone" property="phone" jdbcType="VARCHAR" />
     <result column="Province" property="province" jdbcType="INTEGER" />
     <result column="City" property="city" jdbcType="INTEGER" />
@@ -21,9 +22,9 @@
     <result column="ProcessTime" property="processtime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    BranchUserId, BranchCompanyName, AgentUserId, UserName, Phone, Province, City, Area, 
-    StreetDetail, BusinessLicense, BusinessScope, ShopImg, TeamImg, Remark, Status, CreateTime, 
-    ProcessTime
+    BranchUserId, BranchCompanyName, AgentUserId, UserName, ContactName, Phone, Province, 
+    City, Area, StreetDetail, BusinessLicense, BusinessScope, ShopImg, TeamImg, Remark, 
+    Status, CreateTime, ProcessTime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -35,19 +36,21 @@
     delete from U_Branches
     where BranchUserId = #{branchuserid,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.bbyiya.model.UBranches" >
+ <insert id="insert" parameterType="com.bbyiya.model.UBranches" >
     insert into U_Branches (BranchUserId, BranchCompanyName, AgentUserId, 
-      UserName, Phone, Province, 
-      City, Area, StreetDetail, 
-      BusinessLicense, BusinessScope, ShopImg, 
-      TeamImg, Remark, Status, 
-      CreateTime, ProcessTime)
+      UserName, ContactName, Phone, 
+      Province, City, Area, 
+      StreetDetail, BusinessLicense, BusinessScope, 
+      ShopImg, TeamImg, Remark, 
+      Status, CreateTime, ProcessTime
+      )
     values (#{branchuserid,jdbcType=BIGINT}, #{branchcompanyname,jdbcType=VARCHAR}, #{agentuserid,jdbcType=BIGINT}, 
-      #{username,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, 
-      #{city,jdbcType=INTEGER}, #{area,jdbcType=INTEGER}, #{streetdetail,jdbcType=VARCHAR}, 
-      #{businesslicense,jdbcType=VARCHAR}, #{businessscope,jdbcType=VARCHAR}, #{shopimg,jdbcType=VARCHAR}, 
-      #{teamimg,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{processtime,jdbcType=TIMESTAMP})
+      #{username,jdbcType=VARCHAR}, #{contactname,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
+      #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, #{area,jdbcType=INTEGER}, 
+      #{streetdetail,jdbcType=VARCHAR}, #{businesslicense,jdbcType=VARCHAR}, #{businessscope,jdbcType=VARCHAR}, 
+      #{shopimg,jdbcType=VARCHAR}, #{teamimg,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{processtime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.UBranches" >
     insert into U_Branches
@@ -63,6 +66,9 @@
       </if>
       <if test="username != null" >
         UserName,
+      </if>
+      <if test="contactname != null" >
+        ContactName,
       </if>
       <if test="phone != null" >
         Phone,
@@ -117,6 +123,9 @@
       <if test="username != null" >
         #{username,jdbcType=VARCHAR},
       </if>
+      <if test="contactname != null" >
+        #{contactname,jdbcType=VARCHAR},
+      </if>
       <if test="phone != null" >
         #{phone,jdbcType=VARCHAR},
       </if>
@@ -170,6 +179,9 @@
       <if test="username != null" >
         UserName = #{username,jdbcType=VARCHAR},
       </if>
+      <if test="contactname != null" >
+        ContactName = #{contactname,jdbcType=VARCHAR},
+      </if>
       <if test="phone != null" >
         Phone = #{phone,jdbcType=VARCHAR},
       </if>
@@ -217,6 +229,7 @@
     set BranchCompanyName = #{branchcompanyname,jdbcType=VARCHAR},
       AgentUserId = #{agentuserid,jdbcType=BIGINT},
       UserName = #{username,jdbcType=VARCHAR},
+      ContactName = #{contactname,jdbcType=VARCHAR},
       Phone = #{phone,jdbcType=VARCHAR},
       Province = #{province,jdbcType=INTEGER},
       City = #{city,jdbcType=INTEGER},

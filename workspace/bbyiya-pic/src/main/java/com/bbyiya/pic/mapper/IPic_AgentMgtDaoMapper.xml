@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.pic.dao.IPic_AgentMgtDao" >
+   <resultMap id="UAgentapplyMap" type="com.bbyiya.model.UAgentapply" >
+    <id column="AgentUserId" property="agentuserid" jdbcType="BIGINT" />
+    <result column="AgentCompanyName" property="agentcompanyname" jdbcType="VARCHAR" />
+    <result column="ContactName" property="contactname" jdbcType="VARCHAR" />
+    <result column="UserName" property="username" jdbcType="VARCHAR" />
+    <result column="Phone" property="phone" jdbcType="VARCHAR" />
+    <result column="Province" property="province" jdbcType="INTEGER" />
+    <result column="City" property="city" jdbcType="INTEGER" />
+    <result column="Area" property="area" jdbcType="INTEGER" />
+    <result column="StreetDetail" property="streetdetail" jdbcType="VARCHAR" />
+    <result column="IdCard" property="idcard" jdbcType="VARCHAR" />
+    <result column="BusinessLicense" property="businesslicense" jdbcType="VARCHAR" />
+    <result column="BusinessScope" property="businessscope" jdbcType="VARCHAR" />
+    <result column="ShopImg" property="shopimg" jdbcType="VARCHAR" />
+    <result column="TeamImg" property="teamimg" jdbcType="VARCHAR" />
+    <result column="Remark" property="remark" jdbcType="VARCHAR" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="UAgentapply_Column_List" >
+    AgentUserId, AgentCompanyName, ContactName, UserName, Phone, Province, City, Area, 
+    StreetDetail, IdCard, BusinessLicense, BusinessScope, ShopImg, TeamImg, Remark, Status, 
+    CreateTime
+  </sql>
+  <resultMap id="UBranchesMap" type="com.bbyiya.model.UBranches" >
+    <id column="BranchUserId" property="branchuserid" jdbcType="BIGINT" />
+    <result column="BranchCompanyName" property="branchcompanyname" jdbcType="VARCHAR" />
+    <result column="AgentUserId" property="agentuserid" jdbcType="BIGINT" />
+    <result column="UserName" property="username" jdbcType="VARCHAR" />
+    <result column="ContactName" property="contactname" jdbcType="VARCHAR" />
+    <result column="Phone" property="phone" jdbcType="VARCHAR" />
+    <result column="Province" property="province" jdbcType="INTEGER" />
+    <result column="City" property="city" jdbcType="INTEGER" />
+    <result column="Area" property="area" jdbcType="INTEGER" />
+    <result column="StreetDetail" property="streetdetail" jdbcType="VARCHAR" />
+    <result column="BusinessLicense" property="businesslicense" jdbcType="VARCHAR" />
+    <result column="BusinessScope" property="businessscope" jdbcType="VARCHAR" />
+    <result column="ShopImg" property="shopimg" jdbcType="VARCHAR" />
+    <result column="TeamImg" property="teamimg" jdbcType="VARCHAR" />
+    <result column="Remark" property="remark" jdbcType="VARCHAR" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="ProcessTime" property="processtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="UBranches_Column_List" >
+    BranchUserId, BranchCompanyName, AgentUserId, UserName, ContactName, Phone, Province, 
+    City, Area, StreetDetail, BusinessLicense, BusinessScope, ShopImg, TeamImg, Remark, 
+    Status, CreateTime, ProcessTime
+  </sql>
+   <!-- 代理商申请信息Model-->
+  <resultMap id="UAgentapplyVOResult" type="com.bbyiya.pic.vo.agent.UAgentApplyVo" extends="UAgentapplyMap">  
+  </resultMap>  
+  <!-- 影楼信息Model -->
+  <resultMap id="UBranchVoResult" type="com.bbyiya.pic.vo.agent.UBranchVo" extends="UBranchesMap">  
+  </resultMap>
+  <!-- 通过代理userId获取代理申请model -->
+  <select id="getUAgentapplyVOByAgentUserId" resultMap="UAgentapplyVOResult" parameterType="java.lang.Long" >
+    select 
+    <include refid="UAgentapply_Column_List" />
+    from U_AgentApply
+    where AgentUserId = #{agentuserid,jdbcType=BIGINT}
+  </select>
+  <!-- 通过影楼userId获取影楼信息result -->
+  <select id="getUBranchVoByBranchUserId" resultMap="UBranchVoResult" parameterType="java.lang.Long" >
+    select 
+    <include refid="UBranches_Column_List" />
+    from U_Branches
+    where BranchUserId = #{branchuserid,jdbcType=BIGINT}
+  </select>
+</mapper>

@@ -32,7 +32,10 @@ import com.bbyiya.model.UAgents;
 import com.bbyiya.model.UBranchareaprice;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.pic.dao.IPic_AgentAreaDao;
+import com.bbyiya.pic.dao.IPic_AgentMgtDao;
 import com.bbyiya.pic.service.IPic_BranchMgtService;
+import com.bbyiya.pic.vo.agent.UAgentApplyVo;
+import com.bbyiya.pic.vo.agent.UBranchVo;
 import com.bbyiya.service.IBaseUserCommonService;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.utils.ObjectUtil;
@@ -115,8 +118,15 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		ReturnModel rq=new ReturnModel();
 		UAgentapply apply= agentapplyMapper.selectByPrimaryKey(userId); 
 		if(apply!=null){
-			rq.setStatu(ReturnStatus.SystemError);
-			rq.setStatusreson("您已提交过申请，不能重复提交");
+			if(apply.getStatus()!=null&&apply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.ok.toString())){
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson("您已经是代理商了，不能提交申请！");
+				return rq;
+			}
+//			rq.setStatu(ReturnStatus.SystemError);
+//			rq.setStatusreson("您已提交过申请，不能重复提交");
+//			return rq;
+			applyInfo.setAgentuserid(apply.getAgentuserid());
 		}
 		rq.setStatu(ReturnStatus.SystemError);
 		if(applyInfo==null){
@@ -127,34 +137,39 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			rq.setStatusreson("公司名称不能为空");
 			return rq;
 		}
-		if(ObjectUtil.isEmpty(apply.getIdcard())){
+		if(ObjectUtil.isEmpty(applyInfo.getIdcard())){
 			rq.setStatusreson("身份证信息不能为空");
 			return rq;
 		} 
-		if(ObjectUtil.isEmpty(apply.getContactname())){
+		if(ObjectUtil.isEmpty(applyInfo.getContactname())){
 			rq.setStatusreson("联系人必须填");
 			return rq;
 		} 
-		if(ObjectUtil.isEmpty(apply.getBusinesslicense())){
+		if(ObjectUtil.isEmpty(applyInfo.getBusinesslicense())){
 			rq.setStatusreson("营业执照必须填");
 			return rq;
 		} 
-		if(ObjectUtil.validSqlStr(applyInfo.getAgentcompanyname())
-				||ObjectUtil.validSqlStr(applyInfo.getContactname())
-				||ObjectUtil.validSqlStr(applyInfo.getStreetdetail())
-				||ObjectUtil.validSqlStr(applyInfo.getIdcard())
-				||ObjectUtil.validSqlStr(applyInfo.getBusinesslicense())
-				||ObjectUtil.validSqlStr(applyInfo.getBusinessscope())
-				||ObjectUtil.validSqlStr(applyInfo.getShopimg())
-				||ObjectUtil.validSqlStr(applyInfo.getTeamimg())
-				||ObjectUtil.validSqlStr(applyInfo.getRemark())
+		if(!ObjectUtil.validSqlStr(applyInfo.getAgentcompanyname())
+				||!ObjectUtil.validSqlStr(applyInfo.getContactname())
+				||!ObjectUtil.validSqlStr(applyInfo.getStreetdetail())
+				||!ObjectUtil.validSqlStr(applyInfo.getIdcard())
+				||!ObjectUtil.validSqlStr(applyInfo.getBusinesslicense())
+				||!ObjectUtil.validSqlStr(applyInfo.getBusinessscope())
+				||!ObjectUtil.validSqlStr(applyInfo.getShopimg())
+				||!ObjectUtil.validSqlStr(applyInfo.getTeamimg())
+				||!ObjectUtil.validSqlStr(applyInfo.getRemark())
 				){
 			rq.setStatusreson("存在非法字符");
 			return rq;
 		}
 		applyInfo.setAgentuserid(userId);
 		applyInfo.setCreatetime(new Date());
-		agentapplyMapper.insert(applyInfo);
+		applyInfo.setStatus(Integer.parseInt(AgentStatusEnum.applying.toString()));  
+		if(apply!=null&&applyInfo.getAgentuserid()!=null&&applyInfo.getAgentuserid()>0){
+			agentapplyMapper.updateByPrimaryKeySelective(applyInfo);
+		}else {
+			agentapplyMapper.insert(applyInfo);
+		}
 		rq.setStatu(ReturnStatus.Success);
 		rq.setStatusreson("提交成功，等待审核！"); 
 		return rq;
@@ -165,8 +180,10 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		ReturnModel rq=new ReturnModel();
 		UBranches apply= branchesMapper.selectByPrimaryKey(userId); 
 		if(apply!=null){
-			rq.setStatu(ReturnStatus.SystemError);
-			rq.setStatusreson("您已提交过申请，不能重复提交");
+			applyInfo.setBranchuserid(apply.getBranchuserid());
+//			rq.setStatu(ReturnStatus.SystemError);
+//			rq.setStatusreson("您已提交过申请，不能重复提交");
+//			return rq;
 		}
 		rq.setStatu(ReturnStatus.SystemError);
 		if(applyInfo==null){
@@ -186,29 +203,35 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			rq.setStatusreson("找不到相应的代理商信息！");
 			return rq;
 		}
-		if(ObjectUtil.isEmpty(apply.getUsername())){
+		if(ObjectUtil.isEmpty(applyInfo.getUsername())){
 			rq.setStatusreson("联系人必须填");
 			return rq;
 		} 
-		if(ObjectUtil.isEmpty(apply.getBusinesslicense())){
+		if(ObjectUtil.isEmpty(applyInfo.getBusinesslicense())){
 			rq.setStatusreson("营业执照必须填");
 			return rq;
 		} 
-		if(ObjectUtil.validSqlStr(applyInfo.getBranchcompanyname())
-				||ObjectUtil.validSqlStr(applyInfo.getUsername())
-				||ObjectUtil.validSqlStr(applyInfo.getStreetdetail())
-				||ObjectUtil.validSqlStr(applyInfo.getBusinesslicense())
-				||ObjectUtil.validSqlStr(applyInfo.getBusinessscope())
-				||ObjectUtil.validSqlStr(applyInfo.getShopimg())
-				||ObjectUtil.validSqlStr(applyInfo.getTeamimg())
-				||ObjectUtil.validSqlStr(applyInfo.getRemark())
+		if(!ObjectUtil.validSqlStr(applyInfo.getBranchcompanyname())
+				||!ObjectUtil.validSqlStr(applyInfo.getUsername())
+				||!ObjectUtil.validSqlStr(applyInfo.getStreetdetail())
+				||!ObjectUtil.validSqlStr(applyInfo.getBusinesslicense())
+				||!ObjectUtil.validSqlStr(applyInfo.getBusinessscope())
+				||!ObjectUtil.validSqlStr(applyInfo.getShopimg())
+				||!ObjectUtil.validSqlStr(applyInfo.getTeamimg())
+				||!ObjectUtil.validSqlStr(applyInfo.getRemark())
 				){
 			rq.setStatusreson("存在非法字符");
 			return rq;
 		}
 		applyInfo.setBranchuserid(userId);
 		applyInfo.setCreatetime(new Date());
-		branchesMapper.insert(applyInfo);
+		applyInfo.setStatus(Integer.parseInt(BranchStatusEnum.applying.toString()));  
+		if(apply!=null&&applyInfo.getBranchuserid()!=null&&applyInfo.getBranchuserid()>0){
+			branchesMapper.updateByPrimaryKeySelective(applyInfo);
+		}else {
+			branchesMapper.insert(applyInfo);
+		}
+		
 		rq.setStatu(ReturnStatus.Success);
 		rq.setStatusreson("提交成功，等待审核！"); 
 		return rq;
@@ -352,13 +375,20 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			userBasic.addUserIdentity(apply.getAgentuserid(),UserIdentityEnums.branch);  
 		}
 	}
+	@Autowired
+	private IPic_AgentMgtDao agentDao;
 	
 	public ReturnModel getAgentApplyStatusModel(Long agentUserId){
 		Map<String, Object> map=new HashMap<String, Object>();
-		UAgentapply agentapply= agentapplyMapper.selectByPrimaryKey(agentUserId);
+//		UAgentapply agentapply= agentapplyMapper.selectByPrimaryKey(agentUserId);
+		UAgentApplyVo agentapply=agentDao.getUAgentapplyVOByAgentUserId(agentUserId);
 		if(agentapply!=null){
 			map.put("isApplyed", 1);
 			map.put("status", agentapply.getStatus());
+			agentapply.setProviceName(regionService.getName(agentapply.getProvince())) ;
+			agentapply.setCityName(regionService.getName(agentapply.getCity())) ;
+			agentapply.setAreaName(regionService.getName(agentapply.getArea())) ;
+			map.put("applyInfo", agentapply);
 			if(agentapply.getStatus()!=null){
 				if(agentapply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.ok.toString())){
 					map.put("msg", "已经成为代理商");
@@ -381,10 +411,16 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 	
 	public ReturnModel getBranchApplyStatusModel(Long branchUserId){
 		Map<String, Object> map=new HashMap<String, Object>();
-		UBranches branch= branchesMapper.selectByPrimaryKey(branchUserId);
+//		UBranches branch= branchesMapper.selectByPrimaryKey(branchUserId);
+		UBranchVo branch= agentDao.getUBranchVoByBranchUserId(branchUserId);
 		if(branch!=null){
 			map.put("isApplyed", 1);
 			map.put("status", branch.getStatus());
+		
+			branch.setProviceName(regionService.getName(branch.getProvince())) ;
+			branch.setCityName(regionService.getName(branch.getCity())) ;
+			branch.setAreaName(regionService.getName(branch.getArea())) ;
+			map.put("applyInfo", branch);
 			if(branch.getStatus()!=null){
 				if(branch.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.ok.toString())){
 					map.put("msg", "已经成为代理商");

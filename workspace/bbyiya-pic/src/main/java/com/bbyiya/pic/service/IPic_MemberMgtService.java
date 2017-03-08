@@ -17,4 +17,6 @@ public interface IPic_MemberMgtService {
 	 * @return
 	 */
 	ReturnModel addBranchUser(Long branchUserId,UBranchusers param);
+	
+	ReturnModel delBranchUser(Long branchUserId,Long userId);
 }

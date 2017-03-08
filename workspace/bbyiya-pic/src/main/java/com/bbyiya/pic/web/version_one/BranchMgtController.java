@@ -127,7 +127,7 @@ public class BranchMgtController extends SSOController {
 				} catch (Exception e) {
 					// TODO: handle exception
 					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("参数有误");
+					rq.setStatusreson("参数有误101");
 					return JsonUtil.objectToJsonStr(rq);
 				}
 			}else {
@@ -163,7 +163,7 @@ public class BranchMgtController extends SSOController {
 				} catch (Exception e) {
 					// TODO: handle exception
 					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("参数有误");
+					rq.setStatusreson("参数有误101");
 					return JsonUtil.objectToJsonStr(rq);
 				}
 			}else {

@@ -68,7 +68,9 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 	@Autowired
 	private UBranchesMapper branchesMapper;
 	@Autowired
-	private UUsersMapper usersMapper;
+	private UUsersMapper usersMapper;	
+	@Autowired
+	private IPic_AgentMgtDao agentDao;
 	
 	public ReturnModel getBranchAreaPrice(Integer province,Integer city,Integer district){
 		ReturnModel rqModel=new ReturnModel();
@@ -180,6 +182,11 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		ReturnModel rq=new ReturnModel();
 		UBranches apply= branchesMapper.selectByPrimaryKey(userId); 
 		if(apply!=null){
+			if(apply.getStatus()!=null&&apply.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.ok.toString())){
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson("您已经是合作商了，不能再次提交！");
+				return rq;
+			}
 			applyInfo.setBranchuserid(apply.getBranchuserid());
 //			rq.setStatu(ReturnStatus.SystemError);
 //			rq.setStatusreson("您已提交过申请，不能重复提交");
@@ -198,10 +205,34 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			rq.setStatusreson("代理商咿呀号必须填");
 			return rq;
 		}
+
 		UAgentapply agentapply= agentapplyMapper.selectByPrimaryKey(applyInfo.getAgentuserid());
 		if(agentapply==null){
 			rq.setStatusreson("找不到相应的代理商信息！");
 			return rq;
+		}
+		if(agentapply.getAgentuserid().longValue()==applyInfo.getBranchuserid()){
+			rq.setStatusreson("您已经提交过代理申请，不能再申请分店！");
+			return rq;
+		}
+		//当前用户已经提交过代理申请
+		UAgentapply agentBranchApply= agentapplyMapper.selectByPrimaryKey(applyInfo.getBranchuserid());
+		if(agentBranchApply!=null){
+			rq.setStatusreson("您已经提交过代理申请，不能再申请分店！");
+			return rq;
+		}
+		List<Integer> agentArealist=getAgentAreaCodelist(agentapply.getArea());
+		boolean isInArea=false;
+		if(agentArealist!=null&&agentArealist.size()>0){
+			for (Integer ss : agentArealist) {
+				if(ss.intValue()==applyInfo.getArea()){
+					isInArea=true;
+				}
+			}
+		}
+		if(!isInArea){
+			rq.setStatusreson("对不起，门店不在代理区域！");
+			return rq; 
 		}
 		if(ObjectUtil.isEmpty(applyInfo.getUsername())){
 			rq.setStatusreson("联系人必须填");
@@ -231,7 +262,6 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		}else {
 			branchesMapper.insert(applyInfo);
 		}
-		
 		rq.setStatu(ReturnStatus.Success);
 		rq.setStatusreson("提交成功，等待审核！"); 
 		return rq;
@@ -292,7 +322,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 				}
 			}
 			//代理商 申请信息复制到正式代理表
-			entryAgentInfo(apply);
+			this.addAgentInfo(apply);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("审核成功");
 		}else {
@@ -329,22 +359,22 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 	 * 代理商通过审核，录入代理商信息、代理商影楼信息，代理商身份标识
 	 * @param apply
 	 */
-	public void entryAgentInfo(UAgentapply apply){
+	public void addAgentInfo(UAgentapply apply){
 		if(apply!=null){
 			//代理商录入
-			UAgents agentInfo=new UAgents();
-			agentInfo.setAgentuserid(apply.getAgentuserid());
-			agentInfo.setAgentcompanyname(apply.getAgentcompanyname());
-			agentInfo.setContactname(apply.getContactname());
-			agentInfo.setPhone(apply.getPhone());
-			agentInfo.setProvince(apply.getProvince());
-			agentInfo.setCity(apply.getCity());
-			agentInfo.setArea(apply.getArea());
-			agentInfo.setStreetdetail(apply.getStreetdetail());
-			agentInfo.setStatus(Integer.parseInt(AgentStatusEnum.ok.toString()));
-			agentInfo.setCreatetime(new Date());
-			agentInfo.setProcesstime(new Date());
-			agentsMapper.insert(agentInfo);
+			UAgents agentModel=new UAgents();
+			agentModel.setAgentuserid(apply.getAgentuserid());
+			agentModel.setAgentcompanyname(apply.getAgentcompanyname());
+			agentModel.setContactname(apply.getContactname());
+			agentModel.setPhone(apply.getPhone());
+			agentModel.setProvince(apply.getProvince());
+			agentModel.setCity(apply.getCity());
+			agentModel.setArea(apply.getArea());
+			agentModel.setStreetdetail(apply.getStreetdetail());
+			agentModel.setStatus(Integer.parseInt(AgentStatusEnum.ok.toString()));
+			agentModel.setCreatetime(new Date());
+			agentModel.setProcesstime(new Date());
+			agentsMapper.insertSelective(agentModel);
 			//更新代理身份标识
 			userBasic.addUserIdentity(apply.getAgentuserid(),UserIdentityEnums.agent); 
 			
@@ -370,13 +400,12 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			branch.setRemark(apply.getRemark());
 			branch.setCreatetime(new Date());
 			branch.setProcesstime(new Date());
-			branchesMapper.insert(branch);	
+			branchesMapper.insertSelective(branch);	
 			//更新代理身份标识
 			userBasic.addUserIdentity(apply.getAgentuserid(),UserIdentityEnums.branch);  
 		}
 	}
-	@Autowired
-	private IPic_AgentMgtDao agentDao;
+	
 	
 	public ReturnModel getAgentApplyStatusModel(Long agentUserId){
 		Map<String, Object> map=new HashMap<String, Object>();
@@ -388,6 +417,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			agentapply.setProviceName(regionService.getName(agentapply.getProvince())) ;
 			agentapply.setCityName(regionService.getName(agentapply.getCity())) ;
 			agentapply.setAreaName(regionService.getName(agentapply.getArea())) ;
+			agentapply.setAgentArealist(getAgentArealist(agentapply.getArea())); 
 			map.put("applyInfo", agentapply);
 			if(agentapply.getStatus()!=null){
 				if(agentapply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.ok.toString())){
@@ -420,6 +450,8 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			branch.setProviceName(regionService.getName(branch.getProvince())) ;
 			branch.setCityName(regionService.getName(branch.getCity())) ;
 			branch.setAreaName(regionService.getName(branch.getArea())) ;
+			branch.setAgentArealist(getAgentArealist(branch.getArea()));  
+			
 			map.put("applyInfo", branch);
 			if(branch.getStatus()!=null){
 				if(branch.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.ok.toString())){
@@ -439,6 +471,40 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		rq.setStatu(ReturnStatus.Success);
 		rq.setBasemodle(map);
 		return rq;
+	}
+	
+	private List<String> getAgentArealist(Integer areaCode){
+		RAreaplans areaplans= areaplansMapper.selectByPrimaryKey(areaCode);
+		if(areaplans!=null){//区域在规划单元内
+			List<RAreaplans> arealist= agentAreaDao.findRAreaplansByAreaId(areaplans.getAreaid());
+			if(arealist!=null&&arealist.size()>0){
+				List<String> areasList=new ArrayList<String>();
+				for (RAreaplans rr : arealist) {
+					areasList.add(rr.getAreaname());
+				}
+				return areasList;
+			}
+		}
+		return null;
+	}
+	/**
+	 * 代理区域codelist
+	 * @param areaCode
+	 * @return
+	 */
+	private List<Integer> getAgentAreaCodelist(Integer areaCode){
+		RAreaplans areaplans= areaplansMapper.selectByPrimaryKey(areaCode);
+		if(areaplans!=null){//区域在规划单元内
+			List<RAreaplans> arealist= agentAreaDao.findRAreaplansByAreaId(areaplans.getAreaid());
+			if(arealist!=null&&arealist.size()>0){
+				List<Integer> areasList=new ArrayList<Integer>();
+				for (RAreaplans rr : arealist) {
+					areasList.add(rr.getAreacode());
+				}
+				return areasList;
+			}
+		}
+		return null;
 	}
 	
 	public ReturnModel getAgentArea(Integer areaCode){

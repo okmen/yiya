@@ -36,7 +36,7 @@
     delete from U_Branches
     where BranchUserId = #{branchuserid,jdbcType=BIGINT}
   </delete>
- <insert id="insert" parameterType="com.bbyiya.model.UBranches" >
+  <insert id="insert" parameterType="com.bbyiya.model.UBranches" >
     insert into U_Branches (BranchUserId, BranchCompanyName, AgentUserId, 
       UserName, ContactName, Phone, 
       Province, City, Area, 

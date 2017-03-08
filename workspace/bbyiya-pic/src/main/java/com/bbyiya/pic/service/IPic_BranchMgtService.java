@@ -37,6 +37,7 @@ public interface IPic_BranchMgtService {
 	 * @return
 	 */
 	ReturnModel audit_AgentApply(Long adminId,Long agentUserId,int status,String msg);
+	
 	/**
 	 * Ó°Â¥·ÖµêÉóºË
 	 * @param adminId

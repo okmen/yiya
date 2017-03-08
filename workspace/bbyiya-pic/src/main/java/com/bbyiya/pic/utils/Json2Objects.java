@@ -8,6 +8,7 @@ import net.sf.json.JSONObject;
 
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.UBranchinfotemp;
+import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUseraddress;
 import com.bbyiya.pic.vo.product.MyProductParam;
 import com.bbyiya.utils.ObjectUtil;
@@ -149,6 +150,24 @@ public class Json2Objects {
 			String streetdetail=String.valueOf(model.get("streetdetail"));
 			if(!ObjectUtil.isEmpty(streetdetail)&&!"null".equals(streetdetail)){
 				param.setStreetdetail(streetdetail);
+			}
+			return param;
+		}
+		return null;
+		
+	}
+	
+	public static UBranchusers getParam_UBranchusers(String memberJson) {
+		JSONObject model = JSONObject.fromObject(memberJson);
+		if (model != null) {
+			UBranchusers param = new UBranchusers();
+			String name=String.valueOf(model.get("name"));
+			if(!ObjectUtil.isEmpty(name)&&!"null".equals(name)){
+				param.setName(name);
+			}
+			String phone=String.valueOf(model.get("phone"));
+			if(!ObjectUtil.isEmpty(phone)&&!"null".equals(phone)){
+				param.setPhone(phone);
 			}
 			return param;
 		}

@@ -3,18 +3,22 @@ package com.bbyiya.service.impl;
 import java.util.Date;
 import java.util.UUID;
 
+
+
 //import org.apache.commons.logging.Log;
 //import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.common.enums.SendMsgEnums;
 import com.bbyiya.common.vo.ResultMsg;
 import com.bbyiya.dao.UChildreninfoMapper;
 import com.bbyiya.dao.UOtherloginMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.enums.user.UserStatusEnum;
 import com.bbyiya.model.UChildreninfo;
 import com.bbyiya.model.UOtherlogin;
@@ -200,6 +204,15 @@ public class UserLoginService implements IUserLoginService {
 		LoginSuccessResult result = new LoginSuccessResult();
 		result.setUserId(user.getUserid());
 		result.setIdentity(user.getIdentity());
+		if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.agent)){
+			result.setIsAgent(1);
+		}
+		if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)){
+			result.setIsBranch(1);
+		}
+		if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.salesman)){
+			result.setIsBranchMember(1);
+		} 
 		result.setMobilePhone(user.getMobilephone());
 		result.setNickName(user.getNickname());
 		result.setHeadImg(user.getUserimg());

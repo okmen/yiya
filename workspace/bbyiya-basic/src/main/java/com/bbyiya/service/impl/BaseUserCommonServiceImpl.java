@@ -32,6 +32,7 @@ public class BaseUserCommonServiceImpl implements IBaseUserCommonService{
 		}
 	}
 	
+	
 	public void removeUserIdentity(Long userId,UserIdentityEnums identity){
 		UUsers users=usersMapper.selectByPrimaryKey(userId);
 		if(users!=null){

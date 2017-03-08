@@ -37,8 +37,9 @@ public class LoginSuccessResult  implements Serializable{
      */
     private Long identity;
     
-    private int isEmployee;
-    private int isBranchBussiness;
+    private int isAgent;
+    private int isBranch;
+    private int isBranchMember;
     //登陆票据
     private String ticket;
     //第三方注册标记
@@ -125,18 +126,25 @@ public class LoginSuccessResult  implements Serializable{
 	public void setIsTester(Integer isTester) {
 		this.isTester = isTester;
 	}
-	public int getIsEmployee() {
-		return isEmployee;
+	public int getIsAgent() {
+		return isAgent;
 	}
-	public void setIsEmployee(int isEmployee) {
-		this.isEmployee = isEmployee;
+	public void setIsAgent(int isAgent) {
+		this.isAgent = isAgent;
 	}
-	public int getIsBranchBussiness() {
-		return isBranchBussiness;
+	public int getIsBranch() {
+		return isBranch;
 	}
-	public void setIsBranchBussiness(int isBranchBussiness) {
-		this.isBranchBussiness = isBranchBussiness;
+	public void setIsBranch(int isBranch) {
+		this.isBranch = isBranch;
 	}
+	public int getIsBranchMember() {
+		return isBranchMember;
+	}
+	public void setIsBranchMember(int isBranchMember) {
+		this.isBranchMember = isBranchMember;
+	}
+	
 	
 
 	

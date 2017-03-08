@@ -8,6 +8,7 @@ public class UAgents {
     private String agentcompanyname;
 
     private String contactname;
+
     private String username;
 
     private String phone;
@@ -48,6 +49,14 @@ public class UAgents {
 
     public void setContactname(String contactname) {
         this.contactname = contactname == null ? null : contactname.trim();
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username == null ? null : username.trim();
     }
 
     public String getPhone() {
@@ -113,13 +122,4 @@ public class UAgents {
     public void setProcesstime(Date processtime) {
         this.processtime = processtime;
     }
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-    
 }

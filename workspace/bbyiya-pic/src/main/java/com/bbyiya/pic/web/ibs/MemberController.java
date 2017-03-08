@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.enums.ReturnStatus;
-import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UBranchusers;
 import com.bbyiya.pic.service.IPic_MemberMgtService;
+import com.bbyiya.pic.utils.Json2Objects;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
@@ -55,7 +55,7 @@ public class MemberController extends SSOController{
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			UBranchusers branchUser=(UBranchusers)JsonUtil.jsonStrToObject(memberJson, UBranches.class);
+			UBranchusers branchUser= Json2Objects.getParam_UBranchusers(memberJson);//(UBranchusers)JsonUtil.jsonStrToObject(memberJson, UBranches.class);
 			rq=memberMgtService.addBranchUser(user.getUserId(), branchUser);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);

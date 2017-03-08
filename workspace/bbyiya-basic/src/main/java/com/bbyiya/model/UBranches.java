@@ -10,6 +10,7 @@ public class UBranches {
     private Long agentuserid;
 
     private String username;
+
     private String contactname;
 
     private String phone;
@@ -68,6 +69,14 @@ public class UBranches {
 
     public void setUsername(String username) {
         this.username = username == null ? null : username.trim();
+    }
+
+    public String getContactname() {
+        return contactname;
+    }
+
+    public void setContactname(String contactname) {
+        this.contactname = contactname == null ? null : contactname.trim();
     }
 
     public String getPhone() {
@@ -173,13 +182,4 @@ public class UBranches {
     public void setProcesstime(Date processtime) {
         this.processtime = processtime;
     }
-
-	public String getContactname() {
-		return contactname;
-	}
-
-	public void setContactname(String contactname) {
-		this.contactname = contactname;
-	}
-    
 }

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <appSettings>
+	<yp_single_url value="https://sms.yunpian.com/v2/sms/single_send.json"/><!-- 云片  -->
+	<yp_add_url value="https://sms.yunpian.com/v2/tpl/add.json"/><!-- 云片添加模板url -->
+	<yp_apikey value="593936c15fcc5c7824407d9953eb2bef"/><!-- 云片apikey -->
 	<qiniu_ACCESS_KEY value="vLHbgaYj8mfvPUTpMCYLbAetXh-Cg0Fk0R_FtAN_"/>
 	<qiniu_SECRET_KEY value="re1EvlR0FwlSv9YEYlJsHw_WRIcshxhbxilGvmRN"/>
 	<qiniu_imagedomain value="http://obbepyhga.bkt.clouddn.com/"/><!-- 图片域名 -->
@@ -20,57 +23,12 @@
 		<item id="14" productId="1001" title="看着我的眼睛" content="这张照片上虽然我和妈妈对视着，但其实我的眼睛只能看到20厘米以内的东西，尽管这样，我还是很努力的再寻找着妈妈的目光。" tips="你的眼睛纯净透明，是这世上最美的珍宝，那种对世界充满好奇的样子，就叫做纯真。"  />
 		<item id="15" productId="1001" title="我的身份证" content="放在我枕头旁边的东西叫做出生证，是我来到这个世界上的第一个官方证明，这么重要的物件当然要合影留念啦。" tips="这张出生证上登记着你的体重和身高，你是那么的小，爸爸妈妈希望你快快地长大。"  />			
 	</scenelist>
-	<productDesimgs>
-		<item productId="1001" imageUrl="http://pic.bbyiya.com/2017011300001FiFigure-1.jpg"/>
-		<item productId="1001" imageUrl="http://pic.bbyiya.com/2017011300001FiFigure-2.jpg"/>
-		<item productId="1001" imageUrl="http://pic.bbyiya.com/2017011300001FiFigure-3.jpg"/>
-		<item productId="1001" imageUrl="http://pic.bbyiya.com/2017011300001FiFigure-4.jpg"/>
-		<item productId="1101" imageUrl="http://pic.bbyiya.com/2017011300002-2Figure-1.jpg"/>
-		<item productId="1101" imageUrl="http://pic.bbyiya.com/2017011300002-2Figure-2.jpg"/>
-		<item productId="1101" imageUrl="http://pic.bbyiya.com/2017011300002-2Figure-3.jpg"/>
-		<item productId="1101" imageUrl="http://pic.bbyiya.com/2017011300002-2Figure-4.jpg"/>
-		<item productId="1201" imageUrl="http://pic.bbyiya.com/2017011300002-3Figure-1.jpg"/>
-		<item productId="1201" imageUrl="http://pic.bbyiya.com/2017011300002-3Figure-2.jpg"/>
-		<item productId="1201" imageUrl="http://pic.bbyiya.com/2017011300002-3Figure-3.jpg"/>
-		<item productId="1201" imageUrl="http://pic.bbyiya.com/2017011300002-3Figure-4.jpg"/>
-		<item productId="1301" imageUrl="http://pic.bbyiya.com/2017011300002-4Figure-1.jpg"/>
-		<item productId="1301" imageUrl="http://pic.bbyiya.com/2017011300002-4Figure-2.jpg"/>
-		<item productId="1301" imageUrl="http://pic.bbyiya.com/2017011300002-4Figure-3.jpg"/>
-		<item productId="1301" imageUrl="http://pic.bbyiya.com/2017011300002-4Figure-4.jpg"/>	
-	</productDesimgs>
-	<backgroundimgs>
-		<item  front="http://pic.bbyiya.com/2.png"  back=""/>
-		<item  front="http://pic.bbyiya.com/2.png" back=""/>
-		<item  front="http://pic.bbyiya.com/2.png" back=""/>
-		<item  front="http://pic.bbyiya.com/2.png" back=""/>
-		<item  front="http://pic.bbyiya.com/2.png" back=""/>
-		<item  front="http://pic.bbyiya.com/2.png" back=""/>
-		<item  front="http://pic.bbyiya.com/2.png" back=""/>
-		<item  front="http://pic.bbyiya.com/2.png" back=""/>
-		<item  front="http://pic.bbyiya.com/2.png" back=""/>
-		<item  front="http://pic.bbyiya.com/2.png" back=""/>
-		<item  front="http://pic.bbyiya.com/2.png" back=""/>
-		<item  front="http://pic.bbyiya.com/2.png" back=""/>
-	</backgroundimgs>
-	<proImageParamH>
-		<item id="1" top="0" left="11.4" hight="6.7" width="20" /><!-- 横板-横照片-编号 -->
-		<item id="2" top="6.7" left="11.4" hight="70" width="63.6" /><!-- 横板-横照片-图片 -->
-		<item id="3" top="81.7" left="11.4" hight="7.8" width="63.6" /><!-- 横板-横照片-文字 -->
-		<item id="4" top="0" left="11.4" hight="6.7" width="20" /><!-- 横板-竖照片 -编号 -->
-		<item id="5" top="6.7" left="11.4" hight="86.7" width="44.3" /><!-- 横板-竖照片-图片 -->
-		<item id="6" top="6.7" left="58.4" hight="31.9" width="18.1" /><!-- 横板-竖照片-文字 -->
-		
-		<item id="7" top="10" left="7.3" hight="6.7" width="20" /><!-- 竖板-横照片-编号 -->
-		<item id="8" top="16.7" left="7.3" hight="47" width="85.5" /><!-- 竖板-横照片-图片 -->
-		<item id="9" top="67.7" left="7.3" hight="9.4" width="85.1" /><!-- 竖板-横照片-文字 -->
-		
-		<item id="10" top="10" left="7.3" hight="6.7" width="20" /><!-- 竖板-横照片-编号 -->
-		<item id="11" top="16.7" left="7.3" hight="59.1" width="60.4" /><!-- 竖板-横照片-图片 -->
-		<item id="12" top="17.7" left="70.4" hight="38.7" width="22.6" /><!-- 竖板-横照片-文字 -->
-	</proImageParamH>
 	<wxBackUrl  value="https://mpic.bbyiya.com/wxpay/WxPayNotify"/><!-- 微信公众号支付回写地址 -->
 	<wxAppBackUrl  value="https://mpic.bbyiya.com/wxapppay/WxPayNotify"/><!-- 微信app支付回写地址 -->
 	<wxQuery value="https://api.mch.weixin.qq.com/pay/orderquery"/><!-- 微信订单查询 -->
 	<loginbackurl value="http://photo.bbyiya.com/"/>
+	<loginbackurl_test value="http://photo.bbyiya.com/dist"/><!-- c端测试 -->
+	<loginbackurl_ibs value="http://photo.bbyiya.com/ibs/index.html"/><!-- ibs首页 -->
 	<testcode value="yiya123456"  count="50"/>
+	<testcodeNum value="yiya123456" /><!-- 咿呀测试用户 -->
 </appSettings>

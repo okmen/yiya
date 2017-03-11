@@ -47,7 +47,7 @@ public class RegionServiceImpl implements IRegionService {
 	 * @return
 	 */
 	public List<RegionVo> findRegionAll() {
-		String keyString = "regionList_all";
+		String keyString = "regionList_all_170310";
 		@SuppressWarnings("unchecked")
 		List<RegionVo> resultList = (List<RegionVo>) RedisUtil.getObject(keyString);
 		if (resultList != null && resultList.size() > 0) {

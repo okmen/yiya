@@ -63,6 +63,32 @@
     from U_AgentApply
     where AgentUserId = #{agentuserid,jdbcType=BIGINT}
   </select>
+  <select id="findUAgentapplyVOList" resultMap="UAgentapplyVOResult" parameterType="com.bbyiya.pic.vo.agent.AgentSearchParam" ><!-- 获取申请列表 -->
+    select 
+    <include refid="UAgentapply_Column_List" />
+    from U_AgentApply
+    where 1=1
+    <if test="userId != null" >
+        and  AgentUserId = #{userId,jdbcType=BIGINT}
+    </if>
+    <if test="status != null" >
+       and  Status = #{status,jdbcType=INTEGER}
+    </if>
+  </select>
+  
+  <!-- 获取影楼 列表 -->
+  <select id="findUBranchVoList" resultMap="UBranchVoResult" parameterType="com.bbyiya.pic.vo.agent.AgentSearchParam" >
+    select 
+    <include refid="UBranches_Column_List" />
+    from U_Branches
+    where 1=1
+    <if test="userId != null" >
+        and  BranchUserId = #{userId,jdbcType=BIGINT}
+    </if>
+    <if test="status != null" >
+       and  Status = #{status,jdbcType=INTEGER}
+    </if>
+  </select>
   <!-- 通过影楼userId获取影楼信息result -->
   <select id="getUBranchVoByBranchUserId" resultMap="UBranchVoResult" parameterType="java.lang.Long" >
     select 

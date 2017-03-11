@@ -34,6 +34,7 @@ import com.bbyiya.model.UBranches;
 import com.bbyiya.pic.dao.IPic_AgentAreaDao;
 import com.bbyiya.pic.dao.IPic_AgentMgtDao;
 import com.bbyiya.pic.service.IPic_BranchMgtService;
+import com.bbyiya.pic.vo.agent.AgentSearchParam;
 import com.bbyiya.pic.vo.agent.UAgentApplyVo;
 import com.bbyiya.pic.vo.agent.UBranchVo;
 import com.bbyiya.service.IBaseUserCommonService;
@@ -111,6 +112,22 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		areaMap.put("price", priceTemp);
 		rqModel.setBasemodle(areaMap); 
 		return rqModel;
+	}
+	
+	public ReturnModel findAgentApplyList(AgentSearchParam param){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.Success);
+		List<UAgentApplyVo> list=agentDao.findUAgentapplyVOList(param);
+		rq.setBasemodle(list);
+		return rq;
+	}
+	
+	public ReturnModel findBranchVoList(AgentSearchParam param){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.Success);
+		List<UBranchVo> list=agentDao.findUBranchVoList(param);
+		rq.setBasemodle(list);
+		return rq;
 	}
 	
 	/**
@@ -331,6 +348,8 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		} 
 		return rq;
 	}
+	
+	
 	
 	/**
 	 * Ó°Â¥ÉóºË

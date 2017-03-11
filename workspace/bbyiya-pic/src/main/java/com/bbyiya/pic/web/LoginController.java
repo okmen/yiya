@@ -14,18 +14,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.baseUtils.CookieUtils;
+import com.bbyiya.dao.EErrorsMapper;
 import com.bbyiya.dao.ULoginlogsMapper;
 import com.bbyiya.dao.UUsertesterwxMapper;
 import com.bbyiya.enums.LoginTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.model.EErrors;
 import com.bbyiya.model.ULoginlogs;
 import com.bbyiya.pic.service.IPic_UserMgtService;
 import com.bbyiya.pic.utils.WxPublicUtils;
+import com.bbyiya.service.IUserLoginService;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.HttpRequestHelper;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
-import com.bbyiya.utils.RedisUtil;
 //import com.bbyiya.utils.pay.WxPayAppConfig;
 import com.bbyiya.utils.pay.WxPayConfig;
 import com.bbyiya.vo.ReturnModel;
@@ -39,6 +41,11 @@ public class LoginController extends SSOController {
 	/**
 	 * 登陆、注册 service
 	 */
+	@Resource(name = "userLoginService")
+	private IUserLoginService loginBaseService; 
+	/**
+	 * 登陆、注册 service
+	 */
 	@Resource(name = "pic_userMgtService")
 	private IPic_UserMgtService loginService;
 
@@ -46,7 +53,8 @@ public class LoginController extends SSOController {
 	private UUsertesterwxMapper testMapper;
 	@Autowired
 	private ULoginlogsMapper loginLogMapper;
-
+	@Autowired
+	private EErrorsMapper errorMapper;
 	/**
 	 * A01 第三方登陆、注册
 	 * 
@@ -81,6 +89,17 @@ public class LoginController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rqModel);
 	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value = "/loginPhone")
+	public String loginPhone(String phone, String pwd) throws Exception {
+		ReturnModel rqModel = loginBaseService.login(phone, pwd);
+		if (ReturnStatus.Success.equals(rqModel.getStatu()) && !ObjectUtil.isEmpty(rqModel.getBasemodle())) {
+			addLoginLogAndCookie(rqModel.getBasemodle());
+		}
+		return JsonUtil.objectToJsonStr(rqModel);
+	}
 
 	/**
 	 * A05 获取用户登录信息
@@ -96,7 +115,11 @@ public class LoginController extends SSOController {
 		if (user != null) {
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(user);
+//			String sid=request.getSession().getId();
+//			addlog("获取用户信息：sessionId="+sid+";val="+RedisUtil.getObject(sid) );
 		} else {
+//			String sid=request.getSession().getId();
+//			addlog("获取用户信息：sessionId="+sid+";val="+RedisUtil.getObject(sid) );
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登陆过期，请重新登陆！");
 		}
@@ -124,6 +147,8 @@ public class LoginController extends SSOController {
 	}
 	
 	
+	
+	
 
 	String access_token;
 	/**
@@ -138,7 +163,6 @@ public class LoginController extends SSOController {
 		if (ObjectUtil.isEmpty(code)) {
 			code = request.getParameter("code");
 		}
-		String logs = "code:" + code + ";state:" + state;
 		String urlString = "https://api.weixin.qq.com/sns/oauth2/access_token";
 		String dataString = "appid=" + WxPayConfig.APPID + "&secret=" + WxPayConfig.AppSecret + "&code=" + code + "&grant_type=authorization_code";
 		String result = HttpRequestHelper.sendPost(urlString, dataString);
@@ -156,7 +180,7 @@ public class LoginController extends SSOController {
 				String userInfoJson = HttpRequestHelper.sendPost(userInfoUrl, data2);
 				JSONObject userJson = JSONObject.fromObject(userInfoJson);
 				if (userInfoJson != null) {
-					logs += "5;";
+//					addlog(userInfoJson);
 					OtherLoginParam param = new OtherLoginParam();
 					param.setOpenId(openid);
 					param.setLoginType(Integer.parseInt(LoginTypeEnum.weixin.toString()));
@@ -166,9 +190,9 @@ public class LoginController extends SSOController {
 					if (ReturnStatus.Success.equals(rqModel.getStatu()) && !ObjectUtil.isEmpty(rqModel.getBasemodle())) {
 						addLoginLogAndCookie(rqModel.getBasemodle());
 					}
-					logs += "rqModel=" + JsonUtil.objectToJsonStr(rqModel);
+					
 				} else {
-					logs += "6;";
+					
 					rqModel.setStatu(ReturnStatus.SystemError);
 					rqModel.setStatusreson("获取用户信息失败");
 				}
@@ -180,11 +204,10 @@ public class LoginController extends SSOController {
 			rqModel.setStatu(ReturnStatus.SystemError);
 			rqModel.setStatusreson("获取微信登录权限失败");
 		}
-		RedisUtil.setObject("loginlogs", logs, 6000);
 		if (rqModel.getStatu().equals(ReturnStatus.Success)) {
 			return "redirect:" + ConfigUtil.getSingleValue("loginbackurl") ;
 		} else {
-			return "/index";
+			return "redirect:" + ConfigUtil.getSingleValue("loginbackurl") ;
 		}
 	}
 	
@@ -203,6 +226,8 @@ public class LoginController extends SSOController {
 				loginLogs.setSourcetype(1);// 12photo
 				loginLogMapper.insert(loginLogs);
 				CookieUtils.addCookieBySessionId(request, response,user.getTicket(),86400); 
+//				String sid=request.getSession().getId();
+//				addlog("C端登录：sessionId="+sid+";val="+user.getTicket() );
 				WxPublicUtils.setAccessToken(user.getUserId(),access_token);
 			}
 		} catch (Exception e) {
@@ -211,5 +236,17 @@ public class LoginController extends SSOController {
 
 	}
 	
+	
+	/**
+	 * 插入错误Log
+	 * 
+	 * @param msg
+	 */
+	public void addlog(String msg) {
+		EErrors errors = new EErrors();
+		errors.setClassname(this.getClass().getName());
+		errors.setMsg(msg);
+		errorMapper.insert(errors);
+	}
 
 }

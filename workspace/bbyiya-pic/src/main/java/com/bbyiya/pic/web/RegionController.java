@@ -49,14 +49,14 @@ public class RegionController extends SSOController {
 			if (!ObjectUtil.isEmpty(code)) {// 获取省
 				rq.setBasemodle(regionMapper.getProvinceByCode(ObjectUtil.parseInt(code)));
 			} else {
-				String keyCity="cityArea_province_list";
+				String keyCity="cityArea_province_list1";
 				List<RProvince> provincelist=(List<RProvince>)RedisUtil.getObject(keyCity);
 				if(provincelist!=null&&provincelist.size()>0){
 					rq.setBasemodle(provincelist);
 				}else {
 					provincelist=regionMapper.findProvincelistAll();
 					if(provincelist!=null&&provincelist.size()>0){
-						RedisUtil.setObject(keyCity, provincelist); 
+						RedisUtil.setObject(keyCity, provincelist,36000); 
 					}
 					rq.setBasemodle(provincelist); 
 				}
@@ -66,7 +66,7 @@ public class RegionController extends SSOController {
 			if (!ObjectUtil.isEmpty(code)) {//市 列表
 //				rq.setBasemodle(regionMapper.findCitylistBy_ProvinceCode(ObjectUtil.parseInt(code)));
 				
-				String keyCity="cityArea_province";
+				String keyCity="cityArea_province1";
 				Map<String, List<RCity>> mapCity= (Map<String, List<RCity>>)RedisUtil.getObject(keyCity); //new HashMap<Integer, List<RCity>>();
 				if(mapCity!=null){//已经有缓存信息了
 					if(mapCity.containsKey(code)){//有该省的所有市级缓存
@@ -75,7 +75,7 @@ public class RegionController extends SSOController {
 						List<RCity> list=regionMapper.findCitylistBy_ProvinceCode(ObjectUtil.parseInt(code));
 						if(list!=null&&list.size()>0){
 							mapCity.put(code, list);
-							RedisUtil.setObject(keyCity, mapCity);
+							RedisUtil.setObject(keyCity, mapCity,36000);
 						}
 						rq.setBasemodle(list); 
 					}
@@ -94,7 +94,7 @@ public class RegionController extends SSOController {
 			if (!ObjectUtil.isEmpty(code)) {// 区 列表
 //				rq.setBasemodle(regionMapper.findArealistBy_CityCode(ObjectUtil.parseInt(code)));
 				
-				String keyCity="cityArea_city";
+				String keyCity="cityArea_city1";
 				Map<String, List<RAreas>> mapCity= (Map<String, List<RAreas>>)RedisUtil.getObject(keyCity);
 				if(mapCity!=null){//已经有缓存信息了
 					if(mapCity.containsKey(code)){//有该省的所有市级缓存
@@ -103,7 +103,7 @@ public class RegionController extends SSOController {
 						List<RAreas> list=regionMapper.findArealistBy_CityCode(ObjectUtil.parseInt(code));
 						if(list!=null&&list.size()>0){
 							mapCity.put(code, list);
-							RedisUtil.setObject(keyCity, mapCity);
+							RedisUtil.setObject(keyCity, mapCity,36000);
 						}
 						rq.setBasemodle(list); 
 					}
@@ -112,7 +112,7 @@ public class RegionController extends SSOController {
 					List<RAreas> list=regionMapper.findArealistBy_CityCode(ObjectUtil.parseInt(code));
 					if(list!=null&&list.size()>0){
 						mapCity.put(code, list);
-						RedisUtil.setObject(keyCity, mapCity);
+						RedisUtil.setObject(keyCity, mapCity,36000);
 					}
 					rq.setBasemodle(list); 
 				}

@@ -9,9 +9,10 @@
     <result column="Content" property="content" jdbcType="VARCHAR" />
     <result column="Sort" property="sort" jdbcType="INTEGER" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
   </resultMap>
   <sql id="Base_Column_List" >
-    PdId, CartId, SceneId, ImgUrl, Content, Sort, CreateTime
+    PdId, CartId, SceneId, ImgUrl, Content, Sort, CreateTime, UserId
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -37,13 +38,13 @@
     delete from P_MyProductDetails
     where CartId = #{cartId,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.bbyiya.model.PMyproductdetails" >
+ <insert id="insert" parameterType="com.bbyiya.model.PMyproductdetails" >
     insert into P_MyProductDetails (PdId, CartId, SceneId, 
       ImgUrl, Content, Sort, 
-      CreateTime)
+      CreateTime, UserId)
     values (#{pdid,jdbcType=BIGINT}, #{cartid,jdbcType=BIGINT}, #{sceneid,jdbcType=INTEGER}, 
       #{imgurl,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, 
-      #{createtime,jdbcType=TIMESTAMP})
+      #{createtime,jdbcType=TIMESTAMP}, #{userid,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproductdetails" >
     insert into P_MyProductDetails
@@ -69,6 +70,9 @@
       <if test="createtime != null" >
         CreateTime,
       </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="pdid != null" >
@@ -91,6 +95,9 @@
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -115,6 +122,9 @@
       <if test="createtime != null" >
         CreateTime = #{createtime,jdbcType=TIMESTAMP},
       </if>
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
     </set>
     where PdId = #{pdid,jdbcType=BIGINT}
   </update>
@@ -125,7 +135,8 @@
       ImgUrl = #{imgurl,jdbcType=VARCHAR},
       Content = #{content,jdbcType=VARCHAR},
       Sort = #{sort,jdbcType=INTEGER},
-      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      UserId = #{userid,jdbcType=BIGINT}
     where PdId = #{pdid,jdbcType=BIGINT}
   </update>
 </mapper>

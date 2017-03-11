@@ -2,6 +2,7 @@ package com.bbyiya.pic.service;
 
 import com.bbyiya.model.UAgentapply;
 import com.bbyiya.model.UBranches;
+import com.bbyiya.pic.vo.agent.AgentSearchParam;
 import com.bbyiya.vo.ReturnModel;
 
 public interface IPic_BranchMgtService {
@@ -21,6 +22,10 @@ public interface IPic_BranchMgtService {
 	 * @return
 	 */
 	ReturnModel applyAgent(Long userId,UAgentapply applyInfo);
+	
+	ReturnModel findAgentApplyList(AgentSearchParam param);
+	
+	ReturnModel findBranchVoList(AgentSearchParam param);
 	/**
 	 * ”∞¬•∑÷µÍ…Í«Î
 	 * @param userId

@@ -24,7 +24,8 @@ public class PMyproducts implements Serializable{
     private String phone;
 
     private String orderno;
-
+    private Integer invitestatus;
+    
     public Long getCartid() {
         return cartid;
     }
@@ -103,6 +104,14 @@ public class PMyproducts implements Serializable{
 
 	public void setOrderno(String orderno) {
 		this.orderno = orderno;
+	}
+
+	public Integer getInvitestatus() {
+		return invitestatus;
+	}
+
+	public void setInvitestatus(Integer invitestatus) {
+		this.invitestatus = invitestatus;
 	}
     
 }

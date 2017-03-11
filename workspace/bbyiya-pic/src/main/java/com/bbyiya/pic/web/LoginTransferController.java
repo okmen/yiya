@@ -44,40 +44,60 @@ public class LoginTransferController extends SSOController {
 	private ULoginlogsMapper loginLogMapper;
 	@Autowired
 	private EErrorsMapper errorMapper;
-	
-//	/**
-//	 * 登录 中转页
-//	 * @return
-//	 * @throws Exception
-//	 */
-//	@RequestMapping(value = "/trans")
-//	public String transferPage(String backurl) throws Exception {
-//		LoginSuccessResult user = super.getLoginUser();
-//		if (user != null) {
-//			return "redirect:"+ ConfigUtil.getSingleValue("loginbackurl") ;
-//		} else {
-//			return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin2&response_type=code&scope=snsapi_base#wechat_redirect" ;	
-//		}		
-//	}
-	
-	
-	String access_token;
 	/**
-	 * 微信登录
+	 * 微信access_token
+	 */
+	private String access_token;
+
+	/**
+	 * IBS登录 中转页
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/ibs/index")
+	public String transferPage(String backurl) throws Exception {
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			return "redirect:" + ConfigUtil.getSingleValue("loginbackurl_ibs");
+		} else {
+			return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin2&response_type=code&scope=snsapi_base#wechat_redirect";
+		}
+	}
+
+
+	/**
+	 * IBS 微信登录
 	 * 
 	 * @param code
 	 * @return
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/wxLogin2")
-	public String wxLogin(String code, String state) throws Exception {
+	public String wxLogin2(String code, String state) throws Exception {
+		ReturnModel rqModel = getWxLogin(code, state);
+		if (rqModel.getStatu().equals(ReturnStatus.Success)) {
+			return "redirect:" + ConfigUtil.getSingleValue("loginbackurl_ibs")+ "?ticket=" + ((LoginSuccessResult) rqModel.getBasemodle()).getTicket();
+		} else {
+			addlog(rqModel.getStatusreson());
+			return "/index";
+		}
+	}
+
+	/**
+	 * 微信登录
+	 * 
+	 * @param code
+	 * @param state
+	 * @return
+	 */
+	public ReturnModel getWxLogin(String code, String state) {
 		if (ObjectUtil.isEmpty(code)) {
 			code = request.getParameter("code");
 		}
 		String urlString = "https://api.weixin.qq.com/sns/oauth2/access_token";
 		String dataString = "appid=" + WxPayConfig.APPID + "&secret=" + WxPayConfig.AppSecret + "&code=" + code + "&grant_type=authorization_code";
 		String result = HttpRequestHelper.sendPost(urlString, dataString);
-
 		JSONObject model = JSONObject.fromObject(result);
 		ReturnModel rqModel = new ReturnModel();
 		if (model != null) {
@@ -99,7 +119,6 @@ public class LoginTransferController extends SSOController {
 						addLoginLogAndCookie(rqModel.getBasemodle());
 					}
 				} else {
-					
 					rqModel.setStatu(ReturnStatus.SystemError);
 					rqModel.setStatusreson("获取用户信息失败");
 				}
@@ -111,17 +130,14 @@ public class LoginTransferController extends SSOController {
 			rqModel.setStatu(ReturnStatus.SystemError);
 			rqModel.setStatusreson("获取微信登录权限失败");
 		}
-		
-		if (rqModel.getStatu().equals(ReturnStatus.Success)) {
-			return "redirect:" + ConfigUtil.getSingleValue("loginbackurl_ibs")+"?ticket="+((LoginSuccessResult)rqModel.getBasemodle()).getTicket() ;
-		} else {
-			addlog(rqModel.getStatusreson()); 
-			return "/index";
-		}
+		return rqModel;
 	}
-	
 
-
+	/**
+	 * 加入session, cookie
+	 * 
+	 * @param obj
+	 */
 	private void addLoginLogAndCookie(Object obj) {
 		try {
 			LoginSuccessResult user = (LoginSuccessResult) obj;
@@ -131,22 +147,27 @@ public class LoginTransferController extends SSOController {
 				loginLogs.setLogintime(new Date());
 				loginLogs.setLogintype(Integer.parseInt(LoginTypeEnum.weixin.toString()));
 				loginLogs.setIpstr(super.getIpStr());
-				loginLogs.setNickname(user.getNickName()); 
+				loginLogs.setNickname(user.getNickName());
 				loginLogs.setSourcetype(1);// 12photo
 				loginLogMapper.insert(loginLogs);
-				CookieUtils.addCookieBySessionId(request, response,user.getTicket(),86400); 
-				WxPublicUtils.setAccessToken(user.getUserId(),access_token);
+				CookieUtils.addCookieBySessionId(request, response, user.getTicket(), 86400);
+//				addlog("登录IBS：sessionId="+request.getSession().getId());
+				WxPublicUtils.setAccessToken(user.getUserId(), access_token);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
 
 	}
-	
-	
-	public void addlog(String msg){
-		EErrors errors=new EErrors();
-		errors.setClassname(this.getClass().getName()); 
+
+	/**
+	 * 插入错误Log
+	 * 
+	 * @param msg
+	 */
+	public void addlog(String msg) {
+		EErrors errors = new EErrors();
+		errors.setClassname(this.getClass().getName());
 		errors.setMsg(msg);
 		errorMapper.insert(errors);
 	}

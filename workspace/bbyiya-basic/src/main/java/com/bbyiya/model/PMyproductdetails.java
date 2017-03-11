@@ -19,6 +19,8 @@ public class PMyproductdetails implements Serializable{
 
     private Date createtime;
 
+    private Long userid;
+    
     public Long getPdid() {
         return pdid;
     }
@@ -74,4 +76,13 @@ public class PMyproductdetails implements Serializable{
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+
+	public Long getUserid() {
+		return userid;
+	}
+
+	public void setUserid(Long userid) {
+		this.userid = userid;
+	}
+    
 }

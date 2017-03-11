@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.PMyproductsinvitesMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.PMyproductsinvites" >
+    <id column="InviteId" property="inviteid" jdbcType="BIGINT" />
+    <result column="CartId" property="cartid" jdbcType="BIGINT" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="InvitePhone" property="invitephone" jdbcType="VARCHAR" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    InviteId, CartId, UserId, InvitePhone, Status, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from P_MyProductsInvites
+    where InviteId = #{inviteid,jdbcType=BIGINT}
+  </select>
+   <select id="findListByCartId" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from P_MyProductsInvites
+    where CartId = #{cartId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from P_MyProductsInvites
+    where InviteId = #{inviteid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.PMyproductsinvites" >
+    insert into P_MyProductsInvites (InviteId, CartId, UserId, 
+      InvitePhone, Status, CreateTime
+      )
+    values (#{inviteid,jdbcType=BIGINT}, #{cartid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, 
+      #{invitephone,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproductsinvites" >
+    insert into P_MyProductsInvites
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="inviteid != null" >
+        InviteId,
+      </if>
+      <if test="cartid != null" >
+        CartId,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="invitephone != null" >
+        InvitePhone,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="inviteid != null" >
+        #{inviteid,jdbcType=BIGINT},
+      </if>
+      <if test="cartid != null" >
+        #{cartid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="invitephone != null" >
+        #{invitephone,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PMyproductsinvites" >
+    update P_MyProductsInvites
+    <set >
+      <if test="cartid != null" >
+        CartId = #{cartid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="invitephone != null" >
+        InvitePhone = #{invitephone,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where InviteId = #{inviteid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PMyproductsinvites" >
+    update P_MyProductsInvites
+    set CartId = #{cartid,jdbcType=BIGINT},
+      UserId = #{userid,jdbcType=BIGINT},
+      InvitePhone = #{invitephone,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where InviteId = #{inviteid,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -75,6 +75,11 @@ public enum ReturnStatus {
 	 * 
 	 */
 	OrderError_2(502),
+	/*----------------------------协同编辑错误------------------------------------------------*/
+	/**
+	 * 协同编辑错误
+	 */
+	InvitError_1(601)
 	;
 
 	private final int step;

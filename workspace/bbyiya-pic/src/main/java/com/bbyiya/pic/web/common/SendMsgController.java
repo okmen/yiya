@@ -36,8 +36,13 @@ public class SendMsgController {
     public String sendMsg(String phone,String type) throws MapperException
     {
 		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.ParamError);
+		if(!ObjectUtil.isMobile(phone)){
+			rq.setStatusreson("请输入正确的手机号！");
+			return JsonUtil.objectToJsonStr(rq); 
+		}
 		int codeType=ObjectUtil.parseInt(type);
-		if(!ObjectUtil.isEmpty(type)){
+		if(codeType>0){
 			if(codeType==(Integer.parseInt(SendMsgEnums.register.toString()))){
 				UUsers user= userDao.getUUsersByPhone(phone);
 				if(user!=null&&user.getStatus()!=null&&user.getStatus().intValue()==Integer.parseInt(UserStatusEnum.ok.toString())){
@@ -53,10 +58,12 @@ public class SendMsgController {
 					return JsonUtil.objectToJsonStr(rq); 
 				}
 			}
+		}else {
+			rq.setStatusreson("参数有误");
+			return JsonUtil.objectToJsonStr(rq);
 		}
 		String result= SendSMSByMobile.sendSmsReturnJson(codeType, phone);
 		if(ObjectUtil.isEmpty(result)){
-			rq.setStatu(ReturnStatus.ParamError);
 			rq.setStatusreson("参数有误");
 			return JsonUtil.objectToJsonStr(rq);
 		}

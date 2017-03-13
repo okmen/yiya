@@ -12,19 +12,36 @@
   <sql id="Base_Column_List" >
     InviteId, CartId, UserId, InvitePhone, Status, CreateTime
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" ><!-- 0 主键查询 -->
     select 
     <include refid="Base_Column_List" />
     from P_MyProductsInvites
     where InviteId = #{inviteid,jdbcType=BIGINT}
   </select>
-   <select id="findListByCartId" resultMap="BaseResultMap" >
+   <select id="findListByCartId" resultMap="BaseResultMap" ><!-- 1 根据作品id 查找被邀请列表 -->
     select 
     <include refid="Base_Column_List" />
     from P_MyProductsInvites
     where CartId = #{cartId,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+  <select id="findListByPhone" resultMap="BaseResultMap" ><!-- 2 根据moblePhone 查找被邀请的作品 -->
+    select 
+    <include refid="Base_Column_List" />
+    from P_MyProductsInvites
+    where InvitePhone = #{phone,jdbcType=VARCHAR} order by CreateTime DESC
+  </select>
+  <select id="countInvitingsByPhone" resultType="java.lang.Integer" ><!--3 count我的待处理邀约 数量 -->
+    select count(*)
+    from P_MyProductsInvites
+    where InvitePhone = #{phone,jdbcType=VARCHAR} and Status= #{status,jdbcType=INTEGER}
+  </select>
+  <select id="getInviteByPhoneAndCartId" resultMap="BaseResultMap"  ><!--4 我的邀请model -->
+      select 
+    <include refid="Base_Column_List" />
+    from P_MyProductsInvites
+    where InvitePhone = #{phone,jdbcType=VARCHAR} and CartId=#{cartId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" ><!-- 删除邀请 -->
     delete from P_MyProductsInvites
     where InviteId = #{inviteid,jdbcType=BIGINT}
   </delete>

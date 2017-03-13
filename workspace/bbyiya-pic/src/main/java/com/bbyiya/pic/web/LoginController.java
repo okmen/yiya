@@ -115,11 +115,7 @@ public class LoginController extends SSOController {
 		if (user != null) {
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(user);
-//			String sid=request.getSession().getId();
-//			addlog("获取用户信息：sessionId="+sid+";val="+RedisUtil.getObject(sid) );
 		} else {
-//			String sid=request.getSession().getId();
-//			addlog("获取用户信息：sessionId="+sid+";val="+RedisUtil.getObject(sid) );
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登陆过期，请重新登陆！");
 		}
@@ -184,8 +180,14 @@ public class LoginController extends SSOController {
 					OtherLoginParam param = new OtherLoginParam();
 					param.setOpenId(openid);
 					param.setLoginType(Integer.parseInt(LoginTypeEnum.weixin.toString()));
-					param.setNickName(String.valueOf(userJson.get("nickname")));
-					param.setHeadImg(String.valueOf(userJson.get("headimgurl")));
+					String nickName=String.valueOf(userJson.get("nickname"));
+					String headimg=String.valueOf(userJson.get("headimgurl"));
+					if(!ObjectUtil.isEmpty(nickName)&&!"null".equals(nickName)){
+						param.setNickName(nickName);
+					}
+					if(!ObjectUtil.isEmpty(headimg)&&!"null".equals(headimg)){
+						param.setHeadImg(headimg);
+					}
 					rqModel = loginService.otherLogin(param);
 					if (ReturnStatus.Success.equals(rqModel.getStatu()) && !ObjectUtil.isEmpty(rqModel.getBasemodle())) {
 						addLoginLogAndCookie(rqModel.getBasemodle());

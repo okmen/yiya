@@ -8,19 +8,19 @@ public enum InviteStatus {
 	/**
      * 发送邀请中
      */
-    inviting(0),
+    inviting(1),
     /**
      * 接受邀请
      */
-    agree(1),
+    agree(3),
     /**
-     * 通过， 交了代理费(成为代理商)
+     *  忽略邀请
      */
-    pass(2),
+    lgnore(2),
     /**
-     * 编辑好了
+     * 被邀请人已经编辑好了
      */
-    ok(3)
+    ok(4)
     ;
 
     private final int Type;

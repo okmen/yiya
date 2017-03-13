@@ -23,5 +23,24 @@ public interface PMyproductsinvitesMapper {
      * @param cartId
      * @return
      */
-    List<PMyproductsinvites> findListByCartId(@Param("cartId")Long cartId);
+    List<PMyproductsinvites> findListByCartId(@Param("cartId") Long cartId);
+    /**
+     * 根据手机号 获取被邀请协同编辑的 作品列表
+     * @param phone
+     * @return
+     */
+    List<PMyproductsinvites> findListByPhone(@Param("phone") String phone);
+    /**
+     * 查找我的邀约数量
+     * @param phone
+     * @return
+     */
+    int countInvitingsByPhone(@Param("phone")String phone,@Param("status")Integer status);
+    /**
+     * 获取邀请model
+     * @param phone
+     * @param cartId
+     * @return
+     */
+    PMyproductsinvites getInviteByPhoneAndCartId(@Param("phone")String phone,@Param("cartId")Long cartId);
 }

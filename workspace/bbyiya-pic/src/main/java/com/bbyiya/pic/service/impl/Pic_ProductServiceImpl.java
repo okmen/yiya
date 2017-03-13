@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.PMyproductsMapper;
+import com.bbyiya.dao.PMyproductsinvitesMapper;
 import com.bbyiya.dao.PProductdetailsMapper;
 import com.bbyiya.dao.PProductsMapper;
 import com.bbyiya.dao.PScenesMapper;
@@ -22,6 +23,7 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
+import com.bbyiya.model.PMyproductsinvites;
 import com.bbyiya.model.PProductdetails;
 import com.bbyiya.model.PProducts;
 import com.bbyiya.model.PScenes;
@@ -184,27 +186,57 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				rq.setStatusreson("没有选择款式");
 				return rq;
 			}
+			UUsers user=usersMapper.selectByPrimaryKey(userId);
 			if (param.getCartid() != null && param.getCartid() > 0) {// 更新
 				cartIdTemp = param.getCartid();
 				PMyproducts myproducts = myMapper.selectByPrimaryKey(param.getCartid());
-				if (myproducts != null && myproducts.getUserid() != null && myproducts.getUserid().longValue() == userId) {// 修改
+				boolean canModify=false;
+				//自己的作品
+				if(myproducts != null && myproducts.getUserid() != null && myproducts.getUserid().longValue() == userId){
+					canModify=true;
+				}else {//受邀请 协同编辑的作品
+					List<PMyproductsinvites> invlist= inviteMapper.findListByCartId(param.getCartid());
+					if(invlist!=null&&invlist.size()>0){
+						for (PMyproductsinvites in : invlist) {
+							if(user!=null&&in.getInvitephone().equals(user.getMobilephone()))
+								canModify=true;
+						}
+					}
+				}
+				if (canModify) {// 修改
 					if (!ObjectUtil.isEmpty(param.getTitle())) {
 						myproducts.setTitle(param.getTitle());
 					}
 					if (!ObjectUtil.isEmpty(param.getAuthor())) {
 						myproducts.setAuthor(param.getAuthor());
 					}
-					// 更新用户作品基本信息
-					myMapper.updateByPrimaryKeySelective(myproducts);
 					if (param.getDetails() != null && param.getDetails().size() > 0) {
+						//检验 场景是否被选过
+						List<PMyproductdetails> details=myDetaiMapper.findMyProductdetails(cartIdTemp);
+						if(details!=null&&details.size()>0){//我的作品列表
+							for (PMyproductdetails de : param.getDetails()) {
+								if(de.getPdid()!=null&&de.getPdid()>0){
+									for (PMyproductdetails myde : details) {
+										if(de.getPdid().longValue()!=myde.getPdid().longValue()&& myde.getSceneid()!=null&&de.getSceneid()!=null&& myde.getSceneid().intValue()==de.getSceneid().intValue()){
+											rq.setStatu(ReturnStatus.InvitError_1);
+											rq.setStatusreson("已经被选过的场景");
+											return rq;
+										} 
+									}
+								}
+							}
+						}
 						for (PMyproductdetails de : param.getDetails()) {
 							if(de.getPdid()!=null&&de.getPdid()>0){
 								if(!ObjectUtil.isEmpty(de.getImgurl())){
+									de.setUserid(userId); 
 									myDetaiMapper.updateByPrimaryKeySelective(de);
 								}
 							}
 						}
 					}
+					// 更新用户作品基本信息
+					myMapper.updateByPrimaryKeySelective(myproducts);
 				}else {
 					rq.setStatu(ReturnStatus.SystemError_1);
 					rq.setStatusreson("没有权限编辑别人的作品");
@@ -234,13 +266,69 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		UUsers user = usersMapper.getUUsersByUserID(userId);
 		if (user != null) {
 			List<MyProductResultVo> list = new ArrayList<MyProductResultVo>();
+			//我的协同编辑作品
+			list.addAll(findInvites(user.getMobilephone())); 
+			//我的作品-制作中的
 			List<MyProductResultVo> mylist = myMapper.findMyProductslist(userId, Integer.parseInt(MyProductStatusEnum.ok.toString()));
-			if (mylist != null && mylist.size() > 0) {
-				for (MyProductResultVo item : mylist) {
-					PProducts products = productsMapper.selectByPrimaryKey(item.getProductid());
-					if (products != null) {
-						item.setHeadImg(products.getDefaultimg());
+			list.addAll(getMyProductResultVo(mylist));
+			// 我的作品-已经下单的列表
+			List<MyProductResultVo> myOrderlist = myMapper.findMyProductslist(userId, Integer.parseInt(MyProductStatusEnum.ordered.toString()));
+			list.addAll(getMyProductResultVo(myOrderlist));
+			rq.setBasemodle(list);
+		}
+		rq.setStatu(ReturnStatus.Success);
+		return rq;
+	}
+	
+	@Autowired
+	private PMyproductsinvitesMapper inviteMapper;
+	public List<MyProductResultVo> findInvites(String  mobiePhone){
+		List<PMyproductsinvites> inviteList=inviteMapper.findListByPhone(mobiePhone);
+		if(inviteList!=null&&inviteList.size()>0){
+			List<MyProductResultVo> resultList=new ArrayList<MyProductResultVo>();
+			for (PMyproductsinvites in : inviteList) {
+				MyProductResultVo vo=myMapper.getMyProductResultVo(in.getCartid()); 
+				if(vo!=null){
+					vo.setIsInvited(1);
+					vo.setInvitestatus(in.getStatus()); 
+					UUsers users=usersMapper.selectByPrimaryKey(vo.getUserid());
+					if(users!=null){
+						vo.setUserName(users.getMobilephone());
+						if(ObjectUtil.isEmpty(users.getUserimg())){
+							vo.setUserImg("http://pic.bbyiya.com/userdefaultimg-2017-0303-01.png");
+						}else {
+							vo.setUserImg(users.getUserimg()); 
+						}
 					}
+				}
+				resultList.add(vo);
+			}
+			return getMyProductResultVo(resultList); 
+		}
+		return null;
+	}
+	/**
+	 * 我的作品model转换
+	 * @param mylist
+	 * @return
+	 */
+	private List<MyProductResultVo> getMyProductResultVo(List<MyProductResultVo> mylist){
+		if (mylist != null && mylist.size() > 0) {
+			for (MyProductResultVo item : mylist) {
+				PProducts products = productsMapper.selectByPrimaryKey(item.getProductid());
+				if (products != null) {
+					item.setHeadImg(products.getDefaultimg());
+				}
+				if(item.getInvitestatus()!=null&&item.getInvitestatus()>0){//邀请协同编辑
+					List<PMyproductsinvites> invites= inviteMapper.findListByCartId(item.getCartid());
+					if(invites!=null&&invites.size()>0){
+						item.setInviteModel(invites.get(0)); 
+					}
+				}
+				if(item.getStatus()!=null&&item.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
+					item.setIsOrder(1);
+					item.setCount(12);
+				} else {
 					// 作品详情（图片集合）
 					List<PMyproductdetails> detailslist = myDetaiMapper.findMyProductdetails(item.getCartid());
 					int i = 0;
@@ -253,25 +341,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					}
 					item.setCount(i);
 				}
-				list.addAll(mylist);
 			}
-			// 我的订单列表
-			List<MyProductResultVo> myOrderlist = myMapper.findMyProductslist(userId, Integer.parseInt(MyProductStatusEnum.ordered.toString()));
-			if (myOrderlist != null && myOrderlist.size() > 0) {
-				for (MyProductResultVo oo : myOrderlist) {
-					oo.setIsOrder(1);
-					oo.setCount(12);
-					PProducts products = productsMapper.selectByPrimaryKey(oo.getProductid());
-					if (products != null) {
-						oo.setHeadImg(products.getDefaultimg());
-					}
-				}
-				list.addAll(myOrderlist);
-			}
-			rq.setBasemodle(list);
 		}
-		rq.setStatu(ReturnStatus.Success);
-		return rq;
+		return mylist;
 	}
 
 	public ReturnModel deleMyProduct(Long userId, Long cartId){
@@ -304,7 +376,20 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		UUsers user = usersMapper.getUUsersByUserID(userId);
 		if (user != null) {
 			MyProductsResult myproduct = myProductsDao.getMyProductResultVo(cartId);
-			if (myproduct != null&&myproduct.getUserid().longValue()==userId) {
+			boolean canModify=false;
+			if(myproduct != null&&myproduct.getUserid().longValue()==userId){//自己的作品
+				canModify=true;	
+			}
+			else {//是否是邀请的协同编辑人员
+				List<PMyproductsinvites> invlist= inviteMapper.findListByCartId(cartId);
+				if(invlist!=null&&invlist.size()>0){
+					for (PMyproductsinvites in : invlist) {
+						if(in.getInvitephone().equals(user.getMobilephone()))
+							canModify=true;
+					}
+				}
+			}
+			if (canModify) {
 				PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
 				if (product != null) {
 					myproduct.setDescription(product.getDescription());

@@ -33,6 +33,11 @@ public class InviteMgtController  extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
+			if(phone.equals(user.getMobilePhone())){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("不能邀请自己协同编辑！");
+				return JsonUtil.objectToJsonStr(rq);
+			}
 			rq=myProductService.sendInvite(user.getUserId(), phone, cartId);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
@@ -40,4 +45,45 @@ public class InviteMgtController  extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	/**
+	 * 处理我的邀请
+	 * @param phone
+	 * @param cartId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/processInvite")
+	public String processInvite(Long cartId,Integer status) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=myProductService.processInvite(user.getMobilePhone(), cartId, status);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期，请重新登录");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 获取用户提示信息
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/myUserInfoExp")
+	public String myUserInfoExp() throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=myProductService.myUserInfoExp(user.getUserId(), user.getMobilePhone()); 
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期，请重新登录");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 }

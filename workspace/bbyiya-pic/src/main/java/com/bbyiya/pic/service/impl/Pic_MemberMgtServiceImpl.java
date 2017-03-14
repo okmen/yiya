@@ -9,12 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.baseUtils.ValidateUtils;
+import com.bbyiya.dao.UAgentcustomersMapper;
 import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.BranchStatusEnum;
 import com.bbyiya.enums.user.UserIdentityEnums;
+import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUsers;
@@ -35,6 +38,8 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 	private UUsersMapper usersMapper;
 	@Autowired
 	private UBranchesMapper branchesMapper;
+	@Autowired
+	private UAgentcustomersMapper customerMapper;
 	
 	public ReturnModel findBranchUserslistByBranchUserId(Long branchUserId){
 		ReturnModel rqModel=new ReturnModel();
@@ -110,10 +115,79 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 				userBasic.removeUserIdentity(userId,UserIdentityEnums.salesman); 
 				rqModel.setStatu(ReturnStatus.Success);
 				rqModel.setStatusreson("删除成功！"); 
-				
 			}
 		}
 		return rqModel;
+	}
+	
+	public ReturnModel findCustomersByBranchUserId(Long branchUserId){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.Success);
+		List<UAgentcustomers> customers= customerMapper.findCustomersByBranchUserId(branchUserId);
+		rq.setBasemodle(customers);
+		return rq;
+	}
+	
+	public ReturnModel editCustomer(Long branchUserId,UAgentcustomers param){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.ParamError);
+		if(param==null||param.getCustomerid()==null||param.getCustomerid()<=0){
+			rq.setStatusreson("参数有误");
+			return rq;
+		}
+		UAgentcustomers model= customerMapper.selectByPrimaryKey(param.getCustomerid());
+		if(model!=null){
+			if(!ObjectUtil.isEmpty(param.getName())){
+				model.setName(param.getName());
+			}
+			if(param.getStatus()!=null){
+				model.setStatus(param.getStatus());
+			}
+			if(!ObjectUtil.isEmpty(param.getRemark())){
+				model.setRemark(param.getRemark());
+			}
+			if(!ObjectUtil.isEmpty(param.getPhone())){
+				model.setPhone(param.getPhone());
+				UUsers customerUsers=usersMapper.getUUsersByPhone(param.getPhone());
+				if(customerUsers!=null){
+					model.setUserid(customerUsers.getUserid()); 
+				}
+			}
+			customerMapper.updateByPrimaryKeySelective(model);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("修改成功");
+		}else {
+			rq.setStatusreson("找不到相应的客户！"); 
+		} 
+		return rq;
+	}
+	
+	public ReturnModel addCustomer(Long branchUserId,UAgentcustomers param){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.ParamError);
+		if(param==null|| ObjectUtil.isEmpty(param.getPhone())|| !ObjectUtil.isMobile(param.getPhone()) ){
+			rq.setStatusreson("参数有误");
+			return rq;
+		}
+		UUsers branchUsers=usersMapper.selectByPrimaryKey(branchUserId);
+		if(branchUsers!=null&& ValidateUtils.isIdentity(branchUsers.getIdentity(), UserIdentityEnums.branch)){
+			UBranches branches=branchesMapper.selectByPrimaryKey(branchUserId);
+			if(branches!=null){
+				param.setBranchuserid(branchUserId);
+				param.setAgentuserid(branches.getAgentuserid());
+				param.setCreatetime(new Date());
+				UUsers customerUsers=usersMapper.getUUsersByPhone(param.getPhone());
+				if(customerUsers!=null){
+					param.setUserid(customerUsers.getUserid()); 
+				}
+				customerMapper.insert(param);
+				rq.setStatu(ReturnStatus.Success);
+				rq.setStatusreson("新增成功");
+				return rq;
+			} 
+		}
+		rq.setStatusreson("您还不是咿呀的合作伙伴，此功能的权限不足！");  
+		return rq;
 	}
 	
 	

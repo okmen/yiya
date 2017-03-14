@@ -66,6 +66,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private PStylecoordinateitemMapper styleCoordItemMapper;
 	@Autowired
 	private PScenesMapper sceneMapper;
+	@Autowired
+	private PMyproductsinvitesMapper inviteMapper;
 	
 	/*----------------pic-dao----------------*/
 	@Autowired
@@ -267,7 +269,11 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		if (user != null) {
 			List<MyProductResultVo> list = new ArrayList<MyProductResultVo>();
 			//我的协同编辑作品
-			list.addAll(findInvites(user.getMobilephone())); 
+			List<MyProductResultVo> mylista=findInvites(user.getMobilephone());
+			if(mylista!=null&&mylista.size()>0){
+				list.addAll(mylista); 
+			}
+			
 			//我的作品-制作中的
 			List<MyProductResultVo> mylist = myMapper.findMyProductslist(userId, Integer.parseInt(MyProductStatusEnum.ok.toString()));
 			list.addAll(getMyProductResultVo(mylist));
@@ -280,8 +286,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		return rq;
 	}
 	
-	@Autowired
-	private PMyproductsinvitesMapper inviteMapper;
+
 	public List<MyProductResultVo> findInvites(String  mobiePhone){
 		List<PMyproductsinvites> inviteList=inviteMapper.findListByPhone(mobiePhone);
 		if(inviteList!=null&&inviteList.size()>0){
@@ -300,8 +305,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 							vo.setUserImg(users.getUserimg()); 
 						}
 					}
+					resultList.add(vo);
 				}
-				resultList.add(vo);
 			}
 			return getMyProductResultVo(resultList); 
 		}
@@ -357,6 +362,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			}
 			myMapper.deleteByPrimaryKey(cartId);
 			mydetailDao.deleMyProductDetailsByCartId(cartId); 
+			if(myproducts.getInvitestatus()!=null&&myproducts.getInvitestatus()>0){
+				inviteMapper.deleteByCartId(cartId);
+			}
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("删除成功");
 		}else {
@@ -376,6 +384,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		UUsers user = usersMapper.getUUsersByUserID(userId);
 		if (user != null) {
 			MyProductsResult myproduct = myProductsDao.getMyProductResultVo(cartId);
+			if(myproduct!=null&&myproduct.getStatus()!=null&&myproduct.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
+				myproduct.setIsOrder(1);
+			} 
 			boolean canModify=false;
 			if(myproduct != null&&myproduct.getUserid().longValue()==userId){//自己的作品
 				canModify=true;	
@@ -503,6 +514,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	public MyProductsResult getMyProductsResult(Long cartId){
 		MyProductsResult myproduct=myProductsDao.getMyProductResultVo(cartId);
 		if (myproduct != null) {
+			if(myproduct.getStatus()!=null&&myproduct.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
+				myproduct.setIsOrder(1);
+			}
 			PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
 			if (product != null) {
 				myproduct.setDescription(product.getDescription());
@@ -516,7 +530,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 						detail.setSceneTitle(scene.getTitle()); 
 					}
 				}
-			}
+			} 
 			myproduct.setDetailslist(list);
 		}
 		return myproduct;

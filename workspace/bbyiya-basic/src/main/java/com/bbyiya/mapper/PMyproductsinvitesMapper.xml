@@ -45,6 +45,10 @@
     delete from P_MyProductsInvites
     where InviteId = #{inviteid,jdbcType=BIGINT}
   </delete>
+  <delete id="deleteByCartId" parameterType="java.lang.Long" ><!-- 删除所有邀请  根据CartId -->
+    delete from P_MyProductsInvites
+    where CartId = #{cartId,jdbcType=BIGINT}
+  </delete>
   <insert id="insert" parameterType="com.bbyiya.model.PMyproductsinvites" >
     insert into P_MyProductsInvites (InviteId, CartId, UserId, 
       InvitePhone, Status, CreateTime

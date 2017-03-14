@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.UAgentcustomersMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.UAgentcustomers" >
+    <id column="CustomerId" property="customerid" jdbcType="BIGINT" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="BranchUserId" property="branchuserid" jdbcType="BIGINT" />
+    <result column="AgentUserId" property="agentuserid" jdbcType="BIGINT" />
+    <result column="Phone" property="phone" jdbcType="VARCHAR" />
+    <result column="Name" property="name" jdbcType="VARCHAR" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="Remark" property="remark" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CustomerId, UserId, BranchUserId, AgentUserId, Phone, Name, Status, Remark, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from U_AgentCustomers
+    where CustomerId = #{customerid,jdbcType=BIGINT}
+  </select>
+  <select id="findCustomersByBranchUserId" resultMap="BaseResultMap"  ><!-- 01 查询影楼的用户列表 -->
+    select 
+    <include refid="Base_Column_List" />
+    from U_AgentCustomers
+    where BranchUserId = #{branchUserId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from U_AgentCustomers
+    where CustomerId = #{customerid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.UAgentcustomers" >
+    insert into U_AgentCustomers (CustomerId, UserId, BranchUserId, 
+      AgentUserId, Phone, Name, 
+      Status, Remark, CreateTime
+      )
+    values (#{customerid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{branchuserid,jdbcType=BIGINT}, 
+      #{agentuserid,jdbcType=BIGINT}, #{phone,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.UAgentcustomers" >
+    insert into U_AgentCustomers
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="customerid != null" >
+        CustomerId,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="branchuserid != null" >
+        BranchUserId,
+      </if>
+      <if test="agentuserid != null" >
+        AgentUserId,
+      </if>
+      <if test="phone != null" >
+        Phone,
+      </if>
+      <if test="name != null" >
+        Name,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="remark != null" >
+        Remark,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="customerid != null" >
+        #{customerid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="branchuserid != null" >
+        #{branchuserid,jdbcType=BIGINT},
+      </if>
+      <if test="agentuserid != null" >
+        #{agentuserid,jdbcType=BIGINT},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.UAgentcustomers" >
+    update U_AgentCustomers
+    <set >
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="branchuserid != null" >
+        BranchUserId = #{branchuserid,jdbcType=BIGINT},
+      </if>
+      <if test="agentuserid != null" >
+        AgentUserId = #{agentuserid,jdbcType=BIGINT},
+      </if>
+      <if test="phone != null" >
+        Phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        Name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        Remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where CustomerId = #{customerid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.UAgentcustomers" >
+    update U_AgentCustomers
+    set UserId = #{userid,jdbcType=BIGINT},
+      BranchUserId = #{branchuserid,jdbcType=BIGINT},
+      AgentUserId = #{agentuserid,jdbcType=BIGINT},
+      Phone = #{phone,jdbcType=VARCHAR},
+      Name = #{name,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=INTEGER},
+      Remark = #{remark,jdbcType=VARCHAR},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where CustomerId = #{customerid,jdbcType=BIGINT}
+  </update>
+</mapper>

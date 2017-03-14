@@ -9,6 +9,13 @@ import com.bbyiya.model.PMyproductsinvites;
 public interface PMyproductsinvitesMapper {
     int deleteByPrimaryKey(Long inviteid);
 
+	/**
+	 * 删除我的作品邀请
+	 * @param cartId
+	 * @return
+	 */
+	int deleteByCartId(Long cartId);
+
     int insert(PMyproductsinvites record);
 
     int insertSelective(PMyproductsinvites record);

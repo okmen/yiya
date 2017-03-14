@@ -7,6 +7,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import com.bbyiya.model.PMyproductdetails;
+import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UBranchinfotemp;
 import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUseraddress;
@@ -172,6 +173,37 @@ public class Json2Objects {
 			return param;
 		}
 		return null;
-		
+	}
+	
+	public static UAgentcustomers getParam_UAgentcustomers(String customerJson) {
+		JSONObject model = JSONObject.fromObject(customerJson);
+		if (model != null) {
+			UAgentcustomers param = new UAgentcustomers();
+			long customerid=ObjectUtil.parseLong(String.valueOf(model.get("customerid")));
+			if(customerid>0){
+				param.setCustomerid(customerid); 
+			}
+			String name=String.valueOf(model.get("name"));
+			if(!ObjectUtil.isEmpty(name)&&!"null".equals(name)){
+				param.setName(name);
+			}
+			String phone=String.valueOf(model.get("phone"));
+			if(!ObjectUtil.isEmpty(phone)&&!"null".equals(phone)){
+				param.setPhone(phone);
+			}
+			String remark=String.valueOf(model.get("remark"));
+			if(!ObjectUtil.isEmpty(remark)&&!"null".equals(remark)){
+				param.setRemark(remark);
+			}
+			String status=String.valueOf(model.get("status"));
+			if(!ObjectUtil.isEmpty(status)&&!"null".equals(status)){
+				int statusInt=ObjectUtil.parseInt(status);
+				if(statusInt>0){
+					param.setStatus(statusInt);
+				}
+			}
+			return param;
+		}
+		return null;
 	}
 }

@@ -24,4 +24,10 @@ public interface OUserordersMapper {
      * @return
      */
     List<OUserorders> findOrderByUserId(@Param("userId") Long userId);
+    /**
+     * 待领取的订单
+     * @param agentUserId
+     * @return
+     */
+    List<OUserorders> findOrdersByAgentUserId(@Param("agentUserId")Long agentUserId);
 }

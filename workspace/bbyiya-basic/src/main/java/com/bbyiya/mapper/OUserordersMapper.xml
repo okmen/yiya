@@ -12,10 +12,18 @@
     <result column="Remark" property="remark" jdbcType="VARCHAR" />
     <result column="OrderTime" property="ordertime" jdbcType="TIMESTAMP" />
     <result column="PayTime" property="paytime" jdbcType="TIMESTAMP" />
+    <result column="OrderTotalPrice" property="ordertotalprice" jdbcType="DECIMAL" />
+    <result column="PayType" property="paytype" jdbcType="INTEGER" />
+    <result column="OrderType" property="ordertype" jdbcType="INTEGER" />
+    <result column="AgentUserId" property="agentuserid" jdbcType="BIGINT" />
+    <result column="IsBranch" property="isbranch" jdbcType="INTEGER" />
+    <result column="ExpressCom" property="expresscom" jdbcType="VARCHAR" />
+    <result column="ExpressOrder" property="expressorder" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    UserOrderId, UserId, TotalPrice, Status, BranchUserId, OrderAddressId, PayId, Remark, 
-    OrderTime, PayTime
+    UserOrderId, UserId, TotalPrice, Status, OrderAddressId, PayId, Remark, OrderTime, 
+    PayTime, BranchUserId, OrderTotalPrice, PayType, OrderType, AgentUserId, IsBranch, 
+    ExpressCom, ExpressOrder
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -23,11 +31,17 @@
     from O_UserOrders
     where UserOrderId = #{userorderid,jdbcType=VARCHAR}
   </select>
-  <select id="findOrderByUserId" resultMap="BaseResultMap"  ><!-- 获取用户的订单列表 -->
+  <select id="findOrderByUserId" resultMap="BaseResultMap"  ><!-- 01 根据UserId 获取用户的订单列表 -->
     select 
     <include refid="Base_Column_List" />
     from O_UserOrders
     where UserId = #{userId,jdbcType=BIGINT}  order by OrderTime desc
+  </select>
+  <select id="findOrdersByAgentUserId" resultMap="BaseResultMap"  ><!-- 02 获取待分配的订单 （代理） -->
+    select 
+    <include refid="Base_Column_List" />
+    from O_UserOrders
+    where AgentUserId = #{agentUserId,jdbcType=BIGINT}  and Status=2  and IsBranch=0 order by PayTime desc
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from O_UserOrders
@@ -35,13 +49,17 @@
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.OUserorders" >
     insert into O_UserOrders (UserOrderId, UserId, TotalPrice, 
-      Status, BranchUserId, OrderAddressId, 
-      PayId, Remark, OrderTime, 
-      PayTime)
+      Status, OrderAddressId, PayId, 
+      Remark, OrderTime, PayTime, 
+      BranchUserId, OrderTotalPrice, PayType, 
+      OrderType, AgentUserId, IsBranch, 
+      ExpressCom, ExpressOrder)
     values (#{userorderid,jdbcType=VARCHAR}, #{userid,jdbcType=BIGINT}, #{totalprice,jdbcType=DECIMAL}, 
-      #{status,jdbcType=INTEGER}, #{branchuserid,jdbcType=BIGINT}, #{orderaddressid,jdbcType=BIGINT}, 
-      #{payid,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{ordertime,jdbcType=TIMESTAMP}, 
-      #{paytime,jdbcType=TIMESTAMP})
+      #{status,jdbcType=INTEGER}, #{orderaddressid,jdbcType=BIGINT}, #{payid,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{ordertime,jdbcType=TIMESTAMP}, #{paytime,jdbcType=TIMESTAMP}, 
+      #{branchuserid,jdbcType=BIGINT}, #{ordertotalprice,jdbcType=DECIMAL}, #{paytype,jdbcType=INTEGER}, 
+      #{ordertype,jdbcType=INTEGER}, #{agentuserid,jdbcType=BIGINT}, #{isbranch,jdbcType=INTEGER}, 
+      #{expresscom,jdbcType=VARCHAR}, #{expressorder,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.OUserorders" >
     insert into O_UserOrders
@@ -58,9 +76,6 @@
       <if test="status != null" >
         Status,
       </if>
-      <if test="branchuserid != null" >
-        BranchUserId,
-      </if>
       <if test="orderaddressid != null" >
         OrderAddressId,
       </if>
@@ -76,6 +91,30 @@
       <if test="paytime != null" >
         PayTime,
       </if>
+      <if test="branchuserid != null" >
+        BranchUserId,
+      </if>
+      <if test="ordertotalprice != null" >
+        OrderTotalPrice,
+      </if>
+      <if test="paytype != null" >
+        PayType,
+      </if>
+      <if test="ordertype != null" >
+        OrderType,
+      </if>
+      <if test="agentuserid != null" >
+        AgentUserId,
+      </if>
+      <if test="isbranch != null" >
+        IsBranch,
+      </if>
+      <if test="expresscom != null" >
+        ExpressCom,
+      </if>
+      <if test="expressorder != null" >
+        ExpressOrder,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="userorderid != null" >
@@ -89,9 +128,6 @@
       </if>
       <if test="status != null" >
         #{status,jdbcType=INTEGER},
-      </if>
-      <if test="branchuserid != null" >
-        #{branchuserid,jdbcType=BIGINT},
       </if>
       <if test="orderaddressid != null" >
         #{orderaddressid,jdbcType=BIGINT},
@@ -108,6 +144,30 @@
       <if test="paytime != null" >
         #{paytime,jdbcType=TIMESTAMP},
       </if>
+      <if test="branchuserid != null" >
+        #{branchuserid,jdbcType=BIGINT},
+      </if>
+      <if test="ordertotalprice != null" >
+        #{ordertotalprice,jdbcType=DECIMAL},
+      </if>
+      <if test="paytype != null" >
+        #{paytype,jdbcType=INTEGER},
+      </if>
+      <if test="ordertype != null" >
+        #{ordertype,jdbcType=INTEGER},
+      </if>
+      <if test="agentuserid != null" >
+        #{agentuserid,jdbcType=BIGINT},
+      </if>
+      <if test="isbranch != null" >
+        #{isbranch,jdbcType=INTEGER},
+      </if>
+      <if test="expresscom != null" >
+        #{expresscom,jdbcType=VARCHAR},
+      </if>
+      <if test="expressorder != null" >
+        #{expressorder,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.OUserorders" >
@@ -121,9 +181,6 @@
       </if>
       <if test="status != null" >
         Status = #{status,jdbcType=INTEGER},
-      </if>
-      <if test="branchuserid != null" >
-        BranchUserId = #{branchuserid,jdbcType=BIGINT},
       </if>
       <if test="orderaddressid != null" >
         OrderAddressId = #{orderaddressid,jdbcType=BIGINT},
@@ -140,6 +197,30 @@
       <if test="paytime != null" >
         PayTime = #{paytime,jdbcType=TIMESTAMP},
       </if>
+      <if test="branchuserid != null" >
+        BranchUserId = #{branchuserid,jdbcType=BIGINT},
+      </if>
+      <if test="ordertotalprice != null" >
+        OrderTotalPrice = #{ordertotalprice,jdbcType=DECIMAL},
+      </if>
+      <if test="paytype != null" >
+        PayType = #{paytype,jdbcType=INTEGER},
+      </if>
+      <if test="ordertype != null" >
+        OrderType = #{ordertype,jdbcType=INTEGER},
+      </if>
+      <if test="agentuserid != null" >
+        AgentUserId = #{agentuserid,jdbcType=BIGINT},
+      </if>
+      <if test="isbranch != null" >
+        IsBranch = #{isbranch,jdbcType=INTEGER},
+      </if>
+      <if test="expresscom != null" >
+        ExpressCom = #{expresscom,jdbcType=VARCHAR},
+      </if>
+      <if test="expressorder != null" >
+        ExpressOrder = #{expressorder,jdbcType=VARCHAR},
+      </if>
     </set>
     where UserOrderId = #{userorderid,jdbcType=VARCHAR}
   </update>
@@ -148,12 +229,19 @@
     set UserId = #{userid,jdbcType=BIGINT},
       TotalPrice = #{totalprice,jdbcType=DECIMAL},
       Status = #{status,jdbcType=INTEGER},
-      BranchUserId = #{branchuserid,jdbcType=BIGINT},
       OrderAddressId = #{orderaddressid,jdbcType=BIGINT},
       PayId = #{payid,jdbcType=VARCHAR},
       Remark = #{remark,jdbcType=VARCHAR},
       OrderTime = #{ordertime,jdbcType=TIMESTAMP},
-      PayTime = #{paytime,jdbcType=TIMESTAMP}
+      PayTime = #{paytime,jdbcType=TIMESTAMP},
+      BranchUserId = #{branchuserid,jdbcType=BIGINT},
+      OrderTotalPrice = #{ordertotalprice,jdbcType=DECIMAL},
+      PayType = #{paytype,jdbcType=INTEGER},
+      OrderType = #{ordertype,jdbcType=INTEGER},
+      AgentUserId = #{agentuserid,jdbcType=BIGINT},
+      IsBranch = #{isbranch,jdbcType=INTEGER},
+      ExpressCom = #{expresscom,jdbcType=VARCHAR},
+      ExpressOrder = #{expressorder,jdbcType=VARCHAR}
     where UserOrderId = #{userorderid,jdbcType=VARCHAR}
   </update>
 </mapper>

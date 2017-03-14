@@ -10,10 +10,14 @@ import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OOrderproductdetailsMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OUserordersMapper;
+import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.pic.BranchStatusEnum;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproducts;
+import com.bbyiya.model.OUserorders;
+import com.bbyiya.model.UBranches;
 import com.bbyiya.pic.dao.IPic_OrderMgtDao;
 import com.bbyiya.pic.service.IPic_OrderMgtService;
 import com.bbyiya.pic.vo.order.SearchOrderParam;
@@ -71,6 +75,27 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 		}
 		rq.setStatu(ReturnStatus.Success);
 		rq.setBasemodle(list); 
+		return rq;
+	}
+	
+	@Autowired
+	private UBranchesMapper branchesMapper;
+	/**
+	 * 我的
+	 * @param branchUserId
+	 * @return
+	 */
+	public ReturnModel findAgentOrders(Long branchUserId){
+		ReturnModel rq=new ReturnModel();
+		UBranches branches= branchesMapper.selectByPrimaryKey(branchUserId);
+		if(branches!=null&&branches.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.ok.toString())){
+			List<OUserorders> userorders= userOrdersMapper.findOrdersByAgentUserId(branches.getAgentuserid());
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(userorders);
+		}else {
+			rq.setStatu(ReturnStatus.SystemError);
+			rq.setStatusreson("您还不是合作商，权限不足！");
+		}
 		return rq;
 	}
 	

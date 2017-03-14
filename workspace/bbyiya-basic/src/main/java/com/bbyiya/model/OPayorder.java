@@ -22,6 +22,8 @@ public class OPayorder implements Serializable {
 	private Date paytime;
 
 	private Date prepaytime;
+	
+	private Integer paytype;
 
 	public String getPayid() {
 		return payid;
@@ -94,4 +96,13 @@ public class OPayorder implements Serializable {
 	public void setPrepaytime(Date prepaytime) {
 		this.prepaytime = prepaytime;
 	}
+
+	public Integer getPaytype() {
+		return paytype;
+	}
+
+	public void setPaytype(Integer paytype) {
+		this.paytype = paytype;
+	}
+	
 }

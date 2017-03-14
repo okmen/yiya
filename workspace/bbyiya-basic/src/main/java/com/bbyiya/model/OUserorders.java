@@ -24,6 +24,20 @@ public class OUserorders implements Serializable{
     private Date ordertime;
 
     private Date paytime;
+    
+    private Double ordertotalprice;
+
+    private Integer paytype;
+
+    private Integer ordertype;
+
+    private Long agentuserid;
+
+    private Integer isbranch;
+
+    private String expresscom;
+
+    private String expressorder;
 
     public String getUserorderid() {
         return userorderid;
@@ -106,4 +120,62 @@ public class OUserorders implements Serializable{
     public void setPaytime(Date paytime) {
         this.paytime = paytime;
     }
+
+	public Double getOrdertotalprice() {
+		return ordertotalprice;
+	}
+
+	public void setOrdertotalprice(Double ordertotalprice) {
+		this.ordertotalprice = ordertotalprice;
+	}
+
+	public Integer getPaytype() {
+		return paytype;
+	}
+
+	public void setPaytype(Integer paytype) {
+		this.paytype = paytype;
+	}
+
+	public Integer getOrdertype() {
+		return ordertype;
+	}
+
+	public void setOrdertype(Integer ordertype) {
+		this.ordertype = ordertype;
+	}
+
+	public Long getAgentuserid() {
+		return agentuserid;
+	}
+
+	public void setAgentuserid(Long agentuserid) {
+		this.agentuserid = agentuserid;
+	}
+
+	public Integer getIsbranch() {
+		return isbranch;
+	}
+
+	public void setIsbranch(Integer isbranch) {
+		this.isbranch = isbranch;
+	}
+
+	public String getExpresscom() {
+		return expresscom;
+	}
+
+	public void setExpresscom(String expresscom) {
+		this.expresscom = expresscom;
+	}
+
+	public String getExpressorder() {
+		return expressorder;
+	}
+
+	public void setExpressorder(String expressorder) {
+		this.expressorder = expressorder;
+	}
+    
+    
 }

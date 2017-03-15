@@ -38,6 +38,9 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 	private OOrderproductdetailsMapper detailMapper;
 	@Autowired
 	private OOrderaddressMapper addressMapper;
+	
+	@Autowired
+	private UBranchesMapper branchesMapper;
 	/**
 	 * 获取订单列表
 	 * @param userId
@@ -78,8 +81,7 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 		return rq;
 	}
 	
-	@Autowired
-	private UBranchesMapper branchesMapper;
+	
 	/**
 	 * 我的
 	 * @param branchUserId
@@ -98,5 +100,6 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 		}
 		return rq;
 	}
+	
 	
 }

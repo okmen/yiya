@@ -27,8 +27,13 @@
 	<wxAppBackUrl  value="https://mpic.bbyiya.com/wxapppay/WxPayNotify"/><!-- 微信app支付回写地址 -->
 	<wxQuery value="https://api.mch.weixin.qq.com/pay/orderquery"/><!-- 微信订单查询 -->
 	<loginbackurl value="http://photo.bbyiya.com/"/>
-	<loginbackurl_test value="http://photo.bbyiya.com/dist"/><!-- c端测试 -->
+	<loginbackurl_test value="http://photo.bbyiya.com:82/"/><!-- c端测试 -->
 	<loginbackurl_ibs value="http://photo.bbyiya.com/ibs/index.html"/><!-- ibs首页 -->
 	<testcode value="yiya123456"  count="50"/>
 	<testcodeNum value="yiya123456" /><!-- 咿呀测试用户 -->
+	<adminUsers>
+		<item userId="37"/>
+		<item userId="35"/>
+		<item userId="75"/>
+	</adminUsers>
 </appSettings>

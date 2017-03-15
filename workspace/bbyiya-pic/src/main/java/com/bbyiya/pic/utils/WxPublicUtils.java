@@ -24,18 +24,11 @@ import com.bbyiya.vo.ReturnModel;
 public class WxPublicUtils {
 
 	
-	public static String aCCESS_TOKEN_BASE="wx_access_token_";
+	public static String aCCESS_TOKEN_BASE="wx_access_token_all";
 	//缓存有效时间
 	public static int TIME_VALIDAITY=7200;
-	/**
-	 * 设置用户微信 access_Token 全局缓存
-	 * @param userId
-	 * @param accessTocken
-	 */
-	public static void setAccessToken(Long userId, String accessTocken) {
-		String key = aCCESS_TOKEN_BASE + userId;
-		RedisUtil.setString(key, accessTocken, TIME_VALIDAITY);
-	}
+	
+	
 
 	/**
 	 * 获取微信 access_Token
@@ -45,8 +38,29 @@ public class WxPublicUtils {
 	public static String getAccessToken(Long userId) {
 		if (userId == null || userId <= 0)
 			return "";
-		return RedisUtil.getString(aCCESS_TOKEN_BASE + userId);
+		String tokens=RedisUtil.getString(aCCESS_TOKEN_BASE);
+		if(ObjectUtil.isEmpty(tokens)){
+			tokens=getAccessTokenPost();
+			if(!ObjectUtil.isEmpty(tokens)){
+				RedisUtil.setString(aCCESS_TOKEN_BASE , tokens, 7200);
+			}
+			return tokens;
+		}else {
+			return tokens;
+		}
 	}
+	
+	public static String getAccessTokenPost() {
+		String tokenUrl="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+WxPayConfig.APPID+"&secret="+WxPayConfig.AppSecret;
+		String postResult=HttpRequestHelper.sendPost(tokenUrl, "");
+		JSONObject modelToken = JSONObject.fromObject(postResult);
+		if(modelToken!=null&&modelToken.get("access_token")!=null){
+			String	accessToken=modelToken.getString("access_token");
+			return accessToken;
+		}
+		return "";
+	}
+	
 	
 	
 	public static ReturnModel getWxConfig(String accessToken,String webUrl){

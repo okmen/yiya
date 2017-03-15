@@ -19,7 +19,6 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.EErrors;
 import com.bbyiya.model.ULoginlogs;
 import com.bbyiya.pic.service.IPic_UserMgtService;
-import com.bbyiya.pic.utils.WxPublicUtils;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.HttpRequestHelper;
 import com.bbyiya.utils.ObjectUtil;
@@ -152,7 +151,7 @@ public class LoginTransferController extends SSOController {
 				loginLogMapper.insert(loginLogs);
 				CookieUtils.addCookieBySessionId(request, response, user.getTicket(), 86400);
 //				addlog("µÇÂ¼IBS£ºsessionId="+request.getSession().getId());
-				WxPublicUtils.setAccessToken(user.getUserId(), access_token);
+//				WxPublicUtils.setAccessToken(user.getUserId(), access_token);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception

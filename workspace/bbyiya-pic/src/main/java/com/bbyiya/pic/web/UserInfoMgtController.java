@@ -9,6 +9,8 @@ import javax.annotation.Resource;
 
 
 
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,12 +24,14 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.UUseraddress;
 import com.bbyiya.pic.service.IPic_UserMgtService;
 import com.bbyiya.pic.utils.Json2Objects;
+import com.bbyiya.service.IUserInfoMgtService;
 import com.bbyiya.service.pic.IBaseUserAddressService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
+import com.bbyiya.vo.user.UChildInfoParam;
 import com.bbyiya.web.base.SSOController;
 
 @Controller
@@ -38,6 +42,9 @@ public class UserInfoMgtController extends SSOController {
 	 */
 	@Resource(name = "baseUserAddressServiceImpl")
 	private IBaseUserAddressService addressService;
+	
+	@Resource(name = "userInfoMgtService")
+	private IUserInfoMgtService userMgtService;
 	@Autowired
 	private UUseraddressMapper userAddressMapper;
 	@Autowired
@@ -47,6 +54,8 @@ public class UserInfoMgtController extends SSOController {
 	 */
 	@Resource(name = "pic_userMgtService")
 	private IPic_UserMgtService loginService;
+	
+	
 	/**
 	 * A02 新增/编辑 收货地址
 	 * 
@@ -116,7 +125,7 @@ public class UserInfoMgtController extends SSOController {
 		if (user != null) {
 			rq=loginService.setPwd(user.getUserId(), pwd, phone, vcode);
 			if(rq.getStatu().equals(ReturnStatus.Success)){
-				String ticket= super.getTicket();// CookieUtils.getCookieBySessionId(request);
+				String ticket= super.getTicket();
 				if(ObjectUtil.isEmpty(ticket)){
 					ticket=CookieUtils.getCookieBySessionId(request);
 				}
@@ -130,6 +139,33 @@ public class UserInfoMgtController extends SSOController {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
 		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 新增宝宝信息
+	 * @param childInfoJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/addChildInfo")
+	public String addChildInfo(String childInfoJson) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = this.getLoginUser();
+		if (user == null) {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登陆过期，请重新登陆！");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		if (ObjectUtil.isEmpty(childInfoJson)) {
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("参数不能为空");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		// 宝宝信息参数model
+		UChildInfoParam child = (UChildInfoParam) JsonUtil.jsonStrToObject(childInfoJson, UChildInfoParam.class);
+		rq = userMgtService.addOrEdit_UChildreninfo(user.getUserId(), child);
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	

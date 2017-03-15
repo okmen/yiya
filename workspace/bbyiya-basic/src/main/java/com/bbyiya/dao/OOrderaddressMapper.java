@@ -1,5 +1,7 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
 import com.bbyiya.model.OOrderaddress;
 
 public interface OOrderaddressMapper {
@@ -20,4 +22,11 @@ public interface OOrderaddressMapper {
     int updateByPrimaryKeySelective(OOrderaddress record);
 
     int updateByPrimaryKey(OOrderaddress record);
+    
+    /**
+     * 获取用户收货地址列表
+     * @param ids
+     * @return
+     */
+    List<OOrderaddress> findListByIds(List<Long> ids);
 }

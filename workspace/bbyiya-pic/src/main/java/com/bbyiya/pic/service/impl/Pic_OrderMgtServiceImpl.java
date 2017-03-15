@@ -1,6 +1,10 @@
 package com.bbyiya.pic.service.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,16 +21,22 @@ import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OUserorders;
+import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.pic.dao.IPic_OrderMgtDao;
+import com.bbyiya.pic.service.IPic_MemberMgtService;
 import com.bbyiya.pic.service.IPic_OrderMgtService;
 import com.bbyiya.pic.vo.order.SearchOrderParam;
 import com.bbyiya.pic.vo.order.UserOrderResultVO;
+import com.bbyiya.pic.vo.order.ibs.OrderVo;
 import com.bbyiya.vo.ReturnModel;
 
 @Service("pic_orderMgtService")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
 public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
+	//客户信息处理
+	@Resource(name = "pic_memberMgtService")
+	private IPic_MemberMgtService memberMgtService;
 	
 	@Autowired
 	private OUserordersMapper userOrdersMapper;
@@ -81,9 +91,8 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 		return rq;
 	}
 	
-	
 	/**
-	 * 我的
+	 * 获取待分配的订单（IBS用）
 	 * @param branchUserId
 	 * @return
 	 */
@@ -91,9 +100,31 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 		ReturnModel rq=new ReturnModel();
 		UBranches branches= branchesMapper.selectByPrimaryKey(branchUserId);
 		if(branches!=null&&branches.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.ok.toString())){
+//		if(true){
 			List<OUserorders> userorders= userOrdersMapper.findOrdersByAgentUserId(branches.getAgentuserid());
+			if(userorders!=null&&userorders.size()>0){
+				List<Long> ids=new ArrayList<Long>();
+				for (OUserorders oo : userorders) {
+					ids.add(oo.getOrderaddressid());
+				}
+				List<OOrderaddress> addressList= addressMapper.findListByIds(ids);
+				List<OrderVo> resultlist=new ArrayList<OrderVo>();
+				for (OUserorders order : userorders) {
+					 OrderVo vo=new OrderVo();
+					 vo.setUserorderid(order.getUserorderid());
+					 vo.setStatus(order.getStatus());
+					 vo.setUserid(order.getUserid());
+					 vo.setBranchuserid(order.getBranchuserid());
+					 for (OOrderaddress addr : addressList) {
+						if(addr.getOrderaddressid().longValue()==order.getOrderaddressid().longValue()){
+							vo.setAddress(addr);
+						}
+					}
+					 resultlist.add(vo);
+				}
+				rq.setBasemodle(resultlist); 
+			}
 			rq.setStatu(ReturnStatus.Success);
-			rq.setBasemodle(userorders);
 		}else {
 			rq.setStatu(ReturnStatus.SystemError);
 			rq.setStatusreson("您还不是合作商，权限不足！");
@@ -101,5 +132,98 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 		return rq;
 	}
 	
+	public ReturnModel findMyOrderlist(Long branchUserId,Integer status){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.Success);
+		List<OUserorders> userorders= userOrdersMapper.findOrdersByBranchUserId(branchUserId,status);
+		if(userorders!=null&&userorders.size()>0){
+			List<Long> ids=new ArrayList<Long>();
+			for (OUserorders oo : userorders) {
+				ids.add(oo.getOrderaddressid());
+			}
+			List<OOrderaddress> addressList= addressMapper.findListByIds(ids);
+			List<OrderVo> resultlist=new ArrayList<OrderVo>();
+			for (OUserorders order : userorders) {
+				 OrderVo vo=new OrderVo();
+				 vo.setUserorderid(order.getUserorderid());
+				 vo.setStatus(order.getStatus());
+				 vo.setUserid(order.getUserid());
+				 vo.setBranchuserid(order.getBranchuserid());
+				 for (OOrderaddress addr : addressList) {
+					if(addr.getOrderaddressid().longValue()==order.getOrderaddressid().longValue()){
+						vo.setAddress(addr);
+					}
+				}
+				 resultlist.add(vo);
+			}
+			rq.setBasemodle(resultlist); 
+		}
+		rq.setStatusreson("ok");
+		return rq;
+	}
+	
+	/**
+	 * 我要这个客户
+	 * @param branchUserId
+	 * @param userOrderId
+	 * @return
+	 */
+	public ReturnModel addCustomer(Long branchUserId, String userOrderId){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.SystemError);
+		OUserorders order=userOrdersMapper.selectByPrimaryKey(userOrderId);
+		if(order!=null){
+			if(order.getAgentuserid()!=null&&order.getAgentuserid()>0){
+				if(order.getIsbranch()!=null&&order.getIsbranch()==1){//可以抢
+					rq.setStatusreson("不好意思，此客户已经被分配了！");
+					return rq; 
+				}
+				//我的影楼信息，找到我的代理商
+				UBranches branches=branchesMapper.selectByPrimaryKey(branchUserId);
+				if(branches!=null&&branches.getStatus()!=null&&branches.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.ok.toString())){
+					 //我是代理影楼，具备抢客户的权利
+					if(order.getAgentuserid().longValue()==branches.getAgentuserid().longValue()){
+						 //设置订单信息已经被分配
+						 order.setIsbranch(1);
+						 order.setBranchuserid(branchUserId);
+						 userOrdersMapper.updateByPrimaryKeySelective(order);
+						 
+						 OOrderaddress address=addressMapper.selectByPrimaryKey(order.getOrderaddressid());
+						 if(address!=null){
+							 //客户信息
+							 UAgentcustomers customer=new UAgentcustomers();
+							 customer.setAgentuserid(branches.getAgentuserid());
+							 customer.setBranchuserid(branchUserId);
+							 customer.setCreatetime(new Date());
+							 customer.setUserid(order.getUserid());
+							 customer.setPhone(address.getPhone());
+							 customer.setName(address.getReciver());
+							 customer.setRemark(address.getStreetdetail());
+							 memberMgtService.addCustomer(branchUserId, customer);
+							 rq.setStatu(ReturnStatus.Success);
+							 rq.setStatusreson("顾客成功锁定！");
+							 return rq;
+						 }else {
+							rq.setStatusreson("找不到用户收货信息！");
+							return rq;
+						 }
+					}else {
+						rq.setStatusreson("此订单不在您的代理范围！");
+						return rq;
+					}
+				}else {
+					rq.setStatusreson("您还不是合作商，权限不足！");
+					return rq;
+				}
+			}else {
+				rq.setStatusreson("非代理区域订单，暂不能分配！");
+				return rq;
+			}
+			
+		}else {
+			rq.setStatusreson("订单不存在");
+		}
+		return rq;
+	}
 	
 }

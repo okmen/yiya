@@ -19,4 +19,19 @@ public interface IPic_OrderMgtService {
 	 * @return
 	 */
 	ReturnModel findAgentOrders(Long branchUserId);
+	
+	/**
+	 * IBS 我要这个客户（针对影楼合作伙伴的功能）
+	 * @param branchUserId
+	 * @param userOrderId
+	 * @return
+	 */
+	ReturnModel addCustomer(Long branchUserId, String userOrderId);
+	/**
+	 * 本店订单列表 （IBS影楼用）
+	 * @param branchUserId
+	 * @param status
+	 * @return
+	 */
+	ReturnModel findMyOrderlist(Long branchUserId,Integer status);
 }

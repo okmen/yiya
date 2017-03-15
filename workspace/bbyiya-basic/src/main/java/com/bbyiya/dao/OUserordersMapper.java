@@ -18,16 +18,25 @@ public interface OUserordersMapper {
     int updateByPrimaryKeySelective(OUserorders record);
 
     int updateByPrimaryKey(OUserorders record);
+    
     /**
      * 获取用户订单列表
      * @param userId
      * @return
      */
     List<OUserorders> findOrderByUserId(@Param("userId") Long userId);
+    
     /**
      * 待领取的订单
      * @param agentUserId
      * @return
      */
     List<OUserorders> findOrdersByAgentUserId(@Param("agentUserId")Long agentUserId);
+    
+    /**
+     * 获取影楼的订单列表
+     * @param branchUserId
+     * @return
+     */
+    List<OUserorders> findOrdersByBranchUserId(@Param("branchUserId")Long branchUserId,@Param("status") Integer status);
 }

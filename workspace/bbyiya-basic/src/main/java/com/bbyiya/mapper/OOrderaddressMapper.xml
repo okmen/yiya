@@ -23,6 +23,14 @@
     from O_OrderAddress
     where OrderAddressId = #{orderaddressid,jdbcType=BIGINT}
   </select>
+  <select id="findListByIds" resultMap="BaseResultMap"  ><!-- 02  List<Long>Ids 获取收货地址列表 -->
+    select 
+    <include refid="Base_Column_List" />
+    from O_OrderAddress  where OrderAddressId in 
+    <foreach item="item" index="index" collection="list" open="(" separator="," close=")">  
+ 	 #{item}  
+	</foreach>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from O_OrderAddress
     where OrderAddressId = #{orderaddressid,jdbcType=BIGINT}

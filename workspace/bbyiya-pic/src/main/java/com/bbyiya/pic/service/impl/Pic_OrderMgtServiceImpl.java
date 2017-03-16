@@ -226,4 +226,33 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 		return rq;
 	}
 	
+	/**
+	 * 获取订单详情
+	 * @param userOrderId
+	 * @return
+	 */
+	public ReturnModel getOrderDetail(String userOrderId) {
+		ReturnModel rq=new ReturnModel();
+		OUserorders order = userOrdersMapper.selectByPrimaryKey(userOrderId);
+		if (order != null) {
+			OrderVo vo = new OrderVo();
+			vo.setUserorderid(order.getUserorderid());
+			vo.setStatus(order.getStatus());
+			vo.setUserid(order.getUserid());
+			vo.setBranchuserid(order.getBranchuserid());
+			
+			vo.setAddress(addressMapper.selectByPrimaryKey(order.getAgentuserid()));
+			List<OOrderproducts> proList=orderProductMapper.findOProductsByOrderId(userOrderId);
+			if(proList!=null&&proList.size()>0){
+				vo.setOrderProduct(proList.get(0));
+			} 
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(vo); 
+			rq.setStatusreson("ok");
+		}else {
+			rq.setStatu(ReturnStatus.SystemError);
+			rq.setStatusreson("不存的订单");
+		}
+		return rq;
+	}
 }

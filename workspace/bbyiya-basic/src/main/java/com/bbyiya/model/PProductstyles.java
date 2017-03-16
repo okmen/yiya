@@ -27,6 +27,8 @@ public class PProductstyles implements Serializable{
     private Date createtime;
 
     private Date updatetime;
+    
+    private Double agentprice;
 
     public Long getStyleid() {
         return styleid;
@@ -124,4 +126,13 @@ public class PProductstyles implements Serializable{
     public void setDescription(String description) {
         this.description = description == null ? null : description.trim();
     }
+
+	public Double getAgentprice() {
+		return agentprice;
+	}
+
+	public void setAgentprice(Double agentprice) {
+		this.agentprice = agentprice;
+	}
+    
 }

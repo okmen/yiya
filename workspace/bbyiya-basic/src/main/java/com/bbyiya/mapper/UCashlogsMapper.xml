@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.UCashlogsMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.UCashlogs" >
+    <id column="CashLogId" property="cashlogid" jdbcType="BIGINT" />
+    <result column="UserID" property="userid" jdbcType="BIGINT" />
+    <result column="UseType" property="usetype" jdbcType="INTEGER" />
+    <result column="Amount" property="amount" jdbcType="DECIMAL" />
+    <result column="PayId" property="payid" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CashLogId, UserID, UseType, Amount, PayId, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from U_CashLogs
+    where CashLogId = #{cashlogid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from U_CashLogs
+    where CashLogId = #{cashlogid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.UCashlogs" >
+    insert into U_CashLogs (CashLogId, UserID, UseType, 
+      Amount, PayId, CreateTime
+      )
+    values (#{cashlogid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{usetype,jdbcType=INTEGER}, 
+      #{amount,jdbcType=DECIMAL}, #{payid,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.UCashlogs" >
+    insert into U_CashLogs
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="cashlogid != null" >
+        CashLogId,
+      </if>
+      <if test="userid != null" >
+        UserID,
+      </if>
+      <if test="usetype != null" >
+        UseType,
+      </if>
+      <if test="amount != null" >
+        Amount,
+      </if>
+      <if test="payid != null" >
+        PayId,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="cashlogid != null" >
+        #{cashlogid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="usetype != null" >
+        #{usetype,jdbcType=INTEGER},
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="payid != null" >
+        #{payid,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.UCashlogs" >
+    update U_CashLogs
+    <set >
+      <if test="userid != null" >
+        UserID = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="usetype != null" >
+        UseType = #{usetype,jdbcType=INTEGER},
+      </if>
+      <if test="amount != null" >
+        Amount = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="payid != null" >
+        PayId = #{payid,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where CashLogId = #{cashlogid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.UCashlogs" >
+    update U_CashLogs
+    set UserID = #{userid,jdbcType=BIGINT},
+      UseType = #{usetype,jdbcType=INTEGER},
+      Amount = #{amount,jdbcType=DECIMAL},
+      PayId = #{payid,jdbcType=VARCHAR},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where CashLogId = #{cashlogid,jdbcType=BIGINT}
+  </update>
+</mapper>

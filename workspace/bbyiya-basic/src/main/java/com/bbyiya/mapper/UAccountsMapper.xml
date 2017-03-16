@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.UAccountsMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.UAccounts" >
+    <id column="UserID" property="userid" jdbcType="BIGINT" />
+    <result column="AvailableAmount" property="availableamount" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    UserID, AvailableAmount
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from U_Accounts
+    where UserID = #{userid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from U_Accounts
+    where UserID = #{userid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.UAccounts" >
+    insert into U_Accounts (UserID, AvailableAmount)
+    values (#{userid,jdbcType=BIGINT}, #{availableamount,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.UAccounts" >
+    insert into U_Accounts
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userid != null" >
+        UserID,
+      </if>
+      <if test="availableamount != null" >
+        AvailableAmount,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="availableamount != null" >
+        #{availableamount,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.UAccounts" >
+    update U_Accounts
+    <set >
+      <if test="availableamount != null" >
+        AvailableAmount = #{availableamount,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where UserID = #{userid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.UAccounts" >
+    update U_Accounts
+    set AvailableAmount = #{availableamount,jdbcType=DECIMAL}
+    where UserID = #{userid,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -73,7 +73,7 @@ public class WxPublicUtils {
 			String ticket=String.valueOf(model.get("ticket"));
 			if(errCode==0&&!ObjectUtil.isEmpty(ticket)) {
 				Map<String, Object> packageParams = new HashMap<String, Object>();
-				packageParams.put("nonce_str", WxPayUtils.genNonceStr());// Ëæ»ú×Ö·û´®
+				packageParams.put("noncestr", WxPayUtils.genNonceStr());// Ëæ»ú×Ö·û´®
 				packageParams.put("timestamp", WxPayUtils.genTimeStamp());
 				packageParams.put("jsapi_ticket", ticket);
 				packageParams.put("url", webUrl);

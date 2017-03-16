@@ -320,32 +320,37 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private List<MyProductResultVo> getMyProductResultVo(List<MyProductResultVo> mylist){
 		if (mylist != null && mylist.size() > 0) {
 			for (MyProductResultVo item : mylist) {
-				PProducts products = productsMapper.selectByPrimaryKey(item.getProductid());
-				if (products != null) {
-					item.setHeadImg(products.getDefaultimg());
-				}
+//				PProducts products = productsMapper.selectByPrimaryKey(item.getProductid());
+//				if (products != null) {
+//					item.setHeadImg(products.getDefaultimg());
+//				}
 				if(item.getInvitestatus()!=null&&item.getInvitestatus()>0){//邀请协同编辑
 					List<PMyproductsinvites> invites= inviteMapper.findListByCartId(item.getCartid());
 					if(invites!=null&&invites.size()>0){
 						item.setInviteModel(invites.get(0)); 
 					}
 				}
+				// 作品详情（图片集合）
+				List<PMyproductdetails> detailslist = myDetaiMapper.findMyProductdetails(item.getCartid());
+				int i = 0;
+				if (detailslist != null && detailslist.size() > 0) {
+					for (PMyproductdetails dd : detailslist) {
+						if (!ObjectUtil.isEmpty(dd.getImgurl())) {
+							if(dd.getSort()!=null&&dd.getSort().intValue()==0){
+								item.setHeadImg("http://pic.bbyiya.com/"+dd.getImgurl()+"?imageView2/2/w/200");
+							}
+							i++;
+						}
+					}
+				}
+				if(ObjectUtil.isEmpty(item.getHeadImg())){
+					item.setHeadImg("http://pic.bbyiya.com/484983733454448354.png"); 
+				}
+				item.setCount(i);
 				if(item.getStatus()!=null&&item.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
 					item.setIsOrder(1);
 					item.setCount(12);
-				} else {
-					// 作品详情（图片集合）
-					List<PMyproductdetails> detailslist = myDetaiMapper.findMyProductdetails(item.getCartid());
-					int i = 0;
-					if (detailslist != null && detailslist.size() > 0) {
-						for (PMyproductdetails dd : detailslist) {
-							if (!ObjectUtil.isEmpty(dd.getImgurl())) {
-								i++;
-							}
-						}
-					}
-					item.setCount(i);
-				}
+				} 
 			}
 		}
 		return mylist;

@@ -1,5 +1,6 @@
 package com.bbyiya.service.impl.pic;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -8,9 +9,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.baseUtils.ValidateUtils;
+import com.bbyiya.dao.UBranchesMapper;
+import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UUseraddressMapper;
+import com.bbyiya.dao.UUsersMapper;
+import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.user.UserIdentityEnums;
+import com.bbyiya.model.OOrderaddress;
+import com.bbyiya.model.UBranches;
+import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUseraddress;
+import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.service.pic.IBaseUserAddressService;
 import com.bbyiya.utils.ObjectUtil;
@@ -182,6 +193,39 @@ public class BaseUserAddressServiceImpl implements IBaseUserAddressService {
 		}else {
 			return null;
 		}
+	}
+	@Autowired
+	private UUsersMapper usersMapper;
+	@Autowired
+	private UBranchesMapper branchMapper;
+	@Autowired
+	private UBranchusersMapper branchusersMapper;
+
+	public UUserAddressResult getBranchAddressResult(Long userId){
+		UUsers users = usersMapper.selectByPrimaryKey(userId);
+		if (users != null) {
+			UBranches branches = null;
+			if (ValidateUtils.isIdentity(users.getIdentity(), UserIdentityEnums.branch)) {
+				branches = branchMapper.selectByPrimaryKey(userId);
+			} else if (ValidateUtils.isIdentity(users.getIdentity(), UserIdentityEnums.salesman)) {
+				UBranchusers branchusers = branchusersMapper.selectByPrimaryKey(userId);
+				if (branchusers != null && branchusers.getBranchuserid() != null) {
+					branches = branchMapper.selectByPrimaryKey(branchusers.getBranchuserid());
+				}
+			}
+			if (branches != null) {
+				UUserAddressResult orderAddress = new UUserAddressResult();
+				orderAddress.setUserid(branches.getBranchuserid());
+				orderAddress.setPhone(branches.getPhone());
+				orderAddress.setReciver(branches.getUsername());
+				orderAddress.setCityName(regionService.getName(branches.getCity()));
+				orderAddress.setProvinceName(regionService.getName(branches.getProvince()));
+				orderAddress.setAreaName(regionService.getName(branches.getArea()));
+				orderAddress.setStreetdetail(branches.getStreetdetail());
+				return orderAddress;
+			}
+		}
+		return null;
 	}
 
 }

@@ -22,7 +22,6 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.EErrors;
 import com.bbyiya.model.ULoginlogs;
 import com.bbyiya.pic.service.IPic_UserMgtService;
-import com.bbyiya.pic.utils.WxPublicUtils;
 import com.bbyiya.service.IUserLoginService;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.HttpRequestHelper;
@@ -176,7 +175,6 @@ public class LoginController extends SSOController {
 				String userInfoJson = HttpRequestHelper.sendPost(userInfoUrl, data2);
 				JSONObject userJson = JSONObject.fromObject(userInfoJson);
 				if (userInfoJson != null) {
-//					addlog(userInfoJson);
 					OtherLoginParam param = new OtherLoginParam();
 					param.setOpenId(openid);
 					param.setLoginType(Integer.parseInt(LoginTypeEnum.weixin.toString()));
@@ -230,7 +228,7 @@ public class LoginController extends SSOController {
 				CookieUtils.addCookieBySessionId(request, response,user.getTicket(),86400); 
 //				String sid=request.getSession().getId();
 //				addlog("C¶ËµÇÂ¼£ºsessionId="+sid+";val="+user.getTicket() );
-				WxPublicUtils.setAccessToken(user.getUserId(),access_token);
+//				WxPublicUtils.setAccessToken(user.getUserId(),access_token);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception

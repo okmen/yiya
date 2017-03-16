@@ -23,10 +23,23 @@ import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PProductsMapper;
 import com.bbyiya.dao.PProductstylepropertyMapper;
 import com.bbyiya.dao.PProductstylesMapper;
+import com.bbyiya.dao.RAreaplansMapper;
 import com.bbyiya.dao.RegionMapper;
+import com.bbyiya.dao.UAccountsMapper;
+import com.bbyiya.dao.UAgentsMapper;
+import com.bbyiya.dao.UBranchesMapper;
+import com.bbyiya.dao.UBranchusersMapper;
+import com.bbyiya.dao.UCashlogsMapper;
 import com.bbyiya.dao.UUseraddressMapper;
+import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.OrderStatusEnum;
+import com.bbyiya.enums.OrderTypeEnum;
+import com.bbyiya.enums.PayOrderStatusEnums;
+import com.bbyiya.enums.PayTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.pic.AgentStatusEnum;
+import com.bbyiya.enums.pic.BranchStatusEnum;
+import com.bbyiya.enums.pic.MyProductStatusEnum;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproducts;
@@ -36,10 +49,17 @@ import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PProducts;
 import com.bbyiya.model.PProductstyles;
+import com.bbyiya.model.RAreaplans;
 import com.bbyiya.model.RAreas;
 import com.bbyiya.model.RCity;
 import com.bbyiya.model.RProvince;
+import com.bbyiya.model.UAccounts;
+import com.bbyiya.model.UAgents;
+import com.bbyiya.model.UBranches;
+import com.bbyiya.model.UBranchusers;
+import com.bbyiya.model.UCashlogs;
 import com.bbyiya.model.UUseraddress;
+import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
 import com.bbyiya.utils.DateUtil;
@@ -49,18 +69,18 @@ import com.bbyiya.vo.RegionVo;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.order.UserOrderParam;
 import com.bbyiya.vo.order.UserOrderResult;
+import com.bbyiya.vo.order.UserOrderSubmitParam;
 import com.bbyiya.vo.product.StyleProperty;
 
 @Service("baseOrderMgtServiceImpl")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
 public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
-	@Autowired
-	private UUseraddressMapper addressMapper;// 用户收货地址
-	@Autowired
-	private RegionMapper regionMapper;// 区域
 
 	@Resource(name = "regionServiceImpl")
 	private IRegionService regionService;
+	@Autowired
+	private RegionMapper regionMapper;// 区域
+
 	/*--------------------产品模块注解---------------------------------*/
 	@Autowired
 	private PProductsMapper productsMapper;
@@ -68,6 +88,8 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	private PProductstylesMapper styleMapper;
 	@Autowired
 	private PProductstylepropertyMapper propertyMapper;
+	@Autowired
+	private PMyproductsMapper myproductMapper;//我的作品
 
 	// --------------------订单模块注解--------------------------------------
 	@Autowired
@@ -78,12 +100,325 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	private OUserordersMapper userOrdersMapper;// 订单
 	@Autowired
 	private OPayorderMapper payOrderMapper;// 支付单
-
 	@Autowired
 	private OOrderproductdetailsMapper odetailMapper;// 产品图片集合
 
+	/*------------------------用户信息模块----------------------------------*/
 	@Autowired
-	private PMyproductsMapper myproductMapper;//我的作品
+	private UAccountsMapper accountsMapper;//账户信息
+	@Autowired
+	private UCashlogsMapper cashlogsMapper;//账户流水
+	@Autowired
+	private UUseraddressMapper addressMapper;// 用户收货地址
+	@Autowired
+	private UUsersMapper usersMapper;
+	
+	/*------------------------代理模块-------------------------------------*/
+	@Autowired
+	private UBranchesMapper branchesMapper;
+	@Autowired
+	private UBranchusersMapper branchusersMapper;
+	@Autowired
+	private RAreaplansMapper areaplansMapper;
+	@Autowired
+	private UAgentsMapper agentsMapper;
+	
+	
+
+//	private ReturnModel submitOrder_common(Long userId, Map<String, UserOrderParam> orderlist)throws Exception{
+//		ReturnModel rq=new ReturnModel();
+//		if (orderlist != null && orderlist.size() > 0) {
+//			Map<String, Object> mapResult = new HashMap<String, Object>();
+//			String payId = GenUtils.getOrderNo(userId);
+//			String orderId = payId;
+//			mapResult.put("payId", payId);
+//			mapResult.put("orderId", orderId);
+//			//订单总价
+//			Double totalPrice_pay = 0d;
+//			for (UserOrderParam param : orderlist.values()) {
+//				// 用户订单号（订单号）
+//				String userOrderId = payId;
+//				orderId = userOrderId;
+//				// 用户订单
+//				Date ordertime = new Date();
+//				OUserorders userOrder = new OUserorders();
+//				userOrder.setUserorderid(userOrderId);
+//				userOrder.setBranchuserid(param.getBranchUserId());
+//				userOrder.setUserid(userId);
+//				userOrder.setBranchuserid(param.getBranchUserId());// 分销商userId
+//				userOrder.setAgentuserid(param.getAgentUserId());
+//				userOrder.setRemark(param.getRemark());
+//				if(param.getOrderType()!=null&&param.getOrderType().intValue()==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){
+//					userOrder.setOrdertype(Integer.parseInt(OrderTypeEnum.brachOrder.toString()));
+//				}else {
+//					userOrder.setOrdertype(Integer.parseInt(OrderTypeEnum.nomal.toString())); 
+//				}
+//				userOrder.setOrdertime(ordertime);
+//				userOrder.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
+//				userOrder.setOrderaddressid(param.getAddrId());
+//				userOrder.setPayid(payId); // 会写支付单号
+//				if (param.getProlist() != null && param.getProlist().size() > 0) {
+//					Double totalPrice = 0d;
+//					for (OOrderproducts pp : param.getProlist()) {
+//						// 获取产品信息
+//						PProducts products = productsMapper.selectByPrimaryKey(pp.getProductid());
+//						PProductstyles styles = styleMapper.selectByPrimaryKey(pp.getStyleid());
+//						if (products != null && styles != null) {
+//							mapResult.put("productId",products.getProductid());
+//							mapResult.put("styleId", styles.getStyleid());
+//							pp.setOrderproductid(userOrderId);// 产品订单编号
+//							pp.setUserorderid(userOrderId);// 用户订单号
+//							pp.setBuyeruserid(userId);
+//							if(!ObjectUtil.isEmpty(styles.getDefaultimg())){
+//								pp.setProductimg(styles.getDefaultimg()); 
+//							}else {
+//								pp.setProductimg(products.getDefaultimg()); 
+//							}
+//							oproductMapper.insert(pp); 
+//							// 价格和
+//							totalPrice += styles.getPrice() * pp.getCount();
+//						} else {
+//							throw new Exception("找不到相应的产品！");
+//						}
+//					}
+//					userOrder.setTotalprice(totalPrice);
+//					userOrdersMapper.insert(userOrder);
+//					totalPrice_pay += totalPrice;
+//				} else {
+//					rq.setStatu(ReturnStatus.ParamError);
+//					rq.setStatusreson("产品产生有误");
+//					return rq;
+//				}
+//			}
+//			addPayOrder(userId, payId, payId, totalPrice_pay); // 插入支付订单记录
+//			rq.setStatu(ReturnStatus.Success);
+//		
+//			mapResult.put("totalPrice", totalPrice_pay);
+//			rq.setBasemodle(mapResult);
+//		} else {
+//			rq.setStatu(ReturnStatus.OrderError_1);
+//			rq.setStatusreson("订单参数有误");
+//			return rq;
+//		}
+//		return rq;
+//	}
+
+	
+	public ReturnModel submitOrder_common(UserOrderSubmitParam param)throws Exception{
+		ReturnModel rq = new ReturnModel();
+		if(param==null||param.getUserId()==null||param.getCartId()==null||param.getOrderproducts()==null){
+			rq.setStatu(ReturnStatus.SystemError);
+			rq.setStatusreson("参数有误304");
+			return rq;
+		}
+		int orderType = param.getOrderType() == null ? 0 : param.getOrderType();
+		Map<String, Object> mapResult = new HashMap<String, Object>();
+		String payId = GenUtils.getOrderNo(param.getUserId());
+		String orderId = payId;
+		mapResult.put("payId", payId);
+		mapResult.put("orderId", orderId);
+		
+		OUserorders userOrder = new OUserorders();
+		Date ordertime = new Date();//订单操作时间
+		userOrder.setUserorderid(orderId);//用户订单号
+		userOrder.setPayid(payId); // 会写支付单号
+		userOrder.setUserid(param.getUserId());
+		userOrder.setBranchuserid(param.getBranchUserId());// 分销商userId
+		userOrder.setAgentuserid(param.getAgentUserId());
+		userOrder.setRemark(param.getRemark());
+		userOrder.setOrdertype(param.getOrderType());//订单类型
+		userOrder.setOrdertime(ordertime);
+		userOrder.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
+		if(param.getOrderAddressId()!=null&&param.getOrderAddressId()>0){
+			userOrder.setOrderaddressid(param.getOrderAddressId());
+		}else {
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("收货地址有误");
+			return rq;
+		}
+		if (param.getOrderproducts() != null) {
+			//订单总价
+			Double orderTotalPrice = 0d;
+			//实际需要付款的总价
+			Double totalPrice = 0d;
+			//订单产品
+			OOrderproducts orderProduct = param.getOrderproducts();
+			// 获取产品信息
+			PProducts products = productsMapper.selectByPrimaryKey(orderProduct.getProductid());
+			PProductstyles styles = styleMapper.selectByPrimaryKey(orderProduct.getStyleid());
+			if (products != null && styles != null) {
+				mapResult.put("productId", products.getProductid());
+				mapResult.put("styleId", styles.getStyleid());
+				orderProduct.setOrderproductid(orderId);// 产品订单编号
+				orderProduct.setUserorderid(orderId);// 用户订单号
+				orderProduct.setBuyeruserid(param.getUserId());
+				orderProduct.setPropertystr(styles.getPropertystr()); 
+				orderProduct.setProducttitle(products.getTitle()); 
+				
+				if (!ObjectUtil.isEmpty(styles.getDefaultimg())) {
+					orderProduct.setProductimg(styles.getDefaultimg());
+				} else {
+					orderProduct.setProductimg(products.getDefaultimg());
+				}
+				// 订单原本实际价格总和
+				orderTotalPrice = styles.getPrice() * orderProduct.getCount();
+				if (orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
+					orderProduct.setPrice(styles.getAgentprice()); 
+					orderProduct.setSalesuserid(param.getUserId()); 
+					totalPrice = styles.getAgentprice() * orderProduct.getCount();
+				} else {
+					orderProduct.setPrice(styles.getPrice()); 
+					totalPrice = styles.getPrice() * orderProduct.getCount();
+				}
+			} else {
+				throw new Exception("找不到相应的产品！");
+			}
+			userOrder.setTotalprice(totalPrice);
+			userOrder.setOrdertotalprice(orderTotalPrice);
+			if (orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
+				UAccounts accounts= accountsMapper.selectByPrimaryKey(param.getBranchUserId());
+				if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount()>=totalPrice){
+					// 影楼订单，直接预存款支付 ， 插入支付记录
+					if(payOrder_logAdd(param.getUserId(),orderId,orderId,totalPrice)){
+						userOrder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
+					}else {
+						throw new Exception("下单失败！");
+					}
+				}else {
+					throw new Exception("影楼金额不足！");
+				}
+			} else {
+				addPayOrder(param.getUserId(), payId, payId, totalPrice); // 插入支付订单记录
+			}
+			PMyproducts mycart=myproductMapper.selectByPrimaryKey(param.getCartId()) ;
+			if(mycart!=null){
+				mycart.setOrderno(orderId);
+				mycart.setStatus(Integer.parseInt(MyProductStatusEnum.ordered.toString()));
+				myproductMapper.updateByPrimaryKeySelective(mycart);
+			}else {
+				rq.setStatusreson("作品不存在");
+				return rq;
+			}
+			userOrdersMapper.insert(userOrder);//插入订单
+			oproductMapper.insert(orderProduct);//插入订单产品
+			rq.setStatu(ReturnStatus.Success);
+			mapResult.put("totalPrice", totalPrice);
+			rq.setBasemodle(mapResult);
+		} else {
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("产品产生有误");
+			return rq;
+		}
+		return rq;
+	}
+	
+	
+	public ReturnModel submitOrder_new(UserOrderSubmitParam param) {
+		ReturnModel rq = new ReturnModel();
+		int orderType=param.getOrderType()==null?0:param.getOrderType();
+		try {
+			//订单参数，用户资格验证
+			rq=checkOrderParam(param);
+			if(!rq.getStatu().equals(ReturnStatus.Success))//未通过参数验证
+			{
+				return rq;
+			}	
+			if(rq.getBasemodle()!=null){
+				param=(UserOrderSubmitParam)rq.getBasemodle();
+			}
+			long orderAddressId =0;
+			if(orderType==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){//影楼订单
+				orderAddressId = getOrderAddressIdByBranchUserId(param.getUserId(), orderType);
+			}else {//普通购买
+				orderAddressId  = getOrderAddressId(param.getAddrId());
+			}
+			if(orderAddressId>0){//
+				param.setOrderAddressId(orderAddressId);
+			} 
+			rq=submitOrder_common(param);
+
+		} catch (Exception e) {
+			rq.setStatu(ReturnStatus.SystemError);
+			rq.setStatusreson(e.getMessage());
+		}
+		return rq;
+	}
+	
+	/**
+	 * 检测订单参数 
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	private ReturnModel checkOrderParam(UserOrderSubmitParam param)throws Exception{ 
+		ReturnModel rq = new ReturnModel();
+		rq.setStatu(ReturnStatus.ParamError);
+		if(param==null||param.getUserId()==null||param.getOrderproducts()==null){
+			rq.setStatusreson("参数有误");
+			return rq;
+		}
+		PProductstyles style=null;
+		if(param.getOrderproducts().getProductid()!=null&&param.getOrderproducts().getStyleid()!=null){
+			 style=styleMapper.selectByPrimaryKey(param.getOrderproducts().getSalesuserid());
+			 if(style.getAgentprice()==null)
+				 style.setAgentprice(style.getPrice()); 
+		}else {
+			rq.setStatusreson("产品不存在");
+			return rq;
+		}
+		PMyproducts mycart= myproductMapper.selectByPrimaryKey(param.getCartId());
+		if(mycart==null){
+			rq.setStatusreson("作品不存在");
+			return rq;
+		}
+		int count= param.getOrderproducts().getCount()==null?1:param.getOrderproducts().getCount();
+		int orderType=param.getOrderType()==null?0:param.getOrderType();
+		if(orderType==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){//影楼订单
+			UUsers users=usersMapper.selectByPrimaryKey(param.getUserId());
+			if(users!=null){
+				if(orderType==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){//影楼订单
+					UBranchusers branchusers= branchusersMapper.selectByPrimaryKey(param.getUserId());
+					if(branchusers!=null&&branchusers.getBranchuserid()!=null){
+						UBranches branches=branchesMapper.selectByPrimaryKey(branchusers.getBranchuserid());
+						if(branches!=null&&branches.getStatus()!=null&&branches.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.ok.toString())){
+							double totalprice=style.getAgentprice()*count;
+							UAccounts accounts= accountsMapper.selectByPrimaryKey(branches.getBranchuserid());
+							if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount()>=totalprice){
+								 rq.setStatu(ReturnStatus.Success);
+								 param.setBranchUserId(branches.getBranchuserid());
+								 param.setAgentUserId(branches.getAgentuserid()); 
+								 rq.setBasemodle(param); 
+								 return rq;
+							}else {
+								rq.setStatusreson("影楼预存款不足，无法下单！");
+								return rq;
+							}
+						}else {
+							rq.setStatusreson("不是有效的合作伙伴！");
+							return rq;
+						}
+					}
+				}
+			}
+		}else {//普通订单
+			UUseraddress addr = addressMapper.get_UUserAddressByKeyId(param.getAddrId());//用户收货地址
+			RAreaplans areaplans= areaplansMapper.selectByPrimaryKey(addr.getArea());
+			if(areaplans!=null&&areaplans.getAgentuserid()!=null&&areaplans.getAgentuserid()>0){
+				UAgents agent= agentsMapper.selectByPrimaryKey(areaplans.getAgentuserid());
+				if(agent!=null&&agent.getStatus()!=null&&agent.getStatus()==Integer.parseInt(AgentStatusEnum.ok.toString())){
+					param.setAgentUserId(agent.getAgentuserid());
+				}
+			}
+			rq.setStatu(ReturnStatus.Success); 
+			rq.setBasemodle(param);
+			return rq;
+		}
+		rq.setStatusreson("参数有误");
+		return rq;
+	}
+	
+	
+	
 	
 	/**
 	 * 用户订单，产品订单 共用（一个订单对应一个产品 ）
@@ -122,6 +457,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					userOrder.setUserid(userId);// 买家userId
 					userOrder.setBranchuserid(param.getBranchUserId());// 分销商userId
 					userOrder.setRemark(param.getRemark());
+					userOrder.setOrdertype(Integer.parseInt(OrderTypeEnum.nomal.toString())); 
 					userOrder.setOrdertime(ordertime);
 					userOrder.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
 					userOrder.setOrderaddressid(orderAddrId);
@@ -174,7 +510,6 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			}
 
 		} catch (Exception e) {
-			// TODO: handle exception
 			rq.setStatu(ReturnStatus.SystemError);
 			rq.setStatusreson(e.getMessage());
 		}
@@ -182,7 +517,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	}
 
 	/**
-	 * 去支付
+	 * 去支付（通过订单id获取支付信息）
 	 * 
 	 * @param orderId
 	 * @return
@@ -319,6 +654,36 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		payorder.setCreatetime(new Date());
 		payOrderMapper.insert(payorder);
 	}
+	
+	public boolean payOrder_logAdd(Long userId, String payId, String userOrderId, Double totalPrice) throws Exception{
+		UAccounts accounts=accountsMapper.selectByPrimaryKey(userId);
+		if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount().doubleValue()>=totalPrice.doubleValue()){
+			UCashlogs cashLog=new UCashlogs();
+			cashLog.setAmount(-1*totalPrice);
+			cashLog.setPayid(payId);
+			cashLog.setUserid(userId);
+			cashLog.setUsetype(1);//购物
+			cashLog.setCreatetime(new Date());
+			cashlogsMapper.insert(cashLog);
+			
+			OPayorder payorder = new OPayorder();
+			payorder.setPayid(payId);
+			payorder.setUserorderid(userOrderId);
+			payorder.setUserid(userId);
+			payorder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
+			payorder.setPaytype(Integer.parseInt(PayTypeEnum.yiyaCash.toString()));
+			payorder.setPaytime(new Date()); 
+			payorder.setTotalprice(totalPrice);
+			payorder.setCreatetime(new Date());
+			payOrderMapper.insert(payorder);
+			
+			accounts.setAvailableamount(accounts.getAvailableamount()-totalPrice);
+			accountsMapper.updateByPrimaryKeySelective(accounts); 
+			return true;
+		}
+		return false;
+	}
+	
 
 	/**
 	 * 订单拆分
@@ -340,7 +705,6 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					pp.setPropertystr(getStylePropertyStr(pp.getStyleid()));// 款式
 					pp.setBranchuserid(products.getUserid());
 					pp.setProducttitle(products.getTitle());
-
 					// 根据分销商、业务员 进行拆单
 					String keyItem = products.getUserid() + "-" + pp.getSalesuserid();
 					if (!map.containsKey(keyItem)) {
@@ -412,81 +776,43 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		}
 		return 0;
 	}
-
+	
 	/**
-	 * gets the name of region by code
-	 * 
-	 * @param code
-	 *            // region's code
+	 * 获取订单收货地址
+	 * @param userId
+	 * @param orderType
 	 * @return
 	 */
-	// public String getName(Integer code) {
-	// if (code != null && code > 0) {
-	// for (RegionVo vo : findRegionAll()) {
-	// if (vo.getCode().intValue() == code.intValue()) {
-	// return vo.getCodeName();
-	// }
-	// }
-	// }
-	// return "";
-	// }
+	private long getOrderAddressIdByBranchUserId(Long userId,int orderType) {
+		UUsers users=usersMapper.selectByPrimaryKey(userId);
+		if(users!=null){
+			if(orderType==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){//影楼订单
+				UBranchusers branchusers= branchusersMapper.selectByPrimaryKey(userId);
+				if(branchusers!=null&&branchusers.getBranchuserid()!=null){
+					UBranches branches=branchesMapper.selectByPrimaryKey(branchusers.getBranchuserid());
+					if (branches != null) {
+						OOrderaddress orderAddress = new OOrderaddress();
+						orderAddress.setUserid(branches.getBranchuserid());
+						orderAddress.setPhone(branches.getPhone());
+						orderAddress.setReciver(branches.getUsername());
+						orderAddress.setCity(regionService.getName(branches.getCity()));
+						orderAddress.setProvince(regionService.getName(branches.getProvince()));
+						orderAddress.setDistrict(regionService.getName(branches.getArea()));
+						orderAddress.setStreetdetail(branches.getStreetdetail());
+						orderAddress.setCreatetime(new Date());
+						orderaddressMapper.insertReturnId(orderAddress);
+						return orderAddress.getOrderaddressid();
+					}
+				}
+			}
+		}
+		return 0;
+	}
+
 
 	/**
-	 * All regionlist Gets a list of all regions (provinces, cities and
-	 * districts the same level) 获取所有的 区域列表（省、市、区 同级）
-	 * 
-	 * @return
+	 * 订单支付成功 回写
 	 */
-	// public List<RegionVo> findRegionAll() {
-	// String keyString = "regionList_all";
-	// @SuppressWarnings("unchecked")
-	// List<RegionVo> resultList = (List<RegionVo>)
-	// RedisUtil.getObject(keyString);// new
-	// // ArrayList<RegionVo>();
-	// if (resultList != null && resultList.size() > 0) {
-	// return resultList;
-	// } else {
-	// resultList = new ArrayList<RegionVo>();
-	// }
-	// List<RProvince> provincelist = regionMapper.findProvincelistAll();
-	// if (provincelist != null && provincelist.size() > 0) {
-	// for (RProvince pp : provincelist) {
-	// RegionVo vo = new RegionVo();
-	// vo.setCode(pp.getCode());
-	// vo.setCodeName(pp.getProvince());
-	// vo.setStep(1);
-	// resultList.add(vo);
-	// List<RCity> citylist =
-	// regionMapper.findCitylistBy_ProvinceCode(pp.getCode());
-	// if (citylist != null && citylist.size() > 0) {
-	// for (RCity cc : citylist) {
-	// RegionVo vo_cc = new RegionVo();
-	// vo_cc.setCode(cc.getCode());
-	// vo_cc.setCodeName(cc.getCity());
-	// vo_cc.setStep(2);
-	// resultList.add(vo_cc);
-	// List<RAreas> arealist =
-	// regionMapper.findArealistBy_CityCode(cc.getCode());
-	// if (arealist != null && arealist.size() > 0) {
-	// for (RAreas aa : arealist) {
-	// RegionVo vo_aa = new RegionVo();
-	// vo_aa.setCode(aa.getCode());
-	// vo_aa.setCodeName(aa.getArea());
-	// vo_aa.setStep(3);
-	// resultList.add(vo_aa);
-	// }
-	// }
-	// }
-	// }
-	// }
-	// }
-	// if (resultList != null && resultList.size() > 0) {
-	// RedisUtil.setObject(keyString, resultList, 3600);
-	// }
-	// return resultList;
-	// }
-
-	// TODO 订单处理状态
 	public boolean paySuccessProcess(String payId) {
 		if (!ObjectUtil.isEmpty(payId)) {
 			try {
@@ -496,9 +822,11 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					if (userorders != null) {
 						if (userorders.getStatus().intValue() == Integer.parseInt(OrderStatusEnum.noPay.toString())) {
 							userorders.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
-							userorders.setPaytime(new Date());
+							userorders.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString()));
+							userorders.setPaytime(new Date()); 
 							userOrdersMapper.updateByPrimaryKeySelective(userorders);
 							payOrder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
+							payOrder.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString()));  
 							payOrder.setPaytime(new Date()); 
 							payOrderMapper.updateByPrimaryKeySelective(payOrder);
 							return true;

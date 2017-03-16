@@ -56,6 +56,25 @@ public class OrderIBSController extends SSOController{
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	/**
+	 * 获取订单详情
+	 * @param userOrderId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getOrderDetail")
+	public String getOrderDetail(String userOrderId) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			rq=orderService.getOrderDetail(userOrderId);
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	
 	/**
 	 * 

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.bbyiya.model.OOrderaddress;
+import com.bbyiya.model.OOrderproducts;
 
 public class OrderVo implements Serializable {
 	
@@ -21,6 +22,8 @@ public class OrderVo implements Serializable {
 	
 	private OOrderaddress address;
 
+	private OOrderproducts orderProduct;
+	
 	public String getUserorderid() {
 		return userorderid;
 	}
@@ -67,6 +70,14 @@ public class OrderVo implements Serializable {
 
 	public void setAddress(OOrderaddress address) {
 		this.address = address;
+	}
+
+	public OOrderproducts getOrderProduct() {
+		return orderProduct;
+	}
+
+	public void setOrderProduct(OOrderproducts orderProduct) {
+		this.orderProduct = orderProduct;
 	}
 	
 	

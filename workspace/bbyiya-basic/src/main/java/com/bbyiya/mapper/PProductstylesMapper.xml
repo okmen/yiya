@@ -14,6 +14,7 @@
     <result column="PropertyStr" property="propertystr" jdbcType="VARCHAR" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="UpdateTime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="AgentPrice" property="agentprice" jdbcType="DECIMAL" />
   </resultMap>
   <resultMap id="StyleVOResultMap" type="com.bbyiya.vo.product.PProductStyleResult" >
     <id column="StyleId" property="styleId" jdbcType="BIGINT" />
@@ -24,8 +25,8 @@
     <result column="Description" property="description" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-     StyleId, ProductId, UserId, DefaultImg, OldPrice, Price, Status, IsDefault, PropertyStr, Description,
-    CreateTime, UpdateTime
+     StyleId, ProductId, UserId, DefaultImg, PropertyStr, OldPrice, Price, Status, IsDefault, 
+    Description, CreateTime, UpdateTime, AgentPrice
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -49,17 +50,17 @@
     delete from P_ProductStyles
     where StyleId = #{styleid,jdbcType=BIGINT}
   </delete>
- <insert id="insert" parameterType="com.bbyiya.model.PProductstyles" >
+  <insert id="insert" parameterType="com.bbyiya.model.PProductstyles" >
     insert into P_ProductStyles (StyleId, ProductId, UserId, 
       DefaultImg, PropertyStr, OldPrice, 
       Price, Status, IsDefault, 
-      Description, CreateTime, UpdateTime
-      )
+      Description, CreateTime, UpdateTime, 
+      AgentPrice)
     values (#{styleid,jdbcType=BIGINT}, #{productid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, 
       #{defaultimg,jdbcType=VARCHAR}, #{propertystr,jdbcType=VARCHAR}, #{oldprice,jdbcType=DECIMAL}, 
       #{price,jdbcType=DECIMAL}, #{status,jdbcType=INTEGER}, #{isdefault,jdbcType=INTEGER}, 
-      #{description,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}
-      )
+      #{description,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, 
+      #{agentprice,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PProductstyles" >
     insert into P_ProductStyles
@@ -100,6 +101,9 @@
       <if test="updatetime != null" >
         UpdateTime,
       </if>
+      <if test="agentprice != null" >
+        AgentPrice,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="styleid != null" >
@@ -137,6 +141,9 @@
       </if>
       <if test="updatetime != null" >
         #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="agentprice != null" >
+        #{agentprice,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
@@ -176,6 +183,9 @@
       <if test="updatetime != null" >
         UpdateTime = #{updatetime,jdbcType=TIMESTAMP},
       </if>
+      <if test="agentprice != null" >
+        AgentPrice = #{agentprice,jdbcType=DECIMAL},
+      </if>
     </set>
     where StyleId = #{styleid,jdbcType=BIGINT}
   </update>
@@ -191,7 +201,8 @@
       IsDefault = #{isdefault,jdbcType=INTEGER},
       Description = #{description,jdbcType=VARCHAR},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
-      UpdateTime = #{updatetime,jdbcType=TIMESTAMP}
+      UpdateTime = #{updatetime,jdbcType=TIMESTAMP},
+      AgentPrice = #{agentprice,jdbcType=DECIMAL}
     where StyleId = #{styleid,jdbcType=BIGINT}
   </update>
 </mapper>

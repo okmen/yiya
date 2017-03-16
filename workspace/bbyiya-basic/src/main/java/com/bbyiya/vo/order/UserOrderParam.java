@@ -9,7 +9,9 @@ public class UserOrderParam implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private Long branchUserId;
+	private Long agentUserId;
 	private Long addrId;
+	private Integer orderType;
 	private String remark;
 	private List<OOrderproducts> prolist;
 	public Long getBranchUserId() {
@@ -35,6 +37,18 @@ public class UserOrderParam implements Serializable{
 	}
 	public void setProlist(List<OOrderproducts> prolist) {
 		this.prolist = prolist;
+	}
+	public Integer getOrderType() {
+		return orderType;
+	}
+	public void setOrderType(Integer orderType) {
+		this.orderType = orderType;
+	}
+	public Long getAgentUserId() {
+		return agentUserId;
+	}
+	public void setAgentUserId(Long agentUserId) {
+		this.agentUserId = agentUserId;
 	}
 	
 	

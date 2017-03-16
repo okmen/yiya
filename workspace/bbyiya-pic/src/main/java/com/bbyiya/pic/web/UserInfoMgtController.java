@@ -109,6 +109,25 @@ public class UserInfoMgtController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	/**
+	 * 获取影楼收货地址
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getBranchAddress")
+	public String getBranchAddress() throws Exception {
+		LoginSuccessResult user = super.getLoginUser();
+		ReturnModel rq = new ReturnModel();
+		if (user != null) {
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(addressService.getBranchAddressResult(user.getUserId())); 		
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	
 	/**
 	 * 绑定手机
@@ -166,6 +185,9 @@ public class UserInfoMgtController extends SSOController {
 		// 宝宝信息参数model
 		UChildInfoParam child = (UChildInfoParam) JsonUtil.jsonStrToObject(childInfoJson, UChildInfoParam.class);
 		rq = userMgtService.addOrEdit_UChildreninfo(user.getUserId(), child);
+		if(rq.getStatu().equals(ReturnStatus.Success)){
+			rq.setStatusreson("成功！"); 
+		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	

@@ -26,5 +26,11 @@ public interface IBaseUserAddressService {
 	 * @return
 	 */
 	UUserAddressResult getUserAddressResult(Long userId, Long addressId);
+	/**
+	 * 获取分销影楼地址
+	 * @param userId
+	 * @return
+	 */
+	UUserAddressResult getBranchAddressResult(Long userId);
 	
 }

@@ -17,10 +17,8 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.user.UserStatusEnum;
 import com.bbyiya.model.UOtherlogin;
 import com.bbyiya.model.UUsers;
-import com.bbyiya.model.UUsertesterwx;
 import com.bbyiya.pic.service.IPic_UserMgtService;
 import com.bbyiya.service.IUserLoginService;
-//import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.utils.SendSMSByMobile;
@@ -55,29 +53,25 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 				if (others != null) {
 					UUsers user = userDao.selectByPrimaryKey(others.getUserid());
 					LoginSuccessResult loginSuccessResult = null;
+					
 					if (user != null) {
-						boolean edit=false;
-						if(ObjectUtil.isEmpty(user.getNickname())||"null".equals(user.getNickname())){
-							if(!ObjectUtil.isEmpty(param.getNickName())&&!"null".equals(param.getNickName())){
-								user.setNickname(param.getNickName());
-								edit=true;	
-							}
-						}
-						if(ObjectUtil.isEmpty(user.getUserimg())||"null".equals(user.getUserimg())){
-							if(!ObjectUtil.isEmpty(param.getHeadImg())&&!"null".equals(param.getHeadImg())){
-								user.setUserimg(param.getHeadImg());
-								edit=true;
-							}
-						}
+//						boolean edit=false;
+//						if(ObjectUtil.isEmpty(user.getNickname())||"null".equals(user.getNickname())){
+//							if(!ObjectUtil.isEmpty(param.getNickName())&&!"null".equals(param.getNickName())){
+//								user.setNickname(param.getNickName());
+//								edit=true;	
+//							}
+//						}
+//						if(ObjectUtil.isEmpty(user.getUserimg())||"null".equals(user.getUserimg())){
+//							if(!ObjectUtil.isEmpty(param.getHeadImg())&&!"null".equals(param.getHeadImg())){
+//								user.setUserimg(param.getHeadImg());
+//								edit=true;
+//							}
+//						} 
 						loginSuccessResult = baseLoginService.loginSuccess(user);
-						if(edit){ 
-							userDao.updateByPrimaryKeySelective(user);
-						}
-						//≤‚ ‘’À∫≈
-						UUsertesterwx testerUsertesterwx= testerMapper.selectByPrimaryKey(user.getUserid());
-						if(testerUsertesterwx!=null&&testerUsertesterwx.getStatus().intValue()==1){
-							loginSuccessResult.setIsTester(1); 
-						}
+//						if(edit){ 
+//							userDao.updateByPrimaryKeySelective(user);
+//						}
 						
 					} else {
 						return otherRegiter(param);

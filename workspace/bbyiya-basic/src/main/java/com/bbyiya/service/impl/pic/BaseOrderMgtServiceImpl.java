@@ -536,6 +536,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			model.setUserOrderId(orderInfo.getUserorderid());
 			model.setTotalprice(orderInfo.getTotalprice());
 			model.setStatus(orderInfo.getStatus());
+			model.setPayType(orderInfo.getPaytype()); 
 			model.setOrderTimeStr(DateUtil.getTimeStr(orderInfo.getOrdertime(), "yyyy-MM-dd"));
 			List<OOrderproducts> proList = oproductMapper.findOProductsByOrderId(orderInfo.getUserorderid());
 			model.setProlist(proList);

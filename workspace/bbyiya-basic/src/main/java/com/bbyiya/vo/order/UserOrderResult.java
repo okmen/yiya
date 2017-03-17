@@ -18,6 +18,7 @@ public class UserOrderResult implements Serializable {
 	private String orderTimeStr;
 	private String shareUrl;
 	private Long cartId;
+	private Integer payType;
 	private List<OOrderproducts> prolist;
 	
 	private OOrderaddress orderAddress;
@@ -108,6 +109,14 @@ public class UserOrderResult implements Serializable {
 
 	public void setCartId(Long cartId) {
 		this.cartId = cartId;
+	}
+
+	public Integer getPayType() {
+		return payType;
+	}
+
+	public void setPayType(Integer payType) {
+		this.payType = payType;
 	}
 
 	

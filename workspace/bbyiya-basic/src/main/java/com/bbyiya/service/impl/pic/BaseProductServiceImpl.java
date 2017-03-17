@@ -21,7 +21,6 @@ import com.bbyiya.dao.PStylebackgroundsMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.PProducts;
 import com.bbyiya.model.PProductstyledes;
-//import com.bbyiya.model.PProductstyleproperty;
 import com.bbyiya.model.PProductstyles;
 import com.bbyiya.model.PScenebacks;
 import com.bbyiya.model.PStylebackgrounds;
@@ -30,8 +29,6 @@ import com.bbyiya.service.pic.IBaseProductService;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.product.PProductStyleResult;
 import com.bbyiya.vo.product.ProductResult;
-//import com.bbyiya.vo.product.ProductStandardResult;
-//import com.bbyiya.vo.product.SecondStandard;
 
 @SuppressWarnings("restriction")
 @Service("baseProductServiceImpl")
@@ -57,20 +54,6 @@ public class BaseProductServiceImpl implements IBaseProductService {
 
 	public List<ProductResult> findProductList(Long userId) {
 		List<ProductResult> results = productsMapper.findProductResultByBranchUserId(userId);
-//		if (results != null && results.size() > 0) {
-//			List<Map<String, String>> imgList = ConfigUtil.getMaplist("productDesimgs");
-//			if (imgList != null && imgList.size() > 0) {
-//				for (ProductResult pro : results) {
-//					List<String> imgs = new ArrayList<String>();
-//					for (Map<String, String> map : imgList) {
-//						if (String.valueOf(pro.getProductId()).equals(map.get("productId"))) {
-//							imgs.add(map.get("imageUrl"));
-//						}
-//					}
-//					pro.setDesImgs(imgs);
-//				}
-//			}
-//		}
 		return results;
 	}
 

@@ -25,6 +25,8 @@ public class OOrderproducts {
     private Integer count;
 
     private String productimg;
+    
+    private Long cartid;
 
     public String getOrderproductid() {
         return orderproductid;
@@ -122,4 +124,13 @@ public class OOrderproducts {
     public void setProductimg(String productimg) {
         this.productimg = productimg == null ? null : productimg.trim();
     }
+
+	public Long getCartid() {
+		return cartid;
+	}
+
+	public void setCartid(Long cartid) {
+		this.cartid = cartid;
+	}
+    
 }

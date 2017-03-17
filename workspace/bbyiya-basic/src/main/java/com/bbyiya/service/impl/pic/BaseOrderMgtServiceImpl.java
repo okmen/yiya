@@ -50,9 +50,6 @@ import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PProducts;
 import com.bbyiya.model.PProductstyles;
 import com.bbyiya.model.RAreaplans;
-import com.bbyiya.model.RAreas;
-import com.bbyiya.model.RCity;
-import com.bbyiya.model.RProvince;
 import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UAgents;
 import com.bbyiya.model.UBranches;
@@ -64,8 +61,6 @@ import com.bbyiya.service.IRegionService;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
-import com.bbyiya.utils.RedisUtil;
-import com.bbyiya.vo.RegionVo;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.order.UserOrderParam;
 import com.bbyiya.vo.order.UserOrderResult;
@@ -124,87 +119,13 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	private UAgentsMapper agentsMapper;
 	
 	
-
-//	private ReturnModel submitOrder_common(Long userId, Map<String, UserOrderParam> orderlist)throws Exception{
-//		ReturnModel rq=new ReturnModel();
-//		if (orderlist != null && orderlist.size() > 0) {
-//			Map<String, Object> mapResult = new HashMap<String, Object>();
-//			String payId = GenUtils.getOrderNo(userId);
-//			String orderId = payId;
-//			mapResult.put("payId", payId);
-//			mapResult.put("orderId", orderId);
-//			//订单总价
-//			Double totalPrice_pay = 0d;
-//			for (UserOrderParam param : orderlist.values()) {
-//				// 用户订单号（订单号）
-//				String userOrderId = payId;
-//				orderId = userOrderId;
-//				// 用户订单
-//				Date ordertime = new Date();
-//				OUserorders userOrder = new OUserorders();
-//				userOrder.setUserorderid(userOrderId);
-//				userOrder.setBranchuserid(param.getBranchUserId());
-//				userOrder.setUserid(userId);
-//				userOrder.setBranchuserid(param.getBranchUserId());// 分销商userId
-//				userOrder.setAgentuserid(param.getAgentUserId());
-//				userOrder.setRemark(param.getRemark());
-//				if(param.getOrderType()!=null&&param.getOrderType().intValue()==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){
-//					userOrder.setOrdertype(Integer.parseInt(OrderTypeEnum.brachOrder.toString()));
-//				}else {
-//					userOrder.setOrdertype(Integer.parseInt(OrderTypeEnum.nomal.toString())); 
-//				}
-//				userOrder.setOrdertime(ordertime);
-//				userOrder.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
-//				userOrder.setOrderaddressid(param.getAddrId());
-//				userOrder.setPayid(payId); // 会写支付单号
-//				if (param.getProlist() != null && param.getProlist().size() > 0) {
-//					Double totalPrice = 0d;
-//					for (OOrderproducts pp : param.getProlist()) {
-//						// 获取产品信息
-//						PProducts products = productsMapper.selectByPrimaryKey(pp.getProductid());
-//						PProductstyles styles = styleMapper.selectByPrimaryKey(pp.getStyleid());
-//						if (products != null && styles != null) {
-//							mapResult.put("productId",products.getProductid());
-//							mapResult.put("styleId", styles.getStyleid());
-//							pp.setOrderproductid(userOrderId);// 产品订单编号
-//							pp.setUserorderid(userOrderId);// 用户订单号
-//							pp.setBuyeruserid(userId);
-//							if(!ObjectUtil.isEmpty(styles.getDefaultimg())){
-//								pp.setProductimg(styles.getDefaultimg()); 
-//							}else {
-//								pp.setProductimg(products.getDefaultimg()); 
-//							}
-//							oproductMapper.insert(pp); 
-//							// 价格和
-//							totalPrice += styles.getPrice() * pp.getCount();
-//						} else {
-//							throw new Exception("找不到相应的产品！");
-//						}
-//					}
-//					userOrder.setTotalprice(totalPrice);
-//					userOrdersMapper.insert(userOrder);
-//					totalPrice_pay += totalPrice;
-//				} else {
-//					rq.setStatu(ReturnStatus.ParamError);
-//					rq.setStatusreson("产品产生有误");
-//					return rq;
-//				}
-//			}
-//			addPayOrder(userId, payId, payId, totalPrice_pay); // 插入支付订单记录
-//			rq.setStatu(ReturnStatus.Success);
-//		
-//			mapResult.put("totalPrice", totalPrice_pay);
-//			rq.setBasemodle(mapResult);
-//		} else {
-//			rq.setStatu(ReturnStatus.OrderError_1);
-//			rq.setStatusreson("订单参数有误");
-//			return rq;
-//		}
-//		return rq;
-//	}
-
-	
-	public ReturnModel submitOrder_common(UserOrderSubmitParam param)throws Exception{
+	/**
+	 * 提交订单（param已经被验证）
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	private ReturnModel submitOrder_common(UserOrderSubmitParam param)throws Exception{
 		ReturnModel rq = new ReturnModel();
 		if(param==null||param.getUserId()==null||param.getCartId()==null||param.getOrderproducts()==null){
 			rq.setStatu(ReturnStatus.SystemError);
@@ -254,7 +175,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				orderProduct.setBuyeruserid(param.getUserId());
 				orderProduct.setPropertystr(styles.getPropertystr()); 
 				orderProduct.setProducttitle(products.getTitle()); 
-				
+				orderProduct.setCartid(param.getCartId());//作品Id
 				if (!ObjectUtil.isEmpty(styles.getDefaultimg())) {
 					orderProduct.setProductimg(styles.getDefaultimg());
 				} else {
@@ -265,6 +186,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				if (orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
 					orderProduct.setPrice(styles.getAgentprice()); 
 					orderProduct.setSalesuserid(param.getUserId()); 
+					orderProduct.setBranchuserid(param.getBranchUserId()); 
 					totalPrice = styles.getAgentprice() * orderProduct.getCount();
 				} else {
 					orderProduct.setPrice(styles.getPrice()); 
@@ -335,13 +257,10 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			if(orderAddressId>0){//
 				param.setOrderAddressId(orderAddressId);
 			} 
-			rq=submitOrder_common(param);
-
+			return submitOrder_common(param);
 		} catch (Exception e) {
-			rq.setStatu(ReturnStatus.SystemError);
-			rq.setStatusreson(e.getMessage());
+			throw new RuntimeException(e.getMessage());
 		}
-		return rq;
 	}
 	
 	/**
@@ -658,14 +577,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	public boolean payOrder_logAdd(Long userId, String payId, String userOrderId, Double totalPrice) throws Exception{
 		UAccounts accounts=accountsMapper.selectByPrimaryKey(userId);
 		if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount().doubleValue()>=totalPrice.doubleValue()){
-			UCashlogs cashLog=new UCashlogs();
-			cashLog.setAmount(-1*totalPrice);
-			cashLog.setPayid(payId);
-			cashLog.setUserid(userId);
-			cashLog.setUsetype(1);//购物
-			cashLog.setCreatetime(new Date());
-			cashlogsMapper.insert(cashLog);
-			
+						
 			OPayorder payorder = new OPayorder();
 			payorder.setPayid(payId);
 			payorder.setUserorderid(userOrderId);
@@ -676,6 +588,14 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			payorder.setTotalprice(totalPrice);
 			payorder.setCreatetime(new Date());
 			payOrderMapper.insert(payorder);
+			//消费记录
+			UCashlogs cashLog=new UCashlogs();
+			cashLog.setAmount(-1*totalPrice);
+			cashLog.setPayid(payId);
+			cashLog.setUserid(userId);
+			cashLog.setUsetype(1);//购物
+			cashLog.setCreatetime(new Date());
+			cashlogsMapper.insert(cashLog);
 			
 			accounts.setAvailableamount(accounts.getAvailableamount()-totalPrice);
 			accountsMapper.updateByPrimaryKeySelective(accounts); 

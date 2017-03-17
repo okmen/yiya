@@ -279,7 +279,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				UAccounts accounts= accountsMapper.selectByPrimaryKey(param.getBranchUserId());
 				if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount()>=totalPrice){
 					// 影楼订单，直接预存款支付 ， 插入支付记录
-					if(payOrder_logAdd(param.getUserId(),orderId,orderId,totalPrice)){
+					if(payOrder_logAdd(param.getBranchUserId(),orderId,orderId,totalPrice)){
 						userOrder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
 					}else {
 						throw new Exception("下单失败！");
@@ -359,7 +359,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		}
 		PProductstyles style=null;
 		if(param.getOrderproducts().getProductid()!=null&&param.getOrderproducts().getStyleid()!=null){
-			 style=styleMapper.selectByPrimaryKey(param.getOrderproducts().getSalesuserid());
+			 style=styleMapper.selectByPrimaryKey(param.getOrderproducts().getStyleid());
 			 if(style.getAgentprice()==null)
 				 style.setAgentprice(style.getPrice()); 
 		}else {

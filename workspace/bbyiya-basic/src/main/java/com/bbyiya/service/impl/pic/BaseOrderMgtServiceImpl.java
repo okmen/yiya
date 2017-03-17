@@ -197,7 +197,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			userOrder.setOrdertotalprice(orderTotalPrice);
 			if (orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
 				UAccounts accounts= accountsMapper.selectByPrimaryKey(param.getBranchUserId());
-				if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount()>=totalPrice){
+				if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount()>=totalPrice) {
 					// 影楼订单，直接预存款支付 ， 插入支付记录
 					if(payOrder_logAdd(param.getBranchUserId(),orderId,orderId,totalPrice)){
 						userOrder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
@@ -207,7 +207,9 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 						throw new Exception("下单失败！");
 					}
 				}else {
-					throw new Exception("影楼金额不足！");
+					rq.setStatu(ReturnStatus.CashError);
+					rq.setStatusreson("企业余额不足！");
+					return rq;
 				}
 			} else {
 				addPayOrder(param.getUserId(), payId, payId, totalPrice); // 插入支付订单记录
@@ -218,8 +220,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				mycart.setStatus(Integer.parseInt(MyProductStatusEnum.ordered.toString()));
 				myproductMapper.updateByPrimaryKeySelective(mycart);
 			}else {
-				rq.setStatusreson("作品不存在");
-				return rq;
+				throw new Exception("作品不存在！");
 			}
 			userOrdersMapper.insert(userOrder);//插入订单
 			oproductMapper.insert(orderProduct);//插入订单产品
@@ -309,6 +310,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 								 rq.setBasemodle(param); 
 								 return rq;
 							}else {
+								rq.setStatu(ReturnStatus.CashError); 
 								rq.setStatusreson("影楼预存款不足，无法下单！");
 								return rq;
 							}

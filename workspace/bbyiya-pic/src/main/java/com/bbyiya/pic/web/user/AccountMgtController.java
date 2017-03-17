@@ -57,4 +57,6 @@ public class AccountMgtController extends SSOController{
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	
 }

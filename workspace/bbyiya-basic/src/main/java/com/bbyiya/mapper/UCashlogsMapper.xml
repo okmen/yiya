@@ -12,11 +12,18 @@
   <sql id="Base_Column_List" >
     CashLogId, UserID, UseType, Amount, PayId, CreateTime
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" ><!-- 01 主键查询 -->
+    select   <include refid="Base_Column_List" />
     from U_CashLogs
     where CashLogId = #{cashlogid,jdbcType=BIGINT}
+  </select>
+   <select id="findCashlogsByUserId" resultMap="BaseResultMap" ><!-- 02 获取用户的交易流水 -->
+    select <include refid="Base_Column_List" />
+    from U_CashLogs where UserID = #{userId,jdbcType=BIGINT}
+    <if test="type != null" >
+       and UseType= #{type,jdbcType=INTEGER}
+    </if>
+    order by CashLogId desc
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from U_CashLogs

@@ -1,6 +1,5 @@
 package com.bbyiya.pic.web;
 
-//import javax.servlet.http.HttpServletRequest;
 
 import javax.annotation.Resource;
 
@@ -26,8 +25,6 @@ public class PayController extends SSOController {
 	@Resource(name = "pic_payMgtService")
 	private IPic_PayMgtService payService;
 
-	// @Autowired
-	// private OPayorderMapper payMapper;
 	@Autowired
 	private UOtherloginMapper otherMapper;
 
@@ -47,21 +44,6 @@ public class PayController extends SSOController {
 			if (otherlogin != null) {
 				String ipAddres = super.getIpStr();
 				rq = payService.getWxPayParam(payId, otherlogin.getOpenid(), ipAddres);
-				// OPayorder payorder= payMapper.selectByPrimaryKey(payId);
-				// if(payorder!=null){
-				// if(payorder.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
-				// ResultMsg msg= WxPayUtils.getWxPayParam(payId,
-				// otherlogin.getOpenid(), "", payorder.getTotalprice(),
-				// ipAddres);
-				// if(msg.getStatus()==1){
-				// rq.setStatu(ReturnStatus.Success);
-				// rq.setBasemodle(msg.getMsg());
-				// }else {
-				// rq.setStatu(ReturnStatus.SystemError);
-				// rq.setStatusreson(msg.getMsg());
-				// }
-				// }
-				// }
 			} else {
 				rq.setStatu(ReturnStatus.SystemError);
 				rq.setStatusreson("Î¢ÐÅÎ´µÇÂ¼");

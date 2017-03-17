@@ -1,10 +1,8 @@
 package com.bbyiya.pic.vo.order.ibs;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import com.bbyiya.model.OOrderaddress;
-import com.bbyiya.model.OOrderproducts;
 
 public class OrderVo implements Serializable {
 	
@@ -18,11 +16,11 @@ public class OrderVo implements Serializable {
 
 	private Long branchuserid;
 	//
-	private Date paytime;
+	private String paytime;
 	
 	private OOrderaddress address;
 
-	private OOrderproducts orderProduct;
+	private OrderProductVo orderProduct;
 	
 	public String getUserorderid() {
 		return userorderid;
@@ -56,11 +54,13 @@ public class OrderVo implements Serializable {
 		this.branchuserid = branchuserid;
 	}
 
-	public Date getPaytime() {
+	
+
+	public String getPaytime() {
 		return paytime;
 	}
 
-	public void setPaytime(Date paytime) {
+	public void setPaytime(String paytime) {
 		this.paytime = paytime;
 	}
 
@@ -72,13 +72,15 @@ public class OrderVo implements Serializable {
 		this.address = address;
 	}
 
-	public OOrderproducts getOrderProduct() {
+	public OrderProductVo getOrderProduct() {
 		return orderProduct;
 	}
 
-	public void setOrderProduct(OOrderproducts orderProduct) {
+	public void setOrderProduct(OrderProductVo orderProduct) {
 		this.orderProduct = orderProduct;
 	}
+
+
 	
 	
 	

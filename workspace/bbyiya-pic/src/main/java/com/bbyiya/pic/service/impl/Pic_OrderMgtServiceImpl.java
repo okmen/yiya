@@ -14,6 +14,7 @@ import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OOrderproductdetailsMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OUserordersMapper;
+import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.BranchStatusEnum;
@@ -21,6 +22,7 @@ import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OUserorders;
+import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.pic.dao.IPic_OrderMgtDao;
@@ -28,7 +30,9 @@ import com.bbyiya.pic.service.IPic_MemberMgtService;
 import com.bbyiya.pic.service.IPic_OrderMgtService;
 import com.bbyiya.pic.vo.order.SearchOrderParam;
 import com.bbyiya.pic.vo.order.UserOrderResultVO;
+import com.bbyiya.pic.vo.order.ibs.OrderProductVo;
 import com.bbyiya.pic.vo.order.ibs.OrderVo;
+import com.bbyiya.utils.DateUtil;
 import com.bbyiya.vo.ReturnModel;
 
 @Service("pic_orderMgtService")
@@ -37,7 +41,7 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 	//客户信息处理
 	@Resource(name = "pic_memberMgtService")
 	private IPic_MemberMgtService memberMgtService;
-	
+	/*------------------订单模块--------------------------------------*/
 	@Autowired
 	private OUserordersMapper userOrdersMapper;
 	@Autowired
@@ -48,7 +52,7 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 	private OOrderproductdetailsMapper detailMapper;
 	@Autowired
 	private OOrderaddressMapper addressMapper;
-	
+	/*----------------------代理模块--------------------------*/
 	@Autowired
 	private UBranchesMapper branchesMapper;
 	/**
@@ -131,32 +135,50 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 		}
 		return rq;
 	}
-	
+	@Autowired
+	private PMyproductsMapper myproductsMapper;
 	public ReturnModel findMyOrderlist(Long branchUserId,Integer status){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.Success);
+		//订单列表
 		List<OUserorders> userorders= userOrdersMapper.findOrdersByBranchUserId(branchUserId,status);
 		if(userorders!=null&&userorders.size()>0){
-			List<Long> ids=new ArrayList<Long>();
+			List<Long> ids = new ArrayList<Long>();
 			for (OUserorders oo : userorders) {
 				ids.add(oo.getOrderaddressid());
 			}
-			List<OOrderaddress> addressList= addressMapper.findListByIds(ids);
-			List<OrderVo> resultlist=new ArrayList<OrderVo>();
+			//订单的收货地址
+			List<OOrderaddress> addressList = addressMapper.findListByIds(ids);
+			List<OrderVo> resultlist = new ArrayList<OrderVo>();
 			for (OUserorders order : userorders) {
-				 OrderVo vo=new OrderVo();
-				 vo.setUserorderid(order.getUserorderid());
-				 vo.setStatus(order.getStatus());
-				 vo.setUserid(order.getUserid());
-				 vo.setBranchuserid(order.getBranchuserid());
-				 for (OOrderaddress addr : addressList) {
-					if(addr.getOrderaddressid().longValue()==order.getOrderaddressid().longValue()){
+				OrderVo vo = new OrderVo();
+				vo.setUserorderid(order.getUserorderid());
+				vo.setStatus(order.getStatus());
+				vo.setUserid(order.getUserid());
+				vo.setBranchuserid(order.getBranchuserid());
+				vo.setPaytime(DateUtil.getTimeStr(order.getPaytime(), "yyyy-MM-dd HH:mm:ss"));
+				for (OOrderaddress addr : addressList) {
+					if (addr.getOrderaddressid().longValue() == order.getOrderaddressid().longValue()) {
 						vo.setAddress(addr);
 					}
 				}
-				 resultlist.add(vo);
+				OOrderproducts product= orderProductMapper.getOProductsByOrderId(order.getUserorderid());
+				if(product!=null){
+					OrderProductVo oproduct=new OrderProductVo();
+					oproduct.setProducttitle(product.getProducttitle());
+					oproduct.setPropertystr(product.getPropertystr());
+					oproduct.setPrice(product.getPrice());
+					oproduct.setCartid(product.getCartid());
+					PMyproducts cart= myproductsMapper.selectByPrimaryKey(product.getCartid());
+					if(cart!=null){
+						oproduct.setCartAuthor(cart.getAuthor());
+						oproduct.setCartTitle(cart.getTitle());
+					}
+					vo.setOrderProduct(oproduct);
+				}
+				resultlist.add(vo);
 			}
-			rq.setBasemodle(resultlist); 
+			rq.setBasemodle(resultlist);
 		}
 		rq.setStatusreson("ok");
 		return rq;
@@ -242,9 +264,19 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 			vo.setBranchuserid(order.getBranchuserid());
 			
 			vo.setAddress(addressMapper.selectByPrimaryKey(order.getAgentuserid()));
-			List<OOrderproducts> proList=orderProductMapper.findOProductsByOrderId(userOrderId);
-			if(proList!=null&&proList.size()>0){
-				vo.setOrderProduct(proList.get(0));
+			OOrderproducts product=orderProductMapper.getOProductsByOrderId(userOrderId);
+			if(product!=null){
+				OrderProductVo oproduct=new OrderProductVo();
+				oproduct.setProducttitle(product.getProducttitle());
+				oproduct.setPropertystr(product.getPropertystr());
+				oproduct.setPrice(product.getPrice());
+				oproduct.setCartid(product.getCartid());
+				PMyproducts cart= myproductsMapper.selectByPrimaryKey(product.getCartid());
+				if(cart!=null){
+					oproduct.setCartAuthor(cart.getAuthor());
+					oproduct.setCartTitle(cart.getTitle());
+				}
+				vo.setOrderProduct(oproduct);
 			} 
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(vo); 

@@ -44,6 +44,10 @@ public enum ReturnStatus {
 	 * 非法用户（用户不存在）
 	 */
 	SystemError_1(301),
+	/**
+	 * 账户余额不足
+	 */
+	CashError(302),
 	
 	/*-----------------------------------验证码错误--------------------------------------------*/
 	/**
@@ -80,6 +84,7 @@ public enum ReturnStatus {
 	 * 协同编辑错误
 	 */
 	InvitError_1(601)
+	
 	;
 
 	private final int step;

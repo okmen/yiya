@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.baseUtils.GenUtils;
+import com.bbyiya.dao.EErrorsMapper;
 import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OOrderproductdetailsMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
@@ -34,11 +35,13 @@ import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.OrderTypeEnum;
+import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.PayTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.AgentStatusEnum;
 import com.bbyiya.enums.pic.BranchStatusEnum;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
+import com.bbyiya.model.EErrors;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproducts;
@@ -105,6 +108,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	private UUseraddressMapper addressMapper;// 用户收货地址
 	@Autowired
 	private UUsersMapper usersMapper;
+
 	
 	/*------------------------代理模块-------------------------------------*/
 	@Autowired
@@ -116,6 +120,9 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	@Autowired
 	private UAgentsMapper agentsMapper;
 	
+	/*---错误日志记录----*/
+	@Autowired
+	private EErrorsMapper logMapper;
 	
 	/**
 	 * 提交订单（param已经被验证）
@@ -577,6 +584,19 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		payOrderMapper.insert(payorder);
 	}
 	
+	public boolean addPayOrder(Long userId, String payId, String userOrderId, Integer payOrderType , Double totalPrice) {
+		OPayorder payorder = new OPayorder();
+		payorder.setPayid(payId);
+		payorder.setUserorderid(userOrderId);
+		payorder.setUserid(userId);
+		payorder.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
+		payorder.setOrdertype(payOrderType); 
+		payorder.setTotalprice(totalPrice);
+		payorder.setCreatetime(new Date());
+		payOrderMapper.insert(payorder);
+		return true;
+	}
+	
 	public boolean payOrder_logAdd(Long userId, String payId, String userOrderId, Double totalPrice) throws Exception{
 		UAccounts accounts=accountsMapper.selectByPrimaryKey(userId);
 		if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount().doubleValue()>=totalPrice.doubleValue()){
@@ -732,7 +752,8 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		return 0;
 	}
 
-
+	
+	
 	/**
 	 * 订单支付成功 回写
 	 */
@@ -741,23 +762,50 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			try {
 				OPayorder payOrder = payOrderMapper.selectByPrimaryKey(payId);
 				if (payOrder != null) {
-					OUserorders userorders = userOrdersMapper.selectByPrimaryKey(payOrder.getUserorderid());
-					if (userorders != null) {
-						if (userorders.getStatus().intValue() == Integer.parseInt(OrderStatusEnum.noPay.toString())) {
-							userorders.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
-							userorders.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString()));
-							userorders.setPaytime(new Date()); 
-							userOrdersMapper.updateByPrimaryKeySelective(userorders);
-							payOrder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
-							payOrder.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString()));  
-							payOrder.setPaytime(new Date()); 
-							payOrderMapper.updateByPrimaryKeySelective(payOrder);
-							return true;
+					int orderType=payOrder.getOrdertype()==null?0:payOrder.getOrdertype();
+					if(orderType==Integer.parseInt(PayOrderTypeEnum.chongzhi.toString())){//充值订单
+						UCashlogs log=new UCashlogs();
+						log.setAmount(payOrder.getTotalprice());
+						log.setUserid(payOrder.getUserid());
+						log.setPayid(payId);
+						log.setUsetype(2);//充值
+						log.setCreatetime(new Date());
+						cashlogsMapper.insert(log);
+						UAccounts accounts=accountsMapper.selectByPrimaryKey(payOrder.getUserid());
+						if(accounts!=null){
+							accounts.setAvailableamount(accounts.getAvailableamount()+payOrder.getTotalprice());
+							accountsMapper.updateByPrimaryKeySelective(accounts);
+						}else {
+							accounts=new UAccounts();
+							accounts.setUserid(payOrder.getUserid());
+							accounts.setAvailableamount(payOrder.getTotalprice());
+							accountsMapper.insert(accounts);
+						}
+						return true;
+					}else {//购物
+						OUserorders userorders = userOrdersMapper.selectByPrimaryKey(payOrder.getUserorderid());
+						if (userorders != null) {
+							if (userorders.getStatus().intValue() == Integer.parseInt(OrderStatusEnum.noPay.toString())) {
+								//更新订单状态
+								userorders.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
+								userorders.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString()));
+								userorders.setPaytime(new Date()); 
+								userOrdersMapper.updateByPrimaryKeySelective(userorders);
+								//更新支付订单状态
+								payOrder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
+								payOrder.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString()));  
+								payOrder.setPaytime(new Date()); 
+								payOrderMapper.updateByPrimaryKeySelective(payOrder);
+								return true;
+							}
 						}
 					}
 				}
 			} catch (Exception e) {
-				// TODO: handle exception
+				EErrors errors=new EErrors();
+				errors.setClassname(this.getClass().getName());
+				errors.setMsg("订单支付回写："+e.getMessage());
+				logMapper.insert(errors);
 			}
 		}
 		return false;

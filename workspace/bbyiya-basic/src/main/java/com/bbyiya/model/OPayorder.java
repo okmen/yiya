@@ -24,7 +24,8 @@ public class OPayorder implements Serializable {
 	private Date prepaytime;
 	
 	private Integer paytype;
-
+	private Integer ordertype;
+	
 	public String getPayid() {
 		return payid;
 	}
@@ -103,6 +104,14 @@ public class OPayorder implements Serializable {
 
 	public void setPaytype(Integer paytype) {
 		this.paytype = paytype;
+	}
+
+	public Integer getOrdertype() {
+		return ordertype;
+	}
+
+	public void setOrdertype(Integer ordertype) {
+		this.ordertype = ordertype;
 	}
 	
 }

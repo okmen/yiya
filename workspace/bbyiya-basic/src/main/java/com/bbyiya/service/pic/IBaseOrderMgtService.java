@@ -66,6 +66,17 @@ public interface IBaseOrderMgtService {
 	 * @return
 	 */
 	boolean paySuccessProcess(String payId);
+	
+	/**
+	 * 插入支付信息（账户充值 可用）
+	 * @param userId
+	 * @param payId
+	 * @param userOrderId
+	 * @param payOrderType
+	 * @param totalPrice
+	 * @return
+	 */
+	boolean addPayOrder(Long userId, String payId, String userOrderId, Integer payOrderType , Double totalPrice);
 
 	/**
 	 * 获取款式 属性名称-值

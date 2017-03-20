@@ -26,6 +26,8 @@ import com.bbyiya.model.PScenebacks;
 import com.bbyiya.model.PStylebackgrounds;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
 import com.bbyiya.service.pic.IBaseProductService;
+import com.bbyiya.utils.ConfigUtil;
+import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.product.PProductStyleResult;
 import com.bbyiya.vo.product.ProductResult;
@@ -133,11 +135,19 @@ public class BaseProductServiceImpl implements IBaseProductService {
 
 	public ReturnModel find_previewsImg(long styleId) {
 		ReturnModel rq = new ReturnModel();
-		// 根据款式获取制作背景图
+		// 根据款式获取制作  正面的背景图
 		List<PStylebackgrounds> backgrounds = stylebackgroundsMapper.findBacksByStyleId(styleId);
-
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("backgrounds", backgrounds);
+		//背面的背景图
+		List<Map<String, String>> mapList=ConfigUtil.getMaplist("stylebacks");
+		if(mapList!=null&&mapList.size()>0){
+			for (Map<String, String> mapStyle : mapList) {
+				if(styleId==ObjectUtil.parseLong(mapStyle.get("styleId"))){
+					map.put("back", mapStyle.get("backurl"));
+				}
+			}
+		}
 		rq.setBasemodle(map);
 		rq.setStatu(ReturnStatus.Success);
 		return rq;

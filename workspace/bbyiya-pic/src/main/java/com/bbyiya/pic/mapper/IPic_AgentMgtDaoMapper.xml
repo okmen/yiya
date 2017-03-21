@@ -60,13 +60,13 @@
   <select id="getUAgentapplyVOByAgentUserId" resultMap="UAgentapplyVOResult" parameterType="java.lang.Long" >
     select 
     <include refid="UAgentapply_Column_List" />
-    from U_AgentApply
+    from u_agentapply
     where AgentUserId = #{agentuserid,jdbcType=BIGINT}
   </select>
   <select id="findUAgentapplyVOList" resultMap="UAgentapplyVOResult" parameterType="com.bbyiya.pic.vo.agent.AgentSearchParam" ><!-- 获取申请列表 -->
     select 
     <include refid="UAgentapply_Column_List" />
-    from U_AgentApply
+    from u_agentapply
     where 1=1
     <if test="userId != null" >
         and  AgentUserId = #{userId,jdbcType=BIGINT}

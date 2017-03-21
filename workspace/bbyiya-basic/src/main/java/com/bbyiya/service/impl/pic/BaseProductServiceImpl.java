@@ -148,6 +148,12 @@ public class BaseProductServiceImpl implements IBaseProductService {
 				}
 			}
 		}
+		List<Map<String, String>> covers=ConfigUtil.getMaplist("styleCovers");
+		for (Map<String, String> cover : covers) {
+			if(styleId==ObjectUtil.parseLong(cover.get("styleId"))){
+				map.put("cover", cover.get("url"));
+			}
+		}
 		rq.setBasemodle(map);
 		rq.setStatu(ReturnStatus.Success);
 		return rq;

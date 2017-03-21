@@ -88,7 +88,6 @@ public class OrderMgtController extends SSOController {
 
 	/**
 	 * O02 保存订单相片
-	 * 
 	 * @param orderImagesJson
 	 * @return
 	 * @throws Exception
@@ -114,10 +113,10 @@ public class OrderMgtController extends SSOController {
 					}
 					List<OOrderproductdetails> images = new ArrayList<OOrderproductdetails>();
 					for (OrderPhotoParam pp : param.getImageList()) {
-						if (ObjectUtil.isEmpty(pp.getImageUrl()) || ObjectUtil.isEmpty(pp.getPrintNo())) {
+						if (ObjectUtil.isEmpty(pp.getImageUrl()) || ObjectUtil.isEmpty(pp.getPrintNo())||ObjectUtil.isEmpty(pp.getBackImageUrl())) {
 							rq.setStatu(ReturnStatus.ParamError_1);
 							rq.setStatusreson("图片信息有误，打印号：" + pp.getPrintNo());
-							return JsonUtil.objectToJsonStr(rq);
+							return JsonUtil.objectToJsonStr(rq); 
 						}
 						OOrderproductdetails item = new OOrderproductdetails();
 						item.setOrderproductid(param.getOrderId());
@@ -125,6 +124,7 @@ public class OrderMgtController extends SSOController {
 						String printNo = pp.getPrintNo();
 						item.setPosition(ObjectUtil.parseInt(printNo.substring(printNo.lastIndexOf("-") + 1, printNo.length())));
 						item.setImageurl(pp.getImageUrl());
+						item.setBackimageurl(pp.getBackImageUrl()); 
 						images.add(item);
 					}
 					rq = orderMgtService.saveOrderImages(param.getOrderId(), images);

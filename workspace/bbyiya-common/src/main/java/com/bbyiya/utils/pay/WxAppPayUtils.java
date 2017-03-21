@@ -183,12 +183,19 @@ public class WxAppPayUtils {
 		String urlString = WxPayAppConfig.WX_URL;
 		String entityString = genProductArgs(ipStr, totalPrice, orderNo, nonceStr);
 		String msgString = WxUtil.httpsRequest(urlString, entityString);
-//		System.out.println(msgString); 
-//		String msgString=HttpRequestHelper.sendPost(urlString, entityString);
+		System.out.println(msgString); 
 		Map<String, Object> map = WxUtil.xml2Map(msgString);
 		return map;
 	}
 
+	/**
+	 * 开放平台统一下单
+	 * @param ipStr
+	 * @param totalprice
+	 * @param orderNo
+	 * @param nonceStr
+	 * @return
+	 */
 	private static String genProductArgs(String ipStr, double totalprice, String orderNo, String nonceStr) {
 		try {
 			String pattern = "#0";
@@ -207,20 +214,53 @@ public class WxAppPayUtils {
 			packageParams.add(new BasicNameValuePair("product_id", "order:" + orderNo));
 			packageParams.add(new BasicNameValuePair("notify_url", WxPayAppConfig.NOTIFY_URL));
 			packageParams.add(new BasicNameValuePair("trade_type", "APP"));
-
 			String sign = genPackageSign(packageParams);
-
 			packageParams.add(new BasicNameValuePair("sign", sign));
-//			System.out.println(sign);
 			String xmlstring = WxUtil.toXml(packageParams);
-//			System.out.println(xmlstring);
 			return xmlstring;
 
 		} catch (Exception e) {
 
 			return null;
 		}
+	}
+	
+	/**
+	 * 扫码支付 统一下单
+	 * @param param
+	 * @return
+	 */
+	public static Map<String, Object> doInBackground_NATIVE(WxPayParam param) {
+		try {
+			String pattern = "#0";
+			DecimalFormat formatter = new DecimalFormat();
+			formatter.applyPattern(pattern);
+			String totalFee = formatter.format(param.getTotalprice() * 100);
+			List<NameValuePair> packageParams = new LinkedList<NameValuePair>();
+			packageParams.add(new BasicNameValuePair("appid", WxPayAppConfig.APPID));
+			packageParams.add(new BasicNameValuePair("mch_id", WxPayAppConfig.PARNER));// 商户号
+			packageParams.add(new BasicNameValuePair("nonce_str", param.getNonce_str()));
+			packageParams.add(new BasicNameValuePair("body", "yiya-order:" + param.getOut_trade_no()));// "订单:"+orderNo
+			packageParams.add(new BasicNameValuePair("attach", "order:" + param.getOut_trade_no()));
+			packageParams.add(new BasicNameValuePair("out_trade_no", param.getOut_trade_no()));
+			packageParams.add(new BasicNameValuePair("total_fee", totalFee));
+			packageParams.add(new BasicNameValuePair("spbill_create_ip", param.getSpbill_create_ip()));
+			packageParams.add(new BasicNameValuePair("product_id",  param.getProduct_id()));
+			packageParams.add(new BasicNameValuePair("notify_url", WxPayAppConfig.NOTIFY_URL));
+			packageParams.add(new BasicNameValuePair("trade_type", "NATIVE"));
+			String sign = genPackageSign(packageParams);
+			packageParams.add(new BasicNameValuePair("sign", sign));
+			String xmlstring = WxUtil.toXml(packageParams);
+			
+			String urlString = WxPayAppConfig.WX_URL;
+			String msgString = WxUtil.httpsRequest(urlString, xmlstring);
+			System.out.println(msgString); 
+			Map<String, Object> map = WxUtil.xml2Map(msgString);
+			return map;
 
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	/**

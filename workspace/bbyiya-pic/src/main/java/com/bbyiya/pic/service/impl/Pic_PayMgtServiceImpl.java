@@ -14,6 +14,7 @@ import com.bbyiya.pic.service.IPic_PayMgtService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.pay.WxAppPayUtils;
+import com.bbyiya.utils.pay.WxPayParam;
 import com.bbyiya.utils.pay.WxPayUtils;
 import com.bbyiya.vo.ReturnModel;
 
@@ -133,7 +134,6 @@ public class Pic_PayMgtServiceImpl implements IPic_PayMgtService {
 					return rq;
 				}
 			}
-			
 			String timeStamp = String.valueOf(WxAppPayUtils.genTimeStamp());
 			Map<String, String> resultMap = WxAppPayUtils.get_payParam(prepay_id, nonceStr, timeStamp);
 			rq.setStatu(ReturnStatus.Success);
@@ -146,4 +146,33 @@ public class Pic_PayMgtServiceImpl implements IPic_PayMgtService {
 		return rq;
 	}
 
+	public ReturnModel getWxCode_url(String orderNo, String ip){
+		ReturnModel rq = new ReturnModel();
+		if (ObjectUtil.isEmpty(orderNo) || ObjectUtil.isEmpty(ip)) {
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("²ÎÊý´íÎó");
+			return rq;
+		}
+		WxPayParam param=new WxPayParam();
+		OPayorder payorder = payMapper.selectByPrimaryKey(orderNo);
+		
+		if (payorder != null) {
+			param.setTotalprice(payorder.getTotalprice());
+		}
+		param.setOut_trade_no(orderNo);
+		param.setSpbill_create_ip(ip);
+		param.setProduct_id(orderNo); 
+		param.setNonce_str(WxAppPayUtils.genNonceStr());
+		param.setTrade_type("NATIVE"); 
+		Map<String, Object> map = WxAppPayUtils.doInBackground_NATIVE(param);
+		if (map != null) {
+			if (map.get("return_code").equals("SUCCESS")) {
+				Object code_url = map.get("code_url");
+				String urlString="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+code_url;
+				rq.setStatu(ReturnStatus.Success);
+				rq.setBasemodle(urlString); 
+			}
+		}
+		return rq;
+	}
 }

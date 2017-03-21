@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.enums.ReturnStatus;
@@ -46,11 +47,11 @@ public class AccountMgtController extends SSOController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/cashLogs")
-	public String getCashLogs() throws Exception {
+	public String getCashLogs(@RequestParam(required = false, defaultValue = "1") int  type,int index,int size) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq= accountService.findCashLogs(user.getUserId(), 1, 10);
+			rq= accountService.findCashLogs(user.getUserId(),type, index,size);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("µÇÂ¼¹ýÆÚ");

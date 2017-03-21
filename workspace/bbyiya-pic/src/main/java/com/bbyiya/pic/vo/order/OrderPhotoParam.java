@@ -7,6 +7,7 @@ public class OrderPhotoParam implements Serializable{
 	
 	private String imageUrl;
 	private String printNo;
+	private String backImageUrl;
 	public String getImageUrl() {
 		return imageUrl;
 	}
@@ -18,6 +19,12 @@ public class OrderPhotoParam implements Serializable{
 	}
 	public void setPrintNo(String printNo) {
 		this.printNo = printNo;
+	}
+	public String getBackImageUrl() {
+		return backImageUrl;
+	}
+	public void setBackImageUrl(String backImageUrl) {
+		this.backImageUrl = backImageUrl;
 	}
 	
 	

@@ -22,4 +22,6 @@ public interface IPic_PayMgtService {
 	 * @return
 	 */
 	ReturnModel getWxAppPayParam(String orderNo, String ip);
+	
+	ReturnModel getWxCode_url(String orderNo, String ip);
 }

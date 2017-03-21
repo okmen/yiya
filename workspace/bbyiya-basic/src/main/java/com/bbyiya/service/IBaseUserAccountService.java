@@ -17,5 +17,5 @@ public interface IBaseUserAccountService {
 	 * @param index
 	 * @param size
 	 */
-	ReturnModel findCashLogs(Long userId,int index,int size);
+	ReturnModel findCashLogs(Long userId,Integer type, int index,int size);
 }

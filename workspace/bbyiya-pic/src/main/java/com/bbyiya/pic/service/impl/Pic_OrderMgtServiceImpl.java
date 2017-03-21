@@ -101,35 +101,35 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 	 * @return
 	 */
 	public ReturnModel findAgentOrders(Long branchUserId){
-		ReturnModel rq=new ReturnModel();
-		UBranches branches= branchesMapper.selectByPrimaryKey(branchUserId);
-		if(branches!=null&&branches.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.ok.toString())){
-//		if(true){
-			List<OUserorders> userorders= userOrdersMapper.findOrdersByAgentUserId(branches.getAgentuserid());
-			if(userorders!=null&&userorders.size()>0){
-				List<Long> ids=new ArrayList<Long>();
+		ReturnModel rq = new ReturnModel();
+		UBranches branches = branchesMapper.selectByPrimaryKey(branchUserId);
+		if (branches != null && branches.getStatus().intValue() == Integer.parseInt(BranchStatusEnum.ok.toString())) {
+			// if(true){
+			List<OUserorders> userorders = userOrdersMapper.findOrdersByAgentUserId(branches.getAgentuserid());
+			if (userorders != null && userorders.size() > 0) {
+				List<Long> ids = new ArrayList<Long>();
 				for (OUserorders oo : userorders) {
 					ids.add(oo.getOrderaddressid());
 				}
-				List<OOrderaddress> addressList= addressMapper.findListByIds(ids);
-				List<OrderVo> resultlist=new ArrayList<OrderVo>();
+				List<OOrderaddress> addressList = addressMapper.findListByIds(ids);
+				List<OrderVo> resultlist = new ArrayList<OrderVo>();
 				for (OUserorders order : userorders) {
-					 OrderVo vo=new OrderVo();
-					 vo.setUserorderid(order.getUserorderid());
-					 vo.setStatus(order.getStatus());
-					 vo.setUserid(order.getUserid());
-					 vo.setBranchuserid(order.getBranchuserid());
-					 for (OOrderaddress addr : addressList) {
-						if(addr.getOrderaddressid().longValue()==order.getOrderaddressid().longValue()){
+					OrderVo vo = new OrderVo();
+					vo.setUserorderid(order.getUserorderid());
+					vo.setStatus(order.getStatus());
+					vo.setUserid(order.getUserid());
+					vo.setBranchuserid(order.getBranchuserid());
+					for (OOrderaddress addr : addressList) {
+						if (addr.getOrderaddressid().longValue() == order.getOrderaddressid().longValue()) {
 							vo.setAddress(addr);
 						}
 					}
-					 resultlist.add(vo);
+					resultlist.add(vo);
 				}
-				rq.setBasemodle(resultlist); 
+				rq.setBasemodle(resultlist);
 			}
 			rq.setStatu(ReturnStatus.Success);
-		}else {
+		} else {
 			rq.setStatu(ReturnStatus.SystemError);
 			rq.setStatusreson("您还不是合作商，权限不足！");
 		}
@@ -262,8 +262,8 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 			vo.setStatus(order.getStatus());
 			vo.setUserid(order.getUserid());
 			vo.setBranchuserid(order.getBranchuserid());
-			
-			vo.setAddress(addressMapper.selectByPrimaryKey(order.getAgentuserid()));
+			vo.setPaytime(DateUtil.getTimeStr(order.getPaytime(), "yyyy-MM-dd HH:mm:ss") ); 
+			vo.setAddress(addressMapper.selectByPrimaryKey(order.getOrderaddressid()));
 			OOrderproducts product=orderProductMapper.getOProductsByOrderId(userOrderId);
 			if(product!=null){
 				OrderProductVo oproduct=new OrderProductVo();

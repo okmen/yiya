@@ -73,4 +73,23 @@ public class PayController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	/**
+	 * 获取微信扫码支付 二维码
+	 * @param payId
+	 * @return
+	 * @throws MapperException
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getWxCode_url")
+	public String getWxCode_url(String payId) throws MapperException {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			String ipAddres = super.getIpStr();
+			rq = payService.getWxCode_url(payId, ipAddres);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 }

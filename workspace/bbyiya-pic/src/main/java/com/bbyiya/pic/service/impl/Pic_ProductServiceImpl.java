@@ -38,6 +38,7 @@ import com.bbyiya.pic.vo.product.MyProductParam;
 import com.bbyiya.pic.vo.product.MyProductsDetailsResult;
 import com.bbyiya.pic.vo.product.MyProductsResult;
 import com.bbyiya.pic.vo.product.ProductSampleResultVO;
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.product.MyProductResultVo;
@@ -570,7 +571,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		List<PStylecoordinate> list = styleCoordMapper.findlistByStyleId(styleId);
 		if (list != null && list.size() > 0) {
 			List<Map<String, Object>> arrayList = new ArrayList<Map<String, Object>>();
-
+			
 			for (PStylecoordinate ss : list) {
 				Map<String, Object> map = new HashMap<String, Object>();
 				PStylecoordinateitem w_no = styleCoordItemMapper.selectByPrimaryKey(ss.getNocoordid().longValue());
@@ -581,17 +582,30 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				map.put("words", w_word);
 				map.put("type", ss.getType());
 
+				long type=styleId%2;
+				List<Map<String, String>> backMaps=ConfigUtil.getMaplist("backcoordinate");
+				if(backMaps!=null&&backMaps.size()>0){
+					for (Map<String, String> mapBacks : backMaps) {
+						if(ObjectUtil.parseLong(mapBacks.get("type"))==type){
+							map.put("back-mod", mapBacks);
+						}
+					}
+				}	
 				Map<String, Object> mapWord=new HashMap<String, Object>();
-				if(styleId%2==1){
+				
+				if(type==1){ //ºá°æ
 					mapWord.put("size", 33);
 					mapWord.put("color", "#595857");
 					mapWord.put("lineHeight", 55);
 					mapWord.put("letterSpacing", 5);
-				}else {
+					
+				}else {//Êú°æ
 					mapWord.put("size", 29);
 					mapWord.put("color", "#595857");
 					mapWord.put("lineHeight", 40);
 					mapWord.put("letterSpacing", 0);
+					
+					
 				}
 				map.put("word-mod", mapWord);
 				arrayList.add(map);

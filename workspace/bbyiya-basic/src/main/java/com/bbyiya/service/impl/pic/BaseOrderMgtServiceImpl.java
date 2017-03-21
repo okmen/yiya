@@ -781,6 +781,10 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 							accounts.setAvailableamount(payOrder.getTotalprice());
 							accountsMapper.insert(accounts);
 						}
+						payOrder.setPaytime(new Date());
+						payOrder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
+						payOrder.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString())); 
+						payOrderMapper.updateByPrimaryKeySelective(payOrder);
 						return true;
 					}else {//购物
 						OUserorders userorders = userOrdersMapper.selectByPrimaryKey(payOrder.getUserorderid());

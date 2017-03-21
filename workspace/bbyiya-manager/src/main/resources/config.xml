@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<appSettings>
+	<yp_single_url value="https://sms.yunpian.com/v2/sms/single_send.json"/><!-- 云片  -->
+	<yp_add_url value="https://sms.yunpian.com/v2/tpl/add.json"/><!-- 云片添加模板url -->
+	<yp_apikey value="593936c15fcc5c7824407d9953eb2bef"/><!-- 云片apikey -->
+	<qiniu_ACCESS_KEY value="vLHbgaYj8mfvPUTpMCYLbAetXh-Cg0Fk0R_FtAN_"/>
+	<qiniu_SECRET_KEY value="re1EvlR0FwlSv9YEYlJsHw_WRIcshxhbxilGvmRN"/>
+	<qiniu_imagedomain value="http://obbepyhga.bkt.clouddn.com/"/><!-- 图片域名 -->
+	<muscis>
+		<music ReId="1" MusicId="1" LinkUrl="http://www.baidu.com"/>
+		<music ReId="2" MusicId="2" LinkUrl="http://www.baidu.com"/>
+		<music ReId="3" MusicId="3" LinkUrl="http://www.baidu.com"/>
+		<music ReId="4" MusicId="4" LinkUrl="http://www.baidu.com"/>
+	</muscis>
+	<yiyaspeaks>
+		<item id="1" title="测试001" imageUrl="http://www.baidu.com"/>
+		<item id="2" title="测试001" imageUrl="http://www.baidu.com"/>
+		<item id="3" title="测试001" imageUrl="http://www.baidu.com"/>
+	</yiyaspeaks>
+	<users>
+	 	<item adminId="1" username="zhangyao" pwd="E10ADC3949BA59ABBE56E057F20F883E" />
+	 	<item adminId="2" username="max" pwd="E10ADC3949BA59ABBE56E057F20F883E" />
+	 	<item adminId="3" username="peter" pwd="E10ADC3949BA59ABBE56E057F20F883E" />
+	</users>
+</appSettings>

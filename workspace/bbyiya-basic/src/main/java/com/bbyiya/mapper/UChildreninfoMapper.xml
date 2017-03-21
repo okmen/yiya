@@ -15,15 +15,15 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from U_ChildrenInfo
+    from u_childreninfo
     where UserId = #{userid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from U_ChildrenInfo
+    delete from u_childreninfo
     where UserId = #{userid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.UChildreninfo" >
-    insert into U_ChildrenInfo (UserId, Birthday, NickName, 
+    insert into u_childreninfo (UserId, Birthday, NickName, 
       Sex, Relation, CreateTime
       )
     values (#{userid,jdbcType=BIGINT}, #{birthday,jdbcType=TIMESTAMP}, #{nickname,jdbcType=VARCHAR}, 
@@ -31,7 +31,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.UChildreninfo" >
-    insert into U_ChildrenInfo
+    insert into u_childreninfo
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="userid != null" >
         UserId,
@@ -74,7 +74,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.UChildreninfo" >
-    update U_ChildrenInfo
+    update u_childreninfo
     <set >
       <if test="birthday != null" >
         Birthday = #{birthday,jdbcType=TIMESTAMP},
@@ -95,7 +95,7 @@
     where UserId = #{userid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.UChildreninfo" >
-    update U_ChildrenInfo
+    update u_childreninfo
     set Birthday = #{birthday,jdbcType=TIMESTAMP},
       NickName = #{nickname,jdbcType=VARCHAR},
       Sex = #{sex,jdbcType=INTEGER},

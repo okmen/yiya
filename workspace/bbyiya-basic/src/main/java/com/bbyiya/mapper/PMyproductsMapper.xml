@@ -24,37 +24,37 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from P_MyProducts
+    from p_myproducts
     where CartId = #{cartid,jdbcType=BIGINT}
   </select>
   <select id="getMyProductResultVo" resultMap="MyProductResultVO" parameterType="java.lang.Long" ><!-- 主键获取作品 -->
     select 
     <include refid="Base_Column_List" />
-    from P_MyProducts
+    from p_myproducts
     where CartId = #{cartid,jdbcType=BIGINT}
   </select>
   <select id="getMyProductByOrderNo" resultMap="BaseResultMap"  ><!-- 通过订单号获取作品 -->
     select 
     <include refid="Base_Column_List" />
-    from P_MyProducts
+    from p_myproducts
     where OrderNo = #{orderNo,jdbcType=VARCHAR}
   </select>
   <select id="findMyProductslist" resultMap="MyProductResultVO" ><!-- 通过 UserId ，Status 获取作品列表 -->
     select <include refid="Base_Column_List" />
-    from P_MyProducts
+    from p_myproducts
     where UserId = #{userId,jdbcType=BIGINT} and Status=#{status,jdbcType=INTEGER} order by  CartId desc 
   </select>
    <select id="getMyProductsByProductId" resultMap="BaseResultMap" ><!-- 通过 UserId ，ProductId, Status 获取作品 -->
     select <include refid="Base_Column_List" />
-    from P_MyProducts
+    from p_myproducts
     where UserId = #{userId,jdbcType=BIGINT} and ProductId=#{productId,jdbcType=BIGINT} and Status=#{status,jdbcType=INTEGER} order by  CartId desc 
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from P_MyProducts
+    delete from p_myproducts
     where CartId = #{cartid,jdbcType=BIGINT}
   </delete>
   <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="cartid" parameterType="com.bbyiya.model.PMyproducts" >
-    insert into P_MyProducts (CartId, UserId, Title, 
+    insert into p_myproducts (CartId, UserId, Title, 
       Author, ProductId, StyleId, 
       CreateTime, Status, Phone, 
       OrderNo, InviteStatus)
@@ -64,7 +64,7 @@
       #{orderno,jdbcType=VARCHAR}, #{invitestatus,jdbcType=INTEGER})
   </insert>
   <insert id="insert" parameterType="com.bbyiya.model.PMyproducts" >
-    insert into P_MyProducts (CartId, UserId, Title, 
+    insert into p_myproducts (CartId, UserId, Title, 
       Author, ProductId, StyleId, 
       CreateTime, Status, Phone, 
       OrderNo, InviteStatus)
@@ -74,7 +74,7 @@
       #{orderno,jdbcType=VARCHAR}, #{invitestatus,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproducts" >
-    insert into P_MyProducts
+    insert into p_myproducts
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="cartid != null" >
         CartId,
@@ -147,7 +147,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PMyproducts" >
-    update P_MyProducts
+    update p_myproducts
     <set >
       <if test="userid != null" >
         UserId = #{userid,jdbcType=BIGINT},
@@ -183,7 +183,7 @@
     where CartId = #{cartid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PMyproducts" >
-    update P_MyProducts
+    update p_myproducts
     set UserId = #{userid,jdbcType=BIGINT},
       Title = #{title,jdbcType=VARCHAR},
       Author = #{author,jdbcType=VARCHAR},

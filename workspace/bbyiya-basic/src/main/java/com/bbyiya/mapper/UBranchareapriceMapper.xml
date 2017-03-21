@@ -13,21 +13,21 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from U_BranchAreaPrice
+    from u_branchareaprice
     where Code = #{code,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from U_BranchAreaPrice
+    delete from u_branchareaprice
     where Code = #{code,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.UBranchareaprice" >
-    insert into U_BranchAreaPrice (Code, CodeName, Step, 
+    insert into u_branchareaprice (Code, CodeName, Step, 
       Price)
     values (#{code,jdbcType=INTEGER}, #{codename,jdbcType=VARCHAR}, #{step,jdbcType=INTEGER}, 
       #{price,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.UBranchareaprice" >
-    insert into U_BranchAreaPrice
+    insert into u_branchareaprice
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="code != null" >
         Code,
@@ -58,7 +58,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.UBranchareaprice" >
-    update U_BranchAreaPrice
+    update u_branchareaprice
     <set >
       <if test="codename != null" >
         CodeName = #{codename,jdbcType=VARCHAR},
@@ -73,7 +73,7 @@
     where Code = #{code,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.UBranchareaprice" >
-    update U_BranchAreaPrice
+    update u_branchareaprice
     set CodeName = #{codename,jdbcType=VARCHAR},
       Step = #{step,jdbcType=INTEGER},
       Price = #{price,jdbcType=DECIMAL}

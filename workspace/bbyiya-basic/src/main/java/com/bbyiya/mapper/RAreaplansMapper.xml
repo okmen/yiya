@@ -14,21 +14,21 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from R_Areaplans
+    from r_areaplans
     where AreaCode = #{areacode,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from R_Areaplans
+    delete from r_areaplans
     where AreaCode = #{areacode,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.RAreaplans" >
-    insert into R_Areaplans (AreaCode, AreaName, AreaId, 
+    insert into r_areaplans (AreaCode, AreaName, AreaId, 
       IsAgent, AgentUserId)
     values (#{areacode,jdbcType=INTEGER}, #{areaname,jdbcType=VARCHAR}, #{areaid,jdbcType=INTEGER}, 
       #{isagent,jdbcType=INTEGER}, #{agentuserid,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.RAreaplans" >
-    insert into R_Areaplans
+    insert into r_areaplans
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="areacode != null" >
         AreaCode,
@@ -65,7 +65,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.RAreaplans" >
-    update R_Areaplans
+    update r_areaplans
     <set >
       <if test="areaname != null" >
         AreaName = #{areaname,jdbcType=VARCHAR},
@@ -83,7 +83,7 @@
     where AreaCode = #{areacode,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.RAreaplans" >
-    update R_Areaplans
+    update r_areaplans
     set AreaName = #{areaname,jdbcType=VARCHAR},
       AreaId = #{areaid,jdbcType=INTEGER},
       IsAgent = #{isagent,jdbcType=INTEGER},

@@ -19,23 +19,23 @@
 		parameterType="java.lang.Integer">
 		select
 		<include refid="Base_Column_List" />
-		from S_DailyReads
+		from s_dailyreads
 		where id = #{id,jdbcType=INTEGER}
 	</select>
 	<select id="findDailyReadslist" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">
 		select
 		<include refid="Base_Column_List" />
-		from S_DailyReads
+		from s_dailyreads
 		where ForDay = #{forDay,jdbcType=INTEGER}
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
 		delete from
-		S_DailyReads
+		s_dailyreads
 		where id = #{id,jdbcType=INTEGER}
 	</delete>
 	<insert id="insert" parameterType="com.bbyiya.model.SDailyreads">
-		insert into S_DailyReads (id, Title, Summary,
+		insert into s_dailyreads (id, Title, Summary,
 		ForDay, CreateTime, UpdateTime,
 		SourceType, SourceUrl, Content
 		)
@@ -47,7 +47,7 @@
 		)
 	</insert>
 	<insert id="insertSelective" parameterType="com.bbyiya.model.SDailyreads">
-		insert into S_DailyReads
+		insert into s_dailyreads
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="id != null">
 				id,
@@ -108,7 +108,7 @@
 		</trim>
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.SDailyreads">
-		update S_DailyReads
+		update s_dailyreads
 		<set>
 			<if test="title != null">
 				Title = #{title,jdbcType=VARCHAR},
@@ -138,7 +138,7 @@
 		where id = #{id,jdbcType=INTEGER}
 	</update>
 	<update id="updateByPrimaryKeyWithBLOBs" parameterType="com.bbyiya.model.SDailyreads">
-		update S_DailyReads
+		update s_dailyreads
 		set Title = #{title,jdbcType=VARCHAR},
 		Summary = #{summary,jdbcType=VARCHAR},
 		ForDay = #{forday,jdbcType=INTEGER},
@@ -150,7 +150,7 @@
 		where id = #{id,jdbcType=INTEGER}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="com.bbyiya.model.SDailyreads">
-		update S_DailyReads
+		update s_dailyreads
 		set Title = #{title,jdbcType=VARCHAR},
 		Summary = #{summary,jdbcType=VARCHAR},
 		ForDay = #{forday,jdbcType=INTEGER},

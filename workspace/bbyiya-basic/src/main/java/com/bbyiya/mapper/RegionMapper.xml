@@ -27,35 +27,35 @@
   <select id="getProvinceByCode" resultMap="ProvinceResultMap" parameterType="java.lang.Integer" ><!-- 根据Code获取省  -->
     select 
     <include refid="Provice_columns" />
-    from R_Province
+    from r_province
     where Code = #{code,jdbcType=INTEGER}
   </select>
   <select id="getCityByCode" resultMap="CityResultMap" parameterType="java.lang.Integer" ><!-- 根据Code获取 市  -->
     select 
     <include refid="City_Columns" />
-    from R_City
+    from r_city
     where Code = #{code,jdbcType=INTEGER}
   </select>
   <select id="getAreaByCode" resultMap="AreaResultMap" parameterType="java.lang.Integer" ><!-- 根据Code获取 县区  -->
     select 
     <include refid="Area_Columns" />
-    from R_Areas
+    from r_areas
     where Code = #{code,jdbcType=INTEGER}
   </select>
   <select id="findProvincelistAll" resultMap="ProvinceResultMap" ><!-- 获取所有省  -->
     select 
     <include refid="Provice_columns" />
-    from R_Province
+    from r_province
   </select>
   <select id="findCitylistBy_ProvinceCode" resultMap="CityResultMap" ><!-- 根据省级Code获取市级列表 -->
     select 
     <include refid="City_Columns" />
-    from R_City where ProvinceCode=#{provinceCode,jdbcType=INTEGER}
+    from r_city where ProvinceCode=#{provinceCode,jdbcType=INTEGER}
   </select>
   <select id="findArealistBy_CityCode" resultMap="AreaResultMap" ><!-- 根据市级Code获取区级列表 -->
     select 
     <include refid="Area_Columns" />
-    from R_Areas where CityCode=#{cityCode,jdbcType=INTEGER}
+    from r_areas where CityCode=#{cityCode,jdbcType=INTEGER}
   </select>
   
 </mapper>

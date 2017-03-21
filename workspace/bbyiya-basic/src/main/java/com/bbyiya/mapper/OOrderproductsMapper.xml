@@ -23,27 +23,27 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
-    from O_OrderProducts
+    from o_orderproducts
     where OrderProductId = #{orderproductid,jdbcType=VARCHAR}
   </select>
   <select id="findOProductsByOrderId" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />
-    from O_OrderProducts
+    from o_orderproducts
     where UserOrderId = #{userOrderId,jdbcType=VARCHAR}
   </select>
   <select id="getOProductsByOrderId" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />
-    from O_OrderProducts
+    from o_orderproducts
     where UserOrderId = #{userOrderId,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
-    delete from O_OrderProducts
+    delete from o_orderproducts
     where OrderProductId = #{orderproductid,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.OOrderproducts" >
-    insert into O_OrderProducts (OrderProductId, UserOrderId, ProductId, 
+    insert into o_orderproducts (OrderProductId, UserOrderId, ProductId, 
       StyleId, BuyerUserId, ProductTitle, 
       Price, BranchUserId, SalesUserId, 
       PropertyStr, Count, ProductImg, 
@@ -55,7 +55,7 @@
       #{cartid,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.OOrderproducts" >
-    insert into O_OrderProducts
+    insert into o_orderproducts
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="orderproductid != null" >
         OrderProductId,
@@ -140,7 +140,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.OOrderproducts" >
-    update O_OrderProducts
+    update o_orderproducts
     <set >
       <if test="userorderid != null" >
         UserOrderId = #{userorderid,jdbcType=VARCHAR},
@@ -182,7 +182,7 @@
     where OrderProductId = #{orderproductid,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.OOrderproducts" >
-    update O_OrderProducts
+    update o_orderproducts
     set UserOrderId = #{userorderid,jdbcType=VARCHAR},
       ProductId = #{productid,jdbcType=BIGINT},
       StyleId = #{styleid,jdbcType=BIGINT},

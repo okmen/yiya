@@ -17,29 +17,29 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from P_MyProductDetails
+    from p_myproductdetails
     where PdId = #{pdid,jdbcType=BIGINT}
   </select>
   <select id="findMyProductdetails" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from P_MyProductDetails
+    from p_myproductdetails
     where CartId = #{cartId,jdbcType=BIGINT} order by Sort asc
   </select>
   <select id="getMaxSort"  resultType="java.lang.Integer" >
-    select MAX(Sort) from P_MyProductDetails
+    select MAX(Sort) from p_myproductdetails
     where CartId = #{cartId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from P_MyProductDetails
+    delete from p_myproductdetails
     where PdId = #{pdid,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByCartId" ><!-- 删除某个作品的所有图片 -->
-    delete from P_MyProductDetails
+    delete from p_myproductdetails
     where CartId = #{cartId,jdbcType=BIGINT}
   </delete>
  <insert id="insert" parameterType="com.bbyiya.model.PMyproductdetails" >
-    insert into P_MyProductDetails (PdId, CartId, SceneId, 
+    insert into p_myproductdetails (PdId, CartId, SceneId, 
       ImgUrl, Content, Sort, 
       CreateTime, UserId)
     values (#{pdid,jdbcType=BIGINT}, #{cartid,jdbcType=BIGINT}, #{sceneid,jdbcType=INTEGER}, 
@@ -47,7 +47,7 @@
       #{createtime,jdbcType=TIMESTAMP}, #{userid,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproductdetails" >
-    insert into P_MyProductDetails
+    insert into p_myproductdetails
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="pdid != null" >
         PdId,
@@ -102,7 +102,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PMyproductdetails" >
-    update P_MyProductDetails
+    update p_myproductdetails
     <set >
       <if test="cartid != null" >
         CartId = #{cartid,jdbcType=BIGINT},
@@ -129,7 +129,7 @@
     where PdId = #{pdid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PMyproductdetails" >
-    update P_MyProductDetails
+    update p_myproductdetails
     set CartId = #{cartid,jdbcType=BIGINT},
       SceneId = #{sceneid,jdbcType=INTEGER},
       ImgUrl = #{imgurl,jdbcType=VARCHAR},

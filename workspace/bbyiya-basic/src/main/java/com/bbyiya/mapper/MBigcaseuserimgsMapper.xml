@@ -15,15 +15,15 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from M_BigCaseUserImgs
+    from m_bigcaseuserimgs
     where Id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from M_BigCaseUserImgs
+    delete from m_bigcaseuserimgs
     where Id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.MBigcaseuserimgs" >
-    insert into M_BigCaseUserImgs (Id, CaseId, UserId, 
+    insert into m_bigcaseuserimgs (Id, CaseId, UserId, 
       Position, CreateTime, ImageUrl
       )
     values (#{id,jdbcType=BIGINT}, #{caseid,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, 
@@ -31,7 +31,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.MBigcaseuserimgs" >
-    insert into M_BigCaseUserImgs
+    insert into m_bigcaseuserimgs
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         Id,
@@ -74,7 +74,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.MBigcaseuserimgs" >
-    update M_BigCaseUserImgs
+    update m_bigcaseuserimgs
     <set >
       <if test="caseid != null" >
         CaseId = #{caseid,jdbcType=INTEGER},
@@ -95,7 +95,7 @@
     where Id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.MBigcaseuserimgs" >
-    update M_BigCaseUserImgs
+    update m_bigcaseuserimgs
     set CaseId = #{caseid,jdbcType=INTEGER},
       UserId = #{userid,jdbcType=BIGINT},
       Position = #{position,jdbcType=INTEGER},

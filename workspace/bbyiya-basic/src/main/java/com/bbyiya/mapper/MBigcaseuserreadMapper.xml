@@ -13,21 +13,21 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from M_BigCaseUserRead
+    from m_bigcaseuserread
     where Id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from M_BigCaseUserRead
+    delete from m_bigcaseuserread
     where Id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.MBigcaseuserread" >
-    insert into M_BigCaseUserRead (Id, UserId, CaseId, 
+    insert into m_bigcaseuserread (Id, UserId, CaseId, 
       CreateTime)
     values (#{id,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{caseid,jdbcType=INTEGER}, 
       #{createtime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.MBigcaseuserread" >
-    insert into M_BigCaseUserRead
+    insert into m_bigcaseuserread
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         Id,
@@ -58,7 +58,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.MBigcaseuserread" >
-    update M_BigCaseUserRead
+    update m_bigcaseuserread
     <set >
       <if test="userid != null" >
         UserId = #{userid,jdbcType=BIGINT},
@@ -73,7 +73,7 @@
     where Id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.MBigcaseuserread" >
-    update M_BigCaseUserRead
+    update m_bigcaseuserread
     set UserId = #{userid,jdbcType=BIGINT},
       CaseId = #{caseid,jdbcType=INTEGER},
       CreateTime = #{createtime,jdbcType=TIMESTAMP}

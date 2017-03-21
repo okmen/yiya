@@ -12,7 +12,7 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
-    from O_PayForUserOrder
+    from o_payforuserorder
     where PayId = #{payid,jdbcType=VARCHAR}
   </select>
   <select id="getPayOrderByUserOrderId" resultMap="BaseResultMap" parameterType="java.lang.String" >
@@ -22,17 +22,17 @@
     where UserOrderId = #{userOrderId,jdbcType=VARCHAR} order by CreateTime desc
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
-    delete from O_PayForUserOrder
+    delete from o_payforuserorder
     where PayId = #{payid,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.OPayforuserorder" >
-    insert into O_PayForUserOrder (PayId, UserOrderId, CreateTime
+    insert into o_payforuserorder (PayId, UserOrderId, CreateTime
       )
     values (#{payid,jdbcType=VARCHAR}, #{userorderid,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.OPayforuserorder" >
-    insert into O_PayForUserOrder
+    insert into o_payforuserorder
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="payid != null" >
         PayId,
@@ -57,7 +57,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.OPayforuserorder" >
-    update O_PayForUserOrder
+    update o_payforuserorder
     <set >
       <if test="userorderid != null" >
         UserOrderId = #{userorderid,jdbcType=VARCHAR},
@@ -69,7 +69,7 @@
     where PayId = #{payid,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.OPayforuserorder" >
-    update O_PayForUserOrder
+    update o_payforuserorder
     set UserOrderId = #{userorderid,jdbcType=VARCHAR},
       CreateTime = #{createtime,jdbcType=TIMESTAMP}
     where PayId = #{payid,jdbcType=VARCHAR}

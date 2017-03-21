@@ -19,23 +19,23 @@
 		parameterType="java.lang.Integer">
 		select
 		<include refid="Base_Column_List" />
-		from M_YiyaBanner
+		from m_yiyabanner
 		where Id = #{id,jdbcType=INTEGER}
 	</select>
 	<select id="find_MYiyabannerByCurrentTime" resultMap="BaseResultMap"
 		parameterType="java.util.Date">
 		select
 		<include refid="Base_Column_List" />
-		from M_YiyaBanner
+		from m_yiyabanner
 		where IsOn=1 and  StartTime  &lt;= #{curTime,jdbcType=TIMESTAMP} and EndTime &gt;= #{curTime,jdbcType=TIMESTAMP}
 		order by Sort asc 
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-		delete from M_YiyaBanner
+		delete from m_yiyabanner
 		where Id = #{id,jdbcType=INTEGER}
 	</delete>
 	<insert id="insert" parameterType="com.bbyiya.model.MYiyabanner" >
-    insert into M_YiyaBanner (Id, Title, ImageUrl, 
+    insert into m_yiyabanner (Id, Title, ImageUrl, 
       WapUrl, CreateTime, StartTime, 
       EndTime, IsOn, Sort
       )
@@ -45,7 +45,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.MYiyabanner" >
-    insert into M_YiyaBanner
+    insert into m_yiyabanner
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         Id,
@@ -106,7 +106,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.MYiyabanner" >
-    update M_YiyaBanner
+    update m_yiyabanner
     <set >
       <if test="title != null" >
         Title = #{title,jdbcType=VARCHAR},
@@ -136,7 +136,7 @@
     where Id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.MYiyabanner" >
-    update M_YiyaBanner
+    update m_yiyabanner
     set Title = #{title,jdbcType=VARCHAR},
       ImageUrl = #{imageurl,jdbcType=VARCHAR},
       WapUrl = #{wapurl,jdbcType=VARCHAR},

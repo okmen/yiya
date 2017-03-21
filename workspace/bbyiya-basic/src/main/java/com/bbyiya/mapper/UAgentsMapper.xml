@@ -22,15 +22,15 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from U_Agents
+    from u_agents
     where AgentUserId = #{agentuserid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from U_Agents
+    delete from u_agents
     where AgentUserId = #{agentuserid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.UAgents" >
-    insert into U_Agents (AgentUserId, AgentCompanyName, ContactName, 
+    insert into u_agents (AgentUserId, AgentCompanyName, ContactName, 
       UserName, Phone, Province, 
       City, Area, StreetDetail, 
       Status, CreateTime, ProcessTime
@@ -42,7 +42,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.UAgents" >
-    insert into U_Agents
+    insert into u_agents
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="agentuserid != null" >
         AgentUserId,
@@ -121,7 +121,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.UAgents" >
-    update U_Agents
+    update u_agents
     <set >
       <if test="agentcompanyname != null" >
         AgentCompanyName = #{agentcompanyname,jdbcType=VARCHAR},
@@ -160,7 +160,7 @@
     where AgentUserId = #{agentuserid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.UAgents" >
-    update U_Agents
+    update u_agents
     set AgentCompanyName = #{agentcompanyname,jdbcType=VARCHAR},
       ContactName = #{contactname,jdbcType=VARCHAR},
       UserName = #{username,jdbcType=VARCHAR},

@@ -14,23 +14,23 @@
 		parameterType="java.lang.Integer">
 		select
 		<include refid="Base_Column_List" />
-		from S_MusictType
+		from s_musicttype
 		where MusicTypeId = #{musictypeid,jdbcType=INTEGER}
 	</select>
 	<select id="findMusictTypeAll" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from S_MusictType order by Sort asc
+		from s_musicttype order by Sort asc
 	</select>
 	<insert id="insert" parameterType="com.bbyiya.model.SMusicttype">
-		insert into S_MusictType (MusicTypeId, Name, Sort,
+		insert into s_musicttype (MusicTypeId, Name, Sort,
 		Des)
 		values (#{musictypeid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
 		#{sort,jdbcType=INTEGER},
 		#{des,jdbcType=VARCHAR})
 	</insert>
 	<insert id="insertSelective" parameterType="com.bbyiya.model.SMusicttype">
-		insert into S_MusictType
+		insert into s_musicttype
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="musictypeid != null">
 				MusicTypeId,
@@ -61,7 +61,7 @@
 		</trim>
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.SMusicttype">
-		update S_MusictType
+		update s_musicttype
 		<set>
 			<if test="name != null">
 				Name = #{name,jdbcType=VARCHAR},
@@ -76,7 +76,7 @@
 		where MusicTypeId = #{musictypeid,jdbcType=INTEGER}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="com.bbyiya.model.SMusicttype">
-		update S_MusictType
+		update s_musicttype
 		set Name = #{name,jdbcType=VARCHAR},
 		Sort = #{sort,jdbcType=INTEGER},
 		Des = #{des,jdbcType=VARCHAR}

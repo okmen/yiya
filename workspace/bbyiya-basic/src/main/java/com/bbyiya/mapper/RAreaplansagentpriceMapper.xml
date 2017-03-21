@@ -13,27 +13,27 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from R_AreaPlansAgentPrice
+    from r_areaplansagentprice
     where AreaId = #{areaid,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from R_AreaPlansAgentPrice
+    delete from r_areaplansagentprice
     where AreaId = #{areaid,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.RAreaplansagentprice" >
-    insert into R_AreaPlansAgentPrice (AreaId, Step, AgentAmount, 
+    insert into r_areaplansagentprice (AreaId, Step, AgentAmount, 
       PrepayAmount)
     values (#{areaid,jdbcType=INTEGER}, #{step,jdbcType=INTEGER}, #{agentamount,jdbcType=DECIMAL}, 
       #{prepayamount,jdbcType=DECIMAL})
   </insert>
   <insert id="insertResultId" useGeneratedKeys="true" keyProperty="AreaId" parameterType="com.bbyiya.model.RAreaplansagentprice" >
-    insert into R_AreaPlansAgentPrice (AreaId, Step, AgentAmount, 
+    insert into r_areaplansagentprice (AreaId, Step, AgentAmount, 
       PrepayAmount)
     values (#{areaid,jdbcType=INTEGER}, #{step,jdbcType=INTEGER}, #{agentamount,jdbcType=DECIMAL}, 
       #{prepayamount,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.RAreaplansagentprice" >
-    insert into R_AreaPlansAgentPrice
+    insert into r_areaplansagentprice
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="areaid != null" >
         AreaId,
@@ -64,7 +64,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.RAreaplansagentprice" >
-    update R_AreaPlansAgentPrice
+    update r_areaplansagentprice
     <set >
       <if test="step != null" >
         Step = #{step,jdbcType=INTEGER},
@@ -79,7 +79,7 @@
     where AreaId = #{areaid,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.RAreaplansagentprice" >
-    update R_AreaPlansAgentPrice
+    update r_areaplansagentprice
     set Step = #{step,jdbcType=INTEGER},
       AgentAmount = #{agentamount,jdbcType=DECIMAL},
       PrepayAmount = #{prepayamount,jdbcType=DECIMAL}

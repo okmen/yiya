@@ -12,21 +12,21 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from P_StandardValues
+    from p_standardvalues
     where StandardValueId = #{standardvalueid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from P_StandardValues
+    delete from p_standardvalues
     where StandardValueId = #{standardvalueid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.PStandardvalues" >
-    insert into P_StandardValues (StandardValueId, StandardId, StandardValue
+    insert into p_standardvalues (StandardValueId, StandardId, StandardValue
       )
     values (#{standardvalueid,jdbcType=BIGINT}, #{standardid,jdbcType=BIGINT}, #{standardvalue,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PStandardvalues" >
-    insert into P_StandardValues
+    insert into p_standardvalues
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="standardvalueid != null" >
         StandardValueId,
@@ -51,7 +51,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PStandardvalues" >
-    update P_StandardValues
+    update p_standardvalues
     <set >
       <if test="standardid != null" >
         StandardId = #{standardid,jdbcType=BIGINT},
@@ -63,7 +63,7 @@
     where StandardValueId = #{standardvalueid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PStandardvalues" >
-    update P_StandardValues
+    update p_standardvalues
     set StandardId = #{standardid,jdbcType=BIGINT},
       StandardValue = #{standardvalue,jdbcType=VARCHAR}
     where StandardValueId = #{standardvalueid,jdbcType=BIGINT}

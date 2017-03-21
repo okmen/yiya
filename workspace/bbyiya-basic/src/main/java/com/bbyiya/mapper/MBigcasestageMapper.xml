@@ -13,21 +13,21 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from M_BigCaseStage
+    from m_bigcasestage
     where StageId = #{stageid,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from M_BigCaseStage
+    delete from m_bigcasestage
     where StageId = #{stageid,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.MBigcasestage" >
-    insert into M_BigCaseStage (StageId, Start, End, 
+    insert into m_bigcasestage (StageId, Start, End, 
       Title)
     values (#{stageid,jdbcType=INTEGER}, #{start,jdbcType=INTEGER}, #{end,jdbcType=INTEGER}, 
       #{title,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.MBigcasestage" >
-    insert into M_BigCaseStage
+    insert into m_bigcasestage
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="stageid != null" >
         StageId,
@@ -58,7 +58,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.MBigcasestage" >
-    update M_BigCaseStage
+    update m_bigcasestage
     <set >
       <if test="start != null" >
         Start = #{start,jdbcType=INTEGER},
@@ -73,7 +73,7 @@
     where StageId = #{stageid,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.MBigcasestage" >
-    update M_BigCaseStage
+    update m_bigcasestage
     set Start = #{start,jdbcType=INTEGER},
       End = #{end,jdbcType=INTEGER},
       Title = #{title,jdbcType=VARCHAR}

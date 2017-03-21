@@ -29,15 +29,15 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from U_Branches
+    from u_branches
     where BranchUserId = #{branchuserid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from U_Branches
+    delete from u_branches
     where BranchUserId = #{branchuserid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.UBranches" >
-    insert into U_Branches (BranchUserId, BranchCompanyName, AgentUserId, 
+    insert into u_branches (BranchUserId, BranchCompanyName, AgentUserId, 
       UserName, ContactName, Phone, 
       Province, City, Area, 
       StreetDetail, BusinessLicense, BusinessScope, 
@@ -53,7 +53,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.UBranches" >
-    insert into U_Branches
+    insert into u_branches
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="branchuserid != null" >
         BranchUserId,
@@ -168,7 +168,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.UBranches" >
-    update U_Branches
+    update u_branches
     <set >
       <if test="branchcompanyname != null" >
         BranchCompanyName = #{branchcompanyname,jdbcType=VARCHAR},
@@ -225,7 +225,7 @@
     where BranchUserId = #{branchuserid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.UBranches" >
-    update U_Branches
+    update u_branches
     set BranchCompanyName = #{branchcompanyname,jdbcType=VARCHAR},
       AgentUserId = #{agentuserid,jdbcType=BIGINT},
       UserName = #{username,jdbcType=VARCHAR},

@@ -42,33 +42,33 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from P_Products
+    from p_products
     where ProductId = #{productid,jdbcType=BIGINT}
   </select>
   <select id="findProductResultByBranchUserId" resultMap="ProductResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from P_Products
+    from p_products
     where UserId = #{branchUserId,jdbcType=BIGINT} and Status=1
   </select>
   <select id="getProductResultByProductId" resultMap="ProductResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from P_Products
+    from p_products
     where ProductId = #{productid,jdbcType=BIGINT}
   </select>
    <select id="getProductBaseVoByProId" resultMap="ProductSampleVo" parameterType="java.lang.Long" ><!-- 获取产品基本信息 -->
     select 
     <include refid="Base_Column_List" />
-    from P_Products
+    from p_products
     where ProductId = #{productid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from P_Products
+    delete from p_products
     where ProductId = #{productid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.PProducts" >
-    insert into P_Products (ProductId, UserId, DefaultImg, 
+    insert into p_products (ProductId, UserId, DefaultImg, 
       Title, OldPrice, Price, 
       Status, PostModelId, CreateTime, 
       UpdateTime, Description)
@@ -78,7 +78,7 @@
       #{updatetime,jdbcType=TIMESTAMP}, #{description,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PProducts" >
-    insert into P_Products
+    insert into p_products
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="productid != null" >
         ProductId,
@@ -151,7 +151,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PProducts" >
-    update P_Products
+    update p_products
     <set >
       <if test="userid != null" >
         UserId = #{userid,jdbcType=BIGINT},
@@ -187,7 +187,7 @@
     where ProductId = #{productid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PProducts" >
-    update P_Products
+    update p_products
     set UserId = #{userid,jdbcType=BIGINT},
       DefaultImg = #{defaultimg,jdbcType=VARCHAR},
       Title = #{title,jdbcType=VARCHAR},

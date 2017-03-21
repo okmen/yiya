@@ -27,23 +27,23 @@
 		parameterType="java.lang.Integer">
 		select
 		<include refid="Base_Column_List" />
-		from S_Musics
+		from s_musics
 		where MusicId = #{musicid,jdbcType=INTEGER}
 	</select>
 	<select id="findMusiclistByTypeId" resultMap="MusicResult"
 		parameterType="java.lang.Integer">
 		select
 		<include refid="Base_Column_List" />
-		from S_Musics
+		from s_musics
 		where MusicType = #{typeId,jdbcType=INTEGER}
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
 		delete from
-		S_Musics
+		s_musics
 		where MusicId = #{musicid,jdbcType=INTEGER}
 	</delete>
 	<insert id="insert" parameterType="com.bbyiya.model.SMusics">
-		insert into S_Musics (MusicId, Name, DownloadUrl,
+		insert into s_musics (MusicId, Name, DownloadUrl,
 		ImageUrl, CreateTime, MusicType,
 		Duration, Author)
 		values (#{musicid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
@@ -52,7 +52,7 @@
 		#{duration,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR})
 	</insert>
 	<insert id="insertSelective" parameterType="com.bbyiya.model.SMusics">
-		insert into S_Musics
+		insert into s_musics
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="musicid != null">
 				MusicId,
@@ -107,7 +107,7 @@
 		</trim>
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.SMusics">
-		update S_Musics
+		update s_musics
 		<set>
 			<if test="name != null">
 				Name = #{name,jdbcType=VARCHAR},
@@ -134,7 +134,7 @@
 		where MusicId = #{musicid,jdbcType=INTEGER}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="com.bbyiya.model.SMusics">
-		update S_Musics
+		update s_musics
 		set Name = #{name,jdbcType=VARCHAR},
 		DownloadUrl = #{downloadurl,jdbcType=VARCHAR},
 		ImageUrl = #{imageurl,jdbcType=VARCHAR},

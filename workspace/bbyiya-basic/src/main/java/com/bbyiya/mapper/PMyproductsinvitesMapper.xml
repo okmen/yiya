@@ -15,42 +15,42 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" ><!-- 0 主键查询 -->
     select 
     <include refid="Base_Column_List" />
-    from P_MyProductsInvites
+    from p_myproductsinvites
     where InviteId = #{inviteid,jdbcType=BIGINT}
   </select>
    <select id="findListByCartId" resultMap="BaseResultMap" ><!-- 1 根据作品id 查找被邀请列表 -->
     select 
     <include refid="Base_Column_List" />
-    from P_MyProductsInvites
+    from p_myproductsinvites
     where CartId = #{cartId,jdbcType=BIGINT}
   </select>
   <select id="findListByPhone" resultMap="BaseResultMap" ><!-- 2 根据moblePhone 查找被邀请的作品 -->
     select 
     <include refid="Base_Column_List" />
-    from P_MyProductsInvites
+    from p_myproductsinvites
     where InvitePhone = #{phone,jdbcType=VARCHAR} order by CreateTime DESC
   </select>
   <select id="countInvitingsByPhone" resultType="java.lang.Integer" ><!--3 count我的待处理邀约 数量 -->
     select count(*)
-    from P_MyProductsInvites
+    from p_myproductsinvites
     where InvitePhone = #{phone,jdbcType=VARCHAR} and Status= #{status,jdbcType=INTEGER}
   </select>
   <select id="getInviteByPhoneAndCartId" resultMap="BaseResultMap"  ><!--4 我的邀请model -->
       select 
     <include refid="Base_Column_List" />
-    from P_MyProductsInvites
+    from p_myproductsinvites
     where InvitePhone = #{phone,jdbcType=VARCHAR} and CartId=#{cartId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" ><!-- 删除邀请 -->
-    delete from P_MyProductsInvites
+    delete from p_myproductsinvites
     where InviteId = #{inviteid,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByCartId" parameterType="java.lang.Long" ><!-- 删除所有邀请  根据CartId -->
-    delete from P_MyProductsInvites
+    delete from p_myproductsinvites
     where CartId = #{cartId,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.PMyproductsinvites" >
-    insert into P_MyProductsInvites (InviteId, CartId, UserId, 
+    insert into p_myproductsinvites (InviteId, CartId, UserId, 
       InvitePhone, Status, CreateTime
       )
     values (#{inviteid,jdbcType=BIGINT}, #{cartid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, 
@@ -58,7 +58,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproductsinvites" >
-    insert into P_MyProductsInvites
+    insert into p_myproductsinvites
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="inviteid != null" >
         InviteId,
@@ -101,7 +101,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PMyproductsinvites" >
-    update P_MyProductsInvites
+    update p_myproductsinvites
     <set >
       <if test="cartid != null" >
         CartId = #{cartid,jdbcType=BIGINT},
@@ -122,7 +122,7 @@
     where InviteId = #{inviteid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PMyproductsinvites" >
-    update P_MyProductsInvites
+    update p_myproductsinvites
     set CartId = #{cartid,jdbcType=BIGINT},
       UserId = #{userid,jdbcType=BIGINT},
       InvitePhone = #{invitephone,jdbcType=VARCHAR},

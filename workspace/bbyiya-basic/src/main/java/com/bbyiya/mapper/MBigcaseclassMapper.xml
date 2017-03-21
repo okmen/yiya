@@ -12,19 +12,19 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from M_BigCaseClass
+    from m_bigcaseclass
     where TypeId = #{typeid,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from M_BigCaseClass
+    delete from m_bigcaseclass
     where TypeId = #{typeid,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.MBigcaseclass" >
-    insert into M_BigCaseClass (TypeId, Name, Count)
+    insert into m_bigcaseclass (TypeId, Name, Count)
     values (#{typeid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{count,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.MBigcaseclass" >
-    insert into M_BigCaseClass
+    insert into m_bigcaseclass
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="typeid != null" >
         TypeId,
@@ -49,7 +49,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.MBigcaseclass" >
-    update M_BigCaseClass
+    update m_bigcaseclass
     <set >
       <if test="name != null" >
         Name = #{name,jdbcType=VARCHAR},
@@ -61,7 +61,7 @@
     where TypeId = #{typeid,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.MBigcaseclass" >
-    update M_BigCaseClass
+    update m_bigcaseclass
     set Name = #{name,jdbcType=VARCHAR},
       Count = #{count,jdbcType=INTEGER}
     where TypeId = #{typeid,jdbcType=INTEGER}

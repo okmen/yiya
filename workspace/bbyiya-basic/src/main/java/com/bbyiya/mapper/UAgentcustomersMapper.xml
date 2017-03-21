@@ -18,21 +18,21 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from U_AgentCustomers
+    from u_agentcustomers
     where CustomerId = #{customerid,jdbcType=BIGINT}
   </select>
   <select id="findCustomersByBranchUserId" resultMap="BaseResultMap"  ><!-- 01 查询影楼的用户列表 -->
     select 
     <include refid="Base_Column_List" />
-    from U_AgentCustomers
+    from u_agentcustomers
     where BranchUserId = #{branchUserId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from U_AgentCustomers
+    delete from u_agentcustomers
     where CustomerId = #{customerid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.UAgentcustomers" >
-    insert into U_AgentCustomers (CustomerId, UserId, BranchUserId, 
+    insert into u_agentcustomers (CustomerId, UserId, BranchUserId, 
       AgentUserId, Phone, Name, 
       Status, Remark, CreateTime
       )
@@ -42,7 +42,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.UAgentcustomers" >
-    insert into U_AgentCustomers
+    insert into u_agentcustomers
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="customerid != null" >
         CustomerId,
@@ -103,7 +103,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.UAgentcustomers" >
-    update U_AgentCustomers
+    update u_agentcustomers
     <set >
       <if test="userid != null" >
         UserId = #{userid,jdbcType=BIGINT},
@@ -133,7 +133,7 @@
     where CustomerId = #{customerid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.UAgentcustomers" >
-    update U_AgentCustomers
+    update u_agentcustomers
     set UserId = #{userid,jdbcType=BIGINT},
       BranchUserId = #{branchuserid,jdbcType=BIGINT},
       AgentUserId = #{agentuserid,jdbcType=BIGINT},

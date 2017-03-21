@@ -12,27 +12,27 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from P_StyleBackgrounds
+    from p_stylebackgrounds
     where Id = #{id,jdbcType=INTEGER}
   </select>
    <select id="findBacksByStyleId" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />
-    from P_StyleBackgrounds
+    from p_stylebackgrounds
     where StyleId = #{styleId,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from P_StyleBackgrounds
+    delete from p_stylebackgrounds
     where Id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.PStylebackgrounds" >
-    insert into P_StyleBackgrounds (Id, StyleId, BackgroundImg
+    insert into p_stylebackgrounds (Id, StyleId, BackgroundImg
       )
     values (#{id,jdbcType=INTEGER}, #{styleid,jdbcType=BIGINT}, #{backgroundimg,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PStylebackgrounds" >
-    insert into P_StyleBackgrounds
+    insert into p_stylebackgrounds
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         Id,
@@ -57,7 +57,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PStylebackgrounds" >
-    update P_StyleBackgrounds
+    update p_stylebackgrounds
     <set >
       <if test="styleid != null" >
         StyleId = #{styleid,jdbcType=BIGINT},
@@ -69,7 +69,7 @@
     where Id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PStylebackgrounds" >
-    update P_StyleBackgrounds
+    update p_stylebackgrounds
     set StyleId = #{styleid,jdbcType=BIGINT},
       BackgroundImg = #{backgroundimg,jdbcType=VARCHAR}
     where Id = #{id,jdbcType=INTEGER}

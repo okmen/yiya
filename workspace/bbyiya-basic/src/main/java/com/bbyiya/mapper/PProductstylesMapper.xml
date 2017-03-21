@@ -31,27 +31,27 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from P_ProductStyles
+    from p_productstyles
     where StyleId = #{styleid,jdbcType=BIGINT}
   </select>
   <select id="findStylesByProductId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from P_ProductStyles
+    from p_productstyles
     where ProductId = #{productId,jdbcType=BIGINT}
   </select>
   <select id="findStylesResultByProductId" resultMap="StyleVOResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from P_ProductStyles
+    from p_productstyles
     where ProductId = #{productId,jdbcType=BIGINT} and Status=1
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from P_ProductStyles
+    delete from p_productstyles
     where StyleId = #{styleid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.PProductstyles" >
-    insert into P_ProductStyles (StyleId, ProductId, UserId, 
+    insert into p_productstyles (StyleId, ProductId, UserId, 
       DefaultImg, PropertyStr, OldPrice, 
       Price, Status, IsDefault, 
       Description, CreateTime, UpdateTime, 
@@ -63,7 +63,7 @@
       #{agentprice,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PProductstyles" >
-    insert into P_ProductStyles
+    insert into p_productstyles
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="styleid != null" >
         StyleId,
@@ -148,7 +148,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PProductstyles" >
-    update P_ProductStyles
+    update p_productstyles
     <set >
       <if test="productid != null" >
         ProductId = #{productid,jdbcType=BIGINT},
@@ -190,7 +190,7 @@
     where StyleId = #{styleid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PProductstyles" >
-    update P_ProductStyles
+    update p_productstyles
     set ProductId = #{productid,jdbcType=BIGINT},
       UserId = #{userid,jdbcType=BIGINT},
       DefaultImg = #{defaultimg,jdbcType=VARCHAR},

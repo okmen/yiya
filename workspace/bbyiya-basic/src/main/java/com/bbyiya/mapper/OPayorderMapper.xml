@@ -20,15 +20,15 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
-    from O_PayOrder
+    from o_payorder
     where PayId = #{payid,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
-    delete from O_PayOrder
+    delete from o_payorder
     where PayId = #{payid,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.OPayorder" >
-    insert into O_PayOrder (PayId, UserOrderId, UserId, 
+    insert into o_payorder (PayId, UserOrderId, UserId, 
       PrepayId, Status, TotalPrice, 
       CreateTime, PrepayTime, PayTime, 
       PayType, OrderType)
@@ -38,7 +38,7 @@
       #{paytype,jdbcType=INTEGER}, #{ordertype,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.OPayorder" >
-    insert into O_PayOrder
+    insert into o_payorder
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="payid != null" >
         PayId,
@@ -111,7 +111,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.OPayorder" >
-    update O_PayOrder
+    update o_payorder
     <set >
       <if test="userorderid != null" >
         UserOrderId = #{userorderid,jdbcType=VARCHAR},
@@ -147,7 +147,7 @@
     where PayId = #{payid,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.OPayorder" >
-    update O_PayOrder
+    update o_payorder
     set UserOrderId = #{userorderid,jdbcType=VARCHAR},
       UserId = #{userid,jdbcType=BIGINT},
       PrepayId = #{prepayid,jdbcType=VARCHAR},

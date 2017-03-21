@@ -13,27 +13,27 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from U_Admin
+    from u_admin
     where AdminId = #{adminid,jdbcType=INTEGER}
   </select>
   <select id="getUAdminByUsername" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
-    from U_Admin
+    from u_admin
     where UserName = #{username,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from U_Admin
+    delete from u_admin
     where AdminId = #{adminid,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.UAdmin" >
-    insert into U_Admin (AdminId, UserName, Password, 
+    insert into u_admin (AdminId, UserName, Password, 
       CreateTime)
     values (#{adminid,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{createtime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.UAdmin" >
-    insert into U_Admin
+    insert into u_admin
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="adminid != null" >
         AdminId,
@@ -64,7 +64,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.UAdmin" >
-    update U_Admin
+    update u_admin
     <set >
       <if test="username != null" >
         UserName = #{username,jdbcType=VARCHAR},
@@ -79,7 +79,7 @@
     where AdminId = #{adminid,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.UAdmin" >
-    update U_Admin
+    update u_admin
     set UserName = #{username,jdbcType=VARCHAR},
       Password = #{password,jdbcType=VARCHAR},
       CreateTime = #{createtime,jdbcType=TIMESTAMP}

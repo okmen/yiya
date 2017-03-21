@@ -14,23 +14,23 @@
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" ><!-- 01 主键查询 -->
     select   <include refid="Base_Column_List" />
-    from U_CashLogs
+    from u_cashlogs
     where CashLogId = #{cashlogid,jdbcType=BIGINT}
   </select>
    <select id="findCashlogsByUserId" resultMap="BaseResultMap" ><!-- 02 获取用户的交易流水 -->
     select <include refid="Base_Column_List" />
-    from U_CashLogs where UserID = #{userId,jdbcType=BIGINT}
+    from u_cashlogs where UserID = #{userId,jdbcType=BIGINT}
     <if test="type != null" >
        and UseType= #{type,jdbcType=INTEGER}
     </if>
     order by CashLogId desc
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from U_CashLogs
+    delete from u_cashlogs
     where CashLogId = #{cashlogid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.UCashlogs" >
-    insert into U_CashLogs (CashLogId, UserID, UseType, 
+    insert into u_cashlogs (CashLogId, UserID, UseType, 
       Amount, PayId, CreateTime
       )
     values (#{cashlogid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{usetype,jdbcType=INTEGER}, 
@@ -38,7 +38,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.UCashlogs" >
-    insert into U_CashLogs
+    insert into u_cashlogs
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="cashlogid != null" >
         CashLogId,
@@ -81,7 +81,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.UCashlogs" >
-    update U_CashLogs
+    update u_cashlogs
     <set >
       <if test="userid != null" >
         UserID = #{userid,jdbcType=BIGINT},
@@ -102,7 +102,7 @@
     where CashLogId = #{cashlogid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.UCashlogs" >
-    update U_CashLogs
+    update u_cashlogs
     set UserID = #{userid,jdbcType=BIGINT},
       UseType = #{usetype,jdbcType=INTEGER},
       Amount = #{amount,jdbcType=DECIMAL},

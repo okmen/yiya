@@ -11,19 +11,19 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from U_Accounts
+    from u_accounts
     where UserID = #{userid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from U_Accounts
+    delete from u_accounts
     where UserID = #{userid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.UAccounts" >
-    insert into U_Accounts (UserID, AvailableAmount)
+    insert into u_accounts (UserID, AvailableAmount)
     values (#{userid,jdbcType=BIGINT}, #{availableamount,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.UAccounts" >
-    insert into U_Accounts
+    insert into u_accounts
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="userid != null" >
         UserID,
@@ -42,7 +42,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.UAccounts" >
-    update U_Accounts
+    update u_accounts
     <set >
       <if test="availableamount != null" >
         AvailableAmount = #{availableamount,jdbcType=DECIMAL},
@@ -51,7 +51,7 @@
     where UserID = #{userid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.UAccounts" >
-    update U_Accounts
+    update u_accounts
     set AvailableAmount = #{availableamount,jdbcType=DECIMAL}
     where UserID = #{userid,jdbcType=BIGINT}
   </update>

@@ -18,15 +18,15 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from U_BranchInfoTemp
+    from u_branchinfotemp
     where Id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from U_BranchInfoTemp
+    delete from u_branchinfotemp
     where Id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.UBranchinfotemp" >
-    insert into U_BranchInfoTemp (Id, ContactName, CompanyName, 
+    insert into u_branchinfotemp (Id, ContactName, CompanyName, 
       Phone, Province, City, 
       District, StreetDetail, CreateTime
       )
@@ -36,7 +36,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.UBranchinfotemp" >
-    insert into U_BranchInfoTemp
+    insert into u_branchinfotemp
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         Id,
@@ -97,7 +97,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.UBranchinfotemp" >
-    update U_BranchInfoTemp
+    update u_branchinfotemp
     <set >
       <if test="contactname != null" >
         ContactName = #{contactname,jdbcType=VARCHAR},
@@ -127,7 +127,7 @@
     where Id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.UBranchinfotemp" >
-    update U_BranchInfoTemp
+    update u_branchinfotemp
     set ContactName = #{contactname,jdbcType=VARCHAR},
       CompanyName = #{companyname,jdbcType=VARCHAR},
       Phone = #{phone,jdbcType=VARCHAR},

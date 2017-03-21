@@ -31,33 +31,33 @@
   <select id="get_UUserAddressByKeyId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from U_UserAddress
+    from u_useraddress
     where AddrId = #{addressId,jdbcType=BIGINT}
   </select>
   <select id="get_UUserAddressDefault" resultMap="UUserAddressResultMap"  >
     select 
     <include refid="Base_Column_List" />
-    from U_UserAddress
+    from u_useraddress
     where UserId = #{userId,jdbcType=BIGINT} and IsDefault=1
   </select>
   <select id="get_UUserAddressResultByKeyId" resultMap="UUserAddressResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from U_UserAddress
+    from u_useraddress
     where AddrId = #{addressId,jdbcType=BIGINT}
   </select>
   <select id="find_UUserAddressByUserId" resultMap="UUserAddressResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from U_UserAddress
+    from u_useraddress
     where UserId = #{userId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from U_UserAddress
+    delete from u_useraddress
     where AddrId = #{addrid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.UUseraddress" >
-    insert into U_UserAddress (AddrId, UserId, Reciver, 
+    insert into u_useraddress (AddrId, UserId, Reciver, 
       Phone, Province, City, 
       Area, StreetDetail, PostCode, 
       IsDefault)
@@ -67,7 +67,7 @@
       #{isdefault,jdbcType=INTEGER})
   </insert>
   <insert id="insertReturnId"  useGeneratedKeys="true" keyProperty="AddrId" parameterType="com.bbyiya.model.UUseraddress" >
-    insert into U_UserAddress (AddrId, UserId, Reciver, 
+    insert into u_useraddress (AddrId, UserId, Reciver, 
       Phone, Province, City, 
       Area, StreetDetail, PostCode, 
       IsDefault)
@@ -77,7 +77,7 @@
       #{isdefault,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.UUseraddress" >
-    insert into U_UserAddress
+    insert into u_useraddress
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="addrid != null" >
         AddrId,
@@ -144,7 +144,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.UUseraddress" >
-    update U_UserAddress
+    update u_useraddress
     <set >
       <if test="userid != null" >
         UserId = #{userid,jdbcType=BIGINT},
@@ -177,7 +177,7 @@
     where AddrId = #{addrid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.UUseraddress" >
-    update U_UserAddress
+    update u_useraddress
     set UserId = #{userid,jdbcType=BIGINT},
       Reciver = #{reciver,jdbcType=VARCHAR},
       Phone = #{phone,jdbcType=VARCHAR},

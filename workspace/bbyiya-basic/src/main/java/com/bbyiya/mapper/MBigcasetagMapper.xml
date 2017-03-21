@@ -13,27 +13,27 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from M_BigCaseTag
+    from m_bigcasetag
     where Id = #{id,jdbcType=INTEGER}
   </select>
    <select id="findBigCaseTagByCaseId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from M_BigCaseTag
+    from m_bigcasetag
     where CaseId = #{caseId,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from M_BigCaseTag
+    delete from m_bigcasetag
     where Id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.MBigcasetag" >
-    insert into M_BigCaseTag (Id, CaseId, TagId, 
+    insert into m_bigcasetag (Id, CaseId, TagId, 
       TagContent)
     values (#{id,jdbcType=INTEGER}, #{caseid,jdbcType=INTEGER}, #{tagid,jdbcType=INTEGER}, 
       #{tagcontent,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.MBigcasetag" >
-    insert into M_BigCaseTag
+    insert into m_bigcasetag
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         Id,
@@ -64,7 +64,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.MBigcasetag" >
-    update M_BigCaseTag
+    update m_bigcasetag
     <set >
       <if test="caseid != null" >
         CaseId = #{caseid,jdbcType=INTEGER},
@@ -79,14 +79,14 @@
     where Id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.bbyiya.model.MBigcasetag" >
-    update M_BigCaseTag
+    update m_bigcasetag
     set CaseId = #{caseid,jdbcType=INTEGER},
       TagId = #{tagid,jdbcType=INTEGER},
       TagContent = #{tagcontent,jdbcType=LONGVARCHAR}
     where Id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.MBigcasetag" >
-    update M_BigCaseTag
+    update m_bigcasetag
     set CaseId = #{caseid,jdbcType=INTEGER},
       TagId = #{tagid,jdbcType=INTEGER}
     where Id = #{id,jdbcType=INTEGER}

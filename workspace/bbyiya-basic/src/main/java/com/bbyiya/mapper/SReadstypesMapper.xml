@@ -13,26 +13,26 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from S_ReadsTypes
+    from s_readstypes
     where ReadTypeId = #{readtypeid,jdbcType=INTEGER}
   </select>
   <select id="findReadsTypelist" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />
-    from S_ReadsTypes order by Sort asc
+    from s_readstypes order by Sort asc
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from S_ReadsTypes
+    delete from s_readstypes
     where ReadTypeId = #{readtypeid,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.SReadstypes" >
-    insert into S_ReadsTypes (ReadTypeId, Name, Sort, 
+    insert into s_readstypes (ReadTypeId, Name, Sort, 
       Des)
     values (#{readtypeid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, 
       #{des,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.SReadstypes" >
-    insert into S_ReadsTypes
+    insert into s_readstypes
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="readtypeid != null" >
         ReadTypeId,
@@ -63,7 +63,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.SReadstypes" >
-    update S_ReadsTypes
+    update s_readstypes
     <set >
       <if test="name != null" >
         Name = #{name,jdbcType=VARCHAR},
@@ -78,7 +78,7 @@
     where ReadTypeId = #{readtypeid,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.SReadstypes" >
-    update S_ReadsTypes
+    update s_readstypes
     set Name = #{name,jdbcType=VARCHAR},
       Sort = #{sort,jdbcType=INTEGER},
       Des = #{des,jdbcType=VARCHAR}

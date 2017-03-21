@@ -28,33 +28,33 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
-    from O_UserOrders
+    from o_userorders
     where UserOrderId = #{userorderid,jdbcType=VARCHAR}
   </select>
   <select id="findOrderByUserId" resultMap="BaseResultMap"  ><!-- 01 根据UserId 获取用户的订单列表 -->
     select 
     <include refid="Base_Column_List" />
-    from O_UserOrders
+    from o_userorders
     where UserId = #{userId,jdbcType=BIGINT}  order by OrderTime desc
   </select>
   <select id="findOrdersByAgentUserId" resultMap="BaseResultMap"  ><!-- 02 获取待分配的订单 （代理） -->
     select 
     <include refid="Base_Column_List" />
-    from O_UserOrders
+    from o_userorders
     where AgentUserId = #{agentUserId,jdbcType=BIGINT}  and Status=2  and IsBranch=0 order by PayTime desc
   </select>
   <select id="findOrdersByBranchUserId" resultMap="BaseResultMap"  ><!-- 03 获取本店的订单 （代理） -->
     select 
     <include refid="Base_Column_List" />
-    from O_UserOrders
+    from o_userorders
     where BranchUserId = #{branchUserId,jdbcType=BIGINT} and Status=#{status,jdbcType=INTEGER} order by PayTime,OrderTime desc
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
-    delete from O_UserOrders
+    delete from o_userorders
     where UserId = #{userId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.OUserorders" >
-    insert into O_UserOrders (UserOrderId, UserId, TotalPrice, 
+    insert into o_userorders (UserOrderId, UserId, TotalPrice, 
       Status, OrderAddressId, PayId, 
       Remark, OrderTime, PayTime, 
       BranchUserId, OrderTotalPrice, PayType, 
@@ -68,7 +68,7 @@
       #{expresscom,jdbcType=VARCHAR}, #{expressorder,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.OUserorders" >
-    insert into O_UserOrders
+    insert into o_userorders
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="userorderid != null" >
         UserOrderId,
@@ -177,7 +177,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.OUserorders" >
-    update O_UserOrders
+    update o_userorders
     <set >
       <if test="userid != null" >
         UserId = #{userid,jdbcType=BIGINT},
@@ -231,7 +231,7 @@
     where UserOrderId = #{userorderid,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.OUserorders" >
-    update O_UserOrders
+    update o_userorders
     set UserId = #{userid,jdbcType=BIGINT},
       TotalPrice = #{totalprice,jdbcType=DECIMAL},
       Status = #{status,jdbcType=INTEGER},

@@ -21,21 +21,21 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from M_BigCaseSummary
+    from m_bigcasesummary
     where Id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from M_BigCaseSummary
+    delete from m_bigcasesummary
     where Id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.MBigcasesummary" >
-    insert into M_BigCaseSummary (Id, StageId, CaseId, 
+    insert into m_bigcasesummary (Id, StageId, CaseId, 
       GroupCount, Content)
     values (#{id,jdbcType=INTEGER}, #{stageid,jdbcType=INTEGER}, #{caseid,jdbcType=INTEGER}, 
       #{groupcount,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.MBigcasesummary" >
-    insert into M_BigCaseSummary
+    insert into m_bigcasesummary
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         Id,
@@ -72,7 +72,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.MBigcasesummary" >
-    update M_BigCaseSummary
+    update m_bigcasesummary
     <set >
       <if test="stageid != null" >
         StageId = #{stageid,jdbcType=INTEGER},
@@ -90,7 +90,7 @@
     where Id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.bbyiya.model.MBigcasesummary" >
-    update M_BigCaseSummary
+    update m_bigcasesummary
     set StageId = #{stageid,jdbcType=INTEGER},
       CaseId = #{caseid,jdbcType=INTEGER},
       GroupCount = #{groupcount,jdbcType=INTEGER},
@@ -98,7 +98,7 @@
     where Id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.MBigcasesummary" >
-    update M_BigCaseSummary
+    update m_bigcasesummary
     set StageId = #{stageid,jdbcType=INTEGER},
       CaseId = #{caseid,jdbcType=INTEGER},
       GroupCount = #{groupcount,jdbcType=INTEGER}

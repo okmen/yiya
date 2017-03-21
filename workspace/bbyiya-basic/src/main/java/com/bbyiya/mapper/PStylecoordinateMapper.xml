@@ -15,21 +15,21 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from P_StyleCoordinate
+    from p_stylecoordinate
     where Id = #{id,jdbcType=BIGINT}
   </select>
   <select id="findlistByStyleId" resultMap="BaseResultMap"  ><!-- 产品款式图像坐标 -->
     select 
     <include refid="Base_Column_List" />
-    from P_StyleCoordinate
+    from p_stylecoordinate
     where StyleId = #{styleId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from P_StyleCoordinate
+    delete from p_stylecoordinate
     where Id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.PStylecoordinate" >
-    insert into P_StyleCoordinate (Id, StyleId, NoCoordId, 
+    insert into p_stylecoordinate (Id, StyleId, NoCoordId, 
       PicCoordId, WordCoordId, Type
       )
     values (#{id,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, #{nocoordid,jdbcType=INTEGER}, 
@@ -37,7 +37,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PStylecoordinate" >
-    insert into P_StyleCoordinate
+    insert into p_stylecoordinate
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         Id,
@@ -80,7 +80,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PStylecoordinate" >
-    update P_StyleCoordinate
+    update p_stylecoordinate
     <set >
       <if test="styleid != null" >
         StyleId = #{styleid,jdbcType=BIGINT},
@@ -101,7 +101,7 @@
     where Id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PStylecoordinate" >
-    update P_StyleCoordinate
+    update p_stylecoordinate
     set StyleId = #{styleid,jdbcType=BIGINT},
       NoCoordId = #{nocoordid,jdbcType=INTEGER},
       PicCoordId = #{piccoordid,jdbcType=INTEGER},

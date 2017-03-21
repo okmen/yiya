@@ -15,21 +15,21 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from P_ProductDetails
+    from p_productdetails
     where DetailId = #{detailid,jdbcType=BIGINT}
   </select>
   <select id="findDetailsByProductId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from P_ProductDetails
+    from p_productdetails
     where ProductId = #{productId,jdbcType=BIGINT} order by Position ASC
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from P_ProductDetails
+    delete from p_productdetails
     where DetailId = #{detailid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.PProductdetails" >
-    insert into P_ProductDetails (DetailId, ProductId, Position, 
+    insert into p_productdetails (DetailId, ProductId, Position, 
       Description, Image, CreateTime
       )
     values (#{detailid,jdbcType=BIGINT}, #{productid,jdbcType=BIGINT}, #{position,jdbcType=INTEGER}, 
@@ -37,7 +37,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PProductdetails" >
-    insert into P_ProductDetails
+    insert into p_productdetails
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="detailid != null" >
         DetailId,
@@ -80,7 +80,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PProductdetails" >
-    update P_ProductDetails
+    update p_productdetails
     <set >
       <if test="productid != null" >
         ProductId = #{productid,jdbcType=BIGINT},
@@ -101,7 +101,7 @@
     where DetailId = #{detailid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PProductdetails" >
-    update P_ProductDetails
+    update p_productdetails
     set ProductId = #{productid,jdbcType=BIGINT},
       Position = #{position,jdbcType=INTEGER},
       Description = #{description,jdbcType=VARCHAR},

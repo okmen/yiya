@@ -21,18 +21,18 @@
 		parameterType="java.lang.Long">
 		select
 		<include refid="Base_Column_List" />
-		from M_BigCaseImgs
+		from m_bigcaseimgs
 		where Id = #{id,jdbcType=BIGINT}
 	</select>
 	<select id="findMBigCaseImgsByCaseId" resultMap="BigCaseUserImg">
 		select
 		<include refid="Base_Column_List" />
-		from M_BigCaseImgs
+		from m_bigcaseimgs
 		where CaseId = #{caseId,jdbcType=INTEGER} and UserId =  #{userId,jdbcType=BIGINT}
 		ORDER BY Position asc
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-		delete from M_BigCaseImgs
+		delete from m_bigcaseimgs
 		where Id = #{id,jdbcType=BIGINT}
 	</delete>
 	<insert id="insert" parameterType="com.bbyiya.model.MBigcaseuserimgs">

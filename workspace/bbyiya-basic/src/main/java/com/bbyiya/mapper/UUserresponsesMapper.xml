@@ -13,21 +13,21 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from U_UserResponses
+    from u_userresponses
     where Id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from U_UserResponses
+    delete from u_userresponses
     where Id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.UUserresponses" >
-    insert into U_UserResponses (Id, UserId, Content, 
+    insert into u_userresponses (Id, UserId, Content, 
       CreateTime)
     values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{content,jdbcType=VARCHAR}, 
       #{createtime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.UUserresponses" >
-    insert into U_UserResponses
+    insert into u_userresponses
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         Id,
@@ -58,7 +58,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.UUserresponses" >
-    update U_UserResponses
+    update u_userresponses
     <set >
       <if test="userid != null" >
         UserId = #{userid,jdbcType=BIGINT},
@@ -73,7 +73,7 @@
     where Id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.UUserresponses" >
-    update U_UserResponses
+    update u_userresponses
     set UserId = #{userid,jdbcType=BIGINT},
       Content = #{content,jdbcType=VARCHAR},
       CreateTime = #{createtime,jdbcType=TIMESTAMP}

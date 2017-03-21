@@ -12,27 +12,27 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from E_Errors
+    from e_errors
     where LogId = #{logid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from E_Errors
+    delete from e_errors
     where LogId = #{logid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.EErrors" >
-    insert into E_Errors (LogId, ClassName, Msg
+    insert into e_errors (LogId, ClassName, Msg
       )
     values (#{logid,jdbcType=BIGINT}, #{classname,jdbcType=VARCHAR}, #{msg,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="addError" ><!-- 新增log 错误记录 -->
-    insert into E_Errors (ClassName, Msg
+    insert into e_errors (ClassName, Msg
       )
     values (#{classname,jdbcType=VARCHAR}, #{msg,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.EErrors" >
-    insert into E_Errors
+    insert into e_errors
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="logid != null" >
         LogId,
@@ -57,7 +57,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.EErrors" >
-    update E_Errors
+    update e_errors
     <set >
       <if test="classname != null" >
         ClassName = #{classname,jdbcType=VARCHAR},
@@ -69,7 +69,7 @@
     where LogId = #{logid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.EErrors" >
-    update E_Errors
+    update e_errors
     set ClassName = #{classname,jdbcType=VARCHAR},
       Msg = #{msg,jdbcType=VARCHAR}
     where LogId = #{logid,jdbcType=BIGINT}

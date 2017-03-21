@@ -12,25 +12,25 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from M_BigCaseClassTag
+    from m_bigcaseclasstag
     where TagId = #{tagid,jdbcType=INTEGER}
   </select>
   <select id="findTagsByClassId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from M_BigCaseClassTag
+    from m_bigcaseclasstag
     where BigCaseTypeId = #{typeId,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from M_BigCaseClassTag
+    delete from m_bigcaseclasstag
     where TagId = #{tagid,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.MBigcaseclasstag" >
-    insert into M_BigCaseClassTag (TagId, BigCaseTypeId, Value)
+    insert into m_bigcaseclasstag (TagId, BigCaseTypeId, Value)
     values (#{tagid,jdbcType=INTEGER}, #{bigcasetypeid,jdbcType=INTEGER}, #{value,jdbcType=VARCHAR} )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.MBigcaseclasstag" >
-    insert into M_BigCaseClassTag
+    insert into m_bigcaseclasstag
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="tagid != null" >
         TagId,
@@ -55,7 +55,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.MBigcaseclasstag" >
-    update M_BigCaseClassTag
+    update m_bigcaseclasstag
     <set >
       <if test="bigcasetypeid != null" >
         BigCaseTypeId = #{bigcasetypeid,jdbcType=INTEGER},
@@ -67,7 +67,7 @@
     where TagId = #{tagid,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.MBigcaseclasstag" >
-    update M_BigCaseClassTag
+    update m_bigcaseclasstag
     set BigCaseTypeId = #{bigcasetypeid,jdbcType=INTEGER},
       Value = #{value,jdbcType=VARCHAR}
     where TagId = #{tagid,jdbcType=INTEGER}

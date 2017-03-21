@@ -25,33 +25,33 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from P_ProductStyleProperty
+    from p_productstyleproperty
     where Id = #{id,jdbcType=BIGINT}
   </select>
   <select id="findPropertyByStyleId" resultMap="StyleResultMap" parameterType="java.lang.Long" ><!-- 获取款式属性列表 -->
     select  a.StyleId, a.StandardId, a.StandardValueId, a.ProductId,b.StandardName,c.StandardValue
-    from P_ProductStyleProperty as a,P_Standards as b ,P_StandardValues as c 
+    from p_productstyleproperty as a,P_Standards as b ,P_StandardValues as c 
     where StyleId=#{styleId,jdbcType=BIGINT} and a.StandardId=b.StandardId and a.StandardValueId=c.StandardValueId
    	order by a.StandardId asc
   </select>
   <select id="findStylePropertyByProductId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from P_ProductStyleProperty
+    from p_productstyleproperty
     where ProductId = #{productId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from P_ProductStyleProperty
+    delete from p_productstyleproperty
     where Id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.PProductstyleproperty" >
-    insert into P_ProductStyleProperty (Id, StyleId, StandardId, 
+    insert into p_productstyleproperty (Id, StyleId, StandardId, 
       StandardValueId, ProductId)
     values (#{id,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, #{standardid,jdbcType=BIGINT}, 
       #{standardvalueid,jdbcType=BIGINT}, #{productid,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PProductstyleproperty" >
-    insert into P_ProductStyleProperty
+    insert into p_productstyleproperty
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         Id,
@@ -88,7 +88,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PProductstyleproperty" >
-    update P_ProductStyleProperty
+    update p_productstyleproperty
     <set >
       <if test="styleid != null" >
         StyleId = #{styleid,jdbcType=BIGINT},
@@ -106,7 +106,7 @@
     where Id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PProductstyleproperty" >
-    update P_ProductStyleProperty
+    update p_productstyleproperty
     set StyleId = #{styleid,jdbcType=BIGINT},
       StandardId = #{standardid,jdbcType=BIGINT},
       StandardValueId = #{standardvalueid,jdbcType=BIGINT},

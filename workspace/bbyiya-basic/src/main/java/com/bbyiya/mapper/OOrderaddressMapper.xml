@@ -20,23 +20,23 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from O_OrderAddress
+    from o_orderaddress
     where OrderAddressId = #{orderaddressid,jdbcType=BIGINT}
   </select>
   <select id="findListByIds" resultMap="BaseResultMap"  ><!-- 02  List<Long>Ids 获取收货地址列表 -->
     select 
     <include refid="Base_Column_List" />
-    from O_OrderAddress  where OrderAddressId in 
+    from o_orderaddress  where OrderAddressId in 
     <foreach item="item" index="index" collection="list" open="(" separator="," close=")">  
  	 #{item}  
 	</foreach>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from O_OrderAddress
+    delete from o_orderaddress
     where OrderAddressId = #{orderaddressid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.OOrderaddress" >
-    insert into O_OrderAddress (OrderAddressId, UserId, Reciver, 
+    insert into o_orderaddress (OrderAddressId, UserId, Reciver, 
       Phone, PostCode, Province, 
       City, District, StreetDetail, 
       CreateTime)
@@ -46,7 +46,7 @@
       #{createtime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="orderaddressid" parameterType="com.bbyiya.model.OOrderaddress" >
-    insert into O_OrderAddress (OrderAddressId, UserId, Reciver, 
+    insert into o_orderaddress (OrderAddressId, UserId, Reciver, 
       Phone, PostCode, Province, 
       City, District, StreetDetail, 
       CreateTime)
@@ -56,7 +56,7 @@
       #{createtime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.OOrderaddress" >
-    insert into O_OrderAddress
+    insert into o_orderaddress
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="orderaddressid != null" >
         OrderAddressId,
@@ -123,7 +123,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.OOrderaddress" >
-    update O_OrderAddress
+    update o_orderaddress
     <set >
       <if test="userid != null" >
         UserId = #{userid,jdbcType=BIGINT},
@@ -156,7 +156,7 @@
     where OrderAddressId = #{orderaddressid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.OOrderaddress" >
-    update O_OrderAddress
+    update o_orderaddress
     set UserId = #{userid,jdbcType=BIGINT},
       Reciver = #{reciver,jdbcType=VARCHAR},
       Phone = #{phone,jdbcType=VARCHAR},

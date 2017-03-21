@@ -16,15 +16,15 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from O_OrderProductDetails
+    from o_orderproductdetails
     where OProductDetailId = #{oproductdetailid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from O_OrderProductDetails
+    delete from o_orderproductdetails
     where OProductDetailId = #{oproductdetailid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.OOrderproductdetails" >
-    insert into O_OrderProductDetails (OProductDetailId, OrderProductId, 
+    insert into o_orderproductdetails (OProductDetailId, OrderProductId, 
       PrintNo, Position, ImageUrl, 
       CreateTime, BackImageUrl)
     values (#{oproductdetailid,jdbcType=BIGINT}, #{orderproductid,jdbcType=VARCHAR}, 
@@ -32,7 +32,7 @@
       #{createtime,jdbcType=TIMESTAMP}, #{backimageurl,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.OOrderproductdetails" >
-    insert into O_OrderProductDetails
+    insert into o_orderproductdetails
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="oproductdetailid != null" >
         OProductDetailId,
@@ -81,7 +81,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.OOrderproductdetails" >
-    update O_OrderProductDetails
+    update o_orderproductdetails
     <set >
       <if test="orderproductid != null" >
         OrderProductId = #{orderproductid,jdbcType=VARCHAR},
@@ -105,7 +105,7 @@
     where OProductDetailId = #{oproductdetailid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.OOrderproductdetails" >
-    update O_OrderProductDetails
+    update o_orderproductdetails
     set OrderProductId = #{orderproductid,jdbcType=VARCHAR},
       PrintNo = #{printno,jdbcType=VARCHAR},
       Position = #{position,jdbcType=INTEGER},

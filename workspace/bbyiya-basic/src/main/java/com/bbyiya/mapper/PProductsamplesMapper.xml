@@ -15,15 +15,15 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from P_ProductSamples
+    from p_productsamples
     where SampleId = #{sampleid,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from P_ProductSamples
+    delete from p_productsamples
     where SampleId = #{sampleid,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.PProductsamples" >
-    insert into P_ProductSamples (SampleId, ProductId, SampleImg, 
+    insert into p_productsamples (SampleId, ProductId, SampleImg, 
       CartId, CreateTime, Status
       )
     values (#{sampleid,jdbcType=INTEGER}, #{productid,jdbcType=BIGINT}, #{sampleimg,jdbcType=VARCHAR}, 
@@ -31,7 +31,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PProductsamples" >
-    insert into P_ProductSamples
+    insert into p_productsamples
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="sampleid != null" >
         SampleId,
@@ -74,7 +74,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PProductsamples" >
-    update P_ProductSamples
+    update p_productsamples
     <set >
       <if test="productid != null" >
         ProductId = #{productid,jdbcType=BIGINT},
@@ -95,7 +95,7 @@
     where SampleId = #{sampleid,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PProductsamples" >
-    update P_ProductSamples
+    update p_productsamples
     set ProductId = #{productid,jdbcType=BIGINT},
       SampleImg = #{sampleimg,jdbcType=VARCHAR},
       CartId = #{cartid,jdbcType=BIGINT},

@@ -12,27 +12,27 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from P_ProductStyleDes
+    from p_productstyledes
     where ID = #{id,jdbcType=BIGINT}
   </select>
   <select id="findImgsByStyleId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from P_ProductStyleDes
+    from p_productstyledes
     where StyleId = #{styleId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from P_ProductStyleDes
+    delete from p_productstyledes
     where ID = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.PProductstyledes" >
-    insert into P_ProductStyleDes (ID, StyleId, ImgUrl
+    insert into p_productstyledes (ID, StyleId, ImgUrl
       )
     values (#{id,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, #{imgurl,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PProductstyledes" >
-    insert into P_ProductStyleDes
+    insert into p_productstyledes
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         ID,
@@ -57,7 +57,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PProductstyledes" >
-    update P_ProductStyleDes
+    update p_productstyledes
     <set >
       <if test="styleid != null" >
         StyleId = #{styleid,jdbcType=BIGINT},
@@ -69,7 +69,7 @@
     where ID = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PProductstyledes" >
-    update P_ProductStyleDes
+    update p_productstyledes
     set StyleId = #{styleid,jdbcType=BIGINT},
       ImgUrl = #{imgurl,jdbcType=VARCHAR}
     where ID = #{id,jdbcType=BIGINT}

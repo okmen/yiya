@@ -11,19 +11,19 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from M_BigCaseExp
+    from m_bigcaseexp
     where CaseId = #{caseid,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from M_BigCaseExp
+    delete from m_bigcaseexp
     where CaseId = #{caseid,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.MBigcaseexp" >
-    insert into M_BigCaseExp (CaseId, ReadCount)
+    insert into m_bigcaseexp (CaseId, ReadCount)
     values (#{caseid,jdbcType=INTEGER}, #{readcount,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.MBigcaseexp" >
-    insert into M_BigCaseExp
+    insert into m_bigcaseexp
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="caseid != null" >
         CaseId,
@@ -42,7 +42,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.MBigcaseexp" >
-    update M_BigCaseExp
+    update m_bigcaseexp
     <set >
       <if test="readcount != null" >
         ReadCount = #{readcount,jdbcType=INTEGER},
@@ -51,7 +51,7 @@
     where CaseId = #{caseid,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.MBigcaseexp" >
-    update M_BigCaseExp
+    update m_bigcaseexp
     set ReadCount = #{readcount,jdbcType=INTEGER}
     where CaseId = #{caseid,jdbcType=INTEGER}
   </update>

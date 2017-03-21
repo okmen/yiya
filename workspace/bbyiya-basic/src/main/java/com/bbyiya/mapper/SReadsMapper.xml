@@ -21,21 +21,21 @@
 		parameterType="java.lang.Integer">
 		select
 		<include refid="Base_Column_List" />
-		from S_Reads
+		from s_reads
 		where ID = #{id,jdbcType=INTEGER}
 	</select>
 	<select id="findSReadsByTypeId" resultMap="ReadsResultMap" parameterType="java.lang.Integer">
 		select
 		<include refid="Base_Column_List" />
-		from S_Reads
+		from s_reads
 		where TypeId = #{typeid,jdbcType=INTEGER}
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-		delete from S_Reads
+		delete from s_reads
 		where ID = #{id,jdbcType=INTEGER}
 	</delete>
 	<insert id="insert" parameterType="com.bbyiya.model.SReads">
-		insert into S_Reads (ID, Title, Summary,
+		insert into s_reads (ID, Title, Summary,
 		TypeId, CreateTime, Content
 		)
 		values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR},
@@ -44,7 +44,7 @@
 		)
 	</insert>
 	<insert id="insertSelective" parameterType="com.bbyiya.model.SReads">
-		insert into S_Reads
+		insert into s_reads
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="id != null">
 				ID,
@@ -87,7 +87,7 @@
 		</trim>
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.SReads">
-		update S_Reads
+		update s_reads
 		<set>
 			<if test="title != null">
 				Title = #{title,jdbcType=VARCHAR},
@@ -108,7 +108,7 @@
 		where ID = #{id,jdbcType=INTEGER}
 	</update>
 	<update id="updateByPrimaryKeyWithBLOBs" parameterType="com.bbyiya.model.SReads">
-		update S_Reads
+		update s_reads
 		set Title = #{title,jdbcType=VARCHAR},
 		Summary = #{summary,jdbcType=VARCHAR},
 		TypeId = #{typeid,jdbcType=INTEGER},
@@ -117,7 +117,7 @@
 		where ID = #{id,jdbcType=INTEGER}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="com.bbyiya.model.SReads">
-		update S_Reads
+		update s_reads
 		set Title = #{title,jdbcType=VARCHAR},
 		Summary = #{summary,jdbcType=VARCHAR},
 		TypeId = #{typeid,jdbcType=INTEGER},

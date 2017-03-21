@@ -14,21 +14,21 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from P_StyleCoordinateItem
+    from p_stylecoordinateitem
     where CoordId = #{coordid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from P_StyleCoordinateItem
+    delete from p_stylecoordinateitem
     where CoordId = #{coordid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.PStylecoordinateitem" >
-    insert into P_StyleCoordinateItem (CoordId, PointLeft, PointTop, 
+    insert into p_stylecoordinateitem (CoordId, PointLeft, PointTop, 
       PointHight, PointWidth)
     values (#{coordid,jdbcType=BIGINT}, #{pointleft,jdbcType=DECIMAL}, #{pointtop,jdbcType=DECIMAL}, 
       #{pointhight,jdbcType=DECIMAL}, #{pointwidth,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PStylecoordinateitem" >
-    insert into P_StyleCoordinateItem
+    insert into p_stylecoordinateitem
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="coordid != null" >
         CoordId,
@@ -65,7 +65,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PStylecoordinateitem" >
-    update P_StyleCoordinateItem
+    update p_stylecoordinateitem
     <set >
       <if test="pointleft != null" >
         PointLeft = #{pointleft,jdbcType=DECIMAL},
@@ -83,7 +83,7 @@
     where CoordId = #{coordid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PStylecoordinateitem" >
-    update P_StyleCoordinateItem
+    update p_stylecoordinateitem
     set PointLeft = #{pointleft,jdbcType=DECIMAL},
       PointTop = #{pointtop,jdbcType=DECIMAL},
       PointHight = #{pointhight,jdbcType=DECIMAL},

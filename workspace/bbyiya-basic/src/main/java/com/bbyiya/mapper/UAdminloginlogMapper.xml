@@ -13,21 +13,21 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from U_AdminLoginLog
+    from u_adminloginlog
     where logId = #{logid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from U_AdminLoginLog
+    delete from u_adminloginlog
     where logId = #{logid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.UAdminloginlog" >
-    insert into U_AdminLoginLog (logId, AdminId, UserName, 
+    insert into u_adminloginlog (logId, AdminId, UserName, 
       CreateTime)
     values (#{logid,jdbcType=BIGINT}, #{adminid,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, 
       #{createtime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.UAdminloginlog" >
-    insert into U_AdminLoginLog
+    insert into u_adminloginlog
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="logid != null" >
         logId,
@@ -58,7 +58,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.UAdminloginlog" >
-    update U_AdminLoginLog
+    update u_adminloginlog
     <set >
       <if test="adminid != null" >
         AdminId = #{adminid,jdbcType=INTEGER},
@@ -73,7 +73,7 @@
     where logId = #{logid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.UAdminloginlog" >
-    update U_AdminLoginLog
+    update u_adminloginlog
     set AdminId = #{adminid,jdbcType=INTEGER},
       UserName = #{username,jdbcType=VARCHAR},
       CreateTime = #{createtime,jdbcType=TIMESTAMP}

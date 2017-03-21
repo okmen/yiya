@@ -20,23 +20,23 @@
 		parameterType="java.lang.Integer">
 		select
 		<include refid="Base_Column_List" />
-		from S_MusicRecommend
+		from s_musicrecommend
 		where ReId = #{reid,jdbcType=INTEGER}
 	</select>
 	<select id="findSMusicrecommendByDay" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">
 		select
 		<include refid="Base_Column_List" />
-		from S_MusicRecommend
+		from s_musicrecommend
 		where ForDay = #{day,jdbcType=INTEGER}
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
 		delete from
-		S_MusicRecommend
+		s_musicrecommend
 		where ReId = #{reid,jdbcType=INTEGER}
 	</delete>
 	<insert id="insert" parameterType="com.bbyiya.model.SMusicrecommend">
-		insert into S_MusicRecommend (ReId, MusicId, LinkUrl,
+		insert into s_musicrecommend (ReId, MusicId, LinkUrl,
 		ForDay, Name, Author,
 		CreateTime, Duration, Pic
 		)
@@ -48,7 +48,7 @@
 		)
 	</insert>
 	<insert id="insertSelective" parameterType="com.bbyiya.model.SMusicrecommend">
-		insert into S_MusicRecommend
+		insert into s_musicrecommend
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="reid != null">
 				ReId,
@@ -109,7 +109,7 @@
 		</trim>
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.SMusicrecommend">
-		update S_MusicRecommend
+		update s_musicrecommend
 		<set>
 			<if test="musicid != null">
 				MusicId = #{musicid,jdbcType=INTEGER},
@@ -139,7 +139,7 @@
 		where ReId = #{reid,jdbcType=INTEGER}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="com.bbyiya.model.SMusicrecommend">
-		update S_MusicRecommend
+		update s_musicrecommend
 		set MusicId = #{musicid,jdbcType=INTEGER},
 		LinkUrl = #{linkurl,jdbcType=VARCHAR},
 		ForDay = #{forday,jdbcType=INTEGER},

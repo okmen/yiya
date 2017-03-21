@@ -19,27 +19,27 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" /> 
-     from M_BigCaseStageSummary
+     from m_bigcasestagesummary
     where Id = #{id,jdbcType=INTEGER}
   </select>
   <select id="findStageSummaryByStageId" resultMap="stageSummaryInfo" >
     select 
     <include refid="Base_Column_List" /> 
-     from M_BigCaseStageSummary
+     from m_bigcasestagesummary
     where StageId = #{stageId,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from M_BigCaseStageSummary
+    delete from m_bigcasestagesummary
     where Id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.MBigcasestagesummary" >
-    insert into M_BigCaseStageSummary (Id, StageId, CaseTypeId, 
+    insert into m_bigcasestagesummary (Id, StageId, CaseTypeId, 
       GroupCount, Content)
     values (#{id,jdbcType=INTEGER}, #{stageid,jdbcType=INTEGER}, #{casetypeid,jdbcType=INTEGER}, 
       #{groupcount,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.MBigcasestagesummary" >
-    insert into M_BigCaseStageSummary
+    insert into m_bigcasestagesummary
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         Id,
@@ -76,7 +76,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.MBigcasestagesummary" >
-    update M_BigCaseStageSummary
+    update m_bigcasestagesummary
     <set >
       <if test="stageid != null" >
         StageId = #{stageid,jdbcType=INTEGER},
@@ -94,7 +94,7 @@
     where Id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.bbyiya.model.MBigcasestagesummary" >
-    update M_BigCaseStageSummary
+    update m_bigcasestagesummary
     set StageId = #{stageid,jdbcType=INTEGER},
       CaseTypeId = #{casetypeid,jdbcType=INTEGER},
       GroupCount = #{groupcount,jdbcType=INTEGER},
@@ -102,7 +102,7 @@
     where Id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.MBigcasestagesummary" >
-    update M_BigCaseStageSummary
+    update m_bigcasestagesummary
     set StageId = #{stageid,jdbcType=INTEGER},
       CaseTypeId = #{casetypeid,jdbcType=INTEGER},
       GroupCount = #{groupcount,jdbcType=INTEGER}

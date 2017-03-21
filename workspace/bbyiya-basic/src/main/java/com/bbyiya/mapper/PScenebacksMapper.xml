@@ -13,31 +13,31 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from P_SceneBacks
+    from p_scenebacks
     where Id = #{id,jdbcType=INTEGER}
   </select>
 
   <select id="findScenelistByMap" resultMap="BaseResultMap"  parameterType="java.util.HashMap" >
     select 
     <include refid="Base_Column_List" />
-    from P_SceneBacks
+    from p_scenebacks
     where StyleId =${styleId} and SceneId in
 	<foreach item="item" index="index" collection="ids"  open="(" separator="," close=")">
                         #{item}           
     </foreach>
   </select> 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from P_SceneBacks
+    delete from p_scenebacks
     where Id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.PScenebacks" >
-    insert into P_SceneBacks (Id, SceneId, StyleId, 
+    insert into p_scenebacks (Id, SceneId, StyleId, 
       ImageUrl)
     values (#{id,jdbcType=INTEGER}, #{sceneid,jdbcType=INTEGER}, #{styleid,jdbcType=BIGINT}, 
       #{imageurl,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PScenebacks" >
-    insert into P_SceneBacks
+    insert into p_scenebacks
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         Id,
@@ -68,7 +68,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PScenebacks" >
-    update P_SceneBacks
+    update p_scenebacks
     <set >
       <if test="sceneid != null" >
         SceneId = #{sceneid,jdbcType=INTEGER},
@@ -83,7 +83,7 @@
     where Id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PScenebacks" >
-    update P_SceneBacks
+    update p_scenebacks
     set SceneId = #{sceneid,jdbcType=INTEGER},
       StyleId = #{styleid,jdbcType=BIGINT},
       ImageUrl = #{imageurl,jdbcType=VARCHAR}

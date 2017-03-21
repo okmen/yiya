@@ -25,32 +25,32 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from M_BigCase
+    from m_bigcase
     where CaseId = #{caseid,jdbcType=INTEGER}
   </select>
   <select id="findMBigcaseList" resultMap="BaseResultMap" ><!-- 获取宝宝大事件列表 -->
     select 
     <include refid="Base_Column_List" />
-    from M_BigCase
+    from m_bigcase
     where ForDay &gt;= #{start,jdbcType=INTEGER} and ForDay &lt;= #{end,jdbcType=INTEGER}  
   </select>
   <select id="findMBigcaseResultList" resultMap="BaseResultExpMap" >
     select 
     <include refid="Base_Column_List" />
-    from M_BigCase
+    from m_bigcase
     where ForDay &gt;= #{start,jdbcType=INTEGER} and ForDay &lt;= #{end,jdbcType=INTEGER}  
   </select>
   <select id="getMBigcaseResultByCaseId" resultMap="BaseResultExpMap" parameterType="java.lang.Integer">
     select 
     <include refid="Base_Column_List" />
-    from M_BigCase
+    from m_bigcase
     where CaseId = #{caseid,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from M_BigCase  where CaseId = #{caseid,jdbcType=INTEGER}
+    delete from m_bigcase  where CaseId = #{caseid,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.MBigcase" >
-    insert into M_BigCase (CaseId, Title, TypeId, 
+    insert into m_bigcase (CaseId, Title, TypeId, 
       CreateTime, ImageDefault, StartDay, 
       EndDay, Summary)
     values (#{caseid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{typeid,jdbcType=INTEGER}, 
@@ -58,7 +58,7 @@
       #{endday,jdbcType=INTEGER}, #{summary,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.MBigcase" >
-    insert into M_BigCase
+    insert into m_bigcase
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="caseid != null" >
         CaseId,
@@ -113,7 +113,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.MBigcase" >
-    update M_BigCase
+    update m_bigcase
     <set >
       <if test="title != null" >
         Title = #{title,jdbcType=VARCHAR},
@@ -140,7 +140,7 @@
     where CaseId = #{caseid,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.bbyiya.model.MBigcase" >
-    update M_BigCase
+    update m_bigcase
     set Title = #{title,jdbcType=VARCHAR},
       TypeId = #{typeid,jdbcType=INTEGER},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
@@ -151,7 +151,7 @@
     where CaseId = #{caseid,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.MBigcase" >
-    update M_BigCase
+    update m_bigcase
     set Title = #{title,jdbcType=VARCHAR},
       TypeId = #{typeid,jdbcType=INTEGER},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},

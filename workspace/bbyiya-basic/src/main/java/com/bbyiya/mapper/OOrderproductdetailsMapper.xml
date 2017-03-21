@@ -8,9 +8,10 @@
     <result column="Position" property="position" jdbcType="INTEGER" />
     <result column="ImageUrl" property="imageurl" jdbcType="VARCHAR" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="BackImageUrl" property="backimageurl" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    OProductDetailId, OrderProductId, PrintNo, Position, ImageUrl, CreateTime
+    OProductDetailId, OrderProductId, PrintNo, Position, ImageUrl, CreateTime, BackImageUrl
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -25,10 +26,10 @@
   <insert id="insert" parameterType="com.bbyiya.model.OOrderproductdetails" >
     insert into O_OrderProductDetails (OProductDetailId, OrderProductId, 
       PrintNo, Position, ImageUrl, 
-      CreateTime)
+      CreateTime, BackImageUrl)
     values (#{oproductdetailid,jdbcType=BIGINT}, #{orderproductid,jdbcType=VARCHAR}, 
       #{printno,jdbcType=VARCHAR}, #{position,jdbcType=INTEGER}, #{imageurl,jdbcType=VARCHAR}, 
-      #{createtime,jdbcType=TIMESTAMP})
+      #{createtime,jdbcType=TIMESTAMP}, #{backimageurl,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.OOrderproductdetails" >
     insert into O_OrderProductDetails
@@ -51,6 +52,9 @@
       <if test="createtime != null" >
         CreateTime,
       </if>
+      <if test="backimageurl != null" >
+        BackImageUrl,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="oproductdetailid != null" >
@@ -70,6 +74,9 @@
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="backimageurl != null" >
+        #{backimageurl,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -91,6 +98,9 @@
       <if test="createtime != null" >
         CreateTime = #{createtime,jdbcType=TIMESTAMP},
       </if>
+      <if test="backimageurl != null" >
+        BackImageUrl = #{backimageurl,jdbcType=VARCHAR},
+      </if>
     </set>
     where OProductDetailId = #{oproductdetailid,jdbcType=BIGINT}
   </update>
@@ -100,7 +110,8 @@
       PrintNo = #{printno,jdbcType=VARCHAR},
       Position = #{position,jdbcType=INTEGER},
       ImageUrl = #{imageurl,jdbcType=VARCHAR},
-      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      BackImageUrl = #{backimageurl,jdbcType=VARCHAR}
     where OProductDetailId = #{oproductdetailid,jdbcType=BIGINT}
   </update>
 </mapper>

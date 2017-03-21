@@ -23,7 +23,7 @@
   <select id="findRAreaplansByAreaId" resultMap="RAreaplansMap"  ><!-- 通过代理单元Id获取 代理区县 -->
     select 
     <include refid="RAreaplans_Column_List" />
-    from R_Areaplans
+    from r_areaplans
     where AreaId = #{areaId,jdbcType=INTEGER}
   </select>
 </mapper>

@@ -14,21 +14,21 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from V_Code
+    from v_code
     where CodeID = #{codeid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from V_Code
+    delete from v_code
     where CodeID = #{codeid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.VCode" >
-    insert into V_Code (CodeID, Phone, Vcode, 
+    insert into v_code (CodeID, Phone, Vcode, 
       CreateTime, Type)
     values (#{codeid,jdbcType=BIGINT}, #{phone,jdbcType=VARCHAR}, #{vcode,jdbcType=VARCHAR}, 
       #{createtime,jdbcType=TIMESTAMP}, #{type,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.VCode" >
-    insert into V_Code
+    insert into v_code
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="codeid != null" >
         CodeID,
@@ -65,7 +65,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.VCode" >
-    update V_Code
+    update v_code
     <set >
       <if test="phone != null" >
         Phone = #{phone,jdbcType=VARCHAR},
@@ -83,7 +83,7 @@
     where CodeID = #{codeid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.VCode" >
-    update V_Code
+    update v_code
     set Phone = #{phone,jdbcType=VARCHAR},
       Vcode = #{vcode,jdbcType=VARCHAR},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},

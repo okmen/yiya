@@ -16,15 +16,15 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from U_LoginLogs
+    from u_loginlogs
     where LogId = #{logid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from U_LoginLogs
+    delete from u_loginlogs
     where LogId = #{logid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.ULoginlogs" >
-    insert into U_LoginLogs (LogId, UserId, NickName, 
+    insert into u_loginlogs (LogId, UserId, NickName, 
       LoginTime, LoginType, IpStr, 
       SourceType)
     values (#{logid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{nickname,jdbcType=VARCHAR}, 
@@ -32,7 +32,7 @@
       #{sourcetype,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.ULoginlogs" >
-    insert into U_LoginLogs
+    insert into u_loginlogs
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="logid != null" >
         LogId,
@@ -81,7 +81,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.ULoginlogs" >
-    update U_LoginLogs
+    update u_loginlogs
     <set >
       <if test="userid != null" >
         UserId = #{userid,jdbcType=BIGINT},
@@ -105,7 +105,7 @@
     where LogId = #{logid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.ULoginlogs" >
-    update U_LoginLogs
+    update u_loginlogs
     set UserId = #{userid,jdbcType=BIGINT},
       NickName = #{nickname,jdbcType=VARCHAR},
       LoginTime = #{logintime,jdbcType=TIMESTAMP},

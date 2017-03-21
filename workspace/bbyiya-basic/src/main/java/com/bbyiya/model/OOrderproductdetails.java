@@ -14,6 +14,8 @@ public class OOrderproductdetails {
     private String imageurl;
 
     private Date createtime;
+    
+    private String backimageurl;
 
     public Long getOproductdetailid() {
         return oproductdetailid;
@@ -62,4 +64,13 @@ public class OOrderproductdetails {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+
+	public String getBackimageurl() {
+		return backimageurl;
+	}
+
+	public void setBackimageurl(String backimageurl) {
+		this.backimageurl = backimageurl;
+	}
+    
 }

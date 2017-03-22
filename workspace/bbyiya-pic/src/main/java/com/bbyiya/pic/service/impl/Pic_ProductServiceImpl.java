@@ -19,6 +19,7 @@ import com.bbyiya.dao.PProductsMapper;
 import com.bbyiya.dao.PScenesMapper;
 import com.bbyiya.dao.PStylecoordinateMapper;
 import com.bbyiya.dao.PStylecoordinateitemMapper;
+import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
@@ -31,6 +32,7 @@ import com.bbyiya.model.PProducts;
 import com.bbyiya.model.PScenes;
 import com.bbyiya.model.PStylecoordinate;
 import com.bbyiya.model.PStylecoordinateitem;
+import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.dao.IMyProductDetailsDao;
 import com.bbyiya.pic.dao.IMyProductsDao;
@@ -47,34 +49,38 @@ import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.product.MyProductResultVo;
 import com.bbyiya.vo.product.ProductSampleVo;
 import com.bbyiya.vo.user.UChildInfoParam;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 @Service("pic_productService")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
 public class Pic_ProductServiceImpl implements IPic_ProductService {
 
+	/*------------------Product---------------------------*/
 	@Autowired
 	private PProductsMapper productsMapper;
 	@Autowired
 	private PProductdetailsMapper detailMapper;
-
-	@Autowired
-	private PMyproductsMapper myMapper;
-	@Autowired
-	private PMyproductdetailsMapper myDetaiMapper;
-
-	@Autowired
-	private UUsersMapper usersMapper;
-
+	/*---------------------坐标模板---------------------------------*/
 	@Autowired
 	private PStylecoordinateMapper styleCoordMapper;
 	@Autowired
 	private PStylecoordinateitemMapper styleCoordItemMapper;
+    /*--------------------我的作品----------------------------------*/
+	@Autowired
+	private PMyproductsMapper myMapper;
+	@Autowired
+	private PMyproductdetailsMapper myDetaiMapper;
 	@Autowired
 	private PScenesMapper sceneMapper;
 	@Autowired
 	private PMyproductsinvitesMapper inviteMapper;
-	
-	/*----------------pic-dao----------------*/
+	/*-------------------用户信息------------------------------------------------*/
+	@Autowired
+	private UUsersMapper usersMapper;
+	@Autowired
+	private UBranchusersMapper branchusersMapper;//影楼信息
+	/*----------------pic-dao----------------------------------*/
 	@Autowired
 	private IMyProductsDao myProductsDao;
 	@Autowired
@@ -151,7 +157,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					rq.setStatusreson("");
 					return rq;
 				}
-				PMyproducts myproduct = myMapper.getMyProductsByProductId(userId, param.getProductid(), Integer.parseInt(MyProductStatusEnum.ok.toString()));
+				PMyproducts myproduct = null;// myMapper.getMyProductsByProductId(userId, param.getProductid(), Integer.parseInt(MyProductStatusEnum.ok.toString()));
 				if (myproduct == null) {
 					myproduct = new PMyproducts();
 					myproduct.setAuthor(param.getAuthor());
@@ -175,6 +181,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 						sort++;
 					}
 				}
+				
 			}
 		}
 		rq.setStatu(ReturnStatus.Success);
@@ -314,6 +321,28 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		rq.setStatu(ReturnStatus.Success);
 		return rq;
 	}
+
+	public ReturnModel findMyProductsForBranch(Long branchUserId,Integer status,Integer inviteStatus, int index,int size){
+		ReturnModel rq=new ReturnModel();
+		List<Long> idsList=new ArrayList<Long>();
+		idsList.add(branchUserId);
+		//获取影楼的工作人员列表
+		List<UBranchusers> userList= branchusersMapper.findMemberslistByBranchUserId(branchUserId);
+		if(userList!=null&&userList.size()>0){
+			for (UBranchusers uu : userList) {
+				idsList.add(uu.getUserid());
+			}
+		}
+		PageHelper.startPage(index, size);
+		List<MyProductResultVo> mylist = myMapper.findMyProductslistForBranch(idsList, status, inviteStatus);
+		PageInfo<MyProductResultVo> resultPage=new PageInfo<MyProductResultVo>(mylist); 
+		if(resultPage.getList()!=null&&resultPage.getList().size()>0){
+			resultPage.setList(getMyProductResultVo(resultPage.getList())); 
+		}
+		rq.setStatu(ReturnStatus.Success);
+		rq.setBasemodle(resultPage);
+		return rq;
+	}
 	
 
 	public List<MyProductResultVo> findInvites(String  mobiePhone){
@@ -349,10 +378,6 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private List<MyProductResultVo> getMyProductResultVo(List<MyProductResultVo> mylist){
 		if (mylist != null && mylist.size() > 0) {
 			for (MyProductResultVo item : mylist) {
-//				PProducts products = productsMapper.selectByPrimaryKey(item.getProductid());
-//				if (products != null) {
-//					item.setHeadImg(products.getDefaultimg());
-//				}
 				if(item.getInvitestatus()!=null&&item.getInvitestatus()>0){//邀请协同编辑
 					List<PMyproductsinvites> invites= inviteMapper.findListByCartId(item.getCartid());
 					if(invites!=null&&invites.size()>0){

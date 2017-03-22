@@ -12,6 +12,7 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UCashlogs;
 import com.bbyiya.service.IBaseUserAccountService;
+import com.bbyiya.utils.DateUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -41,9 +42,14 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 		ReturnModel rq=new ReturnModel();
 		PageHelper.startPage(index, size);
 		List<UCashlogs> logs= cashlogsMapper.findCashlogsByUserId(userId, type);
-		PageInfo<UCashlogs> reuslt=new PageInfo<UCashlogs>(logs); 
+		PageInfo<UCashlogs> resultPage=new PageInfo<UCashlogs>(logs); 
+		if(resultPage.getList()!=null&&resultPage.getList().size()>0){
+			for (UCashlogs uCashlogs : resultPage.getList()) {
+				uCashlogs.setCreatetimestr(DateUtil.getTimeStr(uCashlogs.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
+			}
+		}
 		rq.setStatu(ReturnStatus.Success); 
-		rq.setBasemodle(reuslt);
+		rq.setBasemodle(resultPage);
 		return rq;
 	}
 	

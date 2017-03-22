@@ -63,4 +63,12 @@ public interface PMyproductsMapper {
 	 */
 	PMyproducts getMyProductsByProductId(@Param("userId") Long userId,@Param("productId")Long productId, @Param("status") Integer status);
 
+	/**
+	 * 获取影楼分销作品 情况（跟踪）
+	 * @param userIds
+	 * @param status
+	 * @param invitestatus
+	 * @return
+	 */
+	List<MyProductResultVo> findMyProductslistForBranch(@Param("list")List<Long> list,@Param("status") Integer status,@Param("invitestatus")Integer invitestatus);
 }

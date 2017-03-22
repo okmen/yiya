@@ -1,6 +1,5 @@
 package com.bbyiya.model;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 public class UCashlogs {
@@ -15,6 +14,8 @@ public class UCashlogs {
     private String payid;
 
     private Date createtime;
+    
+    private String createtimestr;
 
     public Long getCashlogid() {
         return cashlogid;
@@ -64,4 +65,14 @@ public class UCashlogs {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+
+	public String getCreatetimestr() {
+		return createtimestr;
+	}
+
+	public void setCreatetimestr(String createtimestr) {
+		this.createtimestr = createtimestr;
+	}
+    
+    
 }

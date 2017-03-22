@@ -85,16 +85,21 @@ public class Json2Objects {
 			if(!ObjectUtil.isEmpty(childJsonString)&&!"null".equals(childJsonString)){
 				JSONObject chidMod = JSONObject.fromObject(childJsonString);
 				if(chidMod!=null){
+					boolean isEdit=false;
 					UChildInfoParam childParam=new UChildInfoParam();
 					String nickname=String.valueOf(chidMod.get("nickName"));
 					if(!ObjectUtil.isEmpty(nickname)&&!"null".equals(nickname)){
 						childParam.setNickName(nickname);
+						isEdit=true;
 					}
 					String birthday=String.valueOf(chidMod.get("birthday"));
 					if(!ObjectUtil.isEmpty(birthday)&&!"null".equals(birthday)){
 						childParam.setBirthday(birthday);
+						isEdit=true;
 					}
-					param.setChildInfo(childParam); 
+					if(isEdit){
+						param.setChildInfo(childParam); 
+					}
 				}
 			}
 			String detailString=String.valueOf(model.get("details"));

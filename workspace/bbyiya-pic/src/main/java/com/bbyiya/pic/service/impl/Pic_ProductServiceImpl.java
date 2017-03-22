@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.dao.PMyproductchildinfoMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproductsinvitesMapper;
@@ -21,6 +22,7 @@ import com.bbyiya.dao.PStylecoordinateitemMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
+import com.bbyiya.model.PMyproductchildinfo;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproductsinvites;
@@ -39,6 +41,7 @@ import com.bbyiya.pic.vo.product.MyProductsDetailsResult;
 import com.bbyiya.pic.vo.product.MyProductsResult;
 import com.bbyiya.pic.vo.product.ProductSampleResultVO;
 import com.bbyiya.utils.ConfigUtil;
+import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.product.MyProductResultVo;
@@ -179,7 +182,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		rq.setBasemodle(map);
 		return rq;
 	}
-	
+	@Autowired
+	private PMyproductchildinfoMapper mychildMapper;
 	public ReturnModel Edit_MyProducts(Long userId, MyProductParam param) {
 		ReturnModel rq = new ReturnModel();
 		Long cartIdTemp = 0l;
@@ -193,6 +197,28 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			if (param.getCartid() != null && param.getCartid() > 0) {// 更新
 				cartIdTemp = param.getCartid();
 				PMyproducts myproducts = myMapper.selectByPrimaryKey(param.getCartid());
+				// A修改作品的宝宝信息
+				if(myproducts != null && param.getChildInfo()!=null){
+					boolean isnew=false;
+					PMyproductchildinfo mychild=mychildMapper.selectByPrimaryKey(param.getCartid());
+					if(mychild==null){
+						mychild=new PMyproductchildinfo();
+						mychild.setCartid(param.getCartid());
+						mychild.setCreatetime(new Date());
+						isnew=true;
+					}
+					if(!ObjectUtil.isEmpty(param.getChildInfo().getNickName())){
+						mychild.setNickname(param.getChildInfo().getNickName());
+					}
+					if(!ObjectUtil.isEmpty(param.getChildInfo().getBirthday())){
+						mychild.setBirthday(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday())) ;
+					}
+					if(isnew){
+						mychildMapper.insert(mychild);
+					}else {
+						mychildMapper.updateByPrimaryKeySelective(mychild);
+					} 
+				}//----------------------------------------------------
 				boolean canModify=false;
 				//自己的作品
 				if(myproducts != null && myproducts.getUserid() != null && myproducts.getUserid().longValue() == userId){
@@ -206,6 +232,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 						}
 					}
 				}
+				
 				if (canModify) {// 修改
 					if (!ObjectUtil.isEmpty(param.getTitle())) {
 						myproducts.setTitle(param.getTitle());

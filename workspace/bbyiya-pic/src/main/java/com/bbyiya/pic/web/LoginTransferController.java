@@ -111,8 +111,14 @@ public class LoginTransferController extends SSOController {
 					OtherLoginParam param = new OtherLoginParam();
 					param.setOpenId(openid);
 					param.setLoginType(Integer.parseInt(LoginTypeEnum.weixin.toString()));
-					param.setNickName(String.valueOf(userJson.get("nickname")));
-					param.setHeadImg(String.valueOf(userJson.get("headimgurl")));
+					String nickName=String.valueOf(userJson.get("nickname"));
+					if(!ObjectUtil.isEmpty(nickName)&&!"null".equals(nickName)){
+						param.setNickName(nickName);
+					}
+					String headimgurl=String.valueOf(userJson.get("headimgurl"));
+					if(!ObjectUtil.isEmpty(headimgurl)&&!"null".equals(headimgurl)){
+						param.setHeadImg(headimgurl);
+					}
 					rqModel = loginService.otherLogin(param);
 					if (ReturnStatus.Success.equals(rqModel.getStatu()) && !ObjectUtil.isEmpty(rqModel.getBasemodle())) {
 						addLoginLogAndCookie(rqModel.getBasemodle());

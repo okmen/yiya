@@ -13,6 +13,7 @@ import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUseraddress;
 import com.bbyiya.pic.vo.product.MyProductParam;
 import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.vo.user.UChildInfoParam;
 
 public class Json2Objects {
 
@@ -70,10 +71,32 @@ public class Json2Objects {
 		JSONObject model = JSONObject.fromObject(result);
 		if (model != null) {
 			MyProductParam param = new MyProductParam();
-			param.setProductid(ObjectUtil.parseLong(String.valueOf(model.get("productid"))));
-			param.setTitle(String.valueOf(model.get("title")));
-			param.setAuthor(String.valueOf(model.get("author")));
 			param.setCartid(ObjectUtil.parseLong(String.valueOf(model.get("cartid"))));
+			param.setProductid(ObjectUtil.parseLong(String.valueOf(model.get("productid"))));
+			String title=String.valueOf(model.get("title"));
+			if(!ObjectUtil.isEmpty(title)&&!"null".equals(title)){
+				param.setTitle(title);
+			}
+			String author=String.valueOf(model.get("author"));
+			if(!ObjectUtil.isEmpty(author)&&!"null".equals(author)){
+				param.setAuthor(author);
+			}
+			String childJsonString=String.valueOf(model.get("childInfo"));
+			if(!ObjectUtil.isEmpty(childJsonString)&&!"null".equals(childJsonString)){
+				JSONObject chidMod = JSONObject.fromObject(childJsonString);
+				if(chidMod!=null){
+					UChildInfoParam childParam=new UChildInfoParam();
+					String nickname=String.valueOf(chidMod.get("nickName"));
+					if(!ObjectUtil.isEmpty(nickname)&&!"null".equals(nickname)){
+						childParam.setNickName(nickname);
+					}
+					String birthday=String.valueOf(chidMod.get("birthday"));
+					if(!ObjectUtil.isEmpty(birthday)&&!"null".equals(birthday)){
+						childParam.setBirthday(birthday);
+					}
+					param.setChildInfo(childParam); 
+				}
+			}
 			String detailString=String.valueOf(model.get("details"));
 			if(ObjectUtil.isEmpty(detailString)||detailString.equals("null"))
 				return param;

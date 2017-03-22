@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<appSettings>
+	<currentDomain value="10.10.10.194:8080" /><!-- 当前服务器域名 -->
+	<imgDoman value=""/><!-- 图片域名 -->
+	<imgPathTemp value="temp\"/> <!-- 图片临时地址 -->
+	<yp_single_url value="https://sms.yunpian.com/v2/sms/single_send.json"/><!-- 云片  -->
+	<yp_add_url value="https://sms.yunpian.com/v2/tpl/add.json"/><!-- 云片添加模板url -->
+	<yp_apikey value="593936c15fcc5c7824407d9953eb2bef"/><!-- 云片apikey -->
+	<qiniu_ACCESS_KEY value="vLHbgaYj8mfvPUTpMCYLbAetXh-Cg0Fk0R_FtAN_"/>
+	<qiniu_SECRET_KEY value="re1EvlR0FwlSv9YEYlJsHw_WRIcshxhbxilGvmRN"/>
+	<qiniu_imagedomain value="http://obbepyhga.bkt.clouddn.com/"/><!-- 图片域名 -->
+	<muscis><!-- 每日推荐 -->
+		<music reId="1" musicId="1" name="老男孩" author="筷子兄弟" duration="03:40" linkUrl="http://obbepyhga.bkt.clouddn.com/201612/1837016cf3b68fc21e44118aee0e22fcb6aca77.mp3"/>
+		<music reId="2" musicId="2" name="秋日私语" author="dsdjkls" duration="03:40" linkUrl="http://obbepyhga.bkt.clouddn.com/201612/1837016cf3b68fc21e44118aee0e22fcb6aca77.mp3"/>
+		<music reId="3" musicId="3" name="两只老虎" author="2dad" duration="03:40" linkUrl="http://obbepyhga.bkt.clouddn.com/201612/1837016cf3b68fc21e44118aee0e22fcb6aca77.mp3"/>
+		<music reId="4" musicId="4" name="诡诞" author="ss" duration="03:40" linkUrl="http://obbepyhga.bkt.clouddn.com/201612/1837016cf3b68fc21e44118aee0e22fcb6aca77.mp3"/>
+	</muscis>
+	<yiyaspeaks><!-- 咿呀说 -->
+		<item id="1" title="测试001" imageUrl="http://www.baidu.com" wapUrl="http://www.baidu.com" />
+		<item id="2" title="测试001" imageUrl="http://www.baidu.com" wapUrl="http://www.baidu.com" />
+		<item id="3" title="测试001" imageUrl="http://www.baidu.com" wapUrl="http://www.baidu.com" />
+	</yiyaspeaks>
+	<reads><!-- 每日读物 -->
+		<item id="1"  title="爸爸的鼾声" summary="【作者】 Raimond Lap 【时期】 1912~1974" content="就像是山上的小火车，。。。"/>
+		<item id="2" title="静夜思" summary="【作者】 李白  【朝代】唐朝 " content="窗前明月光，"/>
+		<item id="3" title="拔河还是" summary="古典文学精选" content="湿哒哒倒萨"/>
+		<item id="4" title="拔河还是" summary="古典文学精选" content="湿哒哒倒萨"/>
+	</reads>
+	<timeIntervals><!-- 时期 -->
+		<item id="1" start="1" end="7" title="第一周" />
+		<item id="2" start="8" end="14" title="第二周" />
+		<item id="3" start="15" end="30" title="第1个月" />
+		<item id="4" start="31" end="60" title="第2个月" />
+		<item id="5" start="61" end="90" title="第3个月" />
+		<item id="6" start="91" end="120" title="第4个月" />
+		<item id="7" start="121" end="150" title="第5个月" />
+		<item id="8" start="151" end="180" title="第6个月" />
+		<item id="9" start="181" end="210" title="第7个月" />
+		<item id="10" start="211" end="240" title="第8个月" />
+		<item id="11" start="241" end="270" title="第9个月" />
+		<item id="12" start="271" end="300" title="第10个月" />
+		<item id="13" start="301" end="330" title="第11个月" />
+		<item id="14" start="331" end="360" title="第12个月" />
+	</timeIntervals>
+	<relations>
+		<item id="1" value="爸爸"/>
+		<item id="2" value="妈妈"/>
+		<item id="3" value="爷爷"/>
+		<item id="4" value="奶奶"/>
+		<item id="5" value="叔叔"/>
+		<item id="6" value="阿姨"/>
+	</relations>
+	<yiya_pic_url value="http://mpic.bbyiya.com/"/><!-- yiya-pic地址 --> 
+</appSettings>

@@ -46,6 +46,7 @@ import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.product.MyProductResultVo;
 import com.bbyiya.vo.product.ProductSampleVo;
+import com.bbyiya.vo.user.UChildInfoParam;
 
 @Service("pic_productService")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
@@ -454,6 +455,17 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 						i++;
 					}
 					myproduct.setDetailslist(arrayList);
+				}
+				PMyproductchildinfo childInfo= mychildMapper.selectByPrimaryKey(cartId);
+				if(childInfo!=null){
+					UChildInfoParam childInfoParam=new UChildInfoParam();
+					if(!ObjectUtil.isEmpty(childInfo.getNickname()) ){
+						childInfoParam.setNickName(childInfo.getNickname());
+					}
+					if(!ObjectUtil.isEmpty(childInfo.getBirthday())){
+						childInfoParam.setBirthday(DateUtil.getTimeStr(childInfo.getBirthday(), "yyyy-MM-dd HH:mm:ss"));   
+					}
+					myproduct.setChildInfo(childInfoParam);
 				}
 				rq.setBasemodle(myproduct);
 			}else {

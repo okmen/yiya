@@ -3,6 +3,7 @@ package com.bbyiya.pic.vo.product;
 import java.util.List;
 
 import com.bbyiya.model.PMyproducts;
+import com.bbyiya.vo.user.UChildInfoParam;
 
 public class MyProductsResult extends PMyproducts{
 
@@ -26,6 +27,7 @@ public class MyProductsResult extends PMyproducts{
 	 */
 	private List<MyProductsDetailsResult> detailslist;
 	
+	private UChildInfoParam childInfo;
 	
 	public int getCount() {
 		return count;
@@ -62,6 +64,12 @@ public class MyProductsResult extends PMyproducts{
 	}
 	public void setSharepageLcon(String sharepageLcon) {
 		this.sharepageLcon = sharepageLcon;
+	}
+	public UChildInfoParam getChildInfo() {
+		return childInfo;
+	}
+	public void setChildInfo(UChildInfoParam childInfo) {
+		this.childInfo = childInfo;
 	}
 	
 	

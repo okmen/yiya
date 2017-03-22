@@ -2,17 +2,12 @@ package com.bbyiya.pic.web.version_one;
 
 import java.util.Date;
 
-
-
-
-
-
-
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.dao.EErrorsMapper;
@@ -23,6 +18,7 @@ import com.bbyiya.model.UAgentapply;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UBranchinfotemp;
 import com.bbyiya.pic.service.IPic_BranchMgtService;
+import com.bbyiya.pic.service.IPic_ProductService;
 import com.bbyiya.pic.utils.Json2Objects;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
@@ -36,9 +32,11 @@ import com.bbyiya.web.base.SSOController;
 public class BranchMgtController extends SSOController {
 	@Resource(name = "pic_BranchMgtService")
 	private IPic_BranchMgtService branchService;
-	
+	@Resource(name = "pic_productService")
+	private IPic_ProductService proService;
 	@Autowired
 	private UBranchinfotempMapper tempMapper;
+	
 	@Autowired
 	private EErrorsMapper logger;
 	/**
@@ -125,7 +123,6 @@ public class BranchMgtController extends SSOController {
 					UAgentapply applyInfo=(UAgentapply)JsonUtil.jsonStrToObject(agentJson, UAgentapply.class);
 					rq =branchService.applyAgent(user.getUserId(), applyInfo);
 				} catch (Exception e) {
-					// TODO: handle exception
 					rq.setStatu(ReturnStatus.ParamError);
 					rq.setStatusreson("参数有误101");
 					return JsonUtil.objectToJsonStr(rq);
@@ -161,7 +158,6 @@ public class BranchMgtController extends SSOController {
 					UBranches applyInfo=(UBranches)JsonUtil.jsonStrToObject(branchJson, UBranches.class);
 					rq =branchService.applyBranch(user.getUserId(), applyInfo);
 				} catch (Exception e) {
-					// TODO: handle exception
 					rq.setStatu(ReturnStatus.ParamError);
 					rq.setStatusreson("参数有误101");
 					return JsonUtil.objectToJsonStr(rq);
@@ -224,5 +220,18 @@ public class BranchMgtController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-	
+	@ResponseBody
+	@RequestMapping(value = "/findMyProductsForBranch")
+	public String findMyProductsForBranch(@RequestParam(required = false, defaultValue = "1")int index,@RequestParam(required = false, defaultValue = "20")int size) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=proService.findMyProductsForBranch(user.getUserId(),null,null,index,size);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 }

@@ -222,7 +222,8 @@ public class OrderMgtController extends SSOController {
 				rq.setStatusreson("验证成功"); 
 //				user.setIsTester(1);
 //				rq.setBasemodle(user); 
-			}else{
+			}else{  
+				
 				rq.setStatu(ReturnStatus.SystemError);
 				rq.setStatusreson("验证失败"); 
 			}

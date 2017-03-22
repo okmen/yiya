@@ -21,8 +21,8 @@ public class PbsSearchOrderParam {
 	private String userName;
 	private String userPhone;
 	
-	private Integer index;
-	private Integer size;
+	private int index;
+	private int size;
 	
 	public String getOrderNo() {
 		return orderNo;
@@ -96,18 +96,19 @@ public class PbsSearchOrderParam {
 	public void setUserPhone(String userPhone) {
 		this.userPhone = userPhone;
 	}
-	public Integer getIndex() {
+	public int getIndex() {
 		return index;
 	}
-	public void setIndex(Integer index) {
+	public void setIndex(int index) {
 		this.index = index;
 	}
-	public Integer getSize() {
+	public int getSize() {
 		return size;
 	}
-	public void setSize(Integer size) {
+	public void setSize(int size) {
 		this.size = size;
 	}
+	
 	
 	
 	

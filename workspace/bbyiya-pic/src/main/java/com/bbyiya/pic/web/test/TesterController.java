@@ -35,6 +35,10 @@ public class TesterController  extends SSOController{
 		rq.setStatu(ReturnStatus.Success);
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	@RequestMapping(value = "/export")
+	public String downloadorder() throws Exception {
+		return "exportOrder";
+	}
 	
 }
 

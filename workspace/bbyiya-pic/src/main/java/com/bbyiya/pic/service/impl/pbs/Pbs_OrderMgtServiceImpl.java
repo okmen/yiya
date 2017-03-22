@@ -49,12 +49,11 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	private UBranchesMapper branchesMapper;
 	
 	
-	public ReturnModel find_pbsOrderList(PbsSearchOrderParam param){
+	public PageInfo<PbsUserOrderResultVO> find_pbsOrderList(PbsSearchOrderParam param){
 			
-		ReturnModel rq=new ReturnModel();
+		
 		if(param==null)
 			param=new PbsSearchOrderParam();
-		if(param.getSize()==null||param.getSize()==0) param.setSize(10);
 		PageHelper.startPage(param.getIndex(), param.getSize());
 		List<PbsUserOrderResultVO> list=orderDao.findPbsUserOrders(param);
 		PageInfo<PbsUserOrderResultVO> reuslt=new PageInfo<PbsUserOrderResultVO>(list);
@@ -90,10 +89,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 				
 			}
 		}
-		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("获取列表成功！");
-		rq.setBasemodle(reuslt); 
-		return rq;
+		return reuslt;
 	}
 	
 	

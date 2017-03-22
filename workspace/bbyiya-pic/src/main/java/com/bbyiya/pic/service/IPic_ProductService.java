@@ -6,6 +6,8 @@ import com.bbyiya.vo.ReturnModel;
 
 public interface IPic_ProductService {
 	
+	
+	/*---------------------get 获取单个model--------------------------------------------*/
 	/**
 	 * 获取产品样本详情（旧版）
 	 * @param productId
@@ -19,25 +21,6 @@ public interface IPic_ProductService {
 	 * @return
 	 */
 	ReturnModel getProductSamplelist(Long productId) ;
-	/**
-	 * 保存用户的作品 save user's product 
-	 * @param param
-	 * @return
-	 */
-	ReturnModel saveOrEdit_MyProducts(Long userId, MyProductParam param);
-	/**
-	 * 修改我的作品(只修改 ，不做新增)
-	 * @param userId
-	 * @param param
-	 * @return
-	 */
-	ReturnModel Edit_MyProducts(Long userId, MyProductParam param);
-	/**
-	 * 我的作品列表
-	 * @param userId
-	 * @return
-	 */
-	ReturnModel findMyProlist(Long userId);
 	/**
 	 * 作品详情 - 通过userId，cartId 获取
 	 * @param userId
@@ -58,6 +41,48 @@ public interface IPic_ProductService {
 	 * @return
 	 */
 	ReturnModel getMyProductInfo(Long cartId);
+
+	/**
+	 * 获取款式图片作品
+	 * @param styleId
+	 * @return
+	 */
+	ReturnModel getStyleCoordResult(Long styleId);
+	
+	/*--------------------------保存、修改操作-------------------------------------------*/
+	/**
+	 * 保存用户的作品 save user's product 
+	 * @param param
+	 * @return
+	 */
+	ReturnModel saveOrEdit_MyProducts(Long userId, MyProductParam param);
+	/**
+	 * 修改我的作品(只修改 ，不做新增)
+	 * @param userId
+	 * @param param
+	 * @return
+	 */
+	ReturnModel Edit_MyProducts(Long userId, MyProductParam param);
+	
+	/*---------------------------------find 列表 查询操作----------------------------------------------------*/
+	/**
+	 * 我的作品列表
+	 * @param userId
+	 * @return
+	 */
+	ReturnModel findMyProlist(Long userId);
+	/**
+	 * 影楼的作品列表
+	 * @param branchUserId
+	 * @param status
+	 * @param inviteStatus
+	 * @param index
+	 * @param size
+	 * @return
+	 */
+	ReturnModel findMyProductsForBranch(Long branchUserId,Integer status,Integer inviteStatus, int index,int size);
+	
+	/*-------------------------------delete 删除操作------------------------------------------------------*/
 	/**
 	 * 删除我的作品图片
 	 * @param userId
@@ -73,10 +98,4 @@ public interface IPic_ProductService {
 	 */
 	ReturnModel deleMyProduct(Long userId, Long cartId);
 	
-	/**
-	 * 获取款式图片作品
-	 * @param styleId
-	 * @return
-	 */
-	ReturnModel getStyleCoordResult(Long styleId);
 }

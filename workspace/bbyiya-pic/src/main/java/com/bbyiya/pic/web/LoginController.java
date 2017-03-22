@@ -246,6 +246,7 @@ public class LoginController extends SSOController {
 		EErrors errors = new EErrors();
 		errors.setClassname(this.getClass().getName());
 		errors.setMsg(msg);
+		errors.setCreatetime(new Date()); 
 		errorMapper.insert(errors);
 	}
 

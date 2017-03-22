@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.pic.service.IPic_OrderMgtService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -49,7 +51,12 @@ public class OrderIBSController extends SSOController{
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			rq=orderService.findMyOrderlist(user.getUserId(), status);
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)){
+				rq=orderService.findMyOrderlist(user.getUserId(), status);
+			}else {
+				rq.setStatu(ReturnStatus.SystemError_1);
+				rq.setStatusreson("您还不是代理商，没有权限");
+			} 
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
@@ -77,7 +84,7 @@ public class OrderIBSController extends SSOController{
 	}
 	
 	/**
-	 * 
+	 * 我要这个客户
 	 * @param userOrderId
 	 * @return
 	 * @throws Exception
@@ -88,7 +95,12 @@ public class OrderIBSController extends SSOController{
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			rq=orderService.addCustomer(user.getUserId(), userOrderId);
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)){
+				rq=orderService.addCustomer(user.getUserId(), userOrderId);
+			}else {
+				rq.setStatu(ReturnStatus.SystemError_1);
+				rq.setStatusreson("您还不是代理商，没有权限");
+			} 
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

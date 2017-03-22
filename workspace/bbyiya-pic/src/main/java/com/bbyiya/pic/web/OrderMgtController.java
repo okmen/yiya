@@ -1,6 +1,7 @@
 package com.bbyiya.pic.web;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -12,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bbyiya.dao.EErrorsMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
+import com.bbyiya.model.EErrors;
 import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.PMyproducts;
@@ -37,7 +40,8 @@ public class OrderMgtController extends SSOController {
 	private IBaseOrderMgtService orderMgtService;
 	@Autowired
 	private PMyproductsMapper myMapper;
-
+	@Autowired
+	private EErrorsMapper errorMapper;
 	/**
 	 * O01 提交订单（购买）
 	 * 
@@ -116,6 +120,7 @@ public class OrderMgtController extends SSOController {
 						if (ObjectUtil.isEmpty(pp.getImageUrl()) || ObjectUtil.isEmpty(pp.getPrintNo())||ObjectUtil.isEmpty(pp.getBackImageUrl())) {
 							rq.setStatu(ReturnStatus.ParamError_1);
 							rq.setStatusreson("图片信息有误，打印号：" + pp.getPrintNo());
+							addlog(orderImagesJson);
 							return JsonUtil.objectToJsonStr(rq); 
 						}
 						OOrderproductdetails item = new OOrderproductdetails();
@@ -203,32 +208,14 @@ public class OrderMgtController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
-	/**
-	 * 权限验证
-	 * @param code
-	 * @return
-	 * @throws Exception
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/checkCode")
-	public String checkCode(String code) throws Exception {
-		ReturnModel rq = new ReturnModel();
-		LoginSuccessResult user = super.getLoginUser();
-		if (user != null) {
-			String codeNum=ConfigUtil.getSingleValue("testcodeNum");
-			if(codeNum.equals(code)){
-				rq.setStatu(ReturnStatus.Success);
-				rq.setStatusreson("验证成功"); 
-//				user.setIsTester(1);
-//				rq.setBasemodle(user); 
-			}else{
-				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("验证失败"); 
-			}
-		} else {
-			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
-		}
-		return JsonUtil.objectToJsonStr(rq);
+
+	
+	public void addlog(String msg) {
+		EErrors errors = new EErrors();
+		errors.setClassname(this.getClass().getName());
+		errors.setMsg(msg);
+		errors.setCreatetime(new Date()); 
+		errorMapper.insert(errors);
 	}
+
 }

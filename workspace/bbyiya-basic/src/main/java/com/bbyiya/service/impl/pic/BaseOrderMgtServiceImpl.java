@@ -809,6 +809,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				EErrors errors=new EErrors();
 				errors.setClassname(this.getClass().getName());
 				errors.setMsg("订单支付回写："+e.getMessage());
+				errors.setCreatetime(new Date());
 				logMapper.insert(errors);
 			}
 		}

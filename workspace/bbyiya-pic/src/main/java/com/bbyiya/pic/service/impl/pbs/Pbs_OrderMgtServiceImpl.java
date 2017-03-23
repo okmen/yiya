@@ -118,7 +118,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 		}
 		
 		return rq;
-	}
+	}  
 	
 	
 	public void pbsdownloadImg(List<PbsUserOrderResultVO> orderlist,String basePath){

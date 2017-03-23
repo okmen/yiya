@@ -9,7 +9,7 @@
 	<qiniu_ACCESS_KEY value="vLHbgaYj8mfvPUTpMCYLbAetXh-Cg0Fk0R_FtAN_"/>
 	<qiniu_SECRET_KEY value="re1EvlR0FwlSv9YEYlJsHw_WRIcshxhbxilGvmRN"/>
 	<qiniu_imagedomain value="http://obbepyhga.bkt.clouddn.com/"/><!-- 图片域名 -->
-	<muscis><!-- 每日推荐 -->
+	<muscis><!-- 每日推荐 --> 
 		<music reId="1" musicId="1" name="老男孩" author="筷子兄弟" duration="03:40" linkUrl="http://obbepyhga.bkt.clouddn.com/201612/1837016cf3b68fc21e44118aee0e22fcb6aca77.mp3"/>
 		<music reId="2" musicId="2" name="秋日私语" author="dsdjkls" duration="03:40" linkUrl="http://obbepyhga.bkt.clouddn.com/201612/1837016cf3b68fc21e44118aee0e22fcb6aca77.mp3"/>
 		<music reId="3" musicId="3" name="两只老虎" author="2dad" duration="03:40" linkUrl="http://obbepyhga.bkt.clouddn.com/201612/1837016cf3b68fc21e44118aee0e22fcb6aca77.mp3"/>

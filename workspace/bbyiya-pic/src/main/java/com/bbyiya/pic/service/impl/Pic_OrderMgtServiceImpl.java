@@ -1,7 +1,9 @@
 package com.bbyiya.pic.service.impl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -33,6 +35,8 @@ import com.bbyiya.pic.vo.order.UserOrderResultVO;
 import com.bbyiya.pic.vo.order.ibs.OrderProductVo;
 import com.bbyiya.pic.vo.order.ibs.OrderVo;
 import com.bbyiya.utils.DateUtil;
+import com.bbyiya.utils.FileUtils;
+import com.bbyiya.utils.upload.FileDownloadUtils;
 import com.bbyiya.vo.ReturnModel;
 
 @Service("pic_orderMgtService")
@@ -286,5 +290,50 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 			rq.setStatusreson("不存的订单");
 		}
 		return rq;
+	}
+	
+	
+	public void downloadImg(List<UserOrderResultVO> orderlist,String basePath){
+		try {
+			FileUtils.isDirExists(basePath);
+		} catch (Exception e) {
+			basePath="D:\\orderImgs\\";
+			FileUtils.isDirExists(basePath);
+		}
+
+		for (UserOrderResultVO order : orderlist) {
+			Calendar c1 = new GregorianCalendar();
+			c1.setTime(order.getPaytime());
+			c1.set(Calendar.HOUR_OF_DAY, 18);
+			c1.set(Calendar.MINUTE, 0);
+			c1.set(Calendar.SECOND, 0);
+			Calendar c2 = new GregorianCalendar();
+			c2.setTime(order.getPaytime());
+			if(c2.getTime().getTime()>c1.getTime().getTime()){
+				c2.set(Calendar.DAY_OF_MONTH, 1);
+			}
+			String file_temp=DateUtil.getTimeStr(c2.getTime(), "MMdd");
+			
+			//创建文件夹
+			FileUtils.isDirExists(basePath+"\\"+file_temp);
+			FileUtils.isDirExists(basePath+"\\"+file_temp+"\\"+order.getUserorderid());;
+			int i=1;
+			for (OOrderproductdetails detail : order.getImglist()) {
+				String file_dir=basePath+"\\"+file_temp+"\\"+order.getUserorderid();
+				String fileFull_name=file_dir+"\\"+i+".jpg";
+				if(!FileUtils.isFileExists(fileFull_name)){
+					try {
+						FileDownloadUtils.download(detail.getImageurl(),fileFull_name);
+						FileDownloadUtils.setDPI(fileFull_name);
+//						System.out.println(fileFull_name); 
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				i++;
+			}
+			
+		}
 	}
 }

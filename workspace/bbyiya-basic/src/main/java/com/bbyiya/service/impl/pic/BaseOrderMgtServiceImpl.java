@@ -223,14 +223,14 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			}
 			PMyproducts mycart=myproductMapper.selectByPrimaryKey(param.getCartId()) ;
 			if(mycart!=null){
+				userOrdersMapper.insert(userOrder);//插入订单
+				oproductMapper.insert(orderProduct);//插入订单产品
 				mycart.setOrderno(orderId);
 				mycart.setStatus(Integer.parseInt(MyProductStatusEnum.ordered.toString()));
 				myproductMapper.updateByPrimaryKeySelective(mycart);
 			}else {
 				throw new Exception("作品不存在！");
 			}
-			userOrdersMapper.insert(userOrder);//插入订单
-			oproductMapper.insert(orderProduct);//插入订单产品
 			rq.setStatu(ReturnStatus.Success);
 			mapResult.put("totalPrice", totalPrice);
 			rq.setBasemodle(mapResult);

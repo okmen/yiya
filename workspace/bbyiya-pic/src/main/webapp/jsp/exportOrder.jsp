@@ -11,7 +11,7 @@ $(function(){
     $("#exportOrder").click(function(){ 
     	 var myproductJson='{ "orderNo": "2017020800341314352", "status": 2, "startTime":"2012-02-01","endTime":"2017-03-22"}';
     	 $.ajax({ 
-             url: "/pbs/order/orderExportExcel",
+             url: "/pbs/order/orderExportExcel", 
              type: 'post',
              data: {myproductJson:myproductJson},
              success: function(data){ 

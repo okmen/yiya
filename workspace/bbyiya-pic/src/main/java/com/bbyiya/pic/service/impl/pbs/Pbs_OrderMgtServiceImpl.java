@@ -123,7 +123,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	
 	public void pbsdownloadImg(List<PbsUserOrderResultVO> orderlist,String basePath){
 		try {
-			FileUtils.isDirExists(basePath);
+			FileUtils.isDirExists(basePath); 
 		} catch (Exception e) {
 			basePath="D:\\orderImgs\\";
 			FileUtils.isDirExists(basePath);

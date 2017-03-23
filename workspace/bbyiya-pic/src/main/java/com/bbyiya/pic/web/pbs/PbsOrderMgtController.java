@@ -242,7 +242,7 @@ public class PbsOrderMgtController extends SSOController {
 				if(page!=null&&page.getList()!=null&&page.getList().size()>0){
 					orderMgtService.pbsdownloadImg(page.getList(),fileDir);
 					rq.setStatu(ReturnStatus.Success);
-					rq.setStatusreson("下载图片成功");
+					rq.setStatusreson("下载图片成功"); 
 				}
 			}
 		} else {

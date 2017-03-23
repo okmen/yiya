@@ -77,6 +77,12 @@
     <if test="status != null" >
         AND Status = #{status,jdbcType=INTEGER}
     </if>
+    <if test="agentUserId != null" >
+        AND BranchUserId = #{agentUserId,jdbcType=INTEGER}
+    </if>
+    <if test="userId != null" >
+        AND UserId = #{userId,jdbcType=INTEGER}
+    </if>
      order by OrderTime desc
   </select>
   

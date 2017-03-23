@@ -250,7 +250,7 @@ public class PbsOrderMgtController extends SSOController {
 	
 	
 	/**
-	 * 单个下载订单图片
+	 * 单个订单下载图片
 	 * @param myproductJson
 	 * @return
 	 * @throws Exception

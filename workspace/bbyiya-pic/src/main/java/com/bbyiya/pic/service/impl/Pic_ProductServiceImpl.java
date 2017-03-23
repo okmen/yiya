@@ -378,11 +378,12 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private List<MyProductResultVo> getMyProductResultVo(List<MyProductResultVo> mylist){
 		if (mylist != null && mylist.size() > 0) {
 			for (MyProductResultVo item : mylist) {
+				item.setCreatetimestr(DateUtil.getTimeStr(item.getCreatetime(), "yyyy-MM-dd HH:mm:ss")); 
 				if(item.getInvitestatus()!=null&&item.getInvitestatus()>0){//邀请协同编辑
 					List<PMyproductsinvites> invites= inviteMapper.findListByCartId(item.getCartid());
 					if(invites!=null&&invites.size()>0){
 						item.setInviteModel(invites.get(0)); 
-					}
+					} 
 				}
 				// 作品详情（图片集合）
 				List<PMyproductdetails> detailslist = myDetaiMapper.findMyProductdetails(item.getCartid());

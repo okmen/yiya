@@ -19,6 +19,9 @@ public class PMyproducts implements Serializable{
     private Long styleid;
 
     private Date createtime;
+    
+   //更新时间串
+  	private String createtimestr;
 
     private Integer status;
     private String phone;
@@ -112,6 +115,14 @@ public class PMyproducts implements Serializable{
 
 	public void setInvitestatus(Integer invitestatus) {
 		this.invitestatus = invitestatus;
+	}
+
+	public String getCreatetimestr() {
+		return createtimestr;
+	}
+
+	public void setCreatetimestr(String createtimestr) {
+		this.createtimestr = createtimestr;
 	}
     
 }

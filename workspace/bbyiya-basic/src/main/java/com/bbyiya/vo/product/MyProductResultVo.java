@@ -80,6 +80,7 @@ public class MyProductResultVo extends PMyproducts{
 	public void setInviteModel(PMyproductsinvites inviteModel) {
 		this.inviteModel = inviteModel;
 	}
+
 	
 
 }

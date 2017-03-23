@@ -222,24 +222,57 @@ public class PbsOrderMgtController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			
-			
 			SearchOrderParam param= (SearchOrderParam)JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
 			//param.setStartTime(c2.getTime());
 			//param.setEndTime(c1.getTime()); 
-			param.setStartTimeStr(DateUtil.getTimeStr(param.getStartTime(), "yyyy-MM-dd HH:mm:ss"));
-			param.setEndTimeStr(DateUtil.getTimeStr(param.getEndTime(), "yyyy-MM-dd HH:mm:ss")); 
-			System.out.println(param.getStartTimeStr() );
+			//param.setStartTimeStr(DateUtil.getTimeStr(param.getStartTime(), "yyyy-MM-dd HH:mm:ss"));
+			//param.setEndTimeStr(DateUtil.getTimeStr(param.getEndTime(), "yyyy-MM-dd HH:mm:ss")); 
+			System.out.println(param.getStartTimeStr());
 			System.out.println(param.getEndTimeStr() );
-			rq=orderService.find_orderList(param);
+			PageInfo<PbsUserOrderResultVO> page=orderMgtService.find_pbsOrderList(param, 0, 0);
+			//rq=orderService.find_orderList(param);
 			if(ObjectUtil.parseInt(isDownload)>0){
 				if(ObjectUtil.isEmpty(fileDir)){
 					rq.setStatu(ReturnStatus.ParamError);
 					rq.setStatusreson("请输入要保存到本地的文件路径");
 					return JsonUtil.objectToJsonStr(rq);
 				}
-				if(rq.getStatu().equals(ReturnStatus.Success)){
-					orderMgtService.pbsdownloadImg((List<UserOrderResultVO>)rq.getBasemodle(),fileDir);
+				if(page!=null&&page.getList()!=null&&page.getList().size()>0){
+					orderMgtService.pbsdownloadImg(page.getList(),fileDir);
+				}
+			}
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	
+	/**
+	 * 单个下载订单图片
+	 * @param myproductJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/singleDownLoadImage")
+	public String singleDownLoadImage(String orderId,String isDownload,String fileDir) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			SearchOrderParam param= new SearchOrderParam();
+			param.setOrderNo(orderId);
+			PageInfo<PbsUserOrderResultVO> page=orderMgtService.find_pbsOrderList(param, 0, 0);
+			//rq=orderService.find_orderList(param);
+			if(ObjectUtil.parseInt(isDownload)>0){
+				if(ObjectUtil.isEmpty(fileDir)){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("请输入要保存到本地的文件路径");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				if(page!=null&&page.getList()!=null&&page.getList().size()>0){
+					orderMgtService.pbsdownloadImg(page.getList(),fileDir);
 				}
 			}
 		} else {

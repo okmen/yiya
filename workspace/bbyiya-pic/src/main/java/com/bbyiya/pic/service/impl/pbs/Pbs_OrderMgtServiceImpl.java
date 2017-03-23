@@ -1,6 +1,7 @@
 package com.bbyiya.pic.service.impl.pbs;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -32,6 +33,7 @@ import com.bbyiya.pic.vo.order.UserOrderResultVO;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.FileUtils;
 import com.bbyiya.utils.JsonUtil;
+import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.upload.FileDownloadUtils;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
@@ -119,7 +121,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	}
 	
 	
-	public void pbsdownloadImg(List<UserOrderResultVO> orderlist,String basePath){
+	public void pbsdownloadImg(List<PbsUserOrderResultVO> orderlist,String basePath){
 		try {
 			FileUtils.isDirExists(basePath);
 		} catch (Exception e) {
@@ -127,36 +129,49 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			FileUtils.isDirExists(basePath);
 		}
 
-		for (UserOrderResultVO order : orderlist) {
-			Calendar c1 = new GregorianCalendar();
-			c1.setTime(order.getPaytime());
-			c1.set(Calendar.HOUR_OF_DAY, 18);
-			c1.set(Calendar.MINUTE, 0);
-			c1.set(Calendar.SECOND, 0);
-			Calendar c2 = new GregorianCalendar();
-			c2.setTime(order.getPaytime());
-			if(c2.getTime().getTime()>c1.getTime().getTime()){
-				c2.set(Calendar.DAY_OF_MONTH, 1);
-			}
-			String file_temp=DateUtil.getTimeStr(c2.getTime(), "MMdd");
+		for (PbsUserOrderResultVO order : orderlist) {
+			Calendar c1 =  Calendar.getInstance();;
+			Date nowtime=new Date();
+			c1.setTime(nowtime);
+			
+			//c1.set(Calendar.HOUR_OF_DAY, c1.get(Calendar.HOUR_OF_DAY) - 1);
+			//c1.set(Calendar.MINUTE, c1.get(Calendar.MINUTE));
+			//c1.set(Calendar.SECOND, c1.get(Calendar.SECOND));
+			String file_temp=DateUtil.getTimeStr(c1.getTime(), "yyyyMMddHHmm");
 			
 			//创建文件夹
 			FileUtils.isDirExists(basePath+"\\"+file_temp);
-			FileUtils.isDirExists(basePath+"\\"+file_temp+"\\"+order.getUserorderid());;
+			FileUtils.isDirExists(basePath+"\\"+file_temp+"\\"+order.getBuyeruserid()+"-"+order.getProducttitle()+"-"+order.getPropertystr()+"×"+order.getCount());;
 			int i=1;
-			for (OOrderproductdetails detail : order.getImglist()) {
-				String file_dir=basePath+"\\"+file_temp+"\\"+order.getUserorderid();
+			
+			List<OOrderproductdetails> detallist=orderDao.findOrderProductDetailsByProductOrderId(order.getOrderproductid());
+			int j=detallist.size()+1;
+			for (OOrderproductdetails detail : detallist) {
+				detail.setImageurl("http://pic.bbyiya.com/"+detail.getImageurl()); 
+				String file_dir=basePath+"\\"+file_temp+"\\"+order.getBuyeruserid()+"-"+order.getProducttitle()+"-"+order.getPropertystr()+"×"+order.getCount();
+			
 				String fileFull_name=file_dir+"\\"+i+".jpg";
+				String filebackFull_name=file_dir+"\\"+j+".jpg";
 				if(!FileUtils.isFileExists(fileFull_name)){
 					try {
-						FileDownloadUtils.download(detail.getImageurl(),fileFull_name);
-						FileDownloadUtils.setDPI(fileFull_name);
+						if(!ObjectUtil.isEmpty(detail.getImageurl())){
+							FileDownloadUtils.download(detail.getImageurl(),fileFull_name);
+							FileDownloadUtils.setDPI(fileFull_name);
+						}
+						
+						if(!ObjectUtil.isEmpty(detail.getBackimageurl())){
+							FileDownloadUtils.download(detail.getBackimageurl(),filebackFull_name);
+							FileDownloadUtils.setDPI(filebackFull_name);
+							j++;
+						}
+						
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
 				i++;
+				
 			}
 			
 		}

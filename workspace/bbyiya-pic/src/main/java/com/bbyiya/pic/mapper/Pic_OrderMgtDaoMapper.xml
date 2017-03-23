@@ -31,10 +31,11 @@
     <result column="PrintNo" property="printno" jdbcType="VARCHAR" />
     <result column="Position" property="position" jdbcType="INTEGER" />
     <result column="ImageUrl" property="imageurl" jdbcType="VARCHAR" />
+    <result column="BackImageUrl" property="backimageurl" jdbcType="VARCHAR" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="OOrderproductdetails_Column_List" >
-    OProductDetailId, OrderProductId, PrintNo, Position, ImageUrl, CreateTime
+    OProductDetailId, OrderProductId, PrintNo, Position, ImageUrl, CreateTime,BackImageUrl
   </sql>
   
   <resultMap id="OOrderproductsMap" type="com.bbyiya.model.OOrderproducts" >

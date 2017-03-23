@@ -16,7 +16,7 @@ public class GetterUtil {
 	public static String toGetter(String fieldname) {
 
 		if (fieldname == null || fieldname.length() == 0) {
-			return null;
+			return null; 
 		}
 
 		if (fieldname.length() > 2) {

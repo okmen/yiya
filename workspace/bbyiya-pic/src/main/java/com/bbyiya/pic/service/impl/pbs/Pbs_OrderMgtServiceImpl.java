@@ -49,7 +49,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	/*------------------¶©µ¥Ä£¿é--------------------------------------*/
 	@Autowired
 	private OUserordersMapper userOrdersMapper;
-	@Autowired
+	@Autowired 
 	private IPic_OrderMgtDao orderDao;
 	@Autowired
 	private OOrderproductsMapper orderProductMapper;

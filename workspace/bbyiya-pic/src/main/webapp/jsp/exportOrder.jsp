@@ -16,7 +16,7 @@ $(function(){
              data: {myproductJson:myproductJson},
              success: function(data){ 
                 window.location.href = "/pbs/order/download?path=" + encodeURI(data.BaseModle) ; //执行下载操作
-                 
+                  
              },
              error: function(data,err){ 
             	 alert("请求出错处理...");

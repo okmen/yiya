@@ -57,26 +57,6 @@
     OrderProductId, UserOrderId, ProductId, StyleId, BuyerUserId, ProductTitle, Price, 
     BranchUserId, SalesUserId, PropertyStr, Count,ProductImg,CartId
   </sql>
-  
-  <resultMap id="OOrderproductsMap" type="com.bbyiya.model.OOrderproducts" >
-    <id column="OrderProductId" property="orderproductid" jdbcType="VARCHAR" />
-    <result column="UserOrderId" property="userorderid" jdbcType="VARCHAR" />
-    <result column="ProductId" property="productid" jdbcType="BIGINT" />
-    <result column="StyleId" property="styleid" jdbcType="BIGINT" />
-    <result column="BuyerUserId" property="buyeruserid" jdbcType="BIGINT" />
-    <result column="ProductTitle" property="producttitle" jdbcType="VARCHAR" />
-    <result column="Price" property="price" jdbcType="DECIMAL" />
-    <result column="BranchUserId" property="branchuserid" jdbcType="BIGINT" />
-    <result column="SalesUserId" property="salesuserid" jdbcType="BIGINT" />
-    <result column="PropertyStr" property="propertystr" jdbcType="VARCHAR" />
-    <result column="Count" property="count" jdbcType="INTEGER" />
-    <result column="ProductImg" property="productimg" jdbcType="VARCHAR" />
-    <result column="CartId" property="cartid" jdbcType="BIGINT" />
-  </resultMap>
-  <sql id="OOrderproducts_Column_List" >
-    OrderProductId, UserOrderId, ProductId, StyleId, BuyerUserId, ProductTitle, Price, 
-    BranchUserId, SalesUserId, PropertyStr, Count,ProductImg,CartId
-  </sql>
   <!-- 用户订单结果类Result -->
   <resultMap id="UserOrderResult" type="com.bbyiya.pic.vo.order.UserOrderResultVO" extends="BaseResultMap">  
   </resultMap>  

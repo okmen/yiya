@@ -9,15 +9,9 @@
 <script type="text/javascript">
 $(function(){ 
     $("#exportOrder").click(function(){ 
-<<<<<<< HEAD
-    	 var myproductJson='{ "orderNo": "2017020800341314352", "status": 2, "startTime":"2012-02-01","endTime":"2017-03-22"}'';
-    	 $.ajax({ 
-             url: "/pbs/order/orderExportExcel",
-=======
     	 var myproductJson='{ "orderNo": "2017020800341314352", "status": 2, "startTime":"2012-02-01","endTime":"2017-03-22"}';
     	 $.ajax({ 
              url: "/pbs/order/orderExportExcel", 
->>>>>>> refs/remotes/origin/master
              type: 'post',
              data: {myproductJson:myproductJson},
              success: function(data){ 

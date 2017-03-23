@@ -14,7 +14,6 @@ public class PbsSearchOrderParam {
 	private String endTimeStr;
 	
 	private Integer agentUserId;
-	
 	private String agentName;
 	private String agentPhone;
 	private Integer userId;

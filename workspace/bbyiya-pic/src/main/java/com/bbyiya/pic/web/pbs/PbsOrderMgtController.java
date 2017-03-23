@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -24,12 +27,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.pic.service.IPic_OrderMgtService;
 import com.bbyiya.pic.service.pbs.IPbs_OrderMgtService;
 import com.bbyiya.pic.utils.ExportExcel;
 import com.bbyiya.pic.vo.order.PbsSearchOrderParam;
 import com.bbyiya.pic.vo.order.PbsUserOrderResultVO;
+import com.bbyiya.pic.vo.order.SearchOrderParam;
+import com.bbyiya.pic.vo.order.UserOrderResultVO;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
+import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.JsonUtil;
+import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.upload.FileDownloadUtils;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
@@ -44,7 +52,8 @@ public class PbsOrderMgtController extends SSOController {
 	@Resource(name = "pbs_orderMgtService")
 	private IPbs_OrderMgtService orderMgtService;
 	
-	
+	@Resource(name = "pic_orderMgtService")
+	private IPic_OrderMgtService orderService;
 	/**
 	 * O03 我的购买订单
 	 * 
@@ -53,11 +62,12 @@ public class PbsOrderMgtController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getOrderList")
-	public String getOrderList(PbsSearchOrderParam param) throws Exception {
+	public String getOrderList(String myproductJson,int index,int size) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			PageInfo<PbsUserOrderResultVO> result= orderMgtService.find_pbsOrderList(param);
+			SearchOrderParam param= (SearchOrderParam)JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
+			PageInfo<PbsUserOrderResultVO> result= orderMgtService.find_pbsOrderList(param,index,size);
 			rq.setBasemodle(result);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("获取列表成功！");
@@ -76,7 +86,7 @@ public class PbsOrderMgtController extends SSOController {
 	 */
 	@RequestMapping(value="/orderExportExcel")
 	@ResponseBody
-	public String orderExportExcel(HttpServletRequest request, HttpServletResponse response,PbsSearchOrderParam param) throws MapperException {
+	public String orderExportExcel(HttpServletRequest request, HttpServletResponse response,String myproductJson) throws MapperException {
 		// 列头
 		String[] headers =new String[18];
 		headers[0]="订单号";
@@ -120,8 +130,9 @@ public class PbsOrderMgtController extends SSOController {
 		//导出格式
 		String format =".xlsx";
 		
+		SearchOrderParam param= (SearchOrderParam)JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
 		
-		PageInfo<PbsUserOrderResultVO> page = orderMgtService.find_pbsOrderList(param);
+		PageInfo<PbsUserOrderResultVO> page = orderMgtService.find_pbsOrderList(param,0,0);
 		List<PbsUserOrderResultVO> list=page.getList();
 		ExportExcel<PbsUserOrderResultVO> ex = new ExportExcel<PbsUserOrderResultVO>();
 		
@@ -153,7 +164,6 @@ public class PbsOrderMgtController extends SSOController {
 	
 	@RequestMapping(value="/download")
 	public String download(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
 		try {
 			String path = request.getParameter("path");
 			// path是指欲下载的文件的路径。
@@ -188,5 +198,63 @@ public class PbsOrderMgtController extends SSOController {
 		return null;
 	}
 
+	/**
+	 *查询订单运单号信息
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/editLogistics")
+	public String editLogistics(String orderId,String expressCom,String expressOrder) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			rq=orderMgtService.editLogistics(orderId, expressCom, expressOrder);
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	
+	/**
+	 * 批量下载订单图片
+	 * @param myproductJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/batchDownLoadImage")
+	public String batchDownLoadImage(String myproductJson,String isDownload,String fileDir) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			
+			
+			SearchOrderParam param= (SearchOrderParam)JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
+			//param.setStartTime(c2.getTime());
+			//param.setEndTime(c1.getTime()); 
+			param.setStartTimeStr(DateUtil.getTimeStr(param.getStartTime(), "yyyy-MM-dd HH:mm:ss"));
+			param.setEndTimeStr(DateUtil.getTimeStr(param.getEndTime(), "yyyy-MM-dd HH:mm:ss")); 
+			System.out.println(param.getStartTimeStr() );
+			System.out.println(param.getEndTimeStr() );
+			rq=orderService.find_orderList(param);
+			if(ObjectUtil.parseInt(isDownload)>0){
+				if(ObjectUtil.isEmpty(fileDir)){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("请输入要保存到本地的文件路径");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				if(rq.getStatu().equals(ReturnStatus.Success)){
+					orderMgtService.pbsdownloadImg((List<UserOrderResultVO>)rq.getBasemodle(),fileDir);
+				}
+			}
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 }

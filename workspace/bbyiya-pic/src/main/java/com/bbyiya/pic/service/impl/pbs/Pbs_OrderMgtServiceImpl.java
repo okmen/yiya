@@ -1,5 +1,7 @@
 package com.bbyiya.pic.service.impl.pbs;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -7,6 +9,8 @@ import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OOrderproductdetailsMapper;
@@ -16,14 +20,21 @@ import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.OOrderaddress;
+import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.pic.dao.IPic_OrderMgtDao;
 import com.bbyiya.pic.service.IPic_MemberMgtService;
 import com.bbyiya.pic.service.pbs.IPbs_OrderMgtService;
-import com.bbyiya.pic.vo.order.PbsSearchOrderParam;
 import com.bbyiya.pic.vo.order.PbsUserOrderResultVO;
+import com.bbyiya.pic.vo.order.SearchOrderParam;
+import com.bbyiya.pic.vo.order.UserOrderResultVO;
+import com.bbyiya.utils.DateUtil;
+import com.bbyiya.utils.FileUtils;
+import com.bbyiya.utils.JsonUtil;
+import com.bbyiya.utils.upload.FileDownloadUtils;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.user.LoginSuccessResult;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
@@ -49,12 +60,10 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	private UBranchesMapper branchesMapper;
 	
 	
-	public PageInfo<PbsUserOrderResultVO> find_pbsOrderList(PbsSearchOrderParam param){
-			
-		
+	public PageInfo<PbsUserOrderResultVO> find_pbsOrderList(SearchOrderParam param,int index,int size){
 		if(param==null)
-			param=new PbsSearchOrderParam();
-		PageHelper.startPage(param.getIndex(), param.getSize());
+			param=new SearchOrderParam();
+		PageHelper.startPage(index, size);
 		List<PbsUserOrderResultVO> list=orderDao.findPbsUserOrders(param);
 		PageInfo<PbsUserOrderResultVO> reuslt=new PageInfo<PbsUserOrderResultVO>(list);
 		
@@ -90,6 +99,67 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			}
 		}
 		return reuslt;
+	}
+	public ReturnModel editLogistics(String orderId,String expressCom,String expressOrder) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		OUserorders userorders = userOrdersMapper.selectByPrimaryKey(orderId);
+		if(userorders!=null){
+			userorders.setExpresscom(expressCom);
+			userorders.setExpressorder(expressOrder);
+			userOrdersMapper.updateByPrimaryKeySelective(userorders);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(userorders);
+			rq.setStatusreson("修改运单号成功!");
+		}else{
+			rq.setStatu(ReturnStatus.ParamError);		
+			rq.setStatusreson("orderId参数传入有误！");
+		}
+		
+		return rq;
+	}
+	
+	
+	public void pbsdownloadImg(List<UserOrderResultVO> orderlist,String basePath){
+		try {
+			FileUtils.isDirExists(basePath);
+		} catch (Exception e) {
+			basePath="D:\\orderImgs\\";
+			FileUtils.isDirExists(basePath);
+		}
+
+		for (UserOrderResultVO order : orderlist) {
+			Calendar c1 = new GregorianCalendar();
+			c1.setTime(order.getPaytime());
+			c1.set(Calendar.HOUR_OF_DAY, 18);
+			c1.set(Calendar.MINUTE, 0);
+			c1.set(Calendar.SECOND, 0);
+			Calendar c2 = new GregorianCalendar();
+			c2.setTime(order.getPaytime());
+			if(c2.getTime().getTime()>c1.getTime().getTime()){
+				c2.set(Calendar.DAY_OF_MONTH, 1);
+			}
+			String file_temp=DateUtil.getTimeStr(c2.getTime(), "MMdd");
+			
+			//创建文件夹
+			FileUtils.isDirExists(basePath+"\\"+file_temp);
+			FileUtils.isDirExists(basePath+"\\"+file_temp+"\\"+order.getUserorderid());;
+			int i=1;
+			for (OOrderproductdetails detail : order.getImglist()) {
+				String file_dir=basePath+"\\"+file_temp+"\\"+order.getUserorderid();
+				String fileFull_name=file_dir+"\\"+i+".jpg";
+				if(!FileUtils.isFileExists(fileFull_name)){
+					try {
+						FileDownloadUtils.download(detail.getImageurl(),fileFull_name);
+						FileDownloadUtils.setDPI(fileFull_name);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				i++;
+			}
+			
+		}
 	}
 	
 	

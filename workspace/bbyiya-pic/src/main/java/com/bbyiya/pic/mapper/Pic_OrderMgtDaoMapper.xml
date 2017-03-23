@@ -64,7 +64,7 @@
   <select id="findUserOrders" resultMap="UserOrderResult" parameterType="com.bbyiya.pic.vo.order.SearchOrderParam"  >
     select 
     <include refid="Base_Column_List" />
-    from O_UserOrders where 1=1 
+    from o_userorders where 1=1 
     <if test="orderNo != null" >
         AND UserOrderId LIKE  CONCAT('%', #{orderNo,jdbcType=VARCHAR},'%' )  
     </if>
@@ -88,7 +88,7 @@
         </association>
   </resultMap> 
   <!-- 搜索Pbs订单列表作品 -->
-  <select id="findPbsUserOrders" resultMap="PbsUserOrderResult" parameterType="com.bbyiya.pic.vo.order.PbsSearchOrderParam"  >
+  <select id="findPbsUserOrders" resultMap="PbsUserOrderResult" parameterType="com.bbyiya.pic.vo.order.SearchOrderParam"  >
     select 
     a.OrderProductId, a.UserOrderId, a.ProductId, a.StyleId, a.BuyerUserId, a.ProductTitle, a.Price, 
     a.BranchUserId, a.SalesUserId, a.PropertyStr, a.Count,a.ProductImg,a.CartId
@@ -118,7 +118,7 @@
    <!-- 搜索订单图片列表  -->
    <select id="findOrderProductDetailsByProductOrderId" resultMap="OProductDetailMap"  >
     select  <include refid="OOrderproductdetails_Column_List" />
-    from O_OrderProductDetails where OrderProductId=#{orderProductId,jdbcType=VARCHAR}  
+    from o_orderproductdetails where OrderProductId=#{orderProductId,jdbcType=VARCHAR}  
     order by Position asc
   </select>
 </mapper>

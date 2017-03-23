@@ -1,6 +1,9 @@
 package com.bbyiya.pic.service;
 
+import java.util.List;
+
 import com.bbyiya.pic.vo.order.SearchOrderParam;
+import com.bbyiya.pic.vo.order.UserOrderResultVO;
 import com.bbyiya.vo.ReturnModel;
 
 public interface IPic_OrderMgtService {
@@ -39,4 +42,6 @@ public interface IPic_OrderMgtService {
 	 * @param userOrderId
 	 */
 	ReturnModel getOrderDetail(String userOrderId);
+
+	void downloadImg(List<UserOrderResultVO> orderlist, String basePath);
 }

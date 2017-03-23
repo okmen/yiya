@@ -72,7 +72,7 @@ public class OrderController  extends SSOController {
 					return JsonUtil.objectToJsonStr(rq);
 				}
 				if(rq.getStatu().equals(ReturnStatus.Success)){
-					downloadImg((List<UserOrderResultVO>)rq.getBasemodle(),fileDir);
+					orderService.downloadImg((List<UserOrderResultVO>)rq.getBasemodle(),fileDir);
 				}
 			}
 		} else {
@@ -96,50 +96,50 @@ public class OrderController  extends SSOController {
 //		return JsonUtil.objectToJsonStr(rq);
 //	}
 
-	//TODO
-	public void downloadImg(List<UserOrderResultVO> orderlist,String basePath){
-		try {
-			FileUtils.isDirExists(basePath);
-		} catch (Exception e) {
-			basePath="D:\\orderImgs\\";
-			FileUtils.isDirExists(basePath);
-		}
-
-		for (UserOrderResultVO order : orderlist) {
-			Calendar c1 = new GregorianCalendar();
-			c1.setTime(order.getPaytime());
-			c1.set(Calendar.HOUR_OF_DAY, 18);
-			c1.set(Calendar.MINUTE, 0);
-			c1.set(Calendar.SECOND, 0);
-			Calendar c2 = new GregorianCalendar();
-			c2.setTime(order.getPaytime());
-			if(c2.getTime().getTime()>c1.getTime().getTime()){
-				c2.set(Calendar.DAY_OF_MONTH, 1);
-			}
-			String file_temp=DateUtil.getTimeStr(c2.getTime(), "MMdd");
-			
-			//创建文件夹
-			FileUtils.isDirExists(basePath+"\\"+file_temp);
-			FileUtils.isDirExists(basePath+"\\"+file_temp+"\\"+order.getUserorderid());;
-			int i=1;
-			for (OOrderproductdetails detail : order.getImglist()) {
-				String file_dir=basePath+"\\"+file_temp+"\\"+order.getUserorderid();
-				String fileFull_name=file_dir+"\\"+i+".jpg";
-				if(!FileUtils.isFileExists(fileFull_name)){
-					try {
-						FileDownloadUtils.download(detail.getImageurl(),fileFull_name);
-						FileDownloadUtils.setDPI(fileFull_name);
-//						System.out.println(fileFull_name); 
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				i++;
-			}
-			
-		}
-	}
+//	//TODO
+//	public void downloadImg(List<UserOrderResultVO> orderlist,String basePath){
+//		try {
+//			FileUtils.isDirExists(basePath);
+//		} catch (Exception e) {
+//			basePath="D:\\orderImgs\\";
+//			FileUtils.isDirExists(basePath);
+//		}
+//
+//		for (UserOrderResultVO order : orderlist) {
+//			Calendar c1 = new GregorianCalendar();
+//			c1.setTime(order.getPaytime());
+//			c1.set(Calendar.HOUR_OF_DAY, 18);
+//			c1.set(Calendar.MINUTE, 0);
+//			c1.set(Calendar.SECOND, 0);
+//			Calendar c2 = new GregorianCalendar();
+//			c2.setTime(order.getPaytime());
+//			if(c2.getTime().getTime()>c1.getTime().getTime()){
+//				c2.set(Calendar.DAY_OF_MONTH, 1);
+//			}
+//			String file_temp=DateUtil.getTimeStr(c2.getTime(), "MMdd");
+//			
+//			//创建文件夹
+//			FileUtils.isDirExists(basePath+"\\"+file_temp);
+//			FileUtils.isDirExists(basePath+"\\"+file_temp+"\\"+order.getUserorderid());;
+//			int i=1;
+//			for (OOrderproductdetails detail : order.getImglist()) {
+//				String file_dir=basePath+"\\"+file_temp+"\\"+order.getUserorderid();
+//				String fileFull_name=file_dir+"\\"+i+".jpg";
+//				if(!FileUtils.isFileExists(fileFull_name)){
+//					try {
+//						FileDownloadUtils.download(detail.getImageurl(),fileFull_name);
+//						FileDownloadUtils.setDPI(fileFull_name);
+////						System.out.println(fileFull_name); 
+//					} catch (Exception e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//				}
+//				i++;
+//			}
+//			
+//		}
+//	}
 
 	
 

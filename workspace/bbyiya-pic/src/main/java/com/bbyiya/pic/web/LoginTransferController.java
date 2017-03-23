@@ -156,8 +156,6 @@ public class LoginTransferController extends SSOController {
 				loginLogs.setSourcetype(1);// 12photo
 				loginLogMapper.insert(loginLogs);
 				CookieUtils.addCookieBySessionId(request, response, user.getTicket(), 86400);
-//				addlog("µÇÂ¼IBS£ºsessionId="+request.getSession().getId());
-//				WxPublicUtils.setAccessToken(user.getUserId(), access_token);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception

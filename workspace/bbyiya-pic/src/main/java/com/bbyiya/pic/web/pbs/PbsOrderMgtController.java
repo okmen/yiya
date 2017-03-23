@@ -14,18 +14,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.pic.service.IPic_OrderMgtService;
 import com.bbyiya.pic.service.pbs.IPbs_OrderMgtService;
@@ -33,11 +27,9 @@ import com.bbyiya.pic.utils.ExportExcel;
 import com.bbyiya.pic.vo.order.PbsUserOrderResultVO;
 import com.bbyiya.pic.vo.order.SearchOrderParam;
 import com.bbyiya.pic.vo.order.UserOrderResultVO;
-import com.bbyiya.service.pic.IBaseOrderMgtService;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
-import com.bbyiya.utils.upload.FileDownloadUtils;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;

@@ -130,7 +130,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 		}
 		Calendar c1 =  Calendar.getInstance();;
 		Date nowtime=new Date();
-		c1.setTime(nowtime);
+		c1.setTime(nowtime); 
 		
 		for (PbsUserOrderResultVO order : orderlist) {
 			

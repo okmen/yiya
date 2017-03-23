@@ -130,6 +130,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					if (!ObjectUtil.isEmpty(param.getAuthor())) {
 						myproducts.setAuthor(param.getAuthor());
 					}
+					myproducts.setUpdatetime(new Date());
 					// 更新用户作品基本信息
 					myMapper.updateByPrimaryKeySelective(myproducts);
 					if (param.getDetails() != null && param.getDetails().size() > 0) {
@@ -166,6 +167,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					myproduct.setProductid(param.getProductid());
 					myproduct.setCreatetime(new Date());
 					myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.ok.toString()));
+					myproduct.setUpdatetime(new Date());
 					myMapper.insertReturnId(myproduct);
 				}
 				cartIdTemp = myproduct.getCartid();
@@ -273,6 +275,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 							}
 						}
 					}
+
+					myproducts.setUpdatetime(new Date());
 					// 更新用户作品基本信息
 					myMapper.updateByPrimaryKeySelective(myproducts);
 				}else {
@@ -378,7 +382,11 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private List<MyProductResultVo> getMyProductResultVo(List<MyProductResultVo> mylist){
 		if (mylist != null && mylist.size() > 0) {
 			for (MyProductResultVo item : mylist) {
-				item.setCreatetimestr(DateUtil.getTimeStr(item.getCreatetime(), "yyyy-MM-dd HH:mm:ss")); 
+				if(!ObjectUtil.isEmpty(item.getUpdatetime())){
+					item.setCreatetimestr(DateUtil.getTimeStr(item.getUpdatetime(), "yyyy-MM-dd HH:mm:ss")); 
+				}else {
+					item.setCreatetimestr(DateUtil.getTimeStr(item.getCreatetime(), "yyyy-MM-dd HH:mm:ss")); 
+				}
 				if(item.getInvitestatus()!=null&&item.getInvitestatus()>0){//邀请协同编辑
 					List<PMyproductsinvites> invites= inviteMapper.findListByCartId(item.getCartid());
 					if(invites!=null&&invites.size()>0){

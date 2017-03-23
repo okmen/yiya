@@ -28,6 +28,7 @@ public class PMyproducts implements Serializable{
 
     private String orderno;
     private Integer invitestatus;
+    private Date updatetime;
     
     public Long getCartid() {
         return cartid;
@@ -123,6 +124,14 @@ public class PMyproducts implements Serializable{
 
 	public void setCreatetimestr(String createtimestr) {
 		this.createtimestr = createtimestr;
+	}
+
+	public Date getUpdatetime() {
+		return updatetime;
+	}
+
+	public void setUpdatetime(Date updatetime) {
+		this.updatetime = updatetime;
 	}
     
 }

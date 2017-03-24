@@ -18,6 +18,7 @@ import com.bbyiya.dao.OOrderproductdetailsMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.UBranchesMapper;
+import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.OOrderaddress;
@@ -73,6 +74,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			for (PbsUserOrderResultVO product : reuslt.getList()) {
 				OUserorders order=userOrdersMapper.selectByPrimaryKey(product.getUserorderid());
 				product.setOrder(order);
+				product.setPayTimeStr(DateUtil.getTimeStr(order.getPaytime(), "yyyy-MM-dd HH:mm:ss"));
 				OOrderaddress address= addressMapper.selectByPrimaryKey(order.getOrderaddressid());
 				UBranches branch=branchesMapper.selectByPrimaryKey(order.getBranchuserid());
 				if(branch!=null){
@@ -108,6 +110,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 		if(userorders!=null){
 			userorders.setExpresscom(expressCom);
 			userorders.setExpressorder(expressOrder);
+			userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
 			userOrdersMapper.updateByPrimaryKeySelective(userorders);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(userorders);
@@ -118,37 +121,34 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 		}
 		
 		return rq;
-	}
+	}  
 	
 	
-	public void pbsdownloadImg(List<PbsUserOrderResultVO> orderlist,String basePath){
+	public String pbsdownloadImg(List<PbsUserOrderResultVO> orderlist){
+		
+		String  basePath = System.getProperty("user.home") + "\\orderImg\\";
 		try {
-			FileUtils.isDirExists(basePath);
+			FileUtils.isDirExists(basePath); 
 		} catch (Exception e) {
 			basePath="D:\\orderImgs\\";
 			FileUtils.isDirExists(basePath);
 		}
-
+		Calendar c1 =  Calendar.getInstance();
+		Date nowtime=new Date();
+		c1.setTime(nowtime); 
+		String file_temp=DateUtil.getTimeStr(c1.getTime(), "yyyyMMddHHmm");
+		//创建文件夹
+		FileUtils.isDirExists(basePath+"\\"+file_temp);
 		for (PbsUserOrderResultVO order : orderlist) {
-			Calendar c1 =  Calendar.getInstance();;
-			Date nowtime=new Date();
-			c1.setTime(nowtime);
-			
-			//c1.set(Calendar.HOUR_OF_DAY, c1.get(Calendar.HOUR_OF_DAY) - 1);
-			//c1.set(Calendar.MINUTE, c1.get(Calendar.MINUTE));
-			//c1.set(Calendar.SECOND, c1.get(Calendar.SECOND));
-			String file_temp=DateUtil.getTimeStr(c1.getTime(), "yyyyMMddHHmm");
-			
-			//创建文件夹
-			FileUtils.isDirExists(basePath+"\\"+file_temp);
-			FileUtils.isDirExists(basePath+"\\"+file_temp+"\\"+order.getBuyeruserid()+"-"+order.getProducttitle()+"-"+order.getPropertystr()+"×"+order.getCount());;
-			int i=1;
-			
+			FileUtils.isDirExists(basePath+"\\"+file_temp+"\\"+order.getBuyeruserid()+"-"+order.getProducttitle()+"-"+order.getPropertystr().replaceAll("/", "-")+"×"+order.getCount()+"("+order.getUserorderid()+")");
+			int i=1;			
 			List<OOrderproductdetails> detallist=orderDao.findOrderProductDetailsByProductOrderId(order.getOrderproductid());
 			int j=detallist.size()+1;
 			for (OOrderproductdetails detail : detallist) {
-				detail.setImageurl("http://pic.bbyiya.com/"+detail.getImageurl()); 
-				String file_dir=basePath+"\\"+file_temp+"\\"+order.getBuyeruserid()+"-"+order.getProducttitle()+"-"+order.getPropertystr()+"×"+order.getCount();
+				detail.setImageurl("http://pic.bbyiya.com/"+detail.getImageurl());
+				detail.setBackimageurl("http://pic.bbyiya.com/"+detail.getBackimageurl()); 
+				
+				String file_dir=basePath+"\\"+file_temp+"\\"+order.getBuyeruserid()+"-"+order.getProducttitle()+"-"+order.getPropertystr().replaceAll("/", "-")+"×"+order.getCount()+"("+order.getUserorderid()+")";
 			
 				String fileFull_name=file_dir+"\\"+i+".jpg";
 				String filebackFull_name=file_dir+"\\"+j+".jpg";
@@ -175,6 +175,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			}
 			
 		}
+		return basePath+"\\"+file_temp;
 	}
 	
 	

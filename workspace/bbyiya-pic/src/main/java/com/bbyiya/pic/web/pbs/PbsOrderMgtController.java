@@ -14,16 +14,23 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONObject;
+
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.pic.service.IPic_OrderMgtService;
 import com.bbyiya.pic.service.pbs.IPbs_OrderMgtService;
 import com.bbyiya.pic.utils.ExportExcel;
+import com.bbyiya.pic.utils.FileToZip;
 import com.bbyiya.pic.vo.order.PbsUserOrderResultVO;
 import com.bbyiya.pic.vo.order.SearchOrderParam;
 import com.bbyiya.pic.vo.order.UserOrderResultVO;
@@ -34,12 +41,14 @@ import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
 import com.github.pagehelper.PageInfo;
+import com.google.gson.JsonObject;
 import com.sdicons.json.mapper.MapperException;
+
 
 @Controller
 @RequestMapping(value = "/pbs/order")
 public class PbsOrderMgtController extends SSOController {
-
+	private Logger Log = Logger.getLogger(PbsOrderMgtController.class);
 	@Resource(name = "pbs_orderMgtService")
 	private IPbs_OrderMgtService orderMgtService;
 	
@@ -56,7 +65,15 @@ public class PbsOrderMgtController extends SSOController {
 	public String getOrderList(String myproductJson,int index,int size) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
-		if (user != null) {
+		
+		if (user != null) {	
+			myproductJson=myproductJson.replaceAll("\"status\":\"\"", "\"status\":null");
+			Object object=JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
+			if(object==null){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("参数传入错误！");
+				return JsonUtil.objectToJsonStr(rq);
+			}
 			SearchOrderParam param= (SearchOrderParam)JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
 			PageInfo<PbsUserOrderResultVO> result= orderMgtService.find_pbsOrderList(param,index,size);
 			rq.setBasemodle(result);
@@ -79,48 +96,50 @@ public class PbsOrderMgtController extends SSOController {
 	@ResponseBody
 	public String orderExportExcel(HttpServletRequest request, HttpServletResponse response,String myproductJson) throws MapperException {
 		// 列头
-		String[] headers =new String[18];
+		String[] headers =new String[19];
 		headers[0]="订单号";
-		headers[1]="产品编号";
-		headers[2]="产品标题";
-		headers[3]="产品型号";
-		headers[4]="代理商";
-		headers[5]="代理商电话";
-		headers[6]="代理商收货地址";
-		headers[7]="收货人姓名";
-		headers[8]="收货人电话";
-		headers[9]="收货省份";
-		headers[10]="收货市";
-		headers[11]="收货区域";
-		headers[12]="收货地址";		
-		headers[13]="订购份数";
-		headers[14]="订单实付";
-		headers[15]="订单状态";
-		headers[16]="物流公司";
-		headers[17]="运单号";
-		String[] fields = new String[18];
+		headers[1]="用户ID号";
+		headers[2]="产品编号";
+		headers[3]="产品标题";
+		headers[4]="产品型号";
+		headers[5]="代理商";
+		headers[6]="代理商电话";
+		headers[7]="代理商收货地址";
+		headers[8]="收货人姓名";
+		headers[9]="收货人电话";
+		headers[10]="收货省份";
+		headers[11]="收货市";
+		headers[12]="收货区域";
+		headers[13]="收货地址";		
+		headers[14]="订购份数";
+		headers[15]="订单实付";
+		headers[16]="订单状态";
+		headers[17]="物流公司";
+		headers[18]="运单号";
+		String[] fields = new String[19];
 		fields[0]="userorderid";
-		fields[1]="productid";
-		fields[2]="producttitle";
-		fields[3]="propertystr";
-		fields[4]="branchesName";
-		fields[5]="branchesPhone";
-		fields[6]="branchesAddress";
-		fields[7]="reciver";
-		fields[8]="buyerPhone";
-		fields[9]="buyerprovince";
-		fields[10]="buyercity";
-		fields[11]="buyerdistrict";
-		fields[12]="buyerstreetdetail";
-		fields[13]="count";
-		fields[14]="order.ordertotalprice";
-		fields[15]="order.status";
-		fields[16]="order.expresscom";
-		fields[17]="order.expressorder";
+		fields[1]="order.userid";
+		fields[2]="productid";
+		fields[3]="producttitle";
+		fields[4]="propertystr";
+		fields[5]="branchesName";
+		fields[6]="branchesPhone";
+		fields[7]="branchesAddress";
+		fields[8]="reciver";
+		fields[9]="buyerPhone";
+		fields[10]="buyerprovince";
+		fields[11]="buyercity";
+		fields[12]="buyerdistrict";
+		fields[13]="buyerstreetdetail";
+		fields[14]="count";
+		fields[15]="order.ordertotalprice";
+		fields[16]="order.status";
+		fields[17]="order.expresscom";
+		fields[18]="order.expressorder";
 		
 		//导出格式
 		String format =".xlsx";
-		
+		myproductJson=myproductJson.replaceAll("\"status\":\"\"", "\"status\":null");
 		SearchOrderParam param= (SearchOrderParam)JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
 		
 		PageInfo<PbsUserOrderResultVO> page = orderMgtService.find_pbsOrderList(param,0,0);
@@ -188,6 +207,27 @@ public class PbsOrderMgtController extends SSOController {
 		}
 		return null;
 	}
+	
+	@RequestMapping(value="/downloadDirectory")
+	public String downloadDirectory(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		try {
+			String path = request.getParameter("path");		
+			FileToZip z = new FileToZip();  
+			Calendar c1 =  Calendar.getInstance();;
+			Date nowtime=new Date();
+			c1.setTime(nowtime); 
+			String file_temp=DateUtil.getTimeStr(c1.getTime(), "yyyyMMddHHmm");
+			String  localPath = System.getProperty("user.home") + "\\";
+			z.zip(path, localPath+file_temp+".zip"); 	
+			// path是指欲下载的文件的路径。
+			//File file = new File(path);
+			z.deleteDirectory(path);
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
 
 	/**
 	 *查询订单运单号信息
@@ -218,27 +258,32 @@ public class PbsOrderMgtController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/batchDownLoadImage")
-	public String batchDownLoadImage(String myproductJson,String isDownload,String fileDir) throws Exception {
+	public String batchDownLoadImage(String myproductJson,String isDownload) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
+			myproductJson=myproductJson.replaceAll("\"status\":\"\"", "\"status\":null");
 			SearchOrderParam param= (SearchOrderParam)JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
 			//param.setStartTime(c2.getTime());
 			//param.setEndTime(c1.getTime()); 
 			//param.setStartTimeStr(DateUtil.getTimeStr(param.getStartTime(), "yyyy-MM-dd HH:mm:ss"));
 			//param.setEndTimeStr(DateUtil.getTimeStr(param.getEndTime(), "yyyy-MM-dd HH:mm:ss")); 
-			System.out.println(param.getStartTimeStr());
-			System.out.println(param.getEndTimeStr() );
+			//System.out.println(param.getStartTimeStr());
+			//System.out.println(param.getEndTimeStr() );
+			
+			
 			PageInfo<PbsUserOrderResultVO> page=orderMgtService.find_pbsOrderList(param, 0, 0);
-			//rq=orderService.find_orderList(param);
 			if(ObjectUtil.parseInt(isDownload)>0){
-				if(ObjectUtil.isEmpty(fileDir)){
-					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("请输入要保存到本地的文件路径");
-					return JsonUtil.objectToJsonStr(rq);
-				}
+//				if(ObjectUtil.isEmpty(fileDir)){
+//					rq.setStatu(ReturnStatus.ParamError);
+//					rq.setStatusreson("请输入要保存到本地的文件路径");
+//					return JsonUtil.objectToJsonStr(rq);
+//				}
 				if(page!=null&&page.getList()!=null&&page.getList().size()>0){
-					orderMgtService.pbsdownloadImg(page.getList(),fileDir);
+					String path=orderMgtService.pbsdownloadImg(page.getList());
+					rq.setBasemodle(path);
+					rq.setStatu(ReturnStatus.Success);
+					rq.setStatusreson("下载图片成功"); 
 				}
 			}
 		} else {
@@ -257,7 +302,7 @@ public class PbsOrderMgtController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/singleDownLoadImage")
-	public String singleDownLoadImage(String orderId,String isDownload,String fileDir) throws Exception {
+	public String singleDownLoadImage(String orderId,String isDownload) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
@@ -266,18 +311,21 @@ public class PbsOrderMgtController extends SSOController {
 			PageInfo<PbsUserOrderResultVO> page=orderMgtService.find_pbsOrderList(param, 0, 0);
 			//rq=orderService.find_orderList(param);
 			if(ObjectUtil.parseInt(isDownload)>0){
-				if(ObjectUtil.isEmpty(fileDir)){
-					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("请输入要保存到本地的文件路径");
-					return JsonUtil.objectToJsonStr(rq);
-				}
+//				if(ObjectUtil.isEmpty(fileDir)){
+//					rq.setStatu(ReturnStatus.ParamError);
+//					rq.setStatusreson("请输入要保存到本地的文件路径");
+//					return JsonUtil.objectToJsonStr(rq);
+//				}
 				if(page!=null&&page.getList()!=null&&page.getList().size()>0){
-					orderMgtService.pbsdownloadImg(page.getList(),fileDir);
+					String path=orderMgtService.pbsdownloadImg(page.getList());
+					rq.setBasemodle(path);
+					rq.setStatu(ReturnStatus.Success);
+					rq.setStatusreson("下载图片成功");
 				}
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
+			rq.setStatusreson("你的登录已过期");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

@@ -211,27 +211,7 @@ public class PbsOrderMgtController extends SSOController {
 		return null;
 	}
 	
-	@RequestMapping(value="/downloadDirectory")
-	public String downloadDirectory(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		try {
-			String path = request.getParameter("path");		
-			FileToZip z = new FileToZip();  
-			Calendar c1 =  Calendar.getInstance();;
-			Date nowtime=new Date();
-			c1.setTime(nowtime); 
-			String file_temp=DateUtil.getTimeStr(c1.getTime(), "yyyyMMddHHmm");
-			String  localPath = System.getProperty("user.home") + "\\";
-			z.zip(path, localPath+file_temp+".zip"); 	
-			// path是指欲下载的文件的路径。
-			//File file = new File(path);
-			z.deleteDirectory(path);
-			
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return null;
-	}
-
+	
 	/**
 	 *查询订单运单号信息
 	 * 

@@ -35,6 +35,7 @@ import com.bbyiya.pic.vo.order.PbsUserOrderResultVO;
 import com.bbyiya.pic.vo.order.SearchOrderParam;
 import com.bbyiya.pic.vo.order.UserOrderResultVO;
 import com.bbyiya.utils.DateUtil;
+import com.bbyiya.utils.FileUtils;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -151,7 +152,8 @@ public class PbsOrderMgtController extends SSOController {
 		
 		Long seed = System.currentTimeMillis();// 获得系统时间，作为生成随机数的种子
 		// 获取用户的当前工作主目录 
-		String currentWorkDir = System.getProperty("user.home") + "\\";
+		String currentWorkDir = System.getProperty("user.home") + "/imagedownloadtemp/";
+		FileUtils.isDirExists(currentWorkDir);
 		String filename =  seed + format; ;
 		File file = new File(currentWorkDir + filename);
 		try { 

@@ -127,22 +127,20 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	
 	
 	public String pbsdownloadImg(List<PbsUserOrderResultVO> orderlist){
-		
-		String  basePath = System.getProperty("user.home") + "\\orderImg";
+		String  basePath = System.getProperty("user.home") + "/imagedownloadtemp/orderImg";
 		try {
 			FileUtils.isDirExists(basePath); 
 		} catch (Exception e) {
-			basePath="D:\\orderImgs\\";
-			FileUtils.isDirExists(basePath);
+			e.printStackTrace();
 		}
 		Calendar c1 =  Calendar.getInstance();
 		Date nowtime=new Date();
 		c1.setTime(nowtime); 
 		String file_temp=DateUtil.getTimeStr(c1.getTime(), "yyyyMMddHHmm");
 		//创建文件夹
-		FileUtils.isDirExists(basePath+"\\"+file_temp);
+		FileUtils.isDirExists(basePath+"/"+file_temp);
 		for (PbsUserOrderResultVO order : orderlist) {
-			FileUtils.isDirExists(basePath+"\\"+file_temp+"\\"+order.getBuyeruserid()+"-"+order.getProducttitle()+"-"+order.getPropertystr().replaceAll("/", "-")+"×"+order.getCount()+"("+order.getUserorderid()+")");
+			FileUtils.isDirExists(basePath+"/"+file_temp+"/"+order.getBuyeruserid()+"-"+order.getProducttitle()+"-"+order.getPropertystr().replaceAll("/", "-")+"×"+order.getCount()+"("+order.getUserorderid()+")");
 			int i=1;			
 			List<OOrderproductdetails> detallist=orderDao.findOrderProductDetailsByProductOrderId(order.getOrderproductid());
 			int j=detallist.size()+1;
@@ -150,10 +148,10 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 				detail.setImageurl("http://pic.bbyiya.com/"+detail.getImageurl());
 				detail.setBackimageurl("http://pic.bbyiya.com/"+detail.getBackimageurl()); 
 				
-				String file_dir=basePath+"\\"+file_temp+"\\"+order.getBuyeruserid()+"-"+order.getProducttitle()+"-"+order.getPropertystr().replaceAll("/", "-")+"×"+order.getCount()+"("+order.getUserorderid()+")";
+				String file_dir=basePath+"/"+file_temp+"/"+order.getBuyeruserid()+"-"+order.getProducttitle()+"-"+order.getPropertystr().replaceAll("/", "-")+"×"+order.getCount()+"("+order.getUserorderid()+")";
 			
-				String fileFull_name=file_dir+"\\"+i+".jpg";
-				String filebackFull_name=file_dir+"\\"+j+".jpg";
+				String fileFull_name=file_dir+"/"+i+".jpg";
+				String filebackFull_name=file_dir+"/"+j+".jpg";
 				if(!FileUtils.isFileExists(fileFull_name)){
 					try {
 						if(!ObjectUtil.isEmpty(detail.getImageurl())){
@@ -180,9 +178,9 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 		
 		//压缩成zip文件		
 		FileToZip z = new FileToZip();  
-		z.zip(basePath+"\\"+file_temp, basePath+"\\"+file_temp+".zip"); 	
-		File file = new File(basePath+"\\"+file_temp+".zip");
-		z.deleteDirectory(basePath+"\\"+file_temp);
+		z.zip(basePath+"/"+file_temp, basePath+"/"+file_temp+".zip"); 	
+		File file = new File(basePath+"/"+file_temp+".zip");
+		z.deleteDirectory(basePath+"/"+file_temp);
 		return file.getPath();
 	}
 	

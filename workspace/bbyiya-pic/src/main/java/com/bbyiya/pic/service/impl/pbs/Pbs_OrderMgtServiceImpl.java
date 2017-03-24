@@ -1,5 +1,6 @@
 package com.bbyiya.pic.service.impl.pbs;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -28,6 +29,7 @@ import com.bbyiya.model.UBranches;
 import com.bbyiya.pic.dao.IPic_OrderMgtDao;
 import com.bbyiya.pic.service.IPic_MemberMgtService;
 import com.bbyiya.pic.service.pbs.IPbs_OrderMgtService;
+import com.bbyiya.pic.utils.FileToZip;
 import com.bbyiya.pic.vo.order.PbsUserOrderResultVO;
 import com.bbyiya.pic.vo.order.SearchOrderParam;
 import com.bbyiya.pic.vo.order.UserOrderResultVO;
@@ -126,7 +128,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	
 	public String pbsdownloadImg(List<PbsUserOrderResultVO> orderlist){
 		
-		String  basePath = System.getProperty("user.home") + "\\orderImg\\";
+		String  basePath = System.getProperty("user.home") + "\\orderImg";
 		try {
 			FileUtils.isDirExists(basePath); 
 		} catch (Exception e) {
@@ -175,7 +177,13 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			}
 			
 		}
-		return basePath+"\\"+file_temp;
+		
+		//Ñ¹Ëõ³ÉzipÎÄ¼þ		
+		FileToZip z = new FileToZip();  
+		z.zip(basePath+"\\"+file_temp, basePath+"\\"+file_temp+".zip"); 	
+		File file = new File(basePath+"\\"+file_temp+".zip");
+		z.deleteDirectory(basePath+"\\"+file_temp);
+		return file.getPath();
 	}
 	
 	

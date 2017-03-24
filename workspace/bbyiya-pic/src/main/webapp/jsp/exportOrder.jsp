@@ -32,7 +32,7 @@ $(function(){
 	            success: function(data){ 
 	           	   alert(JSON.stringify(data));
 	           	   if(data.Statu=="1"){
-	           		 window.location.href = "/pbs/order/downloadDirectory?path=" + encodeURI(data.BaseModle) ; //执行下载操作    
+	           		 window.location.href = "/pbs/order/download?path=" + encodeURI(data.BaseModle) ; //执行下载操作    
 	           	   }else{
 	           		alert(data.StatusReson);
 	           	   }

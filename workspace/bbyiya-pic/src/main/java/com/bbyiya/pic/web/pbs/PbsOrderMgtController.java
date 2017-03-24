@@ -64,17 +64,20 @@ public class PbsOrderMgtController extends SSOController {
 	@RequestMapping(value = "/getOrderList")
 	public String getOrderList(String myproductJson,int index,int size) throws Exception {
 		ReturnModel rq = new ReturnModel();
-		LoginSuccessResult user = super.getLoginUser();
-		
+		LoginSuccessResult user = super.getLoginUser();		
 		if (user != null) {	
-			myproductJson=myproductJson.replaceAll("\"status\":\"\"", "\"status\":null");
+			JSONObject jb = JSONObject.fromObject(myproductJson);
+			if(jb.getString("status")==""){
+				myproductJson=myproductJson.replaceAll("\"status\":\"\"", "\"status\":null");
+			}
 			Object object=JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
 			if(object==null){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("参数传入错误！");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			SearchOrderParam param= (SearchOrderParam)JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
+			SearchOrderParam param = (SearchOrderParam)JSONObject.toBean(jb,SearchOrderParam.class);
+			//SearchOrderParam param= (SearchOrderParam)JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
 			PageInfo<PbsUserOrderResultVO> result= orderMgtService.find_pbsOrderList(param,index,size);
 			rq.setBasemodle(result);
 			rq.setStatu(ReturnStatus.Success);

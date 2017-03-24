@@ -66,9 +66,8 @@ public class PbsOrderMgtController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		
-		if (user != null) {
-			JSONObject json = JSONObject.fromObject(myproductJson);
-			String status=json.getString("status");
+		if (user != null) {	
+			myproductJson=myproductJson.replaceAll("\"status\":\"\"", "\"status\":null");
 			Object object=JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
 			if(object==null){
 				rq.setStatu(ReturnStatus.ParamError);

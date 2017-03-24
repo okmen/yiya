@@ -152,7 +152,8 @@ public class PbsOrderMgtController extends SSOController {
 		
 		Long seed = System.currentTimeMillis();// 获得系统时间，作为生成随机数的种子
 		// 获取用户的当前工作主目录 
-		String currentWorkDir = System.getProperty("user.home") + "/imagedownloadtemp/";
+		String sep=System.getProperty("file.separator");
+		String currentWorkDir = System.getProperty("user.home") +sep+ "imagedownloadtemp"+sep;
 		FileUtils.isDirExists(currentWorkDir);
 		String filename =  seed + format; ;
 		File file = new File(currentWorkDir + filename);

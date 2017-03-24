@@ -156,6 +156,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		userOrder.setOrdertype(param.getOrderType());//订单类型
 		userOrder.setOrdertime(ordertime);
 		userOrder.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
+		userOrder.setIsbranch(0); 
 		if(param.getOrderAddressId()!=null&&param.getOrderAddressId()>0){
 			userOrder.setOrderaddressid(param.getOrderAddressId());
 		}else {

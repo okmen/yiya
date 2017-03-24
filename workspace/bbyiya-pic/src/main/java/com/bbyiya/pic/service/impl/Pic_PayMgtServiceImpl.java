@@ -26,7 +26,7 @@ public class Pic_PayMgtServiceImpl implements IPic_PayMgtService {
 
 	/**
 	 * 微信公众号支付 获取支付参数
-	 * @param orderNo
+	 * @param orderNo 支付id
 	 * @param openid
 	 * @param ip
 	 * @return

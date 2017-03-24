@@ -14,16 +14,23 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONObject;
+
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.pic.service.IPic_OrderMgtService;
 import com.bbyiya.pic.service.pbs.IPbs_OrderMgtService;
 import com.bbyiya.pic.utils.ExportExcel;
+import com.bbyiya.pic.utils.FileToZip;
 import com.bbyiya.pic.vo.order.PbsUserOrderResultVO;
 import com.bbyiya.pic.vo.order.SearchOrderParam;
 import com.bbyiya.pic.vo.order.UserOrderResultVO;
@@ -34,12 +41,14 @@ import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
 import com.github.pagehelper.PageInfo;
+import com.google.gson.JsonObject;
 import com.sdicons.json.mapper.MapperException;
+
 
 @Controller
 @RequestMapping(value = "/pbs/order")
 public class PbsOrderMgtController extends SSOController {
-
+	private Logger Log = Logger.getLogger(PbsOrderMgtController.class);
 	@Resource(name = "pbs_orderMgtService")
 	private IPbs_OrderMgtService orderMgtService;
 	
@@ -56,7 +65,16 @@ public class PbsOrderMgtController extends SSOController {
 	public String getOrderList(String myproductJson,int index,int size) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
+		
 		if (user != null) {
+			JSONObject json = JSONObject.fromObject(myproductJson);
+			String status=json.getString("status");
+			Object object=JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
+			if(object==null){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("参数传入错误！");
+				return JsonUtil.objectToJsonStr(rq);
+			}
 			SearchOrderParam param= (SearchOrderParam)JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
 			PageInfo<PbsUserOrderResultVO> result= orderMgtService.find_pbsOrderList(param,index,size);
 			rq.setBasemodle(result);
@@ -190,6 +208,27 @@ public class PbsOrderMgtController extends SSOController {
 		}
 		return null;
 	}
+	
+	@RequestMapping(value="/downloadDirectory")
+	public String downloadDirectory(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		try {
+			String path = request.getParameter("path");		
+			FileToZip z = new FileToZip();  
+			Calendar c1 =  Calendar.getInstance();;
+			Date nowtime=new Date();
+			c1.setTime(nowtime); 
+			String file_temp=DateUtil.getTimeStr(c1.getTime(), "yyyyMMddHHmm");
+			String  localPath = System.getProperty("user.home") + "\\";
+			z.zip(path, localPath+file_temp+".zip"); 	
+			// path是指欲下载的文件的路径。
+			//File file = new File(path);
+			z.deleteDirectory(path);
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
 
 	/**
 	 *查询订单运单号信息
@@ -220,7 +259,7 @@ public class PbsOrderMgtController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/batchDownLoadImage")
-	public String batchDownLoadImage(String myproductJson,String isDownload,String fileDir) throws Exception {
+	public String batchDownLoadImage(String myproductJson,String isDownload) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
@@ -231,16 +270,18 @@ public class PbsOrderMgtController extends SSOController {
 			//param.setEndTimeStr(DateUtil.getTimeStr(param.getEndTime(), "yyyy-MM-dd HH:mm:ss")); 
 			//System.out.println(param.getStartTimeStr());
 			//System.out.println(param.getEndTimeStr() );
+			
+			
 			PageInfo<PbsUserOrderResultVO> page=orderMgtService.find_pbsOrderList(param, 0, 0);
-			//rq=orderService.find_orderList(param);
 			if(ObjectUtil.parseInt(isDownload)>0){
-				if(ObjectUtil.isEmpty(fileDir)){
-					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("请输入要保存到本地的文件路径");
-					return JsonUtil.objectToJsonStr(rq);
-				}
+//				if(ObjectUtil.isEmpty(fileDir)){
+//					rq.setStatu(ReturnStatus.ParamError);
+//					rq.setStatusreson("请输入要保存到本地的文件路径");
+//					return JsonUtil.objectToJsonStr(rq);
+//				}
 				if(page!=null&&page.getList()!=null&&page.getList().size()>0){
-					orderMgtService.pbsdownloadImg(page.getList(),fileDir);
+					String path=orderMgtService.pbsdownloadImg(page.getList());
+					rq.setBasemodle(path);
 					rq.setStatu(ReturnStatus.Success);
 					rq.setStatusreson("下载图片成功"); 
 				}
@@ -261,7 +302,7 @@ public class PbsOrderMgtController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/singleDownLoadImage")
-	public String singleDownLoadImage(String orderId,String isDownload,String fileDir) throws Exception {
+	public String singleDownLoadImage(String orderId,String isDownload) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
@@ -270,20 +311,21 @@ public class PbsOrderMgtController extends SSOController {
 			PageInfo<PbsUserOrderResultVO> page=orderMgtService.find_pbsOrderList(param, 0, 0);
 			//rq=orderService.find_orderList(param);
 			if(ObjectUtil.parseInt(isDownload)>0){
-				if(ObjectUtil.isEmpty(fileDir)){
-					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("请输入要保存到本地的文件路径");
-					return JsonUtil.objectToJsonStr(rq);
-				}
+//				if(ObjectUtil.isEmpty(fileDir)){
+//					rq.setStatu(ReturnStatus.ParamError);
+//					rq.setStatusreson("请输入要保存到本地的文件路径");
+//					return JsonUtil.objectToJsonStr(rq);
+//				}
 				if(page!=null&&page.getList()!=null&&page.getList().size()>0){
-					orderMgtService.pbsdownloadImg(page.getList(),fileDir);
+					String path=orderMgtService.pbsdownloadImg(page.getList());
+					rq.setBasemodle(path);
 					rq.setStatu(ReturnStatus.Success);
 					rq.setStatusreson("下载图片成功");
 				}
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
+			rq.setStatusreson("你的登录已过期");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

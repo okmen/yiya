@@ -29,6 +29,6 @@ public interface IPbs_OrderMgtService {
 	ReturnModel editLogistics(String orderId, String expressCom,
 			String expressOrder) throws Exception;
 	
-	void pbsdownloadImg(List<PbsUserOrderResultVO> orderlist, String basePath);
+	String pbsdownloadImg(List<PbsUserOrderResultVO> orderlist);
 	
 }

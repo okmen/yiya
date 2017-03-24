@@ -5,7 +5,7 @@ import com.bbyiya.model.OUserorders;
 public class PbsUserOrderResultVO extends OOrderproducts{
 	private static final long serialVersionUID = 1L;
 	private OUserorders order;	
-	
+	private String payTimeStr;
 	private String branchesName;
 	private String branchesPhone;
 	private String branchesAddress;
@@ -95,6 +95,14 @@ public class PbsUserOrderResultVO extends OOrderproducts{
 
 	public void setBuyerstreetdetail(String buyerstreetdetail) {
 		this.buyerstreetdetail = buyerstreetdetail;
+	}
+
+	public String getPayTimeStr() {
+		return payTimeStr;
+	}
+
+	public void setPayTimeStr(String payTimeStr) {
+		this.payTimeStr = payTimeStr;
 	}
 	
 	

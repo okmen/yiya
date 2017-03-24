@@ -34,7 +34,7 @@
     <result column="BackImageUrl" property="backimageurl" jdbcType="VARCHAR" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
   </resultMap>
-  <sql id="OOrderproductdetails_Column_List" >
+  <sql id="OOrderproductdetails_Column_List" > 
     OProductDetailId, OrderProductId, PrintNo, Position, ImageUrl, CreateTime,BackImageUrl
   </sql>
   

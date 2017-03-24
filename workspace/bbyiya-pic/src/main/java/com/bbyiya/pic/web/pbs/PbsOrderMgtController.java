@@ -139,7 +139,7 @@ public class PbsOrderMgtController extends SSOController {
 		
 		//导出格式
 		String format =".xlsx";
-		
+		myproductJson=myproductJson.replaceAll("\"status\":\"\"", "\"status\":null");
 		SearchOrderParam param= (SearchOrderParam)JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
 		
 		PageInfo<PbsUserOrderResultVO> page = orderMgtService.find_pbsOrderList(param,0,0);
@@ -262,6 +262,7 @@ public class PbsOrderMgtController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
+			myproductJson=myproductJson.replaceAll("\"status\":\"\"", "\"status\":null");
 			SearchOrderParam param= (SearchOrderParam)JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
 			//param.setStartTime(c2.getTime());
 			//param.setEndTime(c1.getTime()); 

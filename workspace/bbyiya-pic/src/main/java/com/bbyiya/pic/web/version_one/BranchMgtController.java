@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.dao.EErrorsMapper;
@@ -220,18 +219,4 @@ public class BranchMgtController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-	@ResponseBody
-	@RequestMapping(value = "/findMyProductsForBranch")
-	public String findMyProductsForBranch(@RequestParam(required = false, defaultValue = "1")int index,@RequestParam(required = false, defaultValue = "20")int size) throws Exception {
-		ReturnModel rq=new ReturnModel();
-		LoginSuccessResult user= super.getLoginUser();
-		if(user!=null){
-			rq=proService.findMyProductsForBranch(user.getUserId(),null,null,index,size);
-		}else {
-			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ýÆÚ");
-			return JsonUtil.objectToJsonStr(rq);
-		}
-		return JsonUtil.objectToJsonStr(rq);
-	}
 }

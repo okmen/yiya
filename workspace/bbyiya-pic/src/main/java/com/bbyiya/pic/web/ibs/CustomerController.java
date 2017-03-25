@@ -65,6 +65,24 @@ public class CustomerController extends SSOController{
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-	
+	/**
+	 * 删除我的客户
+	 * @param customerId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/dele")
+	public String dele(long customerId) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=memberMgtService.deleteCustomer(user.getUserId(), customerId); 
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	
 }

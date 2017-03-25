@@ -49,4 +49,11 @@ public interface IPic_MemberMgtService {
 	 * @return
 	 */
 	ReturnModel addCustomer(Long branchUserId,UAgentcustomers param);
+	/**
+	 * 删除已有客户
+	 * @param branchUserId
+	 * @param customerId
+	 * @return
+	 */
+	ReturnModel deleteCustomer(Long branchUserId,Long customerId);
 }

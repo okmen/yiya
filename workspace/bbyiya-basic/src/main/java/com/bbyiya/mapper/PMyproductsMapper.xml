@@ -43,7 +43,11 @@
   <select id="findMyProductslist" resultMap="MyProductResultVO" ><!-- 03 find 通过 UserId ，Status 获取作品列表 -->
     select <include refid="Base_Column_List" />
     from p_myproducts
-    where UserId = #{userId,jdbcType=BIGINT} and Status=#{status,jdbcType=INTEGER} order by  CartId desc 
+    where UserId = #{userId,jdbcType=BIGINT} 
+    <if test="status != null" >
+        and Status=#{status,jdbcType=INTEGER}
+    </if>
+    order by  CartId desc 
   </select>
   <select id="findMyProductslistForBranch" resultMap="MyProductResultVO" ><!-- 04 find 获取影楼分销人员的作品  -->
     select <include refid="Base_Column_List" />

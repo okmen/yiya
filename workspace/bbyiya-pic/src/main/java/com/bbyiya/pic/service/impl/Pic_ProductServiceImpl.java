@@ -434,11 +434,12 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				rq.setStatusreson("已下单的作品暂不支持删除操作！");
 				return rq;
 			}
-			myMapper.deleteByPrimaryKey(cartId);
-			mydetailDao.deleMyProductDetailsByCartId(cartId); 
 			if(myproducts.getInvitestatus()!=null&&myproducts.getInvitestatus()>0){
 				inviteMapper.deleteByCartId(cartId);
 			}
+			myMapper.deleteByPrimaryKey(cartId);
+			mydetailDao.deleMyProductDetailsByCartId(cartId); 
+			
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("删除成功");
 		}else {

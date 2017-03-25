@@ -41,9 +41,9 @@ public class WxPublicUtils {
 	 * @param userId
 	 * @return
 	 */
-	public static String getAccessToken(Long userId) {
-		if (userId == null || userId <= 0)
-			return "";
+	public static String getAccessToken() {
+//		if (userId == null || userId <= 0)
+//			return "";
 		String tokens=RedisUtil.getString(aCCESS_TOKEN_BASE);
 		if(ObjectUtil.isEmpty(tokens)){
 			tokens=getAccessTokenPost();

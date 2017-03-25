@@ -31,19 +31,12 @@ public class WxController extends SSOController {
 	@RequestMapping(value = "/getWXconfig")
 	public String getWXconfig(String webUrl) throws Exception {
 		ReturnModel rq = new ReturnModel();
-		LoginSuccessResult user = super.getLoginUser();
-		if (user != null) {
-			String accessToken=WxPublicUtils.getAccessToken(user.getUserId());
-			if(!ObjectUtil.isEmpty(accessToken)){//获取
-				 rq= WxPublicUtils.getWxConfig(accessToken, webUrl);
-//				 addlog("分享："+rq.getStatusreson()+";"+rq.getBasemodle()); 
-			}else {
-				rq.setStatu(ReturnStatus.LoginError_3);
-				rq.setStatusreson("微信accessToken过期！");
-			}
+		String accessToken = WxPublicUtils.getAccessToken();
+		if (!ObjectUtil.isEmpty(accessToken)) {// 获取
+			rq = WxPublicUtils.getWxConfig(accessToken, webUrl);
 		} else {
-			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登陆过期，请重新登陆！");
+			rq.setStatu(ReturnStatus.LoginError_3);
+			rq.setStatusreson("微信accessToken过期！");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

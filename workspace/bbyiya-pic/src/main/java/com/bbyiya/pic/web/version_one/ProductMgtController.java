@@ -57,14 +57,7 @@ public class ProductMgtController extends SSOController{
 	@ResponseBody
 	@RequestMapping(value = "/sampleNew")
 	public String sampleNew(@RequestParam(required = false, defaultValue = "0") long productId) throws Exception {
-		ReturnModel rq = new ReturnModel();
-		LoginSuccessResult user= super.getLoginUser();
-		if(user!=null){
-			rq=proService.getProductSamplelist(productId); 
-		}else {
-			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ýÆÚ");
-		}
+		ReturnModel rq =proService.getProductSamplelist(productId); 
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	

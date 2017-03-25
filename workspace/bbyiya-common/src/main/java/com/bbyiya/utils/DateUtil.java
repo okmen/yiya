@@ -308,4 +308,40 @@ public class DateUtil {
 
 		return Integer.parseInt(String.valueOf(between_days));
 	}
+	/**
+	 * 获取日期的最后结束时间
+	 * @param endTimeStr
+	 * @return
+	 * @throws ParseException 
+	 */
+	public static String getEndTime(String endTimeStr){
+		Calendar todayEnd = Calendar.getInstance();
+		todayEnd.setTime(stringToDate(endTimeStr,new SimpleDateFormat("yyyy-MM-dd")));
+		todayEnd.set(Calendar.HOUR,23);
+		todayEnd.set(Calendar.MINUTE,59);
+		todayEnd.set(Calendar.SECOND,59);
+		todayEnd.set(Calendar.MILLISECOND,999);
+		return DateUtil.getTimeString(todayEnd.getTime());
+	}
+	
+	/**
+	* 把指定的日期格式的字符串转换成Date类型
+	* 
+	* @author：tuzongxun
+	* @Title: StringToDate
+	* @param @param string
+	* @return void
+	* @date May 3, 2016 9:16:38 AM
+	* @throws
+	*/
+	public static Date stringToDate(String string,SimpleDateFormat format ) {
+		Date date = new Date();
+		try {
+			date = format.parse(string);	
+		} catch (Exception e) {
+			e.getStackTrace();
+		}
+		return date;
+	}
+	
 }

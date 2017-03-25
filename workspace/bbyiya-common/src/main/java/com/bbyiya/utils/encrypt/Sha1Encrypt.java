@@ -11,8 +11,11 @@ import java.util.Map;
 
 import org.apache.http.NameValuePair;
 
+import com.bbyiya.utils.ObjectUtil;
+
 public class Sha1Encrypt {
 
+	
 	public static String SHA1(Map<String, Object> maps) throws DigestException {
 		// 获取信息摘要 - 参数字典排序后字符串
 		String decrypt = getOrderByLexicographic(maps);
@@ -40,10 +43,34 @@ public class Sha1Encrypt {
 		}
 	}
 	
+	public static String SHA1(String decrypt){
+		try {
+			// 指定sha1算法
+			MessageDigest digest = MessageDigest.getInstance("SHA-1");
+			digest.update(decrypt.getBytes());
+			// 获取字节数组
+			byte messageDigest[] = digest.digest();
+			// Create Hex String
+			StringBuffer hexString = new StringBuffer();
+			// 字节数组转换为 十六进制 数
+			for (int i = 0; i < messageDigest.length; i++) {
+				String shaHex = Integer.toHexString(messageDigest[i] & 0xFF);
+				if (shaHex.length() < 2) {
+					hexString.append(0);
+				}
+				hexString.append(shaHex);
+			}
+			return hexString.toString().toLowerCase();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "";
+	}
+	
 	public static String SHA1(List<NameValuePair> maps) throws DigestException {
 		// 获取信息摘要 - 参数字典排序后字符串
 		String decrypt = getPackage(maps);
-		System.out.println(decrypt);
 		try {
 			// 指定sha1算法
 			MessageDigest digest = MessageDigest.getInstance("SHA-1");
@@ -137,10 +164,14 @@ public class Sha1Encrypt {
 	private static String splitParams(List<String> paramNames, Map<String, Object> maps) {
 		StringBuilder paramStr = new StringBuilder();
 		for (String paramName : paramNames) {
-			paramStr.append(paramName);
+			if(!ObjectUtil.isEmpty(paramStr.toString())){
+				paramStr.append("&"+paramName);
+			}else {
+				paramStr.append(paramName);
+			}
 			for (Map.Entry<String, Object> entry : maps.entrySet()) {
 				if (paramName.equals(entry.getKey())) {
-					paramStr.append(String.valueOf(entry.getValue()));
+					paramStr.append("="+String.valueOf(entry.getValue()));
 				}
 			}
 		}

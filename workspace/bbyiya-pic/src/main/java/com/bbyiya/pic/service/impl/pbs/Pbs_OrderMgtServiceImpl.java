@@ -68,6 +68,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	public PageInfo<PbsUserOrderResultVO> find_pbsOrderList(SearchOrderParam param,int index,int size){
 		if(param==null)
 			param=new SearchOrderParam();
+		param.setEndTimeStr(DateUtil.getEndTime(param.getEndTimeStr()));
 		PageHelper.startPage(index, size);
 		List<PbsUserOrderResultVO> list=orderDao.findPbsUserOrders(param);
 		PageInfo<PbsUserOrderResultVO> reuslt=new PageInfo<PbsUserOrderResultVO>(list);

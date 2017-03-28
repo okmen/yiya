@@ -27,6 +27,7 @@ public class PProducts implements Serializable{
     private Date updatetime;
 
     private String description;
+    private Integer sort;
 
     public Long getProductid() {
         return productid;
@@ -117,4 +118,13 @@ public class PProducts implements Serializable{
     public void setDescription(String description) {
         this.description = description == null ? null : description.trim();
     }
+
+	public Integer getSort() {
+		return sort;
+	}
+
+	public void setSort(Integer sort) {
+		this.sort = sort;
+	}
+    
 }

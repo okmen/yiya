@@ -13,7 +13,11 @@ public enum UserIdentityEnums {
     /**
      * 影楼分销人员
      */
-    salesman(8)
+    salesman(8),
+    /**
+     * 生产端用户
+     */
+    pbs(16)
     ;
 
     private final int Type;

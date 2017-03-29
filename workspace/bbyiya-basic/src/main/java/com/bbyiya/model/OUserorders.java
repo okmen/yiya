@@ -39,6 +39,9 @@ public class OUserorders implements Serializable{
 
     private String expressorder;
 
+    private Double postage;
+    private Date uploadtime;
+    
     public String getUserorderid() {
         return userorderid;
     }
@@ -175,6 +178,22 @@ public class OUserorders implements Serializable{
 
 	public void setExpressorder(String expressorder) {
 		this.expressorder = expressorder;
+	}
+
+	public Double getPostage() {
+		return postage;
+	}
+
+	public void setPostage(Double postage) {
+		this.postage = postage;
+	}
+
+	public Date getUploadtime() {
+		return uploadtime;
+	}
+
+	public void setUploadtime(Date uploadtime) {
+		this.uploadtime = uploadtime;
 	}
     
     

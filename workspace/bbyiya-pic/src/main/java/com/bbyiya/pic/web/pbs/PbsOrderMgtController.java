@@ -217,18 +217,18 @@ public class PbsOrderMgtController extends SSOController {
 	
 	
 	/**
-	 *查询订单运单号信息
+	 *查询订单运单号信息及运费自动扣款
 	 * 
 	 * @return
 	 * @throws Exception
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/editLogistics")
-	public String editLogistics(String orderId,String expressCom,String expressOrder) throws Exception {
+	public String editLogistics(String orderId,String expressCom,String expressOrder,Double postage) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			rq=orderMgtService.editLogistics(orderId, expressCom, expressOrder);
+			rq=orderMgtService.editLogistics(orderId, expressCom, expressOrder,postage);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

@@ -3,7 +3,6 @@ package com.bbyiya.pic.service.impl.pbs;
 import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -11,14 +10,14 @@ import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OOrderproductdetailsMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.UBranchesMapper;
+import com.bbyiya.dao.UBranchtransaccountsMapper;
+import com.bbyiya.dao.UBranchtransamountlogMapper;
+import com.bbyiya.enums.AmountType;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
@@ -26,20 +25,19 @@ import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.UBranches;
+import com.bbyiya.model.UBranchtransaccounts;
+import com.bbyiya.model.UBranchtransamountlog;
 import com.bbyiya.pic.dao.IPic_OrderMgtDao;
 import com.bbyiya.pic.service.IPic_MemberMgtService;
 import com.bbyiya.pic.service.pbs.IPbs_OrderMgtService;
 import com.bbyiya.pic.utils.FileToZip;
 import com.bbyiya.pic.vo.order.PbsUserOrderResultVO;
 import com.bbyiya.pic.vo.order.SearchOrderParam;
-import com.bbyiya.pic.vo.order.UserOrderResultVO;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.FileUtils;
-import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.upload.FileDownloadUtils;
 import com.bbyiya.vo.ReturnModel;
-import com.bbyiya.vo.user.LoginSuccessResult;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
@@ -60,10 +58,14 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	private OOrderproductdetailsMapper detailMapper;
 	@Autowired
 	private OOrderaddressMapper addressMapper;
+	
 	/*----------------------代理模块--------------------------*/
 	@Autowired
 	private UBranchesMapper branchesMapper;
-	
+	@Autowired
+	private UBranchtransaccountsMapper branchesTransMapper;
+	@Autowired
+	private UBranchtransamountlogMapper branchesTransLogMapper;
 	
 	public PageInfo<PbsUserOrderResultVO> find_pbsOrderList(SearchOrderParam param,int index,int size){
 		if(param==null)
@@ -107,20 +109,44 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 		}
 		return reuslt;
 	}
-	public ReturnModel editLogistics(String orderId,String expressCom,String expressOrder) throws Exception {
+	
+	public ReturnModel editLogistics(String orderId,String expressCom,String expressOrder,Double postage) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		OUserorders userorders = userOrdersMapper.selectByPrimaryKey(orderId);
 		if(userorders!=null){
+			//首次填写运单号，则执行自动扣运费款操作
+			if(userorders.getExpressorder()==null||userorders.getExpressorder().equals("")){
+				//自动扣除代理商运费账户的
+				UBranchtransaccounts branchTransAccount=branchesTransMapper.selectByPrimaryKey(userorders.getBranchuserid());
+				if(branchTransAccount!=null&&branchTransAccount.getAvailableamount()!=null&&branchTransAccount.getAvailableamount().doubleValue()>=postage.doubleValue()){
+					UBranchtransamountlog branchTranLog=new UBranchtransamountlog();
+					branchTranLog.setAmount(-1*postage);
+					branchTranLog.setBranchuserid(branchTransAccount.getBranchuserid());
+					branchTranLog.setCreatetime(new Date());
+					branchTranLog.setPayid(userorders.getPayid());
+					branchTranLog.setType(Integer.parseInt(AmountType.lost.toString()));
+					branchesTransLogMapper.insert(branchTranLog);
+					branchTransAccount.setAvailableamount(branchTransAccount.getAvailableamount()-postage);
+					branchesTransMapper.updateByPrimaryKeySelective(branchTransAccount);
+				}else{
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("运费账户余额不足，请充值后再填运单!");
+					return rq;
+				}
+			}
 			userorders.setExpresscom(expressCom);
 			userorders.setExpressorder(expressOrder);
+			//修改订单状态为已发货状态
 			userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
 			userOrdersMapper.updateByPrimaryKeySelective(userorders);
+			
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(userorders);
 			rq.setStatusreson("修改运单号成功!");
 		}else{
 			rq.setStatu(ReturnStatus.ParamError);		
 			rq.setStatusreson("orderId参数传入有误！");
+			return rq;
 		}
 		
 		return rq;

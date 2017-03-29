@@ -30,10 +30,13 @@ import com.bbyiya.dao.RegionMapper;
 import com.bbyiya.dao.UAccountsMapper;
 import com.bbyiya.dao.UAgentsMapper;
 import com.bbyiya.dao.UBranchesMapper;
+import com.bbyiya.dao.UBranchtransaccountsMapper;
+import com.bbyiya.dao.UBranchtransamountlogMapper;
 import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UCashlogsMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
+import com.bbyiya.enums.AmountType;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.PayOrderTypeEnum;
@@ -55,6 +58,8 @@ import com.bbyiya.model.RAreaplans;
 import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UAgents;
 import com.bbyiya.model.UBranches;
+import com.bbyiya.model.UBranchtransaccounts;
+import com.bbyiya.model.UBranchtransamountlog;
 import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UCashlogs;
 import com.bbyiya.model.UUseraddress;
@@ -796,7 +801,10 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		return 0;
 	}
 
-	
+	@Autowired
+	private UBranchtransaccountsMapper transMapper;
+	@Autowired
+	private UBranchtransamountlogMapper transLogMapper;
 	
 	/**
 	 * 订单支付成功 回写
@@ -812,7 +820,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 						log.setAmount(payOrder.getTotalprice());
 						log.setUserid(payOrder.getUserid());
 						log.setPayid(payId);
-						log.setUsetype(2);//充值
+						log.setUsetype(Integer.parseInt(AmountType.get.toString()));//充值
 						log.setCreatetime(new Date());
 						cashlogsMapper.insert(log);
 						UAccounts accounts=accountsMapper.selectByPrimaryKey(payOrder.getUserid());
@@ -830,7 +838,32 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 						payOrder.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString())); 
 						payOrderMapper.updateByPrimaryKeySelective(payOrder);
 						return true;
-					}else {//购物
+					}
+					else if (orderType==Integer.parseInt(PayOrderTypeEnum.postage.toString())) {
+						//供应商邮费充值
+						UBranchtransamountlog translog=new UBranchtransamountlog();
+						translog.setBranchuserid(payOrder.getUserid());
+						translog.setPayid(payId);
+						translog.setAmount(payOrder.getTotalprice());
+						translog.setType(Integer.parseInt(AmountType.get.toString()));
+						translog.setCreatetime(new Date());
+						transLogMapper.insert(translog);
+						
+						//邮费账户金额更新
+						UBranchtransaccounts transAccount= transMapper.selectByPrimaryKey(payOrder.getUserid());
+						if(transAccount!=null){  
+							double amount=transAccount.getAvailableamount()==null?0d:transAccount.getAvailableamount();
+							transAccount.setAvailableamount(amount+payOrder.getTotalprice());
+							transMapper.updateByPrimaryKey(transAccount);
+						}else {
+							transAccount=new UBranchtransaccounts();
+							transAccount.setBranchuserid(payOrder.getUserid());
+							transAccount.setAvailableamount(payOrder.getTotalprice());
+							transMapper.insert(transAccount);
+						}
+						return true;
+					}
+					else {//购物
 						OUserorders userorders = userOrdersMapper.selectByPrimaryKey(payOrder.getUserorderid());
 						if (userorders != null) {
 							if (userorders.getStatus().intValue() == Integer.parseInt(OrderStatusEnum.noPay.toString())) {

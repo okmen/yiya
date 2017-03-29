@@ -1,6 +1,5 @@
 package com.bbyiya.model;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 public class UBranchtransamountlog {
@@ -8,7 +7,7 @@ public class UBranchtransamountlog {
 
     private Long branchuserid;
 
-    private BigDecimal amount;
+    private Double amount;
 
     private String payid;
 
@@ -32,15 +31,16 @@ public class UBranchtransamountlog {
         this.branchuserid = branchuserid;
     }
 
-    public BigDecimal getAmount() {
-        return amount;
-    }
+   
+    public Double getAmount() {
+		return amount;
+	}
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
+	public void setAmount(Double amount) {
+		this.amount = amount;
+	}
 
-    public String getPayid() {
+	public String getPayid() {
         return payid;
     }
 

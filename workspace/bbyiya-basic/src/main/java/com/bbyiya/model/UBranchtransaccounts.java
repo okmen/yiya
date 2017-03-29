@@ -1,11 +1,10 @@
 package com.bbyiya.model;
 
-import java.math.BigDecimal;
 
 public class UBranchtransaccounts {
     private Long branchuserid;
 
-    private BigDecimal availableamount;
+    private Double availableamount;
 
     public Long getBranchuserid() {
         return branchuserid;
@@ -15,11 +14,14 @@ public class UBranchtransaccounts {
         this.branchuserid = branchuserid;
     }
 
-    public BigDecimal getAvailableamount() {
-        return availableamount;
-    }
+	public Double getAvailableamount() {
+		return availableamount;
+	}
 
-    public void setAvailableamount(BigDecimal availableamount) {
-        this.availableamount = availableamount;
-    }
+	public void setAvailableamount(Double availableamount) {
+		this.availableamount = availableamount;
+	}
+
+    
+    
 }

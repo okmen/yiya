@@ -6,9 +6,13 @@ public enum PayOrderTypeEnum {
      */
     gouwu(0),
 	/**
-     * 充值
+     * 供应商货款充值
      */
     chongzhi(2),
+    /**
+     * 邮费充值
+     */
+    postage(3) 
     ;
 
     private final int Type;

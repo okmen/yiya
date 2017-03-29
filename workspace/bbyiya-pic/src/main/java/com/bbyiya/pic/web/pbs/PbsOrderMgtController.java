@@ -77,6 +77,7 @@ public class PbsOrderMgtController extends SSOController {
 				rq.setStatusreson("参数传入错误！");
 				return JsonUtil.objectToJsonStr(rq);
 			}
+
 			SearchOrderParam param = (SearchOrderParam)JSONObject.toBean(jb,SearchOrderParam.class);			
 			//SearchOrderParam param= (SearchOrderParam)JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
 			PageInfo<PbsUserOrderResultVO> result= orderMgtService.find_pbsOrderList(param,index,size);

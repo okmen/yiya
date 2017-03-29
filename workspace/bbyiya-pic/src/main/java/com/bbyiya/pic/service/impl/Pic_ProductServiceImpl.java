@@ -45,6 +45,7 @@ import com.bbyiya.pic.vo.product.ProductSampleResultVO;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.product.MyProductResultVo;
 import com.bbyiya.vo.product.ProductSampleVo;
@@ -102,16 +103,21 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	
 	public ReturnModel getProductSamplelist(Long productId) {
 		ReturnModel rq = new ReturnModel();
-		PProducts products= productsMapper.selectByPrimaryKey(productId);
-		if(products!=null){
-			List<ProductSampleResultVO> list=productDao.findProductSamplesByProductId(productId);
-			if(list!=null&&list.size()>0){
-				for (ProductSampleResultVO sam : list) {
-					sam.setMyWorks(getMyProductsResult(sam.getCartid()));  
+		String keyName="productsample_"+productId;
+		List<ProductSampleResultVO> listResult=(List<ProductSampleResultVO>)RedisUtil.getObject(keyName);
+		if(listResult==null||listResult.size()<=0){ 
+			PProducts products= productsMapper.selectByPrimaryKey(productId);
+			if(products!=null){
+				listResult=productDao.findProductSamplesByProductId(productId);
+				if(listResult!=null&&listResult.size()>0){
+					for (ProductSampleResultVO sam : listResult) {
+						sam.setMyWorks(getMyProductsResult(sam.getCartid()));  
+					}
+					RedisUtil.setObject(keyName, listResult, 7200); 
 				}
 			}
-			rq.setBasemodle(list);
 		}
+		rq.setBasemodle(listResult);
 		rq.setStatu(ReturnStatus.Success);
 		return rq;
 	}
@@ -428,11 +434,12 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				rq.setStatusreson("已下单的作品暂不支持删除操作！");
 				return rq;
 			}
-			myMapper.deleteByPrimaryKey(cartId);
-			mydetailDao.deleMyProductDetailsByCartId(cartId); 
 			if(myproducts.getInvitestatus()!=null&&myproducts.getInvitestatus()>0){
 				inviteMapper.deleteByCartId(cartId);
 			}
+			myMapper.deleteByPrimaryKey(cartId);
+			mydetailDao.deleMyProductDetailsByCartId(cartId); 
+			
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("删除成功");
 		}else {

@@ -29,4 +29,19 @@ public interface IPic_myProductService {
 	 */
 	ReturnModel  myUserInfoExp(Long userId,String mobilePhone);
 	
+	/**
+	 * 我的作品列表--我自己的作品
+	 * @param userId
+	 * @param index
+	 * @param size
+	 * @return
+	 */
+	ReturnModel find_mycarts(Long userId,int index,int size);
+	/**
+	 * 我的作品列表--被邀请的作品
+	 * @param userId
+	 * @return
+	 */
+	ReturnModel find_mycartsInvited(Long userId);
+	
 }

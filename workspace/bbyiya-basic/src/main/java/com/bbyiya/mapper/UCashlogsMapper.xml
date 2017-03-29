@@ -12,12 +12,24 @@
   <sql id="Base_Column_List" >
     CashLogId, UserID, UseType, Amount, PayId, CreateTime
   </sql>
+   <!-- 交易记录result -->
+  <resultMap id="UCashlogResultMap" type="com.bbyiya.vo.user.UCashlogResult" extends="BaseResultMap">  
+  </resultMap>  
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" ><!-- 01 主键查询 -->
     select   <include refid="Base_Column_List" />
     from u_cashlogs
     where CashLogId = #{cashlogid,jdbcType=BIGINT}
   </select>
-   <select id="findCashlogsByUserId" resultMap="BaseResultMap" ><!-- 02 获取用户的交易流水 -->
+  <select id="findCashlogsByUserId" resultMap="BaseResultMap" ><!-- 02 获取用户的交易流水 -->
+    select <include refid="Base_Column_List" />
+    from u_cashlogs where UserID = #{userId,jdbcType=BIGINT}
+    <if test="type != null" >
+       and UseType= #{type,jdbcType=INTEGER}
+    </if>
+    order by CashLogId desc
+  </select>
+  <select id="findCashlogResultByUserId" resultMap="UCashlogResultMap" ><!-- 03  获取用户的交易流水 result -->
     select <include refid="Base_Column_List" />
     from u_cashlogs where UserID = #{userId,jdbcType=BIGINT}
     <if test="type != null" >

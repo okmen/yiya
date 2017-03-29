@@ -68,7 +68,7 @@ public class ProductController extends SSOController {
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			rq.setStatu(ReturnStatus.Success);
-			String key="productlistAll";
+			String key="productlistAll_170328";
 			List<ProductResult> list=(List<ProductResult>)RedisUtil.getObject(key);
 			if(list==null||list.size()<=0){
 				list=productService.findProductList(uid);

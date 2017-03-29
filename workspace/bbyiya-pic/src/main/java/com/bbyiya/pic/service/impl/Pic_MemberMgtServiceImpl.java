@@ -162,6 +162,25 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 		return rq;
 	}
 	
+	public ReturnModel deleteCustomer(Long branchUserId,Long customerId){
+		ReturnModel rq=new ReturnModel();
+		UAgentcustomers agentcustomers= customerMapper.selectByPrimaryKey(customerId);
+		if(agentcustomers!=null){
+			if(agentcustomers.getBranchuserid()!=null&&agentcustomers.getBranchuserid().longValue()==branchUserId){
+				customerMapper.deleteByPrimaryKey(customerId);
+				rq.setStatu(ReturnStatus.Success);
+				rq.setStatusreson("删除成功");
+			}else {
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson("不是你的客户，无法删除！");
+				return rq;
+			}
+		}
+		rq.setStatu(ReturnStatus.SystemError);
+		rq.setStatusreson("找不到相应的客户！");
+		return rq; 
+	}
+	
 	public ReturnModel addCustomer(Long branchUserId,UAgentcustomers param){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.ParamError);

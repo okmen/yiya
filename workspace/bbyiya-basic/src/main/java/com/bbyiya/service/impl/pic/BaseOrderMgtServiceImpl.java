@@ -1,6 +1,7 @@
 package com.bbyiya.service.impl.pic;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -155,6 +156,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		userOrder.setOrdertype(param.getOrderType());//订单类型
 		userOrder.setOrdertime(ordertime);
 		userOrder.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
+		userOrder.setIsbranch(0); 
 		if(param.getOrderAddressId()!=null&&param.getOrderAddressId()>0){
 			userOrder.setOrderaddressid(param.getOrderAddressId());
 		}else {
@@ -458,10 +460,15 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				OPayorder order = payOrderMapper.selectByPrimaryKey(userorder.getPayid());
 				if (order != null) {
 					if (order.getStatus().intValue() == Integer.parseInt(OrderStatusEnum.noPay.toString())) {
+						OPayorder payNew = getPayOrderNew(order);
+						if(payNew!=null){
+							userorder.setPayid(payNew.getPayid()); 
+							userOrdersMapper.updateByPrimaryKeySelective(userorder);
+						}
 						List<OOrderproducts> proList = oproductMapper.findOProductsByOrderId(orderId);
 						if (proList != null && proList.size() > 0) {
 							Map<String, Object> mapResult = new HashMap<String, Object>();
-							mapResult.put("payId", order.getPayid());
+							mapResult.put("payId", userorder.getPayid());
 							mapResult.put("orderId", orderId);
 							mapResult.put("productId", proList.get(0).getProductid());
 							mapResult.put("styleId", proList.get(0).getStyleid());
@@ -480,6 +487,43 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		return rq;
 	}
 
+	/**
+	 * 检验微信支付是否过期 ，如果微信PrepayId过期，重新生成支付单
+	 * 未过期返回null
+	 * @param payorder
+	 * @return
+	 */
+	public OPayorder getPayOrderNew(OPayorder payorder){
+		if(payorder!=null){
+			int ordertype=payorder.getOrdertype()==null?Integer.parseInt(PayOrderTypeEnum.gouwu.toString()):payorder.getOrdertype();
+			if(ordertype==Integer.parseInt(PayOrderTypeEnum.gouwu.toString())){
+				if(payorder.getPrepaytime()!=null){
+					 Date prepayTime=payorder.getPrepaytime();
+					 Calendar prepayCalendar = Calendar.getInstance();
+					 prepayCalendar.setTime(prepayTime);
+					 prepayCalendar.add(Calendar.MINUTE, 100);
+					 Date preNew=prepayCalendar.getTime();
+					 Date nowtime=new Date();
+					 if(preNew.getTime()<nowtime.getTime()){//预付单过期
+						 OPayorder payorderNew=new OPayorder();
+						 payorderNew.setPayid(GenUtils.getOrderNo(payorder.getUserid())); 
+						 payorderNew.setUserorderid(payorder.getUserorderid());
+						 payorderNew.setUserid(payorder.getUserid());
+						 payorderNew.setPaytype(payorder.getPaytype());
+						 payorderNew.setTotalprice(payorder.getTotalprice());
+						 payorderNew.setStatus(payorder.getStatus());
+						 payorderNew.setOrdertype(payorder.getOrdertype());
+						 payorderNew.setCreatetime(new Date());
+						 payOrderMapper.insert(payorderNew);
+						 return payorderNew;
+					 }
+					 System.out.println(DateUtil.getTimeStr(preNew, "yyyy-MM-dd HH:mm:ss")); 
+				}
+			}
+		}
+		return null;
+	}
+	
 	public ReturnModel saveOrderImages(String orderId, List<OOrderproductdetails> imagelist) {
 		ReturnModel rq = new ReturnModel();
 		OOrderproducts oProduct = oproductMapper.selectByPrimaryKey(orderId);

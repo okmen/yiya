@@ -1,10 +1,16 @@
 package com.bbyiya.pic.utils;
 
 import java.security.DigestException;
+import java.util.ArrayList;
 import java.util.HashMap;
-
+import java.util.List;
 import java.util.Map;
 
+
+
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 import net.sf.json.JSONObject;
 
@@ -35,9 +41,9 @@ public class WxPublicUtils {
 	 * @param userId
 	 * @return
 	 */
-	public static String getAccessToken(Long userId) {
-		if (userId == null || userId <= 0)
-			return "";
+	public static String getAccessToken() {
+//		if (userId == null || userId <= 0)
+//			return "";
 		String tokens=RedisUtil.getString(aCCESS_TOKEN_BASE);
 		if(ObjectUtil.isEmpty(tokens)){
 			tokens=getAccessTokenPost();
@@ -72,21 +78,30 @@ public class WxPublicUtils {
 			int errCode=ObjectUtil.parseInt(String.valueOf(model.get("errcode")));
 			String ticket=String.valueOf(model.get("ticket"));
 			if(errCode==0&&!ObjectUtil.isEmpty(ticket)) {
-				Map<String, Object> packageParams = new HashMap<String, Object>();
-				packageParams.put("noncestr", WxPayUtils.genNonceStr());// Ëæ»ú×Ö·û´®
-				packageParams.put("timestamp", WxPayUtils.genTimeStamp());
-				packageParams.put("jsapi_ticket", ticket);
-				packageParams.put("url", webUrl);
+//				Map<String, Object> packageParams = new HashMap<String, Object>();
+//				packageParams.put("noncestr", WxPayUtils.genNonceStr());// Ëæ»ú×Ö·û´®
+//				packageParams.put("timestamp", WxPayUtils.genTimeStamp());
+//				packageParams.put("jsapi_ticket", ticket);
+//				packageParams.put("url", webUrl);
+				String noString= WxPayUtils.genNonceStr();
+				String timeStr=String.valueOf(WxPayUtils.genTimeStamp());
+				List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+				parameters.add(new BasicNameValuePair("noncestr", noString));
+				parameters.add(new BasicNameValuePair("timestamp", timeStr));
+				parameters.add(new BasicNameValuePair("jsapi_ticket", ticket));
+				parameters.add(new BasicNameValuePair("url", webUrl));
 				try {
-					String sign= Sha1Encrypt.SHA1(packageParams);
+//					String sign= Sha1Encrypt.SHA1(packageParams);
+					String sign= Sha1Encrypt.SHA1(parameters);
 					Map<String, Object> result=new HashMap<String, Object>();
 					result.put("appId", WxPayConfig.APPID);
-					result.put("timestamp", WxPayUtils.genTimeStamp());
-					result.put("nonceStr", WxPayUtils.genNonceStr());
+					result.put("timestamp", timeStr);
+					result.put("nonceStr", noString);
 					result.put("signature", sign);
 					result.put("jsApiList",null);
 					rqModel.setStatu(ReturnStatus.Success);
 					rqModel.setBasemodle(result);
+					rqModel.setStatusreson(ticket);
 					
 				} catch (DigestException e) {
 					// TODO Auto-generated catch block

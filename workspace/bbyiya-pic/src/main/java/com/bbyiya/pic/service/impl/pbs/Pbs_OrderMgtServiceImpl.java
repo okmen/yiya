@@ -143,8 +143,10 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			List<OOrderproductdetails> detallist=orderDao.findOrderProductDetailsByProductOrderId(order.getOrderproductid());
 			int j=detallist.size()+1;
 			for (OOrderproductdetails detail : detallist) {
-				detail.setImageurl("http://pic.bbyiya.com/"+detail.getImageurl());
-				detail.setBackimageurl("http://pic.bbyiya.com/"+detail.getBackimageurl()); 
+				if(detail.getImageurl()!=null)
+					detail.setImageurl("http://pic.bbyiya.com/"+detail.getImageurl());
+				if(detail.getBackimageurl()!=null)
+					detail.setBackimageurl("http://pic.bbyiya.com/"+detail.getBackimageurl()); 
 				
 				String file_dir=basePath+sep+file_temp+sep+order.getBuyeruserid()+"-"+order.getProducttitle()+"-"+order.getPropertystr().replaceAll("/", "-")+"¡Á"+order.getCount()+"("+order.getUserorderid()+")";
 			

@@ -9,7 +9,12 @@ public enum MyProductStatusEnum {
     /**
      * 已下单
      */
-    ordered(2)
+    ordered(2),
+    
+    /**
+     * 已删除
+     */
+    deleted(3)
     ;
 
     private final int Type;

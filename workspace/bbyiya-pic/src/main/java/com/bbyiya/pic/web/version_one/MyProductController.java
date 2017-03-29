@@ -33,7 +33,7 @@ public class MyProductController extends SSOController {
 	/**
 	 * P08 保存我的作品(新增/修改) 每次修改都是先清除原有的，再新增
 	 * 
-	 * @param myproductJson
+	 * @param myproductJson 
 	 * @return
 	 * @throws Exception
 	 */

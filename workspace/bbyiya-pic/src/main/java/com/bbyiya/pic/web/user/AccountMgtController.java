@@ -59,5 +59,26 @@ public class AccountMgtController extends SSOController{
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	/**
+	 * 代理商运费账户信息(余额信息)
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/branchAccountInfo")
+	public String getBranchAccounts() throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			UAccounts accounts= accountService.getUserAccount(user.getUserId());
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(accounts);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 	
 }

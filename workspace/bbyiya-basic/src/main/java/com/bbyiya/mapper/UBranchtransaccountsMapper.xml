@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.UBranchtransaccountsMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.UBranchtransaccounts" >
+    <id column="BranchUserId" property="branchuserid" jdbcType="BIGINT" />
+    <result column="AvailableAmount" property="availableamount" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    BranchUserId, AvailableAmount
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from u_branchtransaccounts
+    where BranchUserId = #{branchuserid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from u_branchtransaccounts
+    where BranchUserId = #{branchuserid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.UBranchtransaccounts" >
+    insert into u_branchtransaccounts (BranchUserId, AvailableAmount)
+    values (#{branchuserid,jdbcType=BIGINT}, #{availableamount,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.UBranchtransaccounts" >
+    insert into u_branchtransaccounts
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="branchuserid != null" >
+        BranchUserId,
+      </if>
+      <if test="availableamount != null" >
+        AvailableAmount,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="branchuserid != null" >
+        #{branchuserid,jdbcType=BIGINT},
+      </if>
+      <if test="availableamount != null" >
+        #{availableamount,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.UBranchtransaccounts" >
+    update u_branchtransaccounts
+    <set >
+      <if test="availableamount != null" >
+        AvailableAmount = #{availableamount,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where BranchUserId = #{branchuserid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.UBranchtransaccounts" >
+    update u_branchtransaccounts
+    set AvailableAmount = #{availableamount,jdbcType=DECIMAL}
+    where BranchUserId = #{branchuserid,jdbcType=BIGINT}
+  </update>
+</mapper>

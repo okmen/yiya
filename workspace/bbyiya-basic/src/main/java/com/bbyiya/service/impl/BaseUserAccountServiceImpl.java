@@ -10,6 +10,7 @@ import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.UAccountsMapper;
 import com.bbyiya.dao.UBranchtransaccountsMapper;
+import com.bbyiya.dao.UBranchtransamountlogMapper;
 import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UCashlogsMapper;
 import com.bbyiya.enums.ReturnStatus;
@@ -22,6 +23,7 @@ import com.bbyiya.service.IBaseUserAccountService;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.user.UBranchTansAmountlogResult;
 import com.bbyiya.vo.user.UCashlogResult;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -35,6 +37,9 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 	private UCashlogsMapper cashlogsMapper;
 	@Autowired
 	private UBranchtransaccountsMapper branchAccountMapper;
+	@Autowired
+	private UBranchtransamountlogMapper branchTransAmountlogsMapper;
+	
 	/*---------------------订单模块-------------------------------*/
 	@Autowired
 	private OUserordersMapper userordersMapper;
@@ -59,16 +64,17 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 		return accounts;
 	}
 	/**
-	 * 获取代理商账户信息
+	 * 获取代理商邮费账户信息
 	 */
-	public UBranchtransaccounts getBranchAccounts(Long branchUserId){
-		UBranchtransaccounts accounts=branchAccountMapper.selectByPrimaryKey(branchUserId);
+	public UBranchtransaccounts getBranchAccounts(Long userId){
+		UBranchusers branchuser=branchusersMapper.selectByPrimaryKey(userId);
+		UBranchtransaccounts accounts=branchAccountMapper.selectByPrimaryKey(branchuser.getBranchuserid());
 		if(accounts!=null)
 			return accounts;
 		else {
 			accounts=new UBranchtransaccounts();
-			accounts.setBranchuserid(branchUserId);
-			//accounts.setAvailableamount(0d);
+			accounts.setBranchuserid(branchuser.getBranchuserid());
+			accounts.setAvailableamount(0d);
 			branchAccountMapper.insert(accounts);
 		}
 		return accounts;
@@ -105,5 +111,39 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 		rq.setBasemodle(resultPage);
 		return rq;
 	}
+	
+	/**
+	 * 查询代理商运费账户流水记录
+	 */
+	public ReturnModel findUBranchTansAmountlog(Long userId,Integer type, int index,int size){
+		ReturnModel rq=new ReturnModel();
+		PageHelper.startPage(index, size);
+		UBranchusers branchuser=branchusersMapper.selectByPrimaryKey(userId);
+		if(branchuser==null){
+			rq.setStatu(ReturnStatus.ParamError); 
+			rq.setStatusreson("用户ID参数无效");
+			return rq;
+		}
+		List<UBranchTansAmountlogResult> logs= branchTransAmountlogsMapper.findUBranchTansAmountlogResultByBranchUserId(branchuser.getUserid(), type);
+		PageInfo<UBranchTansAmountlogResult> resultPage=new PageInfo<UBranchTansAmountlogResult>(logs); 
+		if(resultPage.getList()!=null&&resultPage.getList().size()>0){
+			for (UBranchTansAmountlogResult log : resultPage.getList()) {
+				log.setCreatetimestr(DateUtil.getTimeStr(log.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
+				if(type!=null&&type.intValue()==1){
+					OPayorder payorder=payMapper.selectByPrimaryKey(log.getPayid());
+					if(payorder!=null&&!ObjectUtil.isEmpty(payorder.getUserorderid())){
+						OUserorders order= userordersMapper.selectByPrimaryKey(payorder.getUserorderid());
+						if(order!=null){
+							log.setOrderId(order.getUserorderid());
+						}
+					}
+				}
+			}
+		}
+		rq.setStatu(ReturnStatus.Success); 
+		rq.setBasemodle(resultPage);
+		return rq;
+	}
+	
 	
 }

@@ -110,12 +110,36 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 		return reuslt;
 	}
 	
-	public ReturnModel editLogistics(String orderId,String expressCom,String expressOrder,Double postage) throws Exception {
+	public ReturnModel editLogistics(String orderId,String expressCom,String expressOrder) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		OUserorders userorders = userOrdersMapper.selectByPrimaryKey(orderId);
+		if(userorders!=null){
+			userorders.setExpresscom(expressCom);
+			userorders.setExpressorder(expressOrder);
+			if(userorders.getPaytype()==Integer.parseInt(OrderTypeEnum.nomal.toString())){
+				//修改订单状态为已发货状态
+				userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
+			}			
+			userOrdersMapper.updateByPrimaryKeySelective(userorders);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(userorders);
+			rq.setStatusreson("修改运单号成功!");
+		}else{
+			rq.setStatu(ReturnStatus.ParamError);		
+			rq.setStatusreson("orderId参数传入有误！");
+			return rq;
+		}
+		
+		return rq;
+	}  
+	
+	public ReturnModel addPostage(String orderId,Double postage) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		OUserorders userorders = userOrdersMapper.selectByPrimaryKey(orderId);
 		if(userorders!=null){
 			//首次填写运单号，则执行自动扣运费款操作
-			if(userorders.getExpressorder()==null||userorders.getExpressorder().equals("")){
+			if(userorders.getPostage()==null||userorders.getPostage().doubleValue()<=0){
+				
 				//自动扣除代理商运费账户的
 				UBranchtransaccounts branchTransAccount=branchesTransMapper.selectByPrimaryKey(userorders.getBranchuserid());
 				if(branchTransAccount!=null&&branchTransAccount.getAvailableamount()!=null&&branchTransAccount.getAvailableamount().doubleValue()>=postage.doubleValue()){
@@ -133,16 +157,20 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					rq.setStatusreson("运费账户余额不足，请充值后再填运单!");
 					return rq;
 				}
+			}else if(userorders.getPostage()!=null&&userorders.getPostage().doubleValue()>0){
+				rq.setStatu(ReturnStatus.OrderError);
+				rq.setStatusreson("已完成运费自动扣款操作，不能修改！");
+				return rq;
 			}
-			userorders.setExpresscom(expressCom);
-			userorders.setExpressorder(expressOrder);
+			
 			//修改订单状态为已发货状态
+			userorders.setPostage(postage);
 			userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
 			userOrdersMapper.updateByPrimaryKeySelective(userorders);
 			
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(userorders);
-			rq.setStatusreson("修改运单号成功!");
+			rq.setStatusreson("添加运费成功!");
 		}else{
 			rq.setStatu(ReturnStatus.ParamError);		
 			rq.setStatusreson("orderId参数传入有误！");
@@ -151,7 +179,6 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 		
 		return rq;
 	}  
-	
 	
 	public String pbsdownloadImg(List<PbsUserOrderResultVO> orderlist){
 		String sep=System.getProperty("file.separator");

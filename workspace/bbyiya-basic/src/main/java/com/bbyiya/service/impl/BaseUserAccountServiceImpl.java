@@ -68,6 +68,9 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 	 */
 	public UBranchtransaccounts getBranchAccounts(Long userId){
 		UBranchusers branchuser=branchusersMapper.selectByPrimaryKey(userId);
+		if(branchuser==null){
+			return null;
+		}
 		UBranchtransaccounts accounts=branchAccountMapper.selectByPrimaryKey(branchuser.getBranchuserid());
 		if(accounts!=null)
 			return accounts;
@@ -117,15 +120,17 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 	 */
 	public ReturnModel findUBranchTansAmountlog(Long userId,Integer type, int index,int size){
 		ReturnModel rq=new ReturnModel();
-		PageHelper.startPage(index, size);
+		
 		UBranchusers branchuser=branchusersMapper.selectByPrimaryKey(userId);
 		if(branchuser==null){
 			rq.setStatu(ReturnStatus.ParamError); 
 			rq.setStatusreson("用户ID参数无效");
 			return rq;
 		}
-		List<UBranchTansAmountlogResult> logs= branchTransAmountlogsMapper.findUBranchTansAmountlogResultByBranchUserId(branchuser.getUserid(), type);
+		PageHelper.startPage(index, size);
+		List<UBranchTansAmountlogResult> logs= branchTransAmountlogsMapper.findUBranchTansAmountlogResultByBranchUserId(branchuser.getBranchuserid(), type);
 		PageInfo<UBranchTansAmountlogResult> resultPage=new PageInfo<UBranchTansAmountlogResult>(logs); 
+		
 		if(resultPage.getList()!=null&&resultPage.getList().size()>0){
 			for (UBranchTansAmountlogResult log : resultPage.getList()) {
 				log.setCreatetimestr(DateUtil.getTimeStr(log.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));

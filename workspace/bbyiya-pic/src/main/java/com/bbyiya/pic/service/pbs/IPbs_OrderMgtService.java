@@ -27,8 +27,16 @@ public interface IPbs_OrderMgtService {
 	 * @throws Exception
 	 */
 	ReturnModel editLogistics(String orderId, String expressCom,
-			String expressOrder,Double postage) throws Exception;
+			String expressOrder) throws Exception;
 	
 	String pbsdownloadImg(List<PbsUserOrderResultVO> orderlist);
+	/**
+	 * B端订单添加运费自动扣款
+	 * @param orderId
+	 * @param postage
+	 * @return
+	 * @throws Exception
+	 */
+	ReturnModel addPostage(String orderId, Double postage) throws Exception;
 	
 }

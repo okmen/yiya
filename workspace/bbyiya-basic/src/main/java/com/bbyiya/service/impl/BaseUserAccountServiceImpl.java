@@ -9,12 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.UAccountsMapper;
+import com.bbyiya.dao.UBranchtransaccountsMapper;
 import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UCashlogsMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.UAccounts;
+import com.bbyiya.model.UBranchtransaccounts;
 import com.bbyiya.model.UBranchusers;
 import com.bbyiya.service.IBaseUserAccountService;
 import com.bbyiya.utils.DateUtil;
@@ -31,6 +33,8 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 	private UAccountsMapper accountsMapper;
 	@Autowired
 	private UCashlogsMapper cashlogsMapper;
+	@Autowired
+	private UBranchtransaccountsMapper branchAccountMapper;
 	/*---------------------订单模块-------------------------------*/
 	@Autowired
 	private OUserordersMapper userordersMapper;
@@ -54,7 +58,21 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 		}
 		return accounts;
 	}
-	
+	/**
+	 * 获取代理商账户信息
+	 */
+	public UBranchtransaccounts getBranchAccounts(Long branchUserId){
+		UBranchtransaccounts accounts=branchAccountMapper.selectByPrimaryKey(branchUserId);
+		if(accounts!=null)
+			return accounts;
+		else {
+			accounts=new UBranchtransaccounts();
+			accounts.setBranchuserid(branchUserId);
+			//accounts.setAvailableamount(0d);
+			branchAccountMapper.insert(accounts);
+		}
+		return accounts;
+	}
 
 	/**
 	 * 查询账户流水记录

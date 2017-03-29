@@ -36,12 +36,12 @@ public interface IPic_myProductService {
 	 * @param size
 	 * @return
 	 */
-	ReturnModel find_mycarts(Long userId,int index,int size);
+	ReturnModel find_mycarts(Long userId,String phone,int index,int size);
 	/**
 	 * 我的作品列表--被邀请的作品
 	 * @param userId
 	 * @return
 	 */
-	ReturnModel find_mycartsInvited(Long userId);
+//	ReturnModel find_mycartsInvited(Long userId);
 	
 }

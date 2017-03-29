@@ -10,10 +10,6 @@ import java.util.Map;
 
 
 
-
-
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +26,9 @@ import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproductsinvites;
 import com.bbyiya.model.UUsers;
+import com.bbyiya.pic.dao.IMyProductsDao;
 import com.bbyiya.pic.service.IPic_myProductService;
+import com.bbyiya.pic.vo.product.MyProductListVo;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -51,7 +49,10 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 	/*------------------------产品模块-------------------------------------*/
 	@Autowired
 	private PScenesMapper sceneMapper;
-	
+	@Autowired
+	private IMyProductsDao myProductsDao;
+	@Autowired
+	private UUsersMapper usersMapper;
 	/**
 	 * 协同编辑 邀请 
 	 */
@@ -135,20 +136,101 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 	 * @param size
 	 * @return
 	 */
-	public ReturnModel find_mycarts(Long userId,int index,int size){
+	public ReturnModel find_mycarts(Long userId,String phone,int index,int size){
 		ReturnModel rq=new ReturnModel();
 		PageHelper.startPage(index, size);
-		List<MyProductResultVo> mylist = myproductsMapper.findMyProductslist(userId, null);
-		PageInfo<MyProductResultVo> resultPage=new PageInfo<MyProductResultVo>(mylist); 
-		if(resultPage.getList()!=null&&resultPage.getList().size()>0){
-			resultPage.setList(getMyProductResultVo(resultPage.getList())); 
+//		List<MyProductResultVo> mylist = myproductsMapper.findMyProductslist(userId, null);
+//		PageInfo<MyProductResultVo> resultPage=new PageInfo<MyProductResultVo>(mylist); 
+//		if(resultPage.getList()!=null&&resultPage.getList().size()>0){
+//			resultPage.setList(getMyProductResultVo(resultPage.getList())); 
+//		}
+//		UUsers users=usersMapper.selectByPrimaryKey(userId);
+//		if(users==null||ObjectUtil.isEmpty(users.getMobilephone())){
+//			rq.setStatu(ReturnStatus.ParamError);
+//			return rq;
+//		}
+		List<MyProductListVo> mylist=myProductsDao.findMyProductList(userId,phone);  
+		PageInfo<MyProductListVo> resultPage=new PageInfo<MyProductListVo>(mylist); 
+		if(resultPage!=null&&resultPage.getList()!=null&&resultPage.getList().size()>0){
+			resultPage.setList(exchangeMod(userId,resultPage.getList()));
 		}
 		rq.setStatu(ReturnStatus.Success);
 		rq.setBasemodle(resultPage);
 		return rq;
 	}
-	@Autowired
-	private UUsersMapper usersMapper;
+
+
+	private List<MyProductListVo> exchangeMod(Long myUserId, List<MyProductListVo> list){
+		if(list!=null&&list.size()>0){
+			//我自己
+			UUsers myUsers=usersMapper.selectByPrimaryKey(myUserId);
+			for (MyProductListVo vo : list) {
+				// 作品详情（图片集合）
+				List<PMyproductdetails> detailslist = myDetaiMapper.findMyProductdetails(vo.getCartid());
+				int i = 0;
+				if (detailslist != null && detailslist.size() > 0) {
+					for (PMyproductdetails dd : detailslist) {
+						if (!ObjectUtil.isEmpty(dd.getImgurl())) {
+							if(dd.getSort()!=null&&dd.getSort().intValue()==0){
+								vo.setDefaultImg("http://pic.bbyiya.com/"+dd.getImgurl()+"?imageView2/2/w/200");
+							}
+							i++;
+						}
+					}
+				}
+				vo.setCount(i);
+				 /*---------------------作品本人的头像个昵称--------------------------------*/
+				 if (ObjectUtil.isEmpty(myUsers.getUserimg())) {
+					vo.setMyHeadImg("http://pic.bbyiya.com/userdefaultimg-2017-0303-01.png");
+				 } else {
+					vo.setMyHeadImg(myUsers.getUserimg());
+				 }
+				 if (!ObjectUtil.isEmpty(myUsers.getNickname())&&!"null".equals(myUsers.getNickname())) {
+					vo.setMyNickName(myUsers.getNickname());
+				 } else {
+					vo.setMyNickName(myUsers.getMobilephone());
+				 }
+				 /*--------------------------非作品本人的头像昵称----------------------------------------------*/
+				 if(vo.getUserid().longValue()==myUserId){//我的作品
+					vo.setIsMine(1);
+					if(vo.getInvitestatus()!=null&&vo.getInvitestatus()>0){
+						List<PMyproductsinvites> invlist= inviteMapper.findListByCartId(vo.getCartid());
+						if(invlist!=null&&invlist.size()>0){
+							UUsers otherUsers = usersMapper.getUUsersByPhone(invlist.get(0).getInvitephone());
+							if(otherUsers!=null){
+								if (ObjectUtil.isEmpty(otherUsers.getUserimg())) {
+									vo.setOtherHeadImg("http://pic.bbyiya.com/userdefaultimg-2017-0303-01.png");
+								} else {
+									vo.setOtherHeadImg(otherUsers.getUserimg());
+								}
+								if (!ObjectUtil.isEmpty(otherUsers.getNickname()) && !"null".equals(otherUsers.getNickname())) {
+									vo.setOtherNickName(otherUsers.getNickname());
+								} else {
+									vo.setOtherNickName(otherUsers.getMobilephone());
+								}
+							}else {
+								vo.setOtherNickName(invlist.get(0).getInvitephone());
+								vo.setOtherHeadImg("http://pic.bbyiya.com/userdefaultimg-2017-0303-01.png");
+							}
+						}
+					}
+				 }else{//别人
+					UUsers otherUsers = usersMapper.selectByPrimaryKey(vo.getUserid());
+					if (ObjectUtil.isEmpty(otherUsers.getUserimg())) {
+						vo.setOtherHeadImg("http://pic.bbyiya.com/userdefaultimg-2017-0303-01.png");
+					} else {
+						vo.setOtherHeadImg(otherUsers.getUserimg());
+					}
+					if (!ObjectUtil.isEmpty(otherUsers.getNickname()) && !"null".equals(otherUsers.getNickname())) {
+						vo.setOtherNickName(otherUsers.getNickname());
+					} else {
+						vo.setOtherNickName(otherUsers.getMobilephone());
+					}
+				 }
+			}
+		}
+		return list;
+	}
 	
 	public ReturnModel find_mycartsInvited(Long userId){
 		ReturnModel rq=new ReturnModel();

@@ -77,17 +77,32 @@ public class SubmitOrderMgtController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
+	/**
+	 * 获取充值订单号
+	 * @param amount
+	 * @param type（2：货款充值）
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/recharge")
-	public String recharge(@RequestParam(required = false, defaultValue = "0") double amount) throws Exception {
+	public String recharge(@RequestParam(required = false, defaultValue = "0") double amount,@RequestParam(required = false, defaultValue = "2") int type) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if(user!=null){
 			String orderId=GenUtils.getOrderNo(user.getUserId());
-			boolean isok=orderMgtService.addPayOrder(user.getUserId(), orderId, "", Integer.parseInt(PayOrderTypeEnum.chongzhi.toString()), amount);
+			boolean isok=false;
+			if(type==Integer.parseInt(PayOrderTypeEnum.chongzhi.toString())){
+				isok=orderMgtService.addPayOrder(user.getUserId(), orderId, "", Integer.parseInt(PayOrderTypeEnum.chongzhi.toString()), amount);
+			}else if (type==Integer.parseInt(PayOrderTypeEnum.postage.toString())) {
+				isok=orderMgtService.addPayOrder(user.getUserId(), orderId, "", Integer.parseInt(PayOrderTypeEnum.postage.toString()), amount);
+			} 
 			if(isok){
 				rq.setStatu(ReturnStatus.Success);
 				rq.setBasemodle(orderId); 
+			}else {
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("参数有误");
 			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);

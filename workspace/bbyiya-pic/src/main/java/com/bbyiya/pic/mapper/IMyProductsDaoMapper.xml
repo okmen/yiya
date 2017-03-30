@@ -43,5 +43,8 @@
    WHERE a.UserId=#{userId,jdbcType=BIGINT} OR b.InvitePhone=#{phone,jdbcType=VARCHAR}
    ORDER BY b.CreateTime DESC,a.CreateTime DESC 
   </select>
-  
+  <select id="getMyProductVO" resultMap="MyProductListVO" ><!-- get 获取作品详情 -->
+    SELECT a.*,b.InvitePhone,b.CreateTime as InviteTime,b.Status as InStatus  from p_myproducts a LEFT JOIN p_myproductsinvites b on a.CartId=b.CartId
+    WHERE a.CartId=#{cartid,jdbcType=BIGINT}  
+  </select>
 </mapper>

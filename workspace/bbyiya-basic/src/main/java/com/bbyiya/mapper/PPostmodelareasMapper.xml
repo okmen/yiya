@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.PPostmodelareasMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.PPostmodelareas" >
+    <id column="PostId" property="postid" jdbcType="INTEGER" />
+    <result column="PostModelId" property="postmodelid" jdbcType="INTEGER" />
+    <result column="AreaCode" property="areacode" jdbcType="INTEGER" />
+    <result column="AreaName" property="areaname" jdbcType="VARCHAR" />
+    <result column="Amount" property="amount" jdbcType="DECIMAL" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    PostId, PostModelId, AreaCode, AreaName, Amount, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from p_postmodelareas
+    where PostId = #{postid,jdbcType=INTEGER}
+  </select>
+  <select id="getPostAreaModel" resultMap="BaseResultMap"  ><!-- 01 get 获取运费model -->
+    select 
+    <include refid="Base_Column_List" />
+    from p_postmodelareas
+    where PostModelId = #{postmodelId,jdbcType=INTEGER} and AreaCode=#{area,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from p_postmodelareas
+    where PostId = #{postid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.PPostmodelareas" >
+    insert into p_postmodelareas (PostId, PostModelId, AreaCode, 
+      AreaName, Amount, CreateTime
+      )
+    values (#{postid,jdbcType=INTEGER}, #{postmodelid,jdbcType=INTEGER}, #{areacode,jdbcType=INTEGER}, 
+      #{areaname,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL}, #{createtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.PPostmodelareas" >
+    insert into p_postmodelareas
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="postid != null" >
+        PostId,
+      </if>
+      <if test="postmodelid != null" >
+        PostModelId,
+      </if>
+      <if test="areacode != null" >
+        AreaCode,
+      </if>
+      <if test="areaname != null" >
+        AreaName,
+      </if>
+      <if test="amount != null" >
+        Amount,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="postid != null" >
+        #{postid,jdbcType=INTEGER},
+      </if>
+      <if test="postmodelid != null" >
+        #{postmodelid,jdbcType=INTEGER},
+      </if>
+      <if test="areacode != null" >
+        #{areacode,jdbcType=INTEGER},
+      </if>
+      <if test="areaname != null" >
+        #{areaname,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PPostmodelareas" >
+    update p_postmodelareas
+    <set >
+      <if test="postmodelid != null" >
+        PostModelId = #{postmodelid,jdbcType=INTEGER},
+      </if>
+      <if test="areacode != null" >
+        AreaCode = #{areacode,jdbcType=INTEGER},
+      </if>
+      <if test="areaname != null" >
+        AreaName = #{areaname,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null" >
+        Amount = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where PostId = #{postid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PPostmodelareas" >
+    update p_postmodelareas
+    set PostModelId = #{postmodelid,jdbcType=INTEGER},
+      AreaCode = #{areacode,jdbcType=INTEGER},
+      AreaName = #{areaname,jdbcType=VARCHAR},
+      Amount = #{amount,jdbcType=DECIMAL},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where PostId = #{postid,jdbcType=INTEGER}
+  </update>
+</mapper>

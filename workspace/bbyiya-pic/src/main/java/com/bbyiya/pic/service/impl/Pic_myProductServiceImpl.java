@@ -158,6 +158,20 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 		rq.setBasemodle(resultPage);
 		return rq;
 	}
+	
+	public ReturnModel get_mycart(Long userId, Long cartId){
+		ReturnModel rq=new ReturnModel();
+		MyProductListVo vo=myProductsDao.getMyProductVO(cartId);
+		if(vo!=null){
+			List<MyProductListVo> list=new ArrayList<MyProductListVo>();
+			list.add(vo);
+			list=exchangeMod(userId, list);
+			rq.setBasemodle(list.get(0));
+			
+		}
+		rq.setStatu(ReturnStatus.Success);
+		return rq;
+	}
 
 
 	private List<MyProductListVo> exchangeMod(Long myUserId, List<MyProductListVo> list){
@@ -177,6 +191,9 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 							i++;
 						}
 					}
+				}
+				if(ObjectUtil.isEmpty(vo.getDefaultImg())){
+					vo.setDefaultImg("http://pic.bbyiya.com/484983733454448354.png"); 
 				}
 				vo.setCount(i);
 				 /*---------------------作品本人的头像个昵称--------------------------------*/

@@ -1,5 +1,7 @@
 package com.bbyiya.pic.web;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
@@ -11,8 +13,10 @@ import com.bbyiya.baseUtils.GenUtils;
 import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.OOrderproducts;
+import com.bbyiya.model.PPostmodel;
 import com.bbyiya.pic.vo.order.SubmitOrderProductParam;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
+import com.bbyiya.service.pic.IBasePostMgtService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -25,7 +29,37 @@ import com.bbyiya.web.base.SSOController;
 public class SubmitOrderMgtController extends SSOController {
 	@Resource(name = "baseOrderMgtServiceImpl")
 	private IBaseOrderMgtService orderMgtService;
+	/**
+	 * 运费
+	 */
+	@Resource(name = "basePostMgtServiceImpl")
+	private IBasePostMgtService postMgtService;
 
+	
+	
+	@ResponseBody
+	@RequestMapping(value = "/findpostlist")
+	public String findpostlist(String area,String addressId)throws Exception{
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			long addrid=ObjectUtil.parseLong(addressId);
+			if(addrid>0){
+				rq=postMgtService.find_postagelist(addrid);
+			}else {
+				List<PPostmodel> postlist= postMgtService.find_postlist(ObjectUtil.parseInt(area));
+				if(postlist!=null){
+					rq.setBasemodle(postlist);
+					rq.setStatu(ReturnStatus.Success);
+				}
+			}
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 	/**
 	 * 提交订单
 	 * 

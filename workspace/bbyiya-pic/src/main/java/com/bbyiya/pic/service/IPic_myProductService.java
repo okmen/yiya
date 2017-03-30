@@ -38,6 +38,13 @@ public interface IPic_myProductService {
 	 */
 	ReturnModel find_mycarts(Long userId,String phone,int index,int size);
 	/**
+	 * 根据作品cartid获取作品
+	 * @param userId
+	 * @param cartId
+	 * @return
+	 */
+	ReturnModel get_mycart(Long userId, Long cartId);
+	/**
 	 * 我的作品列表--被邀请的作品
 	 * @param userId
 	 * @return

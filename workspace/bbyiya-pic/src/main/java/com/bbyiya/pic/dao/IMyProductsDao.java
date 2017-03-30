@@ -19,10 +19,20 @@ public interface IMyProductsDao {
 	MyProductsResult getMyProductResultByProductId(@Param("userId") Long userId,@Param("productId")Long productId, @Param("status") Integer status);
 	/**
 	 * 我的作品列表
+	 * (我的作品)
+	 * v1.0
 	 * @param userId
 	 * @param phone
 	 * @return
 	 */
 	List<MyProductListVo> findMyProductList(@Param("userId")Long userId,@Param("phone") String phone);
+	/**
+	 * 获取作品单个model 
+	 * （我的作品）
+	 *  v1.0
+	 * @param cartId
+	 * @return
+	 */
+	MyProductListVo getMyProductVO(@Param("cartid")Long cartId);
 
 }

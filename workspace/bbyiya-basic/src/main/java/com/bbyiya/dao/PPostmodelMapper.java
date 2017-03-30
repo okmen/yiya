@@ -1,5 +1,7 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
 import com.bbyiya.model.PPostmodel;
 
 public interface PPostmodelMapper {
@@ -14,4 +16,9 @@ public interface PPostmodelMapper {
     int updateByPrimaryKeySelective(PPostmodel record);
 
     int updateByPrimaryKey(PPostmodel record);
+    /**
+     * 获取所有的快递方式
+     * @return
+     */
+    List<PPostmodel> findAllModels();
 }

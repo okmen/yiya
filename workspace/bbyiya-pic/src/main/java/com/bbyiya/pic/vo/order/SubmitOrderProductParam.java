@@ -9,7 +9,7 @@ public class SubmitOrderProductParam implements Serializable{
 	private Long  styleId;
 	private Integer  count;
 	private Long cartId;
-	
+	private Integer postModelId;
 	public Long getProductId() {
 		return productId;
 	}
@@ -33,6 +33,12 @@ public class SubmitOrderProductParam implements Serializable{
 	}
 	public void setCartId(Long cartId) {
 		this.cartId = cartId;
+	}
+	public Integer getPostModelId() {
+		return postModelId;
+	}
+	public void setPostModelId(Integer postModelId) {
+		this.postModelId = postModelId;
 	}
 	
 	

@@ -83,6 +83,7 @@ public class SubmitOrderMgtController extends SSOController {
 				product.setStyleid(productParam.getStyleId());
 				product.setCount(productParam.getCount());
 
+				
 				// 下单参数
 				UserOrderSubmitParam param = new UserOrderSubmitParam();
 				param.setUserId(user.getUserId());

@@ -21,6 +21,8 @@ import com.bbyiya.model.EErrors;
 import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.PMyproducts;
+import com.bbyiya.pic.service.IPic_OrderMgtService;
+import com.bbyiya.pic.service.pbs.IPbs_OrderMgtService;
 import com.bbyiya.pic.vo.order.OrderPhotoParam;
 import com.bbyiya.pic.vo.order.SaveOrderPhotoParam;
 import com.bbyiya.pic.vo.order.SubmitOrderProductParam;
@@ -38,6 +40,9 @@ public class OrderMgtController extends SSOController {
 
 	@Resource(name = "baseOrderMgtServiceImpl")
 	private IBaseOrderMgtService orderMgtService;
+	
+	@Resource(name = "pic_orderMgtService")
+	private IPic_OrderMgtService orderService;
 	@Autowired
 	private PMyproductsMapper myMapper;
 	@Autowired
@@ -186,6 +191,49 @@ public class OrderMgtController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	
+	/**
+	 * O03 我的购买订单 带分页
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/userbuylist")
+	public String userbuylist(int index,int size) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			rq = orderMgtService.findUserOrderlist(user.getUserId(),index,size);
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * O02取消订单
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/cancelorder")
+	public String cancelorder(String orderId) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			rq = orderService.cancelOrder(orderId);
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	
 
 	/**
 	 * O05 支付详情

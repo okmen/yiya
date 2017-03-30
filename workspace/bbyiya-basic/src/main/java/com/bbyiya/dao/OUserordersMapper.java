@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.bbyiya.model.OUserorders;
+import com.bbyiya.vo.order.UserBuyerOrderResult;
 
 public interface OUserordersMapper {
     int deleteByPrimaryKey(String userorderid);
@@ -25,6 +26,8 @@ public interface OUserordersMapper {
      * @return
      */
     List<OUserorders> findOrderByUserId(@Param("userId") Long userId);
+    
+    List<UserBuyerOrderResult>findUserOrderByUserId(@Param("userId") Long userId);
     
     /**
      * 待领取的订单

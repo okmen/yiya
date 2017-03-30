@@ -27,6 +27,10 @@
     PayTime, BranchUserId, OrderTotalPrice, PayType, OrderType, AgentUserId, IsBranch, 
     ExpressCom, ExpressOrder,Postage, UploadTime
   </sql>
+  <!-- 用户订单结果类Result -->
+  <resultMap id="UserBuyerOrderResultMap" type="com.bbyiya.vo.order.UserBuyerOrderResult" extends="BaseResultMap">  
+  </resultMap>  
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
@@ -39,6 +43,13 @@
     from o_userorders
     where UserId = #{userId,jdbcType=BIGINT}  order by OrderTime desc
   </select>
+  <select id="findUserOrderByUserId" resultMap="UserBuyerOrderResultMap"  ><!-- 01 根据UserId 获取用户的订单列表 -->
+    select 
+    <include refid="Base_Column_List" />
+    from o_userorders
+    where UserId = #{userId,jdbcType=BIGINT}  order by OrderTime desc
+  </select>
+  
   <select id="findOrdersByAgentUserId" resultMap="BaseResultMap"  ><!-- 02 获取待分配的订单 （代理） -->
     select 
     <include refid="Base_Column_List" />

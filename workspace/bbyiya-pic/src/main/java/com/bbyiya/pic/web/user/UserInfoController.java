@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.service.IUserInfoMgtService;
 import com.bbyiya.utils.JsonUtil;
+import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.vo.user.UUserInfoParam;
@@ -29,6 +30,12 @@ public class UserInfoController  extends SSOController{
 			UUserInfoParam param=(UUserInfoParam)JsonUtil.jsonStrToObject(userInfoJson, UUserInfoParam.class);
 			if(param!=null){
 				rq= userInfoMgtService.editUUsers(user.getUserId(), param);
+				if(ReturnStatus.Success.equals(rq.getStatu()) ){
+					LoginSuccessResult loginUser= userInfoMgtService.getLoginSuccessResult(user.getUserId());
+					if(loginUser!=null){
+						RedisUtil.setObject(super.getTicket(), loginUser, 86400); 
+					}
+				}
 			}
 			rq.setStatu(ReturnStatus.Success);
 		}else {

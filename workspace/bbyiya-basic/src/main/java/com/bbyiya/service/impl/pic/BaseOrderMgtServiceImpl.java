@@ -69,10 +69,13 @@ import com.bbyiya.service.pic.IBaseOrderMgtService;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.order.UserBuyerOrderResult;
 import com.bbyiya.vo.order.UserOrderParam;
 import com.bbyiya.vo.order.UserOrderResult;
 import com.bbyiya.vo.order.UserOrderSubmitParam;
 import com.bbyiya.vo.product.StyleProperty;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 @Service("baseOrderMgtServiceImpl")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
@@ -129,7 +132,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	/*---错误日志记录----*/
 	@Autowired
 	private EErrorsMapper logMapper;
-	
+
 	/**
 	 * 提交订单（param已经被验证）
 	 * @param param
@@ -572,10 +575,15 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			List<UserOrderResult> resultlist = new ArrayList<UserOrderResult>();
 			for (OUserorders oo : userorders) {
 				UserOrderResult model = new UserOrderResult();
+				
 				model.setUserOrderId(oo.getUserorderid());
+				model.setPayId(oo.getPayid());
 				model.setTotalprice(oo.getTotalprice());
 				model.setStatus(oo.getStatus());
+				model.setBranchUserId(oo.getBranchuserid());
+				model.setRemark(oo.getRemark());
 				model.setOrderTimeStr(DateUtil.getTimeStr(oo.getOrdertime(), "yyyy-MM-dd"));
+				
 				List<OOrderproducts> proList = oproductMapper.findOProductsByOrderId(oo.getUserorderid());
 				model.setProlist(proList);
 				resultlist.add(model);
@@ -585,7 +593,45 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		}
 		return rq;
 	}
-
+	
+	/**
+	 * 获取用户购买订单列表
+	 * @param userId
+	 * @return
+	 */
+	public ReturnModel findUserOrderlist(Long userId,int index,int size) {
+		ReturnModel rq = new ReturnModel();
+		PageHelper.startPage(index, size);
+		List<UserBuyerOrderResult> userorderslist = userOrdersMapper.findUserOrderByUserId(userId);
+		PageInfo<UserBuyerOrderResult> resultPage=new PageInfo<UserBuyerOrderResult>(userorderslist); 
+		if(resultPage!=null&&resultPage.getList()!=null&&resultPage.getList().size()>0){
+			for (UserBuyerOrderResult oo : resultPage.getList()) {
+				if(oo.getOrdertime()!=null)
+					oo.setOrdertimestr(DateUtil.getTimeFormatText(oo.getOrdertime()));
+				if(oo.getPaytime()!=null)
+					oo.setPaytimestr(DateUtil.getTimeStr(oo.getPaytime(), "yyyy-MM-dd"));
+				if(oo.getUploadtime()!=null)
+					oo.setUploadtimestr(DateUtil.getTimeStr(oo.getUploadtime(), "yyyy-MM-dd"));
+				List<OOrderproducts> proList = oproductMapper.findOProductsByOrderId(oo.getUserorderid());
+				if(proList!=null&&proList.size()>0){
+					OOrderproducts product=proList.get(0);
+					if(product.getProductimg()==null||product.getProductimg().equals("")){
+						product.setProductimg("http://pic.bbyiya.com/484983733454448354.png");
+					}
+					oo.setProduct(proList.get(0));
+					PMyproducts myproduct= myproductMapper.selectByPrimaryKey(proList.get(0).getCartid());
+					if(myproduct!=null){
+						oo.setWorkTitle(myproduct.getTitle()); 
+					}
+				}
+			}
+			rq.setBasemodle(resultPage);
+			rq.setStatu(ReturnStatus.Success);
+		}
+		return rq;
+	}
+	
+	
 	public ReturnModel getOrderInfo(Long userId, String orderId) {
 		ReturnModel rq=new ReturnModel();
 		OUserorders orderInfo=userOrdersMapper.selectByPrimaryKey(orderId);
@@ -593,8 +639,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			UserOrderResult model = new UserOrderResult();
 			model.setUserOrderId(orderInfo.getUserorderid());
 			model.setTotalprice(orderInfo.getTotalprice());
-			model.setStatus(orderInfo.getStatus());
-			model.setPayType(orderInfo.getPaytype()); 
+			model.setStatus(orderInfo.getStatus());			
 			model.setOrderTimeStr(DateUtil.getTimeStr(orderInfo.getOrdertime(), "yyyy-MM-dd"));
 			List<OOrderproducts> proList = oproductMapper.findOProductsByOrderId(orderInfo.getUserorderid());
 			model.setProlist(proList);

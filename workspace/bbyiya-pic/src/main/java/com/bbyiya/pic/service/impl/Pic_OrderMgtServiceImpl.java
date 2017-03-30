@@ -292,7 +292,38 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 		return rq;
 	}
 	
-	
+	/**
+	 * 取消订单
+	 * @param userId
+	 * @return
+	 */
+	public ReturnModel cancelOrder(String orderId) {
+		ReturnModel rq = new ReturnModel();
+		OUserorders userorders = userOrdersMapper.selectByPrimaryKey(orderId);
+		if(userorders!=null){
+			List<OOrderproducts> productList=orderProductMapper.findOProductsByOrderId(userorders.getUserorderid());
+			if(productList!=null&&productList.size()>0){
+				for (OOrderproducts pro : productList) {
+					List<OOrderproductdetails> detailslist= orderDao.findOrderProductDetailsByProductOrderId(pro.getOrderproductid());
+					for (OOrderproductdetails detail : detailslist) {
+						detailMapper.deleteByPrimaryKey(detail.getOproductdetailid());
+					}
+					orderProductMapper.deleteByPrimaryKey(pro.getOrderproductid());
+				}
+			}
+			if(userorders.getOrderaddressid()!=null){
+				OOrderaddress address=addressMapper.selectByPrimaryKey(userorders.getOrderaddressid());
+				if(address!=null)
+					addressMapper.deleteByPrimaryKey(address.getOrderaddressid());
+			}	
+			userOrdersMapper.deleteByPrimaryKey(userorders.getUserorderid());
+		}
+		rq.setBasemodle(null);
+		rq.setStatusreson("取消订单成功！");
+		rq.setStatu(ReturnStatus.Success);
+		return rq;
+	}
+
 	public void downloadImg(List<UserOrderResultVO> orderlist,String basePath){
 		try {
 			FileUtils.isDirExists(basePath);

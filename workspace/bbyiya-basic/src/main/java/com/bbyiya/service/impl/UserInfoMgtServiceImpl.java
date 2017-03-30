@@ -27,6 +27,7 @@ import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.SendSMSByMobile;
 import com.bbyiya.utils.encrypt.MD5Encrypt;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.vo.user.UChildInfoParam;
 import com.bbyiya.vo.user.UUserInfoParam;
 
@@ -43,6 +44,15 @@ public class UserInfoMgtServiceImpl implements IUserInfoMgtService {
 	@Resource(name = "userLoginService")
 	private IUserLoginService loginService;
 
+	public LoginSuccessResult getLoginSuccessResult(Long userId){
+		UUsers user= userDao.selectByPrimaryKey(userId);
+		if(user!=null){
+			return loginService.getLoginSuccessResult_Common(user);
+		}else {
+			return null;
+		}
+	}
+	
 	public ReturnModel updatePWD(String mobile, String vcode, String pwd) {
 		ReturnModel rq = new ReturnModel();
 		if(!ObjectUtil.isNumberAlphaFix(mobile)){

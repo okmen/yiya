@@ -2,6 +2,7 @@ package com.bbyiya.service;
 
 import com.bbyiya.model.UUserresponses;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.vo.user.UChildInfoParam;
 import com.bbyiya.vo.user.UUserInfoParam;
 
@@ -37,6 +38,12 @@ public interface IUserInfoMgtService {
 	 * @param param
 	 */
 	ReturnModel editUUsers(Long userId,UUserInfoParam param);
+	/**
+	 * 通过userId获取用户登录信息
+	 * @param userId
+	 * @return
+	 */
+	LoginSuccessResult getLoginSuccessResult(Long userId);
 	/**
 	 * 用户意见反馈
 	 * @param param

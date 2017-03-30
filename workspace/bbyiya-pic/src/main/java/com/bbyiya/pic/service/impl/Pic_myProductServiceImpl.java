@@ -168,7 +168,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 			list=exchangeMod(userId, list);
 			rq.setBasemodle(list.get(0));
 			
-		}
+		} 
 		rq.setStatu(ReturnStatus.Success);
 		return rq;
 	}

@@ -87,6 +87,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					product.setBranchesPhone(branch.getPhone());
 				}
 				int orderType = order.getOrdertype() == null ? 0 : order.getOrdertype();
+				order.setOrdertype(orderType);
 				//影楼直接下单
 				if (orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
 					product.setBranchesAddress(address.getProvince()+address.getCity()+address.getDistrict()+address.getStreetdetail());

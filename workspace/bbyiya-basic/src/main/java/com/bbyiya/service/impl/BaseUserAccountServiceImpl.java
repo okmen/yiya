@@ -67,16 +67,13 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 	 * 获取代理商邮费账户信息
 	 */
 	public UBranchtransaccounts getBranchAccounts(Long userId){
-		UBranchusers branchuser=branchusersMapper.selectByPrimaryKey(userId);
-		if(branchuser==null){
-			return null;
-		}
-		UBranchtransaccounts accounts=branchAccountMapper.selectByPrimaryKey(branchuser.getBranchuserid());
+		
+		UBranchtransaccounts accounts=branchAccountMapper.selectByPrimaryKey(userId);
 		if(accounts!=null)
 			return accounts;
 		else {
 			accounts=new UBranchtransaccounts();
-			accounts.setBranchuserid(branchuser.getBranchuserid());
+			accounts.setBranchuserid(userId);
 			accounts.setAvailableamount(0d);
 			branchAccountMapper.insert(accounts);
 		}
@@ -121,14 +118,9 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 	public ReturnModel findUBranchTansAmountlog(Long userId,Integer type, int index,int size){
 		ReturnModel rq=new ReturnModel();
 		
-		UBranchusers branchuser=branchusersMapper.selectByPrimaryKey(userId);
-		if(branchuser==null){
-			rq.setStatu(ReturnStatus.ParamError); 
-			rq.setStatusreson("用户ID参数无效");
-			return rq;
-		}
+		
 		PageHelper.startPage(index, size);
-		List<UBranchTansAmountlogResult> logs= branchTransAmountlogsMapper.findUBranchTansAmountlogResultByBranchUserId(branchuser.getBranchuserid(), type);
+		List<UBranchTansAmountlogResult> logs= branchTransAmountlogsMapper.findUBranchTansAmountlogResultByBranchUserId(userId, type);
 		PageInfo<UBranchTansAmountlogResult> resultPage=new PageInfo<UBranchTansAmountlogResult>(logs); 
 		
 		if(resultPage.getList()!=null&&resultPage.getList().size()>0){

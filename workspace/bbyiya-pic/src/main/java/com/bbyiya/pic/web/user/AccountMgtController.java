@@ -70,8 +70,7 @@ public class AccountMgtController extends SSOController{
 	public String getBranchAccounts() throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
-		if(user!=null){
-			
+		if(user!=null){	
 			UBranchtransaccounts accounts= accountService.getBranchAccounts(user.getUserId());
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(accounts);

@@ -85,5 +85,12 @@ public interface IBaseOrderMgtService {
 	 * @return （中款-横版）
 	 */
 	String getStylePropertyStr(Long styleId);
+	
+	/**
+	 * 获取用户购买订单列表
+	 * @param userId
+	 * @return
+	 */
+	ReturnModel findUserOrderlist(Long userId,int index,int size);
 
 }

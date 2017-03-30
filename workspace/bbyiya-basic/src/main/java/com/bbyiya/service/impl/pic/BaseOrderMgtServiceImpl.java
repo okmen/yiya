@@ -132,7 +132,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	/*---错误日志记录----*/
 	@Autowired
 	private EErrorsMapper logMapper;
-	
+
 	/**
 	 * 提交订单（param已经被验证）
 	 * @param param
@@ -630,7 +630,8 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		}
 		return rq;
 	}
-
+	
+	
 	public ReturnModel getOrderInfo(Long userId, String orderId) {
 		ReturnModel rq=new ReturnModel();
 		OUserorders orderInfo=userOrdersMapper.selectByPrimaryKey(orderId);

@@ -44,4 +44,10 @@ public interface IPic_OrderMgtService {
 	ReturnModel getOrderDetail(String userOrderId);
 
 	void downloadImg(List<UserOrderResultVO> orderlist, String basePath);
+	/**
+	 * È¡Ïû¶©µ¥
+	 * @param orderId
+	 * @return
+	 */
+	ReturnModel cancelOrder(String orderId);
 }

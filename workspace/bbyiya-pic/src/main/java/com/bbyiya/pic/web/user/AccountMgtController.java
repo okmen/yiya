@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.UAccounts;
+import com.bbyiya.model.UBranchtransaccounts;
 import com.bbyiya.service.IBaseUserAccountService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -52,6 +53,46 @@ public class AccountMgtController extends SSOController{
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			rq= accountService.findCashLogs(user.getUserId(),type, index,size);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * PBS A1代理商运费账户信息(余额信息)
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/branchAccountInfo")
+	public String getBranchAccounts() throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			
+			UBranchtransaccounts accounts= accountService.getBranchAccounts(user.getUserId());
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(accounts);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	/**
+	 * PBS A2代理商运费账户交易流水
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/branchTransAccountlog")
+	public String getbranchTransAccountLogs(@RequestParam(required = false, defaultValue = "1") int  type,int index,int size) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq= accountService.findUBranchTansAmountlog(user.getUserId(),type, index,size);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

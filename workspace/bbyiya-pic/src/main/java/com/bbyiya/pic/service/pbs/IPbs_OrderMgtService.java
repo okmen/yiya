@@ -18,7 +18,7 @@ public interface IPbs_OrderMgtService {
 	 */
 	PageInfo<PbsUserOrderResultVO> find_pbsOrderList(SearchOrderParam param,int index,int size);
 	/** 
-	 * 修改订单运单号
+	 * 修改订单运单号及运费自动扣款
 	 * @author Julie 
 	 * @param orderId
 	 * @param expressCom
@@ -30,5 +30,13 @@ public interface IPbs_OrderMgtService {
 			String expressOrder) throws Exception;
 	
 	String pbsdownloadImg(List<PbsUserOrderResultVO> orderlist);
+	/**
+	 * B端订单添加运费自动扣款
+	 * @param orderId
+	 * @param postage
+	 * @return
+	 * @throws Exception
+	 */
+	ReturnModel addPostage(String orderId, Double postage) throws Exception;
 	
 }

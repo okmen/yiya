@@ -77,7 +77,8 @@ public class PbsOrderMgtController extends SSOController {
 				rq.setStatusreson("参数传入错误！");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			SearchOrderParam param = (SearchOrderParam)JSONObject.toBean(jb,SearchOrderParam.class);
+
+			SearchOrderParam param = (SearchOrderParam)JSONObject.toBean(jb,SearchOrderParam.class);			
 			//SearchOrderParam param= (SearchOrderParam)JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
 			PageInfo<PbsUserOrderResultVO> result= orderMgtService.find_pbsOrderList(param,index,size);
 			rq.setBasemodle(result);
@@ -216,7 +217,7 @@ public class PbsOrderMgtController extends SSOController {
 	
 	
 	/**
-	 *查询订单运单号信息
+	 *查询订单运单号信息及运费自动扣款
 	 * 
 	 * @return
 	 * @throws Exception
@@ -228,6 +229,27 @@ public class PbsOrderMgtController extends SSOController {
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
 			rq=orderMgtService.editLogistics(orderId, expressCom, expressOrder);
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 *B端订单填运费自动扣款
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/addPostAge")
+	public String addPostAge(String orderId,Double postage) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			rq=orderMgtService.addPostage(orderId,postage);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

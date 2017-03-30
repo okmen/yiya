@@ -1,6 +1,11 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.UBranchtransamountlog;
+import com.bbyiya.vo.user.UBranchTansAmountlogResult;
 
 public interface UBranchtransamountlogMapper {
     int deleteByPrimaryKey(Long logid);
@@ -14,4 +19,12 @@ public interface UBranchtransamountlogMapper {
     int updateByPrimaryKeySelective(UBranchtransamountlog record);
 
     int updateByPrimaryKey(UBranchtransamountlog record);
+    
+    /**
+     *  获取代理商运费账户交易流水
+     * @param userId
+     * @param type
+     * @return
+     */
+    List<UBranchTansAmountlogResult> findUBranchTansAmountlogResultByBranchUserId(@Param("branchUserId")Long branchUserId,@Param("type")Integer type);
 }

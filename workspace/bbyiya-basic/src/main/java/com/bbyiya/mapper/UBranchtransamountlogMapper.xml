@@ -12,12 +12,28 @@
   <sql id="Base_Column_List" >
     LogId, BranchUserId, Amount, PayId, Type, CreateTime
   </sql>
+   <!--运费交易记录result -->
+  <resultMap id="UBranchTansAmountlogResultMap" type="com.bbyiya.vo.user.UBranchTansAmountlogResult" extends="BaseResultMap">  
+  </resultMap>  
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from u_branchtransamountlog
     where LogId = #{logid,jdbcType=BIGINT}
   </select>
+  
+   <select id="findUBranchTansAmountlogResultByBranchUserId" resultMap="UBranchTansAmountlogResultMap" >
+   <!-- 03  获取代理商运费的交易流水 result -->
+    select <include refid="Base_Column_List" />
+    from u_branchtransamountlog where BranchUserId = #{branchUserId,jdbcType=BIGINT}
+    <if test="type != null" >
+       and Type= #{type,jdbcType=INTEGER}
+    </if>
+    order by LogId desc
+  </select>
+  
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from u_branchtransamountlog
     where LogId = #{logid,jdbcType=BIGINT}

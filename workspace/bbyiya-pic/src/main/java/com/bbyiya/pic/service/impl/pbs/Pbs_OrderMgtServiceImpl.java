@@ -195,7 +195,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			FileUtils.isDirExists(basePath+sep+file_temp+sep+order.getBuyeruserid()+"-"+order.getProducttitle()+"-"+order.getPropertystr().replaceAll("/", "-")+"¡Á"+order.getCount()+"("+order.getUserorderid()+")");
 			int i=1;			
 			List<OOrderproductdetails> detallist=orderDao.findOrderProductDetailsByProductOrderId(order.getOrderproductid());
-			int j=detallist.size()+1;
+			
 			for (OOrderproductdetails detail : detallist) {
 				if(detail.getImageurl()!=null)
 					detail.setImageurl("http://pic.bbyiya.com/"+detail.getImageurl());
@@ -203,9 +203,10 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					detail.setBackimageurl("http://pic.bbyiya.com/"+detail.getBackimageurl()); 
 				
 				String file_dir=basePath+sep+file_temp+sep+order.getBuyeruserid()+"-"+order.getProducttitle()+"-"+order.getPropertystr().replaceAll("/", "-")+"¡Á"+order.getCount()+"("+order.getUserorderid()+")";
-			
+				
 				String fileFull_name=file_dir+sep+i+".jpg";
-				String filebackFull_name=file_dir+sep+j+".jpg";
+				i++;
+				String filebackFull_name=file_dir+sep+i+".jpg";
 				if(!FileUtils.isFileExists(fileFull_name)){
 					try {
 						if(!ObjectUtil.isEmpty(detail.getImageurl())){
@@ -216,7 +217,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 						if(!ObjectUtil.isEmpty(detail.getBackimageurl())){
 							FileDownloadUtils.download(detail.getBackimageurl(),filebackFull_name);
 							FileDownloadUtils.setDPI(filebackFull_name);
-							j++;
+							
 						}
 						
 					} catch (Exception e) {

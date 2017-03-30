@@ -66,7 +66,8 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 	/**
 	 * 获取代理商邮费账户信息
 	 */
-	public UBranchtransaccounts getBranchAccounts(Long userId){
+	public UBranchtransaccounts getBranchAccounts(Long userId){ 
+		
 		
 		UBranchtransaccounts accounts=branchAccountMapper.selectByPrimaryKey(userId);
 		if(accounts!=null)
@@ -117,6 +118,7 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 	 */
 	public ReturnModel findUBranchTansAmountlog(Long userId,Integer type, int index,int size){
 		ReturnModel rq=new ReturnModel();
+		
 		
 		
 		PageHelper.startPage(index, size);

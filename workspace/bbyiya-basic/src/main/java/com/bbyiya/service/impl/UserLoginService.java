@@ -215,7 +215,11 @@ public class UserLoginService implements IUserLoginService {
 		} 
 		result.setMobilePhone(user.getMobilephone());
 		result.setNickName(user.getNickname());
-		result.setHeadImg(user.getUserimg());
+		if(!"null".equals(user.getUserimg())&&!ObjectUtil.isEmpty(user.getUserimg())){
+			result.setHeadImg(user.getUserimg());
+		}else {
+			result.setHeadImg("http://pic.bbyiya.com/userdefaultimg-2017-0303-01.png");
+		}
 		result.setStatus(user.getStatus());
 		result.setSign(user.getSign());
 		if (!ObjectUtil.isEmpty(user.getBirthday())) {

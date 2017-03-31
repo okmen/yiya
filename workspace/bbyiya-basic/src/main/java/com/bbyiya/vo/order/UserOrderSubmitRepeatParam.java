@@ -9,9 +9,9 @@ public class UserOrderSubmitRepeatParam implements Serializable {
 	private int  count;
 	private Long addrId;
 	private String remark;
-	private int orderType;
+	private Integer orderType;
 	private Double postage;
-	private int postModelId;
+	private Integer postModelId;
 	private Long branchUserId;
 	private Long agentUserId;
 	

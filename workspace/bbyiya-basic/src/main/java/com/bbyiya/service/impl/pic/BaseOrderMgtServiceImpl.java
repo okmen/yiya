@@ -403,7 +403,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					userOrder_Repeat.setOrdertime(ordertime);
 					userOrder_Repeat.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
 					userOrder_Repeat.setIsbranch(0);
-					userOrder_Repeat.setPostmodelid(param.getPostModelId());
+					
 					long orderAddressId = 0;
 					if (param.getOrderType() == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {// 影楼订单
 						orderAddressId = getOrderAddressIdByBranchUserId(userId, param.getOrderType());
@@ -463,6 +463,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 							}
 						} else {// 普通购买 算邮费
 							if (param.getPostage() != null) {
+								userOrder_Repeat.setPostmodelid(param.getPostModelId());
 								userOrder_Repeat.setPostage(param.getPostage());
 								orderTotalPrice += param.getPostage();
 								userOrder_Repeat.setOrdertotalprice(orderTotalPrice);// 订单总价

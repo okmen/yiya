@@ -2,6 +2,7 @@ package com.bbyiya.pic.service;
 
 import java.util.List;
 
+import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.pic.vo.order.SearchOrderParam;
 import com.bbyiya.pic.vo.order.UserOrderResultVO;
 import com.bbyiya.vo.ReturnModel;
@@ -50,4 +51,11 @@ public interface IPic_OrderMgtService {
 	 * @return
 	 */
 	ReturnModel cancelOrder(String orderId);
+	
+	/**
+	 * 得到订单产品的作品详情，用于重复下单的效果浏览	
+	 * @param orderProductId
+	 * @return
+	 */
+	List<OOrderproductdetails> getOrderProductdetails(String orderProductId);
 }

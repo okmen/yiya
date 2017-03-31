@@ -256,7 +256,26 @@ public class OrderMgtController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
-
+	/**
+	 * O09 再次订购产品详情浏览效果
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getOrderProductdetails")
+	public String getOrderProductdetails(@RequestParam(required = false, defaultValue = "0") String orderProductId) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq.setBasemodle(orderService.getOrderProductdetails(orderProductId)); 
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("获取成功");  
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	
 	public void addlog(String msg) {
 		EErrors errors = new EErrors();

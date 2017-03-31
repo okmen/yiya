@@ -323,7 +323,16 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 		rq.setStatu(ReturnStatus.Success);
 		return rq;
 	}
-
+	/**
+	 * 得到订单产品的作品详情，用于重复下单的效果浏览
+	 * @param orderProductId
+	 * @return
+	 */
+	public List<OOrderproductdetails> getOrderProductdetails(String orderProductId) {
+		List<OOrderproductdetails> detailslist= orderDao.findOrderProductDetailsByProductOrderId(orderProductId);
+		return detailslist;
+		
+	}
 	public void downloadImg(List<UserOrderResultVO> orderlist,String basePath){
 		try {
 			FileUtils.isDirExists(basePath);

@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UBranchtransaccounts;
 import com.bbyiya.service.IBaseUserAccountService;
@@ -35,6 +37,7 @@ public class AccountMgtController extends SSOController{
 			UAccounts accounts= accountService.getUserAccount(user.getUserId());
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(accounts);
+			
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
@@ -52,7 +55,12 @@ public class AccountMgtController extends SSOController{
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq= accountService.findCashLogs(user.getUserId(),type, index,size);
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)){
+				rq= accountService.findCashLogs(user.getUserId(),type, index,size);
+			}else {
+				rq.setStatu(ReturnStatus.SystemError_1);
+				rq.setStatusreson("权限不足");
+			} 
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
@@ -71,7 +79,6 @@ public class AccountMgtController extends SSOController{
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			
 			UBranchtransaccounts accounts= accountService.getBranchAccounts(user.getUserId());
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(accounts);
@@ -92,7 +99,12 @@ public class AccountMgtController extends SSOController{
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq= accountService.findUBranchTansAmountlog(user.getUserId(),type, index,size);
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)){
+				rq= accountService.findUBranchTansAmountlog(user.getUserId(),type, index,size);
+			}else {
+				rq.setStatu(ReturnStatus.SystemError_1);
+				rq.setStatusreson("权限不足");
+			} 
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

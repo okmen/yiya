@@ -13,6 +13,7 @@ import com.bbyiya.dao.UBranchtransaccountsMapper;
 import com.bbyiya.dao.UBranchtransamountlogMapper;
 import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UCashlogsMapper;
+import com.bbyiya.enums.AmountType;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.OUserorders;
@@ -91,7 +92,7 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 		if(resultPage.getList()!=null&&resultPage.getList().size()>0){
 			for (UCashlogResult log : resultPage.getList()) {
 				log.setCreatetimestr(DateUtil.getTimeStr(log.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
-				if(type!=null&&type.intValue()==1){
+				if(type!=null&&type.intValue()==Integer.parseInt(AmountType.lost.toString())){ 
 					OPayorder payorder=payMapper.selectByPrimaryKey(log.getPayid());
 					if(payorder!=null&&!ObjectUtil.isEmpty(payorder.getUserorderid())){
 						OUserorders order= userordersMapper.selectByPrimaryKey(payorder.getUserorderid());

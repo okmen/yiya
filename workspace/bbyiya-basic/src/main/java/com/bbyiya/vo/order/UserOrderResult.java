@@ -12,12 +12,24 @@ public class UserOrderResult implements Serializable {
 	private String userOrderId;
 	private String payId;
 	private Double totalprice;
+	private Double postage;
+	private Double orderTotalPrice;
 	private Integer status;
 	private Long branchUserId;
 	private String remark;
 	private String orderTimeStr;
+	private String payTimeStr;
+	public String getPayTimeStr() {
+		return payTimeStr;
+	}
+
+	public void setPayTimeStr(String payTimeStr) {
+		this.payTimeStr = payTimeStr;
+	}
+
 	private String shareUrl;
 	private Long cartId;
+	private Integer payType;
 	private List<OOrderproducts> prolist;
 	
 	private OOrderaddress orderAddress;
@@ -108,6 +120,30 @@ public class UserOrderResult implements Serializable {
 
 	public void setCartId(Long cartId) {
 		this.cartId = cartId;
+	}
+
+	public Integer getPayType() {
+		return payType;
+	}
+
+	public void setPayType(Integer payType) {
+		this.payType = payType;
+	}
+
+	public Double getPostage() {
+		return postage;
+	}
+
+	public void setPostage(Double postage) {
+		this.postage = postage;
+	}
+
+	public Double getOrderTotalPrice() {
+		return orderTotalPrice;
+	}
+
+	public void setOrderTotalPrice(Double orderTotalPrice) {
+		this.orderTotalPrice = orderTotalPrice;
 	}
 
 	

@@ -14,58 +14,29 @@
     <result column="PayTime" property="paytime" jdbcType="TIMESTAMP" />
     <result column="OrderTotalPrice" property="ordertotalprice" jdbcType="DECIMAL" />
     <result column="PayType" property="paytype" jdbcType="INTEGER" />
-    <result column="OrderType" property="ordertype" jdbcType="INTEGER" />
     <result column="AgentUserId" property="agentuserid" jdbcType="BIGINT" />
     <result column="IsBranch" property="isbranch" jdbcType="INTEGER" />
     <result column="ExpressCom" property="expresscom" jdbcType="VARCHAR" />
     <result column="ExpressOrder" property="expressorder" jdbcType="VARCHAR" />
+    <result column="OrderType" property="ordertype" jdbcType="INTEGER" />
     <result column="Postage" property="postage" jdbcType="DECIMAL" />
     <result column="UploadTime" property="uploadtime" jdbcType="TIMESTAMP" />
     <result column="PostModelId" property="postmodelid" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    UserOrderId, UserId, TotalPrice, Status, OrderAddressId, PayId, Remark, OrderTime, 
-    PayTime, BranchUserId, OrderTotalPrice, PayType, OrderType, AgentUserId, IsBranch, 
-    ExpressCom, ExpressOrder,Postage, UploadTime, PostModelId
+    UserOrderId, UserId, TotalPrice, Status, BranchUserId, OrderAddressId, PayId, Remark, 
+    OrderTime, PayTime, OrderTotalPrice, PayType, AgentUserId, IsBranch, ExpressCom, 
+    ExpressOrder, OrderType, Postage, UploadTime, PostModelId
   </sql>
-  <!-- 用户订单结果类Result -->
-  <resultMap id="UserBuyerOrderResultMap" type="com.bbyiya.vo.order.UserBuyerOrderResult" extends="BaseResultMap">  
-  </resultMap>  
-  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from o_userorders
     where UserOrderId = #{userorderid,jdbcType=VARCHAR}
   </select>
-  <select id="findOrderByUserId" resultMap="BaseResultMap"  ><!-- 01 根据UserId 获取用户的订单列表 -->
-    select 
-    <include refid="Base_Column_List" />
-    from o_userorders
-    where UserId = #{userId,jdbcType=BIGINT}  order by OrderTime desc
-  </select>
-  <select id="findUserOrderByUserId" resultMap="UserBuyerOrderResultMap"  ><!-- 01 根据UserId 获取用户的订单列表 -->
-    select 
-    <include refid="Base_Column_List" />
-    from o_userorders
-    where UserId = #{userId,jdbcType=BIGINT}  order by OrderTime desc
-  </select>
-  
-  <select id="findOrdersByAgentUserId" resultMap="BaseResultMap"  ><!-- 02 获取待分配的订单 （代理） -->
-    select 
-    <include refid="Base_Column_List" />
-    from o_userorders
-    where AgentUserId = #{agentUserId,jdbcType=BIGINT}  and Status=2  and IsBranch=0 order by PayTime desc
-  </select>
-  <select id="findOrdersByBranchUserId" resultMap="BaseResultMap"  ><!-- 03 获取本店的订单 （代理） -->
-    select 
-    <include refid="Base_Column_List" />
-    from o_userorders
-    where BranchUserId = #{branchUserId,jdbcType=BIGINT} and Status=#{status,jdbcType=INTEGER} order by PayTime,OrderTime desc
-  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from o_userorders
-    where UserId = #{userId,jdbcType=VARCHAR}
+    where UserOrderId = #{userorderid,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.OUserorders" >
     insert into o_userorders (UserOrderId, UserId, TotalPrice, 

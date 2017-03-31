@@ -332,7 +332,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			if(users!=null){
 				if(orderType==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){//影楼订单
 					UBranchusers branchusers= branchusersMapper.selectByPrimaryKey(param.getUserId());
-					if(branchusers!=null&&branchusers.getBranchuserid()!=null){
+					if(branchusers!=null&&branchusers.getBranchuserid()!=null) {
 						UBranches branches=branchesMapper.selectByPrimaryKey(branchusers.getBranchuserid());
 						if(branches!=null&&branches.getStatus()!=null&&branches.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.ok.toString())){
 							double totalprice=style.getAgentprice()*count;
@@ -359,6 +359,9 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 							rq.setStatusreson("不是有效的合作伙伴！");
 							return rq;
 						}
+					}else {
+						rq.setStatusreson("权限不足");
+						return rq;
 					}
 				}
 			}

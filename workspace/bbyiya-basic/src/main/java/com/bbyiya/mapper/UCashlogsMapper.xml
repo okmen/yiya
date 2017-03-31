@@ -33,7 +33,12 @@
     select <include refid="Base_Column_List" />
     from u_cashlogs where UserID = #{userId,jdbcType=BIGINT}
     <if test="type != null" >
-       and UseType= #{type,jdbcType=INTEGER}
+    	<if test="type == 1" >
+    	 	and UseType= #{type,jdbcType=INTEGER}
+    	</if>
+      	<if test="type == 2" >
+    	 	and Amount>0
+    	</if>
     </if>
     order by CashLogId desc
   </select>

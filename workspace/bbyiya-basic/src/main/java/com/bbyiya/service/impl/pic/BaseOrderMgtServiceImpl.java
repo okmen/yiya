@@ -219,7 +219,8 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			} else {
 				throw new Exception("找不到相应的产品！");
 			}
-			userOrder.setTotalprice(totalPrice);
+			userOrder.setTotalprice(orderTotalPrice);//订单价格，不包括邮费
+			//实际需要付款金额（包括邮费）ps:B端订单邮费后期pbs扣款
 			userOrder.setOrdertotalprice(orderTotalPrice);
 			if (orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
 				UAccounts accounts= accountsMapper.selectByPrimaryKey(param.getBranchUserId());
@@ -237,10 +238,11 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					rq.setStatusreson("企业余额不足！");
 					return rq;
 				}
-			} else {
+			} else {//普通购买  算邮费
 				if(param.getPostPrice()!=null){
 					userOrder.setPostage(param.getPostPrice()); 
 					totalPrice+=param.getPostPrice();
+					userOrder.setOrdertotalprice(totalPrice);//订单总价 
 				}
 				addPayOrder(param.getUserId(), payId, payId, totalPrice); // 插入支付订单记录
 			}

@@ -3,7 +3,6 @@ package com.bbyiya.pic.web.notify;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
 import java.util.SortedMap;
 
 import javax.annotation.Resource;
@@ -19,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.dao.EErrorsMapper;
 import com.bbyiya.model.EErrors;
-import com.bbyiya.service.pic.IBaseOrderMgtService;
+import com.bbyiya.service.IBasePayService;
 import com.bbyiya.utils.pay.WxPayConfig;
 import com.bbyiya.utils.pay.WxPayUtils;
 import com.bbyiya.utils.pay.WxUtil;
@@ -28,8 +27,8 @@ import com.sdicons.json.mapper.MapperException;
 @Controller
 @RequestMapping(value = "/wxpay")
 public class WxNotifyController {
-	@Resource(name = "baseOrderMgtServiceImpl")
-	private IBaseOrderMgtService orderMgtService;
+	@Resource(name = "basePayServiceImpl")
+	private IBasePayService orderMgtService;
 	@Autowired
 	private EErrorsMapper errorMapper;
 	

@@ -65,7 +65,7 @@ public interface IBaseOrderMgtService {
 	 * @param payId
 	 * @return
 	 */
-	boolean paySuccessProcess(String payId);
+//	boolean paySuccessProcess(String payId);
 	
 	/**
 	 * 插入支付信息（账户充值 可用）

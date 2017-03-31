@@ -3,12 +3,12 @@ package com.bbyiya.pic.web.notify;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
 import java.util.SortedMap;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.bbyiya.dao.EErrorsMapper;
 import com.bbyiya.model.EErrors;
-import com.bbyiya.service.pic.IBaseOrderMgtService;
+import com.bbyiya.service.IBasePayService;
 import com.bbyiya.utils.pay.WxAppPayUtils;
 import com.bbyiya.utils.pay.WxPayAppConfig;
 import com.bbyiya.utils.pay.WxUtil;
@@ -28,8 +28,9 @@ import com.sdicons.json.mapper.MapperException;
 @Controller
 @RequestMapping(value = "/wxapppay")
 public class WxAppNotifyController {
-	@Resource(name = "baseOrderMgtServiceImpl")
-	private IBaseOrderMgtService orderMgtService;
+	
+	@Resource(name = "basePayServiceImpl")
+	private IBasePayService orderMgtService;
 	@Autowired
 	private EErrorsMapper errorMapper;
 	/**
@@ -75,16 +76,6 @@ public class WxAppNotifyController {
 	}
 
 	private String queryWxOrder(String transaction_id, String payId) {
-//		List<NameValuePair> paramlist = new ArrayList<NameValuePair>();
-//		paramlist.add(new BasicNameValuePair("appid", WxPayAppConfig.APPID));
-//		paramlist.add(new BasicNameValuePair("mch_id", WxPayAppConfig.PARNER));
-//		paramlist.add(new BasicNameValuePair("nonce_str", WxPayUtils.genNonceStr()));
-//		paramlist.add(new BasicNameValuePair("out_trade_no", payId));
-//		paramlist.add(new BasicNameValuePair("transaction_id", transaction_id));
-//		String sign = WxPayUtils.genPackageSign(paramlist);
-//		paramlist.add(new BasicNameValuePair("sign", sign));
-//		String xmlstring = WxUtil.toXml(paramlist);
-//		String xmlResult = WxUtil.httpsRequest("https://api.mch.weixin.qq.com/pay/orderquery", xmlstring);
 		SortedMap<String, String> map =  WxAppPayUtils.queryWxOrder(transaction_id, payId);//WxUtil.xmlToMap(xmlResult);
 		if (WxUtil.isWXsign(map, WxPayAppConfig.AppSecret)) {
 			if (map != null && map.get("return_code").equals("SUCCESS") && map.get("result_code").equals("SUCCESS") && map.get("trade_state").equals("SUCCESS")) {

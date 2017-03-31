@@ -135,11 +135,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	@Autowired
 	private EErrorsMapper logMapper;
 	
-	/*-----------------------------------------*/
-	@Autowired
-	private UBranchtransaccountsMapper transMapper;
-	@Autowired
-	private UBranchtransamountlogMapper transLogMapper;
+
 	
 
 	/**
@@ -857,87 +853,4 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 
 
 	
-	/**
-	 * 订单支付成功 回写
-	 */
-	public boolean paySuccessProcess(String payId) {
-		if (!ObjectUtil.isEmpty(payId)) {
-			try {
-				OPayorder payOrder = payOrderMapper.selectByPrimaryKey(payId);
-				if (payOrder != null && payOrder.getStatus()!=null && payOrder.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())) {
-					int orderType=payOrder.getOrdertype()==null?0:payOrder.getOrdertype();
-					if(orderType==Integer.parseInt(PayOrderTypeEnum.chongzhi.toString())){//充值订单
-						UCashlogs log=new UCashlogs();
-						log.setAmount(payOrder.getTotalprice());
-						log.setUserid(payOrder.getUserid());
-						log.setPayid(payId);
-						log.setUsetype(Integer.parseInt(AmountType.get.toString()));//充值
-						log.setCreatetime(new Date());
-						cashlogsMapper.insert(log);
-						UAccounts accounts=accountsMapper.selectByPrimaryKey(payOrder.getUserid());
-						if(accounts!=null){
-							accounts.setAvailableamount(accounts.getAvailableamount()+payOrder.getTotalprice());
-							accountsMapper.updateByPrimaryKeySelective(accounts);
-						}else {
-							accounts=new UAccounts();
-							accounts.setUserid(payOrder.getUserid());
-							accounts.setAvailableamount(payOrder.getTotalprice());
-							accountsMapper.insert(accounts);
-						}
-					}
-					else if (orderType==Integer.parseInt(PayOrderTypeEnum.postage.toString())) {
-						//供应商邮费充值
-						UBranchtransamountlog translog=new UBranchtransamountlog();
-						translog.setBranchuserid(payOrder.getUserid());
-						translog.setPayid(payId);
-						translog.setAmount(payOrder.getTotalprice());
-						translog.setType(Integer.parseInt(AmountType.get.toString()));
-						translog.setCreatetime(new Date());
-						transLogMapper.insert(translog);
-						
-						//邮费账户金额更新
-						UBranchtransaccounts transAccount= transMapper.selectByPrimaryKey(payOrder.getUserid());
-						if(transAccount!=null){  
-							double amount=transAccount.getAvailableamount()==null?0d:transAccount.getAvailableamount();
-							transAccount.setAvailableamount(amount+payOrder.getTotalprice());
-							transMapper.updateByPrimaryKey(transAccount);
-						}else {
-							transAccount=new UBranchtransaccounts();
-							transAccount.setBranchuserid(payOrder.getUserid());
-							transAccount.setAvailableamount(payOrder.getTotalprice());
-							transMapper.insert(transAccount);
-						}
-					}
-					else {//购物
-						OUserorders userorders = userOrdersMapper.selectByPrimaryKey(payOrder.getUserorderid());
-						if (userorders != null) {
-							if (userorders.getStatus().intValue() == Integer.parseInt(OrderStatusEnum.noPay.toString())) {
-								//更新订单状态
-								userorders.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
-								userorders.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString()));
-								userorders.setPaytime(new Date()); 
-								userOrdersMapper.updateByPrimaryKeySelective(userorders);
-								
-							
-							}
-						}
-					}
-					//更新支付订单状态-----------------------
-					payOrder.setPaytime(new Date());
-					payOrder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
-					payOrder.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString())); 
-					payOrderMapper.updateByPrimaryKeySelective(payOrder);
-					return true;
-				}
-			} catch (Exception e) {
-				EErrors errors=new EErrors();
-				errors.setClassname(this.getClass().getName());
-				errors.setMsg("订单支付回写："+e.getMessage());
-				errors.setCreatetime(new Date());
-				logMapper.insert(errors);
-			}
-		}
-		return false;
-	}
-
 }

@@ -107,6 +107,8 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	private OPayorderMapper payOrderMapper;// 支付单
 	@Autowired
 	private OOrderproductdetailsMapper odetailMapper;// 产品图片集合
+	
+	
 
 	/*------------------------用户信息模块----------------------------------*/
 	@Autowired
@@ -132,6 +134,13 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	/*---错误日志记录----*/
 	@Autowired
 	private EErrorsMapper logMapper;
+	
+	/*-----------------------------------------*/
+	@Autowired
+	private UBranchtransaccountsMapper transMapper;
+	@Autowired
+	private UBranchtransamountlogMapper transLogMapper;
+	
 
 	/**
 	 * 提交订单（param已经被验证）
@@ -846,10 +855,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		return 0;
 	}
 
-	@Autowired
-	private UBranchtransaccountsMapper transMapper;
-	@Autowired
-	private UBranchtransamountlogMapper transLogMapper;
+
 	
 	/**
 	 * 订单支付成功 回写
@@ -858,7 +864,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		if (!ObjectUtil.isEmpty(payId)) {
 			try {
 				OPayorder payOrder = payOrderMapper.selectByPrimaryKey(payId);
-				if (payOrder != null) {
+				if (payOrder != null && payOrder.getStatus()!=null && payOrder.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())) {
 					int orderType=payOrder.getOrdertype()==null?0:payOrder.getOrdertype();
 					if(orderType==Integer.parseInt(PayOrderTypeEnum.chongzhi.toString())){//充值订单
 						UCashlogs log=new UCashlogs();
@@ -878,11 +884,6 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 							accounts.setAvailableamount(payOrder.getTotalprice());
 							accountsMapper.insert(accounts);
 						}
-						payOrder.setPaytime(new Date());
-						payOrder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
-						payOrder.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString())); 
-						payOrderMapper.updateByPrimaryKeySelective(payOrder);
-						return true;
 					}
 					else if (orderType==Integer.parseInt(PayOrderTypeEnum.postage.toString())) {
 						//供应商邮费充值
@@ -906,7 +907,6 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 							transAccount.setAvailableamount(payOrder.getTotalprice());
 							transMapper.insert(transAccount);
 						}
-						return true;
 					}
 					else {//购物
 						OUserorders userorders = userOrdersMapper.selectByPrimaryKey(payOrder.getUserorderid());
@@ -917,15 +917,17 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 								userorders.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString()));
 								userorders.setPaytime(new Date()); 
 								userOrdersMapper.updateByPrimaryKeySelective(userorders);
-								//更新支付订单状态
-								payOrder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
-								payOrder.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString()));  
-								payOrder.setPaytime(new Date()); 
-								payOrderMapper.updateByPrimaryKeySelective(payOrder);
-								return true;
+								
+							
 							}
 						}
 					}
+					//更新支付订单状态-----------------------
+					payOrder.setPaytime(new Date());
+					payOrder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
+					payOrder.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString())); 
+					payOrderMapper.updateByPrimaryKeySelective(payOrder);
+					return true;
 				}
 			} catch (Exception e) {
 				EErrors errors=new EErrors();

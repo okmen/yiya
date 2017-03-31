@@ -14,6 +14,8 @@ public class UserBuyerOrderResult extends OUserorders implements Serializable {
 	private String ordertimestr;
 	private String paytimestr;
 	private String uploadtimestr;
+	//横版竖版
+	private Integer showType;
 	
 	
 	public String getWorkTitle() {
@@ -62,6 +64,14 @@ public class UserBuyerOrderResult extends OUserorders implements Serializable {
 
 	public void setUploadtimestr(String uploadtimestr) {
 		this.uploadtimestr = uploadtimestr;
+	}
+
+	public Integer getShowType() {
+		return showType;
+	}
+
+	public void setShowType(Integer showType) {
+		this.showType = showType;
 	}
 	
 	

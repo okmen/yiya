@@ -364,7 +364,15 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					}
 					/*-----------------------普通用户订单--------------------------------*/
 					else {
+						if(param.getAddrId()==null||param.getAddrId()<=0){
+							rq.setStatusreson("收货地址未填！");
+							return rq;
+						}
 						UUseraddress addr = addressMapper.get_UUserAddressByKeyId(param.getAddrId());// 用户收货地址
+						if(addr==null){
+							rq.setStatusreson("收货地址不存在");
+							return rq;
+						}
 						/*---------------------通过快递方式查询邮费---------------------------------------------*/
 						if (param.getPostModelId() <= 0) {
 							List<PPostmodel> listpost = postMgtService.find_postlist(addr.getArea());
@@ -868,6 +876,8 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				List<OOrderproducts> proList = oproductMapper.findOProductsByOrderId(oo.getUserorderid());
 				if(proList!=null&&proList.size()>0){
 					OOrderproducts product=proList.get(0);
+					long temp=product.getStyleid()%2;
+					oo.setShowType((int)temp); 
 					if(product.getProductimg()==null||product.getProductimg().equals("")){
 						product.setProductimg("http://pic.bbyiya.com/484983733454448354.png");
 					}

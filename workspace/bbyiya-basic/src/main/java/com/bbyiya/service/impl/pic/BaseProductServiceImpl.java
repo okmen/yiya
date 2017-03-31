@@ -93,7 +93,7 @@ public class BaseProductServiceImpl implements IBaseProductService {
 				map.put("price", style.getPrice());
 				map.put("styleId", styleId);
 				map.put("productId", style.getProductid());
-				map.put("propertystr", orderMgtService.getStylePropertyStr(styleId));
+				map.put("propertystr", style.getPropertystr());//orderMgtService.getStylePropertyStr(styleId)
 				rq.setBasemodle(map);
 				rq.setStatu(ReturnStatus.Success);
 			}

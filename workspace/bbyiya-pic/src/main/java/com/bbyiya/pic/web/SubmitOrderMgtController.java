@@ -36,7 +36,13 @@ public class SubmitOrderMgtController extends SSOController {
 	private IBasePostMgtService postMgtService;
 
 	
-	
+	/**
+	 * 下单页-获取运费方式列表
+	 * @param area
+	 * @param addressId
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/findpostlist")
 	public String findpostlist(String area,String addressId)throws Exception{
@@ -82,7 +88,6 @@ public class SubmitOrderMgtController extends SSOController {
 				product.setProductid(productParam.getProductId());
 				product.setStyleid(productParam.getStyleId());
 				product.setCount(productParam.getCount());
-
 				
 				// 下单参数
 				UserOrderSubmitParam param = new UserOrderSubmitParam();
@@ -98,6 +103,9 @@ public class SubmitOrderMgtController extends SSOController {
 				if (type > 0) {
 					param.setOrderType(type);
 				}
+				if(productParam.getPostModelId()!=null){
+					param.setPostModelId(productParam.getPostModelId()); 
+				} 
 				param.setOrderproducts(product);
 				rq = orderMgtService.submitOrder_new(param);
 			} else {

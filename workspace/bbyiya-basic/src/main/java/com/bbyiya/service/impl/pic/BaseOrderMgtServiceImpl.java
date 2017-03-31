@@ -31,12 +31,10 @@ import com.bbyiya.dao.UAccountsMapper;
 import com.bbyiya.dao.UAgentsMapper;
 import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.dao.UBranchtransaccountsMapper;
-import com.bbyiya.dao.UBranchtransamountlogMapper;
 import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UCashlogsMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
-import com.bbyiya.enums.AmountType;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.PayOrderTypeEnum;
@@ -52,6 +50,7 @@ import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproducts;
+import com.bbyiya.model.PPostmodel;
 import com.bbyiya.model.PProducts;
 import com.bbyiya.model.PProductstyles;
 import com.bbyiya.model.RAreaplans;
@@ -59,13 +58,13 @@ import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UAgents;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UBranchtransaccounts;
-import com.bbyiya.model.UBranchtransamountlog;
 import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UCashlogs;
 import com.bbyiya.model.UUseraddress;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
+import com.bbyiya.service.pic.IBasePostMgtService;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -73,7 +72,6 @@ import com.bbyiya.vo.order.UserBuyerOrderResult;
 import com.bbyiya.vo.order.UserOrderParam;
 import com.bbyiya.vo.order.UserOrderResult;
 import com.bbyiya.vo.order.UserOrderSubmitParam;
-import com.bbyiya.vo.product.StyleProperty;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
@@ -83,6 +81,9 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 
 	@Resource(name = "regionServiceImpl")
 	private IRegionService regionService;
+	
+	@Resource(name = "basePostMgtServiceImpl")
+	private IBasePostMgtService postMgtService;
 	@Autowired
 	private RegionMapper regionMapper;// 区域
 
@@ -135,7 +136,8 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	@Autowired
 	private EErrorsMapper logMapper;
 	
-
+	@Autowired
+	private UBranchtransaccountsMapper transMapper;
 	
 
 	/**
@@ -177,6 +179,8 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			rq.setStatusreson("收货地址有误");
 			return rq;
 		}
+		//邮费
+		userOrder.setPostage(param.getPostPrice()); 
 		if (param.getOrderproducts() != null) {
 			//订单总价
 			Double orderTotalPrice = 0d;
@@ -203,15 +207,15 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				}
 				// 订单原本实际价格总和
 				orderTotalPrice = styles.getPrice() * orderProduct.getCount();
-				if (orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
-					orderProduct.setPrice(styles.getAgentprice()); 
-					orderProduct.setSalesuserid(param.getUserId()); 
-					orderProduct.setBranchuserid(param.getBranchUserId()); 
-					totalPrice = styles.getAgentprice() * orderProduct.getCount();
-				} else {
+//				if (orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
+//					orderProduct.setPrice(styles.getAgentprice()); 
+//					orderProduct.setSalesuserid(param.getUserId()); 
+//					orderProduct.setBranchuserid(param.getBranchUserId()); 
+//					totalPrice = styles.getAgentprice() * orderProduct.getCount();
+//				} else {
 					orderProduct.setPrice(styles.getPrice()); 
 					totalPrice = styles.getPrice() * orderProduct.getCount();
-				}
+//				}
 			} else {
 				throw new Exception("找不到相应的产品！");
 			}
@@ -234,6 +238,10 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					return rq;
 				}
 			} else {
+				if(param.getPostPrice()!=null){
+					userOrder.setPostage(param.getPostPrice()); 
+					totalPrice+=param.getPostPrice();
+				}
 				addPayOrder(param.getUserId(), payId, payId, totalPrice); // 插入支付订单记录
 			}
 			PMyproducts mycart=myproductMapper.selectByPrimaryKey(param.getCartId()) ;
@@ -286,8 +294,10 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		}
 	}
 	
+	
+	
 	/**
-	 * 检测订单参数 
+	 * 检测订单参数 （订单提交 检验）
 	 * @param param
 	 * @return
 	 * @throws Exception
@@ -326,6 +336,13 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 							double totalprice=style.getAgentprice()*count;
 							UAccounts accounts= accountsMapper.selectByPrimaryKey(branches.getBranchuserid());
 							if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount()>=totalprice){
+								 //影楼的运费款 查询
+								 UBranchtransaccounts transAccount= transMapper.selectByPrimaryKey(branches.getBranchuserid());
+								 if(transAccount==null||transAccount.getAvailableamount()==null||transAccount.getAvailableamount()<=0){
+									 rq.setStatu(ReturnStatus.CashError);
+									 rq.setStatusreson("影楼的运费款不足，无法下单！请通知管理员进行充值，以免影响您的业务！ ");
+									 return rq;
+								 }
 								 rq.setStatu(ReturnStatus.Success);
 								 param.setBranchUserId(branches.getBranchuserid());
 								 param.setAgentUserId(branches.getAgentuserid()); 
@@ -333,7 +350,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 								 return rq;
 							}else {
 								rq.setStatu(ReturnStatus.CashError); 
-								rq.setStatusreson("影楼预存款不足，无法下单！");
+								rq.setStatusreson("影楼预存货款不足，无法下单！请通知管理员进行充值，以免影响您的业务！");
 								return rq;
 							}
 						}else {
@@ -345,6 +362,27 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			}
 		}else {//普通订单
 			UUseraddress addr = addressMapper.get_UUserAddressByKeyId(param.getAddrId());//用户收货地址
+			
+			/*---------------------通过快递方式查询邮费---------------------------------------------*/
+			if(param.getPostModelId()==null||param.getPostModelId()<=0){
+				List<PPostmodel> listpost= postMgtService.find_postlist(addr.getArea());
+				if(listpost!=null&&listpost.size()>0){
+					param.setPostModelId(listpost.get(0).getPostmodelid());
+					param.setPostPrice(listpost.get(0).getAmount());
+				}
+			}else {
+				PPostmodel postmodel= postMgtService.getPostmodel(param.getPostModelId(), addr.getArea());
+				if(postmodel!=null){
+					param.setPostPrice(postmodel.getAmount());
+				}else {
+					rq.setStatu(ReturnStatus.SystemError);
+					rq.setStatusreson("快递方式不存在！");
+					return rq;
+				}
+			}
+			/*-------------------------快递（完）------------------------------------------*/
+			
+			/*-------------------------区域代理分配---------------------------------------------------*/
 			RAreaplans areaplans= areaplansMapper.selectByPrimaryKey(addr.getArea());
 			if(areaplans!=null&&areaplans.getAgentuserid()!=null&&areaplans.getAgentuserid()>0){
 				UAgents agent= agentsMapper.selectByPrimaryKey(areaplans.getAgentuserid());
@@ -696,6 +734,15 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		return true;
 	}
 	
+	/**
+	 * // 影楼订单，直接预存款支付 ， 插入支付记录
+	 * @param userId
+	 * @param payId
+	 * @param userOrderId
+	 * @param totalPrice
+	 * @return
+	 * @throws Exception
+	 */
 	public boolean payOrder_logAdd(Long userId, String payId, String userOrderId, Double totalPrice) throws Exception{
 		UAccounts accounts=accountsMapper.selectByPrimaryKey(userId);
 		if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount().doubleValue()>=totalPrice.doubleValue()){
@@ -744,7 +791,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				PProductstyles styles = styleMapper.selectByPrimaryKey(pp.getStyleid());
 				if (products != null && styles != null) {
 					pp.setPrice(styles.getPrice());
-					pp.setPropertystr(getStylePropertyStr(pp.getStyleid()));// 款式
+					pp.setPropertystr(styles.getPropertystr());// 款式 getStylePropertyStr(pp.getStyleid())
 					pp.setBranchuserid(products.getUserid());
 					pp.setProducttitle(products.getTitle());
 					// 根据分销商、业务员 进行拆单
@@ -774,23 +821,6 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		return null;
 	}
 
-	/**
-	 * 获取产品款式属性（如： 中款|家庭装 ）
-	 * 
-	 * @param styleId
-	 * @return
-	 */
-	public String getStylePropertyStr(Long styleId) {
-		String result = "";
-		List<StyleProperty> list = propertyMapper.findPropertyByStyleId(styleId);
-		if (list != null && list.size() > 0) {
-			for (StyleProperty property : list) {
-				result += property.getStandardValue() + "-";
-			}
-			result = result.substring(0, result.lastIndexOf("-"));
-		}
-		return result;
-	}
 
 	/**
 	 * 根据用户收货地址 生成订单收货地址 并返回订单收货地址的主键Id

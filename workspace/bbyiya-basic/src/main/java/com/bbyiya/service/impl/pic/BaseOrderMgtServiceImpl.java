@@ -487,13 +487,19 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 						// 获取产品信息
 						mapResult.put("productId", product.getProductid());
 						mapResult.put("styleId", style.getStyleid());
-						mapResult.put("isRepeat", 1);
+						mapResult.put("isRepeat", 1);//是重新下单
 						mapResult.put("totalPrice", totalPrice);
+						if(userOrder_Repeat.getStatus()!=null&&userOrder_Repeat.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.waitFoSend.toString())){
+							mapResult.put("payed", 1);
+						}else {
+							mapResult.put("payed", 0);
+						}
 						rq.setBasemodle(mapResult);
 					}
 				}
 			}
 		}
+		rq.setStatusreson("重新下单失败（此功能只支持之前已完成下单的作品）"); 
 		return rq;
 	}
 	

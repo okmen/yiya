@@ -1,6 +1,5 @@
 package com.bbyiya.model;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 public class PPostmodelareas {
@@ -12,7 +11,7 @@ public class PPostmodelareas {
 
     private String areaname;
 
-    private BigDecimal amount;
+    private Double amount;
 
     private Date createtime;
 
@@ -48,15 +47,17 @@ public class PPostmodelareas {
         this.areaname = areaname == null ? null : areaname.trim();
     }
 
-    public BigDecimal getAmount() {
-        return amount;
-    }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
+    
+    public Double getAmount() {
+		return amount;
+	}
 
-    public Date getCreatetime() {
+	public void setAmount(Double amount) {
+		this.amount = amount;
+	}
+
+	public Date getCreatetime() {
         return createtime;
     }
 

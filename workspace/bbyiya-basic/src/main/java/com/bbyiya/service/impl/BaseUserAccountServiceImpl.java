@@ -13,6 +13,7 @@ import com.bbyiya.dao.UBranchtransaccountsMapper;
 import com.bbyiya.dao.UBranchtransamountlogMapper;
 import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UCashlogsMapper;
+import com.bbyiya.enums.AmountType;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.OUserorders;
@@ -66,8 +67,7 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 	/**
 	 * 获取代理商邮费账户信息
 	 */
-	public UBranchtransaccounts getBranchAccounts(Long userId){ 
-		
+	public UBranchtransaccounts getBranchAccounts(Long userId){
 		
 		UBranchtransaccounts accounts=branchAccountMapper.selectByPrimaryKey(userId);
 		if(accounts!=null)
@@ -92,7 +92,7 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 		if(resultPage.getList()!=null&&resultPage.getList().size()>0){
 			for (UCashlogResult log : resultPage.getList()) {
 				log.setCreatetimestr(DateUtil.getTimeStr(log.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
-				if(type!=null&&type.intValue()==1){
+				if(type!=null&&type.intValue()==Integer.parseInt(AmountType.lost.toString())){ 
 					OPayorder payorder=payMapper.selectByPrimaryKey(log.getPayid());
 					if(payorder!=null&&!ObjectUtil.isEmpty(payorder.getUserorderid())){
 						OUserorders order= userordersMapper.selectByPrimaryKey(payorder.getUserorderid());
@@ -118,7 +118,6 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 	 */
 	public ReturnModel findUBranchTansAmountlog(Long userId,Integer type, int index,int size){
 		ReturnModel rq=new ReturnModel();
-		
 		
 		
 		PageHelper.startPage(index, size);

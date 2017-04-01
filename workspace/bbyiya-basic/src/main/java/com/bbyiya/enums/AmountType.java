@@ -6,9 +6,13 @@ public enum AmountType {
      */
 	lost(1),
     /**
-     * 获取
+     * 充值
      */
-    get(2);
+    get(2),
+    /**
+     * 赠送
+     */
+	free(3);
 
     private final int Type;
 

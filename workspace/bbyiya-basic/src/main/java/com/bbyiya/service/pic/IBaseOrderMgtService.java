@@ -11,7 +11,7 @@ public interface IBaseOrderMgtService {
 
 	/**
 	 * 提交订单（针对单个分销商 ）
-	 * 
+	 * v1.0.0 早期版本
 	 * @param userId
 	 * @param addrId
 	 * @param remark
@@ -65,7 +65,7 @@ public interface IBaseOrderMgtService {
 	 * @param payId
 	 * @return
 	 */
-	boolean paySuccessProcess(String payId);
+//	boolean paySuccessProcess(String payId);
 	
 	/**
 	 * 插入支付信息（账户充值 可用）
@@ -78,13 +78,7 @@ public interface IBaseOrderMgtService {
 	 */
 	boolean addPayOrder(Long userId, String payId, String userOrderId, Integer payOrderType , Double totalPrice);
 
-	/**
-	 * 获取款式 属性名称-值
-	 * 
-	 * @param styleId
-	 * @return （中款-横版）
-	 */
-	String getStylePropertyStr(Long styleId);
+
 	
 	/**
 	 * 获取用户购买订单列表

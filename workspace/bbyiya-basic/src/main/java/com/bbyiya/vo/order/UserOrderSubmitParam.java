@@ -15,6 +15,8 @@ public class UserOrderSubmitParam implements Serializable {
 	private Long branchUserId;
 	private Long agentUserId;
 	private Long cartId;
+	private Integer postModelId;
+	private Double postPrice;
 	private OOrderproducts orderproducts;
 	
 	
@@ -73,7 +75,19 @@ public class UserOrderSubmitParam implements Serializable {
 	public void setCartId(Long cartId) {
 		this.cartId = cartId;
 	}
+	public Integer getPostModelId() {
+		return postModelId;
+	}
+	public void setPostModelId(Integer postModelId) {
+		this.postModelId = postModelId;
+	}
+	public Double getPostPrice() {
+		return postPrice;
+	}
+	public void setPostPrice(Double postPrice) {
+		this.postPrice = postPrice;
+	}
 	
-
+	
 	
 }

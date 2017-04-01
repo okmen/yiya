@@ -347,6 +347,13 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		List<MyProductResultVo> mylist = myMapper.findMyProductslistForBranch(idsList, status, inviteStatus);
 		PageInfo<MyProductResultVo> resultPage=new PageInfo<MyProductResultVo>(mylist); 
 		if(resultPage.getList()!=null&&resultPage.getList().size()>0){
+			for (MyProductResultVo vv : resultPage.getList()) {
+				for (UBranchusers uu : userList) {
+					if(uu.getUserid().longValue()==vv.getUserid().longValue()){
+						vv.setUserName(uu.getName()); 
+					}
+				} 
+			}
 			resultPage.setList(getMyProductResultVo(resultPage.getList())); 
 		}
 		rq.setStatu(ReturnStatus.Success);

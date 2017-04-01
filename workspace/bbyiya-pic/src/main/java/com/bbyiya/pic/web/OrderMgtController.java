@@ -264,18 +264,36 @@ public class OrderMgtController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getOrderProductdetails")
-	public String getOrderProductdetails(@RequestParam(required = false, defaultValue = "0") String orderProductId) throws Exception {
+	public String getOrderProductdetails(@RequestParam(required = false, defaultValue = "0") String userOrderId) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq=orderService.getOrderProductdetailsByUserOrderId(orderProductId);
-//			Map<String, Object> map=new HashMap<String, Object>();
-//			map.put("details", orderService.getOrderProductdetails(orderProductId));
-//			map.put("head", "");
-//			rq.setBasemodle(map);
-////			
-//			rq.setStatu(ReturnStatus.Success);
-//			rq.setStatusreson("获取成功");  
+			rq=orderService.getOrderProductdetailsByUserOrderId(userOrderId);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 根据OrderProductId得到OrderProductdetails
+	 * 用于客户端下载图片用
+	 * @param orderProductId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getOrderProductdetailsByOrderProductId")
+	public String getOrderProductdetailsByOrderProductId(@RequestParam(required = false, defaultValue = "0") String orderProductId) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			List<OOrderproductdetails> detaillist=orderService.getOrderProductdetails(orderProductId);
+			HashMap<String,Object> map=new HashMap<String, Object>();
+			map.put("list", detaillist);
+			rq.setBasemodle(map);
+			rq.setStatu(ReturnStatus.Success);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

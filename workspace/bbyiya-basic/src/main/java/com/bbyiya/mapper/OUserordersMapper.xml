@@ -19,12 +19,19 @@
     <result column="IsBranch" property="isbranch" jdbcType="INTEGER" />
     <result column="ExpressCom" property="expresscom" jdbcType="VARCHAR" />
     <result column="ExpressOrder" property="expressorder" jdbcType="VARCHAR" />
+    <result column="Postage" property="postage" jdbcType="DECIMAL" />
+    <result column="UploadTime" property="uploadtime" jdbcType="TIMESTAMP" />
+    <result column="PostModelId" property="postmodelid" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     UserOrderId, UserId, TotalPrice, Status, OrderAddressId, PayId, Remark, OrderTime, 
     PayTime, BranchUserId, OrderTotalPrice, PayType, OrderType, AgentUserId, IsBranch, 
-    ExpressCom, ExpressOrder
+    ExpressCom, ExpressOrder,Postage, UploadTime, PostModelId
   </sql>
+  <!-- 用户订单结果类Result -->
+  <resultMap id="UserBuyerOrderResultMap" type="com.bbyiya.vo.order.UserBuyerOrderResult" extends="BaseResultMap">  
+  </resultMap>  
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
@@ -37,6 +44,13 @@
     from o_userorders
     where UserId = #{userId,jdbcType=BIGINT}  order by OrderTime desc
   </select>
+  <select id="findUserOrderByUserId" resultMap="UserBuyerOrderResultMap"  ><!-- 01 根据UserId 获取用户的订单列表 -->
+    select 
+    <include refid="Base_Column_List" />
+    from o_userorders
+    where UserId = #{userId,jdbcType=BIGINT}  order by OrderTime desc
+  </select>
+  
   <select id="findOrdersByAgentUserId" resultMap="BaseResultMap"  ><!-- 02 获取待分配的订单 （代理） -->
     select 
     <include refid="Base_Column_List" />
@@ -55,17 +69,19 @@
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.OUserorders" >
     insert into o_userorders (UserOrderId, UserId, TotalPrice, 
-      Status, OrderAddressId, PayId, 
-      Remark, OrderTime, PayTime, 
-      BranchUserId, OrderTotalPrice, PayType, 
-      OrderType, AgentUserId, IsBranch, 
-      ExpressCom, ExpressOrder)
+      Status, BranchUserId, OrderAddressId, 
+      PayId, Remark, OrderTime, 
+      PayTime, OrderTotalPrice, PayType, 
+      AgentUserId, IsBranch, ExpressCom, 
+      ExpressOrder, OrderType, Postage, 
+      UploadTime, PostModelId)
     values (#{userorderid,jdbcType=VARCHAR}, #{userid,jdbcType=BIGINT}, #{totalprice,jdbcType=DECIMAL}, 
-      #{status,jdbcType=INTEGER}, #{orderaddressid,jdbcType=BIGINT}, #{payid,jdbcType=VARCHAR}, 
-      #{remark,jdbcType=VARCHAR}, #{ordertime,jdbcType=TIMESTAMP}, #{paytime,jdbcType=TIMESTAMP}, 
-      #{branchuserid,jdbcType=BIGINT}, #{ordertotalprice,jdbcType=DECIMAL}, #{paytype,jdbcType=INTEGER}, 
-      #{ordertype,jdbcType=INTEGER}, #{agentuserid,jdbcType=BIGINT}, #{isbranch,jdbcType=INTEGER}, 
-      #{expresscom,jdbcType=VARCHAR}, #{expressorder,jdbcType=VARCHAR})
+      #{status,jdbcType=INTEGER}, #{branchuserid,jdbcType=BIGINT}, #{orderaddressid,jdbcType=BIGINT}, 
+      #{payid,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{ordertime,jdbcType=TIMESTAMP}, 
+      #{paytime,jdbcType=TIMESTAMP}, #{ordertotalprice,jdbcType=DECIMAL}, #{paytype,jdbcType=INTEGER}, 
+      #{agentuserid,jdbcType=BIGINT}, #{isbranch,jdbcType=INTEGER}, #{expresscom,jdbcType=VARCHAR}, 
+      #{expressorder,jdbcType=VARCHAR}, #{ordertype,jdbcType=INTEGER}, #{postage,jdbcType=DECIMAL}, 
+      #{uploadtime,jdbcType=TIMESTAMP}, #{postmodelid,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.OUserorders" >
     insert into o_userorders
@@ -82,6 +98,9 @@
       <if test="status != null" >
         Status,
       </if>
+      <if test="branchuserid != null" >
+        BranchUserId,
+      </if>
       <if test="orderaddressid != null" >
         OrderAddressId,
       </if>
@@ -97,17 +116,11 @@
       <if test="paytime != null" >
         PayTime,
       </if>
-      <if test="branchuserid != null" >
-        BranchUserId,
-      </if>
       <if test="ordertotalprice != null" >
         OrderTotalPrice,
       </if>
       <if test="paytype != null" >
         PayType,
-      </if>
-      <if test="ordertype != null" >
-        OrderType,
       </if>
       <if test="agentuserid != null" >
         AgentUserId,
@@ -120,6 +133,18 @@
       </if>
       <if test="expressorder != null" >
         ExpressOrder,
+      </if>
+      <if test="ordertype != null" >
+        OrderType,
+      </if>
+      <if test="postage != null" >
+        Postage,
+      </if>
+      <if test="uploadtime != null" >
+        UploadTime,
+      </if>
+      <if test="postmodelid != null" >
+        PostModelId,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -134,6 +159,9 @@
       </if>
       <if test="status != null" >
         #{status,jdbcType=INTEGER},
+      </if>
+      <if test="branchuserid != null" >
+        #{branchuserid,jdbcType=BIGINT},
       </if>
       <if test="orderaddressid != null" >
         #{orderaddressid,jdbcType=BIGINT},
@@ -150,17 +178,11 @@
       <if test="paytime != null" >
         #{paytime,jdbcType=TIMESTAMP},
       </if>
-      <if test="branchuserid != null" >
-        #{branchuserid,jdbcType=BIGINT},
-      </if>
       <if test="ordertotalprice != null" >
         #{ordertotalprice,jdbcType=DECIMAL},
       </if>
       <if test="paytype != null" >
         #{paytype,jdbcType=INTEGER},
-      </if>
-      <if test="ordertype != null" >
-        #{ordertype,jdbcType=INTEGER},
       </if>
       <if test="agentuserid != null" >
         #{agentuserid,jdbcType=BIGINT},
@@ -173,6 +195,18 @@
       </if>
       <if test="expressorder != null" >
         #{expressorder,jdbcType=VARCHAR},
+      </if>
+      <if test="ordertype != null" >
+        #{ordertype,jdbcType=INTEGER},
+      </if>
+      <if test="postage != null" >
+        #{postage,jdbcType=DECIMAL},
+      </if>
+      <if test="uploadtime != null" >
+        #{uploadtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="postmodelid != null" >
+        #{postmodelid,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -187,6 +221,9 @@
       </if>
       <if test="status != null" >
         Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="branchuserid != null" >
+        BranchUserId = #{branchuserid,jdbcType=BIGINT},
       </if>
       <if test="orderaddressid != null" >
         OrderAddressId = #{orderaddressid,jdbcType=BIGINT},
@@ -203,17 +240,11 @@
       <if test="paytime != null" >
         PayTime = #{paytime,jdbcType=TIMESTAMP},
       </if>
-      <if test="branchuserid != null" >
-        BranchUserId = #{branchuserid,jdbcType=BIGINT},
-      </if>
       <if test="ordertotalprice != null" >
         OrderTotalPrice = #{ordertotalprice,jdbcType=DECIMAL},
       </if>
       <if test="paytype != null" >
         PayType = #{paytype,jdbcType=INTEGER},
-      </if>
-      <if test="ordertype != null" >
-        OrderType = #{ordertype,jdbcType=INTEGER},
       </if>
       <if test="agentuserid != null" >
         AgentUserId = #{agentuserid,jdbcType=BIGINT},
@@ -227,6 +258,18 @@
       <if test="expressorder != null" >
         ExpressOrder = #{expressorder,jdbcType=VARCHAR},
       </if>
+      <if test="ordertype != null" >
+        OrderType = #{ordertype,jdbcType=INTEGER},
+      </if>
+      <if test="postage != null" >
+        Postage = #{postage,jdbcType=DECIMAL},
+      </if>
+      <if test="uploadtime != null" >
+        UploadTime = #{uploadtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="postmodelid != null" >
+        PostModelId = #{postmodelid,jdbcType=INTEGER},
+      </if>
     </set>
     where UserOrderId = #{userorderid,jdbcType=VARCHAR}
   </update>
@@ -235,19 +278,22 @@
     set UserId = #{userid,jdbcType=BIGINT},
       TotalPrice = #{totalprice,jdbcType=DECIMAL},
       Status = #{status,jdbcType=INTEGER},
+      BranchUserId = #{branchuserid,jdbcType=BIGINT},
       OrderAddressId = #{orderaddressid,jdbcType=BIGINT},
       PayId = #{payid,jdbcType=VARCHAR},
       Remark = #{remark,jdbcType=VARCHAR},
       OrderTime = #{ordertime,jdbcType=TIMESTAMP},
       PayTime = #{paytime,jdbcType=TIMESTAMP},
-      BranchUserId = #{branchuserid,jdbcType=BIGINT},
       OrderTotalPrice = #{ordertotalprice,jdbcType=DECIMAL},
       PayType = #{paytype,jdbcType=INTEGER},
-      OrderType = #{ordertype,jdbcType=INTEGER},
       AgentUserId = #{agentuserid,jdbcType=BIGINT},
       IsBranch = #{isbranch,jdbcType=INTEGER},
       ExpressCom = #{expresscom,jdbcType=VARCHAR},
-      ExpressOrder = #{expressorder,jdbcType=VARCHAR}
+      ExpressOrder = #{expressorder,jdbcType=VARCHAR},
+      OrderType = #{ordertype,jdbcType=INTEGER},
+      Postage = #{postage,jdbcType=DECIMAL},
+      UploadTime = #{uploadtime,jdbcType=TIMESTAMP},
+      PostModelId = #{postmodelid,jdbcType=INTEGER}
     where UserOrderId = #{userorderid,jdbcType=VARCHAR}
   </update>
 </mapper>

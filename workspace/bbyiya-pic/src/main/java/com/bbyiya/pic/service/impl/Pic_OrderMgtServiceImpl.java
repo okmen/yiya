@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -34,10 +36,13 @@ import com.bbyiya.pic.vo.order.SearchOrderParam;
 import com.bbyiya.pic.vo.order.UserOrderResultVO;
 import com.bbyiya.pic.vo.order.ibs.OrderProductVo;
 import com.bbyiya.pic.vo.order.ibs.OrderVo;
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.FileUtils;
+import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.upload.FileDownloadUtils;
 import com.bbyiya.vo.ReturnModel;
+import com.sdicons.json.validator.impl.predicates.Str;
 
 @Service("pic_orderMgtService")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
@@ -331,8 +336,31 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 	public List<OOrderproductdetails> getOrderProductdetails(String orderProductId) {
 		List<OOrderproductdetails> detailslist= orderDao.findOrderProductDetailsByProductOrderId(orderProductId);
 		return detailslist;
-		
 	}
+	
+	public ReturnModel getOrderProductdetailsByUserOrderId(String userOrderId){
+		ReturnModel rq=new ReturnModel();
+		OOrderproducts orderproducts= orderProductMapper.getOProductsByOrderId(userOrderId);
+		if(orderproducts!=null){
+			long temp=orderproducts.getStyleid()%2;
+			Map<String, Object> map=new HashMap<String, Object>();
+			map.put("type", temp);
+			List<Map<String, String>> coversList=ConfigUtil.getMaplist("styleCovers");
+			if(coversList!=null&&coversList.size()>0){
+				for (Map<String, String> cover : coversList) {
+					if(ObjectUtil.parseLong(cover.get("styleId"))==orderproducts.getStyleid().longValue()){
+						map.put("headImg",cover.get("url"));
+					}
+				}
+			}
+			
+			map.put("details", getOrderProductdetails(userOrderId));
+			rq.setBasemodle(map); 
+			rq.setStatu(ReturnStatus.Success);
+		}
+		return rq;
+	}
+	
 	public void downloadImg(List<UserOrderResultVO> orderlist,String basePath){
 		try {
 			FileUtils.isDirExists(basePath);

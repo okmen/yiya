@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.baseUtils.GenUtils;
+import com.bbyiya.baseUtils.ValidateUtils;
+import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.PPostmodel;
 import com.bbyiya.pic.vo.order.SubmitOrderProductParam;
@@ -21,6 +24,7 @@ import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.order.UserOrderSubmitParam;
+import com.bbyiya.vo.order.UserOrderSubmitRepeatParam;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
 
@@ -36,7 +40,13 @@ public class SubmitOrderMgtController extends SSOController {
 	private IBasePostMgtService postMgtService;
 
 	
-	
+	/**
+	 * 下单页-获取运费方式列表
+	 * @param area
+	 * @param addressId
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/findpostlist")
 	public String findpostlist(String area,String addressId)throws Exception{
@@ -82,7 +92,6 @@ public class SubmitOrderMgtController extends SSOController {
 				product.setProductid(productParam.getProductId());
 				product.setStyleid(productParam.getStyleId());
 				product.setCount(productParam.getCount());
-
 				
 				// 下单参数
 				UserOrderSubmitParam param = new UserOrderSubmitParam();
@@ -98,6 +107,9 @@ public class SubmitOrderMgtController extends SSOController {
 				if (type > 0) {
 					param.setOrderType(type);
 				}
+				if(productParam.getPostModelId()!=null){
+					param.setPostModelId(productParam.getPostModelId()); 
+				} 
 				param.setOrderproducts(product);
 				rq = orderMgtService.submitOrder_new(param);
 			} else {
@@ -112,6 +124,36 @@ public class SubmitOrderMgtController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
+	/**
+	 * 再次下单
+	 * @param addrId
+	 * @param remark
+	 * @param productJsonStr
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/submitOrderRepeat")
+	public String submitOrderSecond( String orderJson) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			UserOrderSubmitRepeatParam param=(UserOrderSubmitRepeatParam)JsonUtil.jsonStrToObject(orderJson,UserOrderSubmitRepeatParam.class);
+			if(param!=null){
+				if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.salesman)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)){
+					param.setOrderType(Integer.parseInt(OrderTypeEnum.brachOrder.toString()));
+				}
+				rq=orderMgtService.submitOrder_repeat(user.getUserId(), param);
+			}
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+
+	
+	
 	/**
 	 * 获取充值订单号
 	 * @param amount

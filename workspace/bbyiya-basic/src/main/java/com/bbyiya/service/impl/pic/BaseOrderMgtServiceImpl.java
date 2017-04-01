@@ -72,6 +72,7 @@ import com.bbyiya.vo.order.UserBuyerOrderResult;
 import com.bbyiya.vo.order.UserOrderParam;
 import com.bbyiya.vo.order.UserOrderResult;
 import com.bbyiya.vo.order.UserOrderSubmitParam;
+import com.bbyiya.vo.order.UserOrderSubmitRepeatParam;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
@@ -172,6 +173,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		userOrder.setOrdertime(ordertime);
 		userOrder.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
 		userOrder.setIsbranch(0); 
+		userOrder.setPostmodelid(param.getPostModelId()); 
 		if(param.getOrderAddressId()!=null&&param.getOrderAddressId()>0){
 			userOrder.setOrderaddressid(param.getOrderAddressId());
 		}else {
@@ -179,12 +181,11 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			rq.setStatusreson("收货地址有误");
 			return rq;
 		}
-		//邮费
-		userOrder.setPostage(param.getPostPrice()); 
+		
 		if (param.getOrderproducts() != null) {
-			//订单总价
+			//实际需要付款的总价（包括邮费）
 			Double orderTotalPrice = 0d;
-			//实际需要付款的总价
+			//订单总价
 			Double totalPrice = 0d;
 			//订单产品
 			OOrderproducts orderProduct = param.getOrderproducts();
@@ -219,10 +220,13 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			} else {
 				throw new Exception("找不到相应的产品！");
 			}
-			userOrder.setTotalprice(orderTotalPrice);//订单价格，不包括邮费
+			userOrder.setTotalprice(totalPrice);//订单价格，不包括邮费
 			//实际需要付款金额（包括邮费）ps:B端订单邮费后期pbs扣款
-			userOrder.setOrdertotalprice(orderTotalPrice);
+			userOrder.setOrdertotalprice(totalPrice);
+			
 			if (orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
+				//邮费 b端下单不录入邮费
+				userOrder.setPostage(0d); 
 				UAccounts accounts= accountsMapper.selectByPrimaryKey(param.getBranchUserId());
 				if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount()>=totalPrice) {
 					// 影楼订单，直接预存款支付 ， 插入支付记录
@@ -241,10 +245,10 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			} else {//普通购买  算邮费
 				if(param.getPostPrice()!=null){
 					userOrder.setPostage(param.getPostPrice()); 
-					totalPrice+=param.getPostPrice();
-					userOrder.setOrdertotalprice(totalPrice);//订单总价 
+					orderTotalPrice+=param.getPostPrice();
+					userOrder.setOrdertotalprice(orderTotalPrice);//订单总价 
 				}
-				addPayOrder(param.getUserId(), payId, payId, totalPrice); // 插入支付订单记录
+				addPayOrder(param.getUserId(), payId, payId, orderTotalPrice); // 插入支付订单记录
 			}
 			PMyproducts mycart=myproductMapper.selectByPrimaryKey(param.getCartId()) ;
 			if(mycart!=null){
@@ -295,8 +299,217 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			throw new RuntimeException(e.getMessage());
 		}
 	}
-	
-	
+	/**
+	 * 已下单的作品 再次下单
+	 * @param userId
+	 * @param param
+	 * @return
+	 * @throws Exception 
+	 * @throws NumberFormatException 
+	 */
+	public ReturnModel submitOrder_repeat(Long userId, UserOrderSubmitRepeatParam param) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		rq.setStatu(ReturnStatus.ParamError);
+		if (param == null || ObjectUtil.isEmpty(param.getUserOrderId())) {
+			rq.setStatusreson("参数有误");
+			return rq;
+		}
+		// 01 获取 订单
+		OUserorders userorder = userOrdersMapper.selectByPrimaryKey(param.getUserOrderId());
+		if (userorder != null) {
+			// 02 订单产品
+			OOrderproducts oproduct = oproductMapper.getOProductsByOrderId(param.getUserOrderId());
+			if (oproduct != null) {
+				PProducts product = productsMapper.selectByPrimaryKey(oproduct.getProductid());
+				PProductstyles style = styleMapper.selectByPrimaryKey(oproduct.getStyleid());
+				if (style == null || product == null || style.getStatus() != 1 || product.getStatus() != 1) {
+					rq.setStatusreson("相册已经下架，无法下单");
+					return rq;
+				}
+				// 03 订单作品
+				List<OOrderproductdetails> details = odetailMapper.findOrderProductDetailsByProductOrderId(oproduct.getOrderproductid());
+				if (details != null && details.size() > 0) {
+					/*------------------------影楼内部订单------------------------------------------------*/
+					if (param.getOrderType() == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
+						// 影楼金额是否足够
+						UBranchusers branchusers = branchusersMapper.selectByPrimaryKey(userId);
+						if (branchusers != null && branchusers.getBranchuserid() != null) {
+							UBranches branches = branchesMapper.selectByPrimaryKey(branchusers.getBranchuserid());
+							if (branches != null && branches.getStatus() != null && branches.getStatus().intValue() == Integer.parseInt(BranchStatusEnum.ok.toString())) {
+								param.setBranchUserId(branches.getBranchuserid());
+								param.setAgentUserId(branches.getAgentuserid());
+								double totalprice = style.getAgentprice() * param.getCount();
+								UAccounts accounts = accountsMapper.selectByPrimaryKey(branches.getBranchuserid());
+								if (accounts != null && accounts.getAvailableamount() != null && accounts.getAvailableamount() >= totalprice) {
+									// 影楼的运费款 查询
+									UBranchtransaccounts transAccount = transMapper.selectByPrimaryKey(branches.getBranchuserid());
+									if (transAccount == null || transAccount.getAvailableamount() == null || transAccount.getAvailableamount() <= 0) {
+										rq.setStatu(ReturnStatus.CashError);
+										rq.setStatusreson("影楼的运费款不足，无法下单！请通知管理员进行充值，以免影响您的业务！ ");
+										return rq;
+									}
+								} else {
+									rq.setStatu(ReturnStatus.CashError);
+									rq.setStatusreson("影楼预存货款不足，无法下单！请通知管理员进行充值，以免影响您的业务！");
+									return rq;
+								}
+							} else {
+								rq.setStatusreson("不是有效的合作伙伴！");
+								return rq;
+							}
+						} else {
+							rq.setStatusreson("权限不足");
+							return rq;
+						}
+					}
+					/*-----------------------普通用户订单--------------------------------*/
+					else {
+						if(param.getAddrId()==null||param.getAddrId()<=0){
+							rq.setStatusreson("收货地址未填！");
+							return rq;
+						}
+						UUseraddress addr = addressMapper.get_UUserAddressByKeyId(param.getAddrId());// 用户收货地址
+						if(addr==null){
+							rq.setStatusreson("收货地址不存在");
+							return rq;
+						}
+						/*---------------------通过快递方式查询邮费---------------------------------------------*/
+						if (param.getPostModelId() <= 0) {
+							List<PPostmodel> listpost = postMgtService.find_postlist(addr.getArea());
+							if (listpost != null && listpost.size() > 0) {
+								param.setPostModelId(listpost.get(0).getPostmodelid());
+								param.setPostage(listpost.get(0).getAmount());
+							}
+						} else {
+							PPostmodel postmodel = postMgtService.getPostmodel(param.getPostModelId(), addr.getArea());
+							if (postmodel != null) {
+								param.setPostage(postmodel.getAmount());
+							} else {
+								rq.setStatu(ReturnStatus.SystemError);
+								rq.setStatusreson("快递方式不存在！");
+								return rq;
+							}
+						}
+					}
+					// 开始下单操作-------------------------------------------------------------------
+					Map<String, Object> mapResult = new HashMap<String, Object>();
+					String payId = GenUtils.getOrderNo(userId);
+					String orderId = payId;
+					mapResult.put("payId", payId);
+					mapResult.put("orderId", orderId);
+
+					/*-------------------------------------------------------*/
+					OUserorders userOrder_Repeat = new OUserorders();
+					Date ordertime = new Date();// 订单操作时间
+					userOrder_Repeat.setUserorderid(orderId);// 用户订单号
+					userOrder_Repeat.setPayid(payId); // 会写支付单号
+					userOrder_Repeat.setUserid(userId);
+					userOrder_Repeat.setBranchuserid(userorder.getBranchuserid());// 分销商userId
+					userOrder_Repeat.setAgentuserid(userorder.getAgentuserid());
+					userOrder_Repeat.setRemark(param.getRemark());
+					userOrder_Repeat.setOrdertype(param.getOrderType());// 订单类型
+					userOrder_Repeat.setOrdertime(ordertime);
+					userOrder_Repeat.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
+					userOrder_Repeat.setIsbranch(0);
+					
+					long orderAddressId = 0;
+					if (param.getOrderType() == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {// 影楼订单
+						orderAddressId = getOrderAddressIdByBranchUserId(userId, param.getOrderType());
+					} else {// 普通购买
+						orderAddressId = getOrderAddressId(param.getAddrId());
+					}
+					if (orderAddressId > 0) {
+						userOrder_Repeat.setOrderaddressid(orderAddressId);
+					} else {
+						rq.setStatu(ReturnStatus.ParamError);
+						rq.setStatusreson("收货地址有误");
+						return rq;
+					}
+
+					if (true) {
+						// 实际需要付款的总价（包括邮费）
+						Double orderTotalPrice = 0d;
+						// 订单总价
+						Double totalPrice = 0d;
+						// 订单产品
+						OOrderproducts orderProduct = new OOrderproducts();
+						orderProduct.setOrderproductid(orderId);// 产品订单编号
+						orderProduct.setUserorderid(orderId);// 用户订单号
+						orderProduct.setBuyeruserid(userId);
+						orderProduct.setPropertystr(style.getPropertystr());
+						orderProduct.setProducttitle(product.getTitle());
+						orderProduct.setCartid(oproduct.getCartid());// 作品Id
+						orderProduct.setProductimg(oproduct.getProductimg());
+						orderProduct.setPrice(style.getPrice());
+						orderProduct.setCount(param.getCount()); 
+						// 订单原本实际价格总和
+						orderTotalPrice = style.getPrice() * param.getCount();
+						totalPrice = style.getPrice() * param.getCount();
+
+						userOrder_Repeat.setTotalprice(totalPrice);// 订单价格，不包括邮费
+						// 实际需要付款金额（包括邮费）ps:B端订单邮费后期pbs扣款
+						userOrder_Repeat.setOrdertotalprice(totalPrice);
+
+						if (param.getOrderType() == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
+							// 邮费 b端下单不录入邮费
+							userOrder_Repeat.setPostage(0d);
+							UAccounts accounts = accountsMapper.selectByPrimaryKey(param.getBranchUserId());
+							if (accounts != null && accounts.getAvailableamount() != null && accounts.getAvailableamount() >= totalPrice) {
+								// 影楼订单，直接预存款支付 ， 插入支付记录
+								if (payOrder_logAdd(param.getBranchUserId(), orderId, orderId, totalPrice)) {
+									
+									userOrder_Repeat.setStatus(Integer.parseInt(OrderStatusEnum.waitFoSend.toString()));
+									userOrder_Repeat.setPaytime(new Date());
+									userOrder_Repeat.setPaytype(Integer.parseInt(PayTypeEnum.yiyaCash.toString()));
+								} else {
+									throw new Exception("下单失败！");
+								}
+							} else {
+								rq.setStatu(ReturnStatus.CashError);
+								rq.setStatusreson("企业余额不足！");
+								return rq;
+							}
+						} else {// 普通购买 算邮费
+							if (param.getPostage() != null) {
+								userOrder_Repeat.setPostmodelid(param.getPostModelId());
+								userOrder_Repeat.setPostage(param.getPostage());
+								orderTotalPrice += param.getPostage();
+								userOrder_Repeat.setOrdertotalprice(orderTotalPrice);// 订单总价
+							}
+							addPayOrder(userId, payId, payId, orderTotalPrice); // 插入支付订单记录
+						}
+						for (OOrderproductdetails dd : details) {
+							OOrderproductdetails det=new OOrderproductdetails();
+							det.setOrderproductid(orderProduct.getOrderproductid());
+							det.setBackimageurl(dd.getBackimageurl());
+							det.setCreatetime(new Date());
+							det.setImageurl(dd.getImageurl());
+							det.setPosition(dd.getPosition());
+							det.setPrintno(dd.getPrintno());
+							odetailMapper.insert(det);
+						}
+						userOrdersMapper.insert(userOrder_Repeat);//插入订单
+						oproductMapper.insert(orderProduct);//插入订单产品
+						
+						rq.setStatu(ReturnStatus.Success);
+						// 获取产品信息
+						mapResult.put("productId", product.getProductid());
+						mapResult.put("styleId", style.getStyleid());
+						mapResult.put("isRepeat", 1);//是重新下单
+						mapResult.put("totalPrice", totalPrice);
+						if(userOrder_Repeat.getStatus()!=null&&userOrder_Repeat.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.waitFoSend.toString())){
+							mapResult.put("payed", 1);
+						}else {
+							mapResult.put("payed", 0);
+						}
+						rq.setBasemodle(mapResult);
+					}
+				}
+			}
+		}
+		rq.setStatusreson("重新下单失败（此功能只支持之前已完成下单的作品）"); 
+		return rq;
+	}
 	
 	/**
 	 * 检测订单参数 （订单提交 检验）
@@ -663,6 +876,8 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				List<OOrderproducts> proList = oproductMapper.findOProductsByOrderId(oo.getUserorderid());
 				if(proList!=null&&proList.size()>0){
 					OOrderproducts product=proList.get(0);
+					long temp=product.getStyleid()%2;
+					oo.setShowType((int)temp); 
 					if(product.getProductimg()==null||product.getProductimg().equals("")){
 						product.setProductimg("http://pic.bbyiya.com/484983733454448354.png");
 					}
@@ -687,8 +902,14 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			UserOrderResult model = new UserOrderResult();
 			model.setUserOrderId(orderInfo.getUserorderid());
 			model.setTotalprice(orderInfo.getTotalprice());
+			model.setOrderTotalPrice(orderInfo.getOrdertotalprice());
+			model.setPostage(orderInfo.getPostage()==null?0d:orderInfo.getPostage()); 
 			model.setStatus(orderInfo.getStatus());			
 			model.setOrderTimeStr(DateUtil.getTimeStr(orderInfo.getOrdertime(), "yyyy-MM-dd"));
+			if(!ObjectUtil.isEmpty(orderInfo.getPaytime())){ 
+				model.setPayTimeStr(DateUtil.getTimeStr(orderInfo.getPaytime(), "yyyy-MM-dd HH:mm:ss")); 
+			}
+			model.setPayType(orderInfo.getPaytype()); 
 			List<OOrderproducts> proList = oproductMapper.findOProductsByOrderId(orderInfo.getUserorderid());
 			model.setProlist(proList);
 			OOrderaddress addr= orderaddressMapper.selectByPrimaryKey(orderInfo.getOrderaddressid());

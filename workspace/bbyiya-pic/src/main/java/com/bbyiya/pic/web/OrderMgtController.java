@@ -2,6 +2,7 @@ package com.bbyiya.pic.web;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -267,9 +268,14 @@ public class OrderMgtController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq.setBasemodle(orderService.getOrderProductdetails(orderProductId)); 
-			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("获取成功");  
+			rq=orderService.getOrderProductdetailsByUserOrderId(orderProductId);
+//			Map<String, Object> map=new HashMap<String, Object>();
+//			map.put("details", orderService.getOrderProductdetails(orderProductId));
+//			map.put("head", "");
+//			rq.setBasemodle(map);
+////			
+//			rq.setStatu(ReturnStatus.Success);
+//			rq.setStatusreson("获取成功");  
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

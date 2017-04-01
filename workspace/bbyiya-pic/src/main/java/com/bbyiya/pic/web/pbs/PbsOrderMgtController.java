@@ -56,7 +56,7 @@ public class PbsOrderMgtController extends SSOController {
 	@Resource(name = "pic_orderMgtService")
 	private IPic_OrderMgtService orderService;
 	/**
-	 * O03 我的购买订单
+	 * O01 PBS查询订单列表
 	 *  
 	 * @return
 	 * @throws Exception

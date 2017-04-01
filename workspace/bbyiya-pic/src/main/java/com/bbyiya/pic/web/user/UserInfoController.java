@@ -6,9 +6,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bbyiya.baseUtils.CookieUtils;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.service.IUserInfoMgtService;
 import com.bbyiya.utils.JsonUtil;
+import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.vo.user.UUserInfoParam;
@@ -29,6 +32,16 @@ public class UserInfoController  extends SSOController{
 			UUserInfoParam param=(UUserInfoParam)JsonUtil.jsonStrToObject(userInfoJson, UUserInfoParam.class);
 			if(param!=null){
 				rq= userInfoMgtService.editUUsers(user.getUserId(), param);
+				if(ReturnStatus.Success.equals(rq.getStatu()) ){
+					LoginSuccessResult loginUser= userInfoMgtService.getLoginSuccessResult(user.getUserId());
+					if(loginUser!=null){
+						String ticket=super.getTicket();
+						if(ObjectUtil.isEmpty(ticket)){
+							ticket=CookieUtils.getCookieBySessionId(request);
+						}
+						RedisUtil.setObject(ticket, loginUser, 86400); 
+					}
+				}
 			}
 			rq.setStatu(ReturnStatus.Success);
 		}else {

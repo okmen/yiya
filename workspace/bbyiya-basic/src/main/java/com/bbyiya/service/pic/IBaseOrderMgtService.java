@@ -6,6 +6,7 @@ import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.order.UserOrderSubmitParam;
+import com.bbyiya.vo.order.UserOrderSubmitRepeatParam;
 
 public interface IBaseOrderMgtService {
 
@@ -27,6 +28,14 @@ public interface IBaseOrderMgtService {
 	 * @return
 	 */
 	ReturnModel submitOrder_new(UserOrderSubmitParam param);
+	/**
+	 * 再次下单
+	 * @param userId
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	ReturnModel submitOrder_repeat(Long userId, UserOrderSubmitRepeatParam param) throws Exception;
 
 	/**
 	 * 去支付

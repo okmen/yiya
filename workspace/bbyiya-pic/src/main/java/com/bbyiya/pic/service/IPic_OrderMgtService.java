@@ -58,4 +58,6 @@ public interface IPic_OrderMgtService {
 	 * @return
 	 */
 	List<OOrderproductdetails> getOrderProductdetails(String orderProductId);
+	
+	ReturnModel getOrderProductdetailsByUserOrderId(String userOrderId);
 }

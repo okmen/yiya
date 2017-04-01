@@ -39,7 +39,7 @@ public class MyProductMgtController extends SSOController {
 	public String getmyproduct(long cartId) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
-		if (user != null) {
+		if (user != null) { 
 			rq = myproductService.get_mycart(user.getUserId(),cartId);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);

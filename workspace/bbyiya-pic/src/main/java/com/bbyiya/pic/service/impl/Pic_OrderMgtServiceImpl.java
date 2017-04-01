@@ -310,8 +310,10 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 			if(productList!=null&&productList.size()>0){
 				for (OOrderproducts pro : productList) {
 					List<OOrderproductdetails> detailslist= orderDao.findOrderProductDetailsByProductOrderId(pro.getOrderproductid());
-					for (OOrderproductdetails detail : detailslist) {
-						detailMapper.deleteByPrimaryKey(detail.getOproductdetailid());
+					if(detailslist!=null&&detailslist.size()>0){
+						for (OOrderproductdetails detail : detailslist) {
+							detailMapper.deleteByPrimaryKey(detail.getOproductdetailid());
+						}
 					}
 					orderProductMapper.deleteByPrimaryKey(pro.getOrderproductid());
 				}

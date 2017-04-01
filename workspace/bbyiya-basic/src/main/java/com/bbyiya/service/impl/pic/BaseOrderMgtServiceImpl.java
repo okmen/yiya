@@ -888,9 +888,10 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					}
 				}
 			}
-			rq.setBasemodle(resultPage);
-			rq.setStatu(ReturnStatus.Success);
+			
 		}
+		rq.setBasemodle(resultPage);
+		rq.setStatu(ReturnStatus.Success);
 		return rq;
 	}
 	

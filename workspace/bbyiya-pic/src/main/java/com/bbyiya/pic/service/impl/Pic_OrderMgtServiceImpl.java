@@ -354,7 +354,7 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 				}
 			}
 			
-			map.put("details", getOrderProductdetails(userOrderId));
+			map.put("details", getOrderProductdetails(orderproducts.getOrderproductid()));
 			rq.setBasemodle(map); 
 			rq.setStatu(ReturnStatus.Success);
 		}

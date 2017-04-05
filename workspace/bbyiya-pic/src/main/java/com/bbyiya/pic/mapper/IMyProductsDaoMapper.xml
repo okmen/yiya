@@ -33,7 +33,7 @@
     from p_myproducts
     where CartId = #{cartid,jdbcType=BIGINT}
   </select>
-  <!-- 通过 UserId ，ProductId, Status 获取作品 -->
+  <!-- 通过 UserId ，ProductId, Status 获取作品 -->  
   <select id="getMyProductResultByProductId" resultMap="MyProductResultVO" >
     select <include refid="Base_Column_List" />
     from p_myproducts

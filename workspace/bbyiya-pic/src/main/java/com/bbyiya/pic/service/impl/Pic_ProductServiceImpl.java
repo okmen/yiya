@@ -347,6 +347,13 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		List<MyProductResultVo> mylist = myMapper.findMyProductslistForBranch(idsList, status, inviteStatus);
 		PageInfo<MyProductResultVo> resultPage=new PageInfo<MyProductResultVo>(mylist); 
 		if(resultPage.getList()!=null&&resultPage.getList().size()>0){
+			for (MyProductResultVo vv : resultPage.getList()) {
+				for (UBranchusers uu : userList) {
+					if(uu.getUserid().longValue()==vv.getUserid().longValue()){
+						vv.setUserName(uu.getName()); 
+					}
+				} 
+			}
 			resultPage.setList(getMyProductResultVo(resultPage.getList())); 
 		}
 		rq.setStatu(ReturnStatus.Success);
@@ -429,16 +436,16 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		ReturnModel rq=new ReturnModel();
 		PMyproducts myproducts= myMapper.selectByPrimaryKey(cartId);
 		if(myproducts!=null&&myproducts.getUserid()!=null&&myproducts.getUserid().longValue()==userId){
-			if(myproducts.getStatus()!=null&&myproducts.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
-				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("已下单的作品暂不支持删除操作！");
-				return rq;
-			}
+//			if(myproducts.getStatus()!=null&&myproducts.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
+//				rq.setStatu(ReturnStatus.SystemError);
+//				rq.setStatusreson("已下单的作品暂不支持删除操作！");
+//				return rq;
+//			}
 			if(myproducts.getInvitestatus()!=null&&myproducts.getInvitestatus()>0){
 				inviteMapper.deleteByCartId(cartId);
 			}
-			myMapper.deleteByPrimaryKey(cartId);
 			mydetailDao.deleMyProductDetailsByCartId(cartId); 
+			myMapper.deleteByPrimaryKey(cartId);
 			
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("删除成功");

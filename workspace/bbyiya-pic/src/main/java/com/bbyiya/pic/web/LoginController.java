@@ -84,7 +84,7 @@ public class LoginController extends SSOController {
 		param.setHeadImg(headImg);
 		ReturnModel rqModel = loginService.otherLogin(param);
 		if (ReturnStatus.Success.equals(rqModel.getStatu()) && !ObjectUtil.isEmpty(rqModel.getBasemodle())) {
-			addLoginLogAndCookie(rqModel.getBasemodle());
+			addLoginLogAndCookie(rqModel.getBasemodle(),0);
 		}
 		return JsonUtil.objectToJsonStr(rqModel);
 	}
@@ -95,7 +95,7 @@ public class LoginController extends SSOController {
 	public String loginPhone(String phone, String pwd) throws Exception {
 		ReturnModel rqModel = loginBaseService.login(phone, pwd);
 		if (ReturnStatus.Success.equals(rqModel.getStatu()) && !ObjectUtil.isEmpty(rqModel.getBasemodle())) {
-			addLoginLogAndCookie(rqModel.getBasemodle());
+			addLoginLogAndCookie(rqModel.getBasemodle(),Integer.parseInt(LoginTypeEnum.mobilephone.toString()));
 		}
 		return JsonUtil.objectToJsonStr(rqModel);
 	}
@@ -129,8 +129,8 @@ public class LoginController extends SSOController {
 	@RequestMapping(value = "/transfer")
 	public String transferPage(String m) throws Exception {
 		LoginSuccessResult user = super.getLoginUser();
+		int mtype=ObjectUtil.parseInt(m);
 		if (user != null) {
-			int mtype=ObjectUtil.parseInt(m);
 			if(mtype==1){
 				return "redirect:"+ ConfigUtil.getSingleValue("loginbackurl_test") ;
 			}else {
@@ -145,7 +145,6 @@ public class LoginController extends SSOController {
 	
 	
 
-	String access_token;
 	/**
 	 * Î¢ÐÅµÇÂ¼
 	 * 
@@ -166,7 +165,7 @@ public class LoginController extends SSOController {
 		ReturnModel rqModel = new ReturnModel();
 		if (model != null) {
 			String openid = String.valueOf(model.get("openid"));
-			access_token = String.valueOf(model.get("access_token"));
+			String access_token = String.valueOf(model.get("access_token"));
 
 			if (!ObjectUtil.isEmpty(openid) && !ObjectUtil.isEmpty(access_token) && !"null".equals(openid) && !"null".equals(access_token)) {
 
@@ -188,7 +187,7 @@ public class LoginController extends SSOController {
 					}
 					rqModel = loginService.otherLogin(param);
 					if (ReturnStatus.Success.equals(rqModel.getStatu()) && !ObjectUtil.isEmpty(rqModel.getBasemodle())) {
-						addLoginLogAndCookie(rqModel.getBasemodle());
+						addLoginLogAndCookie(rqModel.getBasemodle(),Integer.parseInt(LoginTypeEnum.weixin.toString())); 
 					}
 					
 				} else {
@@ -213,22 +212,19 @@ public class LoginController extends SSOController {
 	
 
 
-	private void addLoginLogAndCookie(Object obj) {
+	private void addLoginLogAndCookie(Object obj,int type) {
 		try {
 			LoginSuccessResult user = (LoginSuccessResult) obj;
 			if (user != null) {
 				ULoginlogs loginLogs = new ULoginlogs();
 				loginLogs.setUserid(user.getUserId());
 				loginLogs.setLogintime(new Date());
-				loginLogs.setLogintype(Integer.parseInt(LoginTypeEnum.weixin.toString()));
+				loginLogs.setLogintype(type);
 				loginLogs.setIpstr(super.getIpStr());
 				loginLogs.setNickname(user.getNickName()); 
 				loginLogs.setSourcetype(1);// 12photo
 				loginLogMapper.insert(loginLogs);
 				CookieUtils.addCookieBySessionId(request, response,user.getTicket(),86400); 
-//				String sid=request.getSession().getId();
-//				addlog("C¶ËµÇÂ¼£ºsessionId="+sid+";val="+user.getTicket() );
-//				WxPublicUtils.setAccessToken(user.getUserId(),access_token);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception

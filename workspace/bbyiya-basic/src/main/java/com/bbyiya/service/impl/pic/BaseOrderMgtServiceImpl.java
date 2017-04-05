@@ -330,7 +330,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				List<OOrderproductdetails> details = odetailMapper.findOrderProductDetailsByProductOrderId(oproduct.getOrderproductid());
 				if (details != null && details.size() > 0) {
 					/*------------------------影楼内部订单------------------------------------------------*/
-					if (param.getOrderType() == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
+					if ( param.getOrderType() == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
 						// 影楼金额是否足够
 						UBranchusers branchusers = branchusersMapper.selectByPrimaryKey(userId);
 						if (branchusers != null && branchusers.getBranchuserid() != null) {
@@ -436,12 +436,15 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 						orderProduct.setOrderproductid(orderId);// 产品订单编号
 						orderProduct.setUserorderid(orderId);// 用户订单号
 						orderProduct.setBuyeruserid(userId);
+						orderProduct.setProductid(style.getProductid());
+						orderProduct.setStyleid(style.getStyleid()); 
 						orderProduct.setPropertystr(style.getPropertystr());
 						orderProduct.setProducttitle(product.getTitle());
 						orderProduct.setCartid(oproduct.getCartid());// 作品Id
 						orderProduct.setProductimg(oproduct.getProductimg());
 						orderProduct.setPrice(style.getPrice());
 						orderProduct.setCount(param.getCount()); 
+						
 						// 订单原本实际价格总和
 						orderTotalPrice = style.getPrice() * param.getCount();
 						totalPrice = style.getPrice() * param.getCount();
@@ -451,6 +454,8 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 						userOrder_Repeat.setOrdertotalprice(totalPrice);
 
 						if (param.getOrderType() == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
+							orderProduct.setSalesuserid(userId);
+							orderProduct.setBranchuserid(param.getBranchUserId()); 
 							// 邮费 b端下单不录入邮费
 							userOrder_Repeat.setPostage(0d);
 							UAccounts accounts = accountsMapper.selectByPrimaryKey(param.getBranchUserId());
@@ -503,11 +508,18 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 							mapResult.put("payed", 0);
 						}
 						rq.setBasemodle(mapResult);
+						return rq;
 					}
+				}else {
+					rq.setStatusreson("订单作品缺失！"); 
 				}
 			}
+			rq.setStatusreson("订单信息有误！");
+		}else { 
+			rq.setStatu(ReturnStatus.SystemError);
+			rq.setStatusreson("重新下单失败（此功能只支持之前已完成下单的作品）"); 
 		}
-		rq.setStatusreson("重新下单失败（此功能只支持之前已完成下单的作品）"); 
+		
 		return rq;
 	}
 	
@@ -917,10 +929,13 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			if(addr!=null){
 				model.setOrderAddress(addr);
 			}
-			PMyproducts myproduct= myproductMapper.getMyProductByOrderNo(orderId);
-			if(myproduct!=null){
-				model.setCartId(myproduct.getCartid()); 
+			if(proList!=null&&proList.size()>0){
+				model.setCartId(proList.get(0).getCartid()); 
 			}
+//			PMyproducts myproduct= myproductMapper.getMyProductByOrderNo(orderId);
+//			if(myproduct!=null){
+//				model.setCartId(myproduct.getCartid()); 
+//			}
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(model);
 		}else { 

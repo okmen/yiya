@@ -312,6 +312,15 @@ public class ObjectUtil {
 		}
 		return 0f;
 	}
+	
+	public static Double parseDouble(String score) {
+		if (isNotEmpty(score)) {
+			if (isDouble(score)) {
+				return Double.valueOf(score);
+			}
+		}
+		return 0d;
+	}
 
 	/**
 	 * @author xiehz

@@ -23,12 +23,12 @@ import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.pic.service.IPic_OrderMgtService;
-import com.bbyiya.pic.service.pbs.IPbs_OrderMgtService;
+//import com.bbyiya.pic.service.pbs.IPbs_OrderMgtService;
 import com.bbyiya.pic.vo.order.OrderPhotoParam;
 import com.bbyiya.pic.vo.order.SaveOrderPhotoParam;
 import com.bbyiya.pic.vo.order.SubmitOrderProductParam;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
-import com.bbyiya.utils.ConfigUtil;
+//import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -126,7 +126,7 @@ public class OrderMgtController extends SSOController {
 						if (ObjectUtil.isEmpty(pp.getImageUrl()) || ObjectUtil.isEmpty(pp.getPrintNo())||ObjectUtil.isEmpty(pp.getBackImageUrl())) {
 							rq.setStatu(ReturnStatus.ParamError_1);
 							rq.setStatusreson("图片信息有误，打印号：" + pp.getPrintNo());
-							addlog(orderImagesJson);
+							addlog("图片正面|反面缺失！+"+param.getOrderId()); 
 							return JsonUtil.objectToJsonStr(rq); 
 						}
 						OOrderproductdetails item = new OOrderproductdetails();

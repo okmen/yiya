@@ -142,6 +142,8 @@ public class SubmitOrderMgtController extends SSOController {
 			if(param!=null){
 				if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.salesman)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)){
 					param.setOrderType(Integer.parseInt(OrderTypeEnum.brachOrder.toString()));
+				}else {
+					param.setOrderType(0);
 				}
 				rq=orderMgtService.submitOrder_repeat(user.getUserId(), param);
 			}

@@ -32,13 +32,33 @@ public class CustomerController extends SSOController{
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq=memberMgtService.findCustomersByBranchUserId(user.getUserId());
+			rq=memberMgtService.findCustomerslistByAgentUserId(user.getUserId());
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	/**
+	 * IBS根据客户UserId得到客户的购买记录
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/customerBuylist")
+	public String customerBuylist(Long userId) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=memberMgtService.findCustomersBuylistByUserId(userId);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 	
 	/**
 	 * 新增、修改客户信息

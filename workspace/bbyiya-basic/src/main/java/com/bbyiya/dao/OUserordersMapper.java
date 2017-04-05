@@ -42,4 +42,12 @@ public interface OUserordersMapper {
      * @return
      */
     List<OUserorders> findOrdersByBranchUserId(@Param("branchUserId")Long branchUserId,@Param("status") Integer status);
+    
+    
+    /**
+     * 获取用户订单列表
+     * @param userId
+     * @return
+     */
+    OUserorders findLatelyOrderByUserId(@Param("userId") Long userId);
 }

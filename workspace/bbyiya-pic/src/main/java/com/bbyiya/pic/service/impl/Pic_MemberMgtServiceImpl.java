@@ -10,21 +10,29 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.baseUtils.ValidateUtils;
+import com.bbyiya.dao.OOrderproductsMapper;
+import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.UAgentcustomersMapper;
 import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.dao.UBranchusersMapper;
+import com.bbyiya.dao.UChildreninfoMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.BranchStatusEnum;
 import com.bbyiya.enums.user.UserIdentityEnums;
+import com.bbyiya.model.OOrderproducts;
+import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UBranchusers;
+import com.bbyiya.model.UChildreninfo;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.service.IPic_MemberMgtService;
 import com.bbyiya.service.IBaseUserCommonService;
+import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.agent.UAgentcustomersVo;
 
 @Service("pic_memberMgtService")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
@@ -40,6 +48,15 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 	private UBranchesMapper branchesMapper;
 	@Autowired
 	private UAgentcustomersMapper customerMapper;
+	@Autowired
+	private UChildreninfoMapper childMapper;
+	
+	@Autowired
+	private OOrderproductsMapper orderproductMapper;
+	
+	@Autowired
+	private OUserordersMapper orderMapper;
+	
 	
 	public ReturnModel findBranchUserslistByBranchUserId(Long branchUserId){
 		ReturnModel rqModel=new ReturnModel();
@@ -48,6 +65,8 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 		rqModel.setBasemodle(list);
 		return rqModel;
 	}
+	
+	
 	
 	public ReturnModel addBranchUser(Long branchUserId,UBranchusers param){
 		ReturnModel rqModel=new ReturnModel();
@@ -126,6 +145,56 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 		List<UAgentcustomers> customers= customerMapper.findCustomersByBranchUserId(branchUserId);
 		rq.setBasemodle(customers);
 		return rq;
+	}
+	
+	/**
+	 * 根据AgentUserId得到Uagentcustomers列表
+	 * @param branchUserId
+	 * @return
+	 */
+	public ReturnModel findCustomerslistByAgentUserId(Long branchUserId){
+		ReturnModel rqModel=new ReturnModel();
+		UBranches branch=branchesMapper.selectByPrimaryKey(branchUserId);
+		if(branch==null){
+			rqModel.setStatu(ReturnStatus.Success);
+			rqModel.setBasemodle(null);
+			return rqModel;
+		}
+		List<UAgentcustomersVo> list= customerMapper.findCustomersByAgentUserId(branch.getAgentuserid());
+		
+		for (UAgentcustomersVo cus : list) {
+			if(cus.getCreatetime()!=null) cus.setCreatetimeStr(DateUtil.getTimeStr(cus.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
+			UChildreninfo child=childMapper.selectByPrimaryKey(cus.getUserid());
+			if(child!=null){
+				if(child.getBirthday()!=null)
+					cus.setBabyBirthday(DateUtil.getTimeStr(child.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
+				else
+					cus.setBabyBirthday("");
+				cus.setBabyNickName(child.getNickname());
+			}
+			
+			OUserorders order=orderMapper.findLatelyOrderByUserId(cus.getUserid());
+			if(order!=null){
+				cus.setLastBuyDateStr(DateUtil.getTimeStr(order.getOrdertime(), "yyyy-MM-dd HH:mm:ss"));
+			}
+		}
+		rqModel.setStatu(ReturnStatus.Success);
+		rqModel.setBasemodle(list);
+		return rqModel;
+	}
+	
+	/**
+	 * 根据UserId得到客户的购买列表
+	 * @param branchUserId
+	 * @return
+	 */
+	public ReturnModel findCustomersBuylistByUserId(Long userId){
+		ReturnModel rqModel=new ReturnModel();
+		List<OOrderproducts> productlist=orderproductMapper.findOProductsByBuyerUserId(userId);
+		rqModel.setStatu(ReturnStatus.Success);
+		rqModel.setStatusreson("修改成功");
+		rqModel.setBasemodle(productlist);
+		return rqModel;
 	}
 	
 	public ReturnModel editCustomer(Long branchUserId,UAgentcustomers param){

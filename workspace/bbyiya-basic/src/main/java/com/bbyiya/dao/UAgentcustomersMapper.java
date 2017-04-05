@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.bbyiya.model.UAgentcustomers;
+import com.bbyiya.vo.agent.UAgentcustomersVo;
 
 public interface UAgentcustomersMapper {
     int deleteByPrimaryKey(Long customerid);
@@ -19,9 +20,16 @@ public interface UAgentcustomersMapper {
 
     int updateByPrimaryKey(UAgentcustomers record);
     /**
-     * 获取影楼的用户列表
+     * 根据branchUserId获取影楼的用户列表
      * @param branchUserId
      * @return
      */
     List<UAgentcustomers> findCustomersByBranchUserId(@Param("branchUserId") Long branchUserId);
+    
+    /**
+     * 根据AgentUserId获取影楼的用户列表
+     * @param branchUserId
+     * @return
+     */
+    List<UAgentcustomersVo> findCustomersByAgentUserId(@Param("agentUserId") Long agentUserId);
 }

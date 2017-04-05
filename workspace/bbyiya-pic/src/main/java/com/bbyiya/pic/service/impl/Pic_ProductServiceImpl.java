@@ -103,7 +103,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	
 	public ReturnModel getProductSamplelist(Long productId) {
 		ReturnModel rq = new ReturnModel();
-		String keyName="productsample_"+productId;
+		String keyName="productsample100_"+productId;
 		List<ProductSampleResultVO> listResult=(List<ProductSampleResultVO>)RedisUtil.getObject(keyName);
 		if(listResult==null||listResult.size()<=0){ 
 			PProducts products= productsMapper.selectByPrimaryKey(productId);
@@ -610,6 +610,16 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			if(myproduct.getStatus()!=null&&myproduct.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
 				myproduct.setIsOrder(1);
 			}
+			if(myproduct.getInvitestatus()!=null&&myproduct.getInvitestatus()>1){
+				List<PMyproductsinvites> invites= inviteMapper.findListByCartId(cartId);
+				if(invites!=null&&invites.size()>0){
+					 UUsers  inviteUser= usersMapper.getUUsersByPhone(invites.get(0).getInvitephone()) ;
+					 if(inviteUser!=null){
+						myproduct.setInviteUserId(inviteUser.getUserid());  
+					 }
+				}
+			}
+			
 			PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
 			if (product != null) {
 				myproduct.setDescription(product.getDescription());

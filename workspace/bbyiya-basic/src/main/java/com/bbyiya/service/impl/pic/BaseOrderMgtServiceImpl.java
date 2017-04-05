@@ -330,7 +330,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				List<OOrderproductdetails> details = odetailMapper.findOrderProductDetailsByProductOrderId(oproduct.getOrderproductid());
 				if (details != null && details.size() > 0) {
 					/*------------------------影楼内部订单------------------------------------------------*/
-					if (param.getOrderType() == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
+					if ( param.getOrderType() == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
 						// 影楼金额是否足够
 						UBranchusers branchusers = branchusersMapper.selectByPrimaryKey(userId);
 						if (branchusers != null && branchusers.getBranchuserid() != null) {
@@ -900,9 +900,10 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					}
 				}
 			}
-			rq.setBasemodle(resultPage);
-			rq.setStatu(ReturnStatus.Success);
+			
 		}
+		rq.setBasemodle(resultPage);
+		rq.setStatu(ReturnStatus.Success);
 		return rq;
 	}
 	

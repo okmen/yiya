@@ -14,7 +14,6 @@ public class UserOrderSubmitRepeatParam implements Serializable {
 	private Integer postModelId;
 	private Long branchUserId;
 	private Long agentUserId;
-	
 	public String getUserOrderId() {
 		return userOrderId;
 	}
@@ -39,10 +38,10 @@ public class UserOrderSubmitRepeatParam implements Serializable {
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
-	public int getOrderType() {
+	public Integer getOrderType() {
 		return orderType;
 	}
-	public void setOrderType(int orderType) {
+	public void setOrderType(Integer orderType) {
 		this.orderType = orderType;
 	}
 	public Double getPostage() {
@@ -51,10 +50,10 @@ public class UserOrderSubmitRepeatParam implements Serializable {
 	public void setPostage(Double postage) {
 		this.postage = postage;
 	}
-	public int getPostModelId() {
+	public Integer getPostModelId() {
 		return postModelId;
 	}
-	public void setPostModelId(int postModelId) {
+	public void setPostModelId(Integer postModelId) {
 		this.postModelId = postModelId;
 	}
 	public Long getBranchUserId() {
@@ -69,6 +68,7 @@ public class UserOrderSubmitRepeatParam implements Serializable {
 	public void setAgentUserId(Long agentUserId) {
 		this.agentUserId = agentUserId;
 	}
+	
 	
 	
 

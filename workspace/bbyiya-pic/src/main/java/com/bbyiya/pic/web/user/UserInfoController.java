@@ -22,6 +22,8 @@ import com.bbyiya.web.base.SSOController;
 public class UserInfoController  extends SSOController{
 	@Resource(name = "userInfoMgtService")
 	private IUserInfoMgtService userInfoMgtService;
+	@Resource(name = "userInfoMgtService")
+	private IUserInfoMgtService userMgtService;
 	
 	@ResponseBody
 	@RequestMapping(value = "/edit")
@@ -50,4 +52,19 @@ public class UserInfoController  extends SSOController{
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	/**
+	 * ÷ÿ÷√√‹¬Î
+	 * @param phone
+	 * @param vcode
+	 * @param pwd
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/updatePwd")
+	public String updatePwd(String phone, String vcode, String pwd) throws Exception {
+		return JsonUtil.objectToJsonStr(userMgtService.updatePWD(phone, vcode, pwd));
+	}
+
 }

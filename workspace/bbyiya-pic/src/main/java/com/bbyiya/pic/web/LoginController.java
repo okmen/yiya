@@ -129,8 +129,8 @@ public class LoginController extends SSOController {
 	@RequestMapping(value = "/transfer")
 	public String transferPage(String m) throws Exception {
 		LoginSuccessResult user = super.getLoginUser();
+		int mtype=ObjectUtil.parseInt(m);
 		if (user != null) {
-			int mtype=ObjectUtil.parseInt(m);
 			if(mtype==1){
 				return "redirect:"+ ConfigUtil.getSingleValue("loginbackurl_test") ;
 			}else {

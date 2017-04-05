@@ -277,6 +277,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				oproductMapper.insert(orderProduct);//插入订单产品
 				mycart.setOrderno(orderId);
 				mycart.setStatus(Integer.parseInt(MyProductStatusEnum.ordered.toString()));
+				mycart.setUpdatetime(new Date()); 
 				myproductMapper.updateByPrimaryKeySelective(mycart);
 			}else {
 				throw new Exception("作品不存在！");
@@ -843,6 +844,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					}
 					// 修改订单状态
 					userorders.setStatus(Integer.parseInt(OrderStatusEnum.waitFoSend.toString()));
+					userorders.setUploadtime(new Date()); 
 					userOrdersMapper.updateByPrimaryKeySelective(userorders);
 
 					rq.setStatu(ReturnStatus.Success);

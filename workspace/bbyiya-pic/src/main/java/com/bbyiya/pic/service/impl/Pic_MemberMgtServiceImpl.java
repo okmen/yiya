@@ -239,6 +239,7 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 				customerMapper.deleteByPrimaryKey(customerId);
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("删除成功");
+				return rq;
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
 				rq.setStatusreson("不是你的客户，无法删除！");

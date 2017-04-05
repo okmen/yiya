@@ -32,6 +32,12 @@
     from o_orderproducts
     where UserOrderId = #{userOrderId,jdbcType=VARCHAR}
   </select>
+  <select id="findOProductsByBuyerUserId" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from o_orderproducts
+    where BuyerUserId = #{buyerUserId,jdbcType=BIGINT}
+  </select>
   <select id="getOProductsByOrderId" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />

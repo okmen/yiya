@@ -56,4 +56,16 @@ public interface IPic_MemberMgtService {
 	 * @return
 	 */
 	ReturnModel deleteCustomer(Long branchUserId,Long customerId);
+	/**
+	 * 根据AgentUserId得到Uagentcustomers列表  
+	 * @param branchUserId
+	 * @return
+	 */
+	ReturnModel findCustomerslistByAgentUserId(Long branchUserId);
+	/**
+	 * 根据UserId得到客户的购买列表
+	 * @param userId
+	 * @return
+	 */
+	ReturnModel findCustomersBuylistByUserId(Long userId);
 }

@@ -21,11 +21,21 @@
     from u_agentcustomers
     where CustomerId = #{customerid,jdbcType=BIGINT}
   </select>
+  
   <select id="findCustomersByBranchUserId" resultMap="BaseResultMap"  ><!-- 01 查询影楼的用户列表 -->
     select 
     <include refid="Base_Column_List" />
     from u_agentcustomers
     where BranchUserId = #{branchUserId,jdbcType=BIGINT}
+  </select>
+   <!-- 根据AgentUserId获取影楼的用户列表结果类Result -->
+  <resultMap id="UAgentcustomersVoResult" type="com.bbyiya.vo.agent.UAgentcustomersVo" extends="BaseResultMap">  
+  </resultMap>  
+  <select id="findCustomersByAgentUserId" resultMap="UAgentcustomersVoResult"  ><!-- 02 根据AgentUserId查询影楼的用户列表 -->
+    select 
+    <include refid="Base_Column_List" />
+    from u_agentcustomers
+    where AgentUserId = #{agentUserId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from u_agentcustomers

@@ -27,6 +27,14 @@ public interface OOrderproductsMapper {
      */
     List<OOrderproducts>  findOProductsByOrderId(@Param("userOrderId")String userOrderId);
     
+    
+    /**
+     * 根据BuyerUserId获取订单产品列表
+     * @param userOrderId
+     * @return
+     */
+    List<OOrderproducts>  findOProductsByBuyerUserId(@Param("buyerUserId")Long buyerUserId);
+    
     /**
      * 获取订单产品信息
      * @param userOrderId

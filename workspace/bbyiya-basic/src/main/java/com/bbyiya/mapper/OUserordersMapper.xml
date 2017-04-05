@@ -44,6 +44,12 @@
     from o_userorders
     where UserId = #{userId,jdbcType=BIGINT}  order by OrderTime desc
   </select>
+  <select id="findLatelyOrderByUserId" resultMap="BaseResultMap"  ><!-- 01 根据UserId 获取用户最近的一条订单 -->
+    select 
+    <include refid="Base_Column_List" />
+    from o_userorders
+    where UserId = #{userId,jdbcType=BIGINT}  order by OrderTime desc limit 1
+  </select>
   <select id="findUserOrderByUserId" resultMap="UserBuyerOrderResultMap"  ><!-- 01 根据UserId 获取用户的订单列表 -->
     select 
     <include refid="Base_Column_List" />

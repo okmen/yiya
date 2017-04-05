@@ -71,7 +71,7 @@
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from o_userorders
-    where UserId = #{userId,jdbcType=VARCHAR}
+    where UserOrderId = #{userorderid,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.OUserorders" >
     insert into o_userorders (UserOrderId, UserId, TotalPrice, 

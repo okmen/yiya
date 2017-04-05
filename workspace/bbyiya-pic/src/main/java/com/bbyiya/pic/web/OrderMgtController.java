@@ -126,7 +126,7 @@ public class OrderMgtController extends SSOController {
 						if (ObjectUtil.isEmpty(pp.getImageUrl()) || ObjectUtil.isEmpty(pp.getPrintNo())||ObjectUtil.isEmpty(pp.getBackImageUrl())) {
 							rq.setStatu(ReturnStatus.ParamError_1);
 							rq.setStatusreson("图片信息有误，打印号：" + pp.getPrintNo());
-							addlog(orderImagesJson);
+							addlog("图片正面|反面缺失！+"+param.getOrderId()); 
 							return JsonUtil.objectToJsonStr(rq); 
 						}
 						OOrderproductdetails item = new OOrderproductdetails();

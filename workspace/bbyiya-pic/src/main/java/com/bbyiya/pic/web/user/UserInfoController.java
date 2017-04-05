@@ -2,6 +2,7 @@ package com.bbyiya.pic.web.user;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.codec.digest.Md5Crypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -12,6 +13,7 @@ import com.bbyiya.service.IUserInfoMgtService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
+import com.bbyiya.utils.encrypt.MD5Encrypt;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.vo.user.UUserInfoParam;
@@ -64,6 +66,7 @@ public class UserInfoController  extends SSOController{
 	@ResponseBody
 	@RequestMapping(value = "/updatePwd")
 	public String updatePwd(String phone, String vcode, String pwd) throws Exception {
+		System.out.println(MD5Encrypt.encrypt(pwd)); 
 		return JsonUtil.objectToJsonStr(userMgtService.updatePWD(phone, vcode, pwd));
 	}
 

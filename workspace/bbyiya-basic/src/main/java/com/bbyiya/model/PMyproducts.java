@@ -29,6 +29,7 @@ public class PMyproducts implements Serializable{
     private String orderno;
     private Integer invitestatus;
     private Date updatetime;
+    private String headimg;
     
     public Long getCartid() {
         return cartid;
@@ -132,6 +133,14 @@ public class PMyproducts implements Serializable{
 
 	public void setUpdatetime(Date updatetime) {
 		this.updatetime = updatetime;
+	}
+
+	public String getHeadimg() {
+		return headimg;
+	}
+
+	public void setHeadimg(String headimg) {
+		this.headimg = headimg;
 	}
     
 }

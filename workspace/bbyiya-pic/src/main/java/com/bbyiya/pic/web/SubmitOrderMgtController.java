@@ -144,6 +144,11 @@ public class SubmitOrderMgtController extends SSOController {
 					param.setOrderType(Integer.parseInt(OrderTypeEnum.brachOrder.toString()));
 				}else {
 					param.setOrderType(0);
+					if(param.getPostModelId()==null||param.getPostModelId()<=0){
+						rq.setStatu(ReturnStatus.ParamError);
+						rq.setStatusreson("快递方式有误");
+						return JsonUtil.objectToJsonStr(rq);
+					}
 				}
 				rq=orderMgtService.submitOrder_repeat(user.getUserId(), param);
 			}

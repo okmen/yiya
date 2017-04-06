@@ -4,7 +4,6 @@ package com.bbyiya.vo.agent;
 import com.bbyiya.model.UAgentcustomers;
 
 public class UAgentcustomersVo extends UAgentcustomers{
-	
 	private String babyNickName; //宝宝昵称
 	private String babyBirthday; //宝宝生日
 	private String lastBuyDateStr; // 最近购买日期

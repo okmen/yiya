@@ -67,6 +67,7 @@ import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
 import com.bbyiya.service.pic.IBasePostMgtService;
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -411,7 +412,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 							return rq;
 						}
 						/*---------------------通过快递方式查询邮费---------------------------------------------*/
-						if (param.getPostModelId() <= 0) {
+						if (param.getPostModelId()!=null&& param.getPostModelId() <= 0) {
 							List<PPostmodel> listpost = postMgtService.find_postlist(addr.getArea());
 							if (listpost != null && listpost.size() > 0) {
 								param.setPostModelId(listpost.get(0).getPostmodelid());
@@ -622,14 +623,41 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 							return rq;
 						}
 					}else {
-						rq.setStatusreson("权限不足");
+						rq.setStatusreson("权限不足（如果自己是代理商/影楼管理员，请在ibs管理平台将自己添加为内部账户！）");
 						return rq;
 					}
 				}
 			}
 		}else {//普通订单
 			UUseraddress addr = addressMapper.get_UUserAddressByKeyId(param.getAddrId());//用户收货地址
-			
+			if(addr!=null){
+				/*-----------------------------过滤不能下单的区域--------------------------------------------------*/
+				List<Map<String, String>> exmapList= ConfigUtil.getMaplist("o_excludedareas");
+				if(exmapList!=null&&exmapList.size()>0){
+					for (Map<String, String> map : exmapList) {
+						 if("1".equals(map.get("type"))){
+							 String aress=map.get("codes");
+							 if(aress.contains(addr.getProvince().toString())){
+								 rq.setStatusreson(regionService.getName(addr.getProvince())+"暂时不支持配送！"); 
+								 return rq;
+							 }
+						 }else if ("2".equals(map.get("type"))) {
+							 if(map.get("codes").contains(addr.getCity().toString())){
+								 rq.setStatusreson(regionService.getName(addr.getCity())+"暂时不支持配送！"); 
+								 return rq;
+							 }
+						 }else if ("3".equals(map.get("type"))) {
+							 if(map.get("codes").contains(addr.getArea().toString())){
+								 rq.setStatusreson(regionService.getName(addr.getArea())+"暂时不支持配送！"); 
+								 return rq;
+							 }
+						 }
+					}
+				}
+			}else {
+				rq.setStatusreson("收货地址不存在！");
+				return rq;
+			}
 			/*---------------------通过快递方式查询邮费---------------------------------------------*/
 			if(param.getPostModelId()==null||param.getPostModelId()<=0){
 				List<PPostmodel> listpost= postMgtService.find_postlist(addr.getArea());

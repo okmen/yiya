@@ -297,7 +297,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 									for (PMyproductdetails myde : details) {
 										if(de.getPdid().longValue()!=myde.getPdid().longValue()&& myde.getSceneid()!=null&&de.getSceneid()!=null&& myde.getSceneid().intValue()==de.getSceneid().intValue()){
 											rq.setStatu(ReturnStatus.InvitError_1);
-											rq.setStatusreson("已经被选过的场景");
+											rq.setStatusreson("此主题被协同人使用啦，请更换其他主题");
 											return rq;
 										} 
 									}

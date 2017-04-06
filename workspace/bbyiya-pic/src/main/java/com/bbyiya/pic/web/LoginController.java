@@ -130,15 +130,21 @@ public class LoginController extends SSOController {
 	public String transferPage(String m) throws Exception {
 		LoginSuccessResult user = super.getLoginUser();
 		int mtype=ObjectUtil.parseInt(m);
-		if (user != null) {
-			if(mtype==1){
-				return "redirect:"+ ConfigUtil.getSingleValue("loginbackurl_test") ;
-			}else {
-				return "redirect:"+ ConfigUtil.getSingleValue("loginbackurl") ;
+		if(mtype>0){
+			if (user != null) {
+				if(mtype==1){//测试地址
+					return "redirect:"+ ConfigUtil.getSingleValue("loginbackurl_test") ;
+				}
 			}
-		} else {
 			return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin&response_type=code&scope=snsapi_base#wechat_redirect" ;	
-		}		
+		}
+		else {//正式地址登录
+//			if(user!=null){
+//				return "redirect:"+ ConfigUtil.getSingleValue("loginbackurl") ;
+//			}
+			return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin&response_type=code&scope=snsapi_base#wechat_redirect" ;		
+		}
+		
 	}
 	
 	

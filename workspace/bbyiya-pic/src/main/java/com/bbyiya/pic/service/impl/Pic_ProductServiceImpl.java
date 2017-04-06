@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductchildinfoMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.PMyproductsMapper;
@@ -21,8 +22,10 @@ import com.bbyiya.dao.PStylecoordinateMapper;
 import com.bbyiya.dao.PStylecoordinateitemMapper;
 import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UUsersMapper;
+import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
+import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproductchildinfo;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
@@ -81,6 +84,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private UUsersMapper usersMapper;
 	@Autowired
 	private UBranchusersMapper branchusersMapper;//影楼信息
+	@Autowired
+	private OUserordersMapper orderMapper;
+	
 	/*----------------pic-dao----------------------------------*/
 	@Autowired
 	private IMyProductsDao myProductsDao;
@@ -88,6 +94,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private IMyProductDetailsDao mydetailDao;
 	@Autowired
 	private IPic_ProductDao productDao;
+	
+	
 
 	public ReturnModel getProductSamples(Long productId) {
 		ReturnModel rq = new ReturnModel();
@@ -103,7 +111,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	
 	public ReturnModel getProductSamplelist(Long productId) {
 		ReturnModel rq = new ReturnModel();
-		String keyName="productsample_"+productId;
+		String keyName="productsample100_"+productId;
 		List<ProductSampleResultVO> listResult=(List<ProductSampleResultVO>)RedisUtil.getObject(keyName);
 		if(listResult==null||listResult.size()<=0){ 
 			PProducts products= productsMapper.selectByPrimaryKey(productId);
@@ -436,11 +444,17 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		ReturnModel rq=new ReturnModel();
 		PMyproducts myproducts= myMapper.selectByPrimaryKey(cartId);
 		if(myproducts!=null&&myproducts.getUserid()!=null&&myproducts.getUserid().longValue()==userId){
-//			if(myproducts.getStatus()!=null&&myproducts.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
-//				rq.setStatu(ReturnStatus.SystemError);
-//				rq.setStatusreson("已下单的作品暂不支持删除操作！");
-//				return rq;
-//			}
+			if(myproducts.getStatus()!=null&&myproducts.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
+				if(!ObjectUtil.isEmpty(myproducts.getOrderno())){
+					OUserorders order= orderMapper.selectByPrimaryKey(myproducts.getOrderno());
+					if(order!=null&&order.getStatus()!=null&&order.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
+						rq.setStatu(ReturnStatus.SystemError);
+						rq.setStatusreson("作品关联的订单未上传成功，请先查看订单并重新上传！");
+						return rq;
+					}  
+				}
+			}
+			
 			if(myproducts.getInvitestatus()!=null&&myproducts.getInvitestatus()>0){
 				inviteMapper.deleteByCartId(cartId);
 			}
@@ -610,6 +624,16 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			if(myproduct.getStatus()!=null&&myproduct.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
 				myproduct.setIsOrder(1);
 			}
+			if(myproduct.getInvitestatus()!=null&&myproduct.getInvitestatus()>0){
+				List<PMyproductsinvites> invites= inviteMapper.findListByCartId(cartId);
+				if(invites!=null&&invites.size()>0){
+					 UUsers  inviteUser= usersMapper.getUUsersByPhone(invites.get(0).getInvitephone()) ;
+					 if(inviteUser!=null){
+						myproduct.setInviteUserId(inviteUser.getUserid());  
+					 }
+				}
+			}
+			
 			PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
 			if (product != null) {
 				myproduct.setDescription(product.getDescription());

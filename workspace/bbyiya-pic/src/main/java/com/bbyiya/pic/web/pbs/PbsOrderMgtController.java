@@ -9,32 +9,21 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import net.sf.json.JSONObject;
-
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.pic.service.IPic_OrderMgtService;
 import com.bbyiya.pic.service.pbs.IPbs_OrderMgtService;
 import com.bbyiya.pic.utils.ExportExcel;
-import com.bbyiya.pic.utils.FileToZip;
 import com.bbyiya.pic.vo.order.PbsUserOrderResultVO;
 import com.bbyiya.pic.vo.order.SearchOrderParam;
-import com.bbyiya.pic.vo.order.UserOrderResultVO;
-import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.FileUtils;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
@@ -42,7 +31,6 @@ import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
 import com.github.pagehelper.PageInfo;
-import com.google.gson.JsonObject;
 import com.sdicons.json.mapper.MapperException;
 
 
@@ -101,46 +89,48 @@ public class PbsOrderMgtController extends SSOController {
 	@ResponseBody
 	public String orderExportExcel(HttpServletRequest request, HttpServletResponse response,String myproductJson) throws MapperException {
 		// 列头
-		String[] headers =new String[19];
+		String[] headers =new String[20];
 		headers[0]="订单号";
 		headers[1]="用户ID号";
-		headers[2]="产品编号";
-		headers[3]="产品标题";
-		headers[4]="产品型号";
-		headers[5]="代理商";
-		headers[6]="代理商电话";
-		headers[7]="代理商收货地址";
-		headers[8]="收货人姓名";
-		headers[9]="收货人电话";
-		headers[10]="收货省份";
-		headers[11]="收货市";
-		headers[12]="收货区域";
-		headers[13]="收货地址";		
-		headers[14]="订购份数";
-		headers[15]="订单实付";
-		headers[16]="订单状态";
-		headers[17]="物流公司";
-		headers[18]="运单号";
-		String[] fields = new String[19];
+		headers[2]="作品ID号";
+		headers[3]="产品编号";
+		headers[4]="产品标题";
+		headers[5]="产品型号";
+		headers[6]="代理商";
+		headers[7]="代理商电话";
+		headers[8]="代理商收货地址";
+		headers[9]="收货人姓名";
+		headers[10]="收货人电话";
+		headers[11]="收货省份";
+		headers[12]="收货市";
+		headers[13]="收货区域";
+		headers[14]="收货地址";		
+		headers[15]="订购份数";
+		headers[16]="订单实付";
+		headers[17]="订单状态";
+		headers[18]="物流公司";
+		headers[19]="运单号";
+		String[] fields = new String[20];
 		fields[0]="userorderid";
 		fields[1]="order.userid";
-		fields[2]="productid";
-		fields[3]="producttitle";
-		fields[4]="propertystr";
-		fields[5]="branchesName";
-		fields[6]="branchesPhone";
-		fields[7]="branchesAddress";
-		fields[8]="reciver";
-		fields[9]="buyerPhone";
-		fields[10]="buyerprovince";
-		fields[11]="buyercity";
-		fields[12]="buyerdistrict";
-		fields[13]="buyerstreetdetail";
-		fields[14]="count";
-		fields[15]="order.ordertotalprice";
-		fields[16]="order.status";
-		fields[17]="order.expresscom";
-		fields[18]="order.expressorder";
+		fields[2]="cartid";
+		fields[3]="productid";
+		fields[4]="producttitle";
+		fields[5]="propertystr";
+		fields[6]="branchesName";
+		fields[7]="branchesPhone";
+		fields[8]="branchesAddress";
+		fields[9]="reciver";
+		fields[10]="buyerPhone";
+		fields[11]="buyerprovince";
+		fields[12]="buyercity";
+		fields[13]="buyerdistrict";
+		fields[14]="buyerstreetdetail";
+		fields[15]="count";
+		fields[16]="order.ordertotalprice";
+		fields[17]="order.status";
+		fields[18]="order.expresscom";
+		fields[19]="order.expressorder";
 		
 		//导出格式
 		String format =".xlsx";

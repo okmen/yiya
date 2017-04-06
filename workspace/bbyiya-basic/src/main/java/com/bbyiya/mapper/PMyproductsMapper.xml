@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.bbyiya.dao.PMyproductsMapper" >
   <sql id="Base_Column_List" >
-     CartId, UserId, Title, Author, ProductId, StyleId, CreateTime, Status, Phone, OrderNo, InviteStatus, UpdateTime
+     CartId, UserId, Title, Author, ProductId, StyleId, CreateTime, Status, Phone, OrderNo, InviteStatus, UpdateTime,HeadImg
   </sql>
   <resultMap id="BaseResultMap" type="com.bbyiya.model.PMyproducts" >
     <id column="CartId" property="cartid" jdbcType="BIGINT" />
@@ -17,6 +17,7 @@
     <result column="OrderNo" property="orderno" jdbcType="VARCHAR" />
     <result column="InviteStatus" property="invitestatus" jdbcType="INTEGER" />
     <result column="UpdateTime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="HeadImg" property="headimg" jdbcType="VARCHAR" />
   </resultMap>
   <!-- 我的作品返回model -->
   <resultMap id="MyProductResultVO" type="com.bbyiya.vo.product.MyProductResultVo" extends="BaseResultMap">  
@@ -74,29 +75,29 @@
     delete from p_myproducts
     where CartId = #{cartid,jdbcType=BIGINT}
   </delete>
-  <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="cartid" parameterType="com.bbyiya.model.PMyproducts" >
-    insert into p_myproducts (CartId, UserId, Title, 
+   <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="cartid" parameterType="com.bbyiya.model.PMyproducts" >
+     insert into p_myproducts (CartId, UserId, Title, 
       Author, ProductId, StyleId, 
       CreateTime, Status, Phone, 
-      OrderNo, InviteStatus, UpdateTime
-      )
+      OrderNo, InviteStatus, UpdateTime, 
+      HeadImg)
     values (#{cartid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
       #{author,jdbcType=VARCHAR}, #{productid,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, 
       #{createtime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, 
-      #{orderno,jdbcType=VARCHAR}, #{invitestatus,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}
-      )
+      #{orderno,jdbcType=VARCHAR}, #{invitestatus,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}, 
+      #{headimg,jdbcType=VARCHAR})
   </insert>
- <insert id="insert" parameterType="com.bbyiya.model.PMyproducts" >
+   <insert id="insert" parameterType="com.bbyiya.model.PMyproducts" >
     insert into p_myproducts (CartId, UserId, Title, 
       Author, ProductId, StyleId, 
       CreateTime, Status, Phone, 
-      OrderNo, InviteStatus, UpdateTime
-      )
+      OrderNo, InviteStatus, UpdateTime, 
+      HeadImg)
     values (#{cartid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
       #{author,jdbcType=VARCHAR}, #{productid,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, 
       #{createtime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, 
-      #{orderno,jdbcType=VARCHAR}, #{invitestatus,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}
-      )
+      #{orderno,jdbcType=VARCHAR}, #{invitestatus,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}, 
+      #{headimg,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproducts" >
     insert into p_myproducts
@@ -137,6 +138,9 @@
       <if test="updatetime != null" >
         UpdateTime,
       </if>
+      <if test="headimg != null" >
+        HeadImg,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="cartid != null" >
@@ -174,6 +178,9 @@
       </if>
       <if test="updatetime != null" >
         #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="headimg != null" >
+        #{headimg,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -213,6 +220,9 @@
       <if test="updatetime != null" >
         UpdateTime = #{updatetime,jdbcType=TIMESTAMP},
       </if>
+      <if test="headimg != null" >
+        HeadImg = #{headimg,jdbcType=VARCHAR},
+      </if>
     </set>
     where CartId = #{cartid,jdbcType=BIGINT}
   </update>
@@ -228,7 +238,8 @@
       Phone = #{phone,jdbcType=VARCHAR},
       OrderNo = #{orderno,jdbcType=VARCHAR},
       InviteStatus = #{invitestatus,jdbcType=INTEGER},
-      UpdateTime = #{updatetime,jdbcType=TIMESTAMP}
+      UpdateTime = #{updatetime,jdbcType=TIMESTAMP},
+      HeadImg = #{headimg,jdbcType=VARCHAR}
     where CartId = #{cartid,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -15,10 +15,12 @@
     <result column="Count" property="count" jdbcType="INTEGER" />
     <result column="ProductImg" property="productimg" jdbcType="VARCHAR" />
     <result column="CartId" property="cartid" jdbcType="BIGINT" />
+    <result column="CartTitle" property="carttitle" jdbcType="VARCHAR" />
+    <result column="CartHeadImg" property="cartheadimg" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    OrderProductId, UserOrderId, ProductId, StyleId, BuyerUserId, ProductTitle, Price, 
-    BranchUserId, SalesUserId, PropertyStr, Count,ProductImg,CartId
+   OrderProductId, UserOrderId, ProductId, StyleId, BuyerUserId, ProductTitle, Price, 
+    BranchUserId, SalesUserId, PropertyStr, Count, ProductImg, CartId, CartTitle, CartHeadImg
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -53,12 +55,14 @@
       StyleId, BuyerUserId, ProductTitle, 
       Price, BranchUserId, SalesUserId, 
       PropertyStr, Count, ProductImg, 
-      CartId)
+      CartId, CartTitle, CartHeadImg
+      )
     values (#{orderproductid,jdbcType=VARCHAR}, #{userorderid,jdbcType=VARCHAR}, #{productid,jdbcType=BIGINT}, 
       #{styleid,jdbcType=BIGINT}, #{buyeruserid,jdbcType=BIGINT}, #{producttitle,jdbcType=VARCHAR}, 
       #{price,jdbcType=DECIMAL}, #{branchuserid,jdbcType=BIGINT}, #{salesuserid,jdbcType=BIGINT}, 
       #{propertystr,jdbcType=VARCHAR}, #{count,jdbcType=INTEGER}, #{productimg,jdbcType=VARCHAR}, 
-      #{cartid,jdbcType=BIGINT})
+      #{cartid,jdbcType=BIGINT}, #{carttitle,jdbcType=VARCHAR}, #{cartheadimg,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.OOrderproducts" >
     insert into o_orderproducts
@@ -102,6 +106,12 @@
       <if test="cartid != null" >
         CartId,
       </if>
+      <if test="carttitle != null" >
+        CartTitle,
+      </if>
+      <if test="cartheadimg != null" >
+        CartHeadImg,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="orderproductid != null" >
@@ -142,6 +152,12 @@
       </if>
       <if test="cartid != null" >
         #{cartid,jdbcType=BIGINT},
+      </if>
+      <if test="carttitle != null" >
+        #{carttitle,jdbcType=VARCHAR},
+      </if>
+      <if test="cartheadimg != null" >
+        #{cartheadimg,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -184,6 +200,12 @@
       <if test="cartid != null" >
         CartId = #{cartid,jdbcType=BIGINT},
       </if>
+      <if test="carttitle != null" >
+        CartTitle = #{carttitle,jdbcType=VARCHAR},
+      </if>
+      <if test="cartheadimg != null" >
+        CartHeadImg = #{cartheadimg,jdbcType=VARCHAR},
+      </if>
     </set>
     where OrderProductId = #{orderproductid,jdbcType=VARCHAR}
   </update>
@@ -200,7 +222,9 @@
       PropertyStr = #{propertystr,jdbcType=VARCHAR},
       Count = #{count,jdbcType=INTEGER},
       ProductImg = #{productimg,jdbcType=VARCHAR},
-      CartId = #{cartid,jdbcType=BIGINT}
+      CartId = #{cartid,jdbcType=BIGINT},
+      CartTitle = #{carttitle,jdbcType=VARCHAR},
+      CartHeadImg = #{cartheadimg,jdbcType=VARCHAR}
     where OrderProductId = #{orderproductid,jdbcType=VARCHAR}
   </update>
 </mapper>

@@ -22,7 +22,7 @@
     select 
     <include refid="Base_Column_List" />
     from p_postmodelareas
-    where PostModelId = #{postmodelId,jdbcType=INTEGER} and AreaCode=#{area,jdbcType=INTEGER}
+    where PostModelId = #{postmodelId,jdbcType=INTEGER} and AreaCode = #{area,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from p_postmodelareas

@@ -27,6 +27,10 @@ public class OOrderproducts {
     private String productimg;
     
     private Long cartid;
+    
+    private String carttitle;
+    
+    private String cartheadimg;
 
     public String getOrderproductid() {
         return orderproductid;
@@ -132,5 +136,22 @@ public class OOrderproducts {
 	public void setCartid(Long cartid) {
 		this.cartid = cartid;
 	}
+
+	public String getCartheadimg() {
+		return cartheadimg;
+	}
+
+	public void setCartheadimg(String cartheadimg) {
+		this.cartheadimg = cartheadimg;
+	}
+
+	public String getCarttitle() {
+		return carttitle;
+	}
+
+	public void setCarttitle(String carttitle) {
+		this.carttitle = carttitle;
+	}
+	
     
 }

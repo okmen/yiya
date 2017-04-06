@@ -28,6 +28,7 @@ import com.bbyiya.dao.PProductstylesMapper;
 import com.bbyiya.dao.RAreaplansMapper;
 import com.bbyiya.dao.RegionMapper;
 import com.bbyiya.dao.UAccountsMapper;
+import com.bbyiya.dao.UAgentcustomersMapper;
 import com.bbyiya.dao.UAgentsMapper;
 import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.dao.UBranchtransaccountsMapper;
@@ -55,6 +56,7 @@ import com.bbyiya.model.PProducts;
 import com.bbyiya.model.PProductstyles;
 import com.bbyiya.model.RAreaplans;
 import com.bbyiya.model.UAccounts;
+import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UAgents;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UBranchtransaccounts;
@@ -132,8 +134,10 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	private RAreaplansMapper areaplansMapper;
 	@Autowired
 	private UAgentsMapper agentsMapper;
+	@Autowired
+	private UAgentcustomersMapper customerMapper;
 	
-	/*---错误日志记录----*/
+	/*---错误日志记录------------------------------------------*/
 	@Autowired
 	private EErrorsMapper logMapper;
 	
@@ -242,13 +246,30 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					rq.setStatusreson("企业余额不足！");
 					return rq;
 				}
-			} else {//普通购买  算邮费
+			} 
+			// 普通购买  算邮费----------------------------------------------
+			else{
 				if(param.getPostPrice()!=null){
 					userOrder.setPostage(param.getPostPrice()); 
 					orderTotalPrice+=param.getPostPrice();
 					userOrder.setOrdertotalprice(orderTotalPrice);//订单总价 
 				}
-				addPayOrder(param.getUserId(), payId, payId, orderTotalPrice); // 插入支付订单记录
+				 // 插入支付订单记录
+				addPayOrder(param.getUserId(), payId, payId, orderTotalPrice);
+				// 插入客户记录------------------------------------------------------
+				if(userOrder.getAgentuserid()!=null&&userOrder.getAgentuserid()>0){
+					UUsers users=usersMapper.selectByPrimaryKey(userOrder.getUserid());
+					if(users!=null){
+						UAgentcustomers cus=new UAgentcustomers();
+						cus.setAgentuserid(userOrder.getAgentuserid());
+						cus.setUserid(userOrder.getUserid());
+						cus.setStatus(1);
+						cus.setPhone(users.getMobilephone());
+						cus.setName(users.getNickname());
+						cus.setCreatetime(new Date());
+						customerMapper.insert(cus);
+					}
+				}
 			}
 			PMyproducts mycart=myproductMapper.selectByPrimaryKey(param.getCartId()) ;
 			if(mycart!=null){
@@ -256,6 +277,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				oproductMapper.insert(orderProduct);//插入订单产品
 				mycart.setOrderno(orderId);
 				mycart.setStatus(Integer.parseInt(MyProductStatusEnum.ordered.toString()));
+				mycart.setUpdatetime(new Date()); 
 				myproductMapper.updateByPrimaryKeySelective(mycart);
 			}else {
 				throw new Exception("作品不存在！");
@@ -822,6 +844,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					}
 					// 修改订单状态
 					userorders.setStatus(Integer.parseInt(OrderStatusEnum.waitFoSend.toString()));
+					userorders.setUploadtime(new Date()); 
 					userOrdersMapper.updateByPrimaryKeySelective(userorders);
 
 					rq.setStatu(ReturnStatus.Success);

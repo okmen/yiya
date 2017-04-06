@@ -14,6 +14,8 @@ public class MyProductsResult extends PMyproducts{
 	private String headImg;
 	//是否下单
 	private int isOrder;
+	
+	private Long inviteUserId;
 	/**
 	 * 相册的描述（）
 	 */
@@ -70,6 +72,12 @@ public class MyProductsResult extends PMyproducts{
 	}
 	public void setChildInfo(UChildInfoParam childInfo) {
 		this.childInfo = childInfo;
+	}
+	public Long getInviteUserId() {
+		return inviteUserId;
+	}
+	public void setInviteUserId(Long inviteUserId) {
+		this.inviteUserId = inviteUserId;
 	}
 	
 	

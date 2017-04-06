@@ -260,14 +260,17 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				if(userOrder.getAgentuserid()!=null&&userOrder.getAgentuserid()>0){
 					UUsers users=usersMapper.selectByPrimaryKey(userOrder.getUserid());
 					if(users!=null){
-						UAgentcustomers cus=new UAgentcustomers();
-						cus.setAgentuserid(userOrder.getAgentuserid());
-						cus.setUserid(userOrder.getUserid());
-						cus.setStatus(1);
-						cus.setPhone(users.getMobilephone());
-						cus.setName(users.getNickname());
-						cus.setCreatetime(new Date());
-						customerMapper.insert(cus);
+						UAgentcustomers customer= customerMapper.getCustomersByAgentUserId(userOrder.getAgentuserid(), userOrder.getUserid());
+						if(customer==null){
+							UAgentcustomers cus=new UAgentcustomers();
+							cus.setAgentuserid(userOrder.getAgentuserid());
+							cus.setUserid(userOrder.getUserid());
+							cus.setStatus(1);
+							cus.setPhone(users.getMobilephone());
+							cus.setName(users.getNickname());
+							cus.setCreatetime(new Date());
+							customerMapper.insert(cus);
+						}
 					}
 				}
 			}

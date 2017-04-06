@@ -70,7 +70,9 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	public PageInfo<PbsUserOrderResultVO> find_pbsOrderList(SearchOrderParam param,int index,int size){
 		if(param==null)
 			param=new SearchOrderParam();
-		param.setEndTimeStr(DateUtil.getEndTime(param.getEndTimeStr()));
+		if(param.getEndTimeStr()!=null&&!param.getEndTimeStr().equals("")){
+			param.setEndTimeStr(DateUtil.getEndTime(param.getEndTimeStr()));
+		}
 		PageHelper.startPage(index, size);
 		List<PbsUserOrderResultVO> list=orderDao.findPbsUserOrders(param);
 		PageInfo<PbsUserOrderResultVO> reuslt=new PageInfo<PbsUserOrderResultVO>(list);
@@ -79,7 +81,8 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			for (PbsUserOrderResultVO product : reuslt.getList()) {
 				OUserorders order=userOrdersMapper.selectByPrimaryKey(product.getUserorderid());
 				product.setOrder(order);
-				product.setPayTimeStr(DateUtil.getTimeStr(order.getPaytime(), "yyyy-MM-dd HH:mm:ss"));
+				if(order.getPaytime()!=null)
+					product.setPayTimeStr(DateUtil.getTimeStr(order.getPaytime(), "yyyy-MM-dd HH:mm:ss"));
 				OOrderaddress address= addressMapper.selectByPrimaryKey(order.getOrderaddressid());
 				UBranches branch=branchesMapper.selectByPrimaryKey(order.getBranchuserid());
 				if(branch!=null){

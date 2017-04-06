@@ -212,15 +212,9 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				}
 				// 订单原本实际价格总和
 				orderTotalPrice = styles.getPrice() * orderProduct.getCount();
-//				if (orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
-//					orderProduct.setPrice(styles.getAgentprice()); 
-//					orderProduct.setSalesuserid(param.getUserId()); 
-//					orderProduct.setBranchuserid(param.getBranchUserId()); 
-//					totalPrice = styles.getAgentprice() * orderProduct.getCount();
-//				} else {
-					orderProduct.setPrice(styles.getPrice()); 
-					totalPrice = styles.getPrice() * orderProduct.getCount();
-//				}
+				orderProduct.setPrice(styles.getPrice());
+				totalPrice = styles.getPrice() * orderProduct.getCount();
+
 			} else {
 				throw new Exception("找不到相应的产品！");
 			}
@@ -321,9 +315,23 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			} 
 			return submitOrder_common(param);
 		} catch (Exception e) {
+			addlog(e.getMessage()); 
 			throw new RuntimeException(e.getMessage());
 		}
 	}
+	/**
+	 * 插入错误Log
+	 * 
+	 * @param msg
+	 */
+	public void addlog(String msg) {
+		EErrors errors = new EErrors();
+		errors.setClassname(this.getClass().getName());
+		errors.setMsg(msg);
+		errors.setCreatetime(new Date()); 
+		logMapper.insert(errors);
+	}
+	
 	/**
 	 * 已下单的作品 再次下单
 	 * @param userId
@@ -345,6 +353,10 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			// 02 订单产品
 			OOrderproducts oproduct = oproductMapper.getOProductsByOrderId(param.getUserOrderId());
 			if (oproduct != null) {
+				if(oproduct.getCartid()==null||oproduct.getCartid()<=0){
+					rq.setStatusreson("无效的订单信息，无法再次订购！");
+					return rq;
+				}
 				PProducts product = productsMapper.selectByPrimaryKey(oproduct.getProductid());
 				PProductstyles style = styleMapper.selectByPrimaryKey(oproduct.getStyleid());
 				if (style == null || product == null || style.getStatus() != 1 || product.getStatus() != 1) {

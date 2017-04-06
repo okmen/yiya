@@ -22,5 +22,5 @@ public interface PPostmodelareasMapper {
      * @param area
      * @return
      */
-    PPostmodelareas getPostAreaModel(@Param("postmodelId")Integer postmodelid,@Param("area")Integer area);
+    PPostmodelareas getPostAreaModel(@Param("postmodelId")Integer postmodelid, @Param("area")Integer area);
 }

@@ -75,6 +75,18 @@
     delete from p_myproducts
     where CartId = #{cartid,jdbcType=BIGINT}
   </delete>
+   <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="cartid" parameterType="com.bbyiya.model.PMyproducts" >
+     insert into p_myproducts (CartId, UserId, Title, 
+      Author, ProductId, StyleId, 
+      CreateTime, Status, Phone, 
+      OrderNo, InviteStatus, UpdateTime, 
+      HeadImg)
+    values (#{cartid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
+      #{author,jdbcType=VARCHAR}, #{productid,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, 
+      #{orderno,jdbcType=VARCHAR}, #{invitestatus,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}, 
+      #{headimg,jdbcType=VARCHAR})
+  </insert>
    <insert id="insert" parameterType="com.bbyiya.model.PMyproducts" >
     insert into p_myproducts (CartId, UserId, Title, 
       Author, ProductId, StyleId, 

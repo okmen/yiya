@@ -20,6 +20,7 @@ import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.UBranchesMapper;
+import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.BranchStatusEnum;
 import com.bbyiya.model.OOrderaddress;
@@ -305,6 +306,12 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 	public ReturnModel cancelOrder(String orderId) {
 		ReturnModel rq = new ReturnModel();
 		OUserorders userorders = userOrdersMapper.selectByPrimaryKey(orderId);
+		//如果不是未支付的订单不能取消订单
+		if(userorders!=null&&userorders.getStatus()!=Integer.parseInt(OrderStatusEnum.noPay.toString())){
+			rq.setStatusreson("已支付的订单不能取消订单！");
+			rq.setStatu(ReturnStatus.OrderError);
+			return rq;
+		}
 		if(userorders!=null){
 			List<OOrderproducts> productList=orderProductMapper.findOProductsByOrderId(userorders.getUserorderid());
 			if(productList!=null&&productList.size()>0){

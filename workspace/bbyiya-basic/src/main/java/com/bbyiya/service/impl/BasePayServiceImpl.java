@@ -146,6 +146,7 @@ public class BasePayServiceImpl implements IBasePayService{
 								//更新订单状态
 								if(detailsList!=null&&detailsList.size()>0){
 									userorders.setStatus(Integer.parseInt(OrderStatusEnum.waitFoSend.toString()));
+									userorders.setUploadtime(new Date()); 
 								}else {
 									userorders.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
 								}

@@ -1,6 +1,8 @@
 package com.bbyiya.pic.web;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -20,6 +22,8 @@ import com.bbyiya.model.PPostmodel;
 import com.bbyiya.pic.vo.order.SubmitOrderProductParam;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
 import com.bbyiya.service.pic.IBasePostMgtService;
+import com.bbyiya.utils.ConfigUtil;
+import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -71,6 +75,21 @@ public class SubmitOrderMgtController extends SSOController {
 	}
 	
 	/**
+	 * 系统上线准备期间
+	 * @return
+	 */
+//	public boolean istime(){
+//		String closeStr="2017-04-07 14:00:00";
+//		String openStr="2017-04-07 16:00:00";
+//		Date closeTime=DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", closeStr);
+//		Date openTime=DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", openStr);
+//		Date nowtime=new Date();
+//		if(nowtime.getTime()>=closeTime.getTime()&&nowtime.getTime()<=openTime.getTime()){
+//			return false;
+//		}
+//		return true;
+//	}
+	/**
 	 * 提交订单
 	 * 
 	 * @param addrId
@@ -86,6 +105,14 @@ public class SubmitOrderMgtController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
+//			if(user.getUserId()!=null&&user.getUserId().longValue()==75){
+//				
+//			}
+//			else if(!istime()){
+//				rq.setStatu(ReturnStatus.ParamError);
+//				rq.setStatusreson("14:00-16:00 系统上线准备中，16:00 正式启动！激动人心的时刻即将到来！！ ");
+//				return JsonUtil.objectToJsonStr(rq);
+//			}
 			SubmitOrderProductParam productParam = (SubmitOrderProductParam) JsonUtil.jsonStrToObject(productJsonStr, SubmitOrderProductParam.class);
 			if (productParam != null) {
 				OOrderproducts product = new OOrderproducts();
@@ -138,6 +165,11 @@ public class SubmitOrderMgtController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
+//			if(!istime()){ 
+//				rq.setStatu(ReturnStatus.ParamError);
+//				rq.setStatusreson("14:00-16:00 系统上线准备中，16:00 正式启动！激动人心的时刻即将到来！！ ");
+//				return JsonUtil.objectToJsonStr(rq);
+//			}
 			UserOrderSubmitRepeatParam param=(UserOrderSubmitRepeatParam)JsonUtil.jsonStrToObject(orderJson,UserOrderSubmitRepeatParam.class);
 			if(param!=null){
 				if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.salesman)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)){

@@ -28,6 +28,7 @@ import com.bbyiya.pic.vo.order.OrderPhotoParam;
 import com.bbyiya.pic.vo.order.SaveOrderPhotoParam;
 import com.bbyiya.pic.vo.order.SubmitOrderProductParam;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
+import com.bbyiya.utils.DateUtil;
 //import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
@@ -48,6 +49,19 @@ public class OrderMgtController extends SSOController {
 	private PMyproductsMapper myMapper;
 	@Autowired
 	private EErrorsMapper errorMapper;
+	
+	public boolean istime(){
+		String closeStr="2017-04-07 14:00:00";
+		String openStr="2017-04-07 16:00:00";
+		Date closeTime=DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", closeStr);
+		Date openTime=DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", openStr);
+		Date nowtime=new Date();
+		if(nowtime.getTime()>=closeTime.getTime()&&nowtime.getTime()<=openTime.getTime()){
+			return false;
+		}
+		System.out.println(openTime);
+		return true;
+	}
 	/**
 	 * O01 提交订单（购买）
 	 * 
@@ -62,6 +76,11 @@ public class OrderMgtController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
+//			if(!istime()){
+//				rq.setStatu(ReturnStatus.ParamError);
+//				rq.setStatusreson("14:00-16:00 系统上线准备中，16:00 正式启动！激动人心的时刻即将到来！！ ");
+//				return JsonUtil.objectToJsonStr(rq);
+//			}
 			if (!ObjectUtil.isEmpty(productJsonStr)) {
 				SubmitOrderProductParam param = (SubmitOrderProductParam) JsonUtil.jsonStrToObject(productJsonStr, SubmitOrderProductParam.class);
 				if (param != null) {
@@ -88,7 +107,6 @@ public class OrderMgtController extends SSOController {
 				}
 			}
 			rq.setStatu(ReturnStatus.Success);
-
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

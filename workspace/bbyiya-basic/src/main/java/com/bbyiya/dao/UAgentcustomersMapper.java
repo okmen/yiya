@@ -32,4 +32,12 @@ public interface UAgentcustomersMapper {
      * @return
      */
     List<UAgentcustomersVo> findCustomersByAgentUserId(@Param("agentUserId") Long agentUserId);
+    
+    /**
+     * 根据代理userId， 买家Userid
+     * @param agentUserId
+     * @param userId
+     * @return
+     */
+    UAgentcustomers getCustomersByAgentUserId(@Param("agentUserId") Long agentUserId ,@Param("userId") Long userId);
 }

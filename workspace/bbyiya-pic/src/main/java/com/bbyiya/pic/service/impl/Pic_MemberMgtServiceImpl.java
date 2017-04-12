@@ -240,9 +240,16 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("删除成功");
 				return rq;
-			}else {
+			}
+			else if (branchUserId.longValue()==agentcustomers.getAgentuserid().longValue()) {
+				customerMapper.deleteByPrimaryKey(customerId);
+				rq.setStatu(ReturnStatus.Success);
+				rq.setStatusreson("删除成功");
+				return rq;
+			}
+			else {
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("不是你的客户，无法删除！");
+				rq.setStatusreson("您不是管理员，此客户没有权利删除！");
 				return rq;
 			}
 		}

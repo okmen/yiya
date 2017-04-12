@@ -1,6 +1,7 @@
 package com.bbyiya.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.PayTypeEnum;
 import com.bbyiya.model.EErrors;
+import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.UAccounts;
@@ -138,8 +140,16 @@ public class BasePayServiceImpl implements IBasePayService{
 						OUserorders userorders = userOrdersMapper.selectByPrimaryKey(payOrder.getUserorderid());
 						if (userorders != null) {
 							if (userorders.getStatus().intValue() == Integer.parseInt(OrderStatusEnum.noPay.toString())) {
+								//订单作品详细
+								List<OOrderproductdetails> detailsList= odetailMapper.findOrderProductDetailsByProductOrderId(userorders.getUserorderid());
+								
 								//更新订单状态
-								userorders.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
+								if(detailsList!=null&&detailsList.size()>0){
+									userorders.setStatus(Integer.parseInt(OrderStatusEnum.waitFoSend.toString()));
+									userorders.setUploadtime(new Date()); 
+								}else {
+									userorders.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
+								}
 								userorders.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString()));
 								userorders.setPaytime(new Date()); 
 								userOrdersMapper.updateByPrimaryKeySelective(userorders);

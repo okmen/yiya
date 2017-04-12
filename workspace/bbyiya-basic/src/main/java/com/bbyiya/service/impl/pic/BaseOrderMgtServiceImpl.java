@@ -67,6 +67,7 @@ import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
 import com.bbyiya.service.pic.IBasePostMgtService;
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -212,15 +213,9 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				}
 				// 订单原本实际价格总和
 				orderTotalPrice = styles.getPrice() * orderProduct.getCount();
-//				if (orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
-//					orderProduct.setPrice(styles.getAgentprice()); 
-//					orderProduct.setSalesuserid(param.getUserId()); 
-//					orderProduct.setBranchuserid(param.getBranchUserId()); 
-//					totalPrice = styles.getAgentprice() * orderProduct.getCount();
-//				} else {
-					orderProduct.setPrice(styles.getPrice()); 
-					totalPrice = styles.getPrice() * orderProduct.getCount();
-//				}
+				orderProduct.setPrice(styles.getPrice());
+				totalPrice = styles.getPrice() * orderProduct.getCount();
+
 			} else {
 				throw new Exception("找不到相应的产品！");
 			}
@@ -260,14 +255,17 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				if(userOrder.getAgentuserid()!=null&&userOrder.getAgentuserid()>0){
 					UUsers users=usersMapper.selectByPrimaryKey(userOrder.getUserid());
 					if(users!=null){
-						UAgentcustomers cus=new UAgentcustomers();
-						cus.setAgentuserid(userOrder.getAgentuserid());
-						cus.setUserid(userOrder.getUserid());
-						cus.setStatus(1);
-						cus.setPhone(users.getMobilephone());
-						cus.setName(users.getNickname());
-						cus.setCreatetime(new Date());
-						customerMapper.insert(cus);
+						UAgentcustomers customer= customerMapper.getCustomersByAgentUserId(userOrder.getAgentuserid(), userOrder.getUserid());
+						if(customer==null){
+							UAgentcustomers cus=new UAgentcustomers();
+							cus.setAgentuserid(userOrder.getAgentuserid());
+							cus.setUserid(userOrder.getUserid());
+							cus.setStatus(1);
+							cus.setPhone(users.getMobilephone());
+							cus.setName(users.getNickname());
+							cus.setCreatetime(new Date());
+							customerMapper.insert(cus);
+						}
 					}
 				}
 			}
@@ -318,9 +316,23 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			} 
 			return submitOrder_common(param);
 		} catch (Exception e) {
+			addlog(e.getMessage()); 
 			throw new RuntimeException(e.getMessage());
 		}
 	}
+	/**
+	 * 插入错误Log
+	 * 
+	 * @param msg
+	 */
+	public void addlog(String msg) {
+		EErrors errors = new EErrors();
+		errors.setClassname(this.getClass().getName());
+		errors.setMsg(msg);
+		errors.setCreatetime(new Date()); 
+		logMapper.insert(errors);
+	}
+	
 	/**
 	 * 已下单的作品 再次下单
 	 * @param userId
@@ -342,6 +354,10 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			// 02 订单产品
 			OOrderproducts oproduct = oproductMapper.getOProductsByOrderId(param.getUserOrderId());
 			if (oproduct != null) {
+				if(oproduct.getCartid()==null||oproduct.getCartid()<=0){
+					rq.setStatusreson("无效的订单信息，无法再次订购！");
+					return rq;
+				}
 				PProducts product = productsMapper.selectByPrimaryKey(oproduct.getProductid());
 				PProductstyles style = styleMapper.selectByPrimaryKey(oproduct.getStyleid());
 				if (style == null || product == null || style.getStatus() != 1 || product.getStatus() != 1) {
@@ -396,7 +412,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 							return rq;
 						}
 						/*---------------------通过快递方式查询邮费---------------------------------------------*/
-						if (param.getPostModelId() <= 0) {
+						if (param.getPostModelId()!=null&& param.getPostModelId() <= 0) {
 							List<PPostmodel> listpost = postMgtService.find_postlist(addr.getArea());
 							if (listpost != null && listpost.size() > 0) {
 								param.setPostModelId(listpost.get(0).getPostmodelid());
@@ -607,14 +623,41 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 							return rq;
 						}
 					}else {
-						rq.setStatusreson("权限不足");
+						rq.setStatusreson("权限不足（如果自己是代理商/影楼管理员，请在ibs管理平台将自己添加为内部账户！）");
 						return rq;
 					}
 				}
 			}
 		}else {//普通订单
 			UUseraddress addr = addressMapper.get_UUserAddressByKeyId(param.getAddrId());//用户收货地址
-			
+			if(addr!=null){
+				/*-----------------------------过滤不能下单的区域--------------------------------------------------*/
+				List<Map<String, String>> exmapList= ConfigUtil.getMaplist("o_excludedareas");
+				if(exmapList!=null&&exmapList.size()>0){
+					for (Map<String, String> map : exmapList) {
+						 if("1".equals(map.get("type"))){
+							 String aress=map.get("codes");
+							 if(aress.contains(addr.getProvince().toString())){
+								 rq.setStatusreson(regionService.getName(addr.getProvince())+"暂时不支持配送！"); 
+								 return rq;
+							 }
+						 }else if ("2".equals(map.get("type"))) {
+							 if(map.get("codes").contains(addr.getCity().toString())){
+								 rq.setStatusreson(regionService.getName(addr.getCity())+"暂时不支持配送！"); 
+								 return rq;
+							 }
+						 }else if ("3".equals(map.get("type"))) {
+							 if(map.get("codes").contains(addr.getArea().toString())){
+								 rq.setStatusreson(regionService.getName(addr.getArea())+"暂时不支持配送！"); 
+								 return rq;
+							 }
+						 }
+					}
+				}
+			}else {
+				rq.setStatusreson("收货地址不存在！");
+				return rq;
+			}
 			/*---------------------通过快递方式查询邮费---------------------------------------------*/
 			if(param.getPostModelId()==null||param.getPostModelId()<=0){
 				List<PPostmodel> listpost= postMgtService.find_postlist(addr.getArea());

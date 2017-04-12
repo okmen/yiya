@@ -21,6 +21,7 @@ import com.bbyiya.dao.PScenesMapper;
 import com.bbyiya.dao.PStylecoordinateMapper;
 import com.bbyiya.dao.PStylecoordinateitemMapper;
 import com.bbyiya.dao.UBranchusersMapper;
+import com.bbyiya.dao.UChildreninfoMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
@@ -36,6 +37,7 @@ import com.bbyiya.model.PScenes;
 import com.bbyiya.model.PStylecoordinate;
 import com.bbyiya.model.PStylecoordinateitem;
 import com.bbyiya.model.UBranchusers;
+import com.bbyiya.model.UChildreninfo;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.dao.IMyProductDetailsDao;
 import com.bbyiya.pic.dao.IMyProductsDao;
@@ -79,6 +81,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private PScenesMapper sceneMapper;
 	@Autowired
 	private PMyproductsinvitesMapper inviteMapper;
+	@Autowired
+	private PMyproductchildinfoMapper mychildMapper;
 	/*-------------------用户信息------------------------------------------------*/
 	@Autowired
 	private UUsersMapper usersMapper;
@@ -86,6 +90,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private UBranchusersMapper branchusersMapper;//影楼信息
 	@Autowired
 	private OUserordersMapper orderMapper;
+	@Autowired
+	private UChildreninfoMapper childMapper;
 	
 	/*----------------pic-dao----------------------------------*/
 	@Autowired
@@ -197,7 +203,6 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 						sort++;
 					}
 				}
-				
 			}
 		}
 		rq.setStatu(ReturnStatus.Success);
@@ -206,8 +211,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		rq.setBasemodle(map);
 		return rq;
 	}
-	@Autowired
-	private PMyproductchildinfoMapper mychildMapper;
+	
 	public ReturnModel Edit_MyProducts(Long userId, MyProductParam param) {
 		ReturnModel rq = new ReturnModel();
 		Long cartIdTemp = 0l;
@@ -242,6 +246,26 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					}else {
 						mychildMapper.updateByPrimaryKeySelective(mychild);
 					} 
+					/*----------------------------更新个人宝宝信息---------------------------------------------------*/
+					boolean isHavechild=true;
+					UChildreninfo childreninfo=childMapper.selectByPrimaryKey(userId);
+					if(childreninfo==null){
+						childreninfo=new UChildreninfo();
+						childreninfo.setUserid(userId);
+						childreninfo.setCreatetime(new Date());
+						isHavechild=false;
+					} 
+					if(!ObjectUtil.isEmpty(mychild.getNickname())){
+						childreninfo.setNickname(mychild.getNickname());
+					}
+					if(!ObjectUtil.isEmpty(mychild.getBirthday()) ){
+						childreninfo.setBirthday(mychild.getBirthday());
+					}
+					if(isHavechild){
+						childMapper.updateByPrimaryKey(childreninfo);
+					}else {
+						childMapper.insert(childreninfo);
+					}
 				}//----------------------------------------------------
 				boolean canModify=false;
 				//自己的作品
@@ -273,7 +297,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 									for (PMyproductdetails myde : details) {
 										if(de.getPdid().longValue()!=myde.getPdid().longValue()&& myde.getSceneid()!=null&&de.getSceneid()!=null&& myde.getSceneid().intValue()==de.getSceneid().intValue()){
 											rq.setStatu(ReturnStatus.InvitError_1);
-											rq.setStatusreson("已经被选过的场景");
+											rq.setStatusreson("此主题被协同人使用啦，请更换其他主题");
 											return rq;
 										} 
 									}

@@ -63,4 +63,24 @@ public interface IPic_BranchMgtService {
 	ReturnModel getAgentApplyStatusModel(Long agentUserId);
 	
 	ReturnModel getBranchApplyStatusModel(Long agentUserId);
+	/**
+	 * 获取代理商信息
+	 * @param branchUserId
+	 * @return
+	 */
+	UBranches getBranchInfo(Long branchUserId);
+	/**
+	 * 修改代理商收货地址
+	 * @param branchUserId
+	 * @param streetdetail
+	 * @return
+	 */
+	ReturnModel editBranchAddress(Long branchUserId, String streetdetail);
+	/**
+	 * 添加意见反馈
+	 * @param branchUserId
+	 * @param content
+	 * @return
+	 */
+	ReturnModel addUserResponses(Long branchUserId, String content);
 }

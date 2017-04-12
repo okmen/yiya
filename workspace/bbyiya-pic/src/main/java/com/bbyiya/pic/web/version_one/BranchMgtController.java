@@ -219,4 +219,74 @@ public class BranchMgtController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	/**
+	 * 登陆后得到代理商信息
+	 * @param type
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getBranchInfo")
+	public String getBranchInfo() throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			UBranches branch=branchService.getBranchInfo(user.getUserId());
+			rq.setBasemodle(branch);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("获取代理商信息成功！");
+			
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 修改代理商收货地址
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/editBranchAddress")
+	public String editBranchAddress(String streetdetail) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=branchService.editBranchAddress(user.getUserId(), streetdetail);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("修改代理商信息成功！");
+			
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 代理商新增意见反馈
+	 * @param agentJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/addUserResponses")
+	public String addUserResponses(String content) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=branchService.addUserResponses(user.getUserId(), content);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 }

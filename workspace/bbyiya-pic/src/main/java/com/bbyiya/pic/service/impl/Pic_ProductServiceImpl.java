@@ -685,7 +685,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			PMyproductdetails detail = myDetaiMapper.selectByPrimaryKey(dpId);
 			if (detail != null) {
 				PMyproducts myproduct = myMapper.selectByPrimaryKey(detail.getCartid());
-				if (myproduct != null && myproduct.getUserid() != null && myproduct.getUserid().longValue() == userId) {
+				if (myproduct != null) {// && myproduct.getUserid() != null && myproduct.getUserid().longValue() == userId
 					detail.setImgurl("");
 					detail.setContent("");
 					detail.setSceneid(null);

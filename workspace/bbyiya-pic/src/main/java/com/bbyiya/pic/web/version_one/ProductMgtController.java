@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.pic.service.IPic_ProductService;
 import com.bbyiya.service.pic.IBaseProductService;
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
@@ -81,6 +82,18 @@ public class ProductMgtController extends SSOController{
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-	
+	/**
+	 * c¶ËÊ×Ò³ÂÖ²¥Í¼
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getIndexImgs")
+	public String getIndexImagelist() throws Exception {
+		ReturnModel rq = new ReturnModel();
+		rq.setStatu(ReturnStatus.Success);
+		rq.setBasemodle(ConfigUtil.getMaplist("indexImgs")); 
+		return JsonUtil.objectToJsonStr(rq);
+	}
 
 }

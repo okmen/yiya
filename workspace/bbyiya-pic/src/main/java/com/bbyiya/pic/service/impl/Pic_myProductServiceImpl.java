@@ -65,11 +65,11 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 		}
 		PMyproducts myproducts= myproductsMapper.selectByPrimaryKey(cartId);
 		if(myproducts!=null){
-			if(myproducts.getStatus()!=null&&myproducts.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
-				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("已经下单的作品无法进行此操作！");
-				return rq;
-			}
+//			if(myproducts.getStatus()!=null&&myproducts.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
+//				rq.setStatu(ReturnStatus.SystemError);
+//				rq.setStatusreson("已经下单的作品无法进行此操作！");
+//				return rq;
+//			}
 			if(myproducts.getUserid()!=null&&myproducts.getUserid().longValue()==userId){
 				List<PMyproductsinvites> list= inviteMapper.findListByCartId(cartId);
 				if(list!=null&&list.size()>0){

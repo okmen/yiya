@@ -289,4 +289,26 @@ public class BranchMgtController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	/**
+	 * IBS获取系统消息通知列表
+	 * @param content
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getSysMessageList")
+	public String getSysMessageList(int index,int size,String startTimeStr,String endTimeStr) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=branchService.getSysMessageList(index, size, startTimeStr, endTimeStr);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 }

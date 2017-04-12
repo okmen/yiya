@@ -183,6 +183,35 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 		
 		return rq;
 	}  
+	/**
+	 * 多个订单是否可以运单合并
+	 * 条件： 1：如果有多个订单有不同运单信息，则不能合并
+	 * 	     2：如果所有订单都没有运单信息，则需要弹出录入运单的弹出框
+	 *       3：如果只有一个订单有运单信息，则按有运单号的订单补录其它订单运单信息
+	 * @param orderIds
+	 * @param postage
+	 * @return
+	 * @throws Exception
+	 */
+	public ReturnModel isMergeOrderLogistic(String orderIds) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		if(orderIds==null||orderIds.equals("")){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("订单号不能为空！");
+			return rq;
+		}
+		String orderArr[]=orderIds.split(",");
+		int count=0;
+		if(orderArr!=null&&orderArr.length>0){
+			for (String orderid : orderArr) {
+				OUserorders order=userOrdersMapper.selectByPrimaryKey(orderid);
+				//if()
+			}
+		}
+		
+		
+		return rq;
+	}
 	
 	public String pbsdownloadImg(List<PbsUserOrderResultVO> orderlist){
 		String sep=System.getProperty("file.separator");

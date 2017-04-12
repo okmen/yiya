@@ -53,33 +53,32 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 				if (others != null) {
 					UUsers user = userDao.selectByPrimaryKey(others.getUserid());
 					LoginSuccessResult loginSuccessResult = null;
-					
 					if (user != null) {
-						boolean edit=false;
-						if(ObjectUtil.isEmpty(user.getNickname())||"null".equals(user.getNickname())){
-							if(!ObjectUtil.isEmpty(param.getNickName())&&!"null".equals(param.getNickName())){
-								user.setNickname(param.getNickName());
-								edit=true;	
-							}
-						}
-						if(ObjectUtil.isEmpty(user.getUserimg())||"null".equals(user.getUserimg())){
-							if(!ObjectUtil.isEmpty(param.getHeadImg())&&!"null".equals(param.getHeadImg())){
-								user.setUserimg(param.getHeadImg());
-								edit=true;
-							}
-						} 
+//						boolean edit=false;
+//						if(ObjectUtil.isEmpty(user.getNickname())||"null".equals(user.getNickname())){
+//							if(!ObjectUtil.isEmpty(param.getNickName())&&!"null".equals(param.getNickName())){
+//								user.setNickname(param.getNickName());
+//								edit=true;	
+//							}
+//						}
+//						if(ObjectUtil.isEmpty(user.getUserimg())||"null".equals(user.getUserimg())){
+//							if(!ObjectUtil.isEmpty(param.getHeadImg())&&!"null".equals(param.getHeadImg())){
+//								user.setUserimg(param.getHeadImg());
+//								edit=true;
+//							}
+//						} 
 						loginSuccessResult = baseLoginService.loginSuccess(user);
-						if(edit){ 
-							userDao.updateByPrimaryKeySelective(user);
-						}
+//						if(edit){ 
+//							userDao.updateByPrimaryKeySelective(user);
+//						}
 						
 					} else {
-						return otherRegiter(param);
+						return otherRegiter(param,others);
 					}
 					rq.setStatu(ReturnStatus.Success);
 					rq.setBasemodle(loginSuccessResult);
 				} else {
-					return otherRegiter(param);
+					return otherRegiter(param,others);
 				}
 			} else {
 				rq.setStatu(ReturnStatus.ParamError);
@@ -99,7 +98,7 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 	 * @param param
 	 * @return
 	 */
-	public ReturnModel otherRegiter(OtherLoginParam param) throws Exception {
+	public ReturnModel otherRegiter(OtherLoginParam param,UOtherlogin other) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		rq.setStatu(ReturnStatus.ParamError);
 		if (param != null) {
@@ -111,7 +110,6 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 				rq.setStatusreson("类型不能为空");
 				return rq;
 			}
-			UOtherlogin other = otherloginMapper.get_UOtherlogin(param);
 			if (other == null) {
 				UUsers userModel = new UUsers();
 				userModel.setCreatetime(new Date());
@@ -139,7 +137,8 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("注册成功");
 				rq.setBasemodle(result);
-			} else if (other.getUserid() != null && other.getUserid() > 0) {
+			} 
+			else if (other.getUserid() != null && other.getUserid() > 0) {
 				UUsers userModel = userDao.getUUsersByUserID(other.getUserid());
 				if (userModel != null) {
 					LoginSuccessResult result = baseLoginService.loginSuccess(userModel);

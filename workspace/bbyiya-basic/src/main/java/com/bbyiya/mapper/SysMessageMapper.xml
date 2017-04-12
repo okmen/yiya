@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.SysMessageMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.SysMessage" >
+    <id column="MsgId" property="msgid" jdbcType="INTEGER" />
+    <result column="Title" property="title" jdbcType="VARCHAR" />
+    <result column="Type" property="type" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.bbyiya.model.SysMessage" extends="BaseResultMap" >
+    <result column="Content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    MsgId, Title, Type, CreateTime
+  </sql>
+  <sql id="Blob_Column_List" >
+    Content
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from sys_message
+    where MsgId = #{msgid,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectSysMessage" resultMap="ResultMapWithBLOBs" >
+		select 
+    	<include refid="Base_Column_List" />
+    	,
+    	<include refid="Blob_Column_List" />
+    from sys_message where 1=1  
+    <if test="startTimeStr != null  and startTimeStr !='' " >
+        AND CreateTime &gt;= #{startTimeStr,jdbcType=VARCHAR}
+    </if>
+   <if test="endTimeStr != null  and endTimeStr !=''" >
+        AND CreateTime &lt;= #{endTimeStr,jdbcType=VARCHAR}
+    </if>
+    order by CreateTime desc
+   </select>
+   
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from sys_message
+    where MsgId = #{msgid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.SysMessage" >
+    insert into sys_message (MsgId, Title, Type, 
+      CreateTime, Content)
+    values (#{msgid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.SysMessage" >
+    insert into sys_message
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="msgid != null" >
+        MsgId,
+      </if>
+      <if test="title != null" >
+        Title,
+      </if>
+      <if test="type != null" >
+        Type,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+      <if test="content != null" >
+        Content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="msgid != null" >
+        #{msgid,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.SysMessage" >
+    update sys_message
+    <set >
+      <if test="title != null" >
+        Title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        Type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null" >
+        Content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where MsgId = #{msgid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.bbyiya.model.SysMessage" >
+    update sys_message
+    set Title = #{title,jdbcType=VARCHAR},
+      Type = #{type,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      Content = #{content,jdbcType=LONGVARCHAR}
+    where MsgId = #{msgid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.SysMessage" >
+    update sys_message
+    set Title = #{title,jdbcType=VARCHAR},
+      Type = #{type,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where MsgId = #{msgid,jdbcType=INTEGER}
+  </update>
+</mapper>

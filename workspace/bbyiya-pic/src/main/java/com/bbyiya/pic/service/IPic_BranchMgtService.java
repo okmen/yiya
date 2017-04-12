@@ -83,4 +83,14 @@ public interface IPic_BranchMgtService {
 	 * @return
 	 */
 	ReturnModel addUserResponses(Long branchUserId, String content);
+	/**
+	 * IBS获取系统消息通知列表
+	 * @param index
+	 * @param size
+	 * @param startTimeStr
+	 * @param endTimeStr
+	 * @return
+	 */
+	ReturnModel getSysMessageList(int index, int size, String startTimeStr,
+			String endTimeStr);
 }

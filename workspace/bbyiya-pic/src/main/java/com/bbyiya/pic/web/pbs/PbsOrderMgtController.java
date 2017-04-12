@@ -207,7 +207,7 @@ public class PbsOrderMgtController extends SSOController {
 	
 	
 	/**
-	 *查询订单运单号信息及运费自动扣款
+	 *查询订单运单号信息
 	 * 
 	 * @return
 	 * @throws Exception

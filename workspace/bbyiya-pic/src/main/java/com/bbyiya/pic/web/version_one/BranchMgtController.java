@@ -19,6 +19,8 @@ import com.bbyiya.model.UBranchinfotemp;
 import com.bbyiya.pic.service.IPic_BranchMgtService;
 import com.bbyiya.pic.service.IPic_ProductService;
 import com.bbyiya.pic.utils.Json2Objects;
+import com.bbyiya.pic.vo.agent.UBranchVo;
+import com.bbyiya.service.IRegionService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -35,7 +37,8 @@ public class BranchMgtController extends SSOController {
 	private IPic_ProductService proService;
 	@Autowired
 	private UBranchinfotempMapper tempMapper;
-	
+	@Resource(name = "regionServiceImpl")
+	private IRegionService regionService;
 	@Autowired
 	private EErrorsMapper logger;
 	/**
@@ -231,7 +234,7 @@ public class BranchMgtController extends SSOController {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			UBranches branch=branchService.getBranchInfo(user.getUserId());
+			UBranchVo branch=branchService.getBranchInfo(user.getUserId());	
 			rq.setBasemodle(branch);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("获取代理商信息成功！");

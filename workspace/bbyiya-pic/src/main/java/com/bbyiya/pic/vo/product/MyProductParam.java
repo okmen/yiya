@@ -2,8 +2,6 @@ package com.bbyiya.pic.vo.product;
 
 import java.io.Serializable;
 import java.util.List;
-
-import com.bbyiya.model.PMyproductchildinfo;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.vo.user.UChildInfoParam;

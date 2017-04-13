@@ -617,8 +617,14 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 	 * @param branchUserId
 	 * @return
 	 */
-	public UBranches getBranchInfo(Long branchUserId){	
-		UBranches branch=branchesMapper.selectByPrimaryKey(branchUserId);
+	public UBranchVo getBranchInfo(Long branchUserId){	
+		UBranchVo branch=agentDao.getUBranchVoByBranchUserId(branchUserId);
+		if(branch!=null){
+			branch.setProviceName(regionService.getName(branch.getProvince())) ;
+			branch.setCityName(regionService.getName(branch.getCity())) ;
+			branch.setAreaName(regionService.getName(branch.getArea())) ;	
+		}
+		
 		return branch;		
 	}
 	/**

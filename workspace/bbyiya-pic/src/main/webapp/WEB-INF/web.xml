@@ -7,8 +7,10 @@
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
 	<description>bbyiya-pic</description>
-	<!-- <context-param> <param-name>log4jConfigLocation</param-name> <param-value>classpath:log4j.properties</param-value> 
-		</context-param> -->
+	<context-param> 
+		<param-name>log4jConfigLocation</param-name>
+		<param-value>classpath:log4j.properties</param-value> 
+	</context-param>
 	<filter>
 		<filter-name>characterEncodingFilter</filter-name>
 		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>

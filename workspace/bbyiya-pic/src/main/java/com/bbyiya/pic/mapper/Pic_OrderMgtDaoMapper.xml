@@ -60,7 +60,13 @@
   <!-- 用户订单结果类Result -->
   <resultMap id="UserOrderResult" type="com.bbyiya.pic.vo.order.UserOrderResultVO" extends="BaseResultMap">  
   </resultMap>  
+  <!-- 根据运单号查找订单信息 -->
+  <select id="findUserOrders" resultMap="BaseResultMap" parameterType="java.lang.String"  >
+  	 select 
+    <include refid="Base_Column_List" />
+    	from o_userorders where ExpressOrder=#{expressOrder,jdbcType=VARCHAR} and ExpressCom=#{expressCom,jdbcType=VARCHAR}
   
+  </select> 
   <!-- 搜索订单列表作品 --> 
   <select id="findUserOrders" resultMap="UserOrderResult" parameterType="com.bbyiya.pic.vo.order.SearchOrderParam"  >
     select 

@@ -14,4 +14,11 @@ public interface IPic_AgentAreaDao {
 	 * @return
 	 */
 	List<RAreaplans> findRAreaplansByAreaId(@Param("areaId") Integer areaId);
+	
+	/**
+	 * 通过代理商ID获取代理区县
+	 * @param agentUserId
+	 * @return
+	 */
+	List<RAreaplans> findRAreaplansByAgentUserId(@Param("agentUserId") Long agentUserId);
 }

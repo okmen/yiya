@@ -26,4 +26,12 @@
     from r_areaplans
     where AreaId = #{areaId,jdbcType=INTEGER}
   </select>
+  
+  <select id="findRAreaplansByAgentUserId" resultMap="RAreaplansMap"  parameterType="java.lang.Long"><!-- 通过代理商Id获取 代理区县 -->
+    select 
+    <include refid="RAreaplans_Column_List" />
+    from r_areaplans
+    where AgentUserId = #{agentUserId,jdbcType=INTEGER}
+  </select>
+  
 </mapper>

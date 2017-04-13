@@ -518,6 +518,19 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		}
 		return null;
 	}
+	
+	private List<String> getAgentArealistByAgentUserID(Long agentUserId){		
+		List<RAreaplans> arealist= agentAreaDao.findRAreaplansByAgentUserId(agentUserId);
+		if(arealist!=null&&arealist.size()>0){
+			List<String> areasList=new ArrayList<String>();
+			for (RAreaplans rr : arealist) {
+				areasList.add(rr.getAreaname());
+			}
+			return areasList;
+		}
+		return null;
+		
+	}
 	/**
 	 * ¥˙¿Ì«¯”Úcodelist
 	 * @param areaCode
@@ -623,8 +636,8 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			branch.setProviceName(regionService.getName(branch.getProvince())) ;
 			branch.setCityName(regionService.getName(branch.getCity())) ;
 			branch.setAreaName(regionService.getName(branch.getArea())) ;	
-		}
-		
+			branch.setAgentArealist(getAgentArealistByAgentUserID(branch.getAgentuserid())); 
+		}		
 		return branch;		
 	}
 	/**

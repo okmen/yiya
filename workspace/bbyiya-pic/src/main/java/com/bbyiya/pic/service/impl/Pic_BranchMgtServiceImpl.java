@@ -15,10 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bbyiya.dao.RAreaplansMapper;
 import com.bbyiya.dao.RAreaplansagentpriceMapper;
 import com.bbyiya.dao.RegionMapper;
+import com.bbyiya.dao.SysMessageMapper;
 import com.bbyiya.dao.UAgentapplyMapper;
 import com.bbyiya.dao.UAgentsMapper;
 import com.bbyiya.dao.UBranchareapriceMapper;
 import com.bbyiya.dao.UBranchesMapper;
+import com.bbyiya.dao.UUserresponsesMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.AgentStatusEnum;
@@ -27,10 +29,12 @@ import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.RAreaplans;
 import com.bbyiya.model.RAreaplansagentprice;
 import com.bbyiya.model.RAreas;
+import com.bbyiya.model.SysMessage;
 import com.bbyiya.model.UAgentapply;
 import com.bbyiya.model.UAgents;
 import com.bbyiya.model.UBranchareaprice;
 import com.bbyiya.model.UBranches;
+import com.bbyiya.model.UUserresponses;
 import com.bbyiya.pic.dao.IPic_AgentAreaDao;
 import com.bbyiya.pic.dao.IPic_AgentMgtDao;
 import com.bbyiya.pic.service.IPic_BranchMgtService;
@@ -41,6 +45,8 @@ import com.bbyiya.service.IBaseUserCommonService;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 @Service("pic_BranchMgtService")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
@@ -72,6 +78,12 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 	private UUsersMapper usersMapper;	
 	@Autowired
 	private IPic_AgentMgtDao agentDao;
+	
+	@Autowired
+	private UUserresponsesMapper userresponseMapper;//用户反馈
+	
+	@Autowired
+	private SysMessageMapper sysMessageMapper;//系统消息
 	
 	public ReturnModel getBranchAreaPrice(Integer province,Integer city,Integer district){
 		ReturnModel rqModel=new ReturnModel();
@@ -583,6 +595,66 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			}
 		}
 		return rqModel;
+	}
+	/**
+	 * 修改代理商收货地址
+	 * @param branchUserId
+	 * @return
+	 */
+	public ReturnModel editBranchAddress(Long branchUserId,String streetdetail){	
+		ReturnModel rqModel=new ReturnModel();
+		UBranches branch=branchesMapper.selectByPrimaryKey(branchUserId);
+		branch.setStreetdetail(streetdetail);
+		branchesMapper.updateByPrimaryKeySelective(branch);
+		rqModel.setStatu(ReturnStatus.Success);
+		rqModel.setStatusreson("修改收货地址成功！");
+		return rqModel;		
+	}
+	
+	
+	/**
+	 * 获取代理商信息
+	 * @param branchUserId
+	 * @return
+	 */
+	public UBranches getBranchInfo(Long branchUserId){	
+		UBranches branch=branchesMapper.selectByPrimaryKey(branchUserId);
+		return branch;		
+	}
+	/**
+	 * 添加意见反馈
+	 * @param branchUserId
+	 * @param content
+	 * @return
+	 */
+	public ReturnModel addUserResponses(Long branchUserId,String content){	
+		ReturnModel rqModel=new ReturnModel();
+		UUserresponses response=new UUserresponses();
+		response.setUserid(branchUserId);
+		response.setContent(content);
+		response.setCreatetime(new Date());
+		userresponseMapper.insertSelective(response);
+		rqModel.setBasemodle(response);
+		rqModel.setStatu(ReturnStatus.Success);
+		rqModel.setStatusreson("添加意见反馈成功！");
+		return rqModel;		
+	}
+	
+	/**
+	 * 获取系统消息通知列表
+	 * @param branchUserId
+	 * @param content
+	 * @return
+	 */
+	public ReturnModel getSysMessageList(int index,int size,String startTimeStr,String endTimeStr){	
+		ReturnModel rqModel=new ReturnModel();
+		PageHelper.startPage(index, size);
+		List<SysMessage> messagelist=sysMessageMapper.selectSysMessage(startTimeStr, endTimeStr);
+		PageInfo<SysMessage> reuslt=new PageInfo<SysMessage>(messagelist); 
+		rqModel.setBasemodle(reuslt);
+		rqModel.setStatu(ReturnStatus.Success);
+		rqModel.setStatusreson("获取系统消息通知列表成功！");
+		return rqModel;		
 	}
 	
 	

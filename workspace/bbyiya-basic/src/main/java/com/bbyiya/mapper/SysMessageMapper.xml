@@ -24,6 +24,22 @@
     from sys_message
     where MsgId = #{msgid,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectSysMessage" resultMap="ResultMapWithBLOBs" >
+		select 
+    	<include refid="Base_Column_List" />
+    	,
+    	<include refid="Blob_Column_List" />
+    from sys_message where 1=1  
+    <if test="startTimeStr != null  and startTimeStr !='' " >
+        AND CreateTime &gt;= #{startTimeStr,jdbcType=VARCHAR}
+    </if>
+   <if test="endTimeStr != null  and endTimeStr !=''" >
+        AND CreateTime &lt;= #{endTimeStr,jdbcType=VARCHAR}
+    </if>
+    order by CreateTime desc
+   </select>
+   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from sys_message
     where MsgId = #{msgid,jdbcType=INTEGER}

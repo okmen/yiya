@@ -38,5 +38,9 @@ public interface IPbs_OrderMgtService {
 	 * @throws Exception
 	 */
 	ReturnModel addPostage(String orderId, Double postage) throws Exception;
+	ReturnModel isCanMergeOrderLogistic(String orderIds) throws Exception;
+	ReturnModel MergeOrderLogistic(int ordertype, String orderIds,
+			String expressCom, String expressOrder, Double postage)
+			throws Exception;
 	
 }

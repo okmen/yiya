@@ -16,6 +16,24 @@
     from u_userresponses
     where Id = #{id,jdbcType=INTEGER}
   </select>
+  
+   <select id="findUserResponse" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from u_userresponses
+    where 1=1  
+    
+    <if test="startTimeStr != null  and startTimeStr !='' " >
+        AND CreateTime &gt;= #{startTimeStr,jdbcType=VARCHAR}
+    </if>
+   <if test="endTimeStr != null  and endTimeStr !=''" >
+        AND CreateTime &lt;= #{endTimeStr,jdbcType=VARCHAR}
+    </if>
+    order by CreateTime desc
+   </select>
+  
+  
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from u_userresponses
     where Id = #{id,jdbcType=INTEGER}

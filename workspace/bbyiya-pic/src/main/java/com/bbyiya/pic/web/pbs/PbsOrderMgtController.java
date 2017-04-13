@@ -207,7 +207,7 @@ public class PbsOrderMgtController extends SSOController {
 	
 	
 	/**
-	 *查询订单运单号信息及运费自动扣款
+	 *查询订单运单号信息
 	 * 
 	 * @return
 	 * @throws Exception
@@ -247,6 +247,47 @@ public class PbsOrderMgtController extends SSOController {
 
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	/**
+	 *判断是否可以合单运单信息
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/isCanMergeOrderLogistic")
+	public String isCanMergeOrderLogistic(String orderIds) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			rq=orderMgtService.isCanMergeOrderLogistic(orderIds);
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 *合单运单信息
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/MergeOrderLogistic")
+	public String MergeOrderLogistic(int ordertype,String orderIds,String expressCom,String expressOrder,Double postage) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			rq=orderMgtService.MergeOrderLogistic(ordertype, orderIds, expressCom, expressOrder, postage);
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 	
 	/**
 	 * 批量下载订单图片

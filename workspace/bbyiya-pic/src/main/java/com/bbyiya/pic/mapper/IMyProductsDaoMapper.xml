@@ -42,7 +42,7 @@
   <!-- 获取我的作品列表（包括被邀约的作品） -->
   <select id="findMyProductList" resultMap="MyProductListVO" >
    SELECT a.*,b.InvitePhone,b.CreateTime as InviteTime,b.Status as InStatus  from p_myproducts a LEFT JOIN p_myproductsinvites b on a.CartId=b.CartId
-   WHERE a.UserId=#{userId,jdbcType=BIGINT} OR b.InvitePhone=#{phone,jdbcType=VARCHAR}
+   WHERE a.UserId=#{userId,jdbcType=BIGINT} OR (b.InvitePhone=#{phone,jdbcType=VARCHAR} and b.Status!=2)
    ORDER BY b.CreateTime DESC,a.CreateTime DESC 
   </select>
   <select id="getMyProductVO" resultMap="MyProductListVO" ><!-- get 获取作品详情 -->

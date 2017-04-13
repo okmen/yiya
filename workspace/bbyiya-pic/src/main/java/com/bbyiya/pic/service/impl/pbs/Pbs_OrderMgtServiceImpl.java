@@ -3,6 +3,7 @@ package com.bbyiya.pic.service.impl.pbs;
 import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -10,6 +11,7 @@ import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OOrderproductdetailsMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
@@ -186,14 +188,16 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	/**
 	 * 多个订单是否可以运单合并
 	 * 条件： 1：如果有多个订单有不同运单信息，则不能合并
+	 * 		 2：必须是同一用户的订单才能进行合单操作
 	 * 	     2：如果所有订单都没有运单信息，则需要弹出录入运单的弹出框
 	 *       3：如果只有一个订单有运单信息，则按有运单号的订单补录其它订单运单信息
+	 *       
 	 * @param orderIds
 	 * @param postage
 	 * @return
 	 * @throws Exception
 	 */
-	public ReturnModel isMergeOrderLogistic(String orderIds) throws Exception {
+	public ReturnModel isCanMergeOrderLogistic(String orderIds) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		if(orderIds==null||orderIds.equals("")){
 			rq.setStatu(ReturnStatus.ParamError);
@@ -201,18 +205,127 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			return rq;
 		}
 		String orderArr[]=orderIds.split(",");
-		int count=0;
+		HashMap<Long,String> userIdHash=new HashMap<Long,String>();
+		HashMap<String,OUserorders> expressHash=new HashMap<String, OUserorders>();
+		HashMap<Integer,String> typeHash=new HashMap<Integer,String>();
+		HashMap<String,Object> result=new HashMap<String, Object>();
+
+		int ordertypeLast=0;
 		if(orderArr!=null&&orderArr.length>0){
 			for (String orderid : orderArr) {
 				OUserorders order=userOrdersMapper.selectByPrimaryKey(orderid);
-				//if()
+				if(order!=null){
+					int type=order.getOrdertype()==null?0:order.getOrdertype();
+					if(!typeHash.containsKey(type)){
+						typeHash.put(type,"ordertype");
+						ordertypeLast=type;
+					}
+				}
+			}
+			if(typeHash.size()>1){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("不同用户订单不能进行运单合单操作！");
+				return rq;
 			}
 		}
+		if(orderArr!=null&&orderArr.length>0){
+			for (String orderid : orderArr) {
+				OUserorders order=userOrdersMapper.selectByPrimaryKey(orderid);
+				if(order!=null){
+					//如果是代理商订单合单
+					if(ordertypeLast==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){
+						if(!userIdHash.containsKey(order.getBranchuserid())){
+							userIdHash.put(order.getBranchuserid(), order.getUserorderid());
+						}
+						
+						String express=(order.getExpresscom()==null?"":order.getExpresscom())+(order.getExpressorder()==null?"":order.getExpressorder())+((order.getPostage()==null||order.getPostage()==0)?"":order.getPostage());
+						if(express!=null&&express.length()>0){
+							expressHash.put(order.getExpressorder(), order);
+						}
+					}else{
+						//否则就是普通用户的合单
+						if(!userIdHash.containsKey(order.getUserid())){
+							userIdHash.put(order.getUserid(), order.getUserorderid());
+						}
+						String express=(order.getExpresscom()==null?"":order.getExpresscom())+(order.getExpressorder()==null?"":order.getExpressorder());
+						if(express!=null&&express.length()>0){
+							expressHash.put(order.getExpressorder(), order);
+						}
+					}
+					
+					
+				}
+			}
+			if(userIdHash.size()>1){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("不同用户的订单不能进行运单合单操作！");
+				return rq;
+			}
+			if(expressHash.size()>0){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("存在含用运单信息的订单，不能合单！");
+				return rq;
+			}
+			
+			result.put("orderids", orderIds);
+			result.put("ordertype", ordertypeLast);
+			rq.setBasemodle(result);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("");
 		
-		
+		}
 		return rq;
 	}
 	
+	/**
+	 * 
+	 * @param type 1:所有订单没有运单信息，2：有其中一张有运单信息
+	 * @param orderIds 需要补填运单信息的运单号
+	 * @param expressCom
+	 * @param expressOrder
+	 * @param postage
+	 * @return
+	 * @throws Exception
+	 */
+	public ReturnModel MergeOrderLogistic(int ordertype,String orderIds,String expressCom,String expressOrder,Double postage) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		if(orderIds==null||orderIds.equals("")){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("订单号不能为空！");
+			return rq;
+		}
+		//再次校验一下
+		rq=isCanMergeOrderLogistic(orderIds);
+		if(rq.getStatu()!=ReturnStatus.Success){			
+			return rq;
+		}
+		
+		String orderArr[]=orderIds.split(",");
+		if(orderArr!=null&&orderArr.length>0){
+			for(int i=0;i<orderArr.length;i++){
+				OUserorders userorders = userOrdersMapper.selectByPrimaryKey(orderArr[i]);
+				userorders.setExpresscom(expressCom);
+				userorders.setExpressorder(expressOrder);					
+				//只能第一张单且ordertype=1才会自动扣款
+				if(i==0&&ordertype==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){
+					ReturnModel rqmodel=addPostage(orderArr[i], postage);
+					if(rqmodel.getStatu()!=ReturnStatus.Success){
+						return rqmodel;
+					}	
+				}else{
+					userorders.setPostage(0.0);
+				}
+				
+				//修改订单状态为已发货状态
+				userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
+				userOrdersMapper.updateByPrimaryKeySelective(userorders);
+			}
+		}
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("合并运单信息成功！");
+		return rq;
+		
+	}
 	public String pbsdownloadImg(List<PbsUserOrderResultVO> orderlist){
 		String sep=System.getProperty("file.separator");
 		String  basePath = System.getProperty("user.home") +sep + "imagedownloadtemp"+sep+"orderImg";

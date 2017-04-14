@@ -19,7 +19,7 @@ public class MyProductsResult extends PMyproducts{
 	/**
 	 * 相册的描述（）
 	 */
-	private String description;
+//	private String description;
 	/**
 	 * 分享页不同相册的小图标
 	 */
@@ -49,12 +49,12 @@ public class MyProductsResult extends PMyproducts{
 	public void setIsOrder(int isOrder) {
 		this.isOrder = isOrder;
 	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
+//	public String getDescription() {
+//		return description;
+//	}
+//	public void setDescription(String description) {
+//		this.description = description;
+//	}
 	public List<MyProductsDetailsResult> getDetailslist() {
 		return detailslist;
 	}

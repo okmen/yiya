@@ -112,7 +112,7 @@ public class LoginController extends SSOController {
 		param.setLoginType(loginType);
 		param.setNickName(nickName);
 		param.setHeadImg(headImg);
-		if(ObjectUtil.isEmpty(upUid)){
+		if(!ObjectUtil.isEmpty(upUid)){
 			param.setUpUserId(ObjectUtil.parseLong(upUid)); 
 		} 
 		ReturnModel rqModel = loginService.otherLogin(param);

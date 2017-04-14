@@ -521,22 +521,30 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				}
 			}
 			if (canModify) {
-				PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
-				if (product != null) {
-					myproduct.setDescription(product.getDescription());
+				if(ObjectUtil.isEmpty(myproduct.getDescription())){
+					PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
+					if (product != null) {
+						myproduct.setDescription(product.getDescription());
+					}
 				}
 				List<MyProductsDetailsResult> arrayList =  mydetailDao.findMyProductDetailsResult(cartId);
 				if (arrayList != null && arrayList.size() > 0) {
 					String base_code = userId + "-" + myproduct.getCartid();
 					int i = 1;
 					for (MyProductsDetailsResult dd : arrayList) {
-						if(dd.getSceneid()!=null&&dd.getSceneid()>0){
-							dd.setPrintcode(base_code + "-" + String.format("%02d", dd.getSceneid()) + "-" + String.format("%02d", i));																										// ¥Ú”°±‡∫≈				
-							PScenes scene= sceneMapper.selectByPrimaryKey(dd.getSceneid().longValue());
-							if(scene!=null){
-								dd.setSceneDescription(scene.getContent());
-								dd.setSceneTitle(scene.getTitle()); 
-							}
+						if(dd.getSceneid()!=null&&dd.getSceneid()>0){//+ String.format("%02d", dd.getSceneid()) + "-"
+							// ¥Ú”°±‡∫≈	
+							dd.setPrintcode(base_code + "-" + String.format("%02d", i));
+							if(ObjectUtil.isEmpty(dd.getDescription()))	{
+								PScenes scene= sceneMapper.selectByPrimaryKey(dd.getSceneid().longValue());
+								if(scene!=null){
+									dd.setSceneDescription(scene.getContent());
+									dd.setSceneTitle(scene.getTitle()); 
+								}
+							}else {
+								dd.setSceneDescription(dd.getDescription());
+								dd.setSceneTitle(dd.getTitle()); 
+							}	
 						}
 						i++;
 					}

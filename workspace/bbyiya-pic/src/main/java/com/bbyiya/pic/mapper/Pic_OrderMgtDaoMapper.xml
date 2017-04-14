@@ -85,7 +85,7 @@
         AND Status = #{status,jdbcType=INTEGER}
     </if>
     <if test="agentUserId != null" >
-        AND BranchUserId = #{agentUserId,jdbcType=INTEGER}
+        AND AgentUserId = #{agentUserId,jdbcType=INTEGER}
     </if>
     <if test="userId != null" >
         AND UserId = #{userId,jdbcType=INTEGER}
@@ -119,7 +119,7 @@
         AND b.Status = #{status,jdbcType=INTEGER}
     </if>
     <if test="agentUserId != null" >
-        AND b.BranchUserId = #{agentUserId,jdbcType=INTEGER}
+        AND b.AgentUserId = #{agentUserId,jdbcType=INTEGER}
     </if>
     <if test="userId != null" >
         AND b.UserId = #{userId,jdbcType=INTEGER}

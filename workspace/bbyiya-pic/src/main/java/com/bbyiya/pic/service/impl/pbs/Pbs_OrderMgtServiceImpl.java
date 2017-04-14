@@ -314,21 +314,23 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 		if(orderArr!=null&&orderArr.length>0){
 			for(int i=0;i<orderArr.length;i++){
 				OUserorders userorders = userOrdersMapper.selectByPrimaryKey(orderArr[i]);
-				userorders.setExpresscom(expressCom);
-				userorders.setExpressorder(expressOrder);					
-				//只能第一张单且ordertype=1才会自动扣款
-				if(i==0&&ordertype==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){
-					ReturnModel rqmodel=addPostage(orderArr[i], postage);
-					if(rqmodel.getStatu()!=ReturnStatus.Success){
-						return rqmodel;
-					}	
-				}else{
-					userorders.setPostage(0.0);
+				if(userorders!=null){
+					userorders.setExpresscom(expressCom);
+					userorders.setExpressorder(expressOrder);					
+					//只能第一张单且ordertype=1才会自动扣款
+					if(i==0&&ordertype==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){
+						ReturnModel rqmodel=addPostage(orderArr[i], postage);
+						if(rqmodel.getStatu()!=ReturnStatus.Success){
+							return rqmodel;
+						}	
+					}else{
+						userorders.setPostage(0.0);
+					}
+					
+					//修改订单状态为已发货状态
+					userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
+					userOrdersMapper.updateByPrimaryKeySelective(userorders);
 				}
-				
-				//修改订单状态为已发货状态
-				userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
-				userOrdersMapper.updateByPrimaryKeySelective(userorders);
 			}
 		}
 		rq.setStatu(ReturnStatus.Success);

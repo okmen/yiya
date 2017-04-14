@@ -3,6 +3,7 @@ package com.bbyiya.pic.service;
 import com.bbyiya.model.UAgentapply;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.pic.vo.agent.AgentSearchParam;
+import com.bbyiya.pic.vo.agent.UBranchVo;
 import com.bbyiya.vo.ReturnModel;
 
 public interface IPic_BranchMgtService {
@@ -68,7 +69,7 @@ public interface IPic_BranchMgtService {
 	 * @param branchUserId
 	 * @return
 	 */
-	UBranches getBranchInfo(Long branchUserId);
+	UBranchVo getBranchInfo(Long branchUserId);
 	/**
 	 * 修改代理商收货地址
 	 * @param branchUserId

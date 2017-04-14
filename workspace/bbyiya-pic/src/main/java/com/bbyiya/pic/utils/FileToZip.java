@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;  
 import java.util.zip.ZipOutputStream;  
 /** 
- * å°†æ–‡ä»¶å¤¹ä¸‹é¢çš„æ–‡ä»¶ 
- * æ‰“åŒ…æˆzipå‹ç¼©æ–‡ä»¶ 
+ * ½«ÎÄ¼ş¼ĞÏÂÃæµÄÎÄ¼ş 
+ * ´ò°ü³ÉzipÑ¹ËõÎÄ¼ş 
  *  
  * @author admin 
  * 
@@ -67,56 +67,48 @@ public final class FileToZip {
         }  
     }  
     
-	/**
-Â Â Â Â Â * åˆ é™¤å•ä¸ªæ–‡ä»¶
-Â Â Â Â Â * 
-Â Â Â Â Â * @param sPath
-Â Â Â Â Â *Â Â Â Â Â Â Â Â Â Â Â  è¢«åˆ é™¤æ–‡ä»¶çš„è·¯å¾„+æ–‡ä»¶å
-Â Â Â Â Â * @return å•ä¸ªæ–‡ä»¶åˆ é™¤æˆåŠŸè¿”å›trueï¼Œå¦åˆ™è¿”å›false
-Â Â Â Â Â */
+    /**
+     * É¾³ıµ¥¸öÎÄ¼ş 
+     * @param sPath ±»É¾³ıÎÄ¼şµÄÂ·¾¶+ÎÄ¼şÃû
+     * @return µ¥¸öÎÄ¼şÉ¾³ı³É¹¦·µ»Øtrue£¬·ñÔò·µ»Øfalse
+     */
 	public boolean deleteFile(String sPath) {
 		boolean flag = false;
 		File file = new File(sPath);
-		// è·¯å¾„ä¸ºæ–‡ä»¶ä¸”ä¸ä¸ºç©ºåˆ™è¿›è¡Œåˆ é™¤
+		// Â·¾¶ÎªÎÄ¼şÇÒ²»Îª¿ÕÔò½øĞĞÉ¾³ı
 		if (file.isFile() && file.exists()) {
 			file.delete();
 			flag = true;
 		}
 		return flag;
 	}
-	/**
-Â Â Â Â Â * åˆ é™¤ç›®å½•ï¼ˆæ–‡ä»¶å¤¹ï¼‰ä»¥åŠç›®å½•ä¸‹çš„æ–‡ä»¶
-Â Â Â Â Â * 
-Â Â Â Â Â * @param sPath
-Â Â Â Â Â *Â Â Â Â Â Â Â Â Â Â Â  è¢«åˆ é™¤ç›®å½•çš„æ–‡ä»¶è·¯å¾„
-Â Â Â Â Â * @return ç›®å½•åˆ é™¤æˆåŠŸè¿”å›trueï¼Œå¦åˆ™è¿”å›false
-Â Â Â Â Â */
+	
     public boolean deleteDirectory(String sPath) {
-    	// å¦‚æœsPathä¸ä»¥æ–‡ä»¶åˆ†éš”ç¬¦ç»“å°¾ï¼Œè‡ªåŠ¨æ·»åŠ æ–‡ä»¶åˆ†éš”ç¬¦
+    	// Èç¹ûsPath²»ÒÔÎÄ¼ş·Ö¸ô·û½áÎ²£¬×Ô¶¯Ìí¼ÓÎÄ¼ş·Ö¸ô·û
     	if (!sPath.endsWith(File.separator)) {
     		sPath = sPath + File.separator;
 		}
 		File dirFile = new File(sPath);
-		// å¦‚æœdirå¯¹åº”çš„æ–‡ä»¶ä¸å­˜åœ¨ï¼Œæˆ–è€…ä¸æ˜¯ä¸€ä¸ªç›®å½•ï¼Œåˆ™é€€å‡º
+		// Èç¹ûdir¶ÔÓ¦µÄÎÄ¼ş²»´æÔÚ£¬»òÕß²»ÊÇÒ»¸öÄ¿Â¼£¬ÔòÍË³ö
 		if (!dirFile.exists() || !dirFile.isDirectory()) {
 		return false;
 		}
 		boolean flag = true;
-		// åˆ é™¤æ–‡ä»¶å¤¹ä¸‹çš„æ‰€æœ‰æ–‡ä»¶(åŒ…æ‹¬å­ç›®å½•)
+		// É¾³ıÎÄ¼ş¼ĞÏÂµÄËùÓĞÎÄ¼ş(°üÀ¨×ÓÄ¿Â¼)
 		File[] files = dirFile.listFiles();
 		for (int i = 0; i < files.length; i++) {
-			// åˆ é™¤å­æ–‡ä»¶
+			// É¾³ı×ÓÎÄ¼ş
 			if (files[i].isFile()) {
 				flag=deleteFile(files[i].getAbsolutePath());
 				if (!flag)break;
-			} // åˆ é™¤å­ç›®å½•
+			} // É¾³ı×ÓÄ¿Â¼
 			else {
 				flag = deleteDirectory(files[i].getAbsolutePath());
 				if (!flag)break;
 			}
 		}
 		if (!flag)return false;
-		// åˆ é™¤å½“å‰ç›®å½•
+		// É¾³ıµ±Ç°Ä¿Â¼
 		if (dirFile.delete()) {
 			return true;
 		} else {

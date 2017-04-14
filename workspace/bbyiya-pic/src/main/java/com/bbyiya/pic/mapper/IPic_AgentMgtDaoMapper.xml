@@ -80,7 +80,7 @@
   <select id="findUBranchVoList" resultMap="UBranchVoResult" parameterType="com.bbyiya.pic.vo.agent.AgentSearchParam" >
     select 
     <include refid="UBranches_Column_List" />
-    from U_Branches
+    from u_branches
     where 1=1
     <if test="userId != null" >
         and  BranchUserId = #{userId,jdbcType=BIGINT}
@@ -93,7 +93,7 @@
   <select id="getUBranchVoByBranchUserId" resultMap="UBranchVoResult" parameterType="java.lang.Long" >
     select 
     <include refid="UBranches_Column_List" />
-    from U_Branches
+    from u_branches
     where BranchUserId = #{branchuserid,jdbcType=BIGINT}
   </select>
 </mapper>

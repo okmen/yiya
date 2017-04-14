@@ -116,17 +116,27 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 		return reuslt;
 	}
 	
+	/**
+	 * 修改运单号
+	 */
 	public ReturnModel editLogistics(String orderId,String expressCom,String expressOrder) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		OUserorders userorders = userOrdersMapper.selectByPrimaryKey(orderId);
+		//查找运单号相同的订单号
 		if(userorders!=null){
-			userorders.setExpresscom(expressCom);
-			userorders.setExpressorder(expressOrder);
-			if(userorders.getPaytype()==Integer.parseInt(OrderTypeEnum.nomal.toString())){
-				//修改订单状态为已发货状态
-				userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
-			}			
-			userOrdersMapper.updateByPrimaryKeySelective(userorders);
+			List<OUserorders> orderList=orderDao.findUserOrderByExpressOrder(userorders.getExpressorder(), userorders.getExpresscom());
+			if(orderList!=null&&orderList.size()>0){
+				for (OUserorders order : orderList) {
+					order.setExpresscom(expressCom);
+					order.setExpressorder(expressOrder);
+					if(order.getPaytype()==Integer.parseInt(OrderTypeEnum.nomal.toString())){
+						//修改订单状态为已发货状态
+						order.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
+					}			
+					userOrdersMapper.updateByPrimaryKeySelective(order);
+				}
+			}
+			
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(userorders);
 			rq.setStatusreson("修改运单号成功!");
@@ -304,21 +314,23 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 		if(orderArr!=null&&orderArr.length>0){
 			for(int i=0;i<orderArr.length;i++){
 				OUserorders userorders = userOrdersMapper.selectByPrimaryKey(orderArr[i]);
-				userorders.setExpresscom(expressCom);
-				userorders.setExpressorder(expressOrder);					
-				//只能第一张单且ordertype=1才会自动扣款
-				if(i==0&&ordertype==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){
-					ReturnModel rqmodel=addPostage(orderArr[i], postage);
-					if(rqmodel.getStatu()!=ReturnStatus.Success){
-						return rqmodel;
-					}	
-				}else{
-					userorders.setPostage(0.0);
+				if(userorders!=null){
+					userorders.setExpresscom(expressCom);
+					userorders.setExpressorder(expressOrder);					
+					//只能第一张单且ordertype=1才会自动扣款
+					if(i==0&&ordertype==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){
+						ReturnModel rqmodel=addPostage(orderArr[i], postage);
+						if(rqmodel.getStatu()!=ReturnStatus.Success){
+							return rqmodel;
+						}	
+					}else{
+						userorders.setPostage(0.0);
+					}
+					
+					//修改订单状态为已发货状态
+					userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
+					userOrdersMapper.updateByPrimaryKeySelective(userorders);
 				}
-				
-				//修改订单状态为已发货状态
-				userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
-				userOrdersMapper.updateByPrimaryKeySelective(userorders);
 			}
 		}
 		rq.setStatu(ReturnStatus.Success);

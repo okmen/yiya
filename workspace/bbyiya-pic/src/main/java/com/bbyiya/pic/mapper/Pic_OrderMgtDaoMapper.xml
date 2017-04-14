@@ -60,7 +60,13 @@
   <!-- 用户订单结果类Result -->
   <resultMap id="UserOrderResult" type="com.bbyiya.pic.vo.order.UserOrderResultVO" extends="BaseResultMap">  
   </resultMap>  
+  <!-- 根据运单号查找订单信息 -->
+  <select id="findUserOrderByExpressOrder" resultMap="BaseResultMap" parameterType="java.lang.String"  >
+  	 select 
+    <include refid="Base_Column_List" />
+    	from o_userorders where ExpressOrder=#{expressOrder,jdbcType=VARCHAR} and ExpressCom=#{expressCom,jdbcType=VARCHAR}
   
+  </select> 
   <!-- 搜索订单列表作品 --> 
   <select id="findUserOrders" resultMap="UserOrderResult" parameterType="com.bbyiya.pic.vo.order.SearchOrderParam"  >
     select 
@@ -79,7 +85,7 @@
         AND Status = #{status,jdbcType=INTEGER}
     </if>
     <if test="agentUserId != null" >
-        AND BranchUserId = #{agentUserId,jdbcType=INTEGER}
+        AND AgentUserId = #{agentUserId,jdbcType=INTEGER}
     </if>
     <if test="userId != null" >
         AND UserId = #{userId,jdbcType=INTEGER}
@@ -113,7 +119,7 @@
         AND b.Status = #{status,jdbcType=INTEGER}
     </if>
     <if test="agentUserId != null" >
-        AND b.BranchUserId = #{agentUserId,jdbcType=INTEGER}
+        AND b.AgentUserId = #{agentUserId,jdbcType=INTEGER}
     </if>
     <if test="userId != null" >
         AND b.UserId = #{userId,jdbcType=INTEGER}

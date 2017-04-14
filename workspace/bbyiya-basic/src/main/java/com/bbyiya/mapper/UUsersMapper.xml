@@ -13,11 +13,12 @@
     <result column="Email" property="email" jdbcType="VARCHAR" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="Sign" property="sign" jdbcType="VARCHAR" />
-     <result column="Birthday" property="birthday" jdbcType="DATE" />
+    <result column="Birthday" property="birthday" jdbcType="DATE" />
+    <result column="UpUserId" property="upuserid" jdbcType="BIGINT" />
   </resultMap>
   <sql id="Base_Column_List" >
     UserID, PassWord, MobilePhone, MobileBind, Status, Identity, UserImg, NickName, Email, 
-    CreateTime, Sign, Birthday
+    CreateTime, Sign, Birthday, UpUserId
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -43,29 +44,29 @@
     from u_users
     where MobilePhone = #{phone,jdbcType=VARCHAR}
   </select>
-   <insert id="insert" parameterType="com.bbyiya.model.UUsers" >
-    insert into u_users (UserID, PassWord, MobilePhone, 
-      MobileBind, Status, Identity, 
-      UserImg, NickName, Email, 
-      CreateTime, Sign, Birthday
-      )
-    values (#{userid,jdbcType=BIGINT}, #{password,jdbcType=VARCHAR}, #{mobilephone,jdbcType=VARCHAR}, 
-      #{mobilebind,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{identity,jdbcType=BIGINT}, 
-      #{userimg,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{sign,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}
-      )
-  </insert>
   <insert id="insertReturnKeyId" useGeneratedKeys="true" keyProperty="userid" parameterType="com.bbyiya.model.UUsers" >
-    insert into u_users (UserID, PassWord, MobilePhone, 
+   insert into u_users (UserID, PassWord, MobilePhone, 
       MobileBind, Status, Identity, 
       UserImg, NickName, Email, 
-      CreateTime, Sign, Birthday
-      )
+      CreateTime, Sign, Birthday, 
+      UpUserId)
     values (#{userid,jdbcType=BIGINT}, #{password,jdbcType=VARCHAR}, #{mobilephone,jdbcType=VARCHAR}, 
       #{mobilebind,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{identity,jdbcType=BIGINT}, 
       #{userimg,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{sign,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}
-      )
+      #{createtime,jdbcType=TIMESTAMP}, #{sign,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, 
+      #{upuserid,jdbcType=BIGINT})
+  </insert>
+  <insert id="insert" parameterType="com.bbyiya.model.UUsers" >
+    insert into u_users (UserID, PassWord, MobilePhone, 
+      MobileBind, Status, Identity, 
+      UserImg, NickName, Email, 
+      CreateTime, Sign, Birthday, 
+      UpUserId)
+    values (#{userid,jdbcType=BIGINT}, #{password,jdbcType=VARCHAR}, #{mobilephone,jdbcType=VARCHAR}, 
+      #{mobilebind,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{identity,jdbcType=BIGINT}, 
+      #{userimg,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{sign,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, 
+      #{upuserid,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.UUsers" >
     insert into u_users
@@ -106,6 +107,9 @@
       <if test="birthday != null" >
         Birthday,
       </if>
+      <if test="upuserid != null" >
+        UpUserId,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="userid != null" >
@@ -143,6 +147,9 @@
       </if>
       <if test="birthday != null" >
         #{birthday,jdbcType=DATE},
+      </if>
+      <if test="upuserid != null" >
+        #{upuserid,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -182,6 +189,9 @@
       <if test="birthday != null" >
         Birthday = #{birthday,jdbcType=DATE},
       </if>
+      <if test="upuserid != null" >
+        UpUserId = #{upuserid,jdbcType=BIGINT},
+      </if>
     </set>
     where UserID = #{userid,jdbcType=BIGINT}
   </update>
@@ -197,7 +207,8 @@
       Email = #{email,jdbcType=VARCHAR},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
       Sign = #{sign,jdbcType=VARCHAR},
-      Birthday = #{birthday,jdbcType=DATE}
+      Birthday = #{birthday,jdbcType=DATE},
+      UpUserId = #{upuserid,jdbcType=BIGINT}
     where UserID = #{userid,jdbcType=BIGINT}
   </update>
 </mapper>

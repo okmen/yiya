@@ -204,15 +204,15 @@ public class UserLoginService implements IUserLoginService {
 		LoginSuccessResult result = new LoginSuccessResult();
 		result.setUserId(user.getUserid());
 		result.setIdentity(user.getIdentity());
-		if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.agent)){
-			result.setIsAgent(1);
-		}
-		if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)){
-			result.setIsBranch(1);
-		}
-		if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.salesman)){
-			result.setIsBranchMember(1);
-		} 
+//		if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.agent)){
+//			result.setIsAgent(1);
+//		}
+//		if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)){
+//			result.setIsBranch(1);
+//		}
+//		if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.salesman)){
+//			result.setIsBranchMember(1);
+//		} 
 		result.setMobilePhone(user.getMobilephone());
 		result.setNickName(user.getNickname());
 		if(!"null".equals(user.getUserimg())&&!ObjectUtil.isEmpty(user.getUserimg())){

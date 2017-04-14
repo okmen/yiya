@@ -43,10 +43,8 @@ public class LoginTransferController extends SSOController {
 	private ULoginlogsMapper loginLogMapper;
 	@Autowired
 	private EErrorsMapper errorMapper;
-	/**
-	 * Î¢ÐÅaccess_token
-	 */
-	private String access_token;
+	
+	
 
 	/**
 	 * IBSµÇÂ¼ ÖÐ×ªÒ³
@@ -56,12 +54,7 @@ public class LoginTransferController extends SSOController {
 	 */
 	@RequestMapping(value = "/ibs/index")
 	public String transferPage(String backurl) throws Exception {
-//		LoginSuccessResult user = super.getLoginUser();
-//		if (user != null) {
-//			return "redirect:" + ConfigUtil.getSingleValue("loginbackurl_ibs");
-//		} else {
-			return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin2&response_type=code&scope=snsapi_base#wechat_redirect";
-//		}
+		return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin2&response_type=code&scope=snsapi_base#wechat_redirect";
 	}
 
 
@@ -101,7 +94,7 @@ public class LoginTransferController extends SSOController {
 		ReturnModel rqModel = new ReturnModel();
 		if (model != null) {
 			String openid = String.valueOf(model.get("openid"));
-			access_token = String.valueOf(model.get("access_token"));
+			String access_token = String.valueOf(model.get("access_token"));
 			if (!ObjectUtil.isEmpty(openid) && !ObjectUtil.isEmpty(access_token) && !"null".equals(openid) && !"null".equals(access_token)) {
 				String userInfoUrl = "https://api.weixin.qq.com/sns/userinfo";
 				String data2 = "access_token=" + access_token + "&openid=" + openid;

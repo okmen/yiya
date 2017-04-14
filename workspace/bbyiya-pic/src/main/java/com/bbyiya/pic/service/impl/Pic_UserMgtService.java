@@ -120,6 +120,9 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 				if(!ObjectUtil.isEmpty(param.getHeadImg())){
 					userModel.setUserimg(param.getHeadImg());
 				} 
+				if(param.getUpUserId()!=null&&param.getUpUserId()>0){
+					userModel.setUpuserid(param.getUpUserId()); 
+				}
 				userDao.insertReturnKeyId(userModel);
 				
 				other = new UOtherlogin();

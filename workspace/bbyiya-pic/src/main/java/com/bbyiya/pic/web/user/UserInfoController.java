@@ -1,22 +1,29 @@
 package com.bbyiya.pic.web.user;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.baseUtils.CookieUtils;
+import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IUserInfoMgtService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
-import com.bbyiya.utils.encrypt.MD5Encrypt;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.vo.user.UUserInfoParam;
 import com.bbyiya.web.base.SSOController;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 @Controller
 @RequestMapping(value = "/user")
@@ -25,6 +32,8 @@ public class UserInfoController  extends SSOController{
 	private IUserInfoMgtService userInfoMgtService;
 	@Resource(name = "userInfoMgtService")
 	private IUserInfoMgtService userMgtService;
+	@Autowired
+	private UUsersMapper usermapper;
 	
 	@ResponseBody
 	@RequestMapping(value = "/info/edit")
@@ -65,8 +74,31 @@ public class UserInfoController  extends SSOController{
 	@ResponseBody
 	@RequestMapping(value = "/info/updatePwd")
 	public String updatePwd(String phone, String vcode, String pwd) throws Exception {
-		System.out.println(MD5Encrypt.encrypt(pwd)); 
 		return JsonUtil.objectToJsonStr(userMgtService.updatePWD(phone, vcode, pwd));
 	}
 
+	
+	
+	/**
+	 * 我推荐的用户列表
+	 * @param index
+	 * @param size
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/ibs/getusers")
+	public String getusers(@RequestParam(required = false, defaultValue = "1")int index,@RequestParam(required = false, defaultValue = "10")int size) throws Exception {
+		ReturnModel rq=new ReturnModel(); 
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			PageHelper.startPage(index, size);
+			List<UUsers> list=usermapper.findUUsersByUpUserid(user.getUserId());
+			PageInfo<UUsers> resultPage=new PageInfo<UUsers>(list); 
+		
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(resultPage);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 }

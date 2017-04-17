@@ -81,6 +81,10 @@ public class Json2Objects {
 			if(!ObjectUtil.isEmpty(author)&&!"null".equals(author)){
 				param.setAuthor(author);
 			}
+			String desc=String.valueOf(model.get("description"));
+			if(!ObjectUtil.isEmpty(desc)&&!"null".equals(desc)){
+				param.setDescription(desc);
+			}
 			String childJsonString=String.valueOf(model.get("childInfo"));
 			if(!ObjectUtil.isEmpty(childJsonString)&&!"null".equals(childJsonString)){
 				JSONObject chidMod = JSONObject.fromObject(childJsonString);
@@ -119,6 +123,14 @@ public class Json2Objects {
 					String content=String.valueOf(dd.get("content"));
 					if(!ObjectUtil.isEmpty(content)&&!content.equals("null")){
 						mo.setContent(content);
+					}
+					String scenTitle=String.valueOf(dd.get("title"));
+					if(!ObjectUtil.isEmpty(scenTitle)&&!scenTitle.equals("null")){
+						mo.setTitle(scenTitle);
+					}
+					String dec=String.valueOf(dd.get("description"));
+					if(!ObjectUtil.isEmpty(dec)&&!dec.equals("null")){
+						mo.setDescription(dec);
 					}
 					int scenid=ObjectUtil.parseInt(String.valueOf(dd.get("sceneid")));
 					if(scenid>0){

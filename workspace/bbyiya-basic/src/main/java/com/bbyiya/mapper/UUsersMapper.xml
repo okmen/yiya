@@ -44,6 +44,13 @@
     from u_users
     where MobilePhone = #{phone,jdbcType=VARCHAR}
   </select>
+  <select id="findUUsersByUpUserid" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from u_users
+    where UpUserId = #{upid,jdbcType=BIGINT}
+  </select>
+  
   <insert id="insertReturnKeyId" useGeneratedKeys="true" keyProperty="userid" parameterType="com.bbyiya.model.UUsers" >
    insert into u_users (UserID, PassWord, MobilePhone, 
       MobileBind, Status, Identity, 

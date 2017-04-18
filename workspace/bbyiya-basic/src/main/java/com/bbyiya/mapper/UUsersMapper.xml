@@ -49,6 +49,12 @@
     <include refid="Base_Column_List" />
     from u_users
     where UpUserId = #{upid,jdbcType=BIGINT}
+    <if test="startTime != null" >
+       
+    </if>
+    <if test="endTime != null" >
+       
+    </if>
   </select>
   
   <insert id="insertReturnKeyId" useGeneratedKeys="true" keyProperty="userid" parameterType="com.bbyiya.model.UUsers" >

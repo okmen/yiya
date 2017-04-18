@@ -1,5 +1,6 @@
 package com.bbyiya.pic.web.user;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -15,6 +16,7 @@ import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IUserInfoMgtService;
+import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
@@ -88,14 +90,25 @@ public class UserInfoController  extends SSOController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/ibs/getusers")
-	public String getusers(@RequestParam(required = false, defaultValue = "1")int index,@RequestParam(required = false, defaultValue = "10")int size) throws Exception {
+	public String getusers(@RequestParam(required = false, defaultValue = "1")int index,@RequestParam(required = false, defaultValue = "10")int size,String startTime,String endTime) throws Exception {
 		ReturnModel rq=new ReturnModel(); 
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
+			Date startDay=null,endDay=null;
+			if(!ObjectUtil.isEmpty(startTime)){
+				startDay=DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", startTime);
+			}
+			
+			if(!ObjectUtil.isEmpty(endTime)){
+				endDay=DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", endTime);
+			}
+			
 			PageHelper.startPage(index, size);
-			List<UUsers> list=usermapper.findUUsersByUpUserid(user.getUserId());
+			List<UUsers> list=usermapper.findUUsersByUpUserid(user.getUserId(),startDay,endDay);
 			PageInfo<UUsers> resultPage=new PageInfo<UUsers>(list); 
-		
+			for (UUsers uu : resultPage.getList()) {
+				uu.setPassword(""); 
+			}
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(resultPage);
 		}

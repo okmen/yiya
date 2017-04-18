@@ -9,6 +9,7 @@ public class OtherLoginParam implements java.io.Serializable{
     private Integer loginType;//登陆类型
     private String nickName;//用户名
     private String openId;//openID第三方登陆的标识
+    private Long upUserId;
 
     public String getHeadImg()
     {
@@ -46,6 +47,14 @@ public class OtherLoginParam implements java.io.Serializable{
 
 	public void setOpenId(String openId) {
 		this.openId = openId;
+	}
+
+	public Long getUpUserId() {
+		return upUserId;
+	}
+
+	public void setUpUserId(Long upUserId) {
+		this.upUserId = upUserId;
 	}
 
     

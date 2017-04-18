@@ -10,9 +10,11 @@
     <result column="Sort" property="sort" jdbcType="INTEGER" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="Title" property="title" jdbcType="VARCHAR" />
+    <result column="Description" property="description" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    PdId, CartId, SceneId, ImgUrl, Content, Sort, CreateTime, UserId
+    PdId, CartId, SceneId, ImgUrl, Content, Sort, CreateTime, UserId, Title, Description
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -41,10 +43,12 @@
  <insert id="insert" parameterType="com.bbyiya.model.PMyproductdetails" >
     insert into p_myproductdetails (PdId, CartId, SceneId, 
       ImgUrl, Content, Sort, 
-      CreateTime, UserId)
+      CreateTime, UserId, Title, 
+      Description)
     values (#{pdid,jdbcType=BIGINT}, #{cartid,jdbcType=BIGINT}, #{sceneid,jdbcType=INTEGER}, 
       #{imgurl,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{userid,jdbcType=BIGINT})
+      #{createtime,jdbcType=TIMESTAMP}, #{userid,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproductdetails" >
     insert into p_myproductdetails
@@ -73,6 +77,12 @@
       <if test="userid != null" >
         UserId,
       </if>
+      <if test="title != null" >
+        Title,
+      </if>
+      <if test="description != null" >
+        Description,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="pdid != null" >
@@ -98,6 +108,12 @@
       </if>
       <if test="userid != null" >
         #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -125,6 +141,12 @@
       <if test="userid != null" >
         UserId = #{userid,jdbcType=BIGINT},
       </if>
+      <if test="title != null" >
+        Title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        Description = #{description,jdbcType=VARCHAR},
+      </if>
     </set>
     where PdId = #{pdid,jdbcType=BIGINT}
   </update>
@@ -136,7 +158,9 @@
       Content = #{content,jdbcType=VARCHAR},
       Sort = #{sort,jdbcType=INTEGER},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
-      UserId = #{userid,jdbcType=BIGINT}
+      UserId = #{userid,jdbcType=BIGINT},
+      Title = #{title,jdbcType=VARCHAR},
+      Description = #{description,jdbcType=VARCHAR}
     where PdId = #{pdid,jdbcType=BIGINT}
   </update>
 </mapper>

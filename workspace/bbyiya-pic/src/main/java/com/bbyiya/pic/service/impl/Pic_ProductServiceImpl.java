@@ -150,6 +150,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					if (!ObjectUtil.isEmpty(param.getAuthor())) {
 						myproducts.setAuthor(param.getAuthor());
 					}
+					if(!ObjectUtil.isEmpty(param.getDescription())){
+						myproducts.setDescription(param.getDescription());
+					} 
 					myproducts.setUpdatetime(new Date());
 					// 更新用户作品基本信息
 					myMapper.updateByPrimaryKeySelective(myproducts);
@@ -183,6 +186,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					myproduct = new PMyproducts();
 					myproduct.setAuthor(param.getAuthor());
 					myproduct.setTitle(param.getTitle());
+					if(!ObjectUtil.isEmpty(param.getDescription())){
+						myproduct.setDescription(param.getDescription());
+					} 
 					myproduct.setUserid(userId);
 					myproduct.setProductid(param.getProductid());
 					myproduct.setCreatetime(new Date());
@@ -288,6 +294,10 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					if (!ObjectUtil.isEmpty(param.getAuthor())) {
 						myproducts.setAuthor(param.getAuthor());
 					}
+					if (!ObjectUtil.isEmpty(param.getDescription())) {
+						myproducts.setDescription(param.getDescription());
+					}
+					
 					if (param.getDetails() != null && param.getDetails().size() > 0) {
 						//检验 场景是否被选过
 						List<PMyproductdetails> details=myDetaiMapper.findMyProductdetails(cartIdTemp);
@@ -295,7 +305,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 							for (PMyproductdetails de : param.getDetails()) {
 								if(de.getPdid()!=null&&de.getPdid()>0){
 									for (PMyproductdetails myde : details) {
-										if(de.getPdid().longValue()!=myde.getPdid().longValue()&& myde.getSceneid()!=null&&de.getSceneid()!=null&& myde.getSceneid().intValue()==de.getSceneid().intValue()){
+										if(de.getPdid().longValue()!=myde.getPdid().longValue()&& myde.getSceneid()!=null&&de.getSceneid()!=null&& myde.getSceneid().intValue()==de.getSceneid().intValue()&&de.getSceneid()>0){
 											rq.setStatu(ReturnStatus.InvitError_1);
 											rq.setStatusreson("此主题被协同人使用啦，请更换其他主题");
 											return rq;
@@ -313,7 +323,6 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 							}
 						}
 					}
-
 					myproducts.setUpdatetime(new Date());
 					// 更新用户作品基本信息
 					myMapper.updateByPrimaryKeySelective(myproducts);
@@ -521,22 +530,30 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				}
 			}
 			if (canModify) {
-				PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
-				if (product != null) {
-					myproduct.setDescription(product.getDescription());
+				if(ObjectUtil.isEmpty(myproduct.getDescription())){
+					PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
+					if (product != null) {
+						myproduct.setDescription(product.getDescription());
+					}
 				}
 				List<MyProductsDetailsResult> arrayList =  mydetailDao.findMyProductDetailsResult(cartId);
 				if (arrayList != null && arrayList.size() > 0) {
 					String base_code = userId + "-" + myproduct.getCartid();
 					int i = 1;
 					for (MyProductsDetailsResult dd : arrayList) {
-						if(dd.getSceneid()!=null&&dd.getSceneid()>0){
-							dd.setPrintcode(base_code + "-" + String.format("%02d", dd.getSceneid()) + "-" + String.format("%02d", i));																										// 打印编号				
-							PScenes scene= sceneMapper.selectByPrimaryKey(dd.getSceneid().longValue());
-							if(scene!=null){
-								dd.setSceneDescription(scene.getContent());
-								dd.setSceneTitle(scene.getTitle()); 
-							}
+						if(dd.getSceneid()!=null&&dd.getSceneid()>0){//+ String.format("%02d", dd.getSceneid()) + "-"
+							// 打印编号	
+							dd.setPrintcode(base_code + "-" + String.format("%02d", i));
+							if(ObjectUtil.isEmpty(dd.getDescription()))	{
+								PScenes scene= sceneMapper.selectByPrimaryKey(dd.getSceneid().longValue());
+								if(scene!=null){
+									dd.setSceneDescription(scene.getContent());
+									dd.setSceneTitle(scene.getTitle()); 
+								}
+							}else {
+								dd.setSceneDescription(dd.getDescription());
+								dd.setSceneTitle(dd.getTitle()); 
+							}	
 						}
 						i++;
 					}
@@ -657,18 +674,25 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					 }
 				}
 			}
-			
-			PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
-			if (product != null) {
-				myproduct.setDescription(product.getDescription());
-			}			
+			if(ObjectUtil.isEmpty(myproduct.getDescription())){
+				PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
+				if (product != null) {
+					myproduct.setDescription(product.getDescription());
+				}	
+			}
+					
 			List<MyProductsDetailsResult> list=mydetailDao.findMyProductDetailsResult(cartId);
 			if(list!=null&&list.size()>0){
 				for (MyProductsDetailsResult detail : list) {
-					PScenes scene= sceneMapper.selectByPrimaryKey(detail.getSceneid().longValue());
-					if(scene!=null){
-						detail.setSceneDescription(scene.getContent());
-						detail.setSceneTitle(scene.getTitle()); 
+					if(ObjectUtil.isEmpty(detail.getDescription())||ObjectUtil.isEmpty(detail.getTitle())){
+						PScenes scene= sceneMapper.selectByPrimaryKey(detail.getSceneid().longValue());
+						if(scene!=null){
+							detail.setSceneDescription(scene.getContent());
+							detail.setSceneTitle(scene.getTitle()); 
+						}
+					}else {
+						detail.setSceneDescription(detail.getDescription());
+						detail.setSceneTitle(detail.getTitle()); 
 					}
 				}
 			} 

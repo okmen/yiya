@@ -30,6 +30,8 @@ public class UUsers implements Serializable{
     private String sign;
 
     private Date birthday;
+    
+    private Long upuserid;
 
     public Long getUserid() {
         return userid;
@@ -126,4 +128,13 @@ public class UUsers implements Serializable{
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
+
+	public Long getUpuserid() {
+		return upuserid;
+	}
+
+	public void setUpuserid(Long upuserid) {
+		this.upuserid = upuserid;
+	}
+    
 }

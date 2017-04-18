@@ -16,17 +16,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bbyiya.baseUtils.CookieUtils;
 import com.bbyiya.dao.EErrorsMapper;
 import com.bbyiya.dao.ULoginlogsMapper;
-import com.bbyiya.dao.UUsertesterwxMapper;
 import com.bbyiya.enums.LoginTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.EErrors;
 import com.bbyiya.model.ULoginlogs;
 import com.bbyiya.pic.service.IPic_UserMgtService;
+import com.bbyiya.pic.vo.LoginTempVo;
 import com.bbyiya.service.IUserLoginService;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.HttpRequestHelper;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.utils.RedisUtil;
 //import com.bbyiya.utils.pay.WxPayAppConfig;
 import com.bbyiya.utils.pay.WxPayConfig;
 import com.bbyiya.vo.ReturnModel;
@@ -49,25 +50,54 @@ public class LoginController extends SSOController {
 	private IPic_UserMgtService loginService;
 
 	@Autowired
-	private UUsertesterwxMapper testMapper;
-	@Autowired
 	private ULoginlogsMapper loginLogMapper;
 	@Autowired
 	private EErrorsMapper errorMapper;
+	
+
+	
 	/**
-	 * A01 第三方登陆、注册
-	 * 
+	 * 登录 中转页
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/transfer")
+	public String transferPage(String m,String uid) throws Exception {
+//		LoginSuccessResult user = super.getLoginUser();
+		long branch_userid=ObjectUtil.parseLong(uid);
+		if(branch_userid>0||!ObjectUtil.isEmpty(m)){ 
+			LoginTempVo loginTemp=new LoginTempVo();
+			loginTemp.setUpUserId(branch_userid);
+			loginTemp.setLoginTo(ObjectUtil.parseInt(m));
+			String keyId= request.getSession().getId();
+			RedisUtil.setObject(keyId, loginTemp, 60);
+		}
+//		int mtype=ObjectUtil.parseInt(m);
+//		if(mtype>0){
+//			if (user != null) {
+//				if(mtype==1){//测试地址
+//					return "redirect:" + ConfigUtil.getSingleValue("loginbackurl_test") ;
+//				}
+//			} 
+//			return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLoginTest&response_type=code&scope=snsapi_base#wechat_redirect" ;	
+//		}
+//		else {//正式地址登录
+			return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin&response_type=code&scope=snsapi_base#wechat_redirect" ;		
+//		}
+	}
+	
+	/**
+	 * c端测试版本登陆入口
 	 * @param headImg
 	 * @param loginType
 	 * @param nickName
 	 * @param openId
+	 * @param upUid
 	 * @return
 	 * @throws Exception
 	 */
-
-	@ResponseBody
-	@RequestMapping(value = "/otherLogin")
-	public String otherLogin(String headImg, @RequestParam(required = false, defaultValue = "2") int loginType, String nickName, String openId) throws Exception {
+	@RequestMapping(value = "/wxLoginTest")
+	public String wxLoginTest(String headImg, @RequestParam(required = false, defaultValue = "2") int loginType, String nickName, String openId,String upUid) throws Exception {
 		headImg = ObjectUtil.urlDecoder_decode(headImg, "");
 		nickName = ObjectUtil.urlDecoder_decode(nickName, "");
 		openId = ObjectUtil.urlDecoder_decode(openId, "");
@@ -82,72 +112,15 @@ public class LoginController extends SSOController {
 		param.setLoginType(loginType);
 		param.setNickName(nickName);
 		param.setHeadImg(headImg);
+		if(!ObjectUtil.isEmpty(upUid)){
+			param.setUpUserId(ObjectUtil.parseLong(upUid)); 
+		} 
 		ReturnModel rqModel = loginService.otherLogin(param);
 		if (ReturnStatus.Success.equals(rqModel.getStatu()) && !ObjectUtil.isEmpty(rqModel.getBasemodle())) {
 			addLoginLogAndCookie(rqModel.getBasemodle(),0);
 		}
-		return JsonUtil.objectToJsonStr(rqModel);
+		return "redirect:" + ConfigUtil.getSingleValue("photo-net-url") ;
 	}
-	
-	
-	@ResponseBody
-	@RequestMapping(value = "/loginPhone")
-	public String loginPhone(String phone, String pwd) throws Exception {
-		ReturnModel rqModel = loginBaseService.login(phone, pwd);
-		if (ReturnStatus.Success.equals(rqModel.getStatu()) && !ObjectUtil.isEmpty(rqModel.getBasemodle())) {
-			addLoginLogAndCookie(rqModel.getBasemodle(),Integer.parseInt(LoginTypeEnum.mobilephone.toString()));
-		}
-		return JsonUtil.objectToJsonStr(rqModel);
-	}
-
-	/**
-	 * A05 获取用户登录信息
-	 * 
-	 * @return
-	 * @throws Exception
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/getuser")
-	public String getuser() throws Exception {
-		ReturnModel rq = new ReturnModel();
-		LoginSuccessResult user = super.getLoginUser();
-		if (user != null) {
-			rq.setStatu(ReturnStatus.Success);
-			rq.setBasemodle(user);
-		} else {
-			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登陆过期，请重新登陆！");
-		}
-		return JsonUtil.objectToJsonStr(rq);
-	}
-	
-	/**
-	 * 登录 中转页
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/transfer")
-	public String transferPage(String m) throws Exception {
-		LoginSuccessResult user = super.getLoginUser();
-		int mtype=ObjectUtil.parseInt(m);
-		if(mtype>0){
-			if (user != null) {
-				if(mtype==1){//测试地址
-					return "redirect:"+ ConfigUtil.getSingleValue("loginbackurl_test") ;
-				}
-			}
-			return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin&response_type=code&scope=snsapi_base#wechat_redirect" ;	
-		}
-		else {//正式地址登录
-//			if(user!=null){
-//				return "redirect:"+ ConfigUtil.getSingleValue("loginbackurl") ;
-//			}
-			return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin&response_type=code&scope=snsapi_base#wechat_redirect" ;		
-		}
-		
-	}
-	
-	
 	
 	
 
@@ -172,7 +145,6 @@ public class LoginController extends SSOController {
 		if (model != null) {
 			String openid = String.valueOf(model.get("openid"));
 			String access_token = String.valueOf(model.get("access_token"));
-
 			if (!ObjectUtil.isEmpty(openid) && !ObjectUtil.isEmpty(access_token) && !"null".equals(openid) && !"null".equals(access_token)) {
 
 				String userInfoUrl = "https://api.weixin.qq.com/sns/userinfo";
@@ -191,13 +163,23 @@ public class LoginController extends SSOController {
 					if(!ObjectUtil.isEmpty(headimg)&&!"null".equals(headimg)){
 						param.setHeadImg(headimg);
 					}
+					LoginTempVo logintemp= (LoginTempVo)RedisUtil.getObject(request.getSession().getId());
+					if(logintemp!=null){
+						if(logintemp.getUpUserId()!=null&&logintemp.getUpUserId()>0){
+							param.setUpUserId(logintemp.getUpUserId()); 
+						}
+						int m=logintemp.getLoginTo()==null?0:logintemp.getLoginTo();
+						if(m==1){ //photo测试地址
+							String paramtest="?headImg="+param.getHeadImg()+"&loginType="+param.getLoginType()+"&nickName="+param.getNickName()+"&openId="+param.getOpenId()+"&upUid="+param.getUpUserId();
+							//跳转mpic测试接口地址中转
+							return "redirect:" + ConfigUtil.getSingleValue("mpic-net-url")+paramtest;
+						}
+					}
 					rqModel = loginService.otherLogin(param);
 					if (ReturnStatus.Success.equals(rqModel.getStatu()) && !ObjectUtil.isEmpty(rqModel.getBasemodle())) {
 						addLoginLogAndCookie(rqModel.getBasemodle(),Integer.parseInt(LoginTypeEnum.weixin.toString())); 
 					}
-					
 				} else {
-					
 					rqModel.setStatu(ReturnStatus.SystemError);
 					rqModel.setStatusreson("获取用户信息失败");
 				}
@@ -217,6 +199,7 @@ public class LoginController extends SSOController {
 	}
 	
 
+	
 
 	private void addLoginLogAndCookie(Object obj,int type) {
 		try {
@@ -235,9 +218,7 @@ public class LoginController extends SSOController {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-
 	}
-	
 	
 	/**
 	 * 插入错误Log

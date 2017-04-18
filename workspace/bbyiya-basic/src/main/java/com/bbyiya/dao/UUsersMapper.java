@@ -1,5 +1,9 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.UUsers;
 
 public interface UUsersMapper {
@@ -57,4 +61,11 @@ public interface UUsersMapper {
 	 * @return
 	 */
 	int updateByPrimaryKey(UUsers record);
+
+	/**
+	 * 查询我推荐的用户列表
+	 * @param upUserid
+	 * @return
+	 */
+	List<UUsers> findUUsersByUpUserid(@Param("upid") Long upUserid);
 }

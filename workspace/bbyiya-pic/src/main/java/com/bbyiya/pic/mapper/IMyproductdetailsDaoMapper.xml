@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.bbyiya.pic.dao.IMyProductDetailsDao">
 	<sql id="Base_Column_List">
-		PdId, CartId, SceneId, ImgUrl, Content, Sort, CreateTime, UserId
+		PdId, CartId, SceneId, ImgUrl, Content, Sort, CreateTime, UserId, Title, Description
 	</sql>
 	<resultMap id="BaseResultMap" type="com.bbyiya.model.PMyproductdetails">
 		<id column="PdId" property="pdid" jdbcType="BIGINT" />
@@ -13,6 +13,8 @@
 		<result column="Sort" property="sort" jdbcType="INTEGER" />
 		<result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
 		<result column="UserId" property="userid" jdbcType="BIGINT" />
+		<result column="Title" property="title" jdbcType="VARCHAR" />
+    	<result column="Description" property="description" jdbcType="VARCHAR" />
 	</resultMap>
 
 	<!-- 我的作品详情Result -->

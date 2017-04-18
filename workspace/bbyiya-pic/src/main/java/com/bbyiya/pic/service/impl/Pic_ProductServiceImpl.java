@@ -713,6 +713,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					detail.setImgurl("");
 					detail.setContent("");
 					detail.setSceneid(null);
+					detail.setTitle("");
+					detail.setDescription("");
 					myDetaiMapper.updateByPrimaryKey(detail);
 					rq.setStatu(ReturnStatus.Success);
 					rq.setStatusreson("É¾³ý³É¹¦£¡");

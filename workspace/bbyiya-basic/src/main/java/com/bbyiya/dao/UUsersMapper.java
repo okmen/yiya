@@ -1,5 +1,6 @@
 package com.bbyiya.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -67,5 +68,5 @@ public interface UUsersMapper {
 	 * @param upUserid
 	 * @return
 	 */
-	List<UUsers> findUUsersByUpUserid(@Param("upid") Long upUserid);
+	List<UUsers> findUUsersByUpUserid(@Param("upid") Long upUserid,@Param("startTime")Date starttime,@Param("endTime")Date endtime);
 }

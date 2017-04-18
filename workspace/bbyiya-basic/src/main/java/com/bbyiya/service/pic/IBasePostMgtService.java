@@ -30,4 +30,53 @@ public interface IBasePostMgtService {
 	 * @return
 	 */
 	PPostmodel getPostmodel(Integer postModelId,Integer areaId);
+	
+	/**
+	 * 新增运费模板
+	 * julie(17-04-17)
+	 * @param userid
+	 * @param name
+	 * @param amount
+	 */
+	ReturnModel addPostmodel(Long userid, String name, Double amount);
+	/**
+	 * 修改运费模板
+	 * julie(17-04-17)
+	 * @param postModelId
+	 * @param name
+	 * @param amount
+	 */
+	ReturnModel editPostmodel(int postModelId, String name, Double amount);
+	/**
+	 * 获取邮费模板特殊区域列表
+	 * @author julie
+	 * @param index
+	 * @param size
+	 * @param areacode
+	 * @param areaname
+	 * @return
+	 */
+	ReturnModel find_PostModelAreaslist(int index, int size, Integer areacode,
+			String areaname);
+	/**
+	 * 新增邮费模板特殊区域
+	 * @author julie
+	 * @param postModelJson
+	 * @return
+	 */
+	ReturnModel addPostModelAreas(String postModelJson);
+	/**
+	 * 修改邮费模板特殊区域
+	 * @author julie
+	 * @param postModelJson
+	 * @return
+	 */
+	ReturnModel editPostModelAreas(String postModelJson);
+	/**
+	 * 删除邮费模板特殊区域
+	 * @author julie
+	 * @param postId
+	 * @return
+	 */
+	ReturnModel delPostModelAreas(Integer postId);
 }

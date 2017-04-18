@@ -46,6 +46,26 @@
     from p_productstyles
     where ProductId = #{productId,jdbcType=BIGINT} and Status=1
   </select>
+  <!-- 根据查询条件获取款式列表 -->
+  <select id="findProductStylesBySearchParam" resultMap="BaseResultMap" parameterType="com.bbyiya.vo.product.ProductSearchParam" >
+    select 
+    <include refid="Base_Column_List" />
+    from p_productstyles
+    where 1=1 
+    <if test="status != null" >
+        AND Status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="propertystr != null and propertystr!='' " >
+        AND PropertyStr = #{propertystr,jdbcType=VARCHAR}
+    </if>
+    <if test="productId != null and productId!=''" >
+        AND ProductId = #{productId,jdbcType=VARCHAR}
+    </if>
+    <if test="styleid != null " >
+        AND StyleId = #{styleid,jdbcType=VARCHAR}
+    </if>
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from p_productstyles
     where StyleId = #{styleid,jdbcType=BIGINT}

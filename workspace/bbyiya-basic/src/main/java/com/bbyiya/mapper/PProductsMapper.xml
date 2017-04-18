@@ -61,13 +61,33 @@
     from p_products
     where ProductId = #{productid,jdbcType=BIGINT}
   </select>
-  <!-- 获取产品基本信息 -->
+  <!-- 04 获取产品基本信息 -->
    <select id="getProductBaseVoByProId" resultMap="ProductSampleVo" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from p_products
     where ProductId = #{productid,jdbcType=BIGINT}
   </select>
+  
+  <!-- 05 根据查询条件获取产品列表 -->
+  <select id="findProductListBySearchParam" resultMap="BaseResultMap" parameterType="com.bbyiya.vo.product.ProductSearchParam" >
+    select 
+    <include refid="Base_Column_List" />
+    from p_products
+    where 1=1  
+    <if test="status != null" >
+        AND Status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="title != null and title!='' " >
+        AND Title = #{title,jdbcType=VARCHAR}
+    </if>
+    <if test="productId != null and productId!='' " >
+        AND ProductId = #{productId,jdbcType=VARCHAR}
+    </if>
+     order by Sort ASC
+  </select>
+  
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from p_products
     where ProductId = #{productid,jdbcType=BIGINT}

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.bbyiya.model.PProductstyles;
 import com.bbyiya.vo.product.PProductStyleResult;
+import com.bbyiya.vo.product.ProductSearchParam;
 
 public interface PProductstylesMapper {
     int deleteByPrimaryKey(Long styleid);
@@ -29,4 +30,11 @@ public interface PProductstylesMapper {
      * @return
      */
     List<PProductStyleResult> findStylesResultByProductId(Long productId);
+    
+    /**
+     * 根据查询条件获取款式列表
+     * @param productId
+     * @return
+     */
+    List<PProductstyles> findProductStylesBySearchParam(ProductSearchParam searchparam);
 }

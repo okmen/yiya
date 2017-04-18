@@ -23,6 +23,7 @@
     <result column="DefaultImg" property="defaultImg" jdbcType="VARCHAR" />
     <result column="PropertyStr" property="propertyStr" jdbcType="VARCHAR" />
     <result column="Description" property="description" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
      StyleId, ProductId, UserId, DefaultImg, PropertyStr, OldPrice, Price, Status, IsDefault, 
@@ -47,7 +48,7 @@
     where ProductId = #{productId,jdbcType=BIGINT} and Status=1
   </select>
   <!-- 根据查询条件获取款式列表 -->
-  <select id="findProductStylesBySearchParam" resultMap="BaseResultMap" parameterType="com.bbyiya.vo.product.ProductSearchParam" >
+  <select id="findProductStylesBySearchParam" resultMap="StyleVOResultMap" parameterType="com.bbyiya.vo.product.ProductSearchParam" >
     select 
     <include refid="Base_Column_List" />
     from p_productstyles
@@ -65,6 +66,10 @@
         AND StyleId = #{styleid,jdbcType=VARCHAR}
     </if>
   </select>
+  <!-- 全部重置该产品不为默认款 -->
+  <update id="updateIsDefaultByProductId" parameterType="java.lang.Long" >
+    update p_productstyles set IsDefault = 0  where ProductId = #{productId,jdbcType=BIGINT} 
+  </update>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from p_productstyles

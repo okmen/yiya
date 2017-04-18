@@ -1,6 +1,7 @@
 package com.bbyiya.pic.service.cts;
 
 import com.bbyiya.dto.PProductsDTO;
+import com.bbyiya.model.PProductstyles;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.product.ProductSearchParam;
 
@@ -32,6 +33,12 @@ public interface IProductMgtService {
 	 */
 	ReturnModel findProductStylesBySearchParam(int index, int size,
 			ProductSearchParam searchParam);
+	/**
+	 * 新增修改产品款式
+	 * @param styles
+	 * @return
+	 */
+	ReturnModel addAndupdateProductStyles(Long userId,PProductstyles styles);
 	
 	
 	

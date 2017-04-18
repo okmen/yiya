@@ -5,6 +5,7 @@ import java.util.List;
 import com.bbyiya.model.PProducts;
 import com.bbyiya.vo.product.ProductResult;
 import com.bbyiya.vo.product.ProductSampleVo;
+import com.bbyiya.vo.product.ProductSearchParam;
 
 public interface PProductsMapper {
 	int deleteByPrimaryKey(Long productid);
@@ -30,4 +31,11 @@ public interface PProductsMapper {
 	ProductResult getProductResultByProductId(Long productid);
 
 	ProductSampleVo getProductBaseVoByProId(Long productid);
+	
+	/**
+	 * 根据查询条件获取产品列表
+	 * @param searchParam
+	 * @return
+	 */
+	List<PProducts> findProductListBySearchParam(ProductSearchParam searchParam);
 }

@@ -18,6 +18,21 @@
     from p_postmodelareas
     where PostId = #{postid,jdbcType=INTEGER}
   </select>
+  <!-- 用户订单结果类Result -->
+  <resultMap id="PostmodelareasResult" type="com.bbyiya.vo.product.PPostModelAreasVo" extends="BaseResultMap">  
+  </resultMap>  
+  
+  <select id="findAllPostModelAreas" resultMap="PostmodelareasResult"  ><!-- 获取所有的邮费模板特殊区域 -->
+    select 
+    <include refid="Base_Column_List" />
+    from p_postmodelareas where 1=1
+    <if test="areacode != null" >
+      AND AreaCode= #{areacode,jdbcType=INTEGER},
+    </if>
+    <if test="areaname != null and areaname!=''" >
+      AND AreaName= #{areaname,jdbcType=VARCHAR},
+    </if>
+  </select>
   <select id="getPostAreaModel" resultMap="BaseResultMap"  ><!-- 01 get 获取运费model -->
     select 
     <include refid="Base_Column_List" />

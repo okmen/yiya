@@ -1,6 +1,7 @@
 package com.bbyiya.vo.product;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 public class PProductStyleResult implements Serializable {
@@ -13,6 +14,9 @@ public class PProductStyleResult implements Serializable {
 	private String defaultImg;
 	private String description;
 	private List<String> detailImgs;
+	private String productTitle;
+	private Date createtime;
+	private String createTimeStr;
 	public Long getStyleId() {
 		return styleId;
 	}
@@ -55,6 +59,25 @@ public class PProductStyleResult implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	public String getProductTitle() {
+		return productTitle;
+	}
+	public void setProductTitle(String productTitle) {
+		this.productTitle = productTitle;
+	}
+	public String getCreateTimeStr() {
+		return createTimeStr;
+	}
+	public void setCreateTimeStr(String createTimeStr) {
+		this.createTimeStr = createTimeStr;
+	}
+	public Date getCreatetime() {
+		return createtime;
+	}
+	public void setCreatetime(Date createtime) {
+		this.createtime = createtime;
+	}
+	
 	
 	
 

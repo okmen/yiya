@@ -26,6 +26,8 @@ public class UUsers implements Serializable{
     private String email;
 
     private Date createtime;
+    
+    private String createtimestr;
 
     private String sign;
 
@@ -135,6 +137,14 @@ public class UUsers implements Serializable{
 
 	public void setUpuserid(Long upuserid) {
 		this.upuserid = upuserid;
+	}
+
+	public String getCreatetimestr() {
+		return createtimestr;
+	}
+
+	public void setCreatetimestr(String createtimestr) {
+		this.createtimestr = createtimestr;
 	}
     
 }

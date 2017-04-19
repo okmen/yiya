@@ -129,6 +129,7 @@ public class UserInfoController  extends SSOController{
 			PageInfo<UUsers> resultPage=new PageInfo<UUsers>(list); 
 			for (UUsers uu : resultPage.getList()) {
 				uu.setPassword(""); 
+				uu.setCreatetimestr(DateUtil.getTimeStr(uu.getCreatetime(), "yyyy-MM-dd HH:mm:ss")); 
 			}
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(resultPage);

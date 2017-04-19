@@ -232,7 +232,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				cartIdTemp = param.getCartid();
 				PMyproducts myproducts = myMapper.selectByPrimaryKey(param.getCartid());
 				// A修改作品的宝宝信息
-				if(myproducts != null && param.getChildInfo()!=null){
+				if(myproducts != null && param.getChildInfo()!=null) {
 					boolean isnew=false;
 					PMyproductchildinfo mychild=mychildMapper.selectByPrimaryKey(param.getCartid());
 					if(mychild==null){
@@ -319,6 +319,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 								if(!ObjectUtil.isEmpty(de.getImgurl())){
 									de.setUserid(userId); 
 									myDetaiMapper.updateByPrimaryKeySelective(de);
+								}else if(de.getSort()!=null&&de.getSort()>0){
+									myDetaiMapper.updateByPrimaryKeySelective(de);
 								}
 							}
 						}
@@ -344,6 +346,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		return rq;
 	}
 
+	
 	/**
 	 * 我的作品列表
 	 * 

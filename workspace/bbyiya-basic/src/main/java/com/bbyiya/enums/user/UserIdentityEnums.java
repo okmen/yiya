@@ -17,7 +17,11 @@ public enum UserIdentityEnums {
     /**
      * 生产端用户
      */
-    pbs(16)
+    pbs(16),
+    /**
+     * 微商合作
+     */
+    wei(32)
     ;
 
     private final int Type;

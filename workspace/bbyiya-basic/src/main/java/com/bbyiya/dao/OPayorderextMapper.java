@@ -23,5 +23,5 @@ public interface OPayorderextMapper {
      * @param upuserid
      * @return
      */
-    List<OPayorderext> findListByUpUserid(@Param("upuserid") Long upuserid);
+    List<OPayorderext> findListByUpUserid(@Param("upuserid") Long upuserid,@Param("status") Integer status);
 }

@@ -998,6 +998,12 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			if(proList!=null&&proList.size()>0){
 				model.setCartId(proList.get(0).getCartid()); 
 			}
+			if(!ObjectUtil.isEmpty(orderInfo.getExpresscom())){
+				model.setExpressName(orderInfo.getExpresscom());
+			}
+			if(!ObjectUtil.isEmpty(orderInfo.getExpressorder())){
+				model.setExpressOrderNo(orderInfo.getExpressorder());
+			}
 //			PMyproducts myproduct= myproductMapper.getMyProductByOrderNo(orderId);
 //			if(myproduct!=null){
 //				model.setCartId(myproduct.getCartid()); 

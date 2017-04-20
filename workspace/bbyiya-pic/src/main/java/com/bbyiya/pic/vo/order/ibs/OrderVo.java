@@ -1,6 +1,7 @@
 package com.bbyiya.pic.vo.order.ibs;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import com.bbyiya.model.OOrderaddress;
 
@@ -17,6 +18,12 @@ public class OrderVo implements Serializable {
 	private Long branchuserid;
 	//
 	private String paytime;
+	
+	private String expresscom;//快递公司
+
+	private String expressorder;//快递单号
+
+	private Double postage;//运费
 	
 	private OOrderaddress address;
 
@@ -80,6 +87,30 @@ public class OrderVo implements Serializable {
 		this.orderProduct = orderProduct;
 	}
 
+	public String getExpresscom() {
+		return expresscom;
+	}
+
+	public void setExpresscom(String expresscom) {
+		this.expresscom = expresscom;
+	}
+
+	public String getExpressorder() {
+		return expressorder;
+	}
+
+	public void setExpressorder(String expressorder) {
+		this.expressorder = expressorder;
+	}
+
+	public Double getPostage() {
+		return postage;
+	}
+
+	public void setPostage(Double postage) {
+		this.postage = postage;
+	}
+	
 
 	
 	

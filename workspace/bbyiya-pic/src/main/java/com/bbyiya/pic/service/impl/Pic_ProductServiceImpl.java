@@ -117,7 +117,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	
 	public ReturnModel getProductSamplelist(Long productId) {
 		ReturnModel rq = new ReturnModel();
-		String keyName="productsample100_"+productId;
+		String keyName=ConfigUtil.getSingleValue("currentRedisKey-Base")+"_productsample100_"+productId;
 		List<ProductSampleResultVO> listResult=(List<ProductSampleResultVO>)RedisUtil.getObject(keyName);
 		if(listResult==null||listResult.size()<=0){ 
 			PProducts products= productsMapper.selectByPrimaryKey(productId);

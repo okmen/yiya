@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;  
 import java.util.zip.ZipOutputStream;  
 /** 
- * 将文件夹下面的文件 
+ * 将文件夹下面的文�? 
  * 打包成zip压缩文件 
  *  
  * @author admin 
@@ -69,7 +69,7 @@ public final class FileToZip {
     
     /**
      * 删除单个文件 
-     * @param sPath 被删除文件的路径+文件名
+     * @param sPath 被删除文件的路径+文件�?
      * @return 单个文件删除成功返回true，否则返回false
      */
 	public boolean deleteFile(String sPath) {
@@ -84,24 +84,24 @@ public final class FileToZip {
 	}
 	
     public boolean deleteDirectory(String sPath) {
-    	// 如果sPath不以文件分隔符结尾，自动添加文件分隔符
+    	// 如果sPath不以文件分隔符结尾，自动添加文件分隔�?
     	if (!sPath.endsWith(File.separator)) {
     		sPath = sPath + File.separator;
 		}
 		File dirFile = new File(sPath);
-		// 如果dir对应的文件不存在，或者不是一个目录，则退出
+		// 如果dir对应的文件不存在，或者不是一个目录，则�??�?
 		if (!dirFile.exists() || !dirFile.isDirectory()) {
 		return false;
 		}
 		boolean flag = true;
-		// 删除文件夹下的所有文件(包括子目录)
+		// 删除文件夹下的所有文�?(包括子目�?)
 		File[] files = dirFile.listFiles();
 		for (int i = 0; i < files.length; i++) {
-			// 删除子文件
+			// 删除子文�?
 			if (files[i].isFile()) {
 				flag=deleteFile(files[i].getAbsolutePath());
 				if (!flag)break;
-			} // 删除子目录
+			} // 删除子目�?
 			else {
 				flag = deleteDirectory(files[i].getAbsolutePath());
 				if (!flag)break;

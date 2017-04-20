@@ -273,6 +273,9 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 			vo.setUserid(order.getUserid());
 			vo.setBranchuserid(order.getBranchuserid());
 			vo.setPaytime(DateUtil.getTimeStr(order.getPaytime(), "yyyy-MM-dd HH:mm:ss") ); 
+			vo.setExpresscom(order.getExpresscom());
+			vo.setExpressorder(order.getExpressorder());
+			vo.setPostage(order.getPostage());
 			vo.setAddress(addressMapper.selectByPrimaryKey(order.getOrderaddressid()));
 			OOrderproducts product=orderProductMapper.getOProductsByOrderId(userOrderId);
 			if(product!=null){

@@ -18,7 +18,7 @@ public class PProductsDTO {
 
     private String description;
     
-    private Integer sort; 
+    private Integer sort;
 
     public Long getProductid() {
         return productid;

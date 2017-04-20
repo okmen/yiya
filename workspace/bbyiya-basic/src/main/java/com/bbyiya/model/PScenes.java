@@ -12,7 +12,11 @@ public class PScenes {
     private String content;
 
     private String tips;
+    
+    private String recreason;
 
+    private Integer status;
+    
     public Long getId() {
         return id;
     }
@@ -60,4 +64,21 @@ public class PScenes {
     public void setTips(String tips) {
         this.tips = tips == null ? null : tips.trim();
     }
+
+	public String getRecreason() {
+		return recreason;
+	}
+
+	public void setRecreason(String recreason) {
+		this.recreason = recreason;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+    
 }

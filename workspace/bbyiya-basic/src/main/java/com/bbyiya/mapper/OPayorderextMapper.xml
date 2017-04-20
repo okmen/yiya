@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.OPayorderextMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.OPayorderext" >
+    <id column="PayId" property="payid" jdbcType="VARCHAR" />
+    <result column="UserOrderId" property="userorderid" jdbcType="VARCHAR" />
+    <result column="TotalPrice" property="totalprice" jdbcType="DECIMAL" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="UpUserId" property="upuserid" jdbcType="BIGINT" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    PayId, UserOrderId, TotalPrice, UserId, UpUserId, Status, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from o_payorderext
+    where PayId = #{payid,jdbcType=VARCHAR}
+  </select>
+   <select id="findListByUpUserid" resultMap="BaseResultMap"  ><!-- 01 根据推荐人获取利益订单列表 -->
+    select 
+    <include refid="Base_Column_List" />
+    from o_payorderext
+    where UpUserId = #{upuserid,jdbcType=BIGINT}
+    <if test="status >= 0" >
+    	 and Status= #{status,jdbcType=INTEGER}
+    </if>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from o_payorderext
+    where PayId = #{payid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.OPayorderext" >
+    insert into o_payorderext (PayId, UserOrderId, TotalPrice, 
+      UserId, UpUserId, Status, 
+      CreateTime)
+    values (#{payid,jdbcType=VARCHAR}, #{userorderid,jdbcType=VARCHAR}, #{totalprice,jdbcType=DECIMAL}, 
+      #{userid,jdbcType=BIGINT}, #{upuserid,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.OPayorderext" >
+    insert into o_payorderext
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="payid != null" >
+        PayId,
+      </if>
+      <if test="userorderid != null" >
+        UserOrderId,
+      </if>
+      <if test="totalprice != null" >
+        TotalPrice,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="upuserid != null" >
+        UpUserId,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="payid != null" >
+        #{payid,jdbcType=VARCHAR},
+      </if>
+      <if test="userorderid != null" >
+        #{userorderid,jdbcType=VARCHAR},
+      </if>
+      <if test="totalprice != null" >
+        #{totalprice,jdbcType=DECIMAL},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="upuserid != null" >
+        #{upuserid,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.OPayorderext" >
+    update o_payorderext
+    <set >
+      <if test="userorderid != null" >
+        UserOrderId = #{userorderid,jdbcType=VARCHAR},
+      </if>
+      <if test="totalprice != null" >
+        TotalPrice = #{totalprice,jdbcType=DECIMAL},
+      </if>
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="upuserid != null" >
+        UpUserId = #{upuserid,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where PayId = #{payid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.OPayorderext" >
+    update o_payorderext
+    set UserOrderId = #{userorderid,jdbcType=VARCHAR},
+      TotalPrice = #{totalprice,jdbcType=DECIMAL},
+      UserId = #{userid,jdbcType=BIGINT},
+      UpUserId = #{upuserid,jdbcType=BIGINT},
+      Status = #{status,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where PayId = #{payid,jdbcType=VARCHAR}
+  </update>
+</mapper>

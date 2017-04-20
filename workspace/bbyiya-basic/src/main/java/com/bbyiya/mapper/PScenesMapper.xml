@@ -8,9 +8,11 @@
     <result column="Title" property="title" jdbcType="VARCHAR" />
     <result column="Content" property="content" jdbcType="VARCHAR" />
     <result column="Tips" property="tips" jdbcType="VARCHAR" />
+    <result column="RecReason" property="recreason" jdbcType="VARCHAR" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    Id, ProductId, MinTitle, Title, Content, Tips
+     Id, ProductId, MinTitle, Title, Content, Tips, RecReason, Status
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -30,11 +32,11 @@
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.PScenes" >
     insert into p_scenes (Id, ProductId, MinTitle, 
-      Title, Content, Tips
-      )
+      Title, Content, Tips, 
+      RecReason, Status)
     values (#{id,jdbcType=BIGINT}, #{productid,jdbcType=BIGINT}, #{mintitle,jdbcType=VARCHAR}, 
-      #{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{tips,jdbcType=VARCHAR}
-      )
+      #{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{tips,jdbcType=VARCHAR}, 
+      #{recreason,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PScenes" >
     insert into p_scenes
@@ -57,6 +59,12 @@
       <if test="tips != null" >
         Tips,
       </if>
+      <if test="recreason != null" >
+        RecReason,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -76,6 +84,12 @@
       </if>
       <if test="tips != null" >
         #{tips,jdbcType=VARCHAR},
+      </if>
+      <if test="recreason != null" >
+        #{recreason,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -97,6 +111,12 @@
       <if test="tips != null" >
         Tips = #{tips,jdbcType=VARCHAR},
       </if>
+      <if test="recreason != null" >
+        RecReason = #{recreason,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
     </set>
     where Id = #{id,jdbcType=BIGINT}
   </update>
@@ -106,7 +126,9 @@
       MinTitle = #{mintitle,jdbcType=VARCHAR},
       Title = #{title,jdbcType=VARCHAR},
       Content = #{content,jdbcType=VARCHAR},
-      Tips = #{tips,jdbcType=VARCHAR}
+      Tips = #{tips,jdbcType=VARCHAR},
+      RecReason = #{recreason,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=INTEGER}
     where Id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

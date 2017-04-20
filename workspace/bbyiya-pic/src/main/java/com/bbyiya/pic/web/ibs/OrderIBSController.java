@@ -11,6 +11,7 @@ import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.pic.service.IPic_OrderMgtService;
+import com.bbyiya.pic.service.ibs.IIbs_OrderManageService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
@@ -18,12 +19,16 @@ import com.bbyiya.web.base.SSOController;
 
 @Controller
 @RequestMapping(value = "/ibs/order")
-public class OrderIBSController extends SSOController{
+public class OrderIBSController extends SSOController {
 	@Resource(name = "pic_orderMgtService")
 	private IPic_OrderMgtService orderService;
-	
+
+	@Resource(name = "ibs_OrderManageService")
+	private IIbs_OrderManageService ibs_OrderManageService;
+
 	/**
 	 * 代分配的订单列表
+	 * 
 	 * @return
 	 * @throws Exception
 	 */
@@ -33,15 +38,17 @@ public class OrderIBSController extends SSOController{
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			rq=orderService.findAgentOrders(user.getUserId());
+			rq = orderService.findAgentOrders(user.getUserId());
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+
 	/**
 	 * 本店订单列表
+	 * 
 	 * @return
 	 * @throws Exception
 	 */
@@ -51,20 +58,22 @@ public class OrderIBSController extends SSOController{
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)){
-				rq=orderService.findMyOrderlist(user.getUserId(), status);
-			}else {
+			if (ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)) {
+				rq = orderService.findMyOrderlist(user.getUserId(), status);
+			} else {
 				rq.setStatu(ReturnStatus.SystemError_1);
 				rq.setStatusreson("您还不是代理商，没有权限");
-			} 
+			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+
 	/**
 	 * 获取订单详情
+	 * 
 	 * @param userOrderId
 	 * @return
 	 * @throws Exception
@@ -75,16 +84,17 @@ public class OrderIBSController extends SSOController{
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			rq=orderService.getOrderDetail(userOrderId);
+			rq = orderService.getOrderDetail(userOrderId);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	
+
 	/**
 	 * 我要这个客户
+	 * 
 	 * @param userOrderId
 	 * @return
 	 * @throws Exception
@@ -95,17 +105,38 @@ public class OrderIBSController extends SSOController{
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)){
-				rq=orderService.addCustomer(user.getUserId(), userOrderId);
-			}else {
+			if (ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)) {
+				rq = orderService.addCustomer(user.getUserId(), userOrderId);
+			} else {
 				rq.setStatu(ReturnStatus.SystemError_1);
 				rq.setStatusreson("您还不是代理商，没有权限");
-			} 
+			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	
+
+	/**
+	 * 根据推荐人userid获取订单列表
+	 * @param status
+	 * @param index
+	 * @param size
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getPayOrderByUpUserId")
+	public String getPayOrderByUpUserId(int status, int index, int size) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			rq = ibs_OrderManageService.find_payorderExtByUpUserid(user.getUserId(), status, index, size);
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 }

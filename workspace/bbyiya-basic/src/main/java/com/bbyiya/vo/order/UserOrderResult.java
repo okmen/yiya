@@ -19,6 +19,10 @@ public class UserOrderResult implements Serializable {
 	private String remark;
 	private String orderTimeStr;
 	private String payTimeStr;
+	//快递公司
+	private String expressName;
+	//快递单号
+	private String expressOrderNo;
 	public String getPayTimeStr() {
 		return payTimeStr;
 	}
@@ -146,5 +150,21 @@ public class UserOrderResult implements Serializable {
 		this.orderTotalPrice = orderTotalPrice;
 	}
 
+	public String getExpressName() {
+		return expressName;
+	}
+
+	public void setExpressName(String expressName) {
+		this.expressName = expressName;
+	}
+
+	public String getExpressOrderNo() {
+		return expressOrderNo;
+	}
+
+	public void setExpressOrderNo(String expressOrderNo) {
+		this.expressOrderNo = expressOrderNo;
+	}
+	
 	
 }

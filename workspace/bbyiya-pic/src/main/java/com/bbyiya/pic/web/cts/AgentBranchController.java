@@ -9,14 +9,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.pic.service.IPic_BranchMgtService;
+import com.bbyiya.pic.service.cts.ICts_UWeiUserManageService;
 import com.bbyiya.pic.vo.agent.AgentSearchParam;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
+import com.bbyiya.vo.user.UWeiUserSearchParam;
 import com.bbyiya.web.base.SSOController;
 
 @Controller
@@ -24,6 +28,8 @@ import com.bbyiya.web.base.SSOController;
 public class AgentBranchController extends SSOController {
 	@Resource(name = "pic_BranchMgtService")
 	private IPic_BranchMgtService branchService;
+	@Resource(name = "cts_UWeiuserService")
+	private ICts_UWeiUserManageService weiUserService;
 
 	/**
 	 * B01 代理商审核
@@ -97,7 +103,7 @@ public class AgentBranchController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/findBranchApplylist")
-	public String findBranchApplylist(String userId, String status) throws Exception {
+	public String findBranchApplylist(Integer index,Integer size,String userId, String status,String branchcompanyname,String username) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
@@ -108,19 +114,72 @@ public class AgentBranchController extends SSOController {
 			if(!ObjectUtil.isEmpty(status)){
 				param.setStatus(ObjectUtil.parseInt(status)); 
 			} 
-			if(validate(user.getUserId())){
-				rq = branchService.findBranchVoList(param);
-			}else {
+			if(!ObjectUtil.isEmpty(branchcompanyname)){
+				param.setBranchcompanyname(branchcompanyname); 
+			} 
+			if(!ObjectUtil.isEmpty(username)){
+				param.setUsername(username); 
+			} 
+			if(index==null) index=0;
+			if(size==null) size=20;
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
+				rq = branchService.findBranchVoList(param,index,size);
+			}else{
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("无权限");
+				rq.setStatusreson("不是cts用户，无权限");
 			}
+			
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-
+	
+	
+	/**
+	 *  查询微商列表
+	 * @param userId
+	 * @param status
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/findWeiUserlist")
+	public String findWeiUserlist(Integer index,Integer size,String userId, String status,String name,String mobilephone) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			UWeiUserSearchParam param=new UWeiUserSearchParam();
+			Long userid=ObjectUtil.parseLong(userId);
+			if(userid>0)
+				param.setUserId(userid);
+			if(!ObjectUtil.isEmpty(status)){
+				param.setStatus(ObjectUtil.parseInt(status)); 
+			} 
+			if(!ObjectUtil.isEmpty(name)){
+				param.setName(name);
+			} 
+			if(!ObjectUtil.isEmpty(mobilephone)){
+				param.setMobilephone(mobilephone);
+			} 
+			if(index==null) index=0;
+			if(size==null) size=20;
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
+				rq = weiUserService.findWeiUserVoList(param, index, size);
+			}else{
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson("不是cts用户，无权限");
+			}
+			
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	
 	/**
 	 * B02 影楼审核
 	 * 
@@ -185,4 +244,6 @@ public class AgentBranchController extends SSOController {
 		}
 		return false;
 	}
+	
+	
 }

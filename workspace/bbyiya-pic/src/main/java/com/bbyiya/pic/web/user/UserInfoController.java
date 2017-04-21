@@ -16,6 +16,7 @@ import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IUserInfoMgtService;
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
@@ -65,6 +66,9 @@ public class UserInfoController  extends SSOController{
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	
+	
+
 	/**
 	 * 重置密码
 	 * @param phone
@@ -78,9 +82,26 @@ public class UserInfoController  extends SSOController{
 	public String updatePwd(String phone, String vcode, String pwd) throws Exception {
 		return JsonUtil.objectToJsonStr(userMgtService.updatePWD(phone, vcode, pwd));
 	}
-
 	
-	
+	/**
+	 * 获取推广地址
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/info/getshareUrl")
+	public String getshareUrl() throws Exception {
+		ReturnModel rq=new ReturnModel(); 
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(ConfigUtil.getSingleValue("shareulr-base")+"uid="+user.getUserId()); 
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	/**
 	 * 我推荐的用户列表
 	 * @param index
@@ -108,9 +129,13 @@ public class UserInfoController  extends SSOController{
 			PageInfo<UUsers> resultPage=new PageInfo<UUsers>(list); 
 			for (UUsers uu : resultPage.getList()) {
 				uu.setPassword(""); 
+				uu.setCreatetimestr(DateUtil.getTimeStr(uu.getCreatetime(), "yyyy-MM-dd HH:mm:ss")); 
 			}
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(resultPage);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.utils.JsonUtil;
+import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.web.base.SSOController;
 
@@ -38,6 +39,12 @@ public class TesterController  extends SSOController{
 	@RequestMapping(value = "/export")
 	public String downloadorder() throws Exception {
 		return "exportOrder";
+	}
+	
+	@RequestMapping(value = "/clearRedisByKey")
+	public String clearRedisByKey(String key) throws Exception {
+		RedisUtil.delete(key);
+		return "index";
 	}
 	
 }

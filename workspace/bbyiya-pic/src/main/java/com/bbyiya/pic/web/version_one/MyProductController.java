@@ -94,6 +94,7 @@ public class MyProductController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
+	
 	/**
 	 * 我的作品列表
 	 * 

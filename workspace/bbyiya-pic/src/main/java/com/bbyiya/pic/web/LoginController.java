@@ -8,10 +8,8 @@ import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-//import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.baseUtils.CookieUtils;
 import com.bbyiya.dao.EErrorsMapper;
@@ -28,7 +26,6 @@ import com.bbyiya.utils.HttpRequestHelper;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
-//import com.bbyiya.utils.pay.WxPayAppConfig;
 import com.bbyiya.utils.pay.WxPayConfig;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;

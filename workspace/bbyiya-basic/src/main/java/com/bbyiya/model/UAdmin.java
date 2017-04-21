@@ -1,25 +1,22 @@
 package com.bbyiya.model;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public class UAdmin implements Serializable{
-	private static final long serialVersionUID = 1L;
-	
-    private Integer adminid;
+public class UAdmin {
+    private Long userid;
 
     private String username;
 
-    private String password;
+    private Integer type;
 
     private Date createtime;
 
-    public Integer getAdminid() {
-        return adminid;
+    public Long getUserid() {
+        return userid;
     }
 
-    public void setAdminid(Integer adminid) {
-        this.adminid = adminid;
+    public void setUserid(Long userid) {
+        this.userid = userid;
     }
 
     public String getUsername() {
@@ -30,12 +27,12 @@ public class UAdmin implements Serializable{
         this.username = username == null ? null : username.trim();
     }
 
-    public String getPassword() {
-        return password;
+    public Integer getType() {
+        return type;
     }
 
-    public void setPassword(String password) {
-        this.password = password == null ? null : password.trim();
+    public void setType(Integer type) {
+        this.type = type;
     }
 
     public Date getCreatetime() {

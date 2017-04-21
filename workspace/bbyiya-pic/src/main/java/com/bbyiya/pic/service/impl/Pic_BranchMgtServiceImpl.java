@@ -134,11 +134,22 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		return rq;
 	}
 	
-	public ReturnModel findBranchVoList(AgentSearchParam param){
+	public ReturnModel findBranchVoList(AgentSearchParam param,int index, int size){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.Success);
+		PageHelper.startPage(index, size);
 		List<UBranchVo> list=agentDao.findUBranchVoList(param);
-		rq.setBasemodle(list);
+		PageInfo<UBranchVo> result=new PageInfo<UBranchVo>(list); 
+		for (UBranchVo branchvo : result.getList()) {
+			Integer count=usersMapper.getUserCountByUpUserid(param.getUserId());
+			branchvo.setUserCount(count==null?0:count);
+			branchvo.setProviceName(regionService.getName(branchvo.getProvince())) ;
+			branchvo.setCityName(regionService.getName(branchvo.getCity())) ;
+			branchvo.setAreaName(regionService.getName(branchvo.getArea())) ;
+			branchvo.setAgentArealist(getAgentArealist(branchvo.getArea()));  
+		}
+		
+		rq.setBasemodle(result);
 		return rq;
 	}
 	

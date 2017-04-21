@@ -21,7 +21,15 @@ public enum UserIdentityEnums {
     /**
      * 微商合作
      */
-    wei(32)
+    wei(32),
+    /**
+     * cts管理员
+     */
+    cts_admin(64),
+    /**
+     * cts组员
+     */
+    cts_member(128)
     ;
 
     private final int Type;

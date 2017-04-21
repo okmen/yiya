@@ -37,7 +37,7 @@ public class UAdminService implements IUAdminService{
 			for (Map<String, String> map : users) {
 				if(map.get("username").equals(username)&&map.get("pwd").equals(pwdMd5)){
 					UAdmin user=new UAdmin();
-					user.setAdminid(ObjectUtil.parseInt(map.get("adminId")));
+					//user.setAdminid(ObjectUtil.parseInt(map.get("adminId")));
 					user.setUsername((map.get("username")));
 					rqModel.setStatu(ReturnStatus.Success);
 					rqModel.setBasemodle(getAdminLoginSuccessResult(user)); 
@@ -71,7 +71,7 @@ public class UAdminService implements IUAdminService{
 	public AdminLoginSuccessResult getAdminLoginSuccessResult(UAdmin user){
 		if(user!=null){
 			AdminLoginSuccessResult loginSuccess=new AdminLoginSuccessResult();
-			loginSuccess.setAdminid(user.getAdminid());
+			//loginSuccess.setAdminid(user.getAdminid());
 			loginSuccess.setUsername(user.getUsername()); 
 			return loginSuccess;
 		}

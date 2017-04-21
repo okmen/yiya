@@ -544,9 +544,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					String base_code = userId + "-" + myproduct.getCartid();
 					int i = 1;
 					for (MyProductsDetailsResult dd : arrayList) {
+						dd.setPrintcode(base_code + "-" + String.format("%02d", i));
 						if(dd.getSceneid()!=null&&dd.getSceneid()>0){//+ String.format("%02d", dd.getSceneid()) + "-"
 							// ´òÓ¡±àºÅ	
-							dd.setPrintcode(base_code + "-" + String.format("%02d", i));
 							if(ObjectUtil.isEmpty(dd.getDescription()))	{
 								PScenes scene= sceneMapper.selectByPrimaryKey(dd.getSceneid().longValue());
 								if(scene!=null){
@@ -718,6 +718,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					detail.setSceneid(null);
 					detail.setTitle("");
 					detail.setDescription("");
+					detail.setSort(myDetaiMapper.getMaxSort(detail.getCartid())+1); 
 					myDetaiMapper.updateByPrimaryKey(detail);
 					rq.setStatu(ReturnStatus.Success);
 					rq.setStatusreson("É¾³ý³É¹¦£¡");
@@ -729,6 +730,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		rq.setStatusreson("É¾³ýÊ§°Ü");
 		return rq;
 	}
+	
+	
 
 	public ReturnModel getStyleCoordResult(Long styleId) {
 		ReturnModel rq = new ReturnModel();

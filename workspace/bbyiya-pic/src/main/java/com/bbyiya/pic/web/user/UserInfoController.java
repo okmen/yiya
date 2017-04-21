@@ -130,6 +130,12 @@ public class UserInfoController  extends SSOController{
 			for (UUsers uu : resultPage.getList()) {
 				uu.setPassword(""); 
 				uu.setCreatetimestr(DateUtil.getTimeStr(uu.getCreatetime(), "yyyy-MM-dd HH:mm:ss")); 
+				if(ObjectUtil.isEmpty(uu.getNickname())){
+					uu.setNickname("yiya"+uu.getUserid());
+				}
+				if(ObjectUtil.isEmpty(uu.getUserimg())){
+					uu.setUserimg(ConfigUtil.getSingleValue("default-headimg")); 
+				}
 			}
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(resultPage);

@@ -12,6 +12,7 @@ import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OOrderproductdetailsMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OPayorderMapper;
+import com.bbyiya.dao.OPayorderextMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.UAccountsMapper;
 import com.bbyiya.dao.UBranchtransaccountsMapper;
@@ -26,11 +27,13 @@ import com.bbyiya.enums.PayTypeEnum;
 import com.bbyiya.model.EErrors;
 import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OPayorder;
+import com.bbyiya.model.OPayorderext;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UBranchtransaccounts;
 import com.bbyiya.model.UBranchtransamountlog;
 import com.bbyiya.model.UCashlogs;
+import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IBasePayService;
 import com.bbyiya.utils.ObjectUtil;
 
@@ -50,6 +53,8 @@ public class BasePayServiceImpl implements IBasePayService{
 	@Autowired
 	private OOrderproductdetailsMapper odetailMapper;// 产品图片集合
 	
+	@Autowired
+	private OPayorderextMapper oextMapper;
 	
 
 	/*------------------------用户信息模块----------------------------------*/
@@ -61,7 +66,7 @@ public class BasePayServiceImpl implements IBasePayService{
 	private UUseraddressMapper addressMapper;// 用户收货地址
 	@Autowired
 	private UUsersMapper usersMapper;
-	/*---错误日志记录----*/
+	/*-- ---------------------错误日志记录-------------------------------------------*/
 	@Autowired
 	private EErrorsMapper logMapper;
 	
@@ -153,6 +158,8 @@ public class BasePayServiceImpl implements IBasePayService{
 								userorders.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString()));
 								userorders.setPaytime(new Date()); 
 								userOrdersMapper.updateByPrimaryKeySelective(userorders);
+								//分提成
+								addOrderExtend(payOrder);
 							}
 						}
 					}
@@ -164,13 +171,42 @@ public class BasePayServiceImpl implements IBasePayService{
 					return true;
 				}
 			} catch (Exception e) {
-				EErrors errors=new EErrors();
-				errors.setClassname(this.getClass().getName());
-				errors.setMsg("订单支付回写："+e.getMessage());
-				errors.setCreatetime(new Date());
-				logMapper.insert(errors);
+				addlog("订单支付回写："+e.getMessage());
 			}
 		}
 		return false;
 	}
+
+	public void addOrderExtend(OPayorder payorder){
+		try {
+			UUsers user= usersMapper.selectByPrimaryKey(payorder.getUserid());
+			if(user!=null&&user.getUpuserid()!=null&&user.getUpuserid()>0){
+				OPayorderext ext=new OPayorderext();
+				ext.setPayid(payorder.getPayid());
+				ext.setUserorderid(payorder.getUserorderid());
+				ext.setUserid(payorder.getUserid());
+				ext.setUpuserid(user.getUpuserid());
+				ext.setTotalprice(payorder.getTotalprice());
+				ext.setCreatetime(new Date());
+				oextMapper.insert(ext);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			addlog("订单结算："+e.getMessage());
+		}
+		
+	}
+	/**
+	 * 插入错误Log
+	 * 
+	 * @param msg
+	 */
+	public void addlog(String msg) {
+		EErrors errors = new EErrors();
+		errors.setClassname(this.getClass().getName());
+		errors.setMsg(msg);
+		errors.setCreatetime(new Date()); 
+		logMapper.insert(errors);
+	}
+
 }

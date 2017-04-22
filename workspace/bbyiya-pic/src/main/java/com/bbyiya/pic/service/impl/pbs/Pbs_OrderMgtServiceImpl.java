@@ -137,7 +137,10 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					userOrdersMapper.updateByPrimaryKeySelective(order);
 				}
 			}
-			
+			//修改本张订单
+			userorders.setExpresscom(expressCom);
+			userorders.setExpressorder(expressOrder);
+			userOrdersMapper.updateByPrimaryKeySelective(userorders);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(userorders);
 			rq.setStatusreson("修改运单号成功!");

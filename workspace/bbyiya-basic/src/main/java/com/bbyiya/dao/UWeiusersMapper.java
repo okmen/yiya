@@ -1,6 +1,9 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
 import com.bbyiya.model.UWeiusers;
+import com.bbyiya.vo.user.UWeiUserSearchParam;
 
 public interface UWeiusersMapper {
     int deleteByPrimaryKey(Long userid);
@@ -14,4 +17,6 @@ public interface UWeiusersMapper {
     int updateByPrimaryKeySelective(UWeiusers record);
 
     int updateByPrimaryKey(UWeiusers record);
+    
+    List<UWeiusers> findUWeiusersList(UWeiUserSearchParam param);
 }

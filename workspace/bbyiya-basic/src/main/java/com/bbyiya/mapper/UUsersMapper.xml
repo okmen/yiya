@@ -57,6 +57,12 @@
     </if>
   </select>
   
+  <!-- 获取我发展的用户数 -->
+  <select id="getUserCountByUpUserid" resultType="java.lang.Integer" parameterType="java.lang.Long" >
+    select count(UserID) from u_users where UpUserId = #{upid,jdbcType=BIGINT}   
+  </select>
+  
+  
   <insert id="insertReturnKeyId" useGeneratedKeys="true" keyProperty="userid" parameterType="com.bbyiya.model.UUsers" >
    insert into u_users (UserID, PassWord, MobilePhone, 
       MobileBind, Status, Identity, 

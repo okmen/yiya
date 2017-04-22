@@ -24,4 +24,19 @@ public interface OPayorderextMapper {
      * @return
      */
     List<OPayorderext> findListByUpUserid(@Param("upuserid") Long upuserid,@Param("status") Integer status);
+    
+    /**
+     * 根据影楼推荐人获取订单列表
+     * @param upuserid
+     * @return
+     */
+    List<OPayorderext> find_payorderExtByBranchUpUserid(@Param("upuserid") Long upuserid,@Param("status") Integer status,@Param("startTimeStr") String startTimeStr,@Param("endTimeStr") String endTimeStr);
+    
+    /**
+     * 根据微商推荐人获取订单列表 
+     * @param upuserid
+     * @return
+     */
+    List<OPayorderext> find_payorderExtByWeiUserUpUserid(@Param("upuserid") Long upuserid,@Param("status") Integer status,@Param("startTimeStr") String startTimeStr,@Param("endTimeStr") String endTimeStr);
+    
 }

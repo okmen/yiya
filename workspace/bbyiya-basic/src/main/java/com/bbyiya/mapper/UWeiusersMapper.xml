@@ -17,6 +17,26 @@
     from u_weiusers
     where UserId = #{userid,jdbcType=BIGINT}
   </select>
+  
+  <!-- 获取微商 列表 -->
+  <select id="findUWeiusersList" resultMap="BaseResultMap" parameterType="com.bbyiya.vo.user.UWeiUserSearchParam" >
+    select 
+    <include refid="Base_Column_List" />
+    from u_weiusers
+    where 1=1
+    <if test="userId != null and userId>0" >
+        and  UserId = #{userId,jdbcType=BIGINT}
+    </if>
+    <if test="status != null" >
+       and  Status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="mobilephone != null and mobilephone!=''" >
+       and  Mobilephone = #{mobilephone,jdbcType=VARCHAR}
+    </if>
+     <if test="name != null and name!=''" >
+       and  Name = #{name,jdbcType=VARCHAR}
+    </if>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from u_weiusers
     where UserId = #{userid,jdbcType=BIGINT}

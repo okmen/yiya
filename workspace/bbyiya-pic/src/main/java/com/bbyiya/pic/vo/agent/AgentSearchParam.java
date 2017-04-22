@@ -4,6 +4,8 @@ public class AgentSearchParam {
 
 	private Long userId;
 	private Integer status;
+	private String branchcompanyname;
+    private String username; 
 	public Long getUserId() {
 		return userId;
 	}
@@ -15,6 +17,18 @@ public class AgentSearchParam {
 	}
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+	public String getBranchcompanyname() {
+		return branchcompanyname;
+	}
+	public void setBranchcompanyname(String branchcompanyname) {
+		this.branchcompanyname = branchcompanyname;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	
 	

@@ -69,4 +69,11 @@ public interface UUsersMapper {
 	 * @return
 	 */
 	List<UUsers> findUUsersByUpUserid(@Param("upid") Long upUserid,@Param("startTime")Date starttime,@Param("endTime")Date endtime);
+	
+	/**
+	 * 获取我发展的用户数
+	 * @param branchuserid
+	 * @return
+	 */
+	Integer getUserCountByUpUserid(@Param("upid") Long upUserid);
 }

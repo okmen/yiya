@@ -1,6 +1,5 @@
 package com.bbyiya.model;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 public class OPayorderext {
@@ -8,7 +7,7 @@ public class OPayorderext {
 
     private String userorderid;
 
-    private BigDecimal totalprice;
+    private Double totalprice;
 
     private Long userid;
 
@@ -34,15 +33,17 @@ public class OPayorderext {
         this.userorderid = userorderid == null ? null : userorderid.trim();
     }
 
-    public BigDecimal getTotalprice() {
-        return totalprice;
-    }
+   
 
-    public void setTotalprice(BigDecimal totalprice) {
-        this.totalprice = totalprice;
-    }
+    public Double getTotalprice() {
+		return totalprice;
+	}
 
-    public Long getUserid() {
+	public void setTotalprice(Double totalprice) {
+		this.totalprice = totalprice;
+	}
+
+	public Long getUserid() {
         return userid;
     }
 

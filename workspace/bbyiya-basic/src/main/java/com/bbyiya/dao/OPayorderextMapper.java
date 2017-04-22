@@ -19,7 +19,7 @@ public interface OPayorderextMapper {
 
     int updateByPrimaryKey(OPayorderext record);
     /**
-     * 根据推荐人获取订单列表  
+     * 根据推荐人获取订单列表
      * @param upuserid
      * @return
      */

@@ -33,7 +33,7 @@ public interface OPayorderextMapper {
     List<OPayorderext> find_payorderExtByBranchUpUserid(@Param("upuserid") Long upuserid,@Param("status") Integer status,@Param("startTimeStr") String startTimeStr,@Param("endTimeStr") String endTimeStr);
     
     /**
-     * 根据微商推荐人获取订单列表
+     * 根据微商推荐人获取订单列表 
      * @param upuserid
      * @return
      */

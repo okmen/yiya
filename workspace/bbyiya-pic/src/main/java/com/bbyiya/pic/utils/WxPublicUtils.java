@@ -42,8 +42,6 @@ public class WxPublicUtils {
 	 * @return
 	 */
 	public static String getAccessToken() {
-//		if (userId == null || userId <= 0)
-//			return "";
 		String tokens=RedisUtil.getString(aCCESS_TOKEN_BASE);
 		if(ObjectUtil.isEmpty(tokens)){
 			tokens=getAccessTokenPost();
@@ -78,11 +76,6 @@ public class WxPublicUtils {
 			int errCode=ObjectUtil.parseInt(String.valueOf(model.get("errcode")));
 			String ticket=String.valueOf(model.get("ticket"));
 			if(errCode==0&&!ObjectUtil.isEmpty(ticket)) {
-//				Map<String, Object> packageParams = new HashMap<String, Object>();
-//				packageParams.put("noncestr", WxPayUtils.genNonceStr());// 随机字符串
-//				packageParams.put("timestamp", WxPayUtils.genTimeStamp());
-//				packageParams.put("jsapi_ticket", ticket);
-//				packageParams.put("url", webUrl);
 				String noString= WxPayUtils.genNonceStr();
 				String timeStr=String.valueOf(WxPayUtils.genTimeStamp());
 				List<NameValuePair> parameters = new ArrayList<NameValuePair>();
@@ -91,7 +84,6 @@ public class WxPublicUtils {
 				parameters.add(new BasicNameValuePair("jsapi_ticket", ticket));
 				parameters.add(new BasicNameValuePair("url", webUrl));
 				try {
-//					String sign= Sha1Encrypt.SHA1(packageParams);
 					String sign= Sha1Encrypt.SHA1(parameters);
 					Map<String, Object> result=new HashMap<String, Object>();
 					result.put("appId", WxPayConfig.APPID);
@@ -102,6 +94,7 @@ public class WxPublicUtils {
 					rqModel.setStatu(ReturnStatus.Success);
 					rqModel.setBasemodle(result);
 					rqModel.setStatusreson(ticket);
+					return rqModel;
 					
 				} catch (DigestException e) {
 					// TODO Auto-generated catch block
@@ -109,16 +102,12 @@ public class WxPublicUtils {
 					rqModel.setStatu(ReturnStatus.SystemError);
 					rqModel.setBasemodle(e);
 				}
-			}else {
-				rqModel.setStatu(ReturnStatus.SystemError);
-				rqModel.setStatusreson("ticket获取失败");
-				rqModel.setBasemodle(postResult);
 			}
-		}else {
-			rqModel.setStatu(ReturnStatus.SystemError);
-			rqModel.setStatusreson("ticket获取失败");
-			rqModel.setBasemodle(postResult);
 		}
+		RedisUtil.delete(aCCESS_TOKEN_BASE);
+		rqModel.setStatu(ReturnStatus.Success);
+		rqModel.setStatusreson("ticket获取失败");
+		rqModel.setBasemodle(postResult);
 		return rqModel;
 	}
 }

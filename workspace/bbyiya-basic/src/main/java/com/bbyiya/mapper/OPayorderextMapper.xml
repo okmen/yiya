@@ -42,7 +42,7 @@
     	 and a.CreateTime &gt;=  #{startTimeStr,jdbcType=VARCHAR}
     </if> 
     <if test="endTimeStr!=null  and endTimeStr!=''" >
-    	 and a.CreateTime &lt;= #{startTimeStr,jdbcType=VARCHAR}
+    	 and a.CreateTime &lt;= #{endTimeStr,jdbcType=VARCHAR}
     </if>    
   </select>
   
@@ -59,7 +59,7 @@
     	 and a.CreateTime &gt;=  #{startTimeStr,jdbcType=VARCHAR}
     </if> 
     <if test="endTimeStr!=null  and endTimeStr!=''" >
-    	 and a.CreateTime &lt;= #{startTimeStr,jdbcType=VARCHAR}
+    	 and a.CreateTime &lt;= #{endTimeStr,jdbcType=VARCHAR}
     </if>    
   </select>
   

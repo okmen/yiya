@@ -42,6 +42,7 @@ public class OUserorders implements Serializable{
     private Double postage;
     private Date uploadtime;
     private Integer postmodelid;
+    private Date deliverytime;
     
     public String getUserorderid() {
         return userorderid;
@@ -203,6 +204,14 @@ public class OUserorders implements Serializable{
 
 	public void setPostmodelid(Integer postmodelid) {
 		this.postmodelid = postmodelid;
+	}
+
+	public Date getDeliverytime() {
+		return deliverytime;
+	}
+
+	public void setDeliverytime(Date deliverytime) {
+		this.deliverytime = deliverytime;
 	}
     
     

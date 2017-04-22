@@ -129,6 +129,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 				for (OUserorders order : orderList) {
 					order.setExpresscom(expressCom);
 					order.setExpressorder(expressOrder);
+					order.setDeliverytime(new Date()); 
 					if(order.getPaytype()==Integer.parseInt(OrderTypeEnum.nomal.toString())){
 						//修改订单状态为已发货状态
 						order.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));

@@ -545,7 +545,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					int i = 1;
 					for (MyProductsDetailsResult dd : arrayList) {
 						dd.setPrintcode(base_code + "-" + String.format("%02d", i));
-						if(dd.getSceneid()!=null&&dd.getSceneid()>0){//+ String.format("%02d", dd.getSceneid()) + "-"
+						if(dd.getSceneid()!=null&&dd.getSceneid()>=0){//+ String.format("%02d", dd.getSceneid()) + "-"
 							// ¥Ú”°±‡∫≈	
 							if(ObjectUtil.isEmpty(dd.getDescription()))	{
 								PScenes scene= sceneMapper.selectByPrimaryKey(dd.getSceneid().longValue());
@@ -559,7 +559,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 							}	
 						}
 						i++;
-					}
+					} 
 					myproduct.setDetailslist(arrayList);
 				}
 				PMyproductchildinfo childInfo= mychildMapper.selectByPrimaryKey(cartId);

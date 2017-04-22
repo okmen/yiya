@@ -67,7 +67,7 @@
     select 
     <include refid="Base_Column_List" />
     from o_userorders
-    where BranchUserId = #{branchUserId,jdbcType=BIGINT} and Status=#{status,jdbcType=INTEGER} order by PayTime,OrderTime desc
+    where BranchUserId = #{branchUserId,jdbcType=BIGINT} and Status=#{status,jdbcType=INTEGER} order by PayTime desc,OrderTime desc
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from o_userorders

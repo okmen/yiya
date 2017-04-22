@@ -37,7 +37,7 @@ import com.bbyiya.web.base.SSOController;
 public class LoginController extends SSOController {
 	/**
 	 * µÇÂ½¡¢×¢²á service
-	 */
+	 */ 
 	@Resource(name = "userLoginService")
 	private IUserLoginService loginBaseService; 
 	/**

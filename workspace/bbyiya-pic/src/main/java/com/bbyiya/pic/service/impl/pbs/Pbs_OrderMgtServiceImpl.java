@@ -138,6 +138,10 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 				}
 			}
 			//修改本张订单
+			if(userorders.getPaytype()==Integer.parseInt(OrderTypeEnum.nomal.toString())){
+				//修改订单状态为已发货状态
+				userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
+			}			
 			userorders.setExpresscom(expressCom);
 			userorders.setExpressorder(expressOrder);
 			userOrdersMapper.updateByPrimaryKeySelective(userorders);

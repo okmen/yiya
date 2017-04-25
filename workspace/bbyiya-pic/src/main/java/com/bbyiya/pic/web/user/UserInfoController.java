@@ -52,7 +52,8 @@ public class UserInfoController  extends SSOController{
 					if(loginUser!=null){
 						String ticket=super.getTicket();
 						if(ObjectUtil.isEmpty(ticket)){
-							ticket=CookieUtils.getCookieBySessionId(request);
+//							ticket=CookieUtils.getCookieBySessionId(request);
+							ticket=CookieUtils.getCookie_web(request);
 						}
 						RedisUtil.setObject(ticket, loginUser, 86400); 
 					}

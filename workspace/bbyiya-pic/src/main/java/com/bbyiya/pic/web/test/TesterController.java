@@ -46,6 +46,15 @@ public class TesterController  extends SSOController{
 		RedisUtil.delete(key);
 		return "index";
 	}
+	@ResponseBody
+	@RequestMapping(value = "/templateMessageSend")
+	public String templateMessageSend(String key) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		rq.setBasemodle(key);
+		rq.setStatu(ReturnStatus.Success);
+		return JsonUtil.objectToJsonStr(rq);
+	
+	}
 	
 }
 

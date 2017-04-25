@@ -146,7 +146,8 @@ public class UserInfoMgtController extends SSOController {
 			if(rq.getStatu().equals(ReturnStatus.Success)){
 				String ticket= super.getTicket();
 				if(ObjectUtil.isEmpty(ticket)){
-					ticket=CookieUtils.getCookieBySessionId(request);
+//					ticket=CookieUtils.getCookieBySessionId(request);
+					ticket=CookieUtils.getCookie_web(request);
 				}
 				if(!ObjectUtil.isEmpty(ticket)){
 					 RedisUtil.setObject(ticket, rq.getBasemodle(), 86400); 

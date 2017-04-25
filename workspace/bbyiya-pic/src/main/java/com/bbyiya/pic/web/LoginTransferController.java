@@ -148,7 +148,8 @@ public class LoginTransferController extends SSOController {
 				loginLogs.setNickname(user.getNickName());
 				loginLogs.setSourcetype(1);// 12photo
 				loginLogMapper.insert(loginLogs);
-				CookieUtils.addCookieBySessionId(request, response, user.getTicket(), 86400);
+//				CookieUtils.addCookieBySessionId(request, response, user.getTicket(), 86400);
+				CookieUtils.addCookie_web(request, response,user.getTicket(),86400);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception

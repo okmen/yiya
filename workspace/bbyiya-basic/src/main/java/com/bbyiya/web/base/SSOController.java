@@ -39,10 +39,10 @@ public class SSOController {
 		String ticket = getTicket();
 		if (ObjectUtil.isEmpty(ticket)) {
 			// 获取cookie的tiket的值
-//			ticket = CookieUtils.getCookieByName(request, PHOTO_TOKEN);
-			ticket = CookieUtils.getCookieBySessionId(request);
+//			ticket = CookieUtils.getCookieBySessionId(request);
+			ticket = CookieUtils.getCookie_web(request);
 			if (ObjectUtil.isEmpty(ticket)) {
-				ticket=CookieUtils.getCookie_ibs(request);
+				ticket=CookieUtils.getCookie_web(request);
 				if(ObjectUtil.isEmpty(ticket)){
 					return null;
 				}
@@ -62,7 +62,8 @@ public class SSOController {
 	 * @return
 	 */
 	public LoginSuccessResult getWebLoginUser() {
-		String ticket = CookieUtils.getCookieBySessionId(request);// CookieUtils.getCookieByName(request, PHOTO_TOKEN);
+//		String ticket = CookieUtils.getCookieBySessionId(request);
+		String ticket = CookieUtils.getCookie_web(request);
 		if(ObjectUtil.isEmpty(ticket))
 			return null;
 		Object userObject = RedisUtil.getObject(ticket);
@@ -84,8 +85,8 @@ public class SSOController {
 		String ticket = getTicket(request);
 		// 判断tiekt是否为空
 		if (ObjectUtil.isEmpty(ticket)) {
-//			ticket = CookieUtils.getCookieByName(request, "ticket");// 获取cookie的tiket的值
-			ticket = CookieUtils.getCookieBySessionId(request);
+//			ticket = CookieUtils.getCookieBySessionId(request);
+			ticket = CookieUtils.getCookie_web(request);
 			if (ObjectUtil.isEmpty(ticket)) {
 				return null;
 			}

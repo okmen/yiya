@@ -37,7 +37,7 @@ import com.bbyiya.web.base.SSOController;
 public class LoginController extends SSOController {
 	/**
 	 * µÇÂ½¡¢×¢²á service
-	 */
+	 */  
 	@Resource(name = "userLoginService")
 	private IUserLoginService loginBaseService; 
 	/**
@@ -210,7 +210,8 @@ public class LoginController extends SSOController {
 				loginLogs.setNickname(user.getNickName()); 
 				loginLogs.setSourcetype(1);// 12photo
 				loginLogMapper.insert(loginLogs);
-				CookieUtils.addCookieBySessionId(request, response,user.getTicket(),86400); 
+//				CookieUtils.addCookieBySessionId(request, response,user.getTicket(),86400); 
+				CookieUtils.addCookie_web(request, response, user.getTicket(),86400);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception

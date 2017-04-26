@@ -68,6 +68,29 @@ public class InviteMgtController  extends SSOController {
 	}
 	
 	/**
+	 * 
+	 * @param phone 被邀请人手机号
+	 * @param cartId 作品cartid
+	 * @param inviteUserId 邀请人用户ID
+	 * @param verifcode  验证码
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/acceptScanQrCodeInvite")
+	public String acceptScanQrCodeInvite(String phone,Long cartId,Long inviteUserId,Integer verifcode) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			//rq=myProductService.processInvite(user.getMobilePhone(), cartId, status);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期，请重新登录");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
 	 * 获取用户提示信息
 	 * @return
 	 * @throws Exception

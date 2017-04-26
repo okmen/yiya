@@ -8,6 +8,7 @@ public class LoginTempVo implements Serializable {
 	
 	private Long upUserId;
 	private Integer loginTo;
+	private String redirect_url;
 	public Long getUpUserId() {
 		return upUserId;
 	}
@@ -19,6 +20,12 @@ public class LoginTempVo implements Serializable {
 	}
 	public void setLoginTo(Integer loginTo) {
 		this.loginTo = loginTo;
+	}
+	public String getRedirect_url() {
+		return redirect_url;
+	}
+	public void setRedirect_url(String redirect_url) {
+		this.redirect_url = redirect_url;
 	}
 	
 	

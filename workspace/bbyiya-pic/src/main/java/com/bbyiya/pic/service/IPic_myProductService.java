@@ -50,5 +50,16 @@ public interface IPic_myProductService {
 	 * @return
 	 */
 //	ReturnModel find_mycartsInvited(Long userId);
+	/**
+	 * 处理扫码页面的接受邀请
+	 * @param phone 被邀请人手机号
+	 * @param cartId 作品cartid
+	 * @param userId 被邀请人用户ID
+	 * @param vcode  验证码
+	 * @param needVerfiCode  是否需要验证手机验证码 0 不需要，1需要
+	 * @author julie at 2017-04-26
+	 * @throws Exception
+	 */
+	ReturnModel acceptScanQrCodeInvite(Long userId,String phone, Long cartId, String vcode, Integer needVerfiCode);
 	
 }

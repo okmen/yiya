@@ -5,15 +5,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-
-
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import com.bbyiya.common.enums.MsgStatusEnums;
+import com.bbyiya.common.enums.SendMsgEnums;
+import com.bbyiya.common.vo.ResultMsg;
 import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproductsinvitesMapper;
@@ -21,7 +18,9 @@ import com.bbyiya.dao.PScenesMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.InviteStatus;
+import com.bbyiya.enums.pic.InviteType;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
+import com.bbyiya.enums.user.UserStatusEnum;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproductsinvites;
@@ -31,8 +30,11 @@ import com.bbyiya.pic.service.IPic_myProductService;
 import com.bbyiya.pic.vo.product.MyProductListVo;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.utils.SendSMSByMobile;
+import com.bbyiya.utils.encrypt.MD5Encrypt;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.product.MyProductResultVo;
+import com.bbyiya.vo.user.LoginSuccessResult;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 @Service("pic_myProductService")
@@ -81,6 +83,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				invoMo.setCartid(cartId);
 				invoMo.setInvitephone(phone);
 				invoMo.setUserid(userId);
+				invoMo.setInvitetype(Integer.parseInt(InviteType.sendPhoneInvite.toString()));
 				invoMo.setStatus(Integer.parseInt(InviteStatus.inviting.toString()));
 				invoMo.setCreatetime(new Date());
 				inviteMapper.insert(invoMo);
@@ -98,7 +101,84 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 		}
 		return rq;
 	}
-	
+	/**
+	 * 处理扫码页面的接受邀请
+	 * @param phone 被邀请人手机号
+	 * @param cartId 作品cartid
+	 * @param userId 被邀请人用户ID
+	 * @param vcode  验证码
+	 * @param needVerfiCode  是否需要验证手机验证码 0 不需要，1需要
+	 * @author julie at 2017-04-26
+	 * @throws Exception
+	 */
+	public ReturnModel acceptScanQrCodeInvite(Long userId,String phone,Long cartId,String vcode,Integer needVerfiCode){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.SystemError); 
+		if(!ObjectUtil.isMobile(phone)){
+			rq.setStatusreson("请输入正确的手机号");
+			return rq; 
+		}
+		//如果需要验证手机短信验证码
+		if(needVerfiCode!=null&&needVerfiCode==1){
+			ResultMsg msgResult= SendSMSByMobile.validateCode(phone, vcode, SendMsgEnums.register);
+			if(msgResult.getStatus()==Integer.parseInt(MsgStatusEnums.ok.toString())) {
+				UUsers userPhone=usersMapper.getUUsersByPhone(phone);
+				if(userPhone!=null&&userPhone.getUserid().longValue()!=userId){
+					rq.setStatu(ReturnStatus.SystemError);
+					rq.setStatusreson("该手机号已经绑定其他用户！");
+					return rq;
+				}
+				UUsers user= usersMapper.getUUsersByUserID(userId);
+				if(user!=null){
+					user.setMobilephone(phone);
+					user.setMobilebind(1);
+					user.setStatus(Integer.parseInt(UserStatusEnum.ok.toString())); 
+					user.setPassword(""); //默认密码为空
+					usersMapper.updateByPrimaryKey(user);
+					//LoginSuccessResult result = baseLoginService.getLoginSuccessResult_Common(user);					
+				}else {
+					rq.setStatu(ReturnStatus.SystemError);
+					rq.setStatusreson("系统错误");
+					return rq; 
+				}
+			}else{
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson(msgResult.getMsg()); 
+				return rq; 
+			}
+		}
+		PMyproducts myproducts= myproductsMapper.selectByPrimaryKey(cartId);
+		if(myproducts!=null){
+			if(myproducts.getUserid()!=null){
+				List<PMyproductsinvites> list= inviteMapper.findListByCartId(cartId);
+				if(list!=null&&list.size()>0){
+					for (PMyproductsinvites invo : list) {
+						inviteMapper.deleteByPrimaryKey(invo.getInviteid());
+					}
+				}
+				PMyproductsinvites invoMo=new PMyproductsinvites();
+				invoMo.setCartid(cartId);
+				invoMo.setInvitephone(phone);
+				invoMo.setUserid(myproducts.getUserid());//邀请人ID
+				invoMo.setInviteuserid(userId);//被邀请人ID
+				invoMo.setInvitetype(Integer.parseInt(InviteType.scanQRInvite.toString()));
+				invoMo.setStatus(Integer.parseInt(InviteStatus.agree.toString()));
+				invoMo.setCreatetime(new Date());
+				inviteMapper.insert(invoMo);
+				myproducts.setInvitestatus(Integer.parseInt(InviteStatus.agree.toString()));
+				myproductsMapper.updateByPrimaryKeySelective(myproducts); 
+				rq.setStatu(ReturnStatus.Success);
+				rq.setStatusreson("成功接受邀请");			
+			}else {
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson("不是您本人的作品，不能进行此操作"); 				
+			}
+		}else {
+			rq.setStatu(ReturnStatus.SystemError);
+			rq.setStatusreson("不存在的作品");
+		}
+		return rq;
+	}
 	public ReturnModel processInvite(String phone, Long cartId, int status) {
 		ReturnModel rq = new ReturnModel();
 		PMyproductsinvites invite = inviteMapper.getInviteByPhoneAndCartId(phone, cartId); //inviteMapper.selectByPrimaryKey(inviteId);

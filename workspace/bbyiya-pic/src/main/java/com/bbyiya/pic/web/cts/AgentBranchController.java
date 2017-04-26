@@ -82,7 +82,7 @@ public class AgentBranchController extends SSOController {
 				param.setStatus(ObjectUtil.parseInt(status)); 
 			} 
 			
-			if(validate(user.getUserId())){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){
 				rq = branchService.findAgentApplyList(param);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
@@ -195,8 +195,36 @@ public class AgentBranchController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			if(validate(user.getUserId())){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){
 				rq = branchService.audit_BranchApply(user.getUserId(), branchUserId, status, msg);
+			}else {
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson("无权限");
+			}
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 代理商退驻操作
+	 * 
+	 * @param agentUserId
+	 * @param status
+	 * @param msg
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/agentTuiZhu")
+	public String agentTuiZhu(Long agentUserId) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {		
+			if(validate(user.getUserId())){
+				rq = branchService.agentTuiZhu(user.getNickName(),user.getUserId(), agentUserId);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
 				rq.setStatusreson("无权限");
@@ -234,14 +262,15 @@ public class AgentBranchController extends SSOController {
 	}
 	
 	public boolean validate(long userId){
-		List<Map<String, String>>users= ConfigUtil.getMaplist("adminUsers");
-		if(users!=null&&users.size()>0){
-			for (Map<String, String> map : users) {
-				if(ObjectUtil.parseLong(map.get("userId"))==userId){
-					return true;
-				}
-			}
-		}
+//		List<Map<String, String>>users= ConfigUtil.getMaplist("adminUsers");
+//		if(users!=null&&users.size()>0){
+//			for (Map<String, String> map : users) {
+//				if(ObjectUtil.parseLong(map.get("userId"))==userId){
+//					return true;
+//				}
+//			}
+//		}
+		
 		return false;
 	}
 	

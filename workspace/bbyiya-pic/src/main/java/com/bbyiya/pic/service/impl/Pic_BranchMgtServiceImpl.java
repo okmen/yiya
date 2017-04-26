@@ -16,12 +16,17 @@ import com.bbyiya.dao.RAreaplansMapper;
 import com.bbyiya.dao.RAreaplansagentpriceMapper;
 import com.bbyiya.dao.RegionMapper;
 import com.bbyiya.dao.SysMessageMapper;
+import com.bbyiya.dao.UAccountsMapper;
+import com.bbyiya.dao.UAdminactionlogsMapper;
 import com.bbyiya.dao.UAgentapplyMapper;
 import com.bbyiya.dao.UAgentsMapper;
 import com.bbyiya.dao.UBranchareapriceMapper;
 import com.bbyiya.dao.UBranchesMapper;
+import com.bbyiya.dao.UBranchtransaccountsMapper;
+import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UUserresponsesMapper;
 import com.bbyiya.dao.UUsersMapper;
+import com.bbyiya.enums.AdminActionType;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.AgentStatusEnum;
 import com.bbyiya.enums.pic.BranchStatusEnum;
@@ -30,10 +35,14 @@ import com.bbyiya.model.RAreaplans;
 import com.bbyiya.model.RAreaplansagentprice;
 import com.bbyiya.model.RAreas;
 import com.bbyiya.model.SysMessage;
+import com.bbyiya.model.UAccounts;
+import com.bbyiya.model.UAdminactionlogs;
 import com.bbyiya.model.UAgentapply;
 import com.bbyiya.model.UAgents;
 import com.bbyiya.model.UBranchareaprice;
 import com.bbyiya.model.UBranches;
+import com.bbyiya.model.UBranchtransaccounts;
+import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUserresponses;
 import com.bbyiya.pic.dao.IPic_AgentAreaDao;
 import com.bbyiya.pic.dao.IPic_AgentMgtDao;
@@ -63,11 +72,11 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 	@Autowired
 	private RegionMapper regionMapper;
 	@Autowired
-	private UAgentapplyMapper agentapplyMapper;
-	@Autowired
 	private RAreaplansMapper areaplansMapper;
 	@Autowired
 	private RAreaplansagentpriceMapper areaplansagentpriceMapper;
+	@Autowired
+	private UAgentapplyMapper agentapplyMapper;	
 	@Autowired
 	private IPic_AgentAreaDao agentAreaDao;
 	@Autowired
@@ -75,15 +84,25 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 	@Autowired
 	private UBranchesMapper branchesMapper;
 	@Autowired
-	private UUsersMapper usersMapper;	
-	@Autowired
 	private IPic_AgentMgtDao agentDao;
 	
 	@Autowired
-	private UUserresponsesMapper userresponseMapper;//用户反馈
+	private UBranchusersMapper branchuserMapper;
 	
 	@Autowired
+	private UBranchtransaccountsMapper transaccountsMapper;//账户信息
+	//------------------------用户信息-------------------
+	@Autowired
+	private UUsersMapper usersMapper;	
+	@Autowired
+	private UUserresponsesMapper userresponseMapper;//用户反馈
+	@Autowired
+	private UAccountsMapper accountsMapper;//账户信息
+	@Autowired
 	private SysMessageMapper sysMessageMapper;//系统消息
+	@Autowired
+	private UAdminactionlogsMapper adminlogMapper;//管理员日志信息
+	
 	
 	public ReturnModel getBranchAreaPrice(Integer province,Integer city,Integer district){
 		ReturnModel rqModel=new ReturnModel();
@@ -391,6 +410,78 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		} else {
 			rq.setStatu(ReturnStatus.SystemError);
 			rq.setStatusreson("找不到申请记录");
+		} 
+		return rq;
+	}
+	
+	/**
+	 * 代理商退驻
+	 */
+	public ReturnModel agentTuiZhu(String adminname,Long adminId,Long agentUserId){
+		ReturnModel rq=new ReturnModel();
+		UAgents agent=agentsMapper.selectByPrimaryKey(agentUserId);
+		if(agent!=null){
+			//1.代理商的影楼内部员工身份清除 ,清除身份后删除
+			List<UBranchusers>  branchusersList=branchuserMapper.findMemberslistByAgentUserId(agentUserId);
+			for (UBranchusers branchuser : branchusersList) {
+				userBasic.removeUserIdentity(branchuser.getUserid(), UserIdentityEnums.salesman);
+				branchuserMapper.deleteByPrimaryKey(branchuser.getUserid());
+			}
+			//2.代理区域清理
+			List<RAreaplans> areaplansList=agentAreaDao.findRAreaplansByAgentUserId(agentUserId);
+			for (RAreaplans areaplan : areaplansList) {
+				areaplan.setAgentuserid(null);
+				areaplan.setIsagent(null);
+				areaplansMapper.updateByPrimaryKey(areaplan);
+			}
+			//3.影楼信息表清理 (u_branches)
+			List<UBranchVo> branchList=agentDao.findUBranchVoListByAgentUserId(agentUserId);
+			for (UBranchVo branch : branchList) {
+				
+				//3.1清理代理商运费账户表
+				UBranchtransaccounts branchTransAccount=transaccountsMapper.selectByPrimaryKey(branch.getBranchuserid());
+				if(branchTransAccount!=null){
+					branchTransAccount.setAvailableamount(0.0);
+					transaccountsMapper.updateByPrimaryKey(branchTransAccount);
+				}
+				//3.2.清除代理商账户可用余额
+				UAccounts count=accountsMapper.selectByPrimaryKey(branch.getBranchuserid());
+				if(count!=null){
+					count.setAvailableamount(0.0);
+					accountsMapper.updateByPrimaryKey(count);
+				}	
+				//3.3修改影楼状态
+				branch.setStatus(Integer.parseInt(BranchStatusEnum.tuizhu.toString()));
+				//3.4修改影楼用户身份
+				userBasic.removeUserIdentity(branch.getBranchuserid(), UserIdentityEnums.branch);
+				branchesMapper.updateByPrimaryKey(branch);
+			}
+					
+			
+			//4.修改代理商的状态及用户身份
+			userBasic.removeUserIdentity(agentUserId, UserIdentityEnums.agent);			
+			agent.setStatus(Integer.parseInt(AgentStatusEnum.tuizhu.toString()));		
+			agentsMapper.updateByPrimaryKeySelective(agent);
+			
+			//5.清理代理申请表
+			UAgentapply agentApply=agentapplyMapper.selectByPrimaryKey(agentUserId);
+			if(agentApply!=null){
+				agentApply.setStatus(Integer.parseInt(AgentStatusEnum.tuizhu.toString()));
+				agentapplyMapper.updateByPrimaryKeySelective(agentApply);
+			}
+			//6.插入cts日志表
+			UAdminactionlogs log=new UAdminactionlogs();
+			log.setContent("代理商退驻操作，agentUserId:"+agentUserId);
+			log.setCreatetime(new Date());
+			log.setType(Integer.parseInt(AdminActionType.agent_quit.toString()));
+			log.setUserid(adminId);
+			log.setUsername(adminname);
+			adminlogMapper.insert(log);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("退驻成功");
+		} else {
+			rq.setStatu(ReturnStatus.SystemError);
+			rq.setStatusreson("找不到代理商记录");
 		} 
 		return rq;
 	}

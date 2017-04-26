@@ -95,6 +95,18 @@
        and  UserName = #{username,jdbcType=VARCHAR}
     </if>
   </select>
+  
+  <!-- 根据AgentUserId获取影楼 列表 -->
+  <select id="findUBranchVoListByAgentUserId" resultMap="UBranchVoResult" parameterType="java.lang.Long" >
+    select 
+    <include refid="UBranches_Column_List" />
+    from u_branches
+    where 1=1
+    <if test="agentUserId != null" >
+        and  AgentUserId = #{agentUserId,jdbcType=BIGINT}
+    </if>
+   
+  </select>
   <!-- 通过影楼userId获取影楼信息result -->
   <select id="getUBranchVoByBranchUserId" resultMap="UBranchVoResult" parameterType="java.lang.Long" >
     select 

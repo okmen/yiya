@@ -94,4 +94,11 @@ public interface IPic_BranchMgtService {
 	 */
 	ReturnModel getSysMessageList(int index, int size, String startTimeStr,
 			String endTimeStr);
+	/**
+	 * ´úÀíÉÌÍË×¤
+	 * @param adminId
+	 * @param agentUserId
+	 * @return
+	 */
+	ReturnModel agentTuiZhu(String adminname,Long adminId, Long agentUserId);
 }

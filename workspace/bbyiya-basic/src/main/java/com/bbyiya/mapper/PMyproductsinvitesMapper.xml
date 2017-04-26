@@ -8,9 +8,11 @@
     <result column="InvitePhone" property="invitephone" jdbcType="VARCHAR" />
     <result column="Status" property="status" jdbcType="INTEGER" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="InviteUserId" property="inviteuserid" jdbcType="BIGINT" />
+    <result column="InviteType" property="invitetype" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    InviteId, CartId, UserId, InvitePhone, Status, CreateTime
+     InviteId, CartId, UserId, InvitePhone, Status, CreateTime, InviteUserId, InviteType
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" ><!-- 0 主键查询 -->
     select 
@@ -51,11 +53,11 @@
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.PMyproductsinvites" >
     insert into p_myproductsinvites (InviteId, CartId, UserId, 
-      InvitePhone, Status, CreateTime
-      )
+      InvitePhone, Status, CreateTime, 
+      InviteUserId, InviteType)
     values (#{inviteid,jdbcType=BIGINT}, #{cartid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, 
-      #{invitephone,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}
-      )
+      #{invitephone,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{inviteuserid,jdbcType=BIGINT}, #{invitetype,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproductsinvites" >
     insert into p_myproductsinvites
@@ -78,6 +80,12 @@
       <if test="createtime != null" >
         CreateTime,
       </if>
+      <if test="inviteuserid != null" >
+        InviteUserId,
+      </if>
+      <if test="invitetype != null" >
+        InviteType,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="inviteid != null" >
@@ -97,6 +105,12 @@
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="inviteuserid != null" >
+        #{inviteuserid,jdbcType=BIGINT},
+      </if>
+      <if test="invitetype != null" >
+        #{invitetype,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -118,6 +132,12 @@
       <if test="createtime != null" >
         CreateTime = #{createtime,jdbcType=TIMESTAMP},
       </if>
+      <if test="inviteuserid != null" >
+        InviteUserId = #{inviteuserid,jdbcType=BIGINT},
+      </if>
+      <if test="invitetype != null" >
+        InviteType = #{invitetype,jdbcType=INTEGER},
+      </if>
     </set>
     where InviteId = #{inviteid,jdbcType=BIGINT}
   </update>
@@ -127,7 +147,9 @@
       UserId = #{userid,jdbcType=BIGINT},
       InvitePhone = #{invitephone,jdbcType=VARCHAR},
       Status = #{status,jdbcType=INTEGER},
-      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      InviteUserId = #{inviteuserid,jdbcType=BIGINT},
+      InviteType = #{invitetype,jdbcType=INTEGER}
     where InviteId = #{inviteid,jdbcType=BIGINT}
   </update>
 </mapper>

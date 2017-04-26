@@ -14,6 +14,10 @@ public class PMyproductsinvites {
     private Integer status;
 
     private Date createtime;
+    
+    private Long inviteuserid;
+
+    private Integer invitetype;
 
     public Long getInviteid() {
         return inviteid;
@@ -62,4 +66,21 @@ public class PMyproductsinvites {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+
+	public Long getInviteuserid() {
+		return inviteuserid;
+	}
+
+	public void setInviteuserid(Long inviteuserid) {
+		this.inviteuserid = inviteuserid;
+	}
+
+	public Integer getInvitetype() {
+		return invitetype;
+	}
+
+	public void setInvitetype(Integer invitetype) {
+		this.invitetype = invitetype;
+	}
+    
 }

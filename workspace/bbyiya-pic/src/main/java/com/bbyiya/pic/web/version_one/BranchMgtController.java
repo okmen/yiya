@@ -158,10 +158,14 @@ public class BranchMgtController extends SSOController {
 			if(user.getStatus()!=null&&user.getStatus().intValue()==Integer.parseInt(UserStatusEnum.ok.toString())){
 				try {
 					UBranches applyInfo=(UBranches)JsonUtil.jsonStrToObject(branchJson, UBranches.class);
+					if(applyInfo!=null){
+						applyInfo.setBranchuserid(user.getUserId()); 
+					}
 					rq =branchService.applyBranch(user.getUserId(), applyInfo);
 				} catch (Exception e) {
 					rq.setStatu(ReturnStatus.ParamError);
 					rq.setStatusreson("²ÎÊýÓÐÎó101");
+					System.out.println(e); 
 					return JsonUtil.objectToJsonStr(rq);
 				}
 			}else {

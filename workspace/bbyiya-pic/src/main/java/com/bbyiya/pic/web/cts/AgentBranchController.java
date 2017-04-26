@@ -82,7 +82,7 @@ public class AgentBranchController extends SSOController {
 				param.setStatus(ObjectUtil.parseInt(status)); 
 			} 
 			
-			if(validate(user.getUserId())){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){
 				rq = branchService.findAgentApplyList(param);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
@@ -195,7 +195,7 @@ public class AgentBranchController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			if(validate(user.getUserId())){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){
 				rq = branchService.audit_BranchApply(user.getUserId(), branchUserId, status, msg);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
@@ -234,14 +234,15 @@ public class AgentBranchController extends SSOController {
 	}
 	
 	public boolean validate(long userId){
-		List<Map<String, String>>users= ConfigUtil.getMaplist("adminUsers");
-		if(users!=null&&users.size()>0){
-			for (Map<String, String> map : users) {
-				if(ObjectUtil.parseLong(map.get("userId"))==userId){
-					return true;
-				}
-			}
-		}
+//		List<Map<String, String>>users= ConfigUtil.getMaplist("adminUsers");
+//		if(users!=null&&users.size()>0){
+//			for (Map<String, String> map : users) {
+//				if(ObjectUtil.parseLong(map.get("userId"))==userId){
+//					return true;
+//				}
+//			}
+//		}
+		
 		return false;
 	}
 	

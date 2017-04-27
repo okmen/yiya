@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductchildinfoMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.PMyproductsMapper;
@@ -20,9 +21,12 @@ import com.bbyiya.dao.PScenesMapper;
 import com.bbyiya.dao.PStylecoordinateMapper;
 import com.bbyiya.dao.PStylecoordinateitemMapper;
 import com.bbyiya.dao.UBranchusersMapper;
+import com.bbyiya.dao.UChildreninfoMapper;
 import com.bbyiya.dao.UUsersMapper;
+import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
+import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproductchildinfo;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
@@ -33,6 +37,7 @@ import com.bbyiya.model.PScenes;
 import com.bbyiya.model.PStylecoordinate;
 import com.bbyiya.model.PStylecoordinateitem;
 import com.bbyiya.model.UBranchusers;
+import com.bbyiya.model.UChildreninfo;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.dao.IMyProductDetailsDao;
 import com.bbyiya.pic.dao.IMyProductsDao;
@@ -45,6 +50,7 @@ import com.bbyiya.pic.vo.product.ProductSampleResultVO;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.product.MyProductResultVo;
 import com.bbyiya.vo.product.ProductSampleVo;
@@ -75,11 +81,18 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private PScenesMapper sceneMapper;
 	@Autowired
 	private PMyproductsinvitesMapper inviteMapper;
+	@Autowired
+	private PMyproductchildinfoMapper mychildMapper;
 	/*-------------------用户信息------------------------------------------------*/
 	@Autowired
 	private UUsersMapper usersMapper;
 	@Autowired
 	private UBranchusersMapper branchusersMapper;//影楼信息
+	@Autowired
+	private OUserordersMapper orderMapper;
+	@Autowired
+	private UChildreninfoMapper childMapper;
+	
 	/*----------------pic-dao----------------------------------*/
 	@Autowired
 	private IMyProductsDao myProductsDao;
@@ -87,6 +100,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private IMyProductDetailsDao mydetailDao;
 	@Autowired
 	private IPic_ProductDao productDao;
+	
+	
 
 	public ReturnModel getProductSamples(Long productId) {
 		ReturnModel rq = new ReturnModel();
@@ -102,16 +117,21 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	
 	public ReturnModel getProductSamplelist(Long productId) {
 		ReturnModel rq = new ReturnModel();
-		PProducts products= productsMapper.selectByPrimaryKey(productId);
-		if(products!=null){
-			List<ProductSampleResultVO> list=productDao.findProductSamplesByProductId(productId);
-			if(list!=null&&list.size()>0){
-				for (ProductSampleResultVO sam : list) {
-					sam.setMyWorks(getMyProductsResult(sam.getCartid()));  
+		String keyName=ConfigUtil.getSingleValue("currentRedisKey-Base")+"_productsample100_"+productId;
+		List<ProductSampleResultVO> listResult=(List<ProductSampleResultVO>)RedisUtil.getObject(keyName);
+		if(listResult==null||listResult.size()<=0){ 
+			PProducts products= productsMapper.selectByPrimaryKey(productId);
+			if(products!=null){
+				listResult=productDao.findProductSamplesByProductId(productId);
+				if(listResult!=null&&listResult.size()>0){
+					for (ProductSampleResultVO sam : listResult) {
+						sam.setMyWorks(getMyProductsResult(sam.getCartid()));  
+					}
+					RedisUtil.setObject(keyName, listResult, 7200); 
 				}
 			}
-			rq.setBasemodle(list);
 		}
+		rq.setBasemodle(listResult);
 		rq.setStatu(ReturnStatus.Success);
 		return rq;
 	}
@@ -130,6 +150,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					if (!ObjectUtil.isEmpty(param.getAuthor())) {
 						myproducts.setAuthor(param.getAuthor());
 					}
+					if(!ObjectUtil.isEmpty(param.getDescription())){
+						myproducts.setDescription(param.getDescription());
+					} 
 					myproducts.setUpdatetime(new Date());
 					// 更新用户作品基本信息
 					myMapper.updateByPrimaryKeySelective(myproducts);
@@ -163,6 +186,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					myproduct = new PMyproducts();
 					myproduct.setAuthor(param.getAuthor());
 					myproduct.setTitle(param.getTitle());
+					if(!ObjectUtil.isEmpty(param.getDescription())){
+						myproduct.setDescription(param.getDescription());
+					} 
 					myproduct.setUserid(userId);
 					myproduct.setProductid(param.getProductid());
 					myproduct.setCreatetime(new Date());
@@ -183,7 +209,6 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 						sort++;
 					}
 				}
-				
 			}
 		}
 		rq.setStatu(ReturnStatus.Success);
@@ -192,8 +217,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		rq.setBasemodle(map);
 		return rq;
 	}
-	@Autowired
-	private PMyproductchildinfoMapper mychildMapper;
+	
 	public ReturnModel Edit_MyProducts(Long userId, MyProductParam param) {
 		ReturnModel rq = new ReturnModel();
 		Long cartIdTemp = 0l;
@@ -208,7 +232,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				cartIdTemp = param.getCartid();
 				PMyproducts myproducts = myMapper.selectByPrimaryKey(param.getCartid());
 				// A修改作品的宝宝信息
-				if(myproducts != null && param.getChildInfo()!=null){
+				if(myproducts != null && param.getChildInfo()!=null) {
 					boolean isnew=false;
 					PMyproductchildinfo mychild=mychildMapper.selectByPrimaryKey(param.getCartid());
 					if(mychild==null){
@@ -228,6 +252,26 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					}else {
 						mychildMapper.updateByPrimaryKeySelective(mychild);
 					} 
+					/*----------------------------更新个人宝宝信息---------------------------------------------------*/
+					boolean isHavechild=true;
+					UChildreninfo childreninfo=childMapper.selectByPrimaryKey(userId);
+					if(childreninfo==null){
+						childreninfo=new UChildreninfo();
+						childreninfo.setUserid(userId);
+						childreninfo.setCreatetime(new Date());
+						isHavechild=false;
+					} 
+					if(!ObjectUtil.isEmpty(mychild.getNickname())){
+						childreninfo.setNickname(mychild.getNickname());
+					}
+					if(!ObjectUtil.isEmpty(mychild.getBirthday()) ){
+						childreninfo.setBirthday(mychild.getBirthday());
+					}
+					if(isHavechild){
+						childMapper.updateByPrimaryKey(childreninfo);
+					}else {
+						childMapper.insert(childreninfo);
+					}
 				}//----------------------------------------------------
 				boolean canModify=false;
 				//自己的作品
@@ -250,6 +294,10 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					if (!ObjectUtil.isEmpty(param.getAuthor())) {
 						myproducts.setAuthor(param.getAuthor());
 					}
+					if (!ObjectUtil.isEmpty(param.getDescription())) {
+						myproducts.setDescription(param.getDescription());
+					}
+					
 					if (param.getDetails() != null && param.getDetails().size() > 0) {
 						//检验 场景是否被选过
 						List<PMyproductdetails> details=myDetaiMapper.findMyProductdetails(cartIdTemp);
@@ -257,9 +305,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 							for (PMyproductdetails de : param.getDetails()) {
 								if(de.getPdid()!=null&&de.getPdid()>0){
 									for (PMyproductdetails myde : details) {
-										if(de.getPdid().longValue()!=myde.getPdid().longValue()&& myde.getSceneid()!=null&&de.getSceneid()!=null&& myde.getSceneid().intValue()==de.getSceneid().intValue()){
+										if(de.getPdid().longValue()!=myde.getPdid().longValue()&& myde.getSceneid()!=null&&de.getSceneid()!=null&& myde.getSceneid().intValue()==de.getSceneid().intValue()&&de.getSceneid()>0){
 											rq.setStatu(ReturnStatus.InvitError_1);
-											rq.setStatusreson("已经被选过的场景");
+											rq.setStatusreson("此主题被协同人使用啦，请更换其他主题");
 											return rq;
 										} 
 									}
@@ -271,11 +319,12 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 								if(!ObjectUtil.isEmpty(de.getImgurl())){
 									de.setUserid(userId); 
 									myDetaiMapper.updateByPrimaryKeySelective(de);
+								}else if(de.getSort()!=null&&de.getSort()>0){
+									myDetaiMapper.updateByPrimaryKeySelective(de);
 								}
 							}
 						}
 					}
-
 					myproducts.setUpdatetime(new Date());
 					// 更新用户作品基本信息
 					myMapper.updateByPrimaryKeySelective(myproducts);
@@ -297,6 +346,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		return rq;
 	}
 
+	
 	/**
 	 * 我的作品列表
 	 * 
@@ -341,6 +391,13 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		List<MyProductResultVo> mylist = myMapper.findMyProductslistForBranch(idsList, status, inviteStatus);
 		PageInfo<MyProductResultVo> resultPage=new PageInfo<MyProductResultVo>(mylist); 
 		if(resultPage.getList()!=null&&resultPage.getList().size()>0){
+			for (MyProductResultVo vv : resultPage.getList()) {
+				for (UBranchusers uu : userList) {
+					if(uu.getUserid().longValue()==vv.getUserid().longValue()){
+						vv.setUserName(uu.getName()); 
+					}
+				} 
+			}
 			resultPage.setList(getMyProductResultVo(resultPage.getList())); 
 		}
 		rq.setStatu(ReturnStatus.Success);
@@ -424,15 +481,22 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		PMyproducts myproducts= myMapper.selectByPrimaryKey(cartId);
 		if(myproducts!=null&&myproducts.getUserid()!=null&&myproducts.getUserid().longValue()==userId){
 			if(myproducts.getStatus()!=null&&myproducts.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
-				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("已下单的作品暂不支持删除操作！");
-				return rq;
+				if(!ObjectUtil.isEmpty(myproducts.getOrderno())){
+					OUserorders order= orderMapper.selectByPrimaryKey(myproducts.getOrderno());
+					if(order!=null&&order.getStatus()!=null&&order.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
+						rq.setStatu(ReturnStatus.SystemError);
+						rq.setStatusreson("作品关联的订单未上传成功，请先查看订单并重新上传！");
+						return rq;
+					}  
+				}
 			}
-			myMapper.deleteByPrimaryKey(cartId);
-			mydetailDao.deleMyProductDetailsByCartId(cartId); 
+			
 			if(myproducts.getInvitestatus()!=null&&myproducts.getInvitestatus()>0){
 				inviteMapper.deleteByCartId(cartId);
 			}
+			mydetailDao.deleMyProductDetailsByCartId(cartId); 
+			myMapper.deleteByPrimaryKey(cartId);
+			
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("删除成功");
 		}else {
@@ -469,22 +533,30 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				}
 			}
 			if (canModify) {
-				PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
-				if (product != null) {
-					myproduct.setDescription(product.getDescription());
+				if(ObjectUtil.isEmpty(myproduct.getDescription())){
+					PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
+					if (product != null) {
+						myproduct.setDescription(product.getDescription());
+					}
 				}
 				List<MyProductsDetailsResult> arrayList =  mydetailDao.findMyProductDetailsResult(cartId);
 				if (arrayList != null && arrayList.size() > 0) {
 					String base_code = userId + "-" + myproduct.getCartid();
 					int i = 1;
 					for (MyProductsDetailsResult dd : arrayList) {
-						if(dd.getSceneid()!=null&&dd.getSceneid()>0){
-							dd.setPrintcode(base_code + "-" + String.format("%02d", dd.getSceneid()) + "-" + String.format("%02d", i));																										// 打印编号				
-							PScenes scene= sceneMapper.selectByPrimaryKey(dd.getSceneid().longValue());
-							if(scene!=null){
-								dd.setSceneDescription(scene.getContent());
-								dd.setSceneTitle(scene.getTitle()); 
-							}
+						if(dd.getSceneid()!=null&&dd.getSceneid()>0){//+ String.format("%02d", dd.getSceneid()) + "-"
+							// 打印编号	
+							dd.setPrintcode(base_code + "-" + String.format("%02d", i));
+							if(ObjectUtil.isEmpty(dd.getDescription()))	{
+								PScenes scene= sceneMapper.selectByPrimaryKey(dd.getSceneid().longValue());
+								if(scene!=null){
+									dd.setSceneDescription(scene.getContent());
+									dd.setSceneTitle(scene.getTitle()); 
+								}
+							}else {
+								dd.setSceneDescription(dd.getDescription());
+								dd.setSceneTitle(dd.getTitle()); 
+							}	
 						}
 						i++;
 					}
@@ -596,17 +668,34 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			if(myproduct.getStatus()!=null&&myproduct.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
 				myproduct.setIsOrder(1);
 			}
-			PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
-			if (product != null) {
-				myproduct.setDescription(product.getDescription());
-			}			
+			if(myproduct.getInvitestatus()!=null&&myproduct.getInvitestatus()>0){
+				List<PMyproductsinvites> invites= inviteMapper.findListByCartId(cartId);
+				if(invites!=null&&invites.size()>0){
+					 UUsers  inviteUser= usersMapper.getUUsersByPhone(invites.get(0).getInvitephone()) ;
+					 if(inviteUser!=null){
+						myproduct.setInviteUserId(inviteUser.getUserid());  
+					 }
+				}
+			}
+			if(ObjectUtil.isEmpty(myproduct.getDescription())){
+				PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
+				if (product != null) {
+					myproduct.setDescription(product.getDescription());
+				}	
+			}
+					
 			List<MyProductsDetailsResult> list=mydetailDao.findMyProductDetailsResult(cartId);
 			if(list!=null&&list.size()>0){
 				for (MyProductsDetailsResult detail : list) {
-					PScenes scene= sceneMapper.selectByPrimaryKey(detail.getSceneid().longValue());
-					if(scene!=null){
-						detail.setSceneDescription(scene.getContent());
-						detail.setSceneTitle(scene.getTitle()); 
+					if(ObjectUtil.isEmpty(detail.getDescription())||ObjectUtil.isEmpty(detail.getTitle())){
+						PScenes scene= sceneMapper.selectByPrimaryKey(detail.getSceneid().longValue());
+						if(scene!=null){
+							detail.setSceneDescription(scene.getContent());
+							detail.setSceneTitle(scene.getTitle()); 
+						}
+					}else {
+						detail.setSceneDescription(detail.getDescription());
+						detail.setSceneTitle(detail.getTitle()); 
 					}
 				}
 			} 
@@ -623,10 +712,12 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			PMyproductdetails detail = myDetaiMapper.selectByPrimaryKey(dpId);
 			if (detail != null) {
 				PMyproducts myproduct = myMapper.selectByPrimaryKey(detail.getCartid());
-				if (myproduct != null && myproduct.getUserid() != null && myproduct.getUserid().longValue() == userId) {
+				if (myproduct != null) {// && myproduct.getUserid() != null && myproduct.getUserid().longValue() == userId
 					detail.setImgurl("");
 					detail.setContent("");
 					detail.setSceneid(null);
+					detail.setTitle("");
+					detail.setDescription("");
 					myDetaiMapper.updateByPrimaryKey(detail);
 					rq.setStatu(ReturnStatus.Success);
 					rq.setStatusreson("删除成功！");

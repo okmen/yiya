@@ -38,7 +38,7 @@ public class LoginController extends SSOController {
 	/**
 	 * µÇÂ½¡¢×¢²á service
 	 */  
-	@Resource(name = "userLoginService")
+	@Resource(name = "userLoginService") 
 	private IUserLoginService loginBaseService; 
 	/**
 	 * µÇÂ½¡¢×¢²á service

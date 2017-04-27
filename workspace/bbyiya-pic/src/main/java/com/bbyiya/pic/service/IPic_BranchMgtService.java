@@ -90,7 +90,7 @@ public interface IPic_BranchMgtService {
 	 * @param size
 	 * @param startTimeStr
 	 * @param endTimeStr
-	 * @return
+	 * @return ReturnModel 
 	 */
 	ReturnModel getSysMessageList(int index, int size, String startTimeStr,
 			String endTimeStr);

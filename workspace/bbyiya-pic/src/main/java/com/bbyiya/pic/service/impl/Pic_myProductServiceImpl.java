@@ -41,7 +41,7 @@ import com.github.pagehelper.PageInfo;
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
 public class Pic_myProductServiceImpl implements IPic_myProductService{
 
-	 /*--------------------我的作品----------------------------------*/
+	 /*-----------------------我的作品----------------------------------*/
 	@Autowired
 	private PMyproductsinvitesMapper inviteMapper;
 	@Autowired

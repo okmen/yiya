@@ -20,7 +20,7 @@
   <sql id="RAreaplansAgentprice_Column_List" >
     AreaId, Step, AgentAmount, PrepayAmount
   </sql>
-  <select id="findRAreaplansByAreaId" resultMap="RAreaplansMap"  ><!-- 通过代理单元Id获取 代理区县 -->
+  <select id="findRAreaplansByAreaId" resultMap="RAreaplansMap"  ><!-- 通 过代理单元Id获取 代理区县 -->
     select 
     <include refid="RAreaplans_Column_List" />
     from r_areaplans

@@ -22,7 +22,7 @@ public interface IPic_OrderMgtDao {
 
 	List<UserOrderResultVO> findUserOrders(SearchOrderParam param);
 	/**
-	 * 获取订单作品列表
+	 *  获取订单作品列表
 	 * @param orderproductId
 	 * @return 
 	 */ 

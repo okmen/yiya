@@ -143,8 +143,8 @@ public class OrderController  extends SSOController {
 				rq.setStatusreson("参数错误，weiuserId必须输入数字！");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-		}
-		
+		} 
+		 
 		if (user != null) {				
 			rq=ctsOrderService.find_payorderExtByWeiUserUpUserid(weiuserIdL, startTimeStr, endTimeStr, status, index, size);			
 		} else {

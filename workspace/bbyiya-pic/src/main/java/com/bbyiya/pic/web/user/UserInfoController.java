@@ -71,7 +71,7 @@ public class UserInfoController  extends SSOController{
 	
 
 	/**
-	 * ÖØÖÃÃÜÂë
+	 * ÖØÖÃÃÜÂë  
 	 * @param phone
 	 * @param vcode
 	 * @param pwd

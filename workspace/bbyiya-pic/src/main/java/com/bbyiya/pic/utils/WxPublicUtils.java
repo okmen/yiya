@@ -37,7 +37,7 @@ public class WxPublicUtils {
 	
 
 	/**
-	 * 获取微信 access_Token
+	 * 获取微信   access_Token
 	 * @param userId
 	 * @return
 	 */

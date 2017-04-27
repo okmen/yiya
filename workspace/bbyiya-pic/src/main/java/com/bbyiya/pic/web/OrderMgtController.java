@@ -63,7 +63,7 @@ public class OrderMgtController extends SSOController {
 		return true;
 	}
 	/**
-	 * O01 提交订单（购买）
+	 * O01 提交订单 （购 买）
 	 * 
 	 * @param addrId
 	 * @param productJsonStr

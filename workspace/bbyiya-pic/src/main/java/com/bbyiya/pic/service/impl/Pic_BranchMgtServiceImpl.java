@@ -444,7 +444,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 					branchTransAccount.setAvailableamount(0.0);
 					transaccountsMapper.updateByPrimaryKey(branchTransAccount);
 				}
-				//3.2.清除代理商账户可用余额
+				//3.2. 清除代理商账户可用余额
 				UAccounts count=accountsMapper.selectByPrimaryKey(branch.getBranchuserid());
 				if(count!=null){
 					count.setAvailableamount(0.0);

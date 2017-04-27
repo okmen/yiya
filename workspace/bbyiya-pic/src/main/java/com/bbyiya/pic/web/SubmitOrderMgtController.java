@@ -35,7 +35,7 @@ public class SubmitOrderMgtController extends SSOController {
 	@Resource(name = "baseOrderMgtServiceImpl")
 	private IBaseOrderMgtService orderMgtService;
 	/**
-	 * 运费
+	 * 运  费
 	 */
 	@Resource(name = "basePostMgtServiceImpl")
 	private IBasePostMgtService postMgtService;

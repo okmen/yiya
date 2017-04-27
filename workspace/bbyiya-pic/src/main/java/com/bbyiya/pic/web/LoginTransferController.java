@@ -32,7 +32,7 @@ import com.bbyiya.web.base.SSOController;
 @RequestMapping(value = "/login")
 public class LoginTransferController extends SSOController {
 	/**
-	 * µÇÂ½¡¢×¢²á service
+	 * µÇÂ½¡¢ ×¢²á service
 	 */
 	@Resource(name = "pic_userMgtService")
 	private IPic_UserMgtService loginService;

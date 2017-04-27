@@ -9,7 +9,7 @@ public interface IPic_myProductService {
 	 * @param userId
 	 * @param phone
 	 * @param cartId
-	 * @return
+	 * @return ReturnModel
 	 */
 	ReturnModel sendInvite(Long userId, String phone,Long cartId);
 	/**

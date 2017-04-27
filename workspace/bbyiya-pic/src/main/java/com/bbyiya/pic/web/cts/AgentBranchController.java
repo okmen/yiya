@@ -235,11 +235,11 @@ public class AgentBranchController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-
+ 
 	/**
 	 * 判断用户代理商申请状态 
 	 * @param type
-	 * @return
+	 * @return String
 	 * @throws Exception
 	 */
 	@ResponseBody

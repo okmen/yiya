@@ -11,7 +11,7 @@ import com.bbyiya.pic.vo.agent.UBranchVo;
 public interface IPic_AgentMgtDao {
 
 	/**
-	 * 获取代理商申请信息
+	 *  获取代理商申请信息
 	 * @param agentuserid
 	 * @return
 	 */

@@ -175,13 +175,14 @@ public class PPostmodelController extends SSOController {
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			rq=postService.delPostModelAreas(postId);	
-		}else {
+		}else { 
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("µÇÂ¼¹ýÆÚ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
 	
 	
 	

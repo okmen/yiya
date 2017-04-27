@@ -39,7 +39,7 @@ public class SysMessageController extends SSOController {
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
-	}
+	} 
 	
 	/**
 	 * 获取意见反馈列表
@@ -61,4 +61,5 @@ public class SysMessageController extends SSOController {
 		}		
 		return JsonUtil.objectToJsonStr(rq);	
 	}
+	
 }

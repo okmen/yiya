@@ -124,7 +124,7 @@ public class PProductController extends SSOController {
 	 * @return
 	 * @throws Exception
 	 */
-	@ResponseBody
+	@ResponseBody 
 	@RequestMapping(value = "/addProductStyles")
 	public String addProductStyles(String myproductJson) throws Exception {
 		ReturnModel rq=new ReturnModel();
@@ -139,5 +139,6 @@ public class PProductController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
 	
 }

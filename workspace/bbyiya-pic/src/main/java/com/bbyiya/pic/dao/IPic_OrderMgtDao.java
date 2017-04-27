@@ -36,8 +36,9 @@ public interface IPic_OrderMgtDao {
 	List<PbsUserOrderResultVO> findPbsUserOrders(SearchOrderParam param);
 	
 	/**
-	 * 根据运单号查找订单信息
+	 * 根据运单号查找订单信息  
 	 * @param expressOrder
+	 * @author julie
 	 * @return
 	 */
 	List<OUserorders> findUserOrderByExpressOrder(@Param("expressOrder") String expressOrder,@Param("expressCom")String expressCom);

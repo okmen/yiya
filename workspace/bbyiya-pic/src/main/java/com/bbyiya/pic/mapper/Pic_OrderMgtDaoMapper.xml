@@ -60,7 +60,7 @@
   <!-- 用 户订单结果类Result -->
   <resultMap id="UserOrderResult" type="com.bbyiya.pic.vo.order.UserOrderResultVO" extends="BaseResultMap">  
   </resultMap>  
-  <!-- 根据运单号查找订单信息 -->
+  <!-- 根 据运单号查找订单信息 -->
   <select id="findUserOrderByExpressOrder" resultMap="BaseResultMap" parameterType="java.lang.String"  >
   	 select 
     <include refid="Base_Column_List" />

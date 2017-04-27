@@ -29,7 +29,7 @@ public interface IPic_OrderMgtDao {
 	List<OOrderproductdetails> findOrderProductDetailsByProductOrderId(@Param("orderProductId")String orderproductId);
 	
 	/**
-	 * 获取Pbs订单列表 
+	 * 获取Pbs订单列 表  
 	 * @param param
 	 * @return
 	 */

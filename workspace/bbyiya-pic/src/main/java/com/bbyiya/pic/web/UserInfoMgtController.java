@@ -38,7 +38,7 @@ import com.bbyiya.web.base.SSOController;
 @RequestMapping(value = "/user")
 public class UserInfoMgtController extends SSOController {
 	/**
-	 * µÇÂ½¡¢×¢²á service
+	 * µÇÂ½¡¢   ×¢²á service
 	 */
 	@Resource(name = "baseUserAddressServiceImpl")
 	private IBaseUserAddressService addressService;

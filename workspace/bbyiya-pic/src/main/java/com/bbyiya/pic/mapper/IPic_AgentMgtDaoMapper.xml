@@ -50,7 +50,7 @@
     City, Area, StreetDetail, BusinessLicense, BusinessScope, ShopImg, TeamImg, Remark, 
     Status, CreateTime, ProcessTime
   </sql>
-   <!-- 代理商申请信息Model-->
+   <!-- 代 理商申请信息Model-->
   <resultMap id="UAgentapplyVOResult" type="com.bbyiya.pic.vo.agent.UAgentApplyVo" extends="UAgentapplyMap">  
   </resultMap>  
   <!-- 影楼信息Model -->
@@ -94,6 +94,18 @@
      <if test="username != null" >
        and  UserName = #{username,jdbcType=VARCHAR}
     </if>
+  </select>
+  
+  <!-- 根据AgentUserId获取影楼 列表 -->
+  <select id="findUBranchVoListByAgentUserId" resultMap="UBranchVoResult" parameterType="java.lang.Long" >
+    select 
+    <include refid="UBranches_Column_List" />
+    from u_branches
+    where 1=1
+    <if test="agentUserId != null" >
+        and  AgentUserId = #{agentUserId,jdbcType=BIGINT}
+    </if>
+   
   </select>
   <!-- 通过影楼userId获取影楼信息result -->
   <select id="getUBranchVoByBranchUserId" resultMap="UBranchVoResult" parameterType="java.lang.Long" >

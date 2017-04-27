@@ -51,7 +51,7 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 	//客户信息处理
 	@Resource(name = "pic_memberMgtService")
 	private IPic_MemberMgtService memberMgtService;
-	/*------------------订单模块--------------------------------------*/
+	/*----------------------订单模块--------------------------------------*/
 	@Autowired
 	private OUserordersMapper userOrdersMapper;
 	@Autowired

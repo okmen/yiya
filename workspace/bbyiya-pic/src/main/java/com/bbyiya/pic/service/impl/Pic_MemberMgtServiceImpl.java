@@ -150,7 +150,7 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 	/**
 	 * 根据AgentUserId得到Uagentcustomers列表
 	 * @param branchUserId
-	 * @return
+	 *   @return  
 	 */
 	public ReturnModel findCustomerslistByAgentUserId(Long branchUserId){
 		ReturnModel rqModel=new ReturnModel();

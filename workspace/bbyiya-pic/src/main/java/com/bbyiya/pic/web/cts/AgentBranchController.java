@@ -207,11 +207,39 @@ public class AgentBranchController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-
+	
 	/**
-	 * 判断用户代理商申请状态
-	 * @param type
+	 * 代理商退驻操作
+	 * 
+	 * @param agentUserId
+	 * @param status
+	 * @param msg
 	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/agentTuiZhu")
+	public String agentTuiZhu(Long agentUserId) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {		
+			if(validate(user.getUserId())){
+				rq = branchService.agentTuiZhu(user.getNickName(),user.getUserId(), agentUserId);
+			}else {
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson("无权限");
+			}
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+ 
+	/**
+	 * 判断用户代理商申请状态 
+	 * @param type
+	 * @return String
 	 * @throws Exception
 	 */
 	@ResponseBody

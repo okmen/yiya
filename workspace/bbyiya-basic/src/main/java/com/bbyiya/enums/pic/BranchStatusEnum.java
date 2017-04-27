@@ -10,6 +10,10 @@ public enum BranchStatusEnum {
      */
     no(2),
     /**
+     * 退驻
+     */
+    tuizhu(4),
+    /**
      * 通过， 交了代理费(成为代理商)
      */
     ok(1)

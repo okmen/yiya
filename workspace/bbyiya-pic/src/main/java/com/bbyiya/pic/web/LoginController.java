@@ -59,28 +59,22 @@ public class LoginController extends SSOController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/transfer")
-	public String transferPage(String m,String uid) throws Exception {
+	public String transferPage(String m,String uid,String redirct_url) throws Exception {
 //		LoginSuccessResult user = super.getLoginUser();
 		long branch_userid=ObjectUtil.parseLong(uid);
-		if(branch_userid>0||!ObjectUtil.isEmpty(m)){ 
+		if(branch_userid>0||!ObjectUtil.isEmpty(m)||!ObjectUtil.isEmpty(redirct_url)){  
 			LoginTempVo loginTemp=new LoginTempVo();
 			loginTemp.setUpUserId(branch_userid);
 			loginTemp.setLoginTo(ObjectUtil.parseInt(m));
+			if(!ObjectUtil.isEmpty(redirct_url)){
+				loginTemp.setRedirect_url(redirct_url); 
+			}
 			String keyId= request.getSession().getId();
 			RedisUtil.setObject(keyId, loginTemp, 60);
 		}
-//		int mtype=ObjectUtil.parseInt(m);
-//		if(mtype>0){
-//			if (user != null) {
-//				if(mtype==1){//测试地址
-//					return "redirect:" + ConfigUtil.getSingleValue("loginbackurl_test") ;
-//				}
-//			} 
-//			return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLoginTest&response_type=code&scope=snsapi_base#wechat_redirect" ;	
-//		}
-//		else {//正式地址登录
-			return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin&response_type=code&scope=snsapi_base#wechat_redirect" ;		
-//		}
+//		return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin&response_type=code&scope=snsapi_userinfo#wechat_redirect" ;		
+		
+		return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin&response_type=code&scope=snsapi_base#wechat_redirect" ;		
 	}
 	
 	/**
@@ -116,6 +110,10 @@ public class LoginController extends SSOController {
 		if (ReturnStatus.Success.equals(rqModel.getStatu()) && !ObjectUtil.isEmpty(rqModel.getBasemodle())) {
 			addLoginLogAndCookie(rqModel.getBasemodle(),0);
 		}
+		LoginTempVo logintemp= (LoginTempVo)RedisUtil.getObject(request.getSession().getId());
+		if(logintemp!=null&&!ObjectUtil.isEmpty(logintemp.getRedirect_url())){
+			return "redirect:" + logintemp.getRedirect_url() ;
+		}
 		return "redirect:" + ConfigUtil.getSingleValue("photo-net-url") ;
 	}
 	
@@ -139,13 +137,15 @@ public class LoginController extends SSOController {
 
 		JSONObject model = JSONObject.fromObject(result);
 		ReturnModel rqModel = new ReturnModel();
+		//中转信息
+		LoginTempVo logintemp= (LoginTempVo)RedisUtil.getObject(request.getSession().getId());
 		if (model != null) {
 			String openid = String.valueOf(model.get("openid"));
 			String access_token = String.valueOf(model.get("access_token"));
 			if (!ObjectUtil.isEmpty(openid) && !ObjectUtil.isEmpty(access_token) && !"null".equals(openid) && !"null".equals(access_token)) {
 
 				String userInfoUrl = "https://api.weixin.qq.com/sns/userinfo";
-				String data2 = "access_token=" + access_token + "&openid=" + openid;
+				String data2 = "access_token=" + access_token + "&openid=" + openid+"&lang=zh_CN";
 				String userInfoJson = HttpRequestHelper.sendPost(userInfoUrl, data2);
 				JSONObject userJson = JSONObject.fromObject(userInfoJson);
 				if (userInfoJson != null) {
@@ -160,7 +160,7 @@ public class LoginController extends SSOController {
 					if(!ObjectUtil.isEmpty(headimg)&&!"null".equals(headimg)){
 						param.setHeadImg(headimg);
 					}
-					LoginTempVo logintemp= (LoginTempVo)RedisUtil.getObject(request.getSession().getId());
+					
 					if(logintemp!=null){
 						if(logintemp.getUpUserId()!=null&&logintemp.getUpUserId()>0){
 							param.setUpUserId(logintemp.getUpUserId()); 
@@ -189,6 +189,10 @@ public class LoginController extends SSOController {
 			rqModel.setStatusreson("获取微信登录权限失败");
 		}
 		if (rqModel.getStatu().equals(ReturnStatus.Success)) {
+			//用户跳转
+			if(logintemp!=null&&!ObjectUtil.isEmpty(logintemp.getRedirect_url())){
+				return "redirect:" + logintemp.getRedirect_url() ; 
+			}
 			return "redirect:" + ConfigUtil.getSingleValue("loginbackurl") ;
 		} else {
 			return "redirect:" + ConfigUtil.getSingleValue("loginbackurl") ;
@@ -198,6 +202,11 @@ public class LoginController extends SSOController {
 
 	
 
+	/**
+	 * 
+	 * @param obj
+	 * @param type
+	 */
 	private void addLoginLogAndCookie(Object obj,int type) {
 		try {
 			LoginSuccessResult user = (LoginSuccessResult) obj;

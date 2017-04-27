@@ -22,22 +22,23 @@ public interface IPic_OrderMgtDao {
 
 	List<UserOrderResultVO> findUserOrders(SearchOrderParam param);
 	/**
-	 * 获取订单作品列表
+	 *  获取订单作品列表
 	 * @param orderproductId
 	 * @return 
 	 */ 
 	List<OOrderproductdetails> findOrderProductDetailsByProductOrderId(@Param("orderProductId")String orderproductId);
 	
 	/**
-	 * 获取Pbs订单列表
+	 * 获取Pbs订单列 表  
 	 * @param param
 	 * @return
 	 */
 	List<PbsUserOrderResultVO> findPbsUserOrders(SearchOrderParam param);
 	
 	/**
-	 * 根据运单号查找订单信息
+	 * 根据运单号查找订单信息  
 	 * @param expressOrder
+	 * @author julie
 	 * @return
 	 */
 	List<OUserorders> findUserOrderByExpressOrder(@Param("expressOrder") String expressOrder,@Param("expressCom")String expressCom);

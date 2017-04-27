@@ -16,7 +16,11 @@ public enum AgentStatusEnum {
     /**
      * 交了代理费(成为代理商)
      */
-    ok(1)
+    ok(1),
+    /**
+     * 退驻
+     */
+    tuizhu(4)
     ;
 
     private final int Type;

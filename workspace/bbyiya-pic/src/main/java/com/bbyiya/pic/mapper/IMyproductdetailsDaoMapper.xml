@@ -17,7 +17,7 @@
     	<result column="Description" property="description" jdbcType="VARCHAR" />
 	</resultMap>
 
-	<!-- 我的作品详情Result -->
+	<!--   我的作品详情Result -->
 	<resultMap id="MyProductDetailsResult"
 		type="com.bbyiya.pic.vo.product.MyProductsDetailsResult" extends="BaseResultMap">
 	</resultMap>

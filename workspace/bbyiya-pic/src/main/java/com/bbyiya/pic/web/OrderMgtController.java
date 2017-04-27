@@ -2,7 +2,6 @@ package com.bbyiya.pic.web;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,14 +21,12 @@ import com.bbyiya.model.EErrors;
 import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.PMyproducts;
-import com.bbyiya.pic.service.IPic_OrderMgtService;
-//import com.bbyiya.pic.service.pbs.IPbs_OrderMgtService;
 import com.bbyiya.pic.vo.order.OrderPhotoParam;
 import com.bbyiya.pic.vo.order.SaveOrderPhotoParam;
 import com.bbyiya.pic.vo.order.SubmitOrderProductParam;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
 import com.bbyiya.utils.DateUtil;
-//import com.bbyiya.utils.ConfigUtil;
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -42,9 +39,6 @@ public class OrderMgtController extends SSOController {
 
 	@Resource(name = "baseOrderMgtServiceImpl")
 	private IBaseOrderMgtService orderMgtService;
-	
-	@Resource(name = "pic_orderMgtService")
-	private IPic_OrderMgtService orderService;
 	@Autowired
 	private PMyproductsMapper myMapper;
 	@Autowired
@@ -63,7 +57,7 @@ public class OrderMgtController extends SSOController {
 		return true;
 	}
 	/**
-	 * O01 提交订单（购买）
+	 * O01 提交订单 （购 买）
 	 * 
 	 * @param addrId
 	 * @param productJsonStr
@@ -144,7 +138,7 @@ public class OrderMgtController extends SSOController {
 						if (ObjectUtil.isEmpty(pp.getImageUrl()) || ObjectUtil.isEmpty(pp.getPrintNo())||ObjectUtil.isEmpty(pp.getBackImageUrl())) {
 							rq.setStatu(ReturnStatus.ParamError_1);
 							rq.setStatusreson("图片信息有误，打印号：" + pp.getPrintNo());
-							addlog("图片正面|反面缺失！+"+param.getOrderId()); 
+							addlog(orderImagesJson);
 							return JsonUtil.objectToJsonStr(rq); 
 						}
 						OOrderproductdetails item = new OOrderproductdetails();
@@ -210,49 +204,6 @@ public class OrderMgtController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	
-	
-	/**
-	 * O03 我的购买订单 带分页
-	 * 
-	 * @return
-	 * @throws Exception
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/userbuylist")
-	public String userbuylist(int index,int size) throws Exception {
-		ReturnModel rq = new ReturnModel();
-		LoginSuccessResult user = super.getLoginUser();
-		if (user != null) {
-			rq = orderMgtService.findUserOrderlist(user.getUserId(),index,size);
-		} else {
-			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
-		}
-		return JsonUtil.objectToJsonStr(rq);
-	}
-	
-	/**
-	 * O02取消订单
-	 * 
-	 * @return
-	 * @throws Exception
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/cancelorder")
-	public String cancelorder(String orderId) throws Exception {
-		ReturnModel rq = new ReturnModel();
-		LoginSuccessResult user = super.getLoginUser();
-		if (user != null) {
-			rq = orderService.cancelOrder(orderId);
-		} else {
-			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
-		}
-		return JsonUtil.objectToJsonStr(rq);
-	}
-	
-	
 
 	/**
 	 * O05 支付详情
@@ -275,49 +226,7 @@ public class OrderMgtController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
-	/**
-	 * O09 再次订购产品详情浏览效果
-	 * @return
-	 * @throws Exception
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/getOrderProductdetails")
-	public String getOrderProductdetails(@RequestParam(required = false, defaultValue = "0") String userOrderId) throws Exception {
-		ReturnModel rq = new ReturnModel();
-		LoginSuccessResult user= super.getLoginUser();
-		if(user!=null){
-			rq=orderService.getOrderProductdetailsByUserOrderId(userOrderId);
-		}else {
-			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
-		}
-		return JsonUtil.objectToJsonStr(rq);
-	}
-	
-	/**
-	 * 根据OrderProductId得到OrderProductdetails
-	 * 用于客户端下载图片用
-	 * @param orderProductId
-	 * @return
-	 * @throws Exception
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/getOrderProductdetailsByOrderProductId")
-	public String getOrderProductdetailsByOrderProductId(@RequestParam(required = false, defaultValue = "0") String orderProductId) throws Exception {
-		ReturnModel rq = new ReturnModel();
-		LoginSuccessResult user= super.getLoginUser();
-		if(user!=null){
-			List<OOrderproductdetails> detaillist=orderService.getOrderProductdetails(orderProductId);
-			HashMap<String,Object> map=new HashMap<String, Object>();
-			map.put("list", detaillist);
-			rq.setBasemodle(map);
-			rq.setStatu(ReturnStatus.Success);
-		}else {
-			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
-		}
-		return JsonUtil.objectToJsonStr(rq);
-	}
+
 	
 	public void addlog(String msg) {
 		EErrors errors = new EErrors();

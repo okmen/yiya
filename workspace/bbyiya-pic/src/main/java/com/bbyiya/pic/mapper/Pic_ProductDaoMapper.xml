@@ -16,7 +16,7 @@
   <resultMap id="ProductSampleResultVO" type="com.bbyiya.pic.vo.product.ProductSampleResultVO" extends="PProductsamplesMap">  
   </resultMap>  
    
-   <!-- 搜索相册样本列表  -->
+   <!--  搜索相册样本列表  -->
   <select id="findProductSamplesByProductId" resultMap="ProductSampleResultVO"  >
     select  <include refid="PProductsamples_Column_List" />
     from p_productsamples where ProductId=#{productId,jdbcType=BIGINT}  

@@ -29,7 +29,7 @@ public class InviteMgtController  extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/sendInvite")
-	public String getBranchAreaPrice(String phone,Long cartId) throws Exception {
+	public String sendInvite(String phone,Long cartId) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
@@ -60,6 +60,29 @@ public class InviteMgtController  extends SSOController {
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			rq=myProductService.processInvite(user.getMobilePhone(), cartId, status);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期，请重新登录");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 处理扫码页面的接受邀请
+	 * @param phone 被邀请人手机号
+	 * @param cartId 作品cartid
+	 * @param verifcode  验证码
+	 * @param needVerfiCode  是否需要验证手机验证码
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/acceptScanQrCodeInvite")
+	public String acceptScanQrCodeInvite(String phone,Long cartId,String vcode,Integer needVerfiCode) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=myProductService.acceptScanQrCodeInvite(user.getUserId(),phone,cartId,vcode,needVerfiCode);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期，请重新登录");

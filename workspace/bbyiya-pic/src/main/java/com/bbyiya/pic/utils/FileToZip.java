@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;  
 import java.util.zip.ZipOutputStream;  
 /** 
- * 灏嗘枃浠跺す涓嬮潰鐨勬枃浠? 
- * 鎵撳寘鎴恴ip鍘嬬缉鏂囦欢 
+ * 将文件夹下面的文件 
+ * 打包成zip压缩文件 
  *  
  * @author admin 
  * 
@@ -68,14 +68,14 @@ public final class FileToZip {
     }  
     
     /**
-     *  鍒犻櫎鍗曚釜鏂囦欢 
-     * @param sPath 琚垹闄ゆ枃浠剁殑璺緞+鏂囦欢鍚?
-     * @return 鍗曚釜鏂囦欢鍒犻櫎鎴愬姛杩斿洖true锛屽惁鍒欒繑鍥瀎alse
+     *  删除单个文件 
+     * @param sPath 被删除文件的路径+文件名
+     * @return 单个文件删除成功返回true，否则返回false
      */
 	public boolean deleteFile(String sPath) {
 		boolean flag = false;
 		File file = new File(sPath);
-		// 璺緞涓烘枃浠朵笖涓嶄负绌哄垯杩涜鍒犻櫎
+		// 路径为文件且不为空则进行删除
 		if (file.isFile() && file.exists()) {
 			file.delete();
 			flag = true;
@@ -84,31 +84,31 @@ public final class FileToZip {
 	}
 	
     public boolean deleteDirectory(String sPath) {
-    	// 濡傛灉sPath涓嶄互鏂囦欢鍒嗛殧绗︾粨灏撅紝鑷姩娣诲姞鏂囦欢鍒嗛殧绗?
+    	// 如果sPath不以文件分隔符结尾，自动添加文件分隔符
     	if (!sPath.endsWith(File.separator)) {
     		sPath = sPath + File.separator;
 		}
 		File dirFile = new File(sPath);
-		// 濡傛灉dir瀵瑰簲鐨勬枃浠朵笉瀛樺湪锛屾垨鑰呬笉鏄竴涓洰褰曪紝鍒欓??鍑?
+		// 如果dir对应的文件不存在，或者不是一个目录，则退出
 		if (!dirFile.exists() || !dirFile.isDirectory()) {
 		return false;
 		}
 		boolean flag = true;
-		// 鍒犻櫎鏂囦欢澶逛笅鐨勬墍鏈夋枃浠?(鍖呮嫭瀛愮洰褰?)
+		// 删除文件夹下的所有文件(包括子目录)
 		File[] files = dirFile.listFiles();
 		for (int i = 0; i < files.length; i++) {
-			// 鍒犻櫎瀛愭枃浠?
+			// 删除子文件
 			if (files[i].isFile()) {
 				flag=deleteFile(files[i].getAbsolutePath());
 				if (!flag)break;
-			} // 鍒犻櫎瀛愮洰褰?
+			} // 删除子目录
 			else {
 				flag = deleteDirectory(files[i].getAbsolutePath());
 				if (!flag)break;
 			}
 		}
 		if (!flag)return false;
-		// 鍒犻櫎褰撳墠鐩綍
+		// 删除当前目录
 		if (dirFile.delete()) {
 			return true;
 		} else {

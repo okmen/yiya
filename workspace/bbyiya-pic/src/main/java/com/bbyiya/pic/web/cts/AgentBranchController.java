@@ -237,7 +237,7 @@ public class AgentBranchController extends SSOController {
 	}
 
 	/**
-	 * 判断用户代理商申请状态
+	 * 判断用户代理商申请状态 
 	 * @param type
 	 * @return
 	 * @throws Exception

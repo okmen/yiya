@@ -61,4 +61,5 @@ public class SysMessageController extends SSOController {
 		}		
 		return JsonUtil.objectToJsonStr(rq);	
 	}
+	
 }

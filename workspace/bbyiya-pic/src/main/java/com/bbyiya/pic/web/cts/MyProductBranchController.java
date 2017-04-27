@@ -30,7 +30,7 @@ public class MyProductBranchController extends SSOController {
 	@Autowired
 	private EErrorsMapper logger;
 	
-	@ResponseBody
+	@ResponseBody 
 	@RequestMapping(value = "/findMyProductsForBranch")
 	public String findMyProductsForBranch(@RequestParam(required = false, defaultValue = "1")int index,@RequestParam(required = false, defaultValue = "20")int size) throws Exception {
 		ReturnModel rq=new ReturnModel();
@@ -44,4 +44,5 @@ public class MyProductBranchController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
 }

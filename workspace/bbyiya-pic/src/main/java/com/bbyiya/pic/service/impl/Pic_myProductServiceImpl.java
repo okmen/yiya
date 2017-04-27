@@ -73,12 +73,25 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 //				return rq;
 //			}
 			if(myproducts.getUserid()!=null&&myproducts.getUserid().longValue()==userId){
-				List<PMyproductsinvites> list= inviteMapper.findListByCartId(cartId);
+				List<PMyproductsinvites> list= inviteMapper.findListByCartId(cartId);			
+				boolean flag=true;
 				if(list!=null&&list.size()>0){
 					for (PMyproductsinvites invo : list) {
-						inviteMapper.deleteByPrimaryKey(invo.getInviteid());
+						if(invo.getStatus()==Integer.parseInt(InviteStatus.agree.toString())){
+							flag=false;
+							rq.setStatu(ReturnStatus.ParamError);
+							rq.setStatusreson("已有人接受邀请协同编辑，不能再邀请了！"); 
+							return rq;
+						}						
+					}
+					//如果没有在接受邀请的情况下，清空以前的未接受或已拒绝的邀请
+					if(flag){
+						for (PMyproductsinvites invo : list) {
+							inviteMapper.deleteByPrimaryKey(invo.getInviteid());
+						}
 					}
 				}
+				
 				PMyproductsinvites invoMo=new PMyproductsinvites();
 				invoMo.setCartid(cartId);
 				invoMo.setInvitephone(phone);
@@ -151,9 +164,21 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 		if(myproducts!=null){
 			if(myproducts.getUserid()!=null){
 				List<PMyproductsinvites> list= inviteMapper.findListByCartId(cartId);
+				boolean flag=true;
 				if(list!=null&&list.size()>0){
 					for (PMyproductsinvites invo : list) {
-						inviteMapper.deleteByPrimaryKey(invo.getInviteid());
+						if(invo.getStatus()==Integer.parseInt(InviteStatus.agree.toString())){
+							flag=false;
+							rq.setStatu(ReturnStatus.ParamError);
+							rq.setStatusreson("已有人接受邀请协同编辑，不能再邀请了！"); 
+							return rq;
+						}
+					}
+					//如果没有在接受邀请的情况下，清空以前的未接受或已拒绝的邀请
+					if(flag){
+						for (PMyproductsinvites invo : list) {
+							inviteMapper.deleteByPrimaryKey(invo.getInviteid());
+						}
 					}
 				}
 				PMyproductsinvites invoMo=new PMyproductsinvites();

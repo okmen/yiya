@@ -93,7 +93,7 @@
      order by OrderTime desc
   </select>
   
-   <!-- Pbs用户订单结果类Result -->
+   <!-- Pbs用户订单结果类Result  -->
   <resultMap id="PbsUserOrderResult" type="com.bbyiya.pic.vo.order.PbsUserOrderResultVO" extends="OOrderproductsMap">
   		<id property="userorderid" column="UserOrderId"/>   
         <association property="order" javaType="com.bbyiya.model.OUserorders">   

@@ -57,9 +57,10 @@ public interface IPic_myProductService {
 	 * @param userId 被邀请人用户ID
 	 * @param vcode  验证码
 	 * @param needVerfiCode  是否需要验证手机验证码 0 不需要，1需要
+	 * @param version  二维码版本号
 	 * @author julie at 2017-04-26
 	 * @throws Exception
 	 */
-	ReturnModel acceptScanQrCodeInvite(Long userId,String phone, Long cartId, String vcode, Integer needVerfiCode);
+	ReturnModel acceptScanQrCodeInvite(Long userId,String phone, Long cartId, String vcode, Integer needVerfiCode,String version);
 	
 }

@@ -79,28 +79,32 @@
     where CartId = #{cartid,jdbcType=BIGINT}
   </delete>
   <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="cartid" parameterType="com.bbyiya.model.PMyproducts" >
-     insert into p_myproducts (CartId, UserId, Title, 
+      insert into p_myproducts (CartId, UserId, Title, 
       Author, ProductId, StyleId, 
       CreateTime, Status, Phone, 
       OrderNo, InviteStatus, UpdateTime, 
-      HeadImg, Description)
+      HeadImg, Description, Version
+      )
     values (#{cartid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
       #{author,jdbcType=VARCHAR}, #{productid,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, 
       #{createtime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, 
       #{orderno,jdbcType=VARCHAR}, #{invitestatus,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}, 
-      #{headimg,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR})
+      #{headimg,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR}
+      )
   </insert>
    <insert id="insert" parameterType="com.bbyiya.model.PMyproducts" >
     insert into p_myproducts (CartId, UserId, Title, 
       Author, ProductId, StyleId, 
       CreateTime, Status, Phone, 
       OrderNo, InviteStatus, UpdateTime, 
-      HeadImg, Description)
+      HeadImg, Description, Version
+      )
     values (#{cartid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
       #{author,jdbcType=VARCHAR}, #{productid,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, 
       #{createtime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, 
       #{orderno,jdbcType=VARCHAR}, #{invitestatus,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}, 
-      #{headimg,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR})
+      #{headimg,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproducts" >
     insert into p_myproducts
@@ -147,6 +151,9 @@
       <if test="description != null" >
         Description,
       </if>
+      <if test="version != null" >
+        Version,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="cartid != null" >
@@ -190,6 +197,9 @@
       </if>
       <if test="description != null" >
         #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null" >
+        #{version,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -235,6 +245,9 @@
       <if test="description != null" >
         Description = #{description,jdbcType=VARCHAR},
       </if>
+      <if test="version != null" >
+        Version = #{version,jdbcType=VARCHAR},
+      </if>
     </set>
     where CartId = #{cartid,jdbcType=BIGINT}
   </update>
@@ -252,7 +265,8 @@
       InviteStatus = #{invitestatus,jdbcType=INTEGER},
       UpdateTime = #{updatetime,jdbcType=TIMESTAMP},
       HeadImg = #{headimg,jdbcType=VARCHAR},
-      Description = #{description,jdbcType=VARCHAR}
+      Description = #{description,jdbcType=VARCHAR},
+      Version = #{version,jdbcType=VARCHAR}
     where CartId = #{cartid,jdbcType=BIGINT}
   </update>
 </mapper>

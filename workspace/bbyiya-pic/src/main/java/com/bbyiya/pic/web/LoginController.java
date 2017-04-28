@@ -66,7 +66,7 @@ public class LoginController extends SSOController {
 			LoginTempVo loginTemp=new LoginTempVo();
 			loginTemp.setUpUserId(branch_userid);
 			loginTemp.setLoginTo(ObjectUtil.parseInt(m));
-			if(!ObjectUtil.isEmpty(redirct_url)){
+			if(!ObjectUtil.isEmpty(redirct_url)&&!"null".equals(redirct_url)){
 				loginTemp.setRedirect_url(redirct_url); 
 			}
 			String keyId= request.getSession().getId();
@@ -88,7 +88,7 @@ public class LoginController extends SSOController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/wxLoginTest")
-	public String wxLoginTest(String headImg, @RequestParam(required = false, defaultValue = "2") int loginType, String nickName, String openId,String upUid) throws Exception {
+	public String wxLoginTest(String headImg, @RequestParam(required = false, defaultValue = "2") int loginType, String nickName, String openId,String upUid,String redirect_url) throws Exception {
 		headImg = ObjectUtil.urlDecoder_decode(headImg, "");
 		nickName = ObjectUtil.urlDecoder_decode(nickName, "");
 		openId = ObjectUtil.urlDecoder_decode(openId, "");
@@ -110,9 +110,18 @@ public class LoginController extends SSOController {
 		if (ReturnStatus.Success.equals(rqModel.getStatu()) && !ObjectUtil.isEmpty(rqModel.getBasemodle())) {
 			addLoginLogAndCookie(rqModel.getBasemodle(),0);
 		}
-		LoginTempVo logintemp= (LoginTempVo)RedisUtil.getObject(request.getSession().getId());
-		if(logintemp!=null&&!ObjectUtil.isEmpty(logintemp.getRedirect_url())){
-			return "redirect:" + logintemp.getRedirect_url() ;
+		if(!ObjectUtil.isEmpty(redirect_url)&&!"null".equals(redirect_url)){
+//			try {
+//				LoginTempVo logintemp= (LoginTempVo)JsonUtil.jsonStrToObject(loginTempJson, LoginTempVo.class);
+//				if(logintemp!=null&&!ObjectUtil.isEmpty(logintemp.getRedirect_url())&&!"null".equals(logintemp.getRedirect_url())){
+//					return "redirect:" + logintemp.getRedirect_url() ;
+//				}
+//			} catch (Exception e) {
+//				// TODO: handle exception
+//			}
+			if(redirect_url.indexOf("http")>0){
+				return "redirect:" + redirect_url ;
+			}
 		}
 		return "redirect:" + ConfigUtil.getSingleValue("photo-net-url") ;
 	}
@@ -160,7 +169,6 @@ public class LoginController extends SSOController {
 					if(!ObjectUtil.isEmpty(headimg)&&!"null".equals(headimg)){
 						param.setHeadImg(headimg);
 					}
-					
 					if(logintemp!=null){
 						if(logintemp.getUpUserId()!=null&&logintemp.getUpUserId()>0){
 							param.setUpUserId(logintemp.getUpUserId()); 
@@ -168,6 +176,9 @@ public class LoginController extends SSOController {
 						int m=logintemp.getLoginTo()==null?0:logintemp.getLoginTo();
 						if(m==1){ //photo测试地址
 							String paramtest="?headImg="+param.getHeadImg()+"&loginType="+param.getLoginType()+"&nickName="+param.getNickName()+"&openId="+param.getOpenId()+"&upUid="+param.getUpUserId();
+							if(!ObjectUtil.isEmpty(logintemp.getRedirect_url())&&!"null".equals(logintemp.getRedirect_url())){
+								paramtest+="&redirect_url="+logintemp.getRedirect_url(); 
+							}
 							//跳转mpic测试接口地址中转
 							return "redirect:" + ConfigUtil.getSingleValue("mpic-net-url")+paramtest;
 						}

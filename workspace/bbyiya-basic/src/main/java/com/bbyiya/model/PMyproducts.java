@@ -31,6 +31,7 @@ public class PMyproducts implements Serializable{
     private Date updatetime;
     private String headimg;
     private String description;
+    private String version;
     
     public Long getCartid() {
         return cartid;
@@ -150,6 +151,14 @@ public class PMyproducts implements Serializable{
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
 	}
     
 }

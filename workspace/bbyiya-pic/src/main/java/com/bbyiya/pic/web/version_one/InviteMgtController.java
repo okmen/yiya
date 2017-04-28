@@ -73,7 +73,7 @@ public class InviteMgtController  extends SSOController {
 	 * @param cartId 作品cartid
 	 * @param verifcode  验证码
 	 * @param needVerfiCode  是否需要验证手机验证码
-	 * @param version  二维码版本号
+	 * @param version 二维码版本号a
 	 * @return
 	 * @throws Exception
 	 */

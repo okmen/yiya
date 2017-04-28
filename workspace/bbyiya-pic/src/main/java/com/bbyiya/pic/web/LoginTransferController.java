@@ -32,7 +32,7 @@ import com.bbyiya.web.base.SSOController;
 @RequestMapping(value = "/login")
 public class LoginTransferController extends SSOController {
 	/**
-	 * µÇÂ½¡¢ ×¢²á service
+	 * µÇÂ½¡¢×¢²á service
 	 */
 	@Resource(name = "pic_userMgtService")
 	private IPic_UserMgtService loginService;
@@ -148,8 +148,7 @@ public class LoginTransferController extends SSOController {
 				loginLogs.setNickname(user.getNickName());
 				loginLogs.setSourcetype(1);// 12photo
 				loginLogMapper.insert(loginLogs);
-//				CookieUtils.addCookieBySessionId(request, response, user.getTicket(), 86400);
-				CookieUtils.addCookie_web(request, response,user.getTicket(),86400);
+				CookieUtils.addCookieBySessionId(request, response, user.getTicket(), 86400);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception

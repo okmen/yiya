@@ -41,7 +41,6 @@ import com.bbyiya.model.UChildreninfo;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.dao.IMyProductDetailsDao;
 import com.bbyiya.pic.dao.IMyProductsDao;
-import com.bbyiya.pic.dao.IPic_OrderMgtDao;
 import com.bbyiya.pic.dao.IPic_ProductDao;
 import com.bbyiya.pic.service.IPic_ProductService;
 import com.bbyiya.pic.vo.product.MyProductParam;
@@ -63,7 +62,7 @@ import com.github.pagehelper.PageInfo;
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
 public class Pic_ProductServiceImpl implements IPic_ProductService {
 
-	/*---------------------Product---------------------------*/
+	/*------------------Product---------------------------*/
 	@Autowired
 	private PProductsMapper productsMapper;
 	@Autowired
@@ -101,8 +100,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private IMyProductDetailsDao mydetailDao;
 	@Autowired
 	private IPic_ProductDao productDao;
-	@Autowired 
-	private IPic_OrderMgtDao orderDao;
+	
 	
 
 	public ReturnModel getProductSamples(Long productId) {
@@ -483,21 +481,14 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		PMyproducts myproducts= myMapper.selectByPrimaryKey(cartId);
 		if(myproducts!=null&&myproducts.getUserid()!=null&&myproducts.getUserid().longValue()==userId){
 			if(myproducts.getStatus()!=null&&myproducts.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
-				//得到作品相关的未支付或图片未上传订单
-				List<OUserorders> orderList=orderDao.findOrderListByCartId(cartId);
-				if(orderList!=null&&orderList.size()>0){
-					rq.setStatu(ReturnStatus.SystemError);
-					rq.setStatusreson("作品关联的订单或未支付或图片未上传成功，请先查看订单支付状态或重新上传！");
-					return rq;
+				if(!ObjectUtil.isEmpty(myproducts.getOrderno())){
+					OUserorders order= orderMapper.selectByPrimaryKey(myproducts.getOrderno());
+					if(order!=null&&order.getStatus()!=null&&order.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
+						rq.setStatu(ReturnStatus.SystemError);
+						rq.setStatusreson("作品关联的订单未上传成功，请先查看订单并重新上传！");
+						return rq;
+					}  
 				}
-//				if(!ObjectUtil.isEmpty(myproducts.getOrderno())){
-//					OUserorders order= orderMapper.selectByPrimaryKey(myproducts.getOrderno());
-//					if(order!=null&&order.getStatus()!=null&&order.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
-//						rq.setStatu(ReturnStatus.SystemError);
-//						rq.setStatusreson("作品关联的订单未上传成功，请先查看订单并重新上传！");
-//						return rq;
-//					}  
-//				}
 			}
 			
 			if(myproducts.getInvitestatus()!=null&&myproducts.getInvitestatus()>0){
@@ -553,9 +544,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					String base_code = userId + "-" + myproduct.getCartid();
 					int i = 1;
 					for (MyProductsDetailsResult dd : arrayList) {
-						if(dd.getSceneid()!=null&&dd.getSceneid()>0){//+ String.format("%02d", dd.getSceneid()) + "-"
+						dd.setPrintcode(base_code + "-" + String.format("%02d", i));
+						if(dd.getSceneid()!=null&&dd.getSceneid()>=0){//+ String.format("%02d", dd.getSceneid()) + "-"
 							// 打印编号	
-							dd.setPrintcode(base_code + "-" + String.format("%02d", i));
 							if(ObjectUtil.isEmpty(dd.getDescription()))	{
 								PScenes scene= sceneMapper.selectByPrimaryKey(dd.getSceneid().longValue());
 								if(scene!=null){
@@ -568,7 +559,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 							}	
 						}
 						i++;
-					}
+					} 
 					myproduct.setDetailslist(arrayList);
 				}
 				PMyproductchildinfo childInfo= mychildMapper.selectByPrimaryKey(cartId);
@@ -727,6 +718,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					detail.setSceneid(null);
 					detail.setTitle("");
 					detail.setDescription("");
+					detail.setSort(myDetaiMapper.getMaxSort(detail.getCartid())+1); 
 					myDetaiMapper.updateByPrimaryKey(detail);
 					rq.setStatu(ReturnStatus.Success);
 					rq.setStatusreson("删除成功！");
@@ -738,6 +730,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		rq.setStatusreson("删除失败");
 		return rq;
 	}
+	
+	
 
 	public ReturnModel getStyleCoordResult(Long styleId) {
 		ReturnModel rq = new ReturnModel();

@@ -94,7 +94,7 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 
 	/**
 	 * 用户第三方注册
-	 * @param other
+	 * 
 	 * @param param
 	 * @return
 	 */

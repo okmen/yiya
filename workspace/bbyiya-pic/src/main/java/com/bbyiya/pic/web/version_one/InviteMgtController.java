@@ -73,16 +73,17 @@ public class InviteMgtController  extends SSOController {
 	 * @param cartId 作品cartid
 	 * @param verifcode  验证码
 	 * @param needVerfiCode  是否需要验证手机验证码
+	 * @param version  二维码版本号
 	 * @return
 	 * @throws Exception
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/acceptScanQrCodeInvite")
-	public String acceptScanQrCodeInvite(String phone,Long cartId,String vcode,Integer needVerfiCode) throws Exception {
+	public String acceptScanQrCodeInvite(String phone,Long cartId,String vcode,Integer needVerfiCode,String version) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq=myProductService.acceptScanQrCodeInvite(user.getUserId(),phone,cartId,vcode,needVerfiCode);
+			rq=myProductService.acceptScanQrCodeInvite(user.getUserId(),phone,cartId,vcode,needVerfiCode,version);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期，请重新登录");

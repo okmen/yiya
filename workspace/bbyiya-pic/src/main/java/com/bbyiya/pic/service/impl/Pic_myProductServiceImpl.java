@@ -121,15 +121,21 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 	 * @param userId 被邀请人用户ID
 	 * @param vcode  验证码
 	 * @param needVerfiCode  是否需要验证手机验证码 0 不需要，1需要
+	 * @param version  二维码版本号
 	 * @author julie at 2017-04-26
 	 * @throws Exception
 	 */
-	public ReturnModel acceptScanQrCodeInvite(Long userId,String phone,Long cartId,String vcode,Integer needVerfiCode){
+	public ReturnModel acceptScanQrCodeInvite(Long userId,String phone,Long cartId,String vcode,Integer needVerfiCode,String version){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError); 
 		if(!ObjectUtil.isMobile(phone)){
 			rq.setStatusreson("请输入正确的手机号");
 			return rq; 
+		}
+		PMyproducts myproducts= myproductsMapper.selectByPrimaryKey(cartId);
+		if(myproducts!=null&&myproducts.getVersion()!=null&&(!myproducts.getVersion().equalsIgnoreCase(version))){
+			rq.setStatusreson("此二维码已失效，扫码后不能接受邀请");
+			return rq;
 		}
 		//如果需要验证手机短信验证码
 		if(needVerfiCode!=null&&needVerfiCode==1){
@@ -160,7 +166,6 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				return rq; 
 			}
 		}
-		PMyproducts myproducts= myproductsMapper.selectByPrimaryKey(cartId);
 		if(myproducts!=null){
 			if(myproducts.getUserid()!=null){
 				List<PMyproductsinvites> list= inviteMapper.findListByCartId(cartId);

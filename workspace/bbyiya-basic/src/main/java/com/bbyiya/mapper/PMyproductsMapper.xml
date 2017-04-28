@@ -3,7 +3,7 @@
 <mapper namespace="com.bbyiya.dao.PMyproductsMapper" >
   <sql id="Base_Column_List" >
     CartId, UserId, Title, Author, ProductId, StyleId, CreateTime, Status, Phone, OrderNo, 
-    InviteStatus, UpdateTime, HeadImg, Description
+    InviteStatus, UpdateTime, HeadImg, Description, Version
   </sql>
   <resultMap id="BaseResultMap" type="com.bbyiya.model.PMyproducts" >
     <id column="CartId" property="cartid" jdbcType="BIGINT" />
@@ -20,6 +20,7 @@
     <result column="UpdateTime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="HeadImg" property="headimg" jdbcType="VARCHAR" />
     <result column="Description" property="description" jdbcType="VARCHAR" />
+    <result column="Version" property="version" jdbcType="VARCHAR" />
   </resultMap>
   <!-- 我的作品返回model -->
   <resultMap id="MyProductResultVO" type="com.bbyiya.vo.product.MyProductResultVo" extends="BaseResultMap">  

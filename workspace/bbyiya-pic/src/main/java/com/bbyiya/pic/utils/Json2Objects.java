@@ -125,13 +125,16 @@ public class Json2Objects {
 						mo.setContent(content);
 					}
 					String scenTitle=String.valueOf(dd.get("title"));
-					if(!ObjectUtil.isEmpty(scenTitle)&&!scenTitle.equals("null")){
+					int scenid=ObjectUtil.parseInt(String.valueOf(dd.get("sceneid")));
+					if(scenid>0){
+						mo.setSceneid(scenid); 
+					}
+					if (!ObjectUtil.isEmpty(scenTitle)&&!scenTitle.equals("null")) {
 						mo.setTitle(scenTitle);
-						int scenid=ObjectUtil.parseInt(String.valueOf(dd.get("sceneid")));
 						if(scenid>=0){
 							mo.setSceneid(scenid); 
 						}
-					}
+					} 
 					String dec=String.valueOf(dd.get("description"));
 					if(!ObjectUtil.isEmpty(dec)&&!dec.equals("null")){
 						mo.setDescription(dec);

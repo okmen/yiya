@@ -20,6 +20,7 @@
     <result column="UpdateTime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="HeadImg" property="headimg" jdbcType="VARCHAR" />
     <result column="Description" jdbcType="VARCHAR" property="description" />
+    <result column="Version" property="version" jdbcType="VARCHAR" />
   </resultMap>
   <!-- 我的作品返回model -->
   <resultMap id="MyProductResultVO" type="com.bbyiya.pic.vo.product.MyProductsResult" extends="BaseResultMap">  

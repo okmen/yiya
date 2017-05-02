@@ -519,7 +519,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			if(myproduct!=null&&myproduct.getStatus()!=null&&myproduct.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
 				myproduct.setIsOrder(1);
 			} 
-			boolean canModify=false;
+			boolean canModify=true;
 			if(myproduct != null&&myproduct.getUserid().longValue()==userId){//自己的作品
 				canModify=true;	
 			}

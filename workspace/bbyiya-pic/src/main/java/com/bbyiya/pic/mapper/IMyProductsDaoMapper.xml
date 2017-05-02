@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.bbyiya.pic.dao.IMyProductsDao" >
   <sql id="Base_Column_List" >
-     CartId, UserId, Title, Author, ProductId, StyleId, CreateTime, Status, Phone, OrderNo, 
-     InviteStatus, UpdateTime, HeadImg, Description
+    CartId, UserId, Title, Author, ProductId, StyleId, CreateTime, Status, Phone, OrderNo, 
+    InviteStatus, UpdateTime, HeadImg, Description, Version, IsTemp, TempId
   </sql>
   <resultMap id="BaseResultMap" type="com.bbyiya.model.PMyproducts" >
     <id column="CartId" property="cartid" jdbcType="BIGINT" />
@@ -21,6 +21,8 @@
     <result column="HeadImg" property="headimg" jdbcType="VARCHAR" />
     <result column="Description" jdbcType="VARCHAR" property="description" />
     <result column="Version" property="version" jdbcType="VARCHAR" />
+    <result column="IsTemp" property="istemp" jdbcType="INTEGER" />
+    <result column="TempId" property="tempid" jdbcType="INTEGER" />
   </resultMap>
   <!-- 我的作品返回model -->
   <resultMap id="MyProductResultVO" type="com.bbyiya.pic.vo.product.MyProductsResult" extends="BaseResultMap">  

@@ -119,9 +119,9 @@ public class LoginController extends SSOController {
 //			} catch (Exception e) {
 //				// TODO: handle exception
 //			}
-			if(redirect_url.indexOf("http")>0){
+//			if(redirect_url.indexOf("http")>0){
 				return "redirect:" + redirect_url ;
-			}
+//			}
 		}
 		return "redirect:" + ConfigUtil.getSingleValue("photo-net-url") ;
 	}

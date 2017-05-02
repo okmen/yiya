@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.bbyiya.dao.PMyproductsMapper" >
   <sql id="Base_Column_List" >
-    CartId, UserId, Title, Author, ProductId, StyleId, CreateTime, Status, Phone, OrderNo, 
-    InviteStatus, UpdateTime, HeadImg, Description, Version
+   CartId, UserId, Title, Author, ProductId, StyleId, CreateTime, Status, Phone, OrderNo, 
+    InviteStatus, UpdateTime, HeadImg, Description, Version, IsTemp, TempId
   </sql>
   <resultMap id="BaseResultMap" type="com.bbyiya.model.PMyproducts" >
     <id column="CartId" property="cartid" jdbcType="BIGINT" />
@@ -21,6 +21,8 @@
     <result column="HeadImg" property="headimg" jdbcType="VARCHAR" />
     <result column="Description" property="description" jdbcType="VARCHAR" />
     <result column="Version" property="version" jdbcType="VARCHAR" />
+    <result column="IsTemp" property="istemp" jdbcType="INTEGER" />
+    <result column="TempId" property="tempid" jdbcType="INTEGER" />
   </resultMap>
   <!-- 我的作品返回model -->
   <resultMap id="MyProductResultVO" type="com.bbyiya.vo.product.MyProductResultVo" extends="BaseResultMap">  
@@ -83,28 +85,28 @@
       Author, ProductId, StyleId, 
       CreateTime, Status, Phone, 
       OrderNo, InviteStatus, UpdateTime, 
-      HeadImg, Description, Version
-      )
+      HeadImg, Description, Version, 
+      IsTemp, TempId)
     values (#{cartid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
       #{author,jdbcType=VARCHAR}, #{productid,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, 
       #{createtime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, 
       #{orderno,jdbcType=VARCHAR}, #{invitestatus,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}, 
-      #{headimg,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR}
-      )
+      #{headimg,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR}, 
+      #{istemp,jdbcType=INTEGER}, #{tempid,jdbcType=INTEGER})
   </insert>
-   <insert id="insert" parameterType="com.bbyiya.model.PMyproducts" >
+  <insert id="insert" parameterType="com.bbyiya.model.PMyproducts" >
     insert into p_myproducts (CartId, UserId, Title, 
       Author, ProductId, StyleId, 
       CreateTime, Status, Phone, 
       OrderNo, InviteStatus, UpdateTime, 
-      HeadImg, Description, Version
-      )
+      HeadImg, Description, Version, 
+      IsTemp, TempId)
     values (#{cartid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
       #{author,jdbcType=VARCHAR}, #{productid,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, 
       #{createtime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, 
       #{orderno,jdbcType=VARCHAR}, #{invitestatus,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}, 
-      #{headimg,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR}
-      )
+      #{headimg,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR}, 
+      #{istemp,jdbcType=INTEGER}, #{tempid,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproducts" >
     insert into p_myproducts
@@ -154,6 +156,12 @@
       <if test="version != null" >
         Version,
       </if>
+      <if test="istemp != null" >
+        IsTemp,
+      </if>
+      <if test="tempid != null" >
+        TempId,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="cartid != null" >
@@ -200,6 +208,12 @@
       </if>
       <if test="version != null" >
         #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="istemp != null" >
+        #{istemp,jdbcType=INTEGER},
+      </if>
+      <if test="tempid != null" >
+        #{tempid,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -248,6 +262,12 @@
       <if test="version != null" >
         Version = #{version,jdbcType=VARCHAR},
       </if>
+      <if test="istemp != null" >
+        IsTemp = #{istemp,jdbcType=INTEGER},
+      </if>
+      <if test="tempid != null" >
+        TempId = #{tempid,jdbcType=INTEGER},
+      </if>
     </set>
     where CartId = #{cartid,jdbcType=BIGINT}
   </update>
@@ -266,7 +286,9 @@
       UpdateTime = #{updatetime,jdbcType=TIMESTAMP},
       HeadImg = #{headimg,jdbcType=VARCHAR},
       Description = #{description,jdbcType=VARCHAR},
-      Version = #{version,jdbcType=VARCHAR}
+      Version = #{version,jdbcType=VARCHAR},
+      IsTemp = #{istemp,jdbcType=INTEGER},
+      TempId = #{tempid,jdbcType=INTEGER}
     where CartId = #{cartid,jdbcType=BIGINT}
   </update>
 </mapper>

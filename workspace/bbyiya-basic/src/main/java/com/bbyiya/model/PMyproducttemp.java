@@ -1,0 +1,85 @@
+package com.bbyiya.model;
+
+import java.util.Date;
+
+public class PMyproducttemp {
+    private Integer tempid;
+
+    private Long branchuserid;
+
+    private String title;
+
+    private Integer status;
+
+    private Integer count;
+
+    private String remark;
+
+    private Long cartid;
+
+    private Date createtime;
+
+    public Integer getTempid() {
+        return tempid;
+    }
+
+    public void setTempid(Integer tempid) {
+        this.tempid = tempid;
+    }
+
+    public Long getBranchuserid() {
+        return branchuserid;
+    }
+
+    public void setBranchuserid(Long branchuserid) {
+        this.branchuserid = branchuserid;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title == null ? null : title.trim();
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark == null ? null : remark.trim();
+    }
+
+    public Long getCartid() {
+        return cartid;
+    }
+
+    public void setCartid(Long cartid) {
+        this.cartid = cartid;
+    }
+
+    public Date getCreatetime() {
+        return createtime;
+    }
+
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
+    }
+}

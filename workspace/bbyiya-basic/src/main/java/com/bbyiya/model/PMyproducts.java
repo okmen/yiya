@@ -32,6 +32,8 @@ public class PMyproducts implements Serializable{
     private String headimg;
     private String description;
     private String version;
+    private Integer istemp;
+    private Integer tempid;
     
     public Long getCartid() {
         return cartid;
@@ -159,6 +161,22 @@ public class PMyproducts implements Serializable{
 
 	public void setVersion(String version) {
 		this.version = version;
+	}
+
+	public Integer getIstemp() {
+		return istemp;
+	}
+
+	public void setIstemp(Integer istemp) {
+		this.istemp = istemp;
+	}
+
+	public Integer getTempid() {
+		return tempid;
+	}
+
+	public void setTempid(Integer tempid) {
+		this.tempid = tempid;
 	}
     
 }

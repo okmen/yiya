@@ -136,7 +136,11 @@
   </select>
   
   <!-- 根据作品ID得到未支付或图片未上传订单  -->
-   <select id="findOrderListByCartId" resultMap="BaseResultMap"  parameterType="java.lang.Long" >
+   <select id="findNoPayOrderListByCartId" resultMap="BaseResultMap"  parameterType="java.lang.Long" >
     select a.* from o_userorders a,o_orderproducts b where a.UserOrderId=b.UserOrderId and b.CartId=#{cartid,jdbcType=BIGINT} and (a.`Status`=0 or a.`Status`=1)   
+  </select>
+  <!-- 根据作品ID得到所有订单列表  -->
+   <select id="findOrderListByCartId" resultMap="BaseResultMap"  parameterType="java.lang.Long" >
+    select a.* from o_userorders a,o_orderproducts b where a.UserOrderId=b.UserOrderId and b.CartId=#{cartid,jdbcType=BIGINT}   
   </select>
 </mapper>

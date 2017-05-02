@@ -73,7 +73,7 @@ public class InviteMgtController  extends SSOController {
 	 * @param cartId 作品cartid
 	 * @param verifcode  验证码
 	 * @param needVerfiCode  是否需要验证手机验证码
-	 * @param version 二维码版本号a
+	 * @param version  二维码版本号
 	 * @return
 	 * @throws Exception
 	 */
@@ -84,6 +84,27 @@ public class InviteMgtController  extends SSOController {
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			rq=myProductService.acceptScanQrCodeInvite(user.getUserId(),phone,cartId,vcode,needVerfiCode,version);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期，请重新登录");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 处理医院扫码页面的接受邀请
+	 * @param phone 被邀请人手机号
+	 * @param cartId 模板作品cartid	
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/acceptTempScanQrCodeInvite")
+	public String acceptTempScanQrCodeInvite(String phone,Long cartId) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=myProductService.acceptTempScanQrCodeInvite(user.getUserId(), phone, cartId);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期，请重新登录");

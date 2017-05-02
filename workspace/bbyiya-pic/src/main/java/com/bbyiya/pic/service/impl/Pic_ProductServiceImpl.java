@@ -15,6 +15,7 @@ import com.bbyiya.dao.PMyproductchildinfoMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproductsinvitesMapper;
+import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PProductdetailsMapper;
 import com.bbyiya.dao.PProductsMapper;
 import com.bbyiya.dao.PScenesMapper;
@@ -31,6 +32,7 @@ import com.bbyiya.model.PMyproductchildinfo;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproductsinvites;
+import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PProductdetails;
 import com.bbyiya.model.PProducts;
 import com.bbyiya.model.PScenes;
@@ -84,6 +86,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private PMyproductsinvitesMapper inviteMapper;
 	@Autowired
 	private PMyproductchildinfoMapper mychildMapper;
+	@Autowired
+	private PMyproducttempMapper tempMapper;
 	/*-------------------用户信息------------------------------------------------*/
 	@Autowired
 	private UUsersMapper usersMapper;
@@ -473,6 +477,33 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					item.setIsOrder(1);
 					item.setCount(12);
 				} 
+				
+				//得到宝宝生日
+				PMyproductchildinfo childinfo=mychildMapper.selectByPrimaryKey(item.getCartid());
+				if(childinfo!=null&&childinfo.getBirthday()!=null){
+					item.setBirthdayStr(DateUtil.getTimeStr(childinfo.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
+				}
+				//得到制作类型
+				PProducts product=productsMapper.selectByPrimaryKey(item.getProductid());
+				if(product!=null&&product.getTitle()!=null){
+					item.setProductTitle(product.getTitle());
+				}
+				//得到来源，即模板名称
+				if(item.getTempid()!=null){
+					PMyproducttemp temp=tempMapper.selectByPrimaryKey(item.getTempid());
+					if(temp!=null&&temp.getTitle()!=null){
+						item.setTempTitle(temp.getTitle());
+					}
+				}
+				//得到作品订单集合
+				List<OUserorders> orderList=orderDao.findOrderListByCartId(item.getCartid());
+				List<String> orderNoList=new ArrayList<String>();
+				for (OUserorders order : orderList) {
+					orderNoList.add(order.getUserorderid());
+				}
+				if(orderNoList.size()>0){
+					item.setOrderNoList(orderNoList);
+				}
 			}
 		}
 		return mylist;
@@ -484,7 +515,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		if(myproducts!=null&&myproducts.getUserid()!=null&&myproducts.getUserid().longValue()==userId){
 			if(myproducts.getStatus()!=null&&myproducts.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
 				//得到作品相关的未支付或图片未上传订单
-				List<OUserorders> orderList=orderDao.findOrderListByCartId(cartId);
+				List<OUserorders> orderList=orderDao.findNoPayOrderListByCartId(cartId);
 				if(orderList!=null&&orderList.size()>0){
 					rq.setStatu(ReturnStatus.SystemError);
 					rq.setStatusreson("作品关联的订单或未支付或图片未上传成功，请先查看订单支付状态或重新上传！");

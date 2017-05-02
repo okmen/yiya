@@ -62,5 +62,14 @@ public interface IPic_myProductService {
 	 * @throws Exception
 	 */
 	ReturnModel acceptScanQrCodeInvite(Long userId,String phone, Long cartId, String vcode, Integer needVerfiCode,String version);
+	/**
+	 * 处理医院扫码页面的接受邀请
+	 * @param userId
+	 * @param phone
+	 * @param cartId
+	 * @return
+	 */
+	ReturnModel acceptTempScanQrCodeInvite(Long userId, String phone,
+			Long cartId);
 	
 }

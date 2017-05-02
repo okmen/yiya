@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.bbyiya.pic.dao.IMyProductsDao" >
   <sql id="Base_Column_List" >
-     CartId, UserId, Title, Author, ProductId, StyleId, CreateTime, Status, Phone, OrderNo, 
-     InviteStatus, UpdateTime, HeadImg, Description
+    CartId, UserId, Title, Author, ProductId, StyleId, CreateTime, Status, Phone, OrderNo, 
+    InviteStatus, UpdateTime, HeadImg, Description, Version, IsTemp, TempId
   </sql>
   <resultMap id="BaseResultMap" type="com.bbyiya.model.PMyproducts" >
     <id column="CartId" property="cartid" jdbcType="BIGINT" />
@@ -21,6 +21,8 @@
     <result column="HeadImg" property="headimg" jdbcType="VARCHAR" />
     <result column="Description" jdbcType="VARCHAR" property="description" />
     <result column="Version" property="version" jdbcType="VARCHAR" />
+    <result column="IsTemp" property="istemp" jdbcType="INTEGER" />
+    <result column="TempId" property="tempid" jdbcType="INTEGER" />
   </resultMap>
   <!-- 我的作品返回model -->
   <resultMap id="MyProductResultVO" type="com.bbyiya.pic.vo.product.MyProductsResult" extends="BaseResultMap">  
@@ -42,10 +44,18 @@
     from p_myproducts
     where UserId = #{userId,jdbcType=BIGINT} and ProductId=#{productId,jdbcType=BIGINT} and Status=#{status,jdbcType=INTEGER} order by  CartId desc 
   </select>
+  
+  <!-- 通过TempId获取作品  status=3删除状态-->  
+  <select id="getMyProductResultByTempId" resultMap="MyProductListVO" >
+    select <include refid="Base_Column_List" />
+    from p_myproducts
+    where TempId = #{tempid,jdbcType=INTEGER} and Status!=3 order by  CartId desc 
+  </select>
+  
   <!-- 获取我的作品列表（包括被邀约的作品） -->
   <select id="findMyProductList" resultMap="MyProductListVO" >
    SELECT a.*,b.InvitePhone,b.CreateTime as InviteTime,b.Status as InStatus  from p_myproducts a LEFT JOIN p_myproductsinvites b on a.CartId=b.CartId
-   WHERE a.UserId=#{userId,jdbcType=BIGINT} 
+   WHERE a.UserId=#{userId,jdbcType=BIGINT} and a.Status!=3
    OR (b.InvitePhone=#{phone,jdbcType=VARCHAR} and (b.InviteType is null or b.InviteType=0) and b.Status!=2)
    OR (b.InviteUserId=#{userId,jdbcType=BIGINT} and b.InviteType=1 and b.Status=3)
    ORDER BY b.CreateTime DESC,a.CreateTime DESC 

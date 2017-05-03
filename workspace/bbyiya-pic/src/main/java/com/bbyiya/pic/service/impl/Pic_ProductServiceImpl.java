@@ -543,8 +543,11 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			}
 			if (canModify) {
 				UUsers myUser= usersMapper.selectByPrimaryKey(myproduct.getUserid());
-				if(myUser!=null&&!ObjectUtil.isEmpty(myUser.getNickname())){ 
-					myproduct.setMyNickName(myUser.getNickname()); 
+				if(myUser!=null){ 
+					if(!ObjectUtil.isEmpty(myUser.getNickname())){
+						myproduct.setMyNickName(myUser.getNickname()); 
+					}
+					myproduct.setUserIdentity(myUser.getIdentity()); 
 				}
 				if(ObjectUtil.isEmpty(myproduct.getDescription())){
 					PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());

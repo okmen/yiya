@@ -516,6 +516,11 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		UUsers user = usersMapper.getUUsersByUserID(userId);
 		if (user != null) {
 			MyProductsResult myproduct = myProductsDao.getMyProductResultVo(cartId);
+			if(myproduct==null){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("作品不存在");
+				return rq;
+			}
 			if(myproduct!=null&&myproduct.getStatus()!=null&&myproduct.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
 				myproduct.setIsOrder(1);
 			} 

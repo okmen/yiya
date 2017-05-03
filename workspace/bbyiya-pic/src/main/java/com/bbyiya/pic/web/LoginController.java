@@ -1,5 +1,6 @@
 package com.bbyiya.pic.web;
 
+import java.net.URLEncoder;
 import java.util.Date;
 
 import javax.annotation.Resource;
@@ -19,6 +20,7 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.EErrors;
 import com.bbyiya.model.ULoginlogs;
 import com.bbyiya.pic.service.IPic_UserMgtService;
+//import com.bbyiya.pic.utils.Json2Objects;
 import com.bbyiya.pic.vo.LoginTempVo;
 import com.bbyiya.service.IUserLoginService;
 import com.bbyiya.utils.ConfigUtil;
@@ -71,11 +73,14 @@ public class LoginController extends SSOController {
 			}
 			String keyId= request.getSession().getId();
 			RedisUtil.setObject(keyId, loginTemp, 60);
+			
 		}
 //		return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin&response_type=code&scope=snsapi_userinfo#wechat_redirect" ;		
 		
 		return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin&response_type=code&scope=snsapi_base#wechat_redirect" ;		
 	}
+	
+	
 	
 	/**
 	 * c端测试版本登陆入口
@@ -111,17 +116,8 @@ public class LoginController extends SSOController {
 			addLoginLogAndCookie(rqModel.getBasemodle(),0);
 		}
 		if(!ObjectUtil.isEmpty(redirect_url)&&!"null".equals(redirect_url)){
-//			try {
-//				LoginTempVo logintemp= (LoginTempVo)JsonUtil.jsonStrToObject(loginTempJson, LoginTempVo.class);
-//				if(logintemp!=null&&!ObjectUtil.isEmpty(logintemp.getRedirect_url())&&!"null".equals(logintemp.getRedirect_url())){
-//					return "redirect:" + logintemp.getRedirect_url() ;
-//				}
-//			} catch (Exception e) {
-//				// TODO: handle exception
-//			}
-//			if(redirect_url.indexOf("http")>0){
-				return "redirect:" + redirect_url ;
-//			}
+			addlog("url:"+ConfigUtil.getSingleValue("currentDomain")+redirect_url); 
+			return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+redirect_url;
 		}
 		return "redirect:" + ConfigUtil.getSingleValue("photo-net-url") ;
 	}
@@ -177,8 +173,9 @@ public class LoginController extends SSOController {
 						if(m==1){ //photo测试地址
 							String paramtest="?headImg="+param.getHeadImg()+"&loginType="+param.getLoginType()+"&nickName="+param.getNickName()+"&openId="+param.getOpenId()+"&upUid="+param.getUpUserId();
 							if(!ObjectUtil.isEmpty(logintemp.getRedirect_url())&&!"null".equals(logintemp.getRedirect_url())){
-								paramtest+="&redirect_url="+logintemp.getRedirect_url(); 
+								paramtest+="&redirect_url="+URLEncoder.encode(logintemp.getRedirect_url(), "gb2312"); 
 							}
+							addlog("urlParam:"+paramtest); 
 							//跳转mpic测试接口地址中转
 							return "redirect:" + ConfigUtil.getSingleValue("mpic-net-url")+paramtest;
 						}
@@ -202,7 +199,8 @@ public class LoginController extends SSOController {
 		if (rqModel.getStatu().equals(ReturnStatus.Success)) {
 			//用户跳转
 			if(logintemp!=null&&!ObjectUtil.isEmpty(logintemp.getRedirect_url())){
-				return "redirect:" + logintemp.getRedirect_url() ; 
+				
+				return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+logintemp.getRedirect_url(); 
 			}
 			return "redirect:" + ConfigUtil.getSingleValue("loginbackurl") ;
 		} else {

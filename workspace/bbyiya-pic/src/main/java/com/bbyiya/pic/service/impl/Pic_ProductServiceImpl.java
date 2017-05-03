@@ -532,8 +532,12 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				List<PMyproductsinvites> invlist= inviteMapper.findListByCartId(cartId);
 				if(invlist!=null&&invlist.size()>0){
 					for (PMyproductsinvites in : invlist) {
-						if(in.getInvitephone().equals(user.getMobilephone()))
+						if(in.getInviteuserid()!=null&&in.getInviteuserid().longValue()==userId){
 							canModify=true;
+							myproduct.setInviteUserId(in.getInviteuserid()); 
+						}else if (!ObjectUtil.isEmpty(in.getInvitephone())&&in.getInvitephone().equals(user.getMobilebind())) {
+							canModify=true;
+						}
 					}
 				}
 			}

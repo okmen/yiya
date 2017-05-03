@@ -1,6 +1,7 @@
 package com.bbyiya.pic.web.user;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -11,8 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.dao.PMyproductsMapper;
+import com.bbyiya.dao.PMyproductsinvitesMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.pic.InviteStatus;
 import com.bbyiya.model.PMyproducts;
+import com.bbyiya.model.PMyproductsinvites;
 import com.bbyiya.pic.service.IPic_myProductService;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.JsonUtil;
@@ -58,6 +62,9 @@ public class MyProductMgtController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	@Autowired
+	private PMyproductsinvitesMapper inviteMapper;
+
 	/**
 	 * 获取作品二维码分享版本号
 	 * @param cartId
@@ -72,6 +79,21 @@ public class MyProductMgtController extends SSOController {
 		if (user != null) { 
 			PMyproducts mycart= myproductMapper.selectByPrimaryKey(cartId);
 			if(mycart!=null&&mycart.getUserid().longValue()==user.getUserId()){
+				if(mycart.getInvitestatus()!=null&&mycart.getInvitestatus()>0){
+					List<PMyproductsinvites> invitesList= inviteMapper.findListByCartId(cartId);
+					for (PMyproductsinvites inv : invitesList) {
+						if(inv.getStatus()!=null&&(inv.getStatus()==Integer.parseInt(InviteStatus.inviting.toString())||inv.getStatus()==Integer.parseInt(InviteStatus.lgnore.toString()))){
+							inviteMapper.deleteByPrimaryKey(inv.getInviteid());
+						}else {
+							rq.setStatu(ReturnStatus.SystemError);
+							rq.setStatusreson("邀请已经被接受，无法重新邀请！");
+							return JsonUtil.objectToJsonStr(rq);
+						}
+					}
+					mycart.setInvitestatus(0);
+					myproductMapper.updateByPrimaryKeySelective(mycart); 
+				}
+				
 				String versionString=DateUtil.getTimeStr(new Date(), "yyyyMMddHHMMss"); 
 				mycart.setVersion(versionString);
 				myproductMapper.updateByPrimaryKeySelective(mycart);

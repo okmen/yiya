@@ -1,7 +1,6 @@
 package com.bbyiya.vo.product;
 
 import java.util.List;
-
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproductsinvites;
@@ -25,6 +24,13 @@ public class MyProductResultVo extends PMyproducts{
 	
 	private String description;
 	private List<PMyproductdetails> detailslist;
+	//宝宝生日
+	private String birthdayStr;
+	//制作类型名称
+	private String productTitle;
+	//模板名称 即来源
+	private String tempTitle;
+	private List<String> orderNoList;
 	
 	public int getCount() {
 		return count;
@@ -80,7 +86,31 @@ public class MyProductResultVo extends PMyproducts{
 	public void setInviteModel(PMyproductsinvites inviteModel) {
 		this.inviteModel = inviteModel;
 	}
-
+	public String getBirthdayStr() {
+		return birthdayStr;
+	}
+	public void setBirthdayStr(String birthdayStr) {
+		this.birthdayStr = birthdayStr;
+	}
+	public String getProductTitle() {
+		return productTitle;
+	}
+	public void setProductTitle(String productTitle) {
+		this.productTitle = productTitle;
+	}
+	public String getTempTitle() {
+		return tempTitle;
+	}
+	public void setTempTitle(String tempTitle) {
+		this.tempTitle = tempTitle;
+	}
+	public List<String> getOrderNoList() {
+		return orderNoList;
+	}
+	public void setOrderNoList(List<String> orderNoList) {
+		this.orderNoList = orderNoList;
+	}
+	
 	
 
 }

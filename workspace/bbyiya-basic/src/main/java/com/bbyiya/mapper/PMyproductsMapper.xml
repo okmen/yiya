@@ -44,7 +44,7 @@
     select 
     <include refid="Base_Column_List" />
     from p_myproducts
-    where OrderNo = #{orderNo,jdbcType=VARCHAR}
+    where OrderNo = #{orderNo,jdbcType=VARCHAR} and Status!=3
   </select>
   <select id="findMyProductslist" resultMap="MyProductResultVO" ><!-- 03 find 通过 UserId ，Status 获取作品列表 -->
     select <include refid="Base_Column_List" />

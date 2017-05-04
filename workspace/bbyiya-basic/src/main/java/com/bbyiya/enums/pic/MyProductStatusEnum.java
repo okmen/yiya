@@ -14,7 +14,11 @@ public enum MyProductStatusEnum {
     /**
      * 已删除
      */
-    deleted(3)
+    deleted(3),
+    /**
+     * 已禁用
+     */
+    disabled(4)
     ;
 
     private final int Type;

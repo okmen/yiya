@@ -20,10 +20,25 @@
     from p_myproducttemp
     where TempId = #{tempid,jdbcType=INTEGER}
   </select>
+  <!-- 获取影楼用户的模板 -->
+  <select id="findBranchMyProductTempList" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from p_myproducttemp
+    where BranchUserId = #{branchuserid,jdbcType=BIGINT} and Status!=2 order by Status desc,CreateTime desc
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from p_myproducttemp
     where TempId = #{tempid,jdbcType=INTEGER}
   </delete>
+  <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="tempid" parameterType="com.bbyiya.model.PMyproducttemp" >
+    insert into p_myproducttemp (TempId, BranchUserId, Title, 
+      Status, Count, Remark, 
+      CartId, CreateTime)
+    values (#{tempid,jdbcType=INTEGER}, #{branchuserid,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{count,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
+      #{cartid,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP})
+  </insert>
   <insert id="insert" parameterType="com.bbyiya.model.PMyproducttemp" >
     insert into p_myproducttemp (TempId, BranchUserId, Title, 
       Status, Count, Remark, 

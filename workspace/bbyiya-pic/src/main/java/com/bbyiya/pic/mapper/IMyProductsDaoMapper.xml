@@ -44,6 +44,14 @@
     from p_myproducts
     where UserId = #{userId,jdbcType=BIGINT} and ProductId=#{productId,jdbcType=BIGINT} and Status=#{status,jdbcType=INTEGER} order by  CartId desc 
   </select>
+  
+  <!-- 通过TempId获取作品  status=3删除状态-->  
+  <select id="getMyProductResultByTempId" resultMap="MyProductListVO" >
+    select <include refid="Base_Column_List" />
+    from p_myproducts
+    where TempId = #{tempid,jdbcType=INTEGER} and Status!=3 order by  CartId desc 
+  </select>
+  
   <!-- 获取我的作品列表（包括被邀约的作品） -->
   <select id="findMyProductList" resultMap="MyProductListVO" >
    SELECT a.*,b.InvitePhone,b.CreateTime as InviteTime,b.Status as InStatus  from p_myproducts a LEFT JOIN p_myproductsinvites b on a.CartId=b.CartId

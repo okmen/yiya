@@ -34,5 +34,12 @@ public interface IMyProductsDao {
 	 * @return
 	 */
 	MyProductListVo getMyProductVO(@Param("cartid")Long cartId);
+	/**
+	 * 通过模板id获取作品列表
+	 * @param tempid
+	 * @return
+	 */
+	List<MyProductListVo>  getMyProductResultByTempId(@Param("tempid") Integer tempid);
+	
 
 }

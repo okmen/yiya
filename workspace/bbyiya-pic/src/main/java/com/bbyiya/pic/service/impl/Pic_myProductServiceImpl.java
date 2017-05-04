@@ -5,12 +5,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.bbyiya.common.enums.MsgStatusEnums;
 import com.bbyiya.common.enums.SendMsgEnums;
 import com.bbyiya.common.vo.ResultMsg;
+import com.bbyiya.dao.PMyproductchildinfoMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproductsinvitesMapper;
@@ -21,6 +24,7 @@ import com.bbyiya.enums.pic.InviteStatus;
 import com.bbyiya.enums.pic.InviteType;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
 import com.bbyiya.enums.user.UserStatusEnum;
+import com.bbyiya.model.PMyproductchildinfo;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproductsinvites;
@@ -48,6 +52,8 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 	private PMyproductsMapper myproductsMapper;
 	@Autowired
 	private PMyproductdetailsMapper myDetaiMapper;
+	@Autowired
+	private PMyproductchildinfoMapper childinfoMapper;
 	/*------------------------产品模块-------------------------------------*/
 	@Autowired
 	private PScenesMapper sceneMapper;
@@ -112,6 +118,118 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 			rq.setStatu(ReturnStatus.SystemError);
 			rq.setStatusreson("不存在的作品");
 		}
+		return rq;
+	}
+	
+	/**
+	 * 处理医院扫码页面的接受邀请
+	 * @param phone 被邀请人手机号
+	 * @param cartId 作品cartid
+	 * @param userId 被邀请人用户Id
+	 * @author julie at 2017-04-26
+	 * @throws Exception
+	 */
+	public ReturnModel acceptTempScanQrCodeInvite(Long userId,String phone,Long cartId){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.SystemError); 
+		if(!ObjectUtil.isMobile(phone)){
+			rq.setStatusreson("请输入正确的手机号");
+			return rq; 
+		}
+		//模板作品ID
+		PMyproducts myproducts= myproductsMapper.selectByPrimaryKey(cartId);
+		if(myproducts!=null){	
+			//查询相应的模板下的作品列表
+			List<MyProductListVo> myprolist=myProductsDao.getMyProductResultByTempId(myproducts.getTempid());
+			if(myprolist!=null&&myprolist.size()>0){
+				for (MyProductListVo mypro : myprolist) {
+					//自已不能扫自已的模板作品二维码
+					if(mypro.getUserid()==userId){
+						rq.setStatu(ReturnStatus.ParamError);					
+						rq.setStatusreson("不能接受自已作品的邀请！"); 
+						return rq;
+					}
+					if(mypro.getCartid()!=cartId){
+						//这个列表包括模板作品
+						List<PMyproductsinvites> list= inviteMapper.findListByCartId(mypro.getCartid());	
+						if(list!=null&&list.size()>0){
+							for (PMyproductsinvites invo : list) {
+								if(invo.getInviteuserid()!=null&&invo.getInviteuserid()==userId){
+									rq.setBasemodle(invo);
+									rq.setStatu(ReturnStatus.Success);
+									rq.setStatusreson("已经接受邀请协同编辑，请直接跳转到作品页！"); 
+									return rq;
+								}
+							}
+						}
+					}					
+				}
+				//如果这个用户以前没有接受邀请，则copy一份作品
+				PMyproducts newproducts=new PMyproducts();
+				newproducts.setAuthor(myproducts.getAuthor());
+				newproducts.setCreatetime(new Date());
+				newproducts.setDescription(myproducts.getDescription());
+				newproducts.setHeadimg(myproducts.getHeadimg());
+				newproducts.setIstemp(0);
+				newproducts.setPhone(myproducts.getPhone());
+				newproducts.setProductid(myproducts.getProductid());
+				newproducts.setStatus(Integer.parseInt(MyProductStatusEnum.ok.toString()));
+				newproducts.setUserid(myproducts.getUserid());
+				newproducts.setStyleid(myproducts.getStyleid());
+				newproducts.setTempid(myproducts.getTempid());
+				newproducts.setTitle(myproducts.getTitle());
+				myproductsMapper.insertReturnId(newproducts);
+				
+				PMyproductchildinfo childinfo=childinfoMapper.selectByPrimaryKey(myproducts.getCartid());
+				if(childinfo!=null){
+					PMyproductchildinfo newchildinfo=new PMyproductchildinfo();
+					newchildinfo.setBirthday(childinfo.getBirthday());
+					newchildinfo.setCartid(newproducts.getCartid());
+					newchildinfo.setCreatetime(new Date());
+					newchildinfo.setNickname(childinfo.getNickname());
+					newchildinfo.setRelation(childinfo.getRelation());
+					newchildinfo.setUserid(newproducts.getUserid());
+				}
+				
+				
+				List<PMyproductdetails> details=myDetaiMapper.findMyProductdetails(myproducts.getCartid());
+				if(details!=null&&details.size()>0){
+					for (PMyproductdetails detail : details) {
+						PMyproductdetails newdet=new PMyproductdetails();
+						newdet.setCartid(newproducts.getCartid());
+						newdet.setContent(detail.getContent());
+						newdet.setCreatetime(new Date());
+						newdet.setDescription(detail.getDescription());
+						newdet.setImgurl(detail.getImgurl());
+						newdet.setSceneid(detail.getSceneid());
+						newdet.setSort(detail.getSceneid());
+						newdet.setTitle(detail.getTitle());
+						newdet.setUserid(newproducts.getUserid());					
+						myDetaiMapper.insert(newdet);
+					}					
+				}
+				
+				PMyproductsinvites invoMo=new PMyproductsinvites();
+				invoMo.setCartid(newproducts.getCartid());
+				invoMo.setInvitephone(phone);
+				invoMo.setUserid(newproducts.getUserid());//邀请人ID
+				invoMo.setInviteuserid(userId);//被邀请人ID
+				invoMo.setInvitetype(Integer.parseInt(InviteType.scanQRInvite.toString()));
+				invoMo.setStatus(Integer.parseInt(InviteStatus.agree.toString()));
+				invoMo.setCreatetime(new Date());
+				inviteMapper.insert(invoMo);
+				newproducts.setInvitestatus(Integer.parseInt(InviteStatus.agree.toString()));
+				myproductsMapper.updateByPrimaryKeySelective(newproducts); 
+				rq.setStatu(ReturnStatus.Success);
+				rq.setStatusreson("成功接受邀请");
+
+			}	
+			
+		}else {
+			rq.setStatu(ReturnStatus.SystemError);
+			rq.setStatusreson("不存在的作品");
+		}
+		
 		return rq;
 	}
 	/**

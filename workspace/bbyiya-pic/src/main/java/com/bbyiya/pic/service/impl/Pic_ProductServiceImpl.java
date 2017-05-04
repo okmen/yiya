@@ -15,6 +15,7 @@ import com.bbyiya.dao.PMyproductchildinfoMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproductsinvitesMapper;
+import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PProductdetailsMapper;
 import com.bbyiya.dao.PProductsMapper;
 import com.bbyiya.dao.PScenesMapper;
@@ -41,6 +42,7 @@ import com.bbyiya.model.UChildreninfo;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.dao.IMyProductDetailsDao;
 import com.bbyiya.pic.dao.IMyProductsDao;
+import com.bbyiya.pic.dao.IPic_OrderMgtDao;
 import com.bbyiya.pic.dao.IPic_ProductDao;
 import com.bbyiya.pic.service.IPic_ProductService;
 import com.bbyiya.pic.vo.product.MyProductParam;
@@ -83,6 +85,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private PMyproductsinvitesMapper inviteMapper;
 	@Autowired
 	private PMyproductchildinfoMapper mychildMapper;
+	@Autowired
+	private PMyproducttempMapper tempMapper;
 	/*-------------------用户信息------------------------------------------------*/
 	@Autowired
 	private UUsersMapper usersMapper;
@@ -100,7 +104,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private IMyProductDetailsDao mydetailDao;
 	@Autowired
 	private IPic_ProductDao productDao;
-	
+	@Autowired 
+	private IPic_OrderMgtDao orderDao;
 	
 
 	public ReturnModel getProductSamples(Long productId) {

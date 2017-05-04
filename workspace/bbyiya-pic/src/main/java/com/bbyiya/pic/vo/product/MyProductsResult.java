@@ -18,6 +18,8 @@ public class MyProductsResult extends PMyproducts{
 	private Long inviteUserId;
 	//邀请人昵称
 	private String myNickName;
+	//邀请人身份
+	private Long userIdentity;
 	/**
 	 * 分享页不同相册的小图标
 	 */
@@ -82,6 +84,12 @@ public class MyProductsResult extends PMyproducts{
 	}
 	public void setMyNickName(String myNickName) {
 		this.myNickName = myNickName;
+	}
+	public Long getUserIdentity() {
+		return userIdentity;
+	}
+	public void setUserIdentity(Long userIdentity) {
+		this.userIdentity = userIdentity;
 	}
 	
 	

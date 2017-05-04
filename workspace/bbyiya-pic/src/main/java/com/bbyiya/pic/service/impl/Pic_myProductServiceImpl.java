@@ -144,7 +144,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 			if(myprolist!=null&&myprolist.size()>0){
 				for (MyProductListVo mypro : myprolist) {
 					//自已不能扫自已的模板作品二维码
-					if(mypro.getUserid()==userId){
+					if(mypro.getUserid().longValue()==userId){
 						rq.setStatu(ReturnStatus.ParamError);					
 						rq.setStatusreson("不能接受自已作品的邀请！"); 
 						return rq;
@@ -287,7 +287,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 		}
 		if(myproducts!=null){
 			//邀请人ID要不等于受邀人ID，自已不能接受自已的作用邀请
-			if(myproducts.getUserid()!=null&&myproducts.getUserid()!=userId){
+			if(myproducts.getUserid()!=null&&myproducts.getUserid().longValue()!=userId){
 				List<PMyproductsinvites> list= inviteMapper.findListByCartId(cartId);
 				boolean flag=true;
 				if(list!=null&&list.size()>0){

@@ -2,6 +2,8 @@ package com.bbyiya.pic.service.impl.ibs;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +24,7 @@ import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.UUserresponses;
 import com.bbyiya.pic.service.ibs.IIbs_MyProductTempService;
+import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.FileUtils;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.QRCodeUtil;
@@ -48,7 +51,8 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		myproduct.setProductid(productid);
 		myproduct.setCreatetime(new Date());
 		myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.ok.toString()));
-		myproduct.setUpdatetime(new Date());		
+		myproduct.setUpdatetime(new Date());	
+		myproduct.setIstemp(1);
 		myMapper.insertReturnId(myproduct);
 			
 		PMyproducttemp temp=new PMyproducttemp();
@@ -136,6 +140,22 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		PageHelper.startPage(index, size);	
 		List<PMyproducttemp>  templist=myproducttempMapper.findBranchMyProductTempList(userid);
 		PageInfo<PMyproducttemp> reuslt=new PageInfo<PMyproducttemp>(templist); 
+		if(reuslt!=null&&reuslt.getList()!=null&&reuslt.getList().size()>0){
+			for (PMyproducttemp temp : templist) {	
+				//String versionString=DateUtil.getTimeStr(new Date(), "yyyyMMddHHMMss"); 
+				String redirct_url="currentPage?workId="+temp.getCartid();		
+				String url="";
+				try {
+					url = "https://mpic.bbyiya.com/common/generateQRcode?urlstr=https://mpic.bbyiya.com/login/transfer?m=1&redirct_url="+URLEncoder.encode(redirct_url,"gb2312");
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				temp.setCodeurl(url);
+				
+			}
+		}
+		
 		rq.setBasemodle(reuslt);
 		rq.setStatu(ReturnStatus.Success);
 		rq.setStatusreson("获取列表成功！");
@@ -160,7 +180,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		ImageIO.write(bufImg, "jpg", file);
 		rq.setBasemodle(file.getPath());
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("获取列表成功！");
+		rq.setStatusreson("获图片成功！");
 		return rq;
 	}
 	

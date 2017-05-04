@@ -1,5 +1,8 @@
 package com.bbyiya.pic.web.ibs;
 
+import java.net.URLEncoder;
+import java.util.Date;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
@@ -9,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.pic.service.ibs.IIbs_MyProductTempService;
+import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -127,12 +131,38 @@ public class MyProductTempController extends SSOController {
 	 * @throws Exception
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/saveProductTempRQcode")
-	public String saveProductTempRQcode(String url) throws Exception {
+	@RequestMapping(value = "/downProductTempRQcode")
+	public String downProductTempRQcode(String url) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			rq=producttempService.saveProductTempRQcode(url);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 生成模板的二维码图片
+	 * @param tempId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getProductTempRQcode")
+	public String getProductTempRQcode(String cartId) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		//String versionString=DateUtil.getTimeStr(new Date(), "yyyyMMddHHMMss"); 
+		String redirct_url="currentPage?workId="+cartId;		
+		String url="https://mpic.bbyiya.com/common/generateQRcode?urlstr=https://mpic.bbyiya.com/login/transfer?m=1&redirct_url="+URLEncoder.encode(redirct_url,"gb2312");;
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq.setBasemodle(url);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("生成模板二维码成功");
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

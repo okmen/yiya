@@ -1,5 +1,6 @@
 package com.bbyiya.pic.service;
 
+import com.bbyiya.model.PMyproducts;
 import com.bbyiya.vo.ReturnModel;
 
 public interface IPic_myProductService {
@@ -71,5 +72,11 @@ public interface IPic_myProductService {
 	 */
 	ReturnModel acceptTempScanQrCodeInvite(Long userId, String phone,
 			Long cartId);
+	/**
+	 * 根据cartId得到作品
+	 * @param cartId
+	 * @return
+	 */
+	PMyproducts getPMyproducts(Long cartId);
 	
 }

@@ -107,7 +107,10 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				invoMo.setCreatetime(new Date());
 				inviteMapper.insert(invoMo);
 				myproducts.setInvitestatus(Integer.parseInt(InviteStatus.inviting.toString()));
-				myproductsMapper.updateByPrimaryKeySelective(myproducts); 
+				//需要重新更新版本号
+				String versionString=DateUtil.getTimeStr(new Date(), "yyyyMMddHHMMss"); 
+				myproducts.setVersion(versionString);
+				myproductsMapper.updateByPrimaryKey(myproducts); 
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("成功发送邀请");
 			}else {
@@ -144,7 +147,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 			if(myprolist!=null&&myprolist.size()>0){
 				for (MyProductListVo mypro : myprolist) {
 					//自已不能扫自已的模板作品二维码
-					if(mypro.getUserid().longValue()==userId){
+					if(mypro.getUserid().longValue()==userId.longValue()){
 						rq.setStatu(ReturnStatus.ParamError);					
 						rq.setStatusreson("不能接受自已作品的邀请！"); 
 						return rq;
@@ -232,6 +235,11 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 		
 		return rq;
 	}
+	
+	public PMyproducts getPMyproducts(Long cartId){
+		PMyproducts myproducts= myproductsMapper.selectByPrimaryKey(cartId);
+		return myproducts;
+	}
 
 	/**
 	 * 处理扫码页面的接受邀请
@@ -261,7 +269,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 			ResultMsg msgResult= SendSMSByMobile.validateCode(phone, vcode, SendMsgEnums.register);
 			if(msgResult.getStatus()==Integer.parseInt(MsgStatusEnums.ok.toString())) {
 				UUsers userPhone=usersMapper.getUUsersByPhone(phone);
-				if(userPhone!=null&&userPhone.getUserid().longValue()!=userId){
+				if(userPhone!=null&&userPhone.getUserid().longValue()!=userId.longValue()){
 					rq.setStatu(ReturnStatus.SystemError);
 					rq.setStatusreson("该手机号已经绑定其他用户！");
 					return rq;

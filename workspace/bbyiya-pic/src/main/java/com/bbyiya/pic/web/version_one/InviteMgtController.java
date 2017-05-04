@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.model.PMyproducts;
 import com.bbyiya.pic.service.IPic_myProductService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -71,9 +72,9 @@ public class InviteMgtController  extends SSOController {
 	 * 处理扫码页面的接受邀请
 	 * @param phone 被邀请人手机号
 	 * @param cartId 作品cartid
-	 * @param verifcode  验证码
+	 * @param vcode  验证码
 	 * @param needVerfiCode  是否需要验证手机验证码
-	 * @param version  二维码版本号
+	 * @param version  二维码版本号 可为空
 	 * @return
 	 * @throws Exception
 	 */
@@ -83,35 +84,25 @@ public class InviteMgtController  extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq=myProductService.acceptScanQrCodeInvite(user.getUserId(),phone,cartId,vcode,needVerfiCode,version);
+			PMyproducts myproduct=myProductService.getPMyproducts(cartId);
+			if(myproduct==null){
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson("不存在的作品");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			//如果是模板作品
+			if(myproduct.getIstemp()!=null&&myproduct.getIstemp().toString().equals("1")){
+				rq=myProductService.acceptTempScanQrCodeInvite(user.getUserId(), phone, cartId);
+			}else{
+				rq=myProductService.acceptScanQrCodeInvite(user.getUserId(),phone,cartId,vcode,needVerfiCode,version);	
+			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期，请重新登录");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	
-	/**
-	 * 处理医院扫码页面的接受邀请
-	 * @param phone 被邀请人手机号
-	 * @param cartId 模板作品cartid	
-	 * @return
-	 * @throws Exception
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/acceptTempScanQrCodeInvite")
-	public String acceptTempScanQrCodeInvite(String phone,Long cartId) throws Exception {
-		ReturnModel rq = new ReturnModel();
-		LoginSuccessResult user= super.getLoginUser();
-		if(user!=null){
-			rq=myProductService.acceptTempScanQrCodeInvite(user.getUserId(), phone, cartId);
-		}else {
-			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期，请重新登录");
-		}
-		return JsonUtil.objectToJsonStr(rq);
-	}
-	
+
 	/**
 	 * 获取用户提示信息
 	 * @return

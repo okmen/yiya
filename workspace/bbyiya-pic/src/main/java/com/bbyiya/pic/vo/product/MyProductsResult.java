@@ -16,10 +16,8 @@ public class MyProductsResult extends PMyproducts{
 	private int isOrder;
 	
 	private Long inviteUserId;
-	/**
-	 * 相册的描述（）
-	 */
-//	private String description;
+	//邀请人昵称
+	private String myNickName;
 	/**
 	 * 分享页不同相册的小图标
 	 */
@@ -78,6 +76,12 @@ public class MyProductsResult extends PMyproducts{
 	}
 	public void setInviteUserId(Long inviteUserId) {
 		this.inviteUserId = inviteUserId;
+	}
+	public String getMyNickName() {
+		return myNickName;
+	}
+	public void setMyNickName(String myNickName) {
+		this.myNickName = myNickName;
 	}
 	
 	

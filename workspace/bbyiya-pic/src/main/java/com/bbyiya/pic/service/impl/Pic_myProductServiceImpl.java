@@ -232,6 +232,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 		
 		return rq;
 	}
+
 	/**
 	 * 处理扫码页面的接受邀请
 	 * @param phone 被邀请人手机号
@@ -449,7 +450,13 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 					if(vo.getInvitestatus()!=null&&vo.getInvitestatus()>0){
 						List<PMyproductsinvites> invlist= inviteMapper.findListByCartId(vo.getCartid());
 						if(invlist!=null&&invlist.size()>0){
-							UUsers otherUsers = usersMapper.getUUsersByPhone(invlist.get(0).getInvitephone());
+							UUsers otherUsers = null;
+							PMyproductsinvites in=invlist.get(0);
+							if(in.getInviteuserid()!=null&&in.getInviteuserid()>0){
+								otherUsers=usersMapper.selectByPrimaryKey(in.getInviteuserid());
+							}else if (!ObjectUtil.isEmpty( in.getInvitephone())) {
+								otherUsers=usersMapper.getUUsersByPhone(in.getInvitephone());
+							}
 							if(otherUsers!=null){
 								if (ObjectUtil.isEmpty(otherUsers.getUserimg())) {
 									vo.setOtherHeadImg("http://pic.bbyiya.com/userdefaultimg-2017-0303-01.png");
@@ -462,7 +469,9 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 									vo.setOtherNickName(otherUsers.getMobilephone());
 								}
 							}else {
-								vo.setOtherNickName(invlist.get(0).getInvitephone());
+								if(!ObjectUtil.isEmpty(in.getInvitephone())){
+									vo.setOtherNickName(in.getInvitephone());
+								}
 								vo.setOtherHeadImg("http://pic.bbyiya.com/userdefaultimg-2017-0303-01.png");
 							}
 						}

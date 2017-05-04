@@ -15,7 +15,6 @@ import com.bbyiya.dao.PMyproductchildinfoMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproductsinvitesMapper;
-import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PProductdetailsMapper;
 import com.bbyiya.dao.PProductsMapper;
 import com.bbyiya.dao.PScenesMapper;
@@ -32,7 +31,6 @@ import com.bbyiya.model.PMyproductchildinfo;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproductsinvites;
-import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PProductdetails;
 import com.bbyiya.model.PProducts;
 import com.bbyiya.model.PScenes;
@@ -43,7 +41,6 @@ import com.bbyiya.model.UChildreninfo;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.dao.IMyProductDetailsDao;
 import com.bbyiya.pic.dao.IMyProductsDao;
-import com.bbyiya.pic.dao.IPic_OrderMgtDao;
 import com.bbyiya.pic.dao.IPic_ProductDao;
 import com.bbyiya.pic.service.IPic_ProductService;
 import com.bbyiya.pic.vo.product.MyProductParam;
@@ -65,7 +62,7 @@ import com.github.pagehelper.PageInfo;
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
 public class Pic_ProductServiceImpl implements IPic_ProductService {
 
-	/*---------------------Product---------------------------*/
+	/*------------------Product---------------------------*/
 	@Autowired
 	private PProductsMapper productsMapper;
 	@Autowired
@@ -86,8 +83,6 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private PMyproductsinvitesMapper inviteMapper;
 	@Autowired
 	private PMyproductchildinfoMapper mychildMapper;
-	@Autowired
-	private PMyproducttempMapper tempMapper;
 	/*-------------------用户信息------------------------------------------------*/
 	@Autowired
 	private UUsersMapper usersMapper;
@@ -105,8 +100,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private IMyProductDetailsDao mydetailDao;
 	@Autowired
 	private IPic_ProductDao productDao;
-	@Autowired 
-	private IPic_OrderMgtDao orderDao;
+	
 	
 
 	public ReturnModel getProductSamples(Long productId) {
@@ -477,33 +471,6 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					item.setIsOrder(1);
 					item.setCount(12);
 				} 
-				
-				//得到宝宝生日
-				PMyproductchildinfo childinfo=mychildMapper.selectByPrimaryKey(item.getCartid());
-				if(childinfo!=null&&childinfo.getBirthday()!=null){
-					item.setBirthdayStr(DateUtil.getTimeStr(childinfo.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
-				}
-				//得到制作类型
-				PProducts product=productsMapper.selectByPrimaryKey(item.getProductid());
-				if(product!=null&&product.getTitle()!=null){
-					item.setProductTitle(product.getTitle());
-				}
-				//得到来源，即模板名称
-				if(item.getTempid()!=null){
-					PMyproducttemp temp=tempMapper.selectByPrimaryKey(item.getTempid());
-					if(temp!=null&&temp.getTitle()!=null){
-						item.setTempTitle(temp.getTitle());
-					}
-				}
-				//得到作品订单集合
-				List<OUserorders> orderList=orderDao.findOrderListByCartId(item.getCartid());
-				List<String> orderNoList=new ArrayList<String>();
-				for (OUserorders order : orderList) {
-					orderNoList.add(order.getUserorderid());
-				}
-				if(orderNoList.size()>0){
-					item.setOrderNoList(orderNoList);
-				}
 			}
 		}
 		return mylist;
@@ -514,21 +481,14 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		PMyproducts myproducts= myMapper.selectByPrimaryKey(cartId);
 		if(myproducts!=null&&myproducts.getUserid()!=null&&myproducts.getUserid().longValue()==userId){
 			if(myproducts.getStatus()!=null&&myproducts.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
-				//得到作品相关的未支付或图片未上传订单
-				List<OUserorders> orderList=orderDao.findNoPayOrderListByCartId(cartId);
-				if(orderList!=null&&orderList.size()>0){
-					rq.setStatu(ReturnStatus.SystemError);
-					rq.setStatusreson("作品关联的订单或未支付或图片未上传成功，请先查看订单支付状态或重新上传！");
-					return rq;
+				if(!ObjectUtil.isEmpty(myproducts.getOrderno())){
+					OUserorders order= orderMapper.selectByPrimaryKey(myproducts.getOrderno());
+					if(order!=null&&order.getStatus()!=null&&order.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
+						rq.setStatu(ReturnStatus.SystemError);
+						rq.setStatusreson("作品关联的订单未上传成功，请先查看订单并重新上传！");
+						return rq;
+					}  
 				}
-//				if(!ObjectUtil.isEmpty(myproducts.getOrderno())){
-//					OUserorders order= orderMapper.selectByPrimaryKey(myproducts.getOrderno());
-//					if(order!=null&&order.getStatus()!=null&&order.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
-//						rq.setStatu(ReturnStatus.SystemError);
-//						rq.setStatusreson("作品关联的订单未上传成功，请先查看订单并重新上传！");
-//						return rq;
-//					}  
-//				}
 			}
 			
 			if(myproducts.getInvitestatus()!=null&&myproducts.getInvitestatus()>0){
@@ -556,10 +516,15 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		UUsers user = usersMapper.getUUsersByUserID(userId);
 		if (user != null) {
 			MyProductsResult myproduct = myProductsDao.getMyProductResultVo(cartId);
+			if(myproduct==null){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("作品不存在");
+				return rq;
+			}
 			if(myproduct!=null&&myproduct.getStatus()!=null&&myproduct.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
 				myproduct.setIsOrder(1);
 			} 
-			boolean canModify=false;
+			boolean canModify=true;
 			if(myproduct != null&&myproduct.getUserid().longValue()==userId){//自己的作品
 				canModify=true;	
 			}
@@ -567,12 +532,20 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				List<PMyproductsinvites> invlist= inviteMapper.findListByCartId(cartId);
 				if(invlist!=null&&invlist.size()>0){
 					for (PMyproductsinvites in : invlist) {
-						if(in.getInvitephone().equals(user.getMobilephone()))
+						if(in.getInviteuserid()!=null&&in.getInviteuserid().longValue()==userId){
 							canModify=true;
+							myproduct.setInviteUserId(in.getInviteuserid()); 
+						}else if (!ObjectUtil.isEmpty(in.getInvitephone())&&in.getInvitephone().equals(user.getMobilebind())) {
+							canModify=true;
+						}
 					}
 				}
 			}
 			if (canModify) {
+				UUsers myUser= usersMapper.selectByPrimaryKey(myproduct.getUserid());
+				if(myUser!=null&&!ObjectUtil.isEmpty(myUser.getNickname())){ 
+					myproduct.setMyNickName(myUser.getNickname()); 
+				}
 				if(ObjectUtil.isEmpty(myproduct.getDescription())){
 					PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
 					if (product != null) {
@@ -584,9 +557,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					String base_code = userId + "-" + myproduct.getCartid();
 					int i = 1;
 					for (MyProductsDetailsResult dd : arrayList) {
-						if(dd.getSceneid()!=null&&dd.getSceneid()>0){//+ String.format("%02d", dd.getSceneid()) + "-"
+						dd.setPrintcode(base_code + "-" + String.format("%02d", i));
+						if(dd.getSceneid()!=null&&dd.getSceneid()>=0){//+ String.format("%02d", dd.getSceneid()) + "-"
 							// 打印编号	
-							dd.setPrintcode(base_code + "-" + String.format("%02d", i));
 							if(ObjectUtil.isEmpty(dd.getDescription()))	{
 								PScenes scene= sceneMapper.selectByPrimaryKey(dd.getSceneid().longValue());
 								if(scene!=null){
@@ -599,7 +572,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 							}	
 						}
 						i++;
-					}
+					} 
 					myproduct.setDetailslist(arrayList);
 				}
 				PMyproductchildinfo childInfo= mychildMapper.selectByPrimaryKey(cartId);
@@ -758,6 +731,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					detail.setSceneid(null);
 					detail.setTitle("");
 					detail.setDescription("");
+					detail.setSort(myDetaiMapper.getMaxSort(detail.getCartid())+1); 
 					myDetaiMapper.updateByPrimaryKey(detail);
 					rq.setStatu(ReturnStatus.Success);
 					rq.setStatusreson("删除成功！");
@@ -769,6 +743,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		rq.setStatusreson("删除失败");
 		return rq;
 	}
+	
+	
 
 	public ReturnModel getStyleCoordResult(Long styleId) {
 		ReturnModel rq = new ReturnModel();

@@ -9,6 +9,7 @@ public class LoginTempVo implements Serializable {
 	private Long upUserId;
 	private Integer loginTo;
 	private String redirect_url;
+	
 	public Long getUpUserId() {
 		return upUserId;
 	}

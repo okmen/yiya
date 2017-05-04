@@ -11,6 +11,7 @@ import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UBranchinfotemp;
 import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUseraddress;
+import com.bbyiya.pic.vo.LoginTempVo;
 import com.bbyiya.pic.vo.product.MyProductParam;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.user.UChildInfoParam;
@@ -245,6 +246,27 @@ public class Json2Objects {
 				if(statusInt>0){
 					param.setStatus(statusInt);
 				}
+			}
+			return param;
+		}
+		return null;
+	}
+	
+	public static LoginTempVo getParam_LoginTempVo(String json) {
+		JSONObject model = JSONObject.fromObject(json);
+		if (model != null) {
+			LoginTempVo param = new LoginTempVo();
+			int loginTo=ObjectUtil.parseInt(String.valueOf(model.get("loginTo")));
+			if(loginTo>=0){
+				param.setLoginTo(loginTo);
+			}
+			long upUserId=ObjectUtil.parseLong(String.valueOf(model.get("upUserId")));
+			if(upUserId>0){
+				param.setUpUserId(upUserId);
+			}
+			String redirect_url=String.valueOf(model.get("redirect_url"));
+			if(!"null".equals(redirect_url)&&!ObjectUtil.isEmpty(redirect_url)){
+				param.setRedirect_url(redirect_url); 
 			}
 			return param;
 		}

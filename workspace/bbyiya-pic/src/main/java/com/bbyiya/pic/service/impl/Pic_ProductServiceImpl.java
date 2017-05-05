@@ -15,6 +15,7 @@ import com.bbyiya.dao.PMyproductchildinfoMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproductsinvitesMapper;
+import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PProductdetailsMapper;
 import com.bbyiya.dao.PProductsMapper;
 import com.bbyiya.dao.PScenesMapper;
@@ -31,6 +32,7 @@ import com.bbyiya.model.PMyproductchildinfo;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproductsinvites;
+import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PProductdetails;
 import com.bbyiya.model.PProducts;
 import com.bbyiya.model.PScenes;
@@ -41,6 +43,7 @@ import com.bbyiya.model.UChildreninfo;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.dao.IMyProductDetailsDao;
 import com.bbyiya.pic.dao.IMyProductsDao;
+import com.bbyiya.pic.dao.IPic_OrderMgtDao;
 import com.bbyiya.pic.dao.IPic_ProductDao;
 import com.bbyiya.pic.service.IPic_ProductService;
 import com.bbyiya.pic.vo.product.MyProductParam;
@@ -83,6 +86,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private PMyproductsinvitesMapper inviteMapper;
 	@Autowired
 	private PMyproductchildinfoMapper mychildMapper;
+	@Autowired
+	private PMyproducttempMapper tempMapper;
 	/*-------------------用户信息------------------------------------------------*/
 	@Autowired
 	private UUsersMapper usersMapper;
@@ -100,6 +105,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private IMyProductDetailsDao mydetailDao;
 	@Autowired
 	private IPic_ProductDao productDao;
+	@Autowired 
+	private IPic_OrderMgtDao orderDao;
 	
 	
 
@@ -447,7 +454,17 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				if(item.getInvitestatus()!=null&&item.getInvitestatus()>0){//邀请协同编辑
 					List<PMyproductsinvites> invites= inviteMapper.findListByCartId(item.getCartid());
 					if(invites!=null&&invites.size()>0){
-						item.setInviteModel(invites.get(0)); 
+						item.setInviteModel(invites.get(0));
+						if(!ObjectUtil.isEmpty(invites.get(0).getInvitephone())){
+							UUsers inviteusers=usersMapper.getUUsersByPhone(invites.get(0).getInvitephone());
+							if(!ObjectUtil.isEmpty(invites.get(0).getInviteuserid())){
+								inviteusers=usersMapper.selectByPrimaryKey(invites.get(0).getInviteuserid());	
+							}
+							if(inviteusers!=null){
+								item.setInvitedName(inviteusers.getNickname());
+							}
+						}
+							
 					} 
 				}
 				// 作品详情（图片集合）
@@ -471,6 +488,35 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					item.setIsOrder(1);
 					item.setCount(12);
 				} 
+				
+				//得到宝宝生日
+				PMyproductchildinfo childinfo=mychildMapper.selectByPrimaryKey(item.getCartid());
+				if(childinfo!=null&&childinfo.getBirthday()!=null){
+					item.setBirthdayStr(DateUtil.getTimeStr(childinfo.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
+				}
+				//得到制作类型
+				PProducts product=productsMapper.selectByPrimaryKey(item.getProductid());
+				if(product!=null&&product.getTitle()!=null){
+					item.setProductTitle(product.getTitle());
+				}
+				//得到来源，即模板名称
+				if(item.getTempid()!=null){
+					PMyproducttemp temp=tempMapper.selectByPrimaryKey(item.getTempid());
+					if(temp!=null&&temp.getTitle()!=null){
+						item.setTempTitle(temp.getTitle());
+					}
+				}else{
+					item.setTempTitle("员工邀请");
+				}
+				//得到作品订单集合
+				List<OUserorders> orderList=orderDao.findOrderListByCartId(item.getCartid());
+				List<String> orderNoList=new ArrayList<String>();
+				for (OUserorders order : orderList) {
+					orderNoList.add(order.getUserorderid());
+				}
+				if(orderNoList.size()>0){
+					item.setOrderNoList(orderNoList);
+				}
 			}
 		}
 		return mylist;

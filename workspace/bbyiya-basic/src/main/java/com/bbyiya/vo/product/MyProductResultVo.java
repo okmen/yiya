@@ -19,7 +19,8 @@ public class MyProductResultVo extends PMyproducts{
 	private String userImg;
 	//邀约人昵称
 	private String userName;
-	
+	//受邀人昵称
+	private String invitedName;
 	private PMyproductsinvites inviteModel;
 	
 	private String description;
@@ -109,6 +110,12 @@ public class MyProductResultVo extends PMyproducts{
 	}
 	public void setOrderNoList(List<String> orderNoList) {
 		this.orderNoList = orderNoList;
+	}
+	public String getInvitedName() {
+		return invitedName;
+	}
+	public void setInvitedName(String invitedName) {
+		this.invitedName = invitedName;
 	}
 	
 	

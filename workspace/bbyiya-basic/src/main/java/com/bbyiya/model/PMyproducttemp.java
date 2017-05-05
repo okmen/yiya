@@ -18,6 +18,9 @@ public class PMyproducttemp {
     private Long cartid;
 
     private Date createtime;
+    
+    //二维码地址
+  	private String codeurl;
 
     public Integer getTempid() {
         return tempid;
@@ -82,4 +85,14 @@ public class PMyproducttemp {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+
+	public String getCodeurl() {
+		return codeurl;
+	}
+
+	public void setCodeurl(String codeurl) {
+		this.codeurl = codeurl;
+	}
+    
+    
 }

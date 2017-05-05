@@ -72,8 +72,7 @@ public class LoginController extends SSOController {
 				loginTemp.setRedirect_url(redirct_url); 
 			}
 			String keyId= request.getSession().getId();
-			RedisUtil.setObject(keyId, loginTemp, 60);
-			
+			RedisUtil.setObject(keyId, loginTemp, 30);
 		}
 //		return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin&response_type=code&scope=snsapi_userinfo#wechat_redirect" ;		
 		

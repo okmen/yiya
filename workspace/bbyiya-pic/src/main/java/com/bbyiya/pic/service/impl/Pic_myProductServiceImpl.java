@@ -97,7 +97,6 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 						}
 					}
 				}
-				
 				PMyproductsinvites invoMo=new PMyproductsinvites();
 				invoMo.setCartid(cartId);
 				invoMo.setInvitephone(phone);
@@ -107,7 +106,10 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				invoMo.setCreatetime(new Date());
 				inviteMapper.insert(invoMo);
 				myproducts.setInvitestatus(Integer.parseInt(InviteStatus.inviting.toString()));
-				myproductsMapper.updateByPrimaryKeySelective(myproducts); 
+				//需要重新更新版本号
+				String versionString=DateUtil.getTimeStr(new Date(), "yyyyMMddHHMMss"); 
+				myproducts.setVersion(versionString);
+				myproductsMapper.updateByPrimaryKey(myproducts); 
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("成功发送邀请");
 			}else {
@@ -144,7 +146,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 			if(myprolist!=null&&myprolist.size()>0){
 				for (MyProductListVo mypro : myprolist) {
 					//自已不能扫自已的模板作品二维码
-					if(mypro.getUserid()==userId){
+					if(mypro.getUserid().longValue()==userId.longValue()){
 						rq.setStatu(ReturnStatus.ParamError);					
 						rq.setStatusreson("不能接受自已作品的邀请！"); 
 						return rq;
@@ -232,6 +234,12 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 		
 		return rq;
 	}
+	
+	public PMyproducts getPMyproducts(Long cartId){
+		PMyproducts myproducts= myproductsMapper.selectByPrimaryKey(cartId);
+		return myproducts;
+	}
+
 	/**
 	 * 处理扫码页面的接受邀请
 	 * @param phone 被邀请人手机号
@@ -260,7 +268,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 			ResultMsg msgResult= SendSMSByMobile.validateCode(phone, vcode, SendMsgEnums.register);
 			if(msgResult.getStatus()==Integer.parseInt(MsgStatusEnums.ok.toString())) {
 				UUsers userPhone=usersMapper.getUUsersByPhone(phone);
-				if(userPhone!=null&&userPhone.getUserid().longValue()!=userId){
+				if(userPhone!=null&&userPhone.getUserid().longValue()!=userId.longValue()){
 					rq.setStatu(ReturnStatus.SystemError);
 					rq.setStatusreson("该手机号已经绑定其他用户！");
 					return rq;
@@ -285,11 +293,19 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 			}
 		}
 		if(myproducts!=null){
-			if(myproducts.getUserid()!=null){
+			//邀请人ID要不等于受邀人ID，自已不能接受自已的作用邀请
+			if(myproducts.getUserid()!=null&&myproducts.getUserid().longValue()!=userId){
 				List<PMyproductsinvites> list= inviteMapper.findListByCartId(cartId);
 				boolean flag=true;
 				if(list!=null&&list.size()>0){
 					for (PMyproductsinvites invo : list) {
+						if(invo.getInviteuserid()!=null&&invo.getInviteuserid()==userId){
+							flag=false;
+							rq.setBasemodle(invo);
+							rq.setStatu(ReturnStatus.Success);
+							rq.setStatusreson("已经接受邀请协同编辑，请直接跳转到作品页！"); 
+							return rq;
+						}
 						if(invo.getStatus()==Integer.parseInt(InviteStatus.agree.toString())){
 							flag=false;
 							rq.setStatu(ReturnStatus.ParamError);
@@ -319,7 +335,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				rq.setStatusreson("成功接受邀请");			
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("不是您本人的作品，不能进行此操作"); 				
+				rq.setStatusreson("不能接受自已作品的邀请！"); 				
 			}
 		}else {
 			rq.setStatu(ReturnStatus.SystemError);
@@ -327,6 +343,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 		}
 		return rq;
 	}
+	
 	public ReturnModel processInvite(String phone, Long cartId, int status) {
 		ReturnModel rq = new ReturnModel();
 		PMyproductsinvites invite = inviteMapper.getInviteByPhoneAndCartId(phone, cartId); //inviteMapper.selectByPrimaryKey(inviteId);

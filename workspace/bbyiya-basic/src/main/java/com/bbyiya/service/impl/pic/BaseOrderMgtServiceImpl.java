@@ -21,6 +21,7 @@ import com.bbyiya.dao.OOrderproductsMapper;
 //import com.bbyiya.dao.OPayforuserorderMapper;
 import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.OUserordersMapper;
+import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PProductsMapper;
 import com.bbyiya.dao.PProductstylepropertyMapper;
@@ -50,6 +51,7 @@ import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.OUserorders;
+import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PPostmodel;
 import com.bbyiya.model.PProducts;
@@ -100,6 +102,9 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	private PProductstylepropertyMapper propertyMapper;
 	@Autowired
 	private PMyproductsMapper myproductMapper;//我的作品
+	
+	@Autowired
+	private PMyproductdetailsMapper mydetailMapper;
 
 	// --------------------订单模块注解--------------------------------------
 	@Autowired
@@ -588,6 +593,23 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			rq.setStatusreson("作品不存在");
 			return rq;
 		}
+		List<PMyproductdetails> detailslist=mydetailMapper.findMyProductdetails(param.getCartId());
+		if(detailslist==null){
+			rq.setStatusreson("作品还没制作完成，不能下单");
+			return rq;
+		}else{
+			int i=0;
+			for (PMyproductdetails dd : detailslist) {
+				if (!ObjectUtil.isEmpty(dd.getImgurl())) {
+					i++;
+				}
+			}
+			if(i<12){
+				rq.setStatusreson("作品还没制作完成，请完成后再下单");
+				return rq;
+			}
+		}
+		
 		int count= param.getOrderproducts().getCount()==null?1:param.getOrderproducts().getCount();
 		int orderType=param.getOrderType()==null?0:param.getOrderType();
 		if(orderType==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){//影楼订单

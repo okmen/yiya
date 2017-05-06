@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;  
 import java.util.zip.ZipOutputStream;  
 /** 
- * О©╫О©╫О©╫д╪О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫д╪О©╫ 
- * О©╫О©╫О©╫О©╫О©╫zipя╧О©╫О©╫О©╫д╪О©╫ 
+ * ╫╚нд╪Ч╪побцФ╣днд╪Ч 
+ * ╢Р╟ЭЁиzipя╧кУнд╪Ч 
  *  
  * @author admin 
  * 
@@ -68,14 +68,14 @@ public final class FileToZip {
     }  
     
     /**
-     *  и╬О©╫О©╫О©╫О©╫О©╫О©╫О©╫д╪О©╫ 
-     * @param sPath О©╫О©╫и╬О©╫О©╫О©╫д╪О©╫О©╫О©╫б╥О©╫О©╫+О©╫д╪О©╫О©╫О©╫
-     * @return О©╫О©╫О©╫О©╫О©╫д╪О©╫и╬О©╫О©╫О©╫и╧О©╫О©╫О©╫О©╫О©╫trueО©╫О©╫О©╫О©╫О©╫Р╥╣╩О©╫false
+     *  и╬ЁЩ╣╔╦Жнд╪Ч 
+     * @param sPath ╠╩и╬ЁЩнд╪Ч╣дб╥╬╤+нд╪ЧцШ
+     * @return ╣╔╦Жнд╪Чи╬ЁЩЁи╧╕╥╣╩ьtrueё╛╥ЯтР╥╣╩ьfalse
      */
 	public boolean deleteFile(String sPath) {
 		boolean flag = false;
 		File file = new File(sPath);
-		// б╥О©╫О©╫н╙О©╫д╪О©╫О©╫р╡О©╫н╙О©╫О©╫О©╫О©╫О©╫О©╫О©╫и╬О©╫О©╫
+		// б╥╬╤н╙нд╪Чгр╡╩н╙©утР╫Ьппи╬ЁЩ
 		if (file.isFile() && file.exists()) {
 			file.delete();
 			flag = true;
@@ -84,31 +84,31 @@ public final class FileToZip {
 	}
 	
     public boolean deleteDirectory(String sPath) {
-    	// О©╫О©╫О©╫sPathО©╫О©╫О©╫О©╫О©╫д╪О©╫О©╫ж╦О©╫О©╫О©╫О©╫О©╫н╡О©╫О©╫О©╫т╤О©╫О©╫О©╫О©╫О©╫д╪О©╫О©╫ж╦О©╫О©╫О©╫
+    	// хГ╧ШsPath╡╩ртнд╪Ч╥ж╦Т╥Ш╫Ан╡ё╛вт╤╞лМ╪снд╪Ч╥ж╦Т╥Ш
     	if (!sPath.endsWith(File.separator)) {
     		sPath = sPath + File.separator;
 		}
 		File dirFile = new File(sPath);
-		// О©╫О©╫О©╫dirО©╫О©╫с╕О©╫О©╫О©╫д╪О©╫О©╫О©╫О©╫О©╫О©╫зёО©╫О©╫О©╫О©╫ъ╡О©╫О©╫О©╫р╩О©╫О©╫д©б╪О©╫О©╫О©╫О©╫О©╫кЁО©╫
+		// хГ╧Шdir╤тс╕╣днд╪Ч╡╩╢Фтзё╛╩Руъ╡╩йгр╩╦Жд©б╪ё╛тРмкЁЖ
 		if (!dirFile.exists() || !dirFile.isDirectory()) {
 		return false;
 		}
 		boolean flag = true;
-		// и╬О©╫О©╫О©╫д╪О©╫О©╫О©╫О©╫б╣О©╫О©╫О©╫О©╫О©╫О©╫д╪О©╫(О©╫О©╫О©╫О©╫О©╫О©╫д©б╪)
+		// и╬ЁЩнд╪Ч╪поб╣дкЫспнд╪Ч(╟Эю╗всд©б╪)
 		File[] files = dirFile.listFiles();
 		for (int i = 0; i < files.length; i++) {
-			// и╬О©╫О©╫О©╫О©╫О©╫д╪О©╫
+			// и╬ЁЩвснд╪Ч
 			if (files[i].isFile()) {
 				flag=deleteFile(files[i].getAbsolutePath());
 				if (!flag)break;
-			} // и╬О©╫О©╫О©╫О©╫д©б╪
+			} // и╬ЁЩвсд©б╪
 			else {
 				flag = deleteDirectory(files[i].getAbsolutePath());
 				if (!flag)break;
 			}
 		}
 		if (!flag)return false;
-		// и╬О©╫О©╫О©╫О©╫г╟д©б╪
+		// и╬ЁЩ╣╠г╟д©б╪
 		if (dirFile.delete()) {
 			return true;
 		} else {

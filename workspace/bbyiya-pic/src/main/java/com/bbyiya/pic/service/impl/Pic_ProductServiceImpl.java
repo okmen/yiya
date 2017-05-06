@@ -551,7 +551,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		}
 		return rq;
 	}
-	
+	@Autowired
+	private PMyproducttempMapper mtempMapper;
 	/**
 	 * 我的作品详情 （用户操作页 ）
 	 *  需要登录
@@ -570,6 +571,12 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			if(myproduct!=null&&myproduct.getStatus()!=null&&myproduct.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
 				myproduct.setIsOrder(1);
 			} 
+			if(myproduct.getIstemp()!=null&&myproduct.getIstemp()>0&&myproduct.getTempid()!=null&&myproduct.getTempid()>0){
+				PMyproducttemp mtemp= mtempMapper.selectByPrimaryKey(myproduct.getTempid());
+				if(mtemp!=null){
+					myproduct.setTempStatus(mtemp.getStatus()==null?0:mtemp.getStatus());
+				}
+			}
 			boolean canModify=true;
 			if(myproduct != null&&myproduct.getUserid().longValue()==userId){//自己的作品
 				canModify=true;	

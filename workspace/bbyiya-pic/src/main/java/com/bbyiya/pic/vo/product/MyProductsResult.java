@@ -20,6 +20,7 @@ public class MyProductsResult extends PMyproducts{
 	private String myNickName;
 	//邀请人身份
 	private Long userIdentity;
+	private int tempStatus;
 	/**
 	 * 分享页不同相册的小图标
 	 */
@@ -90,6 +91,12 @@ public class MyProductsResult extends PMyproducts{
 	}
 	public void setUserIdentity(Long userIdentity) {
 		this.userIdentity = userIdentity;
+	}
+	public int getTempStatus() {
+		return tempStatus;
+	}
+	public void setTempStatus(int tempStatus) {
+		this.tempStatus = tempStatus;
 	}
 	
 	

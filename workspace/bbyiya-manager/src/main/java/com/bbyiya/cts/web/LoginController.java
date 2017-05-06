@@ -68,11 +68,11 @@ public class LoginController  extends CtsSSOController{
 			String ticket=UUID.randomUUID().toString();
 			RedisUtil.setObject(ticket, rqModel.getBasemodle(), 3600);
 //			CookieUtils.addCookie(response, token, ticket, 3600);
-			CookieUtils.addCookieBySessionId(request, response,ticket,3600);
+			CookieUtils.addCookie_web(request, response, ticket, 3600);//(request, response,ticket,3600);
 			rqModel.setStatusreson(ticket); 
 		}else {
 //			String ticket= CookieUtils.getCookieByName(request, token);
-			String	ticket = CookieUtils.getCookieBySessionId(request);
+			String	ticket = CookieUtils.getCookie_web(request);
 			if(!ObjectUtil.isEmpty(ticket)){
 				RedisUtil.delete(ticket);
 			}

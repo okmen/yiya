@@ -63,6 +63,7 @@ public class LoginController extends SSOController {
 	@RequestMapping(value = "/transfer")
 	public String transferPage(String m,String uid,String redirct_url) throws Exception {
 //		LoginSuccessResult user = super.getLoginUser();
+		String keyId= request.getSession().getId();
 		long branch_userid=ObjectUtil.parseLong(uid);
 		if(branch_userid>0||!ObjectUtil.isEmpty(m)||!ObjectUtil.isEmpty(redirct_url)){  
 			LoginTempVo loginTemp=new LoginTempVo();
@@ -71,9 +72,11 @@ public class LoginController extends SSOController {
 			if(!ObjectUtil.isEmpty(redirct_url)&&!"null".equals(redirct_url)){
 				loginTemp.setRedirect_url(redirct_url); 
 			}
-			String keyId= request.getSession().getId();
-			RedisUtil.setObject(keyId, loginTemp, 60);
-			
+			RedisUtil.setObject(keyId, loginTemp, 30);
+		}else {
+			if(!ObjectUtil.isEmpty(RedisUtil.getObject(keyId))){
+				RedisUtil.delete(keyId);
+			}
 		}
 //		return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin&response_type=code&scope=snsapi_userinfo#wechat_redirect" ;		
 		

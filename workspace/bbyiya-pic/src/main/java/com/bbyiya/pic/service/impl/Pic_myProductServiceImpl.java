@@ -97,7 +97,6 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 						}
 					}
 				}
-				
 				PMyproductsinvites invoMo=new PMyproductsinvites();
 				invoMo.setCartid(cartId);
 				invoMo.setInvitephone(phone);
@@ -344,6 +343,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 		}
 		return rq;
 	}
+	
 	public ReturnModel processInvite(String phone, Long cartId, int status) {
 		ReturnModel rq = new ReturnModel();
 		PMyproductsinvites invite = inviteMapper.getInviteByPhoneAndCartId(phone, cartId); //inviteMapper.selectByPrimaryKey(inviteId);

@@ -1,3 +1,4 @@
+
 package com.bbyiya.enums.pic;
 
 public enum BranchStatusEnum {

@@ -8,7 +8,6 @@
     <result column="Status" property="status" jdbcType="INTEGER" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
   </resultMap>
-  
   <sql id="Base_Column_List" >
     UserId, Mobilephone, Name, Status, CreateTime
   </sql>

@@ -6,7 +6,6 @@ import com.bbyiya.model.UWeiusers;
 import com.bbyiya.vo.user.UWeiUserSearchParam;
 
 public interface UWeiusersMapper {
-	
     int deleteByPrimaryKey(Long userid);
 
     int insert(UWeiusers record);

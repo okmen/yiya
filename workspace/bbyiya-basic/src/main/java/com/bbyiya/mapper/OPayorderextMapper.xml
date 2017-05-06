@@ -19,7 +19,7 @@
     from o_payorderext
     where PayId = #{payid,jdbcType=VARCHAR}
   </select>
-   <!-- 01根据推荐人获取利益订单列表 -->
+   <!-- 01 根据推荐人获取利益订单列表 -->
    <select id="findListByUpUserid" resultMap="BaseResultMap"  >
     select 
     <include refid="Base_Column_List" />
@@ -29,7 +29,7 @@
     	 and Status= #{status,jdbcType=INTEGER}
     </if>
   </select>
-  <!-- 02根据影楼推荐人获取订单列表 -->
+  <!-- 02 根据影楼推荐人获取订单列表 -->
    <select id="find_payorderExtByBranchUpUserid" resultMap="BaseResultMap"  >   
     select a.PayId, a.UserOrderId, a.TotalPrice, a.UserId, a.UpUserId, a.Status, a.CreateTime from o_payorderext as a,u_branches as b where a.UpUserId=b.BranchUserId
     <if test="upuserid!=null" >

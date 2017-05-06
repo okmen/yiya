@@ -12,7 +12,6 @@
   <sql id="Base_Column_List" >
     LogId, UserId, UserName, Content, Type, CreateTime
   </sql>
-  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />

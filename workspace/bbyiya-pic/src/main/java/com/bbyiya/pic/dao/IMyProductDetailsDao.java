@@ -14,7 +14,6 @@ public interface IMyProductDetailsDao {
 	 * @return
 	 */
 	List<MyProductsDetailsResult> findMyProductDetailsResult(@Param("cartId")Long cartid);
-	
 	/**
 	 * 根据作品Id删除 作品详情
 	 * @param cartId

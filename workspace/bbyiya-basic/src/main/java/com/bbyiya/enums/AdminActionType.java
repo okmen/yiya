@@ -1,7 +1,6 @@
 package com.bbyiya.enums;
 
 public enum AdminActionType {
-	
 	/**
      * 代理商退驻
      *     */

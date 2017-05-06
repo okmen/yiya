@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class OrderPhotoParam implements Serializable{
 	private static final long serialVersionUID = 1L;
-	//Õº∆¨µÿ÷∑
+	
 	private String imageUrl;
 	private String printNo;
 	private String backImageUrl;

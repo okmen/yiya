@@ -3,7 +3,6 @@ package com.bbyiya.model;
 import java.util.Date;
 
 public class UAdminactionlogs {
-	
     private Long logid;
 
     private Long userid;

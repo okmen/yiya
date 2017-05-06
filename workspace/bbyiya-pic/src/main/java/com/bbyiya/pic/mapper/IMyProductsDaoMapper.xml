@@ -44,6 +44,7 @@
     from p_myproducts
     where UserId = #{userId,jdbcType=BIGINT} and ProductId=#{productId,jdbcType=BIGINT} and Status=#{status,jdbcType=INTEGER} order by  CartId desc 
   </select>
+  
   <!-- 通过TempId获取作品  status=3删除状态-->  
   <select id="getMyProductResultByTempId" resultMap="MyProductListVO" >
     select <include refid="Base_Column_List" />

@@ -1,6 +1,7 @@
 package com.bbyiya.dto;
 
 public class PProductsDTO {
+
     private Long productid;
 
     private Long userid;

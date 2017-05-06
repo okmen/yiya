@@ -68,7 +68,7 @@ public final class FileToZip {
     }  
     
     /**
-     *  删除单个文件 
+     * 删除单个文件 
      * @param sPath 被删除文件的路径+文件名
      * @return 单个文件删除成功返回true，否则返回false
      */

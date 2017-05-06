@@ -13,7 +13,6 @@ import com.bbyiya.enums.ReturnStatus;
  */
 public class ReturnModel implements Serializable{
 	private static final long serialVersionUID = 1L;
-	
 	private ReturnStatus Statu=ReturnStatus.LoginError;
 	private String StatusReson = "";
 	private Object BaseModle =null;

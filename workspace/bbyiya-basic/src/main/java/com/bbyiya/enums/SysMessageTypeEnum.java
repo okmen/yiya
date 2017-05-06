@@ -12,8 +12,7 @@ public enum SysMessageTypeEnum {
     /**
      * 全部可见
      */
-    all(3) 
-    ;
+    all(3);
 
     private final int Type;
 

@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import com.bbyiya.model.SysMessage;
 
 public interface SysMessageMapper {
+	
     int deleteByPrimaryKey(Integer msgid);
 
     int insert(SysMessage record);

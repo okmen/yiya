@@ -5,7 +5,6 @@ import java.io.Serializable;
 public class LoginTempVo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
 	private Long upUserId;
 	private Integer loginTo;
 	private String redirect_url;

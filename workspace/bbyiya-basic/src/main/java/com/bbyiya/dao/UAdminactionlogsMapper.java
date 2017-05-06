@@ -3,6 +3,7 @@ package com.bbyiya.dao;
 import com.bbyiya.model.UAdminactionlogs;
 
 public interface UAdminactionlogsMapper {
+	
     int deleteByPrimaryKey(Long logid);
 
     int insert(UAdminactionlogs record);

@@ -3,6 +3,7 @@ package com.bbyiya.model;
 import java.util.Date;
 
 public class OPayorderext {
+	
     private String payid;
 
     private String userorderid;

@@ -4,6 +4,7 @@ package com.bbyiya.vo.user;
 import com.bbyiya.model.UAgentapply;
 
 public class UWeiUserSearchParam extends UAgentapply{
+	
 	private Long userId;
 	private Integer status;
 	private String mobilephone;

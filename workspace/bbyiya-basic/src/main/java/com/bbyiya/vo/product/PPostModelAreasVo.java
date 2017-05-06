@@ -3,7 +3,6 @@ package com.bbyiya.vo.product;
 import java.util.Date;
 
 public class PPostModelAreasVo {
-	
 	private Integer postid;
 
     private Integer postmodelid;

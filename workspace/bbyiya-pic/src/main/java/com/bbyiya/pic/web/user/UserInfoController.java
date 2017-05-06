@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bbyiya.baseUtils.CookieUtils;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.UUsers;
+import com.bbyiya.service.IBaseUserCommonService;
 import com.bbyiya.service.IUserInfoMgtService;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
@@ -37,7 +39,9 @@ public class UserInfoController  extends SSOController{
 	private IUserInfoMgtService userMgtService;
 	@Autowired
 	private UUsersMapper usermapper;
-	
+	//用户公共模块
+	@Resource(name = "baseUserCommon")
+	private IBaseUserCommonService userBasic;
 	@ResponseBody
 	@RequestMapping(value = "/info/edit")
 	public String getAccountInfo(String userInfoJson) throws Exception {
@@ -145,5 +149,25 @@ public class UserInfoController  extends SSOController{
 			rq.setStatusreson("登录过期");
 		}
 		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	@ResponseBody 
+	@RequestMapping(value = "/editUserIdentity")
+	public String editUserIdentity(String num) throws Exception {	
+		ReturnModel rq=new ReturnModel();
+		
+		UserIdentityEnums identity=UserIdentityEnums.valueOf(num);
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			userBasic.addUserIdentity(user.getUserId(), identity);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("修改成功");
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	
 	}
 }

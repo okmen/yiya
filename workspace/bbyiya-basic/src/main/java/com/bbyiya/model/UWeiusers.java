@@ -3,6 +3,7 @@ package com.bbyiya.model;
 import java.util.Date;
 
 public class UWeiusers {
+	
     private Long userid;
 
     private String mobilephone;

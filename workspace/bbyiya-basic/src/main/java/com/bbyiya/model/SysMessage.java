@@ -3,6 +3,7 @@ package com.bbyiya.model;
 import java.util.Date;
 
 public class SysMessage {
+	
     private Integer msgid;
 
     private String title;

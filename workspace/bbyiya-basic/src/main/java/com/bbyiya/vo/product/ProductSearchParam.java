@@ -1,7 +1,6 @@
 package com.bbyiya.vo.product;
 
 public class ProductSearchParam {
-	
 	private String title;
 	private Long productId; 
 	private Long styleid; 

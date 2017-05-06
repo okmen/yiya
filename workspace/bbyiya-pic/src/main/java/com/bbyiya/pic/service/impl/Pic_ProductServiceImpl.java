@@ -225,6 +225,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		return rq;
 	}
 	
+	/**
+	 * 我的作品修改
+	 */
 	public ReturnModel Edit_MyProducts(Long userId, MyProductParam param) {
 		ReturnModel rq = new ReturnModel();
 		Long cartIdTemp = 0l;

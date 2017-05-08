@@ -156,8 +156,11 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 						List<PMyproductsinvites> list= inviteMapper.findListByCartId(mypro.getCartid());	
 						if(list!=null&&list.size()>0){
 							for (PMyproductsinvites invo : list) {
-								if(invo.getInviteuserid()!=null&&invo.getInviteuserid()==userId){
-									rq.setBasemodle(invo);
+								if(invo.getInviteuserid()!=null&&invo.getInviteuserid().longValue()==userId){
+									Map<String, Object> map = new HashMap<String, Object>();
+									map.put("tempId", myproducts.getTempid());
+									map.put("mycartid", invo.getCartid());
+									rq.setBasemodle(map);						
 									rq.setStatu(ReturnStatus.Success);
 									rq.setStatusreson("已经接受邀请协同编辑，请直接跳转到作品页！"); 
 									return rq;
@@ -200,7 +203,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 					newchildinfo.setRelation("");
 					newchildinfo.setUserid(newproducts.getUserid());
 				}
-				childinfoMapper.insert(childinfo);
+				childinfoMapper.insert(newchildinfo);
 				List<PMyproductdetails> details=myDetaiMapper.findMyProductdetails(myproducts.getCartid());
 				if(details!=null&&details.size()>0){
 					for (PMyproductdetails detail : details) {

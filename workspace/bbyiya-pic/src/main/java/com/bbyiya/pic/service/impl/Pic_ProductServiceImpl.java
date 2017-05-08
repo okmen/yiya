@@ -46,6 +46,7 @@ import com.bbyiya.pic.dao.IMyProductsDao;
 import com.bbyiya.pic.dao.IPic_OrderMgtDao;
 import com.bbyiya.pic.dao.IPic_ProductDao;
 import com.bbyiya.pic.service.IPic_ProductService;
+import com.bbyiya.pic.vo.product.MyProductListVo;
 import com.bbyiya.pic.vo.product.MyProductParam;
 import com.bbyiya.pic.vo.product.MyProductsDetailsResult;
 import com.bbyiya.pic.vo.product.MyProductsResult;
@@ -601,6 +602,23 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				PMyproducttemp mtemp= mtempMapper.selectByPrimaryKey(myproduct.getTempid());
 				if(mtemp!=null){
 					myproduct.setTempStatus(mtemp.getStatus()==null?0:mtemp.getStatus());
+					//判断用户是否接受模板邀请---------------
+					if(userId!=myproduct.getUserid().longValue()){
+						List<MyProductListVo> myprolist=myProductsDao.getMyProductResultByTempId(myproduct.getTempid());
+						if(myprolist!=null&&myprolist.size()>0){
+							for (MyProductListVo ll : myprolist) {
+								List<PMyproductsinvites> invlist= inviteMapper.findListByCartId(ll.getCartid());
+								if(invlist!=null&&invlist.size()>0){
+									for (PMyproductsinvites iv : invlist) {
+										if(iv.getInviteuserid()!=null&&iv.getInviteuserid().longValue()==userId){
+											myproduct.setTempCartId(ll.getCartid()); 
+										}
+									}
+								}
+								
+							}
+						}
+					}//判断用户是否接受模板邀请(over)---------------
 				}
 			}
 			boolean canModify=true;

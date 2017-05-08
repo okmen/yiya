@@ -21,6 +21,7 @@ public class MyProductsResult extends PMyproducts{
 	//邀请人身份
 	private Long userIdentity;
 	private int tempStatus;
+	private Long tempCartId;
 	/**
 	 * 分享页不同相册的小图标
 	 */
@@ -97,6 +98,12 @@ public class MyProductsResult extends PMyproducts{
 	}
 	public void setTempStatus(int tempStatus) {
 		this.tempStatus = tempStatus;
+	}
+	public Long getTempCartId() {
+		return tempCartId;
+	}
+	public void setTempCartId(Long tempCartId) {
+		this.tempCartId = tempCartId;
 	}
 	
 	

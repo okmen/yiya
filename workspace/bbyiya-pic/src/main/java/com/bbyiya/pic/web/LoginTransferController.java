@@ -69,7 +69,8 @@ public class LoginTransferController extends SSOController {
 	public String wxLogin2(String code, String state) throws Exception {
 		ReturnModel rqModel = getWxLogin(code, state);
 		if (rqModel.getStatu().equals(ReturnStatus.Success)) {
-			return "redirect:" + ConfigUtil.getSingleValue("loginbackurl_ibs")+ "?ticket=" + ((LoginSuccessResult) rqModel.getBasemodle()).getTicket();
+			return "redirect:" + ConfigUtil.getSingleValue("loginbackurl_ibs");
+			//+ "?ticket=" + ((LoginSuccessResult) rqModel.getBasemodle()).getTicket()
 		} else {
 			addlog(rqModel.getStatusreson());
 			return "/index";

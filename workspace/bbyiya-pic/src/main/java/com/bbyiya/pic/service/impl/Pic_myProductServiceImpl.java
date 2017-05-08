@@ -183,17 +183,24 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				myproductsMapper.insertReturnId(newproducts);
 				
 				PMyproductchildinfo childinfo=childinfoMapper.selectByPrimaryKey(myproducts.getCartid());
+				PMyproductchildinfo newchildinfo=new PMyproductchildinfo();				
 				if(childinfo!=null){
-					PMyproductchildinfo newchildinfo=new PMyproductchildinfo();
 					newchildinfo.setBirthday(childinfo.getBirthday());
 					newchildinfo.setCartid(newproducts.getCartid());
 					newchildinfo.setCreatetime(new Date());
 					newchildinfo.setNickname(childinfo.getNickname());
 					newchildinfo.setRelation(childinfo.getRelation());
 					newchildinfo.setUserid(newproducts.getUserid());
+					
+				}else{
+					newchildinfo.setBirthday(new Date());
+					newchildinfo.setCartid(newproducts.getCartid());
+					newchildinfo.setCreatetime(new Date());
+					newchildinfo.setNickname("");
+					newchildinfo.setRelation("");
+					newchildinfo.setUserid(newproducts.getUserid());
 				}
-				
-				
+				childinfoMapper.insert(childinfo);
 				List<PMyproductdetails> details=myDetaiMapper.findMyProductdetails(myproducts.getCartid());
 				if(details!=null&&details.size()>0){
 					for (PMyproductdetails detail : details) {
@@ -222,6 +229,10 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				inviteMapper.insert(invoMo);
 				newproducts.setInvitestatus(Integer.parseInt(InviteStatus.agree.toString()));
 				myproductsMapper.updateByPrimaryKeySelective(newproducts); 
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("tempId", myproducts.getTempid());
+				map.put("mycartid", newproducts.getCartid());
+				rq.setBasemodle(map);
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("成功接受邀请");
 

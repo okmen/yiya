@@ -94,6 +94,8 @@ public class BaseProductServiceImpl implements IBaseProductService {
 				map.put("styleId", styleId);
 				map.put("productId", style.getProductid());
 				map.put("propertystr", style.getPropertystr());//orderMgtService.getStylePropertyStr(styleId)
+			    long temp=styleId%2;	//获取是否是横版竖版
+				map.put("type", (int)temp);
 				rq.setBasemodle(map);
 				rq.setStatu(ReturnStatus.Success);
 			}

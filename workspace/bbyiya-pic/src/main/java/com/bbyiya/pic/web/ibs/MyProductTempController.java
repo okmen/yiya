@@ -156,8 +156,11 @@ public class MyProductTempController extends SSOController {
 	public String getProductTempRQcode(String cartId) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		//String versionString=DateUtil.getTimeStr(new Date(), "yyyyMMddHHMMss"); 
-		String redirct_url="currentPage?workId="+cartId;		
-		String url="https://mpic.bbyiya.com/common/generateQRcode?urlstr=https://mpic.bbyiya.com/login/transfer?m=1&redirct_url="+URLEncoder.encode(redirct_url,"gb2312");;
+		String redirct_url="currentPage?workId="+cartId;	
+		String urlstr="https://mpic.bbyiya.com/login/transfer?m=1&redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
+		//String url="https://mpic.bbyiya.com/common/generateQRcode?urlstr=https://mpic.bbyiya.com/login/transfer?m=1&redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
+		String url="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+URLEncoder.encode(urlstr,"utf-8");
+		
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			rq.setBasemodle(url);

@@ -215,7 +215,27 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 						myDetaiMapper.insert(de);
 						sort++;
 					}
+				}				
+				boolean isHavechild=true;
+				UChildreninfo childreninfo=childMapper.selectByPrimaryKey(userId);
+				if(childreninfo==null){
+					childreninfo=new UChildreninfo();
+					childreninfo.setUserid(userId);
+					childreninfo.setCreatetime(new Date());
+				} 
+				
+				if(!ObjectUtil.isEmpty(param.getChildInfo().getNickName())){
+					childreninfo.setNickname(param.getChildInfo().getNickName());
 				}
+				if(!ObjectUtil.isEmpty(param.getChildInfo().getBirthday())){
+					childreninfo.setBirthday(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday())) ;
+				}			
+				if(isHavechild){
+					childMapper.updateByPrimaryKey(childreninfo);
+				}else {
+					childMapper.insert(childreninfo);
+				}
+				
 			}
 		}
 		rq.setStatu(ReturnStatus.Success);

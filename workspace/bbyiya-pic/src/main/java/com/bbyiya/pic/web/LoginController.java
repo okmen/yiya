@@ -73,6 +73,7 @@ public class LoginController extends SSOController {
 				loginTemp.setRedirect_url(redirct_url); 
 			}
 			RedisUtil.setObject(keyId, loginTemp, 30);
+			addlog("trans:"+JsonUtil.objectToJsonStr(loginTemp));  
 		}else {
 			if(!ObjectUtil.isEmpty(RedisUtil.getObject(keyId))){
 				RedisUtil.delete(keyId);

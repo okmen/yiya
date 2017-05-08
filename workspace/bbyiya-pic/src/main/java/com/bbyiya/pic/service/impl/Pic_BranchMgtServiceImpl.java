@@ -404,6 +404,23 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			branchesMapper.updateByPrimaryKeySelective(apply);
 			if(status==Integer.parseInt(BranchStatusEnum.ok.toString())){
 				userBasic.addUserIdentity(branchUserId,UserIdentityEnums.branch); 
+				
+				UBranchusers branchuser = branchuserMapper.selectByPrimaryKey(branchUserId);
+				if(branchuser==null){
+					//影楼内部账号录入
+					branchuser=new UBranchusers();
+					branchuser.setAgentuserid(apply.getAgentuserid());
+					branchuser.setBranchuserid(apply.getAgentuserid());
+					branchuser.setCreatetime(new Date());
+					branchuser.setName(apply.getContactname());
+					branchuser.setPhone(apply.getPhone());
+					branchuser.setStatus(Integer.parseInt(BranchStatusEnum.ok.toString()));
+					branchuser.setUserid(apply.getAgentuserid());		
+					branchuserMapper.insert(branchuser);
+				}else{
+					branchuser.setStatus(Integer.parseInt(BranchStatusEnum.ok.toString()));
+					branchuserMapper.updateByPrimaryKey(branchuser);
+				}				
 			}
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("审核成功");
@@ -533,7 +550,19 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			branch.setRemark(apply.getRemark());
 			branch.setCreatetime(new Date());
 			branch.setProcesstime(new Date());
-			branchesMapper.insertSelective(branch);	
+			branchesMapper.insertSelective(branch);
+			
+			//影楼内部账号录入
+			UBranchusers branchuser=new UBranchusers();
+			branchuser.setAgentuserid(apply.getAgentuserid());
+			branchuser.setBranchuserid(apply.getAgentuserid());
+			branchuser.setCreatetime(new Date());
+			branchuser.setName(apply.getContactname());
+			branchuser.setPhone(apply.getPhone());
+			branchuser.setStatus(Integer.parseInt(BranchStatusEnum.ok.toString()));
+			branchuser.setUserid(apply.getAgentuserid());		
+			branchuserMapper.insert(branchuser);
+			
 			//更新代理身份标识
 			userBasic.addUserIdentity(apply.getAgentuserid(),UserIdentityEnums.branch);  
 		}

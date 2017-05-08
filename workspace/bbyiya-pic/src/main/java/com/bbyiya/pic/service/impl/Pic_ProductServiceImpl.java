@@ -216,25 +216,28 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 						myDetaiMapper.insert(de);
 						sort++;
 					}
-				}				
-				boolean isHavechild=true;
-				UChildreninfo childreninfo=childMapper.selectByPrimaryKey(userId);
-				if(childreninfo==null){
-					childreninfo=new UChildreninfo();
-					childreninfo.setUserid(userId);
-					childreninfo.setCreatetime(new Date());
-				} 
-				
-				if(!ObjectUtil.isEmpty(param.getChildInfo().getNickName())){
-					childreninfo.setNickname(param.getChildInfo().getNickName());
 				}
-				if(!ObjectUtil.isEmpty(param.getChildInfo().getBirthday())){
-					childreninfo.setBirthday(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday())) ;
-				}			
-				if(isHavechild){
-					childMapper.updateByPrimaryKey(childreninfo);
-				}else {
-					childMapper.insert(childreninfo);
+				//插入宝宝生日信息
+				if(param.getChildInfo()!=null) {
+					boolean isnew=false;
+					PMyproductchildinfo mychild=mychildMapper.selectByPrimaryKey(param.getCartid());
+					if(mychild==null){
+						mychild=new PMyproductchildinfo();
+						mychild.setCartid(param.getCartid());
+						mychild.setCreatetime(new Date());
+						isnew=true;
+					}
+					if(!ObjectUtil.isEmpty(param.getChildInfo().getNickName())){
+						mychild.setNickname(param.getChildInfo().getNickName());
+					}
+					if(!ObjectUtil.isEmpty(param.getChildInfo().getBirthday())){
+						mychild.setBirthday(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday())) ;
+					}
+					if(isnew){
+						mychildMapper.insert(mychild);
+					}else {
+						mychildMapper.updateByPrimaryKeySelective(mychild);
+					} 
 				}
 				
 			}
@@ -482,16 +485,24 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					List<PMyproductsinvites> invites= inviteMapper.findListByCartId(item.getCartid());
 					if(invites!=null&&invites.size()>0){
 						item.setInviteModel(invites.get(0));
+						UUsers inviteusers=null;
 						if(!ObjectUtil.isEmpty(invites.get(0).getInvitephone())){
-							UUsers inviteusers=usersMapper.getUUsersByPhone(invites.get(0).getInvitephone());
-							if(!ObjectUtil.isEmpty(invites.get(0).getInviteuserid())){
-								inviteusers=usersMapper.selectByPrimaryKey(invites.get(0).getInviteuserid());	
-							}
-							if(inviteusers!=null){
-								item.setInvitedName(inviteusers.getNickname());
-							}
+							inviteusers=usersMapper.getUUsersByPhone(invites.get(0).getInvitephone());
 						}
+						if(inviteusers==null&&!ObjectUtil.isEmpty(invites.get(0).getInviteuserid())){
+							inviteusers=usersMapper.selectByPrimaryKey(invites.get(0).getInviteuserid());	
+						}
+						if(inviteusers!=null){
+							item.setInvitedName(inviteusers.getNickname());	
+							if(item.getInviteModel()!=null){
+								if(ObjectUtil.isEmpty(item.getInviteModel().getInvitephone())){
+									item.getInviteModel().setInvitephone(inviteusers.getMobilephone());
+								}
+							}
 							
+						}
+						
+						
 					} 
 				}
 				// 作品详情（图片集合）

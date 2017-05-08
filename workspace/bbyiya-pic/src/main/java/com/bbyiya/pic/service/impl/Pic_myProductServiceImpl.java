@@ -214,7 +214,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 						newdet.setDescription(detail.getDescription());
 						newdet.setImgurl(detail.getImgurl());
 						newdet.setSceneid(detail.getSceneid());
-						newdet.setSort(detail.getSceneid());
+						newdet.setSort(detail.getSort());
 						newdet.setTitle(detail.getTitle());
 						newdet.setUserid(newproducts.getUserid());					
 						myDetaiMapper.insert(newdet);
@@ -223,12 +223,20 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				
 				PMyproductsinvites invoMo=new PMyproductsinvites();
 				invoMo.setCartid(newproducts.getCartid());
-				invoMo.setInvitephone(phone);
+				
 				invoMo.setUserid(newproducts.getUserid());//邀请人ID
 				invoMo.setInviteuserid(userId);//被邀请人ID
 				invoMo.setInvitetype(Integer.parseInt(InviteType.scanQRInvite.toString()));
 				invoMo.setStatus(Integer.parseInt(InviteStatus.agree.toString()));
 				invoMo.setCreatetime(new Date());
+				if(ObjectUtil.isEmpty(phone)){
+					UUsers user=usersMapper.selectByPrimaryKey(userId);
+					if(user!=null){
+						invoMo.setInvitephone(user.getMobilephone());
+					}
+				}else{
+					invoMo.setInvitephone(phone);
+				}
 				inviteMapper.insert(invoMo);
 				newproducts.setInvitestatus(Integer.parseInt(InviteStatus.agree.toString()));
 				myproductsMapper.updateByPrimaryKeySelective(newproducts); 
@@ -336,12 +344,19 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				}
 				PMyproductsinvites invoMo=new PMyproductsinvites();
 				invoMo.setCartid(cartId);
-				invoMo.setInvitephone(phone);
 				invoMo.setUserid(myproducts.getUserid());//邀请人ID
 				invoMo.setInviteuserid(userId);//被邀请人ID
 				invoMo.setInvitetype(Integer.parseInt(InviteType.scanQRInvite.toString()));
 				invoMo.setStatus(Integer.parseInt(InviteStatus.agree.toString()));
-				invoMo.setCreatetime(new Date());
+				invoMo.setCreatetime(new Date());	
+				if(ObjectUtil.isEmpty(phone)){
+					UUsers user=usersMapper.selectByPrimaryKey(userId);
+					if(user!=null){
+						invoMo.setInvitephone(user.getMobilephone());
+					}
+				}else{
+					invoMo.setInvitephone(phone);
+				}
 				inviteMapper.insert(invoMo);
 				myproducts.setInvitestatus(Integer.parseInt(InviteStatus.agree.toString()));
 				myproductsMapper.updateByPrimaryKeySelective(myproducts); 

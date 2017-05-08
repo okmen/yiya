@@ -1,7 +1,5 @@
 package com.bbyiya.pic.web.cts;
 
-import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -15,7 +13,7 @@ import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.pic.service.IPic_BranchMgtService;
 import com.bbyiya.pic.service.cts.ICts_UWeiUserManageService;
 import com.bbyiya.pic.vo.agent.AgentSearchParam;
-import com.bbyiya.utils.ConfigUtil;
+
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -47,7 +45,7 @@ public class AgentBranchController extends SSOController {
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
 			
-			if(validate(user.getUserId())){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){
 				rq = branchService.audit_AgentApply(user.getUserId(), agentUserId, status, msg);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
@@ -223,8 +221,8 @@ public class AgentBranchController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {		
-			if(validate(user.getUserId())){
-				rq = branchService.agentTuiZhu(user.getNickName(),user.getUserId(), agentUserId);
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){
+					rq = branchService.agentTuiZhu(user.getNickName(),user.getUserId(), agentUserId);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
 				rq.setStatusreson("ÎÞÈ¨ÏÞ");
@@ -261,18 +259,6 @@ public class AgentBranchController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-	public boolean validate(long userId){
-//		List<Map<String, String>>users= ConfigUtil.getMaplist("adminUsers");
-//		if(users!=null&&users.size()>0){
-//			for (Map<String, String> map : users) {
-//				if(ObjectUtil.parseLong(map.get("userId"))==userId){
-//					return true;
-//				}
-//			}
-//		}
-		
-		return false;
-	}
-	
+
 	
 }

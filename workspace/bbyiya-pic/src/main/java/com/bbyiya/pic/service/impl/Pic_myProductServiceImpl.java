@@ -460,7 +460,11 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 					for (PMyproductdetails dd : detailslist) {
 						if (!ObjectUtil.isEmpty(dd.getImgurl())) {
 							if(dd.getSort()!=null&&dd.getSort().intValue()==0){
-								vo.setDefaultImg("http://pic.bbyiya.com/"+dd.getImgurl()+"?imageView2/2/w/200");
+								if(!ObjectUtil.isEmpty(dd.getImgurl())&&(dd.getImgurl().contains("http://")||dd.getImgurl().contains("https://"))){
+									vo.setDefaultImg(dd.getImgurl());
+								}else {
+									vo.setDefaultImg("http://pic.bbyiya.com/"+dd.getImgurl());//+"?imageView2/2/w/200");
+								}
 							}
 							i++;
 						}

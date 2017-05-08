@@ -143,13 +143,15 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		if(reuslt!=null&&reuslt.getList()!=null&&reuslt.getList().size()>0){
 			for (PMyproducttemp temp : templist) {	
 				//String versionString=DateUtil.getTimeStr(new Date(), "yyyyMMddHHMMss"); 
-				String redirct_url="currentPage?workId="+temp.getCartid();		
+				String redirct_url="currentPage?workId="+temp.getCartid();			
+				String urlstr="";
 				String url="";
 				try {
-					url = "https://mpic.bbyiya.com/common/generateQRcode?urlstr=https://mpic.bbyiya.com/login/transfer?m=1&redirct_url="+URLEncoder.encode(redirct_url,"gb2312");
-				} catch (UnsupportedEncodingException e) {
+					urlstr = "https://mpic.bbyiya.com/login/transfer?m=1&redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
+					url="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+URLEncoder.encode(urlstr,"utf-8");				
+				} catch (UnsupportedEncodingException e1) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					e1.printStackTrace();
 				}
 				temp.setCodeurl(url);
 				

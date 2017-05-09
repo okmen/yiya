@@ -88,13 +88,15 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempid);	
 		if(temp!=null){
 			PMyproducts myproduct =myMapper.selectByPrimaryKey(temp.getCartid());
-			//启用
-			if(type==1){
-				temp.setStatus(Integer.parseInt(MyProductTempStatusEnum.enable.toString()));			
-				myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.ok.toString()));				
-			}else{//禁用
-				temp.setStatus(Integer.parseInt(MyProductTempStatusEnum.disabled.toString()));			
-				myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.disabled.toString()));
+			if(myproduct!=null){
+				//启用
+				if(type==1){
+					temp.setStatus(Integer.parseInt(MyProductTempStatusEnum.enable.toString()));			
+					myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.ok.toString()));				
+				}else{//禁用
+					temp.setStatus(Integer.parseInt(MyProductTempStatusEnum.disabled.toString()));			
+					myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.disabled.toString()));
+				}
 			}
 			myMapper.updateByPrimaryKey(myproduct);
 			myproducttempMapper.updateByPrimaryKey(temp);

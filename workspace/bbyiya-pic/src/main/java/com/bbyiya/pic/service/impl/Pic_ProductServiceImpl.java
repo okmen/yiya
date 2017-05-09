@@ -564,22 +564,23 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		ReturnModel rq=new ReturnModel();
 		PMyproducts myproducts= myMapper.selectByPrimaryKey(cartId);
 		if(myproducts!=null&&myproducts.getUserid()!=null&&myproducts.getUserid().longValue()==userId){
-			if(myproducts.getStatus()!=null&&myproducts.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
-				if(!ObjectUtil.isEmpty(myproducts.getOrderno())){
-					OUserorders order= orderMapper.selectByPrimaryKey(myproducts.getOrderno());
-					if(order!=null&&order.getStatus()!=null&&order.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
-						rq.setStatu(ReturnStatus.SystemError);
-						rq.setStatusreson("作品关联的订单未上传成功，请先查看订单并重新上传！");
-						return rq;
-					}  
-				}
-			}
-			
+//			if(myproducts.getStatus()!=null&&myproducts.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
+//				if(!ObjectUtil.isEmpty(myproducts.getOrderno())){
+//					OUserorders order= orderMapper.selectByPrimaryKey(myproducts.getOrderno());
+//					if(order!=null&&order.getStatus()!=null&&order.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
+//						rq.setStatu(ReturnStatus.SystemError);
+//						rq.setStatusreson("作品关联的订单未上传成功，请先查看订单并重新上传！");
+//						return rq;
+//					}  
+//				}
+//			}
 			if(myproducts.getInvitestatus()!=null&&myproducts.getInvitestatus()>0){
-				inviteMapper.deleteByCartId(cartId);
+				myproducts.setStatus(Integer.parseInt(MyProductStatusEnum.deleted.toString()));
+				myMapper.updateByPrimaryKeySelective(myproducts);
+//				inviteMapper.deleteByCartId(cartId);
 			}
-			mydetailDao.deleMyProductDetailsByCartId(cartId); 
-			myMapper.deleteByPrimaryKey(cartId);
+//			mydetailDao.deleMyProductDetailsByCartId(cartId); 
+//			myMapper.deleteByPrimaryKey(cartId);
 			
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("删除成功");

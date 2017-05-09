@@ -92,7 +92,7 @@ public class InviteMgtController  extends SSOController {
 			}
 			//如果是模板作品
 			if(myproduct.getIstemp()!=null&&myproduct.getIstemp().toString().equals("1")){
-				rq=myProductService.acceptTempScanQrCodeInvite(user.getUserId(), phone, cartId);
+				rq=myProductService.acceptTempScanQrCodeInvite(user.getUserId(), phone, cartId,vcode,needVerfiCode);
 			}else{
 				rq=myProductService.acceptScanQrCodeInvite(user.getUserId(),phone,cartId,vcode,needVerfiCode,version);	
 			}

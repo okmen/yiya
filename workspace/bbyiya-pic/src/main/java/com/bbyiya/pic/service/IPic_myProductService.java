@@ -71,7 +71,7 @@ public interface IPic_myProductService {
 	 * @return
 	 */
 	ReturnModel acceptTempScanQrCodeInvite(Long userId, String phone,
-			Long cartId);
+			Long cartId,String vcode,Integer needVerfiCode);
 	/**
 	 * 根据cartId得到作品
 	 * @param cartId

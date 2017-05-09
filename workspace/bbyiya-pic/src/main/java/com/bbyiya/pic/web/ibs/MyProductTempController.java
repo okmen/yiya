@@ -132,11 +132,13 @@ public class MyProductTempController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/downProductTempRQcode")
-	public String downProductTempRQcode(String url) throws Exception {
+	public String downProductTempRQcode(String cartId) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq=producttempService.saveProductTempRQcode(url);
+			String redirct_url="currentPage?workId="+URLEncoder.encode(cartId,"utf-8");	
+			String urlstr="https://mpic.bbyiya.com/login/transfer?m=1&redirct_url="+URLEncoder.encode(redirct_url,"utf-8");				
+			rq=producttempService.saveProductTempRQcode(urlstr);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("µÇÂ¼¹ýÆÚ");
@@ -155,10 +157,8 @@ public class MyProductTempController extends SSOController {
 	@RequestMapping(value = "/getProductTempRQcode")
 	public String getProductTempRQcode(String cartId) throws Exception {
 		ReturnModel rq=new ReturnModel();
-		//String versionString=DateUtil.getTimeStr(new Date(), "yyyyMMddHHMMss"); 
 		String redirct_url="currentPage?workId="+cartId;	
 		String urlstr="https://mpic.bbyiya.com/login/transfer?m=1&redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
-		//String url="https://mpic.bbyiya.com/common/generateQRcode?urlstr=https://mpic.bbyiya.com/login/transfer?m=1&redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
 		String url="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+URLEncoder.encode(urlstr,"utf-8");
 		
 		LoginSuccessResult user= super.getLoginUser();

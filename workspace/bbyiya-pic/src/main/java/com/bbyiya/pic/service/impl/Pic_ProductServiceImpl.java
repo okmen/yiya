@@ -654,6 +654,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				if(myUser!=null&&!ObjectUtil.isEmpty(myUser.getNickname())){ 
 					myproduct.setMyNickName(myUser.getNickname()); 
 				}
+				if(myUser!=null&&!ObjectUtil.isEmpty(myUser.getIdentity())){
+					myproduct.setUserIdentity(myUser.getIdentity());
+				}
 				if(ObjectUtil.isEmpty(myproduct.getDescription())){
 					PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
 					if (product != null) {

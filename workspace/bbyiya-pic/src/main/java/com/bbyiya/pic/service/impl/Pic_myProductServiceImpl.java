@@ -131,12 +131,41 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 	 * @author julie at 2017-04-26
 	 * @throws Exception
 	 */
-	public ReturnModel acceptTempScanQrCodeInvite(Long userId,String phone,Long cartId){
+	public ReturnModel acceptTempScanQrCodeInvite(Long userId,String phone,Long cartId,String vcode,Integer needVerfiCode){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError); 
 		if(!ObjectUtil.isMobile(phone)){
 			rq.setStatusreson("请输入正确的手机号");
 			return rq; 
+		}
+		//如果需要验证手机短信验证码
+		if(needVerfiCode!=null&&needVerfiCode==1){
+			ResultMsg msgResult= SendSMSByMobile.validateCode(phone, vcode, SendMsgEnums.register);
+			if(msgResult.getStatus()==Integer.parseInt(MsgStatusEnums.ok.toString())) {
+				UUsers userPhone=usersMapper.getUUsersByPhone(phone);
+				if(userPhone!=null&&userPhone.getUserid().longValue()!=userId.longValue()){
+					rq.setStatu(ReturnStatus.SystemError);
+					rq.setStatusreson("该手机号已经绑定其他用户！");
+					return rq;
+				}
+				UUsers user= usersMapper.getUUsersByUserID(userId);
+				if(user!=null){
+					user.setMobilephone(phone);
+					user.setMobilebind(1);
+					user.setStatus(Integer.parseInt(UserStatusEnum.ok.toString())); 
+					user.setPassword(""); //默认密码为空
+					usersMapper.updateByPrimaryKey(user);
+					//LoginSuccessResult result = baseLoginService.getLoginSuccessResult_Common(user);					
+				}else {
+					rq.setStatu(ReturnStatus.SystemError);
+					rq.setStatusreson("系统错误");
+					return rq; 
+				}
+			}else{
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson(msgResult.getMsg()); 
+				return rq; 
+			}
 		}
 		//模板作品ID
 		PMyproducts myproducts= myproductsMapper.selectByPrimaryKey(cartId);

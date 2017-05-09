@@ -574,11 +574,11 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 //					}  
 //				}
 //			}
-			if(myproducts.getInvitestatus()!=null&&myproducts.getInvitestatus()>0){
+//			if(myproducts.getInvitestatus()!=null&&myproducts.getInvitestatus()>0){
 				myproducts.setStatus(Integer.parseInt(MyProductStatusEnum.deleted.toString()));
 				myMapper.updateByPrimaryKeySelective(myproducts);
 //				inviteMapper.deleteByCartId(cartId);
-			}
+//			}
 //			mydetailDao.deleMyProductDetailsByCartId(cartId); 
 //			myMapper.deleteByPrimaryKey(cartId);
 			

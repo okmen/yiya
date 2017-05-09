@@ -63,8 +63,8 @@
    <select id="findMyProductList" resultMap="MyProductListVO" >
    SELECT a.*,b.InvitePhone,case when (b.UserID=#{userId,jdbcType=BIGINT} or b.UserId is null) then a.CreateTime else b.CreateTime end as InviteTime,b.Status as InStatus  from p_myproducts a LEFT JOIN p_myproductsinvites b on a.CartId=b.CartId
    WHERE a.UserId=#{userId,jdbcType=BIGINT} and a.Status!=3 and (a.IsTemp is null or a.IsTemp=0)
-   OR (b.InvitePhone=#{phone,jdbcType=VARCHAR} and (b.InviteType is null or b.InviteType=0) and b.Status!=2)
-   OR (b.InviteUserId=#{userId,jdbcType=BIGINT} and b.InviteType=1 and b.Status=3)
+   OR (b.InvitePhone=#{phone,jdbcType=VARCHAR} and (b.InviteType is null or b.InviteType=0) and b.Status!=2  and a.Status!=3)
+   OR (b.InviteUserId=#{userId,jdbcType=BIGINT} and b.InviteType=1 and b.Status=3  and a.Status!=3)
    ORDER BY InviteTime DESC 
   </select>
   <select id="getMyProductVO" resultMap="MyProductListVO" ><!-- get 获取作品详情 -->

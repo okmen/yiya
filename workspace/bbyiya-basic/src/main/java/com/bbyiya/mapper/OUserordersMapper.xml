@@ -18,6 +18,7 @@
     <result column="AgentUserId" property="agentuserid" jdbcType="BIGINT" />
     <result column="IsBranch" property="isbranch" jdbcType="INTEGER" />
     <result column="ExpressCom" property="expresscom" jdbcType="VARCHAR" />
+    <result column="ExpressCode" property="expresscode" jdbcType="VARCHAR" />
     <result column="ExpressOrder" property="expressorder" jdbcType="VARCHAR" />
     <result column="Postage" property="postage" jdbcType="DECIMAL" />
     <result column="UploadTime" property="uploadtime" jdbcType="TIMESTAMP" />
@@ -25,9 +26,9 @@
     <result column="DeliveryTime" property="deliverytime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    UserOrderId, UserId, TotalPrice, Status, BranchUserId, OrderAddressId, PayId, Remark, 
+     UserOrderId, UserId, TotalPrice, Status, BranchUserId, OrderAddressId, PayId, Remark, 
     OrderTime, PayTime, OrderTotalPrice, PayType, AgentUserId, IsBranch, ExpressCom, 
-    ExpressOrder, OrderType, Postage, UploadTime, PostModelId, DeliveryTime
+    ExpressCode, ExpressOrder, OrderType, Postage, UploadTime, PostModelId, DeliveryTime
   </sql>
   <!-- 用户订单结果类Result -->
   <resultMap id="UserBuyerOrderResultMap" type="com.bbyiya.vo.order.UserBuyerOrderResult" extends="BaseResultMap">  
@@ -80,17 +81,17 @@
       PayId, Remark, OrderTime, 
       PayTime, OrderTotalPrice, PayType, 
       AgentUserId, IsBranch, ExpressCom, 
-      ExpressOrder, OrderType, Postage, 
-      UploadTime, PostModelId, DeliveryTime
-      )
+      ExpressCode, ExpressOrder, OrderType, 
+      Postage, UploadTime, PostModelId, 
+      DeliveryTime)
     values (#{userorderid,jdbcType=VARCHAR}, #{userid,jdbcType=BIGINT}, #{totalprice,jdbcType=DECIMAL}, 
       #{status,jdbcType=INTEGER}, #{branchuserid,jdbcType=BIGINT}, #{orderaddressid,jdbcType=BIGINT}, 
       #{payid,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{ordertime,jdbcType=TIMESTAMP}, 
       #{paytime,jdbcType=TIMESTAMP}, #{ordertotalprice,jdbcType=DECIMAL}, #{paytype,jdbcType=INTEGER}, 
       #{agentuserid,jdbcType=BIGINT}, #{isbranch,jdbcType=INTEGER}, #{expresscom,jdbcType=VARCHAR}, 
-      #{expressorder,jdbcType=VARCHAR}, #{ordertype,jdbcType=INTEGER}, #{postage,jdbcType=DECIMAL}, 
-      #{uploadtime,jdbcType=TIMESTAMP}, #{postmodelid,jdbcType=INTEGER}, #{deliverytime,jdbcType=TIMESTAMP}
-      )
+      #{expresscode,jdbcType=VARCHAR}, #{expressorder,jdbcType=VARCHAR}, #{ordertype,jdbcType=INTEGER}, 
+      #{postage,jdbcType=DECIMAL}, #{uploadtime,jdbcType=TIMESTAMP}, #{postmodelid,jdbcType=INTEGER}, 
+      #{deliverytime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.OUserorders" >
     insert into o_userorders
@@ -139,6 +140,9 @@
       </if>
       <if test="expresscom != null" >
         ExpressCom,
+      </if>
+      <if test="expresscode != null" >
+        ExpressCode,
       </if>
       <if test="expressorder != null" >
         ExpressOrder,
@@ -205,6 +209,9 @@
       <if test="expresscom != null" >
         #{expresscom,jdbcType=VARCHAR},
       </if>
+      <if test="expresscode != null" >
+        #{expresscode,jdbcType=VARCHAR},
+      </if>
       <if test="expressorder != null" >
         #{expressorder,jdbcType=VARCHAR},
       </if>
@@ -270,6 +277,9 @@
       <if test="expresscom != null" >
         ExpressCom = #{expresscom,jdbcType=VARCHAR},
       </if>
+      <if test="expresscode != null" >
+        ExpressCode = #{expresscode,jdbcType=VARCHAR},
+      </if>
       <if test="expressorder != null" >
         ExpressOrder = #{expressorder,jdbcType=VARCHAR},
       </if>
@@ -307,6 +317,7 @@
       AgentUserId = #{agentuserid,jdbcType=BIGINT},
       IsBranch = #{isbranch,jdbcType=INTEGER},
       ExpressCom = #{expresscom,jdbcType=VARCHAR},
+      ExpressCode = #{expresscode,jdbcType=VARCHAR},
       ExpressOrder = #{expressorder,jdbcType=VARCHAR},
       OrderType = #{ordertype,jdbcType=INTEGER},
       Postage = #{postage,jdbcType=DECIMAL},

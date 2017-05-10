@@ -36,6 +36,8 @@ public class OUserorders implements Serializable{
     private Integer isbranch;
 
     private String expresscom;
+    
+    private String expresscode;
 
     private String expressorder;
 
@@ -212,6 +214,14 @@ public class OUserorders implements Serializable{
 
 	public void setDeliverytime(Date deliverytime) {
 		this.deliverytime = deliverytime;
+	}
+
+	public String getExpresscode() {
+		return expresscode;
+	}
+
+	public void setExpresscode(String expresscode) {
+		this.expresscode = expresscode;
 	}
     
     

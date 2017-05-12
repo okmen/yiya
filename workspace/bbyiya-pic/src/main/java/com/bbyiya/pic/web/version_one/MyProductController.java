@@ -50,7 +50,8 @@ public class MyProductController extends SSOController {
 					rq.setStatusreson("不能超过12条记录");
 					return JsonUtil.objectToJsonStr(rq);
 				}
-				rq = proService.saveOrEdit_MyProducts(user.getUserId(), param);
+//				rq = proService.saveOrEdit_MyProducts(user.getUserId(), param);
+				rq=proService.Modify_MyProducts(user.getUserId(), param);
 			} else {
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("参数有误");
@@ -82,7 +83,8 @@ public class MyProductController extends SSOController {
 					rq.setStatusreson("不能超过12条记录");
 					return JsonUtil.objectToJsonStr(rq);
 				}
-				rq = proService.Edit_MyProducts(user.getUserId(), param);
+//				rq = proService.Edit_MyProducts(user.getUserId(), param);
+				rq=proService.Modify_MyProducts(user.getUserId(), param);
 			} else {
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("参数有误");

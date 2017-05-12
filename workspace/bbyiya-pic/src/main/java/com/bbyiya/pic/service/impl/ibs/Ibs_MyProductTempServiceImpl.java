@@ -24,6 +24,7 @@ import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.UUserresponses;
 import com.bbyiya.pic.service.ibs.IIbs_MyProductTempService;
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.FileUtils;
 import com.bbyiya.utils.ObjectUtil;
@@ -149,7 +150,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 				String urlstr="";
 				String url="";
 				try {
-					urlstr = "https://mpic.bbyiya.com/login/transfer?m=1&redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
+					urlstr = ConfigUtil.getSingleValue("shareulr-base")+"redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
 					url="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+URLEncoder.encode(urlstr,"utf-8");				
 				} catch (UnsupportedEncodingException e1) {
 					// TODO Auto-generated catch block

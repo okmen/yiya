@@ -79,4 +79,9 @@ public interface IBasePostMgtService {
 	 * @return
 	 */
 	ReturnModel delPostModelAreas(Integer postId);
+	/**
+	 * 配置文件中读取物流公司信息
+	 * @return
+	 */
+	ReturnModel getPostInfo();
 }

@@ -27,7 +27,7 @@ public interface IPbs_OrderMgtService {
 	 * @throws Exception
 	 */
 	ReturnModel editLogistics(String orderId, String expressCom,
-			String expressOrder) throws Exception;
+			String expressOrder,String expressCode) throws Exception;
 	
 	String pbsdownloadImg(List<PbsUserOrderResultVO> orderlist);
 	/**
@@ -40,7 +40,7 @@ public interface IPbs_OrderMgtService {
 	ReturnModel addPostage(String orderId, Double postage) throws Exception;
 	ReturnModel isCanMergeOrderLogistic(String orderIds) throws Exception;
 	ReturnModel MergeOrderLogistic(int ordertype, String orderIds,
-			String expressCom, String expressOrder, Double postage)
+			String expressCom, String expressOrder, Double postage,String expressCode)
 			throws Exception;
 	
 }

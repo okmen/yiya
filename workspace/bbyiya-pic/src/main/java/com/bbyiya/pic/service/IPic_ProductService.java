@@ -63,6 +63,16 @@ public interface IPic_ProductService {
 	 * @return
 	 */
 	ReturnModel Edit_MyProducts(Long userId, MyProductParam param);
+	/**
+	 * 编辑我的作品（新增，修改）
+	 * 
+	 * 2017-5-10
+	 * zy
+	 * @param userId
+	 * @param param
+	 * @return
+	 */
+	ReturnModel Modify_MyProducts(Long userId, MyProductParam param);
 	
 	/*---------------------------------find 列表 查询操作----------------------------------------------------*/
 	/**

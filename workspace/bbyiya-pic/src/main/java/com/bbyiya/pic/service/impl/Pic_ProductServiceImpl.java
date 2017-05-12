@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.jasper.tagplugins.jstl.core.If;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,7 +77,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private PStylecoordinateMapper styleCoordMapper;
 	@Autowired
 	private PStylecoordinateitemMapper styleCoordItemMapper;
-    /*--------------------我的作品----------------------------------*/
+	/*--------------------我的作品----------------------------------*/
 	@Autowired
 	private PMyproductsMapper myMapper;
 	@Autowired
@@ -93,12 +94,12 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	@Autowired
 	private UUsersMapper usersMapper;
 	@Autowired
-	private UBranchusersMapper branchusersMapper;//影楼信息
+	private UBranchusersMapper branchusersMapper;// 影楼信息
 	@Autowired
 	private OUserordersMapper orderMapper;
 	@Autowired
 	private UChildreninfoMapper childMapper;
-	
+
 	/*----------------pic-dao----------------------------------*/
 	@Autowired
 	private IMyProductsDao myProductsDao;
@@ -106,10 +107,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private IMyProductDetailsDao mydetailDao;
 	@Autowired
 	private IPic_ProductDao productDao;
-	@Autowired 
+	@Autowired
 	private IPic_OrderMgtDao orderDao;
-	
-	
 
 	public ReturnModel getProductSamples(Long productId) {
 		ReturnModel rq = new ReturnModel();
@@ -122,20 +121,20 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		rq.setBasemodle(product);
 		return rq;
 	}
-	
+
 	public ReturnModel getProductSamplelist(Long productId) {
 		ReturnModel rq = new ReturnModel();
-		String keyName=ConfigUtil.getSingleValue("currentRedisKey-Base")+"_productsample100_"+productId;
-		List<ProductSampleResultVO> listResult=(List<ProductSampleResultVO>)RedisUtil.getObject(keyName);
-		if(listResult==null||listResult.size()<=0){ 
-			PProducts products= productsMapper.selectByPrimaryKey(productId);
-			if(products!=null){
-				listResult=productDao.findProductSamplesByProductId(productId);
-				if(listResult!=null&&listResult.size()>0){
+		String keyName = ConfigUtil.getSingleValue("currentRedisKey-Base") + "_productsample100_" + productId;
+		List<ProductSampleResultVO> listResult = (List<ProductSampleResultVO>) RedisUtil.getObject(keyName);
+		if (listResult == null || listResult.size() <= 0) {
+			PProducts products = productsMapper.selectByPrimaryKey(productId);
+			if (products != null) {
+				listResult = productDao.findProductSamplesByProductId(productId);
+				if (listResult != null && listResult.size() > 0) {
 					for (ProductSampleResultVO sam : listResult) {
-						sam.setMyWorks(getMyProductsResult(sam.getCartid()));  
+						sam.setMyWorks(getMyProductsResult(sam.getCartid()));
 					}
-					RedisUtil.setObject(keyName, listResult, 7200); 
+					RedisUtil.setObject(keyName, listResult, 7200);
 				}
 			}
 		}
@@ -158,9 +157,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					if (!ObjectUtil.isEmpty(param.getAuthor())) {
 						myproducts.setAuthor(param.getAuthor());
 					}
-					if(!ObjectUtil.isEmpty(param.getDescription())){
+					if (!ObjectUtil.isEmpty(param.getDescription())) {
 						myproducts.setDescription(param.getDescription());
-					} 
+					}
 					myproducts.setUpdatetime(new Date());
 					// 更新用户作品基本信息
 					myMapper.updateByPrimaryKeySelective(myproducts);
@@ -169,7 +168,6 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 						int maxSort = 0;
 						for (PMyproductdetails de : param.getDetails()) {
 							de.setCartid(param.getCartid());
-							
 							de.setCreatetime(new Date());
 							if (de.getSort() == null) {
 								de.setSort(maxSort);// 设置排序
@@ -178,25 +176,27 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 							maxSort++;
 						}
 					}
-				}else {
+				} else {
 					rq.setStatu(ReturnStatus.SystemError_1);
 					rq.setStatusreson("没有权限编辑别人的作品");
 					return rq;
 				}
 			} else {// 新增
-				if(param.getProductid()==null||param.getProductid()<=0){
+				if (param.getProductid() == null || param.getProductid() <= 0) {
 					rq.setStatu(ReturnStatus.Success);
 					rq.setStatusreson("");
 					return rq;
 				}
-				PMyproducts myproduct = null;// myMapper.getMyProductsByProductId(userId, param.getProductid(), Integer.parseInt(MyProductStatusEnum.ok.toString()));
+				PMyproducts myproduct = null;// myMapper.getMyProductsByProductId(userId,
+												// param.getProductid(),
+												// Integer.parseInt(MyProductStatusEnum.ok.toString()));
 				if (myproduct == null) {
 					myproduct = new PMyproducts();
 					myproduct.setAuthor(param.getAuthor());
 					myproduct.setTitle(param.getTitle());
-					if(!ObjectUtil.isEmpty(param.getDescription())){
+					if (!ObjectUtil.isEmpty(param.getDescription())) {
 						myproduct.setDescription(param.getDescription());
-					} 
+					}
 					myproduct.setUserid(userId);
 					myproduct.setProductid(param.getProductid());
 					myproduct.setCreatetime(new Date());
@@ -217,29 +217,29 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 						sort++;
 					}
 				}
-				//插入宝宝生日信息
-				if(param.getChildInfo()!=null) {
-					boolean isnew=false;
-					PMyproductchildinfo mychild=mychildMapper.selectByPrimaryKey(param.getCartid());
-					if(mychild==null){
-						mychild=new PMyproductchildinfo();
+				// 插入宝宝生日信息
+				if (param.getChildInfo() != null) {
+					boolean isnew = false;
+					PMyproductchildinfo mychild = mychildMapper.selectByPrimaryKey(param.getCartid());
+					if (mychild == null) {
+						mychild = new PMyproductchildinfo();
 						mychild.setCartid(param.getCartid());
 						mychild.setCreatetime(new Date());
-						isnew=true;
+						isnew = true;
 					}
-					if(!ObjectUtil.isEmpty(param.getChildInfo().getNickName())){
+					if (!ObjectUtil.isEmpty(param.getChildInfo().getNickName())) {
 						mychild.setNickname(param.getChildInfo().getNickName());
 					}
-					if(!ObjectUtil.isEmpty(param.getChildInfo().getBirthday())){
-						mychild.setBirthday(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday())) ;
+					if (!ObjectUtil.isEmpty(param.getChildInfo().getBirthday())) {
+						mychild.setBirthday(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday()));
 					}
-					if(isnew){
+					if (isnew) {
 						mychildMapper.insert(mychild);
-					}else {
+					} else {
 						mychildMapper.updateByPrimaryKeySelective(mychild);
-					} 
+					}
 				}
-				
+
 			}
 		}
 		rq.setStatu(ReturnStatus.Success);
@@ -248,7 +248,231 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		rq.setBasemodle(map);
 		return rq;
 	}
-	
+
+	public ReturnModel Modify_MyProducts(Long userId, MyProductParam param) {
+		ReturnModel rq = new ReturnModel();
+		if (param != null) {
+			if (param.getCartid() != null && param.getCartid() > 0) {// 修改
+				return edit_MyProducts(userId, param);
+			} else {// 新增
+				return add_MyProducts(userId, param);
+			}
+		} else {
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("参数有误");
+		}
+		return rq;
+	}
+
+	/**
+	 * 我的作品新增
+	 * 
+	 * @param userId
+	 * @param param
+	 * @return
+	 */
+	public ReturnModel add_MyProducts(Long userId, MyProductParam param) {
+		ReturnModel rq = new ReturnModel();
+		Long cartIdTemp = 0l;
+		if (param != null) {
+			if (param.getCartid() != null && param.getCartid() > 0) {
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("请调去修改接口");
+				return rq;
+			}
+			if (param.getProductid() == null || param.getProductid() <= 0) {
+				rq.setStatu(ReturnStatus.Success);
+				rq.setStatusreson("");
+				return rq;
+			}
+			PMyproducts myproduct = new PMyproducts();
+			myproduct.setAuthor(param.getAuthor());
+			myproduct.setTitle(param.getTitle());
+			if (!ObjectUtil.isEmpty(param.getDescription())) {
+				myproduct.setDescription(param.getDescription());
+			}
+			myproduct.setUserid(userId);
+			myproduct.setProductid(param.getProductid());
+			myproduct.setCreatetime(new Date());
+			myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.ok.toString()));
+			myproduct.setUpdatetime(new Date());
+			myMapper.insertReturnId(myproduct);
+
+			cartIdTemp = myproduct.getCartid();
+			if (param.getDetails() != null && param.getDetails().size() > 0) {
+				int sort = 0;
+				for (PMyproductdetails de : param.getDetails()) {
+					if (!ObjectUtil.isEmpty(de.getImgurl())) {
+						de.setCreatetime(new Date());
+						if (de.getSort() == null) {
+							de.setSort(sort);// 设置排序
+						}
+						de.setUserid(userId);
+						de.setCartid(myproduct.getCartid());
+						myDetaiMapper.insert(de);
+						sort++;
+					}
+				}
+			}
+			// 插入宝宝生日信息
+			if (param.getChildInfo() != null) {
+				boolean isnew = false;
+				PMyproductchildinfo mychild = mychildMapper.selectByPrimaryKey(param.getCartid());
+				if (mychild == null) {
+					mychild = new PMyproductchildinfo();
+					mychild.setCartid(param.getCartid());
+					mychild.setCreatetime(new Date());
+					isnew = true;
+				}
+				if (!ObjectUtil.isEmpty(param.getChildInfo().getNickName())) {
+					mychild.setNickname(param.getChildInfo().getNickName());
+				}
+				if (!ObjectUtil.isEmpty(param.getChildInfo().getBirthday())) {
+					mychild.setBirthday(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday()));
+				}
+				if (isnew) {
+					mychildMapper.insert(mychild);
+				} else {
+					mychildMapper.updateByPrimaryKeySelective(mychild);
+				}
+			}
+
+		}
+		rq.setStatu(ReturnStatus.Success);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("cartId", cartIdTemp);
+		rq.setBasemodle(map);
+		return rq;
+	}
+
+	/**
+	 * 作品的修改（包括图片的修改、新增）
+	 * 
+	 * @param userId
+	 * @param param
+	 * @return
+	 */
+	public ReturnModel edit_MyProducts(Long userId, MyProductParam param) {
+		ReturnModel rq = new ReturnModel();
+		if (param != null) {
+			if ((param.getCartid() == null || param.getCartid() <= 0)) {
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("作品id不能为空");
+				return rq;
+			}
+			PMyproducts myproducts = myMapper.selectByPrimaryKey(param.getCartid());
+			// A修改作品的宝宝信息
+			if (myproducts != null) {
+				if (param.getChildInfo() != null) {
+					boolean isnew = false;
+					boolean isNeedUp = false;
+					PMyproductchildinfo mychild = mychildMapper.selectByPrimaryKey(param.getCartid());
+					if (mychild == null) {
+						mychild = new PMyproductchildinfo();
+						mychild.setCartid(param.getCartid());
+						mychild.setCreatetime(new Date());
+						isnew = true;
+					}
+					if (!ObjectUtil.isEmpty(param.getChildInfo().getNickName())) {
+						mychild.setNickname(param.getChildInfo().getNickName());
+						isNeedUp = true;
+					}
+					if (!ObjectUtil.isEmpty(param.getChildInfo().getBirthday())) {
+						mychild.setBirthday(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday()));
+						isNeedUp = true;
+					}
+					if (isNeedUp) {
+						if (isnew) {
+							mychildMapper.insert(mychild);
+						} else {
+							mychildMapper.updateByPrimaryKeySelective(mychild);
+						}
+					}
+					/*----------------------------更新个人宝宝信息---------------------------------------------------*/
+					boolean isHavechild = true;
+					UChildreninfo childreninfo = childMapper.selectByPrimaryKey(userId);
+					if (childreninfo == null) {
+						childreninfo = new UChildreninfo();
+						childreninfo.setUserid(userId);
+						childreninfo.setCreatetime(new Date());
+						isHavechild = false;
+					}
+					if (!ObjectUtil.isEmpty(mychild.getNickname())) {
+						childreninfo.setNickname(mychild.getNickname());
+					}
+					if (!ObjectUtil.isEmpty(mychild.getBirthday())) {
+						childreninfo.setBirthday(mychild.getBirthday());
+					}
+					if (isHavechild) {
+						childMapper.updateByPrimaryKey(childreninfo);
+					} else {
+						childMapper.insert(childreninfo);
+					}
+				}
+			} else {
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("找不到相应的作品！");
+				return rq;
+			}
+
+			// ****---------------- 作品图片修改 、新增 ----------------------------
+			// *****
+			if (param.getDetails() != null && param.getDetails().size() > 0) {
+				// c1 检验 场景是否被选过
+				List<PMyproductdetails> details = myDetaiMapper.findMyProductdetails(param.getCartid());
+				int count = details.size();
+				int sort = 0;
+				if (count > 0) {
+					sort = myDetaiMapper.getMaxSort(param.getCartid());
+				}
+				for (PMyproductdetails de : param.getDetails()) {
+					de.setUserid(userId);
+					if (de.getPdid() != null && de.getPdid() > 0) {
+						if (!ObjectUtil.isEmpty(de.getImgurl())) {
+							de.setUserid(userId);
+							myDetaiMapper.updateByPrimaryKeySelective(de);
+						} else if (de.getSort() != null && de.getSort() > 0) {// 排序
+							myDetaiMapper.updateByPrimaryKeySelective(de);
+						}
+					} else if (count < 12) {
+						if (!ObjectUtil.isEmpty(de.getImgurl())) {
+							de.setCartid(param.getCartid());
+							de.setSort(count == 0 ? 0 : (sort + 1));
+							myDetaiMapper.insert(de);
+							count++;
+							sort++;
+						}
+					}
+				}
+			}
+			/*--------------------作品表修改 -----------------------------------*/
+			if (!ObjectUtil.isEmpty(param.getTitle())) {
+				myproducts.setTitle(param.getTitle());
+			}
+			if (!ObjectUtil.isEmpty(param.getAuthor())) {
+				myproducts.setAuthor(param.getAuthor());
+			}
+			if (!ObjectUtil.isEmpty(param.getDescription())) {
+				myproducts.setDescription(param.getDescription());
+			}
+			myproducts.setUpdatetime(new Date());
+			// 更新用户作品基本信息
+			myMapper.updateByPrimaryKeySelective(myproducts);
+			/*-------------------------------------------------*/
+
+			rq.setStatu(ReturnStatus.Success);
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("cartId", param.getCartid());
+			rq.setBasemodle(map);
+		} else {
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("参数有误");
+		}
+		return rq;
+	}
+
+	/*------------------------------------------------------------------------------------*/
+
 	/**
 	 * 我的作品修改
 	 */
@@ -256,74 +480,73 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		ReturnModel rq = new ReturnModel();
 		Long cartIdTemp = 0l;
 		if (param != null) {
-			if((param.getCartid()==null||param.getCartid()<=0)&&(param.getProductid()==null||param.getProductid()<=0)){
+			if ((param.getCartid() == null || param.getCartid() <= 0) && (param.getProductid() == null || param.getProductid() <= 0)) {
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("没有选择款式");
 				return rq;
 			}
-			UUsers user=usersMapper.selectByPrimaryKey(userId);
+			UUsers user = usersMapper.selectByPrimaryKey(userId);
 			if (param.getCartid() != null && param.getCartid() > 0) {// 更新
 				cartIdTemp = param.getCartid();
 				PMyproducts myproducts = myMapper.selectByPrimaryKey(param.getCartid());
 				// A修改作品的宝宝信息
-				if(myproducts != null && param.getChildInfo()!=null) {
-					boolean isnew=false;
-					PMyproductchildinfo mychild=mychildMapper.selectByPrimaryKey(param.getCartid());
-					if(mychild==null){
-						mychild=new PMyproductchildinfo();
+				if (myproducts != null && param.getChildInfo() != null) {
+					boolean isnew = false;
+					PMyproductchildinfo mychild = mychildMapper.selectByPrimaryKey(param.getCartid());
+					if (mychild == null) {
+						mychild = new PMyproductchildinfo();
 						mychild.setCartid(param.getCartid());
 						mychild.setCreatetime(new Date());
-						isnew=true;
+						isnew = true;
 					}
-					if(!ObjectUtil.isEmpty(param.getChildInfo().getNickName())){
+					if (!ObjectUtil.isEmpty(param.getChildInfo().getNickName())) {
 						mychild.setNickname(param.getChildInfo().getNickName());
 					}
-					if(!ObjectUtil.isEmpty(param.getChildInfo().getBirthday())){
-						mychild.setBirthday(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday())) ;
+					if (!ObjectUtil.isEmpty(param.getChildInfo().getBirthday())) {
+						mychild.setBirthday(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday()));
 					}
-					if(isnew){
+					if (isnew) {
 						mychildMapper.insert(mychild);
-					}else {
+					} else {
 						mychildMapper.updateByPrimaryKeySelective(mychild);
-					} 
+					}
 					/*----------------------------更新个人宝宝信息---------------------------------------------------*/
-					boolean isHavechild=true;
-					UChildreninfo childreninfo=childMapper.selectByPrimaryKey(userId);
-					if(childreninfo==null){
-						childreninfo=new UChildreninfo();
+					boolean isHavechild = true;
+					UChildreninfo childreninfo = childMapper.selectByPrimaryKey(userId);
+					if (childreninfo == null) {
+						childreninfo = new UChildreninfo();
 						childreninfo.setUserid(userId);
 						childreninfo.setCreatetime(new Date());
-						isHavechild=false;
-					} 
-					if(!ObjectUtil.isEmpty(mychild.getNickname())){
+						isHavechild = false;
+					}
+					if (!ObjectUtil.isEmpty(mychild.getNickname())) {
 						childreninfo.setNickname(mychild.getNickname());
 					}
-					if(!ObjectUtil.isEmpty(mychild.getBirthday()) ){
+					if (!ObjectUtil.isEmpty(mychild.getBirthday())) {
 						childreninfo.setBirthday(mychild.getBirthday());
 					}
-					if(isHavechild){
+					if (isHavechild) {
 						childMapper.updateByPrimaryKey(childreninfo);
-					}else {
+					} else {
 						childMapper.insert(childreninfo);
 					}
-				}//----------------------------------------------------
-				boolean canModify=false;
-				//自己的作品
-				if(myproducts != null && myproducts.getUserid() != null && myproducts.getUserid().longValue() == userId){
-					canModify=true;
-				}else {//受邀请 协同编辑的作品
-					List<PMyproductsinvites> invlist= inviteMapper.findListByCartId(param.getCartid());
-					if(invlist!=null&&invlist.size()>0){
+				}// ----------------------------------------------------
+				boolean canModify = false;
+				// 自己的作品
+				if (myproducts != null && myproducts.getUserid() != null && myproducts.getUserid().longValue() == userId) {
+					canModify = true;
+				} else {// 受邀请 协同编辑的作品
+					List<PMyproductsinvites> invlist = inviteMapper.findListByCartId(param.getCartid());
+					if (invlist != null && invlist.size() > 0) {
 						for (PMyproductsinvites in : invlist) {
-							if(in.getInviteuserid()!=null&&in.getInviteuserid().longValue()==userId){
-								canModify=true;
-							}
-							else if(user!=null&&in.getInvitephone().equals(user.getMobilephone()))
-								canModify=true;
+							if (in.getInviteuserid() != null && in.getInviteuserid().longValue() == userId) {
+								canModify = true;
+							} else if (user != null && in.getInvitephone().equals(user.getMobilephone()))
+								canModify = true;
 						}
 					}
 				}
-				
+
 				if (canModify) {// 修改
 					if (!ObjectUtil.isEmpty(param.getTitle())) {
 						myproducts.setTitle(param.getTitle());
@@ -334,29 +557,29 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					if (!ObjectUtil.isEmpty(param.getDescription())) {
 						myproducts.setDescription(param.getDescription());
 					}
-					
+
 					if (param.getDetails() != null && param.getDetails().size() > 0) {
-						//检验 场景是否被选过
-						List<PMyproductdetails> details=myDetaiMapper.findMyProductdetails(cartIdTemp);
-						if(details!=null&&details.size()>0){//我的作品列表
+						// 检验 场景是否被选过
+						List<PMyproductdetails> details = myDetaiMapper.findMyProductdetails(cartIdTemp);
+						if (details != null && details.size() > 0) {// 我的作品列表
 							for (PMyproductdetails de : param.getDetails()) {
-								if(de.getPdid()!=null&&de.getPdid()>0){
+								if (de.getPdid() != null && de.getPdid() > 0) {
 									for (PMyproductdetails myde : details) {
-										if(de.getPdid().longValue()!=myde.getPdid().longValue()&& myde.getSceneid()!=null&&de.getSceneid()!=null&& myde.getSceneid().intValue()==de.getSceneid().intValue()&&de.getSceneid()>0){
+										if (de.getPdid().longValue() != myde.getPdid().longValue() && myde.getSceneid() != null && de.getSceneid() != null && myde.getSceneid().intValue() == de.getSceneid().intValue() && de.getSceneid() > 0) {
 											rq.setStatu(ReturnStatus.InvitError_1);
 											rq.setStatusreson("此主题被协同人使用啦，请更换其他主题");
 											return rq;
-										} 
+										}
 									}
 								}
 							}
 						}
 						for (PMyproductdetails de : param.getDetails()) {
-							if(de.getPdid()!=null&&de.getPdid()>0){
-								if(!ObjectUtil.isEmpty(de.getImgurl())){
-									de.setUserid(userId); 
+							if (de.getPdid() != null && de.getPdid() > 0) {
+								if (!ObjectUtil.isEmpty(de.getImgurl())) {
+									de.setUserid(userId);
 									myDetaiMapper.updateByPrimaryKeySelective(de);
-								}else if(de.getSort()!=null&&de.getSort()>0){
+								} else if (de.getSort() != null && de.getSort() > 0) {
 									myDetaiMapper.updateByPrimaryKeySelective(de);
 								}
 							}
@@ -365,7 +588,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					myproducts.setUpdatetime(new Date());
 					// 更新用户作品基本信息
 					myMapper.updateByPrimaryKeySelective(myproducts);
-				}else {
+				} else {
 					rq.setStatu(ReturnStatus.SystemError_1);
 					rq.setStatusreson("没有权限编辑别人的作品");
 					return rq;
@@ -383,7 +606,6 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		return rq;
 	}
 
-	
 	/**
 	 * 我的作品列表
 	 * 
@@ -395,13 +617,13 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		UUsers user = usersMapper.getUUsersByUserID(userId);
 		if (user != null) {
 			List<MyProductResultVo> list = new ArrayList<MyProductResultVo>();
-			//我的协同编辑作品
-			List<MyProductResultVo> mylista=findInvites(user.getMobilephone());
-			if(mylista!=null&&mylista.size()>0){
-				list.addAll(mylista); 
+			// 我的协同编辑作品
+			List<MyProductResultVo> mylista = findInvites(user.getMobilephone());
+			if (mylista != null && mylista.size() > 0) {
+				list.addAll(mylista);
 			}
-			
-			//我的作品-制作中的
+
+			// 我的作品-制作中的
 			List<MyProductResultVo> mylist = myMapper.findMyProductslist(userId, Integer.parseInt(MyProductStatusEnum.ok.toString()));
 			list.addAll(getMyProductResultVo(mylist));
 			// 我的作品-已经下单的列表
@@ -413,97 +635,97 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		return rq;
 	}
 
-	public ReturnModel findMyProductsForBranch(Long branchUserId,Integer status,Integer inviteStatus, int index,int size){
-		ReturnModel rq=new ReturnModel();
-		List<Long> idsList=new ArrayList<Long>();
+	public ReturnModel findMyProductsForBranch(Long branchUserId, Integer status, Integer inviteStatus, int index, int size) {
+		ReturnModel rq = new ReturnModel();
+		List<Long> idsList = new ArrayList<Long>();
 		idsList.add(branchUserId);
-		//获取影楼的工作人员列表
-		List<UBranchusers> userList= branchusersMapper.findMemberslistByBranchUserId(branchUserId);
-		if(userList!=null&&userList.size()>0){
+		// 获取影楼的工作人员列表
+		List<UBranchusers> userList = branchusersMapper.findMemberslistByBranchUserId(branchUserId);
+		if (userList != null && userList.size() > 0) {
 			for (UBranchusers uu : userList) {
 				idsList.add(uu.getUserid());
 			}
 		}
 		PageHelper.startPage(index, size);
 		List<MyProductResultVo> mylist = myMapper.findMyProductslistForBranch(idsList, status, inviteStatus);
-		PageInfo<MyProductResultVo> resultPage=new PageInfo<MyProductResultVo>(mylist); 
-		if(resultPage.getList()!=null&&resultPage.getList().size()>0){
+		PageInfo<MyProductResultVo> resultPage = new PageInfo<MyProductResultVo>(mylist);
+		if (resultPage.getList() != null && resultPage.getList().size() > 0) {
 			for (MyProductResultVo vv : resultPage.getList()) {
 				for (UBranchusers uu : userList) {
-					if(uu.getUserid().longValue()==vv.getUserid().longValue()){
-						vv.setUserName(uu.getName()); 
+					if (uu.getUserid().longValue() == vv.getUserid().longValue()) {
+						vv.setUserName(uu.getName());
 					}
-				} 
+				}
 			}
-			resultPage.setList(getMyProductResultVo(resultPage.getList())); 
+			resultPage.setList(getMyProductResultVo(resultPage.getList()));
 		}
 		rq.setStatu(ReturnStatus.Success);
 		rq.setBasemodle(resultPage);
 		return rq;
 	}
-	
 
-	public List<MyProductResultVo> findInvites(String  mobiePhone){
-		List<PMyproductsinvites> inviteList=inviteMapper.findListByPhone(mobiePhone);
-		if(inviteList!=null&&inviteList.size()>0){
-			List<MyProductResultVo> resultList=new ArrayList<MyProductResultVo>();
+	public List<MyProductResultVo> findInvites(String mobiePhone) {
+		List<PMyproductsinvites> inviteList = inviteMapper.findListByPhone(mobiePhone);
+		if (inviteList != null && inviteList.size() > 0) {
+			List<MyProductResultVo> resultList = new ArrayList<MyProductResultVo>();
 			for (PMyproductsinvites in : inviteList) {
-				MyProductResultVo vo=myMapper.getMyProductResultVo(in.getCartid()); 
-				if(vo!=null){
+				MyProductResultVo vo = myMapper.getMyProductResultVo(in.getCartid());
+				if (vo != null) {
 					vo.setIsInvited(1);
-					vo.setInvitestatus(in.getStatus()); 
-					UUsers users=usersMapper.selectByPrimaryKey(vo.getUserid());
-					if(users!=null){
+					vo.setInvitestatus(in.getStatus());
+					UUsers users = usersMapper.selectByPrimaryKey(vo.getUserid());
+					if (users != null) {
 						vo.setUserName(users.getMobilephone());
-						if(ObjectUtil.isEmpty(users.getUserimg())){
+						if (ObjectUtil.isEmpty(users.getUserimg())) {
 							vo.setUserImg("http://pic.bbyiya.com/userdefaultimg-2017-0303-01.png");
-						}else {
-							vo.setUserImg(users.getUserimg()); 
+						} else {
+							vo.setUserImg(users.getUserimg());
 						}
 					}
 					resultList.add(vo);
 				}
 			}
-			return getMyProductResultVo(resultList); 
+			return getMyProductResultVo(resultList);
 		}
 		return null;
 	}
+
 	/**
 	 * 我的作品model转换
+	 * 
 	 * @param mylist
 	 * @return
 	 */
-	private List<MyProductResultVo> getMyProductResultVo(List<MyProductResultVo> mylist){
+	private List<MyProductResultVo> getMyProductResultVo(List<MyProductResultVo> mylist) {
 		if (mylist != null && mylist.size() > 0) {
 			for (MyProductResultVo item : mylist) {
-				if(!ObjectUtil.isEmpty(item.getUpdatetime())){
-					item.setCreatetimestr(DateUtil.getTimeStr(item.getUpdatetime(), "yyyy-MM-dd HH:mm:ss")); 
-				}else {
-					item.setCreatetimestr(DateUtil.getTimeStr(item.getCreatetime(), "yyyy-MM-dd HH:mm:ss")); 
+				if (!ObjectUtil.isEmpty(item.getUpdatetime())) {
+					item.setCreatetimestr(DateUtil.getTimeStr(item.getUpdatetime(), "yyyy-MM-dd HH:mm:ss"));
+				} else {
+					item.setCreatetimestr(DateUtil.getTimeStr(item.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
 				}
-				if(item.getInvitestatus()!=null&&item.getInvitestatus()>0){//邀请协同编辑
-					List<PMyproductsinvites> invites= inviteMapper.findListByCartId(item.getCartid());
-					if(invites!=null&&invites.size()>0){
+				if (item.getInvitestatus() != null && item.getInvitestatus() > 0) {// 邀请协同编辑
+					List<PMyproductsinvites> invites = inviteMapper.findListByCartId(item.getCartid());
+					if (invites != null && invites.size() > 0) {
 						item.setInviteModel(invites.get(0));
-						UUsers inviteusers=null;
-						if(!ObjectUtil.isEmpty(invites.get(0).getInvitephone())){
-							inviteusers=usersMapper.getUUsersByPhone(invites.get(0).getInvitephone());
+						UUsers inviteusers = null;
+						if (!ObjectUtil.isEmpty(invites.get(0).getInvitephone())) {
+							inviteusers = usersMapper.getUUsersByPhone(invites.get(0).getInvitephone());
 						}
-						if(inviteusers==null&&!ObjectUtil.isEmpty(invites.get(0).getInviteuserid())){
-							inviteusers=usersMapper.selectByPrimaryKey(invites.get(0).getInviteuserid());	
+						if (inviteusers == null && !ObjectUtil.isEmpty(invites.get(0).getInviteuserid())) {
+							inviteusers = usersMapper.selectByPrimaryKey(invites.get(0).getInviteuserid());
 						}
-						if(inviteusers!=null){
-							item.setInvitedName(inviteusers.getNickname());	
-							if(item.getInviteModel()!=null){
-								if(ObjectUtil.isEmpty(item.getInviteModel().getInvitephone())){
+						if (inviteusers != null) {
+							item.setInvitedName(inviteusers.getNickname());
+							if (item.getInviteModel() != null) {
+								if (ObjectUtil.isEmpty(item.getInviteModel().getInvitephone())) {
 									item.getInviteModel().setInvitephone(inviteusers.getMobilephone());
 								}
 							}
-							
+
 						}
-						
-						
-					} 
+
+					}
 				}
 				// 作品详情（图片集合）
 				List<PMyproductdetails> detailslist = myDetaiMapper.findMyProductdetails(item.getCartid());
@@ -511,48 +733,48 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				if (detailslist != null && detailslist.size() > 0) {
 					for (PMyproductdetails dd : detailslist) {
 						if (!ObjectUtil.isEmpty(dd.getImgurl())) {
-							if(dd.getSort()!=null&&dd.getSort().intValue()==0){
-								item.setHeadImg("http://pic.bbyiya.com/"+dd.getImgurl()+"?imageView2/2/w/200");
+							if (dd.getSort() != null && dd.getSort().intValue() == 0) {
+								item.setHeadImg("http://pic.bbyiya.com/" + dd.getImgurl() + "?imageView2/2/w/200");
 							}
 							i++;
 						}
 					}
 				}
-				if(ObjectUtil.isEmpty(item.getHeadImg())){
-					item.setHeadImg("http://pic.bbyiya.com/484983733454448354.png"); 
+				if (ObjectUtil.isEmpty(item.getHeadImg())) {
+					item.setHeadImg("http://pic.bbyiya.com/484983733454448354.png");
 				}
 				item.setCount(i);
-				if(item.getStatus()!=null&&item.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
+				if (item.getStatus() != null && item.getStatus().intValue() == Integer.parseInt(MyProductStatusEnum.ordered.toString())) {
 					item.setIsOrder(1);
 					item.setCount(12);
-				} 
-				
-				//得到宝宝生日
-				PMyproductchildinfo childinfo=mychildMapper.selectByPrimaryKey(item.getCartid());
-				if(childinfo!=null&&childinfo.getBirthday()!=null){
+				}
+
+				// 得到宝宝生日
+				PMyproductchildinfo childinfo = mychildMapper.selectByPrimaryKey(item.getCartid());
+				if (childinfo != null && childinfo.getBirthday() != null) {
 					item.setBirthdayStr(DateUtil.getTimeStr(childinfo.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
 				}
-				//得到制作类型
-				PProducts product=productsMapper.selectByPrimaryKey(item.getProductid());
-				if(product!=null&&product.getTitle()!=null){
+				// 得到制作类型
+				PProducts product = productsMapper.selectByPrimaryKey(item.getProductid());
+				if (product != null && product.getTitle() != null) {
 					item.setProductTitle(product.getTitle());
 				}
-				//得到来源，即模板名称
-				if(item.getTempid()!=null){
-					PMyproducttemp temp=tempMapper.selectByPrimaryKey(item.getTempid());
-					if(temp!=null&&temp.getTitle()!=null){
+				// 得到来源，即模板名称
+				if (item.getTempid() != null) {
+					PMyproducttemp temp = tempMapper.selectByPrimaryKey(item.getTempid());
+					if (temp != null && temp.getTitle() != null) {
 						item.setTempTitle(temp.getTitle());
 					}
-				}else{
+				} else {
 					item.setTempTitle("员工邀请");
 				}
-				//得到作品订单集合
-				List<OUserorders> orderList=orderDao.findOrderListByCartId(item.getCartid());
-				List<String> orderNoList=new ArrayList<String>();
+				// 得到作品订单集合
+				List<OUserorders> orderList = orderDao.findOrderListByCartId(item.getCartid());
+				List<String> orderNoList = new ArrayList<String>();
 				for (OUserorders order : orderList) {
 					orderNoList.add(order.getUserorderid());
 				}
-				if(orderNoList.size()>0){
+				if (orderNoList.size() > 0) {
 					item.setOrderNoList(orderNoList);
 				}
 			}
@@ -560,41 +782,44 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		return mylist;
 	}
 
-	public ReturnModel deleMyProduct(Long userId, Long cartId){
-		ReturnModel rq=new ReturnModel();
-		PMyproducts myproducts= myMapper.selectByPrimaryKey(cartId);
-		if(myproducts!=null&&myproducts.getUserid()!=null&&myproducts.getUserid().longValue()==userId){
-//			if(myproducts.getStatus()!=null&&myproducts.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
-//				if(!ObjectUtil.isEmpty(myproducts.getOrderno())){
-//					OUserorders order= orderMapper.selectByPrimaryKey(myproducts.getOrderno());
-//					if(order!=null&&order.getStatus()!=null&&order.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
-//						rq.setStatu(ReturnStatus.SystemError);
-//						rq.setStatusreson("作品关联的订单未上传成功，请先查看订单并重新上传！");
-//						return rq;
-//					}  
-//				}
-//			}
-//			if(myproducts.getInvitestatus()!=null&&myproducts.getInvitestatus()>0){
-				myproducts.setStatus(Integer.parseInt(MyProductStatusEnum.deleted.toString()));
-				myMapper.updateByPrimaryKeySelective(myproducts);
-//				inviteMapper.deleteByCartId(cartId);
-//			}
-//			mydetailDao.deleMyProductDetailsByCartId(cartId); 
-//			myMapper.deleteByPrimaryKey(cartId);
-			
+	public ReturnModel deleMyProduct(Long userId, Long cartId) {
+		ReturnModel rq = new ReturnModel();
+		PMyproducts myproducts = myMapper.selectByPrimaryKey(cartId);
+		if (myproducts != null && myproducts.getUserid() != null && myproducts.getUserid().longValue() == userId) {
+			// if(myproducts.getStatus()!=null&&myproducts.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
+			// if(!ObjectUtil.isEmpty(myproducts.getOrderno())){
+			// OUserorders order=
+			// orderMapper.selectByPrimaryKey(myproducts.getOrderno());
+			// if(order!=null&&order.getStatus()!=null&&order.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
+			// rq.setStatu(ReturnStatus.SystemError);
+			// rq.setStatusreson("作品关联的订单未上传成功，请先查看订单并重新上传！");
+			// return rq;
+			// }
+			// }
+			// }
+			// if(myproducts.getInvitestatus()!=null&&myproducts.getInvitestatus()>0){
+			myproducts.setStatus(Integer.parseInt(MyProductStatusEnum.deleted.toString()));
+			myMapper.updateByPrimaryKeySelective(myproducts);
+			// inviteMapper.deleteByCartId(cartId);
+			// }
+			// mydetailDao.deleMyProductDetailsByCartId(cartId);
+			// myMapper.deleteByPrimaryKey(cartId);
+
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("删除成功");
-		}else {
+		} else {
 			rq.setStatu(ReturnStatus.SystemError);
 			rq.setStatusreson("作品不存在（或者无法删除）");
 		}
 		return rq;
 	}
+
 	@Autowired
 	private PMyproducttempMapper mtempMapper;
+
 	/**
-	 * 我的作品详情 （用户操作页 ）
-	 *  需要登录
+	 * 我的作品详情 （用户操作页 ） 需要登录
+	 * 
 	 * @return
 	 */
 	public ReturnModel getMyProductInfo(Long userId, Long cartId) {
@@ -602,104 +827,89 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		UUsers user = usersMapper.getUUsersByUserID(userId);
 		if (user != null) {
 			MyProductsResult myproduct = myProductsDao.getMyProductResultVo(cartId);
-			if(myproduct==null){
+			if (myproduct == null) {
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("作品不存在");
 				return rq;
 			}
-			if(myproduct!=null&&myproduct.getStatus()!=null&&myproduct.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
+			if (myproduct != null && myproduct.getStatus() != null && myproduct.getStatus().intValue() == Integer.parseInt(MyProductStatusEnum.ordered.toString())) {
 				myproduct.setIsOrder(1);
-			} 
-			if(myproduct.getIstemp()!=null&&myproduct.getIstemp()>0&&myproduct.getTempid()!=null&&myproduct.getTempid()>0){
-				PMyproducttemp mtemp= mtempMapper.selectByPrimaryKey(myproduct.getTempid());
-				if(mtemp!=null){
-					myproduct.setTempStatus(mtemp.getStatus()==null?0:mtemp.getStatus());
-					//判断用户是否接受模板邀请---------------
-					if(userId!=myproduct.getUserid().longValue()){
-						List<MyProductListVo> myprolist=myProductsDao.getMyProductResultByTempId(myproduct.getTempid());
-						if(myprolist!=null&&myprolist.size()>0){
+			}
+			// 是否是模板作品------------------------
+			if (myproduct.getIstemp() != null && myproduct.getIstemp() > 0 && myproduct.getTempid() != null && myproduct.getTempid() > 0) {
+				PMyproducttemp mtemp = mtempMapper.selectByPrimaryKey(myproduct.getTempid());
+				if (mtemp != null) {
+					myproduct.setTempStatus(mtemp.getStatus() == null ? 0 : mtemp.getStatus());
+					// 判断用户是否接受模板邀请---------------
+					if (userId != myproduct.getUserid().longValue()) {
+						List<MyProductListVo> myprolist = myProductsDao.getMyProductResultByTempId(myproduct.getTempid());
+						if (myprolist != null && myprolist.size() > 0) {
 							for (MyProductListVo ll : myprolist) {
-								List<PMyproductsinvites> invlist= inviteMapper.findListByCartId(ll.getCartid());
-								if(invlist!=null&&invlist.size()>0){
+								List<PMyproductsinvites> invlist = inviteMapper.findListByCartId(ll.getCartid());
+								if (invlist != null && invlist.size() > 0) {
 									for (PMyproductsinvites iv : invlist) {
-										if(iv.getInviteuserid()!=null&&iv.getInviteuserid().longValue()==userId){
-											myproduct.setTempCartId(ll.getCartid()); 
+										if (iv.getInviteuserid() != null && iv.getInviteuserid().longValue() == userId) {
+											myproduct.setTempCartId(ll.getCartid());
 										}
 									}
 								}
-								
+
 							}
 						}
-					}//判断用户是否接受模板邀请(over)---------------
+					}// 判断用户是否接受模板邀请(over)---------------
 				}
 			}
-			boolean canModify=true;
-			if(myproduct != null&&myproduct.getUserid().longValue()==userId){//自己的作品
-				canModify=true;	
-			}
-			else {//是否是邀请的协同编辑人员
-				List<PMyproductsinvites> invlist= inviteMapper.findListByCartId(cartId);
-				if(invlist!=null&&invlist.size()>0){
-					for (PMyproductsinvites in : invlist) {
-						if(in.getInviteuserid()!=null&&in.getInviteuserid().longValue()==userId){
-							canModify=true;
-							myproduct.setInviteUserId(in.getInviteuserid()); 
-						}else if (!ObjectUtil.isEmpty(in.getInvitephone())&&in.getInvitephone().equals(user.getMobilebind())) {
-							canModify=true;
-						}
-					}
-				}
-			}
+			boolean canModify = true;
 			if (canModify) {
-				UUsers myUser= usersMapper.selectByPrimaryKey(myproduct.getUserid());
-				if(myUser!=null&&!ObjectUtil.isEmpty(myUser.getNickname())){ 
-					myproduct.setMyNickName(myUser.getNickname()); 
+				UUsers myUser = userId == myproduct.getUserid().longValue() ? user : usersMapper.selectByPrimaryKey(myproduct.getUserid());
+				if (myUser != null && !ObjectUtil.isEmpty(myUser.getNickname())) {
+					myproduct.setMyNickName(myUser.getNickname());
 				}
-				if(myUser!=null&&!ObjectUtil.isEmpty(myUser.getIdentity())){
+				if (myUser != null && !ObjectUtil.isEmpty(myUser.getIdentity())) {
 					myproduct.setUserIdentity(myUser.getIdentity());
 				}
-				if(ObjectUtil.isEmpty(myproduct.getDescription())){
+				if (ObjectUtil.isEmpty(myproduct.getDescription())) {
 					PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
 					if (product != null) {
 						myproduct.setDescription(product.getDescription());
 					}
 				}
-				List<MyProductsDetailsResult> arrayList =  mydetailDao.findMyProductDetailsResult(cartId);
+				List<MyProductsDetailsResult> arrayList = mydetailDao.findMyProductDetailsResult(cartId);
 				if (arrayList != null && arrayList.size() > 0) {
 					String base_code = userId + "-" + myproduct.getCartid();
 					int i = 1;
 					for (MyProductsDetailsResult dd : arrayList) {
 						dd.setPrintcode(base_code + "-" + String.format("%02d", i));
-						if(dd.getSceneid()!=null&&dd.getSceneid()>=0){//+ String.format("%02d", dd.getSceneid()) + "-"
-							// 打印编号	
-							if(ObjectUtil.isEmpty(dd.getDescription()))	{
-								PScenes scene= sceneMapper.selectByPrimaryKey(dd.getSceneid().longValue());
-								if(scene!=null){
+						if (dd.getSceneid() != null && dd.getSceneid() >= 0) {
+							// 打印编号
+							if (ObjectUtil.isEmpty(dd.getDescription())) {
+								PScenes scene = sceneMapper.selectByPrimaryKey(dd.getSceneid().longValue());
+								if (scene != null) {
 									dd.setSceneDescription(scene.getContent());
-									dd.setSceneTitle(scene.getTitle()); 
+									dd.setSceneTitle(scene.getTitle());
 								}
-							}else {
+							} else {
 								dd.setSceneDescription(dd.getDescription());
-								dd.setSceneTitle(dd.getTitle()); 
-							}	
+								dd.setSceneTitle(dd.getTitle());
+							}
 						}
 						i++;
-					} 
+					}
 					myproduct.setDetailslist(arrayList);
 				}
-				PMyproductchildinfo childInfo= mychildMapper.selectByPrimaryKey(cartId);
-				if(childInfo!=null){
-					UChildInfoParam childInfoParam=new UChildInfoParam();
-					if(!ObjectUtil.isEmpty(childInfo.getNickname()) ){
+				PMyproductchildinfo childInfo = mychildMapper.selectByPrimaryKey(cartId);
+				if (childInfo != null) {
+					UChildInfoParam childInfoParam = new UChildInfoParam();
+					if (!ObjectUtil.isEmpty(childInfo.getNickname())) {
 						childInfoParam.setNickName(childInfo.getNickname());
 					}
-					if(!ObjectUtil.isEmpty(childInfo.getBirthday())){
-						childInfoParam.setBirthday(DateUtil.getTimeStr(childInfo.getBirthday(), "yyyy-MM-dd HH:mm:ss"));   
+					if (!ObjectUtil.isEmpty(childInfo.getBirthday())) {
+						childInfoParam.setBirthday(DateUtil.getTimeStr(childInfo.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
 					}
 					myproduct.setChildInfo(childInfoParam);
 				}
 				rq.setBasemodle(myproduct);
-			}else {
+			} else {
 				rq.setStatu(ReturnStatus.SystemError_1);
 				rq.setStatusreson("不可编辑的作品");
 			}
@@ -707,10 +917,10 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		rq.setStatu(ReturnStatus.Success);
 		return rq;
 	}
-	
-	private MyProductsResult getMyProductsResult(MyProductsResult myproduct,Long userId, Long productId){
-		if(myproduct==null){
-			myproduct =new MyProductsResult();
+
+	private MyProductsResult getMyProductsResult(MyProductsResult myproduct, Long userId, Long productId) {
+		if (myproduct == null) {
+			myproduct = new MyProductsResult();
 			myproduct.setUserid(userId);
 			myproduct.setProductid(productId);
 			PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
@@ -727,13 +937,13 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		myproduct.setDetailslist(imglist);
 		return myproduct;
 	}
-	
+
 	public ReturnModel getMyProductByProductId(Long userId, Long productId) {
 		ReturnModel rq = new ReturnModel();
 		UUsers user = usersMapper.getUUsersByUserID(userId);
 		if (user != null) {
-			//我的作品
-			MyProductsResult myproduct = myProductsDao.getMyProductResultByProductId(userId, productId, Integer.parseInt(MyProductStatusEnum.ok.toString()));	
+			// 我的作品
+			MyProductsResult myproduct = myProductsDao.getMyProductResultByProductId(userId, productId, Integer.parseInt(MyProductStatusEnum.ok.toString()));
 			if (myproduct != null && myproduct.getUserid().longValue() == userId) {
 				PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
 				if (product != null) {
@@ -744,18 +954,18 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					String base_code = userId + "-" + myproduct.getCartid();
 					int i = 1;
 					for (MyProductsDetailsResult dd : arrayList) {
-						if(dd.getSceneid()!=null&&dd.getSceneid()>0){
-							dd.setPrintcode(base_code + "-" + String.format("%02d", dd.getSceneid()) + "-" + String.format("%02d", i)); // 打印编号								
+						if (dd.getSceneid() != null && dd.getSceneid() > 0) {
+							dd.setPrintcode(base_code + "-" + String.format("%02d", dd.getSceneid()) + "-" + String.format("%02d", i)); // 打印编号
 						}
 						i++;
 					}
 					myproduct.setDetailslist(arrayList);
 				} else {
-					myproduct=getMyProductsResult(myproduct,userId,productId);
+					myproduct = getMyProductsResult(myproduct, userId, productId);
 				}
 				rq.setBasemodle(myproduct);
-			}else {
-				myproduct=getMyProductsResult(myproduct,userId,productId);
+			} else {
+				myproduct = getMyProductsResult(myproduct, userId, productId);
 				rq.setBasemodle(myproduct);
 			}
 		}
@@ -763,72 +973,72 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		return rq;
 	}
 
-	
-	
 	/**
 	 * 前端 作品详情 （分享页 ）
 	 * 
 	 */
 	public ReturnModel getMyProductInfo(Long cartId) {
 		ReturnModel rq = new ReturnModel();
-		MyProductsResult myproduct=getMyProductsResult(cartId);
-		if(myproduct!=null){
+		MyProductsResult myproduct = getMyProductsResult(cartId);
+		if (myproduct != null) {
 			rq.setBasemodle(myproduct);
 		}
 		rq.setStatu(ReturnStatus.Success);
 		return rq;
 	}
-	
 
-	
-	
 	/**
 	 * 通过作品Id获取作品详细
+	 * 
 	 * @param cartId
 	 * @return
 	 */
-	public MyProductsResult getMyProductsResult(Long cartId){
-		MyProductsResult myproduct=myProductsDao.getMyProductResultVo(cartId);
+	public MyProductsResult getMyProductsResult(Long cartId) {
+		MyProductsResult myproduct = myProductsDao.getMyProductResultVo(cartId);
 		if (myproduct != null) {
-			if(myproduct.getStatus()!=null&&myproduct.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
+			if (myproduct.getStatus() != null && myproduct.getStatus().intValue() == Integer.parseInt(MyProductStatusEnum.ordered.toString())) {
 				myproduct.setIsOrder(1);
 			}
-			if(myproduct.getInvitestatus()!=null&&myproduct.getInvitestatus()>0){
-				List<PMyproductsinvites> invites= inviteMapper.findListByCartId(cartId);
-				if(invites!=null&&invites.size()>0){
-					 UUsers  inviteUser= usersMapper.getUUsersByPhone(invites.get(0).getInvitephone()) ;
-					 if(inviteUser!=null){
-						myproduct.setInviteUserId(inviteUser.getUserid());  
-					 }
+			//获取协同编辑者的userId------------------------------------
+			if (myproduct.getInvitestatus() != null && myproduct.getInvitestatus() > 0) {
+				List<PMyproductsinvites> invites = inviteMapper.findListByCartId(cartId);
+				if (invites != null && invites.size() > 0) {
+					if(invites.get(0).getInviteuserid()!=null){
+						myproduct.setInviteUserId(invites.get(0).getInviteuserid());
+					}else if (!ObjectUtil.isEmpty(invites.get(0).getInvitephone())) {
+						UUsers inviteUser=usersMapper.getUUsersByPhone(invites.get(0).getInvitephone());
+						if(inviteUser!=null){
+							myproduct.setInviteUserId(inviteUser.getUpuserid());
+						}
+					}
 				}
-			}
-			if(ObjectUtil.isEmpty(myproduct.getDescription())){
+			}/*---------------------------------*/
+			if (ObjectUtil.isEmpty(myproduct.getDescription())) {
 				PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
 				if (product != null) {
 					myproduct.setDescription(product.getDescription());
-				}	
+				}
 			}
-					
-			List<MyProductsDetailsResult> list=mydetailDao.findMyProductDetailsResult(cartId);
-			if(list!=null&&list.size()>0){
+
+			List<MyProductsDetailsResult> list = mydetailDao.findMyProductDetailsResult(cartId);
+			if (list != null && list.size() > 0) {
 				for (MyProductsDetailsResult detail : list) {
-					if(ObjectUtil.isEmpty(detail.getDescription())||ObjectUtil.isEmpty(detail.getTitle())){
-						PScenes scene= sceneMapper.selectByPrimaryKey(detail.getSceneid().longValue());
-						if(scene!=null){
+					if (ObjectUtil.isEmpty(detail.getDescription()) || ObjectUtil.isEmpty(detail.getTitle())) {
+						PScenes scene = sceneMapper.selectByPrimaryKey(detail.getSceneid().longValue());
+						if (scene != null) {
 							detail.setSceneDescription(scene.getContent());
-							detail.setSceneTitle(scene.getTitle()); 
+							detail.setSceneTitle(scene.getTitle());
 						}
-					}else {
+					} else {
 						detail.setSceneDescription(detail.getDescription());
-						detail.setSceneTitle(detail.getTitle()); 
+						detail.setSceneTitle(detail.getTitle());
 					}
 				}
-			} 
+			}
 			myproduct.setDetailslist(list);
 		}
 		return myproduct;
 	}
-	
 
 	public ReturnModel del_myProductDetail(Long userId, Long dpId) {
 		ReturnModel rq = new ReturnModel();
@@ -836,34 +1046,38 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		if (user != null) {
 			PMyproductdetails detail = myDetaiMapper.selectByPrimaryKey(dpId);
 			if (detail != null) {
-				PMyproducts myproduct = myMapper.selectByPrimaryKey(detail.getCartid());
-				if (myproduct != null) {// && myproduct.getUserid() != null && myproduct.getUserid().longValue() == userId
-					detail.setImgurl("");
-					detail.setContent("");
-					detail.setSceneid(null);
-					detail.setTitle("");
-					detail.setDescription("");
-					detail.setSort(myDetaiMapper.getMaxSort(detail.getCartid())+1); 
-					myDetaiMapper.updateByPrimaryKey(detail);
-					rq.setStatu(ReturnStatus.Success);
-					rq.setStatusreson("删除成功！");
-					return rq;
-				}
+				// PMyproducts myproduct =
+				// myMapper.selectByPrimaryKey(detail.getCartid());
+				// if (myproduct != null) {
+				// detail.setImgurl("");
+				// detail.setContent("");
+				// detail.setSceneid(null);
+				// detail.setTitle("");
+				// detail.setDescription("");
+				// detail.setSort(myDetaiMapper.getMaxSort(detail.getCartid())+1);
+				// myDetaiMapper.updateByPrimaryKey(detail);
+				// myDetaiMapper.deleteByPrimaryKey(dpId);
+				// rq.setStatu(ReturnStatus.Success);
+				// rq.setStatusreson("删除成功！");
+				// return rq;
+				// }
+				myDetaiMapper.deleteByPrimaryKey(dpId);
+				rq.setStatu(ReturnStatus.Success);
+				rq.setStatusreson("删除成功！");
+				return rq;
 			}
 		}
 		rq.setStatu(ReturnStatus.ParamError);
 		rq.setStatusreson("删除失败");
 		return rq;
 	}
-	
-	
 
 	public ReturnModel getStyleCoordResult(Long styleId) {
 		ReturnModel rq = new ReturnModel();
 		List<PStylecoordinate> list = styleCoordMapper.findlistByStyleId(styleId);
 		if (list != null && list.size() > 0) {
 			List<Map<String, Object>> arrayList = new ArrayList<Map<String, Object>>();
-			
+
 			for (PStylecoordinate ss : list) {
 				Map<String, Object> map = new HashMap<String, Object>();
 				PStylecoordinateitem w_no = styleCoordItemMapper.selectByPrimaryKey(ss.getNocoordid().longValue());
@@ -874,30 +1088,29 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				map.put("words", w_word);
 				map.put("type", ss.getType());
 
-				long type=styleId%2;
-				List<Map<String, String>> backMaps=ConfigUtil.getMaplist("backcoordinate");
-				if(backMaps!=null&&backMaps.size()>0){
+				long type = styleId % 2;
+				List<Map<String, String>> backMaps = ConfigUtil.getMaplist("backcoordinate");
+				if (backMaps != null && backMaps.size() > 0) {
 					for (Map<String, String> mapBacks : backMaps) {
-						if(ObjectUtil.parseLong(mapBacks.get("type"))==type){
+						if (ObjectUtil.parseLong(mapBacks.get("type")) == type) {
 							map.put("back-mod", mapBacks);
 						}
 					}
-				}	
-				Map<String, Object> mapWord=new HashMap<String, Object>();
-				
-				if(type==1){ //横版
+				}
+				Map<String, Object> mapWord = new HashMap<String, Object>();
+
+				if (type == 1) { // 横版
 					mapWord.put("size", 33);
 					mapWord.put("color", "#595857");
 					mapWord.put("lineHeight", 55);
 					mapWord.put("letterSpacing", 5);
-					
-				}else {//竖版
+
+				} else {// 竖版
 					mapWord.put("size", 29);
 					mapWord.put("color", "#595857");
 					mapWord.put("lineHeight", 40);
 					mapWord.put("letterSpacing", 0);
-					
-					
+
 				}
 				map.put("word-mod", mapWord);
 				arrayList.add(map);

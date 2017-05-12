@@ -2,7 +2,9 @@ package com.bbyiya.service.impl.pic;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.sf.json.JSONObject;
 
@@ -18,6 +20,8 @@ import com.bbyiya.model.PPostmodel;
 import com.bbyiya.model.PPostmodelareas;
 import com.bbyiya.model.UUseraddress;
 import com.bbyiya.service.pic.IBasePostMgtService;
+import com.bbyiya.utils.ConfigUtil;
+import com.bbyiya.vo.PostInfoVo;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.product.PPostModelAreasVo;
 import com.github.pagehelper.PageHelper;
@@ -178,6 +182,28 @@ public class BasePostMgtServiceImpl implements IBasePostMgtService{
 		rq.setStatusreson("删除成功！");
 		return rq;
 		
+	}
+	/**
+	 * 配置文件中读取物流公司信息
+	 * @return
+	 */
+	public ReturnModel getPostInfo(){
+		List<PostInfoVo> list=new ArrayList<PostInfoVo>();
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<Map<String, String>> mapList=ConfigUtil.getMaplist("postInfo");
+		if(mapList!=null&&mapList.size()>0){
+			for (Map<String, String> mapStyle : mapList) {
+				PostInfoVo vo=new PostInfoVo();
+				vo.setCode(mapStyle.get("code"));
+				vo.setName(mapStyle.get("name"));
+				list.add(vo);
+			}
+		}
+		ReturnModel rq = new ReturnModel();
+		map.put("list", list);
+		rq.setBasemodle(map);
+		rq.setStatu(ReturnStatus.Success);
+		return rq;
 	}
 	
 }

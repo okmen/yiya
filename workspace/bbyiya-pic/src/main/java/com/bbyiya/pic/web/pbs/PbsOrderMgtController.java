@@ -214,11 +214,11 @@ public class PbsOrderMgtController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/editLogistics")
-	public String editLogistics(String orderId,String expressCom,String expressOrder) throws Exception {
+	public String editLogistics(String orderId,String expressCom,String expressOrder,String expressCode) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			rq=orderMgtService.editLogistics(orderId, expressCom, expressOrder);
+			rq=orderMgtService.editLogistics(orderId, expressCom, expressOrder,expressCode);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
@@ -276,11 +276,11 @@ public class PbsOrderMgtController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/MergeOrderLogistic")
-	public String MergeOrderLogistic(int ordertype,String orderIds,String expressCom,String expressOrder,Double postage) throws Exception {
+	public String MergeOrderLogistic(int ordertype,String orderIds,String expressCom,String expressOrder,Double postage,String expressCode) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			rq=orderMgtService.MergeOrderLogistic(ordertype, orderIds, expressCom, expressOrder, postage);
+			rq=orderMgtService.MergeOrderLogistic(ordertype, orderIds, expressCom, expressOrder, postage,expressCode);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

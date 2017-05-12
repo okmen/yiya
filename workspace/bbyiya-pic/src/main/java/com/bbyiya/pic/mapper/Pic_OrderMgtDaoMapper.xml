@@ -19,11 +19,12 @@
     <result column="IsBranch" property="isbranch" jdbcType="INTEGER" />
     <result column="ExpressCom" property="expresscom" jdbcType="VARCHAR" />
     <result column="ExpressOrder" property="expressorder" jdbcType="VARCHAR" />
+    <result column="ExpressCode" property="expresscode" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List"  >
     UserOrderId, UserId, TotalPrice, Status, OrderAddressId, PayId, Remark, OrderTime, 
     PayTime, BranchUserId, OrderTotalPrice, PayType, OrderType, AgentUserId, IsBranch, 
-    ExpressCom, ExpressOrder
+    ExpressCom,  ExpressCode,ExpressOrder
   </sql>
   <resultMap id="OProductDetailMap" type="com.bbyiya.model.OOrderproductdetails" >
     <id column="OProductDetailId" property="oproductdetailid" jdbcType="BIGINT" />

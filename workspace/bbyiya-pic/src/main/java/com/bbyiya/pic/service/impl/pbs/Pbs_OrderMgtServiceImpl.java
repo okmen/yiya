@@ -119,7 +119,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	/**
 	 * 修改运单号
 	 */
-	public ReturnModel editLogistics(String orderId,String expressCom,String expressOrder) throws Exception {
+	public ReturnModel editLogistics(String orderId,String expressCom,String expressOrder,String expressCode) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		OUserorders userorders = userOrdersMapper.selectByPrimaryKey(orderId);
 		//查找运单号相同的订单号
@@ -129,6 +129,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 				for (OUserorders order : orderList) {
 					order.setExpresscom(expressCom);
 					order.setExpressorder(expressOrder);
+					order.setExpresscode(expressCode);
 					order.setDeliverytime(new Date()); 
 					int orderType = order.getOrdertype() == null ? 0 : order.getOrdertype();
 					
@@ -147,6 +148,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			} 			
 			userorders.setExpresscom(expressCom);
 			userorders.setExpressorder(expressOrder);
+			userorders.setExpresscode(expressCode);
 			userOrdersMapper.updateByPrimaryKeySelective(userorders);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(userorders);
@@ -164,6 +166,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 		ReturnModel rq = new ReturnModel();
 		OUserorders userorders = userOrdersMapper.selectByPrimaryKey(orderId);
 		if(userorders!=null){
+			if(postage==null)postage=0.0;
 			//首次填写运单号，则执行自动扣运费款操作
 			if(userorders.getPostage()==null||userorders.getPostage().doubleValue()<=0){
 				
@@ -308,7 +311,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	 * @return
 	 * @throws Exception
 	 */
-	public ReturnModel MergeOrderLogistic(int ordertype,String orderIds,String expressCom,String expressOrder,Double postage) throws Exception {
+	public ReturnModel MergeOrderLogistic(int ordertype,String orderIds,String expressCom,String expressOrder,Double postage,String expressCode) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		if(orderIds==null||orderIds.equals("")){
 			rq.setStatu(ReturnStatus.ParamError);
@@ -327,7 +330,8 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 				OUserorders userorders = userOrdersMapper.selectByPrimaryKey(orderArr[i]);
 				if(userorders!=null){
 					userorders.setExpresscom(expressCom);
-					userorders.setExpressorder(expressOrder);					
+					userorders.setExpressorder(expressOrder);
+					userorders.setExpresscode(expressCode);
 					//只能第一张单且ordertype=1才会自动扣款
 					if(i==0&&ordertype==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){
 						ReturnModel rqmodel=addPostage(orderArr[i], postage);

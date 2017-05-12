@@ -1,6 +1,7 @@
 package com.bbyiya.pic.utils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import net.sf.json.JSONArray;
@@ -140,11 +141,14 @@ public class Json2Objects {
 					if(!ObjectUtil.isEmpty(dec)&&!dec.equals("null")){
 						mo.setDescription(dec);
 					}
-					
 					if(dd.get("imgurl")!=null){
 						String url=String.valueOf(dd.get("imgurl"));
 						if(!ObjectUtil.isEmpty(url)&&!url.equals("null")){
 							mo.setImgurl(url); 
+							mo.setCreatetime(new Date()); 
+							if(mo.getSceneid()==null){
+								mo.setSceneid(0); 
+							}
 						}	
 					}
 					int sort=ObjectUtil.parseInt(String.valueOf(dd.get("sort")));

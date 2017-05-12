@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.pic.service.ibs.IIbs_MyProductTempService;
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
@@ -137,7 +138,7 @@ public class MyProductTempController extends SSOController {
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			String redirct_url="currentPage?workId="+URLEncoder.encode(cartId,"utf-8");	
-			String urlstr="https://mpic.bbyiya.com/login/transfer?m=1&redirct_url="+URLEncoder.encode(redirct_url,"utf-8");				
+			String urlstr= ConfigUtil.getSingleValue("shareulr-base")+"redirct_url="+URLEncoder.encode(redirct_url,"utf-8");				
 			rq=producttempService.saveProductTempRQcode(urlstr);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
@@ -158,7 +159,7 @@ public class MyProductTempController extends SSOController {
 	public String getProductTempRQcode(String cartId) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		String redirct_url="currentPage?workId="+cartId;	
-		String urlstr="https://mpic.bbyiya.com/login/transfer?m=1&redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
+		String urlstr= ConfigUtil.getSingleValue("shareulr-base")+"redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
 		String url="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+URLEncoder.encode(urlstr,"utf-8");
 		
 		LoginSuccessResult user= super.getLoginUser();

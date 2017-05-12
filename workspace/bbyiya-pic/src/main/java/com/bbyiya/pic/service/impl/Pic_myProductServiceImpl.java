@@ -17,6 +17,7 @@ import com.bbyiya.dao.PMyproductchildinfoMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproductsinvitesMapper;
+import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PScenesMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
@@ -28,6 +29,7 @@ import com.bbyiya.model.PMyproductchildinfo;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproductsinvites;
+import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.dao.IMyProductsDao;
 import com.bbyiya.pic.service.IPic_myProductService;
@@ -54,6 +56,8 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 	private PMyproductdetailsMapper myDetaiMapper;
 	@Autowired
 	private PMyproductchildinfoMapper childinfoMapper;
+	@Autowired
+	private PMyproducttempMapper tempMapper;
 	/*------------------------产品模块-------------------------------------*/
 	@Autowired
 	private PScenesMapper sceneMapper;
@@ -268,7 +272,15 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				}
 				inviteMapper.insert(invoMo);
 				newproducts.setInvitestatus(Integer.parseInt(InviteStatus.agree.toString()));
-				myproductsMapper.updateByPrimaryKeySelective(newproducts); 
+				myproductsMapper.updateByPrimaryKeySelective(newproducts);
+				//模板客户获取数加1
+				PMyproducttemp temp=tempMapper.selectByPrimaryKey(myproducts.getTempid());
+				if(temp!=null){
+					int count=temp.getCount()==null?0:temp.getCount();
+					count++;
+					temp.setCount(count);
+					tempMapper.updateByPrimaryKeySelective(temp);
+				}
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("tempId", myproducts.getTempid());
 				map.put("mycartid", newproducts.getCartid());

@@ -90,6 +90,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 				if(branch!=null){
 					product.setBranchesName(branch.getBranchcompanyname());
 					product.setBranchesPhone(branch.getPhone());
+					product.setBranchesUserName(branch.getUsername());
 				}
 				int orderType = order.getOrdertype() == null ? 0 : order.getOrdertype();
 				order.setOrdertype(orderType);

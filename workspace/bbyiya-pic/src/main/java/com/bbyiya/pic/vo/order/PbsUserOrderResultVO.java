@@ -7,6 +7,7 @@ public class PbsUserOrderResultVO extends OOrderproducts{
 	private OUserorders order;	
 	private String payTimeStr;
 	private String branchesName;
+	private String branchesUserName;
 	private String branchesPhone;
 	private String branchesAddress;
 	
@@ -103,6 +104,14 @@ public class PbsUserOrderResultVO extends OOrderproducts{
 
 	public void setPayTimeStr(String payTimeStr) {
 		this.payTimeStr = payTimeStr;
+	}
+
+	public String getBranchesUserName() {
+		return branchesUserName;
+	}
+
+	public void setBranchesUserName(String branchesUserName) {
+		this.branchesUserName = branchesUserName;
 	}
 	
 	

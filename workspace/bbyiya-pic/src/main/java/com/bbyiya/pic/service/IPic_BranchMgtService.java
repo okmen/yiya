@@ -76,7 +76,7 @@ public interface IPic_BranchMgtService {
 	 * @param streetdetail
 	 * @return
 	 */
-	ReturnModel editBranchAddress(Long branchUserId, String streetdetail);
+	ReturnModel editBranchAddress(Long branchUserId, String streetdetail,String name,String phone);
 	/**
 	 * 添加意见反馈
 	 * @param branchUserId

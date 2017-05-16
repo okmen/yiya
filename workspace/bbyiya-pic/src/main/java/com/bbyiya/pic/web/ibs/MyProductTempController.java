@@ -60,7 +60,32 @@ public class MyProductTempController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	
+	/**
+	 * 修改模板
+	 * @param index
+	 * @param size
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/editMyProductTemp")
+	public String editMyProductTemp(String title,String remark,Integer tempid) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(ObjectUtil.isEmpty(title)){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("模板名称不能为空!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			rq=producttempService.editMyProductTemp(title, remark, tempid);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	/**
 	 * 启用或禁用模板
 	 * @param type
@@ -137,7 +162,7 @@ public class MyProductTempController extends SSOController {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			String redirct_url="currentPage?workId="+URLEncoder.encode(cartId,"utf-8");	
+			String redirct_url="currentPage?workId="+URLEncoder.encode(cartId,"utf-8")+"&uid="+URLEncoder.encode(user.getUserId().toString(),"utf-8");	
 			String urlstr= ConfigUtil.getSingleValue("shareulr-base")+"redirct_url="+URLEncoder.encode(redirct_url,"utf-8");				
 			rq=producttempService.saveProductTempRQcode(urlstr);
 		}else {
@@ -157,13 +182,13 @@ public class MyProductTempController extends SSOController {
 	@ResponseBody
 	@RequestMapping(value = "/getProductTempRQcode")
 	public String getProductTempRQcode(String cartId) throws Exception {
-		ReturnModel rq=new ReturnModel();
-		String redirct_url="currentPage?workId="+cartId;	
-		String urlstr= ConfigUtil.getSingleValue("shareulr-base")+"redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
-		String url="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+URLEncoder.encode(urlstr,"utf-8");
-		
+		ReturnModel rq=new ReturnModel();		
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
+			String redirct_url="currentPage?workId="+cartId+"&uid="+user.getUserId();	
+			String urlstr= ConfigUtil.getSingleValue("shareulr-base")+"redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
+			String url="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+URLEncoder.encode(urlstr,"utf-8");
+			
 			rq.setBasemodle(url);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("生成模板二维码成功");

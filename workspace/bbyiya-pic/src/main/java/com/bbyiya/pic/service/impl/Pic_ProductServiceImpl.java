@@ -291,6 +291,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			if (!ObjectUtil.isEmpty(param.getDescription())) {
 				myproduct.setDescription(param.getDescription());
 			}
+			myproduct.setIstemp(0);
 			myproduct.setUserid(userId);
 			myproduct.setProductid(param.getProductid());
 			myproduct.setCreatetime(new Date());

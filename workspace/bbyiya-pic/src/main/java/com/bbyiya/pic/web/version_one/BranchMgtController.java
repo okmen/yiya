@@ -258,11 +258,11 @@ public class BranchMgtController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/editBranchAddress")
-	public String editBranchAddress(String streetdetail) throws Exception {
+	public String editBranchAddress(String streetdetail,String name,String phone ) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq=branchService.editBranchAddress(user.getUserId(), streetdetail);
+			rq=branchService.editBranchAddress(user.getUserId(), streetdetail,name,phone);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("修改代理商信息成功！");
 			

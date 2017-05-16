@@ -76,6 +76,27 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		rq.setStatusreson("添加模板成功！");
 		return rq;
 	}
+	
+	/**
+	 * 修改模板
+	 * */
+	public ReturnModel editMyProductTemp(String title,String remark,Integer tempid){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.SystemError);	
+		PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempid);
+		if(temp!=null){
+			temp.setTitle(title);
+			temp.setRemark(remark);
+			myproducttempMapper.updateByPrimaryKey(temp);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("修改模板成功！");
+		}else{
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("模板不存在！");
+		}
+		return rq;
+	}
+	
 	/**
 	 * 启用或禁用模板
 	 * @param type
@@ -146,7 +167,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		if(reuslt!=null&&reuslt.getList()!=null&&reuslt.getList().size()>0){
 			for (PMyproducttemp temp : templist) {	
 				//String versionString=DateUtil.getTimeStr(new Date(), "yyyyMMddHHMMss"); 
-				String redirct_url="currentPage?workId="+temp.getCartid();			
+				String redirct_url="currentPage?workId="+temp.getCartid()+"&uid="+userid;			
 				String urlstr="";
 				String url="";
 				try {

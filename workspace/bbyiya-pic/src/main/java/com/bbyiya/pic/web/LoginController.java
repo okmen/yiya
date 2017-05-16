@@ -73,19 +73,21 @@ public class LoginController extends SSOController {
 				loginTemp.setRedirect_url(redirct_url); 
 			}
 			RedisUtil.setObject(keyId, loginTemp, 30);
-			addlog("trans:"+JsonUtil.objectToJsonStr(loginTemp));  
+//			addlog("trans:"+JsonUtil.objectToJsonStr(loginTemp));  
 		}else {
 			if(!ObjectUtil.isEmpty(RedisUtil.getObject(keyId))){
 				RedisUtil.delete(keyId);
 			}
 		}
-//		return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin&response_type=code&scope=snsapi_userinfo#wechat_redirect" ;		
+		return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin&response_type=code&scope=snsapi_userinfo#wechat_redirect" ;		
 		
-		return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin&response_type=code&scope=snsapi_base#wechat_redirect" ;		
+//		return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin&response_type=code&scope=snsapi_base#wechat_redirect" ;		
 	}
 	
-	
-	
+//	@Autowired
+//	private UOtherloginMapper otherloginMapper;
+//	@Autowired
+//	private UUsersMapper userMapper;
 	/**
 	 * c端测试版本登陆入口
 	 * @param headImg
@@ -115,6 +117,7 @@ public class LoginController extends SSOController {
 		if(!ObjectUtil.isEmpty(upUid)){
 			param.setUpUserId(ObjectUtil.parseLong(upUid)); 
 		} 
+		
 		ReturnModel rqModel = loginService.otherLogin(param);
 		if (ReturnStatus.Success.equals(rqModel.getStatu()) && !ObjectUtil.isEmpty(rqModel.getBasemodle())) {
 			addLoginLogAndCookie(rqModel.getBasemodle(),0);
@@ -154,7 +157,7 @@ public class LoginController extends SSOController {
 			if (!ObjectUtil.isEmpty(openid) && !ObjectUtil.isEmpty(access_token) && !"null".equals(openid) && !"null".equals(access_token)) {
 
 				String userInfoUrl = "https://api.weixin.qq.com/sns/userinfo";
-				String data2 = "access_token=" + access_token + "&openid=" + openid+"&lang=zh_CN";
+				String data2 = "access_token=" + access_token + "&openid=" + openid;//+"&lang=zh_CN";
 				String userInfoJson = HttpRequestHelper.sendPost(userInfoUrl, data2);
 				JSONObject userJson = JSONObject.fromObject(userInfoJson);
 				if (userInfoJson != null) {
@@ -179,7 +182,7 @@ public class LoginController extends SSOController {
 							if(!ObjectUtil.isEmpty(logintemp.getRedirect_url())&&!"null".equals(logintemp.getRedirect_url())){
 								paramtest+="&redirect_url="+URLEncoder.encode(logintemp.getRedirect_url(), "gb2312"); 
 							}
-							addlog("urlParam:"+paramtest); 
+//							addlog("urlParam:"+paramtest); 
 							//跳转mpic测试接口地址中转
 							return "redirect:" + ConfigUtil.getSingleValue("mpic-net-url")+paramtest;
 						}
@@ -246,11 +249,15 @@ public class LoginController extends SSOController {
 	 * @param msg
 	 */
 	public void addlog(String msg) {
-		EErrors errors = new EErrors();
-		errors.setClassname(this.getClass().getName());
-		errors.setMsg(msg);
-		errors.setCreatetime(new Date()); 
-		errorMapper.insert(errors);
+		try {
+			EErrors errors = new EErrors();
+			errors.setClassname(this.getClass().getName());
+			errors.setMsg(msg);
+			errors.setCreatetime(new Date()); 
+			errorMapper.insert(errors);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
 }

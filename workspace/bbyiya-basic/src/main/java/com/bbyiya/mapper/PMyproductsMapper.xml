@@ -58,7 +58,7 @@
   <select id="findMyProductslistForBranch" resultMap="MyProductResultVO" ><!-- 04 find 获取影楼分销人员的作品  -->
     select <include refid="Base_Column_List" />
     from p_myproducts 
-    where  Status!=3 and Status!=4 and  UserId in
+    where  Status!=3 and Status!=4 and IsTemp!=1 and InviteStatus in (1,3,4) and UserId in
     <foreach collection="list" item="uid" index="index"
             open="(" close=")" separator=",">
             #{uid}

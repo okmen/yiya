@@ -39,6 +39,16 @@ public interface IIbs_MyProductTempService {
 	 * @throws Exception
 	 */
 	ReturnModel saveProductTempRQcode(String url) throws Exception;
+	/**
+	 * ÐÞ¸ÄÄ£°å
+	 * @param userid
+	 * @param title
+	 * @param remark
+	 * @param tempid
+	 * @return
+	 */
+	ReturnModel editMyProductTemp(String title, String remark,
+			Integer tempid);
 
 	
 }

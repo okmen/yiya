@@ -745,10 +745,12 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 	 * @param branchUserId
 	 * @return
 	 */
-	public ReturnModel editBranchAddress(Long branchUserId,String streetdetail){	
+	public ReturnModel editBranchAddress(Long branchUserId,String streetdetail,String name,String phone){	
 		ReturnModel rqModel=new ReturnModel();
 		UBranches branch=branchesMapper.selectByPrimaryKey(branchUserId);
 		branch.setStreetdetail(streetdetail);
+		branch.setUsername(name);
+		branch.setPhone(phone);
 		branchesMapper.updateByPrimaryKeySelective(branch);
 		rqModel.setStatu(ReturnStatus.Success);
 		rqModel.setStatusreson("修改收货地址成功！");

@@ -6,11 +6,12 @@
     <result column="Mobilephone" property="mobilephone" jdbcType="VARCHAR" />
     <result column="Name" property="name" jdbcType="VARCHAR" />
     <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="CertificateImg" property="certificateimg" jdbcType="VARCHAR" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="Remark" property="remark" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    UserId, Mobilephone, Name, Status, CreateTime, Remark
+    UserId, Mobilephone, Name, Status, CertificateImg, CreateTime, Remark
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -18,13 +19,12 @@
     from u_weiusers
     where UserId = #{userid,jdbcType=BIGINT}
   </select>
-  
-  <!-- 获取微商 列表 -->
+  <!-- 获取流量主 列表 -->
   <select id="findUWeiusersList" resultMap="BaseResultMap" parameterType="com.bbyiya.vo.user.UWeiUserSearchParam" >
     select 
     <include refid="Base_Column_List" />
     from u_weiusers
-    where 1=1
+    where 1=1 and Status!=4 
     <if test="userId != null and userId>0" >
         and  UserId = #{userId,jdbcType=BIGINT}
     </if>
@@ -44,11 +44,11 @@
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.UWeiusers" >
     insert into u_weiusers (UserId, Mobilephone, Name, 
-      Status, CreateTime, Remark
-      )
+      Status, CertificateImg, CreateTime, 
+      Remark)
     values (#{userid,jdbcType=BIGINT}, #{mobilephone,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}
-      )
+      #{status,jdbcType=INTEGER}, #{certificateimg,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{remark,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.UWeiusers" >
     insert into u_weiusers
@@ -64,6 +64,9 @@
       </if>
       <if test="status != null" >
         Status,
+      </if>
+      <if test="certificateimg != null" >
+        CertificateImg,
       </if>
       <if test="createtime != null" >
         CreateTime,
@@ -85,6 +88,9 @@
       <if test="status != null" >
         #{status,jdbcType=INTEGER},
       </if>
+      <if test="certificateimg != null" >
+        #{certificateimg,jdbcType=VARCHAR},
+      </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
       </if>
@@ -105,6 +111,9 @@
       <if test="status != null" >
         Status = #{status,jdbcType=INTEGER},
       </if>
+      <if test="certificateimg != null" >
+        CertificateImg = #{certificateimg,jdbcType=VARCHAR},
+      </if>
       <if test="createtime != null" >
         CreateTime = #{createtime,jdbcType=TIMESTAMP},
       </if>
@@ -119,6 +128,7 @@
     set Mobilephone = #{mobilephone,jdbcType=VARCHAR},
       Name = #{name,jdbcType=VARCHAR},
       Status = #{status,jdbcType=INTEGER},
+      CertificateImg = #{certificateimg,jdbcType=VARCHAR},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
       Remark = #{remark,jdbcType=VARCHAR}
     where UserId = #{userid,jdbcType=BIGINT}

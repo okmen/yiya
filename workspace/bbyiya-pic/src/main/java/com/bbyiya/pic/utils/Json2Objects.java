@@ -13,6 +13,7 @@ import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UBranchinfotemp;
 import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUseraddress;
+import com.bbyiya.model.UWeiuserapplys;
 import com.bbyiya.pic.vo.LoginTempVo;
 import com.bbyiya.pic.vo.product.MyProductParam;
 import com.bbyiya.utils.ObjectUtil;
@@ -293,6 +294,27 @@ public class Json2Objects {
 			String content=String.valueOf(model.get("content"));
 			if(!ObjectUtil.isEmpty(content)&&!"null".equals(content)){
 				param.setContent(content);
+			}
+			return param;
+		}
+		return null;
+	}
+	
+	public static UWeiuserapplys getParam_UWeiuserapplys(String weiUserJson) {
+		JSONObject model = JSONObject.fromObject(weiUserJson);
+		if (model != null) {
+			UWeiuserapplys param = new UWeiuserapplys();
+			String name=String.valueOf(model.get("name"));
+			if(!ObjectUtil.isEmpty(name)&&!"null".equals(name)){
+				param.setName(name);
+			}
+			String certificateimg=String.valueOf(model.get("certificateimg"));
+			if(!ObjectUtil.isEmpty(certificateimg)&&!"null".equals(certificateimg)){
+				param.setCertificateimg(certificateimg);
+			}
+			String remark=String.valueOf(model.get("remark"));
+			if(!ObjectUtil.isEmpty(remark)&&!"null".equals(remark)){
+				param.setRemark(remark);
 			}
 			return param;
 		}

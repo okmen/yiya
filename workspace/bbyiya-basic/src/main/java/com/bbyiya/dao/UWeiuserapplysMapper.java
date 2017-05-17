@@ -1,6 +1,9 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
 import com.bbyiya.model.UWeiuserapplys;
+import com.bbyiya.vo.user.UWeiUserSearchParam;
 
 public interface UWeiuserapplysMapper {
     int deleteByPrimaryKey(Long userid);
@@ -14,4 +17,10 @@ public interface UWeiuserapplysMapper {
     int updateByPrimaryKeySelective(UWeiuserapplys record);
 
     int updateByPrimaryKey(UWeiuserapplys record);
+    /**
+     * 查询流量主申请列表
+     * @param param
+     * @return
+     */
+    List<UWeiuserapplys> findWeiUserApplylist(UWeiUserSearchParam param);
 }

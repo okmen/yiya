@@ -5,14 +5,14 @@
     <id column="UserId" property="userid" jdbcType="BIGINT" />
     <result column="MobilePhone" property="mobilephone" jdbcType="VARCHAR" />
     <result column="Name" property="name" jdbcType="VARCHAR" />
-    <result column="IdCard" property="idcard" jdbcType="VARCHAR" />
+    <result column="CertificateImg" property="certificateimg" jdbcType="VARCHAR" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="Status" property="status" jdbcType="INTEGER" />
     <result column="Remark" property="remark" jdbcType="VARCHAR" />
     <result column="ProcessTime" property="processtime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    UserId, MobilePhone, Name, IdCard, CreateTime, Status, Remark, ProcessTime
+    UserId, MobilePhone, Name, CertificateImg, CreateTime, Status, Remark, ProcessTime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -20,16 +20,37 @@
     from u_weiuserapplys
     where UserId = #{userid,jdbcType=BIGINT}
   </select>
+  <!-- 查询流量主申请列表 -->
+  <select id="findWeiUserApplylist" resultMap="BaseResultMap" parameterType="com.bbyiya.vo.user.UWeiUserSearchParam" >
+    select 
+    <include refid="Base_Column_List" />
+    from u_weiuserapplys
+    where 1=1 and Status!=4 
+    <if test="userId != null and userId>0" >
+        and  UserId = #{userId,jdbcType=BIGINT}
+    </if>
+    <if test="status != null" >
+       and  Status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="mobilephone != null and mobilephone!=''" >
+       and  Mobilephone = #{mobilephone,jdbcType=VARCHAR}
+    </if>
+     <if test="name != null and name!=''" >
+       and  Name = #{name,jdbcType=VARCHAR}
+    </if>
+  </select>
+  
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from u_weiuserapplys
     where UserId = #{userid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.UWeiuserapplys" >
     insert into u_weiuserapplys (UserId, MobilePhone, Name, 
-      IdCard, CreateTime, Status, 
+      CertificateImg, CreateTime, Status, 
       Remark, ProcessTime)
     values (#{userid,jdbcType=BIGINT}, #{mobilephone,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{idcard,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, 
+      #{certificateimg,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, 
       #{remark,jdbcType=VARCHAR}, #{processtime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.UWeiuserapplys" >
@@ -44,8 +65,8 @@
       <if test="name != null" >
         Name,
       </if>
-      <if test="idcard != null" >
-        IdCard,
+      <if test="certificateimg != null" >
+        CertificateImg,
       </if>
       <if test="createtime != null" >
         CreateTime,
@@ -70,8 +91,8 @@
       <if test="name != null" >
         #{name,jdbcType=VARCHAR},
       </if>
-      <if test="idcard != null" >
-        #{idcard,jdbcType=VARCHAR},
+      <if test="certificateimg != null" >
+        #{certificateimg,jdbcType=VARCHAR},
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
@@ -96,8 +117,8 @@
       <if test="name != null" >
         Name = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="idcard != null" >
-        IdCard = #{idcard,jdbcType=VARCHAR},
+      <if test="certificateimg != null" >
+        CertificateImg = #{certificateimg,jdbcType=VARCHAR},
       </if>
       <if test="createtime != null" >
         CreateTime = #{createtime,jdbcType=TIMESTAMP},
@@ -118,7 +139,7 @@
     update u_weiuserapplys
     set MobilePhone = #{mobilephone,jdbcType=VARCHAR},
       Name = #{name,jdbcType=VARCHAR},
-      IdCard = #{idcard,jdbcType=VARCHAR},
+      CertificateImg = #{certificateimg,jdbcType=VARCHAR},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
       Status = #{status,jdbcType=INTEGER},
       Remark = #{remark,jdbcType=VARCHAR},

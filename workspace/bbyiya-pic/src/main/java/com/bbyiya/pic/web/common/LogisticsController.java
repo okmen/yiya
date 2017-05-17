@@ -4,8 +4,6 @@ package com.bbyiya.pic.web.common;
 import javax.annotation.Resource;
 
 import net.sf.json.JSONObject;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,6 +23,7 @@ public class LogisticsController extends SSOController {
 	@Resource(name = "basePostMgtServiceImpl")
 	private IBasePostMgtService postservice;
 	/**
+	 * 
 	 * 根据运单号，物流公司编码简称得到物流信息
 	 * @return
 	 * @throws Exception
@@ -51,7 +50,7 @@ public class LogisticsController extends SSOController {
 				}else {
 					String returnCode = String.valueOf(model.get("returnCode"));
 					rqModel.setStatu(ReturnStatus.ParamError);		
-					rqModel.setStatusreson(message+",失败的代号(returnCode):"+returnCode);
+					rqModel.setStatusreson(message);
 					return JsonUtil.objectToJsonStr(rqModel);
 				}
 			}else{

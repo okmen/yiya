@@ -11,8 +11,10 @@ public class UWeiusers {
 
     private Integer status;
 
+    private String certificateimg;
+
     private Date createtime;
-    
+
     private String remark;
 
     public Long getUserid() {
@@ -47,6 +49,14 @@ public class UWeiusers {
         this.status = status;
     }
 
+    public String getCertificateimg() {
+        return certificateimg;
+    }
+
+    public void setCertificateimg(String certificateimg) {
+        this.certificateimg = certificateimg == null ? null : certificateimg.trim();
+    }
+
     public Date getCreatetime() {
         return createtime;
     }
@@ -55,13 +65,11 @@ public class UWeiusers {
         this.createtime = createtime;
     }
 
-	public String getRemark() {
-		return remark;
-	}
+    public String getRemark() {
+        return remark;
+    }
 
-	public void setRemark(String remark) {
-		this.remark = remark;
-	}
-    
-    
+    public void setRemark(String remark) {
+        this.remark = remark == null ? null : remark.trim();
+    }
 }

@@ -1,5 +1,6 @@
 package com.bbyiya.pic.service.cts;
 
+import com.bbyiya.model.UWeiuserapplys;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.UWeiUserSearchParam;
 
@@ -24,4 +25,35 @@ public interface ICts_UWeiUserManageService {
 	 * @return
 	 */
 	ReturnModel findWeiUserVoList(UWeiUserSearchParam param, int index, int size);
+	/**
+	 * 流量主申请
+	 * @param userId
+	 * @param applyInfo
+	 * @return
+	 */
+	ReturnModel applyWeiUser(Long userId, UWeiuserapplys applyInfo);
+	/**
+	 * 流量主审核
+	 * @param adminId
+	 * @param weiUserId
+	 * @param status
+	 * @return
+	 */
+	ReturnModel audit_weiUserApply(Long adminId, Long weiUserId, int status);
+	/**
+	 * 查询流量主申请列表
+	 * @param param
+	 * @param index
+	 * @param size
+	 * @return
+	 */
+	ReturnModel findWeiUserApplylist(UWeiUserSearchParam param, int index,
+			int size);
+	/**
+	 * 删除流量主记录
+	 * @param adminId
+	 * @param weiUserId
+	 * @return
+	 */
+	ReturnModel delete_weiUserApply(Long adminId, Long weiUserId);
 }

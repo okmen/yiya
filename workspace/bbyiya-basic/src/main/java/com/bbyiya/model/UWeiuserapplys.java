@@ -9,7 +9,7 @@ public class UWeiuserapplys {
 
     private String name;
 
-    private String idcard;
+    private String certificateimg;
 
     private Date createtime;
 
@@ -18,7 +18,7 @@ public class UWeiuserapplys {
     private String remark;
 
     private Date processtime;
-
+    
     public Long getUserid() {
         return userid;
     }
@@ -43,12 +43,12 @@ public class UWeiuserapplys {
         this.name = name == null ? null : name.trim();
     }
 
-    public String getIdcard() {
-        return idcard;
+    public String getCertificateimg() {
+        return certificateimg;
     }
 
-    public void setIdcard(String idcard) {
-        this.idcard = idcard == null ? null : idcard.trim();
+    public void setCertificateimg(String certificateimg) {
+        this.certificateimg = certificateimg == null ? null : certificateimg.trim();
     }
 
     public Date getCreatetime() {

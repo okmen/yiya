@@ -7,6 +7,7 @@ import java.util.List;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import com.bbyiya.model.PMyproductcomments;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UBranchinfotemp;
@@ -271,6 +272,27 @@ public class Json2Objects {
 			String redirect_url=String.valueOf(model.get("redirect_url"));
 			if(!"null".equals(redirect_url)&&!ObjectUtil.isEmpty(redirect_url)){
 				param.setRedirect_url(redirect_url); 
+			}
+			return param;
+		}
+		return null;
+	}
+	
+	public static PMyproductcomments getParam_PMyproductcomments(String json) {
+		JSONObject model = JSONObject.fromObject(json);
+		if (model != null) {
+			PMyproductcomments param = new PMyproductcomments();
+			long cartid=ObjectUtil.parseLong(String.valueOf(model.get("cartid")));
+			if(cartid>0){
+				param.setCartid(cartid);
+			}
+			String relation=String.valueOf(model.get("relation"));
+			if(!ObjectUtil.isEmpty(relation)&&!"null".equals(relation)){
+				param.setRelation(relation);
+			}
+			String content=String.valueOf(model.get("content"));
+			if(!ObjectUtil.isEmpty(content)&&!"null".equals(content)){
+				param.setContent(content);
 			}
 			return param;
 		}

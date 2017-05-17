@@ -1,6 +1,7 @@
 package com.bbyiya.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class PCommentstemp {
     private Integer tipclassid;
@@ -10,6 +11,8 @@ public class PCommentstemp {
     private String tipclassname;
 
     private Date createtime;
+    
+    private List<PCommentstips> tips;
 
     public Integer getTipclassid() {
         return tipclassid;
@@ -42,4 +45,13 @@ public class PCommentstemp {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+
+	public List<PCommentstips> getTips() {
+		return tips;
+	}
+
+	public void setTips(List<PCommentstips> tips) {
+		this.tips = tips;
+	}
+    
 }

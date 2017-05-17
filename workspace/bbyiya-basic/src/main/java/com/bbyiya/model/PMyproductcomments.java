@@ -17,6 +17,8 @@ public class PMyproductcomments {
 
     private Date createtime;
 
+    private String content;
+    
     public Long getId() {
         return id;
     }
@@ -72,4 +74,13 @@ public class PMyproductcomments {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+    
 }

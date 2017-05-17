@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.PMyproductextMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.PMyproductext" >
+    <id column="CartId" property="cartid" jdbcType="BIGINT" />
+    <result column="BrowseCount" property="browsecount" jdbcType="INTEGER" />
+    <result column="CommentsCount" property="commentscount" jdbcType="INTEGER" />
+    <result column="UseActCount" property="useactcount" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CartId, BrowseCount, CommentsCount, UseActCount
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from p_myproductext
+    where CartId = #{cartid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from p_myproductext
+    where CartId = #{cartid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.PMyproductext" >
+    insert into p_myproductext (CartId, BrowseCount, CommentsCount, 
+      UseActCount)
+    values (#{cartid,jdbcType=BIGINT}, #{browsecount,jdbcType=INTEGER}, #{commentscount,jdbcType=INTEGER}, 
+      #{useactcount,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproductext" >
+    insert into p_myproductext
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="cartid != null" >
+        CartId,
+      </if>
+      <if test="browsecount != null" >
+        BrowseCount,
+      </if>
+      <if test="commentscount != null" >
+        CommentsCount,
+      </if>
+      <if test="useactcount != null" >
+        UseActCount,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="cartid != null" >
+        #{cartid,jdbcType=BIGINT},
+      </if>
+      <if test="browsecount != null" >
+        #{browsecount,jdbcType=INTEGER},
+      </if>
+      <if test="commentscount != null" >
+        #{commentscount,jdbcType=INTEGER},
+      </if>
+      <if test="useactcount != null" >
+        #{useactcount,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PMyproductext" >
+    update p_myproductext
+    <set >
+      <if test="browsecount != null" >
+        BrowseCount = #{browsecount,jdbcType=INTEGER},
+      </if>
+      <if test="commentscount != null" >
+        CommentsCount = #{commentscount,jdbcType=INTEGER},
+      </if>
+      <if test="useactcount != null" >
+        UseActCount = #{useactcount,jdbcType=INTEGER},
+      </if>
+    </set>
+    where CartId = #{cartid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PMyproductext" >
+    update p_myproductext
+    set BrowseCount = #{browsecount,jdbcType=INTEGER},
+      CommentsCount = #{commentscount,jdbcType=INTEGER},
+      UseActCount = #{useactcount,jdbcType=INTEGER}
+    where CartId = #{cartid,jdbcType=BIGINT}
+  </update>
+</mapper>

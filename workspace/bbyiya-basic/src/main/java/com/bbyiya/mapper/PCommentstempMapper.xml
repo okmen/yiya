@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.PCommentstempMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.PCommentstemp" >
+    <id column="TipClassId" property="tipclassid" jdbcType="INTEGER" />
+    <result column="ProductId" property="productid" jdbcType="BIGINT" />
+    <result column="TipClassName" property="tipclassname" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    TipClassId, ProductId, TipClassName, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from p_commentstemp
+    where TipClassId = #{tipclassid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from p_commentstemp
+    where TipClassId = #{tipclassid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.PCommentstemp" >
+    insert into p_commentstemp (TipClassId, ProductId, TipClassName, 
+      CreateTime)
+    values (#{tipclassid,jdbcType=INTEGER}, #{productid,jdbcType=BIGINT}, #{tipclassname,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.PCommentstemp" >
+    insert into p_commentstemp
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="tipclassid != null" >
+        TipClassId,
+      </if>
+      <if test="productid != null" >
+        ProductId,
+      </if>
+      <if test="tipclassname != null" >
+        TipClassName,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="tipclassid != null" >
+        #{tipclassid,jdbcType=INTEGER},
+      </if>
+      <if test="productid != null" >
+        #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="tipclassname != null" >
+        #{tipclassname,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PCommentstemp" >
+    update p_commentstemp
+    <set >
+      <if test="productid != null" >
+        ProductId = #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="tipclassname != null" >
+        TipClassName = #{tipclassname,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where TipClassId = #{tipclassid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PCommentstemp" >
+    update p_commentstemp
+    set ProductId = #{productid,jdbcType=BIGINT},
+      TipClassName = #{tipclassname,jdbcType=VARCHAR},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where TipClassId = #{tipclassid,jdbcType=INTEGER}
+  </update>
+</mapper>

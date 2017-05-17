@@ -12,6 +12,8 @@ public class UWeiusers {
     private Integer status;
 
     private Date createtime;
+    
+    private String remark;
 
     public Long getUserid() {
         return userid;
@@ -52,4 +54,14 @@ public class UWeiusers {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+    
+    
 }

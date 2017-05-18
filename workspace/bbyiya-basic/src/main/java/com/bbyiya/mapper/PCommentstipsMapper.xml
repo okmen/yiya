@@ -26,6 +26,10 @@
     delete from p_commentstips
     where TipId = #{tipid,jdbcType=INTEGER}
   </delete>
+   <delete id="deleteByClassID"  >
+    delete from p_commentstips
+    where TipClassId = #{classid,jdbcType=INTEGER}
+  </delete>
   <insert id="insert" parameterType="com.bbyiya.model.PCommentstips" >
     insert into p_commentstips (TipId, TipClassId, Content, 
       CreateTime)

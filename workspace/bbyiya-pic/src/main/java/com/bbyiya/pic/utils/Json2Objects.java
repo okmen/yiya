@@ -7,6 +7,8 @@ import java.util.List;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import com.bbyiya.model.PCommentstemp;
+import com.bbyiya.model.PCommentstips;
 import com.bbyiya.model.PMyproductcomments;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.UAgentcustomers;
@@ -315,6 +317,52 @@ public class Json2Objects {
 			String remark=String.valueOf(model.get("remark"));
 			if(!ObjectUtil.isEmpty(remark)&&!"null".equals(remark)){
 				param.setRemark(remark);
+			}
+			return param;
+		}
+		return null;
+	}
+	
+	public static PCommentstemp getParam_PCommentstemp(String json) {
+		JSONObject model = JSONObject.fromObject(json);
+		if (model != null) {
+			PCommentstemp param = new PCommentstemp();
+			long productId=ObjectUtil.parseLong(String.valueOf(model.get("productid")));
+			if(productId>0){
+				param.setProductid(productId);
+			}
+			int tipclassid=ObjectUtil.parseInt(String.valueOf(model.get("tipclassid")));
+			if(tipclassid>0){
+				param.setTipclassid(tipclassid);
+			}
+			String tipclassname=String.valueOf(model.get("tipclassname"));
+			if (!(ObjectUtil.isEmpty(tipclassname) || "null".equals(tipclassname))) {
+				param.setTipclassname(tipclassname); 
+			}
+			String tipsJson=String.valueOf(model.get("tips"));
+			if(ObjectUtil.isEmpty(tipsJson)||"null".equals(tipsJson))
+				return param;
+			try {
+				JSONArray details = new JSONArray().fromObject(tipsJson);
+				List<PCommentstips> detailsList=new ArrayList<PCommentstips>();
+				for (int i = 0; i < details.size(); i++) {
+					JSONObject dd = details.getJSONObject(i);
+					if (dd != null) {
+						PCommentstips mo = new PCommentstips();
+						int tipId = ObjectUtil.parseInt(String.valueOf(dd.get("tipid")));
+						if (tipId > 0) {
+							mo.setTipid(tipId);
+						}
+						String content = String.valueOf(dd.get("content"));
+						if (!(ObjectUtil.isEmpty(content) || "null".equals(content))) {
+							mo.setContent(content);
+							detailsList.add(mo);
+						}
+					}
+				}
+				param.setTips(detailsList); 
+			} catch (Exception e) {
+				// TODO: handle exception
 			}
 			return param;
 		}

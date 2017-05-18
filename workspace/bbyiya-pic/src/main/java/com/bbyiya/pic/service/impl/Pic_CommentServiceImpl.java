@@ -13,6 +13,7 @@ import com.bbyiya.dao.PMyproductcommentsMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.PCommentstemp;
+import com.bbyiya.model.PCommentstips;
 import com.bbyiya.model.PMyproductcomments;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.service.IPic_CommentService;
@@ -75,6 +76,82 @@ public class Pic_CommentServiceImpl implements IPic_CommentService{
 		PageInfo<PMyproductcomments> pageInfo=new PageInfo<PMyproductcomments>(list);
 		rq.setStatu(ReturnStatus.Success);
 		rq.setBasemodle(pageInfo);
+		return rq;
+	}
+	
+	public ReturnModel modify_Comments(Long userId,PCommentstemp param){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.ParamError);
+		if(param==null){
+			rq.setStatusreson("参数不能为空");
+			return rq;
+		}
+		if(param.getTipclassid()!=null&&param.getTipclassid()>0){
+			PCommentstemp tem=commentstempMapper.selectByPrimaryKey(param.getTipclassid());
+			//已有的评论提示分类
+			if(tem!=null){ 
+				//修改提示分类名称
+				if(!ObjectUtil.isEmpty(param.getTipclassname())){
+					commentstempMapper.updateByPrimaryKeySelective(param);
+				}
+				//评论提示（修改、新增）
+				if(param.getTips()!=null&&param.getTips().size()>0){
+					for (PCommentstips tip : param.getTips()) {
+						//修改评论提示
+						if(tip.getTipid()!=null&&tip.getTipid()>0&&!ObjectUtil.isEmpty(tip.getContent())){
+							 tipsMapper.updateByPrimaryKeySelective(tip);
+						}else {
+							//新增提示评论
+							if(!ObjectUtil.isEmpty(tip.getContent())){
+								tip.setTipclassid(param.getTipclassid()); 
+								tip.setCreatetime(new Date());
+								tipsMapper.insertSelective(tip);
+							}
+						}
+					}
+				}
+			}
+		}else {//新增评论分类
+			if(param.getProductid()==null||param.getProductid()<=0){
+				rq.setStatusreson("产品id不能为空");
+				return rq;
+			}
+			if(ObjectUtil.isEmpty(param.getTipclassname())){
+				rq.setStatusreson("提示分类名称不能为空");
+				return rq;
+			}
+			param.setCreatetime(new Date());
+			commentstempMapper.insertSelective(param);
+		}
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("操作成功！");
+		return rq;
+	}
+	
+	public ReturnModel delTip(Long userId,Integer tipId){
+		ReturnModel rq=new ReturnModel();
+		int count= tipsMapper.deleteByPrimaryKey(tipId);
+		if(count>0){
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("提示评论删除成功");
+		}else {
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("删除失败"); 
+		}
+		return rq;
+	}
+	
+	public ReturnModel delCommentClass(Long userId,Integer commentClassId){
+		ReturnModel rq=new ReturnModel();
+		tipsMapper.deleteByClassID(commentClassId);
+		int count= commentstempMapper.deleteByPrimaryKey(commentClassId);
+		if(count>0){
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("评论分类删除成功");
+		}else {
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("删除失败"); 
+		}
 		return rq;
 	}
 	

@@ -24,4 +24,10 @@ public interface PCommentstipsMapper {
      * @return
      */
     List<PCommentstips> findListByTempId(@Param("tipClassId")Integer tipclassid);
+    /**
+     * 删除评论分类下所有评论提示
+     * @param classId
+     * @return
+     */
+    int deleteByClassID(@Param("classid")Integer classId);
 }

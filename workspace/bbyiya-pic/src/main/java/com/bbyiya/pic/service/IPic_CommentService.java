@@ -31,4 +31,26 @@ public interface IPic_CommentService {
 	 * @return
 	 */
 	ReturnModel findCommentsList(Long userid, Long cartId,int index,int size);
+	/**
+	 * 编辑 提示评论分类（新增、修改）；提示评论（修改、新增）
+	 * @param userId
+	 * @param param
+	 * @return
+	 */
+	ReturnModel modify_Comments(Long userId,PCommentstemp param);
+	
+	/**
+	 * 删除 评论提示
+	 * @param userId
+	 * @param tipId
+	 * @return
+	 */
+	ReturnModel delTip(Long userId,Integer tipId);
+	/**
+	 * 删除 评论分类
+	 * @param userId
+	 * @param commentClassId
+	 * @return
+	 */
+	ReturnModel delCommentClass(Long userId,Integer commentClassId);
 }

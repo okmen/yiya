@@ -32,7 +32,8 @@ public class CommentsController extends SSOController{
 	private IPic_CommentService commentService;
 	
 	/**
-	 * 获取评论提示列表
+	 *
+	 * M07 作品评论-评论提示
 	 * 
 	 * @return
 	 * @throws Exception
@@ -48,7 +49,8 @@ public class CommentsController extends SSOController{
 	}
 	
 	/**
-	 * 提交作品评论
+	 * M09 作品评论-新增评论
+	 * 
 	 * @param commentJson
 	 * @return
 	 * @throws Exception
@@ -74,7 +76,7 @@ public class CommentsController extends SSOController{
 	}
 	
 	/**
-	 * 用户作品评论列表
+	 * M08 作品评论-用户评论列表
 	 * @param cartId
 	 * @param index
 	 * @param size
@@ -94,5 +96,54 @@ public class CommentsController extends SSOController{
 		rq.setStatu(ReturnStatus.Success);
 		return JsonUtil.objectToJsonStr(rq);
 	} 
+	
+	/**
+	 * 新增评论模板
+	 * @param commentJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/modifyCommentTemp")
+	public String addCommentTemp(String commentJson) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			PCommentstemp param=Json2Objects.getParam_PCommentstemp(commentJson);
+			rq=commentService.modify_Comments(user.getUserId(), param);
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/delTip")
+	public String delTip(int tipid) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			rq=commentService.delTip(user.getUserId(), tipid);
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/delTipClass")
+	public String delTipClass(int classId) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			rq=commentService.delCommentClass(user.getUserId(), classId);
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	
 }

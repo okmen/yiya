@@ -1,5 +1,8 @@
 package com.bbyiya.pic.service.ibs;
 
+import java.util.List;
+
+import com.bbyiya.pic.vo.order.OrderCountResultVO;
 import com.bbyiya.vo.ReturnModel;
 
 public interface IIbs_OrderManageService {
@@ -12,5 +15,18 @@ public interface IIbs_OrderManageService {
 	 * @param size
 	 * @return
 	 */
-	ReturnModel find_payorderExtByUpUserid(Long userId,Integer status, int index,int size);
+	ReturnModel find_payorderExtByUpUserid(Long userId,Integer status, String startTime,String endTime,int index,int size);
+	/**
+	 * IBS统计excel导出列表
+	 * @param userId
+	 * @param status
+	 * @param startTime
+	 * @param endTime
+	 * @param index
+	 * @param size
+	 * @return
+	 */
+	List<OrderCountResultVO> find_ibsOrderExportExcelbyUpUserid(Long userId,
+			Integer status, String startTime, String endTime, int index,
+			int size);
 }

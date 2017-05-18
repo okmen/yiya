@@ -836,6 +836,20 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			if (myproduct != null && myproduct.getStatus() != null && myproduct.getStatus().intValue() == Integer.parseInt(MyProductStatusEnum.ordered.toString())) {
 				myproduct.setIsOrder(1);
 			}
+			//获取协同编辑者的userId------------------------------------
+			if (myproduct.getInvitestatus() != null && myproduct.getInvitestatus() > 0) {
+				List<PMyproductsinvites> invites = inviteMapper.findListByCartId(cartId);
+				if (invites != null && invites.size() > 0) {
+					if(invites.get(0).getInviteuserid()!=null){
+						myproduct.setInviteUserId(invites.get(0).getInviteuserid());
+					}else if (!ObjectUtil.isEmpty(invites.get(0).getInvitephone())) {
+						UUsers inviteUser=usersMapper.getUUsersByPhone(invites.get(0).getInvitephone());
+						if(inviteUser!=null){
+							myproduct.setInviteUserId(inviteUser.getUserid());
+						}
+					}
+				}
+			}/*---------------------------------*/
 			// 是否是模板作品------------------------
 			if (myproduct.getIstemp() != null && myproduct.getIstemp() > 0 && myproduct.getTempid() != null && myproduct.getTempid() > 0) {
 				PMyproducttemp mtemp = mtempMapper.selectByPrimaryKey(myproduct.getTempid());
@@ -860,6 +874,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					}// 判断用户是否接受模板邀请(over)---------------
 				}
 			}
+			
 			boolean canModify = true;
 			if (canModify) {
 				UUsers myUser = userId == myproduct.getUserid().longValue() ? user : usersMapper.selectByPrimaryKey(myproduct.getUserid());
@@ -1009,7 +1024,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					}else if (!ObjectUtil.isEmpty(invites.get(0).getInvitephone())) {
 						UUsers inviteUser=usersMapper.getUUsersByPhone(invites.get(0).getInvitephone());
 						if(inviteUser!=null){
-							myproduct.setInviteUserId(inviteUser.getUpuserid());
+							myproduct.setInviteUserId(inviteUser.getUserid());
 						}
 					}
 				}

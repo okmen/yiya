@@ -49,11 +49,11 @@
     <include refid="Base_Column_List" />
     from u_users
     where UpUserId = #{upid,jdbcType=BIGINT}
-    <if test="startTime != null" >
-       
+    <if test="startTime != null " >
+      and date(CreateTime) &gt;= date(#{startTime,jdbcType=TIMESTAMP})  
     </if>
     <if test="endTime != null" >
-       
+      and date(CreateTime) &lt;= date(#{endTime,jdbcType=TIMESTAMP})    
     </if>
   </select>
   

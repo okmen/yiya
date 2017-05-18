@@ -25,8 +25,14 @@
     <include refid="Base_Column_List" />
     from o_payorderext
     where UpUserId = #{upuserid,jdbcType=BIGINT}
-    <if test="status >= 0" >
+    <if test="status!=null and status >= 0" >
     	 and Status= #{status,jdbcType=INTEGER}
+    </if>
+    <if test="startTime != null " >
+      and date(CreateTime) &gt;= date(#{startTime,jdbcType=TIMESTAMP})  
+    </if>
+    <if test="endTime != null" >
+      and date(CreateTime) &lt;= date(#{endTime,jdbcType=TIMESTAMP})    
     </if>
   </select>
   <!-- 02 根据影楼推荐人获取订单列表 -->
@@ -46,7 +52,7 @@
     </if>    
   </select>
   
-  <!-- 03 根据微商推荐人获取订单列表 -->
+   <!-- 03 根据流量主推荐人获取订单列表 -->
    <select id="find_payorderExtByWeiUserUpUserid" resultMap="BaseResultMap"  >   
     select a.PayId, a.UserOrderId, a.TotalPrice, a.UserId, a.UpUserId, a.Status, a.CreateTime from o_payorderext as a,u_weiusers as b where a.UpUserId=b.UserId
     <if test="upuserid!=null" >

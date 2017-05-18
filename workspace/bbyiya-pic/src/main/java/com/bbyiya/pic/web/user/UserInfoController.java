@@ -118,13 +118,13 @@ public class UserInfoController  extends SSOController{
 		if(user!=null){
 			Date startDay=null,endDay=null;
 			if(!ObjectUtil.isEmpty(startTime)){
-				startDay=DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", startTime);
+				startDay=DateUtil.getDateByString("yyyy-MM-dd", startTime);
 			}
-			
 			if(!ObjectUtil.isEmpty(endTime)){
+				//获取日期的最后结束时间
+				endTime=DateUtil.getEndTime(endTime);
 				endDay=DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", endTime);
 			}
-			
 			PageHelper.startPage(index, size);
 			List<UUsers> list=usermapper.findUUsersByUpUserid(user.getUserId(),startDay,endDay);
 			PageInfo<UUsers> resultPage=new PageInfo<UUsers>(list); 

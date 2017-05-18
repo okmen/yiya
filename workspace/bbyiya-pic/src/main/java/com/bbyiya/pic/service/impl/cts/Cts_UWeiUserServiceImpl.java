@@ -1,7 +1,9 @@
 package com.bbyiya.pic.service.impl.cts;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.dao.OPayorderextMapper;
+import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.dao.UWeiuserapplysMapper;
 import com.bbyiya.dao.UWeiusersMapper;
 import com.bbyiya.enums.ReturnStatus;
@@ -23,6 +26,8 @@ import com.bbyiya.model.UWeiuserapplys;
 import com.bbyiya.model.UWeiusers;
 import com.bbyiya.pic.service.cts.ICts_UWeiUserManageService;
 import com.bbyiya.service.IBaseUserCommonService;
+import com.bbyiya.utils.ConfigUtil;
+import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.UWeiUserSearchParam;
@@ -35,7 +40,8 @@ public class Cts_UWeiUserServiceImpl implements ICts_UWeiUserManageService{
 	//用户公共模块
 	@Resource(name = "baseUserCommon")
 	private IBaseUserCommonService userBasic;
-	
+	@Autowired
+	private UUsersMapper usermapper;
 	@Autowired
 	private OPayorderextMapper payextendMapper;
 	@Autowired
@@ -199,6 +205,75 @@ public class Cts_UWeiUserServiceImpl implements ICts_UWeiUserManageService{
 		userBasic.removeUserIdentity(weiUserId,UserIdentityEnums.wei); 	
 		rq.setStatu(ReturnStatus.Success);
 		rq.setStatusreson("删除成功");
+		return rq;
+	}
+	
+	/**
+	 * cts流量主申请状态
+	 */
+	public ReturnModel getWeiUserApplyStatus(Long weiUserId){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.ParamError);
+		Map<String, Object> map=new HashMap<String, Object>();
+		UWeiuserapplys apply=weiuserApplyMapper.selectByPrimaryKey(weiUserId);
+		if(apply!=null){
+			map.put("isApplyed", 1);
+			map.put("status", apply.getStatus());
+			map.put("applyInfo", apply);
+			if(apply.getStatus()!=null){
+				if(apply.getStatus().intValue()==Integer.parseInt(weiUserStatusEnum.ok.toString())){
+					map.put("msg", "已经成为流量主");
+				}else if (apply.getStatus().intValue()==Integer.parseInt(weiUserStatusEnum.applying.toString())) {
+					map.put("msg", "申请中");
+				}else if (apply.getStatus().intValue()==Integer.parseInt(weiUserStatusEnum.no.toString())) {
+					map.put("msg", "申请不通过。");
+				}
+			}else {
+				map.put("msg", "申请中");
+			}
+		}else {
+			map.put("isApplyed", 0);
+		}
+		rq.setStatu(ReturnStatus.Success);
+		rq.setBasemodle(map);
+		return rq;
+	}
+	
+	/**
+	 * 得到推荐用户列表
+	 * @param userId
+	 * @param startTime
+	 * @param endTime
+	 * @param index
+	 * @param size
+	 * @return
+	 */
+	public ReturnModel getRecommendUser(Long userId,String startTime,String endTime,int index,int size){
+		ReturnModel rq=new ReturnModel();
+		Date startDay=null,endDay=null;
+		if(!ObjectUtil.isEmpty(startTime)){
+			startDay=DateUtil.getDateByString("yyyy-MM-dd", startTime);
+		}
+		if(!ObjectUtil.isEmpty(endTime)){
+			//获取日期的最后结束时间
+			endTime=DateUtil.getEndTime(endTime);
+			endDay=DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", endTime);
+		}
+		PageHelper.startPage(index, size);
+		List<UUsers> list=usermapper.findUUsersByUpUserid(userId,startDay,endDay);
+		PageInfo<UUsers> resultPage=new PageInfo<UUsers>(list); 
+		for (UUsers uu : resultPage.getList()) {
+			uu.setPassword(""); 
+			uu.setCreatetimestr(DateUtil.getTimeStr(uu.getCreatetime(), "yyyy-MM-dd HH:mm:ss")); 
+			if(ObjectUtil.isEmpty(uu.getNickname())){
+				uu.setNickname("yiya"+uu.getUserid());
+			}
+			if(ObjectUtil.isEmpty(uu.getUserimg())){
+				uu.setUserimg(ConfigUtil.getSingleValue("default-headimg")); 
+			}
+		}
+		rq.setStatu(ReturnStatus.Success);
+		rq.setBasemodle(resultPage);
 		return rq;
 	}
 	

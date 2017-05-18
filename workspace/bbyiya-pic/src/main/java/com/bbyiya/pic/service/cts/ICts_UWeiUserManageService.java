@@ -56,4 +56,21 @@ public interface ICts_UWeiUserManageService {
 	 * @return
 	 */
 	ReturnModel delete_weiUserApply(Long adminId, Long weiUserId);
+	/**
+	 * 流量主申请状态
+	 * @param weiUserId
+	 * @return
+	 */
+	ReturnModel getWeiUserApplyStatus(Long weiUserId);
+	/**
+	 * 得到推荐用户列表
+	 * @param userId
+	 * @param startTime
+	 * @param endTime
+	 * @param index
+	 * @param size
+	 * @return
+	 */
+	ReturnModel getRecommendUser(Long userId, String startTime, String endTime,
+			int index, int size);
 }

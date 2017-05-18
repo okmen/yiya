@@ -1,5 +1,6 @@
 package com.bbyiya.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -23,7 +24,7 @@ public interface OPayorderextMapper {
      * @param upuserid
      * @return
      */
-    List<OPayorderext> findListByUpUserid(@Param("upuserid") Long upuserid,@Param("status") Integer status);
+    List<OPayorderext> findListByUpUserid(@Param("upuserid") Long upuserid,@Param("status") Integer status,@Param("startTime")Date starttime,@Param("endTime")Date endtime);
     
     /**
      * 根据影楼推荐人获取订单列表

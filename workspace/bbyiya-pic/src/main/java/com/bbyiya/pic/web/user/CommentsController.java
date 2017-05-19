@@ -97,6 +97,16 @@ public class CommentsController extends SSOController{
 		return JsonUtil.objectToJsonStr(rq);
 	} 
 	
+	@ResponseBody
+	@RequestMapping(value = "/commentHeadImglist")
+	public String commentHeadImglist(long cartId,@RequestParam(required = false, defaultValue = "1")int index,@RequestParam(required = false, defaultValue = "10")int size) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		rq=commentService.findCommentsHeadImgList(cartId, index, size);
+		
+		rq.setStatu(ReturnStatus.Success);
+		return JsonUtil.objectToJsonStr(rq);
+	} 
+	
 	/**
 	 * 新增评论模板
 	 * @param commentJson

@@ -32,6 +32,14 @@ public interface IPic_CommentService {
 	 */
 	ReturnModel findCommentsList(Long userid, Long cartId,int index,int size);
 	/**
+	 * 获取作品评论者 头像列表
+	 * @param cartId
+	 * @param index
+	 * @param size
+	 * @return
+	 */
+	ReturnModel findCommentsHeadImgList(Long cartId,int index,int size);
+	/**
 	 * 编辑 提示评论分类（新增、修改）；提示评论（修改、新增）
 	 * @param userId
 	 * @param param

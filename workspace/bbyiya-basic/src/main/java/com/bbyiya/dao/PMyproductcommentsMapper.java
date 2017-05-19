@@ -24,4 +24,10 @@ public interface PMyproductcommentsMapper {
      * @return
      */
     List<PMyproductcomments> findCommentlist(@Param("cartid")Long cartid);
+    /**
+     * 评论者头像列表
+     * @param cartid
+     * @return
+     */
+    List<PMyproductcomments> findCommentHeadImglist(@Param("cartid")Long cartid);
 }

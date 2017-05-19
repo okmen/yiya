@@ -24,7 +24,13 @@
     select 
     <include refid="Base_Column_List" />
     from p_myproductcomments
-    where CartId = #{cartid,jdbcType=BIGINT}
+    where CartId = #{cartid,jdbcType=BIGINT} order by Id desc
+  </select>
+  <select id="findCommentHeadImglist" resultMap="BaseResultMap"  ><!-- 02作品评论者头像列表 -->
+    select 
+    <include refid="Base_Column_List" />
+    from p_myproductcomments
+    where CartId = #{cartid,jdbcType=BIGINT} GROUP BY UserId  ORDER BY Id DESC 
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from p_myproductcomments

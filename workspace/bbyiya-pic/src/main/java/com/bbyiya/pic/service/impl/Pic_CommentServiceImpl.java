@@ -79,6 +79,23 @@ public class Pic_CommentServiceImpl implements IPic_CommentService{
 		return rq;
 	}
 	
+	/**
+	 * 获取点赞列表（评论者头像列表）
+	 * @param cartId
+	 * @param index
+	 * @param size
+	 * @return
+	 */
+	public ReturnModel findCommentsHeadImgList(Long cartId,int index,int size){
+		ReturnModel rq=new ReturnModel();
+		PageHelper.startPage(index, size);
+		List<PMyproductcomments> list=myproductcommentsMapper.findCommentHeadImglist(cartId);
+		PageInfo<PMyproductcomments> pageInfo=new PageInfo<PMyproductcomments>(list);
+		rq.setStatu(ReturnStatus.Success);
+		rq.setBasemodle(pageInfo);
+		return rq;
+	}
+	
 	public ReturnModel modify_Comments(Long userId,PCommentstemp param){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.ParamError);

@@ -19,10 +19,42 @@ public class PMyproducttemp {
 
     private Date createtime;
     
+    private Integer needverifer;
+
+    private Integer applycount;
+
+    private String discription;
+    
     //二维码地址
   	private String codeurl;
+  	
+  	
 
-    public Integer getTempid() {
+    public Integer getNeedverifer() {
+		return needverifer;
+	}
+
+	public void setNeedverifer(Integer needverifer) {
+		this.needverifer = needverifer;
+	}
+
+	public Integer getApplycount() {
+		return applycount;
+	}
+
+	public void setApplycount(Integer applycount) {
+		this.applycount = applycount;
+	}
+
+	public String getDiscription() {
+		return discription;
+	}
+
+	public void setDiscription(String discription) {
+		this.discription = discription;
+	}
+
+	public Integer getTempid() {
         return tempid;
     }
 

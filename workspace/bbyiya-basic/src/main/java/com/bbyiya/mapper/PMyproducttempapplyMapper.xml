@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.PMyproducttempapplyMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.PMyproducttempapply" >
+    <id column="TempApplyId" property="tempapplyid" jdbcType="BIGINT" />
+    <result column="TempId" property="tempid" jdbcType="INTEGER" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="Mobilephone" property="mobilephone" jdbcType="VARCHAR" />
+    <result column="Province" property="province" jdbcType="INTEGER" />
+    <result column="City" property="city" jdbcType="INTEGER" />
+    <result column="Area" property="area" jdbcType="INTEGER" />
+    <result column="Street" property="street" jdbcType="VARCHAR" />
+    <result column="Adress" property="adress" jdbcType="VARCHAR" />
+    <result column="IsDue" property="isdue" jdbcType="INTEGER" />
+    <result column="CompanyUserId" property="companyuserid" jdbcType="BIGINT" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    TempApplyId, TempId, UserId, Mobilephone, Province, City, Area, Street, Adress, IsDue, 
+    CompanyUserId, Status, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from p_myproducttempapply
+    where TempApplyId = #{tempapplyid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from p_myproducttempapply
+    where TempApplyId = #{tempapplyid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.PMyproducttempapply" >
+    insert into p_myproducttempapply (TempApplyId, TempId, UserId, 
+      Mobilephone, Province, City, 
+      Area, Street, Adress, 
+      IsDue, CompanyUserId, Status, 
+      CreateTime)
+    values (#{tempapplyid,jdbcType=BIGINT}, #{tempid,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, 
+      #{mobilephone,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, 
+      #{area,jdbcType=INTEGER}, #{street,jdbcType=VARCHAR}, #{adress,jdbcType=VARCHAR}, 
+      #{isdue,jdbcType=INTEGER}, #{companyuserid,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproducttempapply" >
+    insert into p_myproducttempapply
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="tempapplyid != null" >
+        TempApplyId,
+      </if>
+      <if test="tempid != null" >
+        TempId,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="mobilephone != null" >
+        Mobilephone,
+      </if>
+      <if test="province != null" >
+        Province,
+      </if>
+      <if test="city != null" >
+        City,
+      </if>
+      <if test="area != null" >
+        Area,
+      </if>
+      <if test="street != null" >
+        Street,
+      </if>
+      <if test="adress != null" >
+        Adress,
+      </if>
+      <if test="isdue != null" >
+        IsDue,
+      </if>
+      <if test="companyuserid != null" >
+        CompanyUserId,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="tempapplyid != null" >
+        #{tempapplyid,jdbcType=BIGINT},
+      </if>
+      <if test="tempid != null" >
+        #{tempid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="mobilephone != null" >
+        #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=INTEGER},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=INTEGER},
+      </if>
+      <if test="area != null" >
+        #{area,jdbcType=INTEGER},
+      </if>
+      <if test="street != null" >
+        #{street,jdbcType=VARCHAR},
+      </if>
+      <if test="adress != null" >
+        #{adress,jdbcType=VARCHAR},
+      </if>
+      <if test="isdue != null" >
+        #{isdue,jdbcType=INTEGER},
+      </if>
+      <if test="companyuserid != null" >
+        #{companyuserid,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PMyproducttempapply" >
+    update p_myproducttempapply
+    <set >
+      <if test="tempid != null" >
+        TempId = #{tempid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="mobilephone != null" >
+        Mobilephone = #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        Province = #{province,jdbcType=INTEGER},
+      </if>
+      <if test="city != null" >
+        City = #{city,jdbcType=INTEGER},
+      </if>
+      <if test="area != null" >
+        Area = #{area,jdbcType=INTEGER},
+      </if>
+      <if test="street != null" >
+        Street = #{street,jdbcType=VARCHAR},
+      </if>
+      <if test="adress != null" >
+        Adress = #{adress,jdbcType=VARCHAR},
+      </if>
+      <if test="isdue != null" >
+        IsDue = #{isdue,jdbcType=INTEGER},
+      </if>
+      <if test="companyuserid != null" >
+        CompanyUserId = #{companyuserid,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where TempApplyId = #{tempapplyid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PMyproducttempapply" >
+    update p_myproducttempapply
+    set TempId = #{tempid,jdbcType=INTEGER},
+      UserId = #{userid,jdbcType=BIGINT},
+      Mobilephone = #{mobilephone,jdbcType=VARCHAR},
+      Province = #{province,jdbcType=INTEGER},
+      City = #{city,jdbcType=INTEGER},
+      Area = #{area,jdbcType=INTEGER},
+      Street = #{street,jdbcType=VARCHAR},
+      Adress = #{adress,jdbcType=VARCHAR},
+      IsDue = #{isdue,jdbcType=INTEGER},
+      CompanyUserId = #{companyuserid,jdbcType=BIGINT},
+      Status = #{status,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where TempApplyId = #{tempapplyid,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.PMyproducttempusersMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.PMyproducttempusers" >
+    <id column="Id" property="id" jdbcType="BIGINT" />
+    <result column="TempId" property="tempid" jdbcType="INTEGER" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="ApplyCount" property="applycount" jdbcType="INTEGER" />
+    <result column="PassCount" property="passcount" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Id, TempId, UserId, Status, ApplyCount, PassCount, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from p_myproducttempusers
+    where Id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from p_myproducttempusers
+    where Id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.PMyproducttempusers" >
+    insert into p_myproducttempusers (Id, TempId, UserId, 
+      Status, ApplyCount, PassCount, 
+      CreateTime)
+    values (#{id,jdbcType=BIGINT}, #{tempid,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, 
+      #{status,jdbcType=INTEGER}, #{applycount,jdbcType=INTEGER}, #{passcount,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproducttempusers" >
+    insert into p_myproducttempusers
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        Id,
+      </if>
+      <if test="tempid != null" >
+        TempId,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="applycount != null" >
+        ApplyCount,
+      </if>
+      <if test="passcount != null" >
+        PassCount,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="tempid != null" >
+        #{tempid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="applycount != null" >
+        #{applycount,jdbcType=INTEGER},
+      </if>
+      <if test="passcount != null" >
+        #{passcount,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PMyproducttempusers" >
+    update p_myproducttempusers
+    <set >
+      <if test="tempid != null" >
+        TempId = #{tempid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="applycount != null" >
+        ApplyCount = #{applycount,jdbcType=INTEGER},
+      </if>
+      <if test="passcount != null" >
+        PassCount = #{passcount,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PMyproducttempusers" >
+    update p_myproducttempusers
+    set TempId = #{tempid,jdbcType=INTEGER},
+      UserId = #{userid,jdbcType=BIGINT},
+      Status = #{status,jdbcType=INTEGER},
+      ApplyCount = #{applycount,jdbcType=INTEGER},
+      PassCount = #{passcount,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

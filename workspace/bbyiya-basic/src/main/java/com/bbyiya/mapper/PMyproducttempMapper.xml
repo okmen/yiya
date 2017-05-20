@@ -10,9 +10,13 @@
     <result column="Remark" property="remark" jdbcType="VARCHAR" />
     <result column="CartId" property="cartid" jdbcType="BIGINT" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+     <result column="NeedVerifer" property="needverifer" jdbcType="INTEGER" />
+    <result column="Discription" property="discription" jdbcType="VARCHAR" />
+    <result column="ApplyCount" property="applycount" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    TempId, BranchUserId, Title, Status, Count, Remark, CartId, CreateTime
+    TempId, BranchUserId, Title, Status, Count, Remark, CartId, CreateTime, NeedVerifer, 
+    Discription, ApplyCount
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -34,18 +38,22 @@
   <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="tempid" parameterType="com.bbyiya.model.PMyproducttemp" >
     insert into p_myproducttemp (TempId, BranchUserId, Title, 
       Status, Count, Remark, 
-      CartId, CreateTime)
+      CartId, CreateTime, NeedVerifer, 
+      Discription, ApplyCount)
     values (#{tempid,jdbcType=INTEGER}, #{branchuserid,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
       #{status,jdbcType=INTEGER}, #{count,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
-      #{cartid,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP})
+      #{cartid,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}, #{needverifer,jdbcType=INTEGER}, 
+      #{discription,jdbcType=VARCHAR}, #{applycount,jdbcType=INTEGER})
   </insert>
-  <insert id="insert" parameterType="com.bbyiya.model.PMyproducttemp" >
+   <insert id="insert" parameterType="com.bbyiya.model.PMyproducttemp" >
     insert into p_myproducttemp (TempId, BranchUserId, Title, 
       Status, Count, Remark, 
-      CartId, CreateTime)
+      CartId, CreateTime, NeedVerifer, 
+      Discription, ApplyCount)
     values (#{tempid,jdbcType=INTEGER}, #{branchuserid,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
       #{status,jdbcType=INTEGER}, #{count,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
-      #{cartid,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP})
+      #{cartid,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}, #{needverifer,jdbcType=INTEGER}, 
+      #{discription,jdbcType=VARCHAR}, #{applycount,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproducttemp" >
     insert into p_myproducttemp
@@ -74,6 +82,15 @@
       <if test="createtime != null" >
         CreateTime,
       </if>
+      <if test="needverifer != null" >
+        NeedVerifer,
+      </if>
+      <if test="discription != null" >
+        Discription,
+      </if>
+      <if test="applycount != null" >
+        ApplyCount,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="tempid != null" >
@@ -99,6 +116,15 @@
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="needverifer != null" >
+        #{needverifer,jdbcType=INTEGER},
+      </if>
+      <if test="discription != null" >
+        #{discription,jdbcType=VARCHAR},
+      </if>
+      <if test="applycount != null" >
+        #{applycount,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -126,6 +152,15 @@
       <if test="createtime != null" >
         CreateTime = #{createtime,jdbcType=TIMESTAMP},
       </if>
+      <if test="needverifer != null" >
+        NeedVerifer = #{needverifer,jdbcType=INTEGER},
+      </if>
+      <if test="discription != null" >
+        Discription = #{discription,jdbcType=VARCHAR},
+      </if>
+      <if test="applycount != null" >
+        ApplyCount = #{applycount,jdbcType=INTEGER},
+      </if>
     </set>
     where TempId = #{tempid,jdbcType=INTEGER}
   </update>
@@ -137,7 +172,10 @@
       Count = #{count,jdbcType=INTEGER},
       Remark = #{remark,jdbcType=VARCHAR},
       CartId = #{cartid,jdbcType=BIGINT},
-      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      NeedVerifer = #{needverifer,jdbcType=INTEGER},
+      Discription = #{discription,jdbcType=VARCHAR},
+      ApplyCount = #{applycount,jdbcType=INTEGER}
     where TempId = #{tempid,jdbcType=INTEGER}
   </update>
 </mapper>

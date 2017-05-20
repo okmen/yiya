@@ -3,6 +3,7 @@ package com.bbyiya.model;
 import java.util.Date;
 
 public class PMyproductchildinfo {
+	
     private Long cartid;
 
     private Long userid;
@@ -14,8 +15,18 @@ public class PMyproductchildinfo {
     private String relation;
 
     private Date createtime;
+    
+    private Integer isdue;
+    
+    public Integer getIsdue() {
+		return isdue;
+	}
 
-    public Long getCartid() {
+	public void setIsdue(Integer isdue) {
+		this.isdue = isdue;
+	}
+
+	public Long getCartid() {
         return cartid;
     }
 

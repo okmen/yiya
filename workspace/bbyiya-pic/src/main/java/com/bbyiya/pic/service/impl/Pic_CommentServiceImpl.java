@@ -17,6 +17,7 @@ import com.bbyiya.model.PCommentstips;
 import com.bbyiya.model.PMyproductcomments;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.service.IPic_CommentService;
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.github.pagehelper.PageHelper;
@@ -54,7 +55,11 @@ public class Pic_CommentServiceImpl implements IPic_CommentService{
 		}
 		UUsers user=usersMapper.selectByPrimaryKey(userId);
 		if(user!=null){
-			param.setHeadimg(user.getUserimg());
+			if(!(ObjectUtil.isEmpty(user.getUserimg())||"null".equals(user.getUserimg()))){
+				param.setHeadimg(user.getUserimg());
+			}else {
+				param.setHeadimg(ConfigUtil.getSingleValue("default-headimg"));
+			}
 			param.setNickname(user.getNickname());
 		}else {
 			rqModel.setStatu(ReturnStatus.SystemError);
@@ -73,10 +78,26 @@ public class Pic_CommentServiceImpl implements IPic_CommentService{
 		ReturnModel rq=new ReturnModel();
 		PageHelper.startPage(index, size);
 		List<PMyproductcomments> list=myproductcommentsMapper.findCommentlist(cartId);
+//		if(list==null||list.size()<=0){
+//			list.add(defaulModel());
+//		}
 		PageInfo<PMyproductcomments> pageInfo=new PageInfo<PMyproductcomments>(list);
+		if(pageInfo.getList()==null||pageInfo.getSize()<=0){
+			pageInfo.getList().add(defaulModel());
+			pageInfo.setTotal(1);
+		}
 		rq.setStatu(ReturnStatus.Success);
 		rq.setBasemodle(pageInfo);
 		return rq;
+	}
+	
+	private PMyproductcomments defaulModel(){
+		PMyproductcomments cmo=new PMyproductcomments();
+		cmo.setCreatetime(new Date());
+		cmo.setNickname("ßÞÑ½Ê®¶þ");
+		cmo.setHeadimg("http://pic.bbyiya.com/Fv1TDhI0CVm-XDOk71o2LbrKcQwa"); 
+		cmo.setContent(ConfigUtil.getSingleValue("default-comments"));  
+		return cmo;
 	}
 	
 	/**
@@ -91,6 +112,10 @@ public class Pic_CommentServiceImpl implements IPic_CommentService{
 		PageHelper.startPage(index, size);
 		List<PMyproductcomments> list=myproductcommentsMapper.findCommentHeadImglist(cartId);
 		PageInfo<PMyproductcomments> pageInfo=new PageInfo<PMyproductcomments>(list);
+		if(pageInfo==null||list.size()<=0){
+			pageInfo.getList().add(defaulModel());
+			pageInfo.setTotal(1);
+		}
 		rq.setStatu(ReturnStatus.Success);
 		rq.setBasemodle(pageInfo);
 		return rq;

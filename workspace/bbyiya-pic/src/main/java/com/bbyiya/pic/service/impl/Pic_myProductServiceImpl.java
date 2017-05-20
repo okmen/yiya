@@ -34,6 +34,7 @@ import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.dao.IMyProductsDao;
 import com.bbyiya.pic.service.IPic_myProductService;
 import com.bbyiya.pic.vo.product.MyProductListVo;
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.SendSMSByMobile;
@@ -498,15 +499,21 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				List<PMyproductdetails> detailslist = myDetaiMapper.findMyProductdetails(vo.getCartid());
 				int i = 0;
 				if (detailslist != null && detailslist.size() > 0) {
+					String headimg=detailslist.get(0).getImgurl();
+					if(!ObjectUtil.isEmpty(headimg)&&(headimg.contains("http://")||headimg.contains("https://"))){
+						vo.setDefaultImg(headimg);
+					}else {
+						vo.setDefaultImg("http://pic.bbyiya.com/"+headimg);
+					}
 					for (PMyproductdetails dd : detailslist) {
 						if (!ObjectUtil.isEmpty(dd.getImgurl())) {
-							if(dd.getSort()!=null&&dd.getSort().intValue()==0){
-								if(!ObjectUtil.isEmpty(dd.getImgurl())&&(dd.getImgurl().contains("http://")||dd.getImgurl().contains("https://"))){
-									vo.setDefaultImg(dd.getImgurl());
-								}else {
-									vo.setDefaultImg("http://pic.bbyiya.com/"+dd.getImgurl());//+"?imageView2/2/w/200");
-								}
-							}
+//							if(dd.getSort()!=null&&dd.getSort().intValue()==0){
+//								if(!ObjectUtil.isEmpty(dd.getImgurl())&&(dd.getImgurl().contains("http://")||dd.getImgurl().contains("https://"))){
+//									vo.setDefaultImg(dd.getImgurl());
+//								}else {
+//									vo.setDefaultImg("http://pic.bbyiya.com/"+dd.getImgurl());//+"?imageView2/2/w/200");
+//								}
+//							}
 							i++;
 						}
 					}
@@ -517,8 +524,8 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				vo.setCount(i);
 				 /*---------------------作品本人的头像个昵称--------------------------------*/
 				 if (ObjectUtil.isEmpty(myUsers.getUserimg())) {
-					vo.setMyHeadImg("http://pic.bbyiya.com/userdefaultimg-2017-0303-01.png");
-				 } else {
+					vo.setMyHeadImg(ConfigUtil.getSingleValue("default-headimg"));//"http://pic.bbyiya.com/userdefaultimg-2017-0303-01.png"
+				 } else { 
 					vo.setMyHeadImg(myUsers.getUserimg());
 				 }
 				 if (!ObjectUtil.isEmpty(myUsers.getNickname())&&!"null".equals(myUsers.getNickname())) {

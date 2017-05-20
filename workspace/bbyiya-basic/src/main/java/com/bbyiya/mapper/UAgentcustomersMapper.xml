@@ -11,9 +11,13 @@
     <result column="Status" property="status" jdbcType="INTEGER" />
     <result column="Remark" property="remark" jdbcType="VARCHAR" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+     <result column="IsMarket" property="ismarket" jdbcType="INTEGER" />
+    <result column="SourceType" property="sourcetype" jdbcType="INTEGER" />
+    <result column="StaffUserId" property="staffuserid" jdbcType="BIGINT" />
   </resultMap>
   <sql id="Base_Column_List" >
-    CustomerId, UserId, BranchUserId, AgentUserId, Phone, Name, Status, Remark, CreateTime
+    CustomerId, UserId, BranchUserId, AgentUserId, Phone, Name, Status, Remark, CreateTime, 
+    IsMarket, SourceType, StaffUserId
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -51,11 +55,13 @@
   <insert id="insert" parameterType="com.bbyiya.model.UAgentcustomers" >
     insert into u_agentcustomers (CustomerId, UserId, BranchUserId, 
       AgentUserId, Phone, Name, 
-      Status, Remark, CreateTime
+      Status, Remark, CreateTime, 
+      IsMarket, SourceType, StaffUserId
       )
     values (#{customerid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{branchuserid,jdbcType=BIGINT}, 
       #{agentuserid,jdbcType=BIGINT}, #{phone,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{status,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}
+      #{status,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{ismarket,jdbcType=INTEGER}, #{sourcetype,jdbcType=INTEGER}, #{staffuserid,jdbcType=BIGINT}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.UAgentcustomers" >
@@ -88,6 +94,15 @@
       <if test="createtime != null" >
         CreateTime,
       </if>
+      <if test="ismarket != null" >
+        IsMarket,
+      </if>
+      <if test="sourcetype != null" >
+        SourceType,
+      </if>
+      <if test="staffuserid != null" >
+        StaffUserId,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="customerid != null" >
@@ -116,6 +131,15 @@
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ismarket != null" >
+        #{ismarket,jdbcType=INTEGER},
+      </if>
+      <if test="sourcetype != null" >
+        #{sourcetype,jdbcType=INTEGER},
+      </if>
+      <if test="staffuserid != null" >
+        #{staffuserid,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -146,6 +170,15 @@
       <if test="createtime != null" >
         CreateTime = #{createtime,jdbcType=TIMESTAMP},
       </if>
+      <if test="ismarket != null" >
+        IsMarket = #{ismarket,jdbcType=INTEGER},
+      </if>
+      <if test="sourcetype != null" >
+        SourceType = #{sourcetype,jdbcType=INTEGER},
+      </if>
+      <if test="staffuserid != null" >
+        StaffUserId = #{staffuserid,jdbcType=BIGINT},
+      </if>
     </set>
     where CustomerId = #{customerid,jdbcType=BIGINT}
   </update>
@@ -158,7 +191,10 @@
       Name = #{name,jdbcType=VARCHAR},
       Status = #{status,jdbcType=INTEGER},
       Remark = #{remark,jdbcType=VARCHAR},
-      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      IsMarket = #{ismarket,jdbcType=INTEGER},
+      SourceType = #{sourcetype,jdbcType=INTEGER},
+      StaffUserId = #{staffuserid,jdbcType=BIGINT}
     where CustomerId = #{customerid,jdbcType=BIGINT}
   </update>
 </mapper>

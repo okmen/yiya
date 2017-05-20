@@ -21,7 +21,37 @@ public class UAgentcustomers {
 
     private Date createtime;
 
-    public Long getCustomerid() {
+    private Integer ismarket;
+
+    private Integer sourcetype;
+
+    private Long staffuserid;
+    
+    public Integer getIsmarket() {
+		return ismarket;
+	}
+
+	public void setIsmarket(Integer ismarket) {
+		this.ismarket = ismarket;
+	}
+
+	public Integer getSourcetype() {
+		return sourcetype;
+	}
+
+	public void setSourcetype(Integer sourcetype) {
+		this.sourcetype = sourcetype;
+	}
+
+	public Long getStaffuserid() {
+		return staffuserid;
+	}
+
+	public void setStaffuserid(Long staffuserid) {
+		this.staffuserid = staffuserid;
+	}
+
+	public Long getCustomerid() {
         return customerid;
     }
 

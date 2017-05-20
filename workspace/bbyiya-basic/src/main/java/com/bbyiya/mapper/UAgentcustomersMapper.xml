@@ -14,6 +14,7 @@
      <result column="IsMarket" property="ismarket" jdbcType="INTEGER" />
     <result column="SourceType" property="sourcetype" jdbcType="INTEGER" />
     <result column="StaffUserId" property="staffuserid" jdbcType="BIGINT" />
+    <result column="ExtId" property="extid" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     CustomerId, UserId, BranchUserId, AgentUserId, Phone, Name, Status, Remark, CreateTime, 
@@ -56,13 +57,13 @@
     insert into u_agentcustomers (CustomerId, UserId, BranchUserId, 
       AgentUserId, Phone, Name, 
       Status, Remark, CreateTime, 
-      IsMarket, SourceType, StaffUserId
-      )
+      IsMarket, SourceType, StaffUserId, 
+      ExtId)
     values (#{customerid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{branchuserid,jdbcType=BIGINT}, 
       #{agentuserid,jdbcType=BIGINT}, #{phone,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{status,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
-      #{ismarket,jdbcType=INTEGER}, #{sourcetype,jdbcType=INTEGER}, #{staffuserid,jdbcType=BIGINT}
-      )
+      #{ismarket,jdbcType=INTEGER}, #{sourcetype,jdbcType=INTEGER}, #{staffuserid,jdbcType=BIGINT}, 
+      #{extid,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.UAgentcustomers" >
     insert into u_agentcustomers
@@ -103,6 +104,9 @@
       <if test="staffuserid != null" >
         StaffUserId,
       </if>
+      <if test="extid != null" >
+        ExtId,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="customerid != null" >
@@ -140,6 +144,9 @@
       </if>
       <if test="staffuserid != null" >
         #{staffuserid,jdbcType=BIGINT},
+      </if>
+      <if test="extid != null" >
+        #{extid,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -179,6 +186,9 @@
       <if test="staffuserid != null" >
         StaffUserId = #{staffuserid,jdbcType=BIGINT},
       </if>
+      <if test="extid != null" >
+        ExtId = #{extid,jdbcType=INTEGER},
+      </if>
     </set>
     where CustomerId = #{customerid,jdbcType=BIGINT}
   </update>
@@ -194,7 +204,8 @@
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
       IsMarket = #{ismarket,jdbcType=INTEGER},
       SourceType = #{sourcetype,jdbcType=INTEGER},
-      StaffUserId = #{staffuserid,jdbcType=BIGINT}
+      StaffUserId = #{staffuserid,jdbcType=BIGINT},
+      ExtId = #{extid,jdbcType=INTEGER}
     where CustomerId = #{customerid,jdbcType=BIGINT}
   </update>
 </mapper>

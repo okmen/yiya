@@ -27,6 +27,8 @@ public class UAgentcustomers {
 
     private Long staffuserid;
     
+    private Integer extid;
+    
     public Integer getIsmarket() {
 		return ismarket;
 	}
@@ -122,4 +124,13 @@ public class UAgentcustomers {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+
+	public Integer getExtid() {
+		return extid;
+	}
+
+	public void setExtid(Integer extid) {
+		this.extid = extid;
+	}
+    
 }

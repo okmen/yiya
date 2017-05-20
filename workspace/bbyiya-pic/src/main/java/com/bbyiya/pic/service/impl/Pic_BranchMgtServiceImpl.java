@@ -111,7 +111,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		Double priceTemp=1000d;
 		if(province!=null){
 			areaMap.put("province", province);
-			areaMap.put("provinceName", regionService.getName(province));
+			areaMap.put("provinceName", regionService.getProvinceName(province));
 			if(priceTemp<=1001d){
 				UBranchareaprice mo1= branchAreaMapper.selectByPrimaryKey(province);
 				if(mo1!=null){
@@ -121,7 +121,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		}
 		if(city!=null&&city>0){
 			areaMap.put("city", city);
-			areaMap.put("cityName", regionService.getName(city));
+			areaMap.put("cityName", regionService.getCityName(city));
 			if(priceTemp<=1001d){
 				UBranchareaprice mo2= branchAreaMapper.selectByPrimaryKey(city);
 				if(mo2!=null){
@@ -132,7 +132,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		}
 		if(district!=null&&district>0){
 			areaMap.put("district", city);
-			areaMap.put("districtName", regionService.getName(district));
+			areaMap.put("districtName", regionService.getAresName(district));
 			if(priceTemp<=1001d){
 				UBranchareaprice mo3= branchAreaMapper.selectByPrimaryKey(district);
 				if(mo3!=null){
@@ -162,9 +162,9 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		for (UBranchVo branchvo : result.getList()) {
 			Integer count=usersMapper.getUserCountByUpUserid(param.getUserId());
 			branchvo.setUserCount(count==null?0:count);
-			branchvo.setProviceName(regionService.getName(branchvo.getProvince())) ;
-			branchvo.setCityName(regionService.getName(branchvo.getCity())) ;
-			branchvo.setAreaName(regionService.getName(branchvo.getArea())) ;
+			branchvo.setProviceName(regionService.getProvinceName(branchvo.getProvince())) ;
+			branchvo.setCityName(regionService.getCityName(branchvo.getCity())) ;
+			branchvo.setAreaName(regionService.getAresName(branchvo.getArea())) ;
 			branchvo.setAgentArealist(getAgentArealist(branchvo.getArea()));  
 		}
 		
@@ -576,9 +576,9 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		if(agentapply!=null){
 			map.put("isApplyed", 1);
 			map.put("status", agentapply.getStatus());
-			agentapply.setProviceName(regionService.getName(agentapply.getProvince())) ;
-			agentapply.setCityName(regionService.getName(agentapply.getCity())) ;
-			agentapply.setAreaName(regionService.getName(agentapply.getArea())) ;
+			agentapply.setProviceName(regionService.getProvinceName(agentapply.getProvince())) ;
+			agentapply.setCityName(regionService.getCityName(agentapply.getCity())) ;
+			agentapply.setAreaName(regionService.getAresName(agentapply.getArea())) ;
 			agentapply.setAgentArealist(getAgentArealist(agentapply.getArea())); 
 			map.put("applyInfo", agentapply);
 			if(agentapply.getStatus()!=null){
@@ -609,9 +609,9 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			map.put("isApplyed", 1);
 			map.put("status", branch.getStatus());
 		
-			branch.setProviceName(regionService.getName(branch.getProvince())) ;
-			branch.setCityName(regionService.getName(branch.getCity())) ;
-			branch.setAreaName(regionService.getName(branch.getArea())) ;
+			branch.setProviceName(regionService.getProvinceName(branch.getProvince())) ;
+			branch.setCityName(regionService.getCityName(branch.getCity())) ;
+			branch.setAreaName(regionService.getAresName(branch.getArea())) ;
 			branch.setAgentArealist(getAgentArealist(branch.getArea()));  
 			
 			map.put("applyInfo", branch);
@@ -766,9 +766,9 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 	public UBranchVo getBranchInfo(Long branchUserId){	
 		UBranchVo branch=agentDao.getUBranchVoByBranchUserId(branchUserId);
 		if(branch!=null){
-			branch.setProviceName(regionService.getName(branch.getProvince())) ;
-			branch.setCityName(regionService.getName(branch.getCity())) ;
-			branch.setAreaName(regionService.getName(branch.getArea())) ;	
+			branch.setProviceName(regionService.getProvinceName(branch.getProvince())) ;
+			branch.setCityName(regionService.getCityName(branch.getCity())) ;
+			branch.setAreaName(regionService.getAresName(branch.getArea())) ;	
 			branch.setAgentArealist(getAgentArealistByAgentUserID(branch.getAgentuserid())); 
 		}		
 		return branch;		

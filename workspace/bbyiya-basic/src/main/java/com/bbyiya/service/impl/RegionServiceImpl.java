@@ -39,7 +39,30 @@ public class RegionServiceImpl implements IRegionService {
 		}
 		return "";
 	}
+	
+	public String getProvinceName(Integer conde){
+		RProvince province= regionMapper.getProvinceByCode(conde);
+		if(province!=null){
+			return province.getProvince();
+		}
+		return "";
+	}
 
+	public String getCityName(Integer conde){
+		RCity city= regionMapper.getCityByCode(conde);
+		if(city!=null){
+			return city.getCity();
+		}
+		return "";
+	}
+	public String getAresName(Integer conde){
+		RAreas area= regionMapper.getAreaByCode(conde);
+		if(area!=null){
+			return area.getArea();
+		}
+		return "";
+	}
+	
 	/**
 	 * All regionlist Gets a list of all regions (provinces, cities and
 	 * districts the same level) 获取所有的 区域列表（省、市、区 同级）

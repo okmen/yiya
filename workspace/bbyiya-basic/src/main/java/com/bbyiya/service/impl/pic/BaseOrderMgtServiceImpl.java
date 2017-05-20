@@ -660,17 +660,17 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 						 if("1".equals(map.get("type"))){
 							 String aress=map.get("codes");
 							 if(aress.contains(addr.getProvince().toString())){
-								 rq.setStatusreson(regionService.getName(addr.getProvince())+"暂时不支持配送！"); 
+								 rq.setStatusreson(regionService.getProvinceName(addr.getProvince())+"暂时不支持配送！"); 
 								 return rq;
 							 }
 						 }else if ("2".equals(map.get("type"))) {
 							 if(map.get("codes").contains(addr.getCity().toString())){
-								 rq.setStatusreson(regionService.getName(addr.getCity())+"暂时不支持配送！"); 
+								 rq.setStatusreson(regionService.getCityName(addr.getCity())+"暂时不支持配送！"); 
 								 return rq;
 							 }
 						 }else if ("3".equals(map.get("type"))) {
 							 if(map.get("codes").contains(addr.getArea().toString())){
-								 rq.setStatusreson(regionService.getName(addr.getArea())+"暂时不支持配送！"); 
+								 rq.setStatusreson(regionService.getAresName(addr.getArea())+"暂时不支持配送！"); 
 								 return rq;
 							 }
 						 }
@@ -1176,9 +1176,9 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				orderAddress.setUserid(addr.getUserid());
 				orderAddress.setPhone(addr.getPhone());
 				orderAddress.setReciver(addr.getReciver());
-				orderAddress.setCity(regionService.getName(addr.getCity()));
-				orderAddress.setProvince(regionService.getName(addr.getProvince()));
-				orderAddress.setDistrict(regionService.getName(addr.getArea()));
+				orderAddress.setCity(regionService.getCityName(addr.getCity()));
+				orderAddress.setProvince(regionService.getProvinceName(addr.getProvince()));
+				orderAddress.setDistrict(regionService.getAresName(addr.getArea()));
 				orderAddress.setStreetdetail(addr.getStreetdetail());
 				orderAddress.setCreatetime(new Date());
 				orderaddressMapper.insertReturnId(orderAddress);
@@ -1206,9 +1206,9 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 						orderAddress.setUserid(branches.getBranchuserid());
 						orderAddress.setPhone(branches.getPhone());
 						orderAddress.setReciver(branches.getUsername());
-						orderAddress.setCity(regionService.getName(branches.getCity()));
-						orderAddress.setProvince(regionService.getName(branches.getProvince()));
-						orderAddress.setDistrict(regionService.getName(branches.getArea()));
+						orderAddress.setCity(regionService.getCityName(branches.getCity()));
+						orderAddress.setProvince(regionService.getProvinceName(branches.getProvince()));
+						orderAddress.setDistrict(regionService.getAresName(branches.getArea()));
 						orderAddress.setStreetdetail(branches.getStreetdetail());
 						orderAddress.setCreatetime(new Date());
 						orderaddressMapper.insertReturnId(orderAddress);

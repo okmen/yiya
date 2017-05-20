@@ -90,9 +90,9 @@ public class BaseUserAddressServiceImpl implements IBaseUserAddressService {
 					if (!ObjectUtil.isEmpty(address.getStreetdetail())) {
 						temp.setStreetdetail(address.getStreetdetail());
 					}
-					temp.setProvinceName(regionService.getName(temp.getProvince()));
-					temp.setCityName(regionService.getName(temp.getCity()));
-					temp.setAreaName(regionService.getName(temp.getArea()));
+					temp.setProvinceName(regionService.getProvinceName(temp.getProvince()));
+					temp.setCityName(regionService.getCityName(temp.getCity()));
+					temp.setAreaName(regionService.getAresName(temp.getArea()));
 					rq.setBasemodle(temp);
 					rq.setStatu(ReturnStatus.Success);
 					return rq;
@@ -184,9 +184,9 @@ public class BaseUserAddressServiceImpl implements IBaseUserAddressService {
 			userAddressResult = addressMapper.get_UUserAddressResultByKeyId(addressId);
 		}
 		if (userAddressResult != null && userId.longValue() == userAddressResult.getUserid().longValue()) {
-			userAddressResult.setProvinceName(regionService.getName(userAddressResult.getProvince()));
-			userAddressResult.setCityName(regionService.getName(userAddressResult.getCity()));
-			userAddressResult.setAreaName(regionService.getName(userAddressResult.getArea()));
+			userAddressResult.setProvinceName(regionService.getProvinceName(userAddressResult.getProvince()));
+			userAddressResult.setCityName(regionService.getCityName(userAddressResult.getCity()));
+			userAddressResult.setAreaName(regionService.getAresName(userAddressResult.getArea()));
 			return userAddressResult;
 		}else {
 			return null;
@@ -216,9 +216,9 @@ public class BaseUserAddressServiceImpl implements IBaseUserAddressService {
 				orderAddress.setUserid(branches.getBranchuserid());
 				orderAddress.setPhone(branches.getPhone());
 				orderAddress.setReciver(branches.getUsername());
-				orderAddress.setCityName(regionService.getName(branches.getCity()));
-				orderAddress.setProvinceName(regionService.getName(branches.getProvince()));
-				orderAddress.setAreaName(regionService.getName(branches.getArea()));
+				orderAddress.setCityName(regionService.getCityName(branches.getCity()));
+				orderAddress.setProvinceName(regionService.getProvinceName(branches.getProvince()));
+				orderAddress.setAreaName(regionService.getAresName(branches.getArea()));
 				orderAddress.setStreetdetail(branches.getStreetdetail());
 				return orderAddress;
 			}

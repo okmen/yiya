@@ -8,6 +8,12 @@ public interface IRegionService {
 	 * @param code
 	 * @return
 	 */
-	String getName(Integer code);
+//	String getName(Integer code);
+	
+	String getProvinceName(Integer conde);
+	
+	String getCityName(Integer conde);
+	
+	String getAresName(Integer conde);
 	
 }

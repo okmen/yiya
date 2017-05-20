@@ -107,5 +107,15 @@ public interface IPic_ProductService {
 	 * @return
 	 */
 	ReturnModel deleMyProduct(Long userId, Long cartId);
+	/**
+	 * 得到模板下的作品列表
+	 * @param branchUserId
+	 * @param tempid
+	 * @param index
+	 * @param size
+	 * @return
+	 */
+	ReturnModel findMyProductslistForTempId(Long branchUserId, Integer tempid,
+			int index, int size);
 	
 }

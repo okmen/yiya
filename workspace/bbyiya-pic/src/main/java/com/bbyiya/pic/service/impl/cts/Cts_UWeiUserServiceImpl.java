@@ -87,9 +87,14 @@ public class Cts_UWeiUserServiceImpl implements ICts_UWeiUserManageService{
 	/**
 	 * 流量主申请
 	 */
-	public ReturnModel applyWeiUser(Long userId,UWeiuserapplys applyInfo){
+	public ReturnModel applyWeiUser(UWeiuserapplys applyInfo){
 		ReturnModel rq=new ReturnModel();
-		UWeiuserapplys apply= weiuserApplyMapper.selectByPrimaryKey(userId); 
+		if(applyInfo==null){
+			rq.setStatusreson("参数有误");
+			return rq;
+		}
+		
+		UWeiuserapplys apply= weiuserApplyMapper.selectByPrimaryKey(applyInfo.getUserid()); 
 		if(apply!=null){
 			if(apply.getStatus()!=null&&apply.getStatus().intValue()==Integer.parseInt(weiUserStatusEnum.ok.toString())){
 				rq.setStatu(ReturnStatus.SystemError);
@@ -99,10 +104,7 @@ public class Cts_UWeiUserServiceImpl implements ICts_UWeiUserManageService{
 			applyInfo.setUserid(apply.getUserid());
 		}
 		rq.setStatu(ReturnStatus.SystemError);
-		if(applyInfo==null){
-			rq.setStatusreson("参数有误");
-			return rq;
-		}
+		
 		if(ObjectUtil.isEmpty(applyInfo.getName())){
 			rq.setStatusreson("名称不能为空");
 			return rq;
@@ -112,7 +114,7 @@ public class Cts_UWeiUserServiceImpl implements ICts_UWeiUserManageService{
 			rq.setStatusreson("存在非法字符");
 			return rq;
 		}
-		applyInfo.setUserid(userId);
+		applyInfo.setUserid(applyInfo.getUserid());
 		applyInfo.setCreatetime(new Date());
 		applyInfo.setStatus(Integer.parseInt(weiUserStatusEnum.applying.toString()));
 		

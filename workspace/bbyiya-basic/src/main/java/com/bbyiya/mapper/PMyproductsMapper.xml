@@ -55,9 +55,10 @@
     </if>
     order by  CartId desc 
   </select>
-  <select id="findMyProductslistForBranch" resultMap="MyProductResultVO" ><!-- 04 find 获取影楼分销人员的作品  -->
+  <!-- 04 find 获取影楼分销人员的作品（客户一对一）  -->
+  <select id="findMyProductslistForBranch" resultMap="MyProductResultVO" >
     select a.* from p_myproducts a,p_myproductsinvites b 
-where a.CartId=b.CartId and a.Status!=3 and a.Status!=4 and a.IsTemp!=1 and b.Status!=2 and  a.UserId in
+where a.CartId=b.CartId and a.Status!=3 and a.Status!=4 and a.IsTemp=0 and (a.TempId is null or a.TempId='') and b.Status!=2  and  a.UserId in
     <foreach collection="list" item="uid" index="index"
             open="(" close=")" separator=",">
             #{uid}
@@ -70,11 +71,27 @@ where a.CartId=b.CartId and a.Status!=3 and a.Status!=4 and a.IsTemp!=1 and b.St
     </if>
     order by b.CreateTime desc 
   </select>
+   <!-- 05 find 获取异业合作模板邀请的作品  -->
+  <!-- status 1制作中、 2已下单 、3已删除、 4已禁用 -->
+  <select id="findMyProductslistForTempId" resultMap="MyProductResultVO" >
+    select <include refid="Base_Column_List" /> from p_myproducts 
+		where Status!=3 and Status!=4 and IsTemp=0 and TempId=#{tempid,jdbcType=INTEGER} and  UserId in
+    <foreach collection="list" item="uid" index="index"
+            open="(" close=")" separator=",">
+            #{uid}
+    </foreach>
+    order by CreateTime desc 
+  </select>
+  
+  
    <select id="getMyProductsByProductId" resultMap="BaseResultMap" ><!-- 05 get 通过 UserId ，ProductId, Status 获取作品 -->
     select <include refid="Base_Column_List" />
     from p_myproducts
     where UserId = #{userId,jdbcType=BIGINT} and ProductId=#{productId,jdbcType=BIGINT} and Status=#{status,jdbcType=INTEGER} order by  CartId desc 
   </select>
+  
+ 
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from p_myproducts
     where CartId = #{cartid,jdbcType=BIGINT}

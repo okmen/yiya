@@ -23,7 +23,13 @@ public class MyProductsController extends SSOController {
 	
 	
 	
-	
+	/**
+	 * IBS客户一对一作品列表
+	 * @param index
+	 * @param size
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/findMyProductsForBranch")
 	public String findMyProductsForBranch(@RequestParam(required = false, defaultValue = "1")int index,@RequestParam(required = false, defaultValue = "20")int size) throws Exception {
@@ -31,6 +37,27 @@ public class MyProductsController extends SSOController {
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			rq=proService.findMyProductsForBranch(user.getUserId(),null,null,index,size);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	/**
+	 * 得到模板下的作品列表
+	 * @param index
+	 * @param size
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/findMyProductslistForTempId")
+	public String findMyProductslistForTempId(Integer tempid,@RequestParam(required = false, defaultValue = "1")int index,@RequestParam(required = false, defaultValue = "20")int size) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=proService.findMyProductslistForTempId(user.getUserId(), tempid, index, size);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

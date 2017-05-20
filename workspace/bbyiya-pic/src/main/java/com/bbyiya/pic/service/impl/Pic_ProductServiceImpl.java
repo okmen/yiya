@@ -664,6 +664,42 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		rq.setBasemodle(resultPage);
 		return rq;
 	}
+	/**
+	 * 根据模板ID得到作品列表
+	 * @param branchUserId
+	 * @param tempid
+	 * @param index
+	 * @param size
+	 * @return
+	 */
+	public ReturnModel findMyProductslistForTempId(Long branchUserId, Integer tempid,int index, int size) {
+		ReturnModel rq = new ReturnModel();
+		List<Long> idsList = new ArrayList<Long>();
+		idsList.add(branchUserId);
+		// 获取影楼的工作人员列表
+		List<UBranchusers> userList = branchusersMapper.findMemberslistByBranchUserId(branchUserId);
+		if (userList != null && userList.size() > 0) {
+			for (UBranchusers uu : userList) {
+				idsList.add(uu.getUserid());
+			}
+		}
+		PageHelper.startPage(index, size);
+		List<MyProductResultVo> mylist = myMapper.findMyProductslistForTempId(idsList,tempid);
+		PageInfo<MyProductResultVo> resultPage = new PageInfo<MyProductResultVo>(mylist);
+		if (resultPage.getList() != null && resultPage.getList().size() > 0) {
+			for (MyProductResultVo vv : resultPage.getList()) {
+				for (UBranchusers uu : userList) {
+					if (uu.getUserid().longValue() == vv.getUserid().longValue()) {
+						vv.setUserName(uu.getName());
+					}
+				}
+			}
+			resultPage.setList(getMyProductResultVo(resultPage.getList()));
+		}
+		rq.setStatu(ReturnStatus.Success);
+		rq.setBasemodle(resultPage);
+		return rq;
+	}
 
 	public List<MyProductResultVo> findInvites(String mobiePhone) {
 		List<PMyproductsinvites> inviteList = inviteMapper.findListByPhone(mobiePhone);

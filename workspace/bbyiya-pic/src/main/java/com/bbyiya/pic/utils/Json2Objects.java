@@ -318,6 +318,11 @@ public class Json2Objects {
 			if(!ObjectUtil.isEmpty(remark)&&!"null".equals(remark)){
 				param.setRemark(remark);
 			}
+			long userId=ObjectUtil.parseLong(String.valueOf(model.get("userId")));
+			if(userId>0){
+				param.setUserid(userId);
+			}
+			
 			return param;
 		}
 		return null;

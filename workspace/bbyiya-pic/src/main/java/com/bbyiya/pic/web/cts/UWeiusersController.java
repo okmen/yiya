@@ -61,7 +61,11 @@ public class UWeiusersController extends SSOController {
 					if(applyInfo!=null){
 						applyInfo.setMobilephone(user.getMobilePhone());
 					}
-					rq =weiUserService.applyWeiUser(user.getUserId(), applyInfo);
+					//如果没传userId说明是前端主动报名的，传了userId说明是cts直接添加的
+					if(applyInfo!=null&&applyInfo.getUserid()==null){
+						applyInfo.setUserid(user.getUserId());
+					}
+					rq =weiUserService.applyWeiUser(applyInfo);
 				} catch (Exception e) {
 					rq.setStatu(ReturnStatus.ParamError);
 					rq.setStatusreson("参数有误101");

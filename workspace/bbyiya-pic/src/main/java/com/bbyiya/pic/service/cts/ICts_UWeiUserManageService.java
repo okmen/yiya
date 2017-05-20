@@ -31,7 +31,7 @@ public interface ICts_UWeiUserManageService {
 	 * @param applyInfo
 	 * @return
 	 */
-	ReturnModel applyWeiUser(Long userId, UWeiuserapplys applyInfo);
+	ReturnModel applyWeiUser(UWeiuserapplys applyInfo);
 	/**
 	 * Á÷Á¿Ö÷ÉóºË
 	 * @param adminId

@@ -17,12 +17,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
+import com.bbyiya.dao.PMyproducttempapplyMapper;
 import com.bbyiya.enums.MyProductTempStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
+import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
-import com.bbyiya.model.UUserresponses;
+import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.pic.service.ibs.IIbs_MyProductTempService;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
@@ -40,10 +42,13 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	private PMyproducttempMapper myproducttempMapper;
 	@Autowired
 	private PMyproductsMapper myMapper;
+	@Autowired
+	private PMyproducttempapplyMapper myproducttempapplyMapper;
+
 	/**
 	 * 添加模板
 	 * */
-	public ReturnModel addMyProductTemp(Long userid,String title,String remark,Long productid){
+	public ReturnModel addMyProductTemp(Long userid,String title,String remark,Long productid,int needVerifer,String discription){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);	
 		
@@ -64,6 +69,8 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		temp.setStatus(Integer.parseInt(MyProductTempStatusEnum.enable.toString()));
 		temp.setTitle(title);
 		temp.setCartid(myproduct.getCartid());	
+		temp.setNeedverifer(needVerifer);
+		temp.setDiscription(discription);
 		myproducttempMapper.insertReturnId(temp);
 		
 		myproduct.setTempid(temp.getTempid());
@@ -80,13 +87,15 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	/**
 	 * 修改模板
 	 * */
-	public ReturnModel editMyProductTemp(String title,String remark,Integer tempid){
+	public ReturnModel editMyProductTemp(String title,String remark,Integer tempid,int needVerifer,String discription){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);	
 		PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempid);
 		if(temp!=null){
 			temp.setTitle(title);
 			temp.setRemark(remark);
+			temp.setNeedverifer(needVerifer);
+			temp.setDiscription(discription);
 			myproducttempMapper.updateByPrimaryKey(temp);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("修改模板成功！");
@@ -166,7 +175,6 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		PageInfo<PMyproducttemp> reuslt=new PageInfo<PMyproducttemp>(templist); 
 		if(reuslt!=null&&reuslt.getList()!=null&&reuslt.getList().size()>0){
 			for (PMyproducttemp temp : templist) {	
-				//String versionString=DateUtil.getTimeStr(new Date(), "yyyyMMddHHMMss"); 
 				String redirct_url="currentPage?workId="+temp.getCartid()+"&uid="+userid;			
 				String urlstr="";
 				String url="";
@@ -178,7 +186,39 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 					e1.printStackTrace();
 				}
 				temp.setCodeurl(url);
-				
+				temp.setCreatetimestr(DateUtil.getTimeStr(temp.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
+				//得到待审核数量
+				Integer checkCount=myproducttempapplyMapper.getNeedCheckApllyCountByTemp(temp.getTempid(),Integer.parseInt(MyProducttempApplyStatusEnum.apply.toString()));
+				temp.setNeedCheckCount(checkCount==null?0:checkCount);
+			}
+		}
+		
+		rq.setBasemodle(reuslt);
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("获取列表成功！");
+		return rq;
+	}
+	
+	
+	/**
+	 * 获取影楼模板待审核用户列表
+	 * @return
+	 */
+	public ReturnModel getMyProductTempApplyCheckList(int index,int size,Long userid,int tempid){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.SystemError);		
+		PageHelper.startPage(index, size);	
+		List<PMyproducttempapply>  applylist=myproducttempapplyMapper.findMyProducttempApplyList(tempid, Integer.parseInt(MyProducttempApplyStatusEnum.apply.toString()));
+		PageInfo<PMyproducttempapply> reuslt=new PageInfo<PMyproducttempapply>(applylist); 
+		if(reuslt!=null&&reuslt.getList()!=null&&reuslt.getList().size()>0){
+			for (PMyproducttempapply apply : applylist) {
+				apply.setCreatetimestr(DateUtil.getTimeStr(apply.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
+				if(!ObjectUtil.isEmpty(apply.getVerfiytime())){
+					apply.setVerfiytimestr(DateUtil.getTimeStr(apply.getVerfiytime(), "yyyy-MM-dd HH:mm:ss"));
+				}
+				if(!ObjectUtil.isEmpty(apply.getBirthday())){
+					apply.setBirthdaystr(DateUtil.getTimeStr(apply.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
+				}
 			}
 		}
 		

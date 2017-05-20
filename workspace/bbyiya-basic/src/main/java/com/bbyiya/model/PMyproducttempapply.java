@@ -29,6 +29,13 @@ public class PMyproducttempapply {
 
     private Date createtime;
 
+    private Date verfiytime;
+    
+    private Date birthday;
+    
+    private String createtimestr;
+    private String verfiytimestr;
+    private String birthdaystr;
     public Long getTempapplyid() {
         return tempapplyid;
     }
@@ -132,4 +139,46 @@ public class PMyproducttempapply {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+
+    public Date getVerfiytime() {
+        return verfiytime;
+    }
+
+    public void setVerfiytime(Date verfiytime) {
+        this.verfiytime = verfiytime;
+    }
+
+	public String getCreatetimestr() {
+		return createtimestr;
+	}
+
+	public void setCreatetimestr(String createtimestr) {
+		this.createtimestr = createtimestr;
+	}
+
+	public String getVerfiytimestr() {
+		return verfiytimestr;
+	}
+
+	public void setVerfiytimestr(String verfiytimestr) {
+		this.verfiytimestr = verfiytimestr;
+	}
+
+	public Date getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+
+	public String getBirthdaystr() {
+		return birthdaystr;
+	}
+
+	public void setBirthdaystr(String birthdaystr) {
+		this.birthdaystr = birthdaystr;
+	}
+    
+    
 }

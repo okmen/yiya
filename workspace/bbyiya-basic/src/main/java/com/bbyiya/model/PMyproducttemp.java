@@ -10,7 +10,9 @@ public class PMyproducttemp {
     private String title;
 
     private Integer status;
-
+    /**
+     * 已通过用户数
+     */
     private Integer count;
 
     private String remark;
@@ -20,15 +22,20 @@ public class PMyproducttemp {
     private Date createtime;
     
     private Integer needverifer;
-
+    /**
+     * 已报名数
+     */
     private Integer applycount;
 
     private String discription;
     
     //二维码地址
   	private String codeurl;
-  	
-  	
+  	/**
+  	 * 待审核数量
+  	 */
+  	private Integer needCheckCount; 
+  	private String createtimestr;
 
     public Integer getNeedverifer() {
 		return needverifer;
@@ -124,6 +131,22 @@ public class PMyproducttemp {
 
 	public void setCodeurl(String codeurl) {
 		this.codeurl = codeurl;
+	}
+
+	public Integer getNeedCheckCount() {
+		return needCheckCount;
+	}
+
+	public void setNeedCheckCount(Integer needCheckCount) {
+		this.needCheckCount = needCheckCount;
+	}
+
+	public String getCreatetimestr() {
+		return createtimestr;
+	}
+
+	public void setCreatetimestr(String createtimestr) {
+		this.createtimestr = createtimestr;
 	}
     
     

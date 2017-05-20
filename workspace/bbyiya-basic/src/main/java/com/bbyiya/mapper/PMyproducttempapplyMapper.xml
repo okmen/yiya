@@ -15,11 +15,25 @@
     <result column="CompanyUserId" property="companyuserid" jdbcType="BIGINT" />
     <result column="Status" property="status" jdbcType="INTEGER" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="VerfiyTime" property="verfiytime" jdbcType="TIMESTAMP" />
+    <result column="Birthday" property="birthday" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     TempApplyId, TempId, UserId, Mobilephone, Province, City, Area, Street, Adress, IsDue, 
-    CompanyUserId, Status, CreateTime
+    CompanyUserId, Status, CreateTime, VerfiyTime, Birthday
   </sql>
+  
+  <!-- 得到模板待审核的报名人数 -->
+  <select id="getNeedCheckApllyCountByTemp" resultType="java.lang.Integer"  parameterType="java.lang.Integer" >
+    select count(TempApplyId) from p_myproducttempapply where TempId = #{tempid,jdbcType=BIGINT} and Status=#{status,jdbcType=BIGINT}
+  </select>
+   <!--根据模板ID及状态得到待审核用户列表 -->
+  <select id="findMyProducttempApplyList" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select  <include refid="Base_Column_List" />
+    from p_myproducttempapply where TempId = #{tempid,jdbcType=BIGINT} and Status=#{status,jdbcType=BIGINT}
+  </select>
+  
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -35,12 +49,14 @@
       Mobilephone, Province, City, 
       Area, Street, Adress, 
       IsDue, CompanyUserId, Status, 
-      CreateTime)
+      CreateTime, VerfiyTime, Birthday
+      )
     values (#{tempapplyid,jdbcType=BIGINT}, #{tempid,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, 
       #{mobilephone,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, 
       #{area,jdbcType=INTEGER}, #{street,jdbcType=VARCHAR}, #{adress,jdbcType=VARCHAR}, 
       #{isdue,jdbcType=INTEGER}, #{companyuserid,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, 
-      #{createtime,jdbcType=TIMESTAMP})
+      #{createtime,jdbcType=TIMESTAMP}, #{verfiytime,jdbcType=TIMESTAMP}, #{birthday,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproducttempapply" >
     insert into p_myproducttempapply
@@ -84,6 +100,12 @@
       <if test="createtime != null" >
         CreateTime,
       </if>
+      <if test="verfiytime != null" >
+        VerfiyTime,
+      </if>
+      <if test="birthday != null" >
+        Birthday,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="tempapplyid != null" >
@@ -124,6 +146,12 @@
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="verfiytime != null" >
+        #{verfiytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="birthday != null" >
+        #{birthday,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -166,6 +194,12 @@
       <if test="createtime != null" >
         CreateTime = #{createtime,jdbcType=TIMESTAMP},
       </if>
+      <if test="verfiytime != null" >
+        VerfiyTime = #{verfiytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="birthday != null" >
+        Birthday = #{birthday,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where TempApplyId = #{tempapplyid,jdbcType=BIGINT}
   </update>
@@ -182,7 +216,9 @@
       IsDue = #{isdue,jdbcType=INTEGER},
       CompanyUserId = #{companyuserid,jdbcType=BIGINT},
       Status = #{status,jdbcType=INTEGER},
-      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      VerfiyTime = #{verfiytime,jdbcType=TIMESTAMP},
+      Birthday = #{birthday,jdbcType=TIMESTAMP}
     where TempApplyId = #{tempapplyid,jdbcType=BIGINT}
   </update>
 </mapper>

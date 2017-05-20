@@ -38,7 +38,7 @@ public class MyProductTempController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/addMyProductTemp")
-	public String addMyProductTemp(String title,String remark,String productid) throws Exception {
+	public String addMyProductTemp(String title,String remark,String productid,String needverifer,String discription) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
@@ -52,7 +52,7 @@ public class MyProductTempController extends SSOController {
 				rq.setStatusreson("产品ID不能为空!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			rq=producttempService.addMyProductTemp(user.getUserId(), title, remark,ObjectUtil.parseLong(productid));
+			rq=producttempService.addMyProductTemp(user.getUserId(), title, remark,ObjectUtil.parseLong(productid),ObjectUtil.parseInt(needverifer),discription );
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
@@ -69,7 +69,7 @@ public class MyProductTempController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/editMyProductTemp")
-	public String editMyProductTemp(String title,String remark,Integer tempid) throws Exception {
+	public String editMyProductTemp(String title,String remark,Integer tempid,String needverifer,String discription) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
@@ -78,7 +78,7 @@ public class MyProductTempController extends SSOController {
 				rq.setStatusreson("模板名称不能为空!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			rq=producttempService.editMyProductTemp(title, remark, tempid);
+			rq=producttempService.editMyProductTemp(title, remark, tempid,ObjectUtil.parseInt(needverifer),discription );
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
@@ -142,6 +142,27 @@ public class MyProductTempController extends SSOController {
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			rq=producttempService.findMyProductTempList(index, size, user.getUserId());
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 获取影楼模板待审核用户
+	 * @param tempId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getMyProductTempApplyCheckList")
+	public String getMyProductTempApplyCheckList(int tempid,int index,int size) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=producttempService.getMyProductTempApplyCheckList(index, size, user.getUserId(), tempid);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

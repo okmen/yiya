@@ -10,7 +10,7 @@ public interface IIbs_MyProductTempService {
 	 * @param remark
 	 * @return
 	 */
-	ReturnModel addMyProductTemp(Long userid, String title, String remark,Long productid);
+	ReturnModel addMyProductTemp(Long userid, String title, String remark,Long productid,int needVerifer,String discription);
 	/**
 	 * 启用或禁用模板
 	 * @param type
@@ -48,7 +48,17 @@ public interface IIbs_MyProductTempService {
 	 * @return
 	 */
 	ReturnModel editMyProductTemp(String title, String remark,
-			Integer tempid);
+			Integer tempid,int needVerifer,String discription);
+	/**
+	 * 获取影楼模板待审核用户列表
+	 * @param index
+	 * @param size
+	 * @param userid
+	 * @param tempid
+	 * @return
+	 */
+	ReturnModel getMyProductTempApplyCheckList(int index, int size,
+			Long userid, int tempid);
 
 	
 }

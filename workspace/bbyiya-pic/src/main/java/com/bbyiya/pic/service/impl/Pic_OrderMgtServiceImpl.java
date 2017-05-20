@@ -20,6 +20,7 @@ import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.UBranchesMapper;
+import com.bbyiya.enums.CustomerSourceTypeEnum;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.BranchStatusEnum;
@@ -231,6 +232,8 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 							 customer.setPhone(address.getPhone());
 							 customer.setName(address.getReciver());
 							 customer.setRemark(address.getStreetdetail());
+							 customer.setIsmarket(0);
+							 customer.setSourcetype(Integer.parseInt(CustomerSourceTypeEnum.other.toString()));
 							 memberMgtService.addCustomer(branchUserId, customer);
 							 rq.setStatu(ReturnStatus.Success);
 							 rq.setStatusreson("顾客成功锁定！");

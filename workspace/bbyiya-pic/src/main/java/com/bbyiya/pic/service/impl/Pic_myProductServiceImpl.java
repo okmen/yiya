@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.common.enums.MsgStatusEnums;
 import com.bbyiya.common.enums.SendMsgEnums;
 import com.bbyiya.common.vo.ResultMsg;
@@ -19,17 +20,25 @@ import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproductsinvitesMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PScenesMapper;
+import com.bbyiya.dao.UAgentcustomersMapper;
+import com.bbyiya.dao.UBranchesMapper;
+import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UUsersMapper;
+import com.bbyiya.enums.CustomerSourceTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.InviteStatus;
 import com.bbyiya.enums.pic.InviteType;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
+import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.enums.user.UserStatusEnum;
 import com.bbyiya.model.PMyproductchildinfo;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproductsinvites;
 import com.bbyiya.model.PMyproducttemp;
+import com.bbyiya.model.UAgentcustomers;
+import com.bbyiya.model.UBranches;
+import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.dao.IMyProductsDao;
 import com.bbyiya.pic.service.IPic_myProductService;
@@ -59,6 +68,11 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 	private PMyproductchildinfoMapper childinfoMapper;
 	@Autowired
 	private PMyproducttempMapper tempMapper;
+	@Autowired
+	private UAgentcustomersMapper customerMapper;
+	
+	@Autowired
+	private UBranchusersMapper branchuserMapper;
 	/*------------------------产品模块-------------------------------------*/
 	@Autowired
 	private PScenesMapper sceneMapper;
@@ -228,7 +242,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 					newchildinfo.setNickname(childinfo.getNickname());
 					newchildinfo.setRelation(childinfo.getRelation());
 					newchildinfo.setUserid(newproducts.getUserid());
-					
+					newchildinfo.setIsdue(childinfo.getIsdue());				
 				}else{
 					newchildinfo.setBirthday(new Date());
 					newchildinfo.setCartid(newproducts.getCartid());
@@ -236,6 +250,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 					newchildinfo.setNickname("");
 					newchildinfo.setRelation("");
 					newchildinfo.setUserid(newproducts.getUserid());
+					newchildinfo.setIsdue(0);
 				}
 				childinfoMapper.insert(newchildinfo);
 				List<PMyproductdetails> details=myDetaiMapper.findMyProductdetails(myproducts.getCartid());
@@ -282,6 +297,42 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 					temp.setCount(count);
 					tempMapper.updateByPrimaryKeySelective(temp);
 				}
+				
+				//添加影楼已获取的客户信息
+				UBranchusers branchuser=branchuserMapper.selectByPrimaryKey(myproducts.getUserid());
+				if(branchuser!=null){
+					//添加成为影楼的已获取客户
+					UAgentcustomers cus= customerMapper.getCustomersByAgentUserId(branchuser.getAgentuserid(),userId);
+					if(cus==null){
+						cus=new UAgentcustomers();
+						cus.setAgentuserid(branchuser.getAgentuserid());
+						cus.setBranchuserid(branchuser.getBranchuserid());
+						cus.setUserid(userId);
+						cus.setStatus(1);
+						cus.setPhone(invoMo.getInvitephone());
+						UUsers user=usersMapper.selectByPrimaryKey(userId);
+						if(user!=null){
+							cus.setName(user.getNickname());
+						}
+						cus.setCreatetime(new Date());
+						cus.setIsmarket(1);
+						cus.setSourcetype(Integer.parseInt(CustomerSourceTypeEnum.temp.toString()));
+						cus.setExtid(myproducts.getTempid());
+						cus.setStaffuserid(myproducts.getUserid());
+						customerMapper.insert(cus);
+					}else{
+						if(ObjectUtil.isEmpty(cus.getIsmarket())||cus.getIsmarket().intValue()==0){
+							cus.setIsmarket(1);	
+							cus.setExtid(myproducts.getTempid());
+							cus.setSourcetype(Integer.parseInt(CustomerSourceTypeEnum.temp.toString()));
+							cus.setStaffuserid(myproducts.getUserid());
+							customerMapper.updateByPrimaryKey(cus);
+						}
+					}
+				}
+				
+				
+				
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("tempId", myproducts.getTempid());
 				map.put("mycartid", newproducts.getCartid());
@@ -303,6 +354,8 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 		PMyproducts myproducts= myproductsMapper.selectByPrimaryKey(cartId);
 		return myproducts;
 	}
+	
+	
 
 	/**
 	 * 处理扫码页面的接受邀请
@@ -402,6 +455,42 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				inviteMapper.insert(invoMo);
 				myproducts.setInvitestatus(Integer.parseInt(InviteStatus.agree.toString()));
 				myproductsMapper.updateByPrimaryKeySelective(myproducts); 
+				
+				
+				
+				//添加影楼已获取的客户信息
+				UBranchusers branchuser=branchuserMapper.selectByPrimaryKey(myproducts.getUserid());
+				if(branchuser!=null){
+					//添加成为影楼的已获取客户
+					UAgentcustomers cus= customerMapper.getCustomersByAgentUserId(branchuser.getAgentuserid(),userId);
+					if(cus==null){
+						cus=new UAgentcustomers();
+						cus.setAgentuserid(branchuser.getAgentuserid());
+						cus.setBranchuserid(branchuser.getBranchuserid());
+						cus.setUserid(userId);
+						cus.setStatus(1);
+						cus.setPhone(invoMo.getInvitephone());
+						UUsers user=usersMapper.selectByPrimaryKey(userId);
+						if(user!=null){
+							cus.setName(user.getNickname());
+						}
+						cus.setCreatetime(new Date());
+						cus.setIsmarket(1);
+						cus.setSourcetype(Integer.parseInt(CustomerSourceTypeEnum.oneinvite.toString()));
+						cus.setExtid(myproducts.getTempid());
+						cus.setStaffuserid(myproducts.getUserid());
+						customerMapper.insert(cus);
+					}else{
+						if(ObjectUtil.isEmpty(cus.getIsmarket())||cus.getIsmarket().intValue()==0){
+							cus.setIsmarket(1);	
+							cus.setExtid(myproducts.getTempid());
+							cus.setSourcetype(Integer.parseInt(CustomerSourceTypeEnum.oneinvite.toString()));
+							cus.setStaffuserid(myproducts.getUserid());
+							customerMapper.updateByPrimaryKey(cus);
+						}
+					}
+				}
+				
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("成功接受邀请");			
 			}else {

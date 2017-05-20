@@ -37,6 +37,7 @@ import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UCashlogsMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
+import com.bbyiya.enums.CustomerSourceTypeEnum;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.PayOrderTypeEnum;
@@ -269,6 +270,8 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 							cus.setPhone(users.getMobilephone());
 							cus.setName(users.getNickname());
 							cus.setCreatetime(new Date());
+							cus.setIsmarket(0);
+							cus.setSourcetype(Integer.parseInt(CustomerSourceTypeEnum.order.toString()));
 							customerMapper.insert(cus);
 						}
 					}

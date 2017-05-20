@@ -280,7 +280,14 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 				if(customerUsers!=null){
 					param.setUserid(customerUsers.getUserid()); 
 				}
-				customerMapper.insert(param);
+				
+				UAgentcustomers customer= customerMapper.getCustomersByAgentUserId(branches.getAgentuserid(), param.getUserid());
+				if(customer!=null){
+					param.setCustomerid(customer.getCustomerid());
+					customerMapper.updateByPrimaryKey(param);
+				}else{
+					customerMapper.insert(param);
+				}
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("新增成功");
 				return rq;

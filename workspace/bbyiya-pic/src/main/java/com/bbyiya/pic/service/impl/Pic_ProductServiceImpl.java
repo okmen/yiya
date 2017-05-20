@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductchildinfoMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
+import com.bbyiya.dao.PMyproductextMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproductsinvitesMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
@@ -31,6 +32,7 @@ import com.bbyiya.enums.pic.MyProductStatusEnum;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproductchildinfo;
 import com.bbyiya.model.PMyproductdetails;
+import com.bbyiya.model.PMyproductext;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproductsinvites;
 import com.bbyiya.model.PMyproducttemp;
@@ -90,6 +92,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private PMyproductchildinfoMapper mychildMapper;
 	@Autowired
 	private PMyproducttempMapper tempMapper;
+	@Autowired
+	private PMyproductextMapper myextMapper;
 	/*-------------------用户信息------------------------------------------------*/
 	@Autowired
 	private UUsersMapper usersMapper;
@@ -220,10 +224,10 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				// 插入宝宝生日信息
 				if (param.getChildInfo() != null) {
 					boolean isnew = false;
-					PMyproductchildinfo mychild = mychildMapper.selectByPrimaryKey(param.getCartid());
+					PMyproductchildinfo mychild = mychildMapper.selectByPrimaryKey(myproduct.getCartid());
 					if (mychild == null) {
 						mychild = new PMyproductchildinfo();
-						mychild.setCartid(param.getCartid());
+						mychild.setCartid(myproduct.getCartid());
 						mychild.setCreatetime(new Date());
 						isnew = true;
 					}
@@ -232,6 +236,14 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					}
 					if (!ObjectUtil.isEmpty(param.getChildInfo().getBirthday())) {
 						mychild.setBirthday(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday()));
+						Date now=new Date();
+						int compare=now.compareTo(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday()));
+						//如果在今天之后，说明是预产期
+						if(compare<0){
+							mychild.setIsdue(1);
+						}else{
+							mychild.setIsdue(0);
+						}
 					}
 					if (isnew) {
 						mychildMapper.insert(mychild);
@@ -318,10 +330,10 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			// 插入宝宝生日信息
 			if (param.getChildInfo() != null) {
 				boolean isnew = false;
-				PMyproductchildinfo mychild = mychildMapper.selectByPrimaryKey(param.getCartid());
+				PMyproductchildinfo mychild = mychildMapper.selectByPrimaryKey(myproduct.getCartid());
 				if (mychild == null) {
 					mychild = new PMyproductchildinfo();
-					mychild.setCartid(param.getCartid());
+					mychild.setCartid(myproduct.getCartid());
 					mychild.setCreatetime(new Date());
 					isnew = true;
 				}
@@ -330,7 +342,16 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				}
 				if (!ObjectUtil.isEmpty(param.getChildInfo().getBirthday())) {
 					mychild.setBirthday(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday()));
+					Date now=new Date();
+					int compare=now.compareTo(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday()));
+					//如果在今天之后，说明是预产期
+					if(compare<0){
+						mychild.setIsdue(1);
+					}else{
+						mychild.setIsdue(0);
+					}
 				}
+				
 				if (isnew) {
 					mychildMapper.insert(mychild);
 				} else {
@@ -380,6 +401,14 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					}
 					if (!ObjectUtil.isEmpty(param.getChildInfo().getBirthday())) {
 						mychild.setBirthday(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday()));
+						Date now=new Date();
+						int compare=now.compareTo(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday()));
+						//如果在今天之后，说明是预产期
+						if(compare<0){
+							mychild.setIsdue(1);
+						}else{
+							mychild.setIsdue(0);
+						}
 						isNeedUp = true;
 					}
 					if (isNeedUp) {
@@ -505,6 +534,14 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					}
 					if (!ObjectUtil.isEmpty(param.getChildInfo().getBirthday())) {
 						mychild.setBirthday(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday()));
+						Date now=new Date();
+						int compare=now.compareTo(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday()));
+						//如果在今天之后，说明是预产期
+						if(compare<0){
+							mychild.setIsdue(1);
+						}else{
+							mychild.setIsdue(0);
+						}
 					}
 					if (isnew) {
 						mychildMapper.insert(mychild);
@@ -690,7 +727,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			for (MyProductResultVo vv : resultPage.getList()) {
 				for (UBranchusers uu : userList) {
 					if (uu.getUserid().longValue() == vv.getUserid().longValue()) {
-						vv.setUserName(uu.getName());
+						vv.setUserName(uu.getName());//员工昵称
 					}
 				}
 			}
@@ -785,11 +822,12 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					item.setIsOrder(1);
 					item.setCount(12);
 				}
-
+				item.setIsDue(0);//默认不是预产期
 				// 得到宝宝生日
 				PMyproductchildinfo childinfo = mychildMapper.selectByPrimaryKey(item.getCartid());
 				if (childinfo != null && childinfo.getBirthday() != null) {
 					item.setBirthdayStr(DateUtil.getTimeStr(childinfo.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
+					item.setIsDue(childinfo.getIsdue()==null?0:childinfo.getIsdue());
 				}
 				// 得到制作类型
 				PProducts product = productsMapper.selectByPrimaryKey(item.getProductid());
@@ -802,8 +840,6 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					if (temp != null && temp.getTitle() != null) {
 						item.setTempTitle(temp.getTitle());
 					}
-				} else {
-					item.setTempTitle("员工邀请");
 				}
 				// 得到作品订单集合
 				List<OUserorders> orderList = orderDao.findOrderListByCartId(item.getCartid());
@@ -814,6 +850,13 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				if (orderNoList.size() > 0) {
 					item.setOrderNoList(orderNoList);
 				}
+				//得到评论数
+				item.setCommentsCount(0);
+				PMyproductext myext=myextMapper.selectByPrimaryKey(item.getCartid());
+				if(myext!=null){
+					item.setCommentsCount(myext.getCommentscount()==null?0:myext.getCommentscount());
+				}
+				
 			}
 		}
 		return mylist;

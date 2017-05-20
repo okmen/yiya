@@ -29,8 +29,12 @@ public class MyProductResultVo extends PMyproducts{
 	private String birthdayStr;
 	//制作类型名称
 	private String productTitle;
-	//模板名称 即来源
+	//模板名称
 	private String tempTitle;
+	//评论数
+	private Integer commentsCount;
+	//是否预产期
+	private Integer isDue;
 	private List<String> orderNoList;
 	
 	public int getCount() {
@@ -116,6 +120,18 @@ public class MyProductResultVo extends PMyproducts{
 	}
 	public void setInvitedName(String invitedName) {
 		this.invitedName = invitedName;
+	}
+	public Integer getCommentsCount() {
+		return commentsCount;
+	}
+	public void setCommentsCount(Integer commentsCount) {
+		this.commentsCount = commentsCount;
+	}
+	public Integer getIsDue() {
+		return isDue;
+	}
+	public void setIsDue(Integer isDue) {
+		this.isDue = isDue;
 	}
 	
 	

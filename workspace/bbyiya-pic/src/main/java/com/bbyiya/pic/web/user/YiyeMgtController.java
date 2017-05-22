@@ -51,6 +51,28 @@ public class YiyeMgtController  extends SSOController {
 	@Resource(name = "ibs_MyProductTempService")
 	private IIbs_MyProductTempService ibs_tempService;
 	
+	
+	@ResponseBody
+	@RequestMapping(value = "/detail")
+	public String detail(String workId) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		long cartid=ObjectUtil.parseLong(workId);
+		if(cartid>0){
+			PMyproducts mycart= myProductMapper.selectByPrimaryKey(cartid);
+			if(mycart!=null){
+				PMyproducttemp temp= tempMapper.selectByPrimaryKey(mycart.getTempid());
+				if(temp!=null){
+					rq.setStatu(ReturnStatus.Success);
+					rq.setBasemodle(temp);
+					return JsonUtil.objectToJsonStr(rq);
+				}
+			}
+		}
+		rq.setStatu(ReturnStatus.ParamError);
+		rq.setStatusreson("参数有误"); 
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 	/**
 	 * 接受异业模板邀请 、申请模板相册
 	 * @param commentJson
@@ -156,9 +178,13 @@ public class YiyeMgtController  extends SSOController {
 				param.setSubUserId(subUserId);
 			} 
 			String dateTimeStr =String.valueOf(model.get("dateTimeStr"));
+			long dateVal=ObjectUtil.parseLong(String.valueOf(model.get("dateTimeVal")));
 			if(!(ObjectUtil.isEmpty(dateTimeStr)||"null".equals(dateTimeStr))){
 				param.setDateTimeStr(dateTimeStr);
 				param.setDateTime(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", dateTimeStr));
+			}else if (dateVal>0) {
+				param.setDateTime(DateUtil.getDate(dateVal, "yyyy-MM-dd HH:mm:ss")); 
+				param.setDateTimeVal(dateVal); 
 			}
 			return param;
 		}

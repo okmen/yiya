@@ -11,6 +11,13 @@ public class YiyeSubmitParam implements Serializable{
 	private String version;
 	private long addressId;
 	private String dateTimeStr;
+	private long dateTimeVal;
+	public long getDateTimeVal() {
+		return dateTimeVal;
+	}
+	public void setDateTimeVal(long dateTimeVal) {
+		this.dateTimeVal = dateTimeVal;
+	}
 	private Date dateTime;
 	public long getCartId() {
 		return cartId;

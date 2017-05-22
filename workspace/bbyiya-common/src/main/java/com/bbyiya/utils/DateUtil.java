@@ -178,6 +178,19 @@ public class DateUtil {
 		calendar.add(calendar.DATE, m);
 		return calendar.getTime();
 	}
+	
+	public static Date getDate(Long time, String formatStr) {
+		SimpleDateFormat format = new SimpleDateFormat(formatStr);
+		String d = format.format(time);
+		Date returnDate = null;
+		try {
+			returnDate = format.parse(d);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return returnDate;
+	}
 
 	public static Date getDateByString(String format, String date) {
 		DateFormat fmt = new SimpleDateFormat(format);

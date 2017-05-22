@@ -1,5 +1,6 @@
 package com.bbyiya.pic.service.ibs;
 
+import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.vo.ReturnModel;
 
 public interface IIbs_MyProductTempService {
@@ -59,6 +60,40 @@ public interface IIbs_MyProductTempService {
 	 */
 	ReturnModel getMyProductTempApplyCheckList(int index, int size,
 			Long userid, int tempid);
+	/**
+	 * 审核影楼模板申请用户
+	 * @param userid
+	 * @param tempapplyid
+	 * @param status  0 申请中，1通过，2拒绝
+	 * @return
+	 */
+	ReturnModel audit_TempApplyUser(Long userid, Long tempapplyid,
+			Integer status);
+	/**
+	 * 影楼员工负责模板信息列表
+	 * @param index
+	 * @param size
+	 * @param branchUserId
+	 * @param tempid
+	 * @return
+	 */
+	ReturnModel find_BranchUserOfTemp(int index, int size, Long branchUserId,
+			Integer tempid);
+	/**
+	 * 设置员工模板负责权限
+	 * @param userId
+	 * @param tempid
+	 * @param status
+	 * @return
+	 */
+	ReturnModel setUserTempPermission(Long userId, Integer tempid,
+			Integer status);
+	/**
+	 * 接受邀请或ibs后台审核用户申请操作 (公用方法)
+	 * @param apply
+	 * @return
+	 */
+	ReturnModel doAcceptOrAutoTempApplyOpt(PMyproducttempapply apply);
 
 	
 }

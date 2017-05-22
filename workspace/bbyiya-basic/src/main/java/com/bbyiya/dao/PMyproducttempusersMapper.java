@@ -1,5 +1,7 @@
 package com.bbyiya.dao;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.PMyproducttempusers;
 
 public interface PMyproducttempusersMapper {
@@ -14,4 +16,6 @@ public interface PMyproducttempusersMapper {
     int updateByPrimaryKeySelective(PMyproducttempusers record);
 
     int updateByPrimaryKey(PMyproducttempusers record);
+    
+    PMyproducttempusers selectByUserIdAndTempId(@Param("userId") Long userId,@Param("tempId")int tempId);
 }

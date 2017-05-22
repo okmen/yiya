@@ -13,12 +13,6 @@
   <sql id="Base_Column_List" >
     UserId, Name, Phone, BranchUserId, AgentUserId, Status, CreateTime
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from u_branchusers
-    where UserId = #{userid,jdbcType=BIGINT}
-  </select>
   <select id="findMemberslistByBranchUserId" resultMap="BaseResultMap"  ><!-- 获取影楼内部员工列表 通过影楼userId  -->
     select 
     <include refid="Base_Column_List" />
@@ -31,6 +25,13 @@
     from u_branchusers
     where AgentUserId = #{agentUserId,jdbcType=BIGINT}
   </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from u_branchusers
+    where UserId = #{userid,jdbcType=BIGINT}
+  </select> 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from u_branchusers
     where UserId = #{userid,jdbcType=BIGINT}

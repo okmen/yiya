@@ -21,6 +21,7 @@ import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.model.UUseraddress;
+import com.bbyiya.pic.service.ibs.IIbs_MyProductTempService;
 import com.bbyiya.pic.vo.product.YiyeSubmitParam;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.utils.DateUtil;
@@ -46,6 +47,9 @@ public class YiyeMgtController  extends SSOController {
 	
 	@Resource(name = "regionServiceImpl")
 	private IRegionService regionService;
+	
+	@Resource(name = "ibs_MyProductTempService")
+	private IIbs_MyProductTempService ibs_tempService;
 	
 	/**
 	 * 接受异业模板邀请 、申请模板相册
@@ -111,7 +115,7 @@ public class YiyeMgtController  extends SSOController {
 						tempApplyMapper.insert(apply);
 						
 						if(!isNeedVer){//TODO 不需要审核 调取 新增作品、客户信息
-							
+							rq=ibs_tempService.doAcceptOrAutoTempApplyOpt(apply);
 						}else {
 							rq.setStatu(ReturnStatus.Success);
 							rq.setStatusreson("提交申请成功！");

@@ -22,7 +22,7 @@ public class CustomerController extends SSOController{
 	private IPic_MemberMgtService memberMgtService;
 	
 	/**
-	 * 我的客户列表
+	 * 我的待营销客户列表
 	 * @return
 	 * @throws Exception
 	 */

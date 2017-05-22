@@ -83,7 +83,6 @@ public class YiyeMgtController  extends SSOController {
 				if(myproducts!=null&&myproducts.getIstemp()!=null&&myproducts.getTempid()!=null){
 					PMyproducttemp temp= tempMapper.selectByPrimaryKey(myproducts.getTempid());
 					if(temp!=null){
-						
 						PMyproducttempapply apply=new PMyproducttempapply();
 						apply.setTempid(myproducts.getTempid());
 						apply.setUserid(user.getUserId());

@@ -30,4 +30,11 @@ public interface PMyproducttempapplyMapper {
      * @return
      */
     List<PMyproducttempapply> findMyProducttempApplyList(@Param("tempid") Integer tempid,@Param("status") Integer status);
+    /**
+     * 根据tempid 、userid获取用户申请情况
+     * @param tempid
+     * @param userId
+     * @return
+     */
+    PMyproducttempapply getMyProducttempApplyByUserId(@Param("tempid")Integer tempid,@Param("userid")Long userId);
 }

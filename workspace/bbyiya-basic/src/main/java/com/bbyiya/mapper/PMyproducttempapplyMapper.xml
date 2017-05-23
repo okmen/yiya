@@ -25,14 +25,17 @@
   
   <!-- 得到模板待审核的报名人数 -->
   <select id="getNeedCheckApllyCountByTemp" resultType="java.lang.Integer"  parameterType="java.lang.Integer" >
-    select count(TempApplyId) from p_myproducttempapply where TempId = #{tempid,jdbcType=BIGINT} and Status=#{status,jdbcType=BIGINT}
+    select count(TempApplyId) from p_myproducttempapply where TempId = #{tempid,jdbcType=INTEGER} and Status=#{status,jdbcType=INTEGER}
   </select>
    <!--根据模板ID及状态得到待审核用户列表 -->
   <select id="findMyProducttempApplyList" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select  <include refid="Base_Column_List" />
-    from p_myproducttempapply where TempId = #{tempid,jdbcType=BIGINT} and Status=#{status,jdbcType=BIGINT}
+    from p_myproducttempapply where TempId = #{tempid,jdbcType=INTEGER} and Status=#{status,jdbcType=INTEGER}
   </select>
-  
+  <select id="getMyProducttempApplyByUserId" resultMap="BaseResultMap"  ><!-- 根据tempid,userid获取用户申请情况 -->
+    select  <include refid="Base_Column_List" />
+    from p_myproducttempapply where TempId = #{tempid,jdbcType=INTEGER} and UserId=#{userid,jdbcType=BIGINT}
+  </select>
   
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 

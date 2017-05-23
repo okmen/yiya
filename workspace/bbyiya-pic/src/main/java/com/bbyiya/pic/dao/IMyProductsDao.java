@@ -41,5 +41,11 @@ public interface IMyProductsDao {
 	 */
 	List<MyProductListVo>  getMyProductResultByTempId(@Param("tempid") Integer tempid);
 	
-
+	/**
+	 * 根据作品模板，被邀请用户的userId获取被邀请的作品
+	 * @param tempid
+	 * @param userid
+	 * @return
+	 */
+    MyProductListVo getMyProductByTempId(@Param("tempid")Integer tempid,@Param("userid")Long userid);
 }

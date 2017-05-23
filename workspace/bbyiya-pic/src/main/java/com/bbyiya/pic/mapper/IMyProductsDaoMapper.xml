@@ -71,4 +71,9 @@
     SELECT a.*,b.InvitePhone,b.CreateTime as InviteTime,b.Status as InStatus  from p_myproducts a LEFT JOIN p_myproductsinvites b on a.CartId=b.CartId
     WHERE a.CartId=#{cartid,jdbcType=BIGINT}  
   </select>
+   <select id="getMyProductByTempId" resultMap="MyProductListVO" ><!-- get 获取作品详情 -->
+    SELECT a.* from p_myproducts a 
+    LEFT JOIN p_myproductsinvites b on a.CartId=b.CartId 
+    WHERE a.TempId=#{tempid,jdbcType=INTEGER}  and b.InviteUserId=#{userid,jdbcType=BIGINT}  
+  </select>
 </mapper>

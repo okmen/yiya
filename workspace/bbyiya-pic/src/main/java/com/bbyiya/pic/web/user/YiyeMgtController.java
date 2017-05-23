@@ -21,7 +21,10 @@ import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.model.UUseraddress;
+import com.bbyiya.pic.dao.IMyProductsDao;
 import com.bbyiya.pic.service.ibs.IIbs_MyProductTempService;
+import com.bbyiya.pic.vo.product.MyProductListVo;
+import com.bbyiya.pic.vo.product.MyProductTempVo;
 import com.bbyiya.pic.vo.product.YiyeSubmitParam;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.utils.DateUtil;
@@ -44,6 +47,8 @@ public class YiyeMgtController  extends SSOController {
 	private UUseraddressMapper addressMapper;
 	@Autowired
 	private PMyproducttempapplyMapper tempApplyMapper;
+	@Autowired
+	private IMyProductsDao myproductDao;
 	
 	@Resource(name = "regionServiceImpl")
 	private IRegionService regionService;
@@ -52,24 +57,47 @@ public class YiyeMgtController  extends SSOController {
 	private IIbs_MyProductTempService ibs_tempService;
 	
 	
+	
 	@ResponseBody
 	@RequestMapping(value = "/detail")
 	public String detail(String workId) throws Exception {
 		ReturnModel rq = new ReturnModel();
-		long cartid=ObjectUtil.parseLong(workId);
-		if(cartid>0){
-			PMyproducts mycart= myProductMapper.selectByPrimaryKey(cartid);
-			if(mycart!=null){
-				PMyproducttemp temp= tempMapper.selectByPrimaryKey(mycart.getTempid());
-				if(temp!=null){
-					rq.setStatu(ReturnStatus.Success);
-					rq.setBasemodle(temp);
-					return JsonUtil.objectToJsonStr(rq);
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			MyProductTempVo result=new MyProductTempVo();
+			long cartid=ObjectUtil.parseLong(workId);
+			if(cartid>0){
+				PMyproducts mycart= myProductMapper.selectByPrimaryKey(cartid);
+				if(mycart!=null){
+					PMyproducttemp temp= tempMapper.selectByPrimaryKey(mycart.getTempid());
+					if(temp!=null){
+						MyProductListVo myproduct= myproductDao.getMyProductByTempId(temp.getTempid(), user.getUserId());
+						if(myproduct!=null){
+							result.setIsInvited(1);
+							result.setApplyStatus(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString())); 
+							result.setCartId(myproduct.getCartid());
+						}else {
+							result.setTemp(temp); 
+							PMyproducttempapply apply= tempApplyMapper.getMyProducttempApplyByUserId(temp.getTempid(), user.getUserId());
+							if(apply!=null){
+								result.setApplyStatus(apply.getStatus());
+							}else {
+								result.setApplyStatus(-1); 
+							}
+						} 
+						rq.setStatu(ReturnStatus.Success);
+						rq.setBasemodle(result);
+						return JsonUtil.objectToJsonStr(rq);
+					}
 				}
 			}
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("参数有误"); 
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
 		}
-		rq.setStatu(ReturnStatus.ParamError);
-		rq.setStatusreson("参数有误"); 
+		
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
@@ -156,6 +184,8 @@ public class YiyeMgtController  extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	
 	
 	public static YiyeSubmitParam getParam_YiyeSubmitParam(String json) {
 		JSONObject model = JSONObject.fromObject(json);

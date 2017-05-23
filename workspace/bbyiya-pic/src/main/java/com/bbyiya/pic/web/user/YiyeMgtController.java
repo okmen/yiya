@@ -293,6 +293,7 @@ public class YiyeMgtController  extends SSOController {
 						apply.setBirthdaystr(DateUtil.getTimeStr(apply.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
 					}
 				}
+				rq.setBasemodle(reuslt);
 			}		
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
@@ -302,7 +303,59 @@ public class YiyeMgtController  extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	/**
+	 * 我参与的活动列表
+	 * @param tempid
+	 * @param status
+	 * @param index
+	 * @param size
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/mytempcartlist")
+	public String mytempcartlist(@RequestParam(required = false, defaultValue = "1")int index,@RequestParam(required = false, defaultValue = "20")int size) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			List<PMyproducttempapply>  applylist=tempApplyMapper.findMyProducttempApplyByUserId(user.getUserId());
+			PageInfo<PMyproducttempapply> reuslt=new PageInfo<PMyproducttempapply>(applylist); 
+			rq.setBasemodle(reuslt);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		rq.setStatu(ReturnStatus.Success);
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	
+	/**
+	 * 消息已读
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/updateTempRead")
+	public String updateTempRead() throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			List<PMyproducttempapply>  applylist=tempApplyMapper.findMyProducttempApplyByUserId(user.getUserId());
+			if(applylist!=null&&applylist.size()>0){
+				for (PMyproducttempapply ss : applylist) {
+					if(ss.getIsread()==null||ss.getIsread().intValue()!=1){
+						ss.setIsread(1);
+						tempApplyMapper.updateByPrimaryKeySelective(ss);
+					}
+				}
+			}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		rq.setStatu(ReturnStatus.Success);
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	
 	
 	public static YiyeSubmitParam getParam_YiyeSubmitParam(String json) {

@@ -37,4 +37,17 @@ public interface PMyproducttempapplyMapper {
      * @return
      */
     PMyproducttempapply getMyProducttempApplyByUserId(@Param("tempid")Integer tempid,@Param("userid")Long userId);
+    
+    /**
+     * 获取用户参与活动的模板申请列表
+     * @param userId
+     * @return
+     */
+    List<PMyproducttempapply> findMyProducttempApplyByUserId(@Param("userid")Long userId);
+    /**
+     * 我参与的活动未读消息数
+     * @param userId
+     * @return
+     */
+    int countMyProducttempApplyByUserIdNews(@Param("userid")Long userId);
 }

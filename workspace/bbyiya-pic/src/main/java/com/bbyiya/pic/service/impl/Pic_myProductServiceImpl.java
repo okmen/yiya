@@ -19,6 +19,7 @@ import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproductsinvitesMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
+import com.bbyiya.dao.PMyproducttempapplyMapper;
 import com.bbyiya.dao.PScenesMapper;
 import com.bbyiya.dao.UAgentcustomersMapper;
 import com.bbyiya.dao.UBranchesMapper;
@@ -520,7 +521,8 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 		rq.setStatusreson("已经过期的邀请！");
 		return rq;
 	}
-	
+	@Autowired
+	private PMyproducttempapplyMapper tempApplyMapper;
 	/**
 	 * 我的 个人信息提示
 	 */
@@ -530,6 +532,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 		rq.setStatu(ReturnStatus.Success);
 		Map<String, Object> map=new HashMap<String, Object>();
 		map.put("myInvitingCount", count);//我的待处理 邀请编辑数量
+		map.put("tempCount", tempApplyMapper.countMyProducttempApplyByUserIdNews(userId));
 		rq.setBasemodle(map);
 		return rq;
 	}

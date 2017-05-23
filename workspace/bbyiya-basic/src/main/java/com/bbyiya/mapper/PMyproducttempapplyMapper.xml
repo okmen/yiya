@@ -33,10 +33,22 @@
     select  <include refid="Base_Column_List" />
     from p_myproducttempapply where TempId = #{tempid,jdbcType=INTEGER} and Status=#{status,jdbcType=INTEGER}
   </select>
-  <select id="getMyProducttempApplyByUserId" resultMap="BaseResultMap"  ><!-- 根据tempid,userid获取用户申请情况 -->
+  <!-- 根据tempid,userid获取用户申请情况 -->
+  <select id="getMyProducttempApplyByUserId" resultMap="BaseResultMap"  >
     select  <include refid="Base_Column_List" />
     from p_myproducttempapply where TempId = #{tempid,jdbcType=INTEGER} and UserId=#{userid,jdbcType=BIGINT}  LIMIT 1
   </select>
+  <!-- 根据用户 userid获取用户申请情况 -->
+  <select id="findMyProducttempApplyByUserId" resultMap="BaseResultMap"  >
+    select  <include refid="Base_Column_List" />
+    from p_myproducttempapply  where  UserId=#{userid,jdbcType=BIGINT} order by  VerfiyTime desc,CreateTime desc
+  </select>
+   <!-- 根据用户 userid获取用户申请情况 -->
+  <select id="countMyProducttempApplyByUserIdNews" resultType="java.lang.Integer"  >
+    select  count(*)
+    from p_myproducttempapply  where  UserId=#{userid,jdbcType=BIGINT} and (IsRead is null or IsRead=0)
+  </select>
+  
   
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 

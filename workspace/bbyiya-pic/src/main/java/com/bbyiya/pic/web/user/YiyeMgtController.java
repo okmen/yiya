@@ -228,6 +228,7 @@ public class YiyeMgtController  extends SSOController {
 					PMyproducttemp temp= tempMapper.selectByPrimaryKey(item.getTempid());
 					if(temp!=null){
 						item.setTempStatus(temp.getStatus()); 
+						item.setTempName(temp.getTitle()); 
 						String redirct_url="apply/form?workId="+URLEncoder.encode(temp.getCartid().toString(),"utf-8")+"&uid="+URLEncoder.encode(user.getUserId().toString(),"utf-8");
 						redirct_url=redirct_url+"&sid="+URLEncoder.encode(user.getUserId().toString(),"utf-8");
 						String urlstr= ConfigUtil.getSingleValue("shareulr-base")+"redirct_url="+URLEncoder.encode(redirct_url,"utf-8");

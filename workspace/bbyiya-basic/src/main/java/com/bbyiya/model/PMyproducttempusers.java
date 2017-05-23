@@ -20,6 +20,7 @@ public class PMyproducttempusers {
     private String qRcodeUrl;
     
     private Integer tempStatus;
+    private String tempName;
 
     public Long getId() {
         return id;
@@ -91,6 +92,14 @@ public class PMyproducttempusers {
 
 	public void setTempStatus(Integer tempStatus) {
 		this.tempStatus = tempStatus;
+	}
+
+	public String getTempName() {
+		return tempName;
+	}
+
+	public void setTempName(String tempName) {
+		this.tempName = tempName;
 	}
     
 }

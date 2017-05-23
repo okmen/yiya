@@ -33,6 +33,8 @@ public class PMyproducttempapply {
     
     private Date birthday;
     
+    private Integer isread;
+    
     private String createtimestr;
     private String verfiytimestr;
     private String birthdaystr;
@@ -178,6 +180,14 @@ public class PMyproducttempapply {
 
 	public void setBirthdaystr(String birthdaystr) {
 		this.birthdaystr = birthdaystr;
+	}
+
+	public Integer getIsread() {
+		return isread;
+	}
+
+	public void setIsread(Integer isread) {
+		this.isread = isread;
 	}
     
     

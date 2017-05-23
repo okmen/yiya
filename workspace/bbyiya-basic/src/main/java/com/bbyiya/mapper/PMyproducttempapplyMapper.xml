@@ -17,10 +17,11 @@
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="VerfiyTime" property="verfiytime" jdbcType="TIMESTAMP" />
     <result column="Birthday" property="birthday" jdbcType="TIMESTAMP" />
+    <result column="IsRead" property="isread" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     TempApplyId, TempId, UserId, Mobilephone, Province, City, Area, Street, Adress, IsDue, 
-    CompanyUserId, Status, CreateTime, VerfiyTime, Birthday
+    CompanyUserId, Status, CreateTime, VerfiyTime, Birthday, IsRead
   </sql>
   
   <!-- 得到模板待审核的报名人数 -->
@@ -52,14 +53,14 @@
       Mobilephone, Province, City, 
       Area, Street, Adress, 
       IsDue, CompanyUserId, Status, 
-      CreateTime, VerfiyTime, Birthday
-      )
+      CreateTime, VerfiyTime, Birthday, 
+      IsRead)
     values (#{tempapplyid,jdbcType=BIGINT}, #{tempid,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, 
       #{mobilephone,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, 
       #{area,jdbcType=INTEGER}, #{street,jdbcType=VARCHAR}, #{adress,jdbcType=VARCHAR}, 
       #{isdue,jdbcType=INTEGER}, #{companyuserid,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{verfiytime,jdbcType=TIMESTAMP}, #{birthday,jdbcType=TIMESTAMP}
-      )
+      #{createtime,jdbcType=TIMESTAMP}, #{verfiytime,jdbcType=TIMESTAMP}, #{birthday,jdbcType=TIMESTAMP}, 
+      #{isread,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproducttempapply" >
     insert into p_myproducttempapply
@@ -109,6 +110,9 @@
       <if test="birthday != null" >
         Birthday,
       </if>
+      <if test="isread != null" >
+        IsRead,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="tempapplyid != null" >
@@ -155,6 +159,9 @@
       </if>
       <if test="birthday != null" >
         #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isread != null" >
+        #{isread,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -203,6 +210,9 @@
       <if test="birthday != null" >
         Birthday = #{birthday,jdbcType=TIMESTAMP},
       </if>
+      <if test="isread != null" >
+        IsRead = #{isread,jdbcType=INTEGER},
+      </if>
     </set>
     where TempApplyId = #{tempapplyid,jdbcType=BIGINT}
   </update>
@@ -221,7 +231,8 @@
       Status = #{status,jdbcType=INTEGER},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
       VerfiyTime = #{verfiytime,jdbcType=TIMESTAMP},
-      Birthday = #{birthday,jdbcType=TIMESTAMP}
+      Birthday = #{birthday,jdbcType=TIMESTAMP},
+      IsRead = #{isread,jdbcType=INTEGER}
     where TempApplyId = #{tempapplyid,jdbcType=BIGINT}
   </update>
 </mapper>

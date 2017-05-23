@@ -210,7 +210,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		PageInfo<PMyproducttemp> reuslt=new PageInfo<PMyproducttemp>(templist); 
 		if(reuslt!=null&&reuslt.getList()!=null&&reuslt.getList().size()>0){
 			for (PMyproducttemp temp : templist) {	
-				String redirct_url="currentPage?workId="+temp.getCartid()+"&uid="+userid;			
+				String redirct_url="apply/form?workId="+temp.getCartid()+"&uid="+userid;			
 				String urlstr="";
 				String url="";
 				try {
@@ -467,7 +467,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 					//如果有负责权限
 					if(tempuser.getStatus()!=null&&tempuser.getStatus().intValue()==1){
 						PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempid);
-						String redirct_url="currentPage?workId="+temp.getCartid()+"&uid="+buser.getBranchuserid()+"&sid="+buser.getUserid();			
+						String redirct_url="apply/form?workId="+temp.getCartid()+"&uid="+buser.getBranchuserid()+"&sid="+buser.getUserid();			
 						String urlstr="";
 						String url="";
 						try {

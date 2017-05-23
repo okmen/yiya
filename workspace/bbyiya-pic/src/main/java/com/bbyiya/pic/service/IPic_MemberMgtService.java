@@ -29,12 +29,7 @@ public interface IPic_MemberMgtService {
 	ReturnModel delBranchUser(Long branchUserId,Long userId);
 	
 	/*--------------------------影楼客户管理模块--------------------------------------------------------------------*/
-	/**
-	 * 获取影楼的客户列表
-	 * @param branchUserId
-	 * @return
-	 */
-	ReturnModel findCustomersByBranchUserId(Long branchUserId);
+	
 	/**
 	 * 修改客户资料
 	 * @param branchUserId
@@ -68,4 +63,10 @@ public interface IPic_MemberMgtService {
 	 * @return
 	 */
 	ReturnModel findCustomersBuylistByUserId(Long userId);
+	/**
+	 * 根据BranchUserId得到已获取客户列表 
+	 * @param branchUserId
+	 * @return
+	 */
+	ReturnModel findMarketCustomerslistByBranchUserId(Long branchUserId);
 }

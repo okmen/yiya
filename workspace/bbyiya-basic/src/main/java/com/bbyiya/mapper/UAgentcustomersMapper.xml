@@ -27,20 +27,23 @@
     where CustomerId = #{customerid,jdbcType=BIGINT}
   </select>
   
-  <select id="findCustomersByBranchUserId" resultMap="BaseResultMap"  ><!-- 01 查询影楼的用户列表 -->
+ 
+  
+  <resultMap id="UAgentcustomersVoResult" type="com.bbyiya.vo.agent.UAgentcustomersVo" extends="BaseResultMap">  
+  </resultMap>  
+   <!-- 根据BranchUserId获取影楼的已获取用户列表结果类Result -->
+   <select id="findCustomersByBranchUserId"  resultMap="UAgentcustomersVoResult"   ><!-- 01 查询影楼的用户列表 -->
     select 
     <include refid="Base_Column_List" />
     from u_agentcustomers
-    where BranchUserId = #{branchUserId,jdbcType=BIGINT}
+    where BranchUserId = #{branchUserId,jdbcType=BIGINT} and IsMarket=#{isMarket,jdbcType=BIGINT}
   </select>
-   <!-- 根据AgentUserId获取影楼的用户列表结果类Result -->
-  <resultMap id="UAgentcustomersVoResult" type="com.bbyiya.vo.agent.UAgentcustomersVo" extends="BaseResultMap">  
-  </resultMap>  
+   <!-- 根据AgentUserId获取影楼的待营销用户列表结果类Result -->
   <select id="findCustomersByAgentUserId" resultMap="UAgentcustomersVoResult"  ><!-- 02 根据AgentUserId查询影楼的用户列表 -->
     select 
     <include refid="Base_Column_List" />
     from u_agentcustomers
-    where AgentUserId = #{agentUserId,jdbcType=BIGINT}
+    where AgentUserId = #{agentUserId,jdbcType=BIGINT} and IsMarket=#{isMarket,jdbcType=BIGINT}
   </select>
   <select id="getCustomersByAgentUserId" resultMap="UAgentcustomersVoResult"  ><!-- 03 根据AgentUserId,buyerUserId 查询影楼的用户列表 -->
     select 

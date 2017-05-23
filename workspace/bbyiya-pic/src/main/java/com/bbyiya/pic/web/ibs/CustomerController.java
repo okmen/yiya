@@ -41,6 +41,25 @@ public class CustomerController extends SSOController{
 	}
 	
 	/**
+	 * 我的已获取客户列表
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/marketlist")
+	public String marketlist() throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=memberMgtService.findMarketCustomerslistByBranchUserId(user.getUserId());
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
 	 * IBS根据客户UserId得到客户的购买记录
 	 * @return
 	 * @throws Exception

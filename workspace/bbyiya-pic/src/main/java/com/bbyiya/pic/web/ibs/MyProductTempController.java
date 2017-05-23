@@ -210,18 +210,70 @@ public class MyProductTempController extends SSOController {
 	}
 	
 	/**
+	 * 影楼员工负责模板信息列表
+	 * @param tempApplyId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/find_UBranchUserOfTempList")
+	public String find_UBranchUserOfTempList(Integer index,Integer size,Integer tempid) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=producttempService.find_BranchUserOfTemp(index, size, user.getUserId(), tempid);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	
+	/**
+	 * 设置员工模板负责权限
+	 * @param tempApplyId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/setUserTempPermission")
+	public String setUserTempPermission(Long userId,Integer tempid,Integer status) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(status==null){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("status参数不能为空！");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			rq=producttempService.setUserTempPermission(userId, tempid, status);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
 	 * 保存模板的二维码图片
-	 * @param tempId
+	 * @param cartId
+	 * @param companyUserid 员工ID
 	 * @return
 	 * @throws Exception
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/downProductTempRQcode")
-	public String downProductTempRQcode(String cartId) throws Exception {
+	public String downProductTempRQcode(String cartId,String companyUserid) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			String redirct_url="currentPage?workId="+URLEncoder.encode(cartId,"utf-8")+"&uid="+URLEncoder.encode(user.getUserId().toString(),"utf-8");	
+			String redirct_url="apply/form?workId="+URLEncoder.encode(cartId,"utf-8")+"&uid="+URLEncoder.encode(user.getUserId().toString(),"utf-8");
+			if(ObjectUtil.parseLong(companyUserid)>0){
+				redirct_url=redirct_url+"&sid="+URLEncoder.encode(companyUserid.toString(),"utf-8");
+			}
 			String urlstr= ConfigUtil.getSingleValue("shareulr-base")+"redirct_url="+URLEncoder.encode(redirct_url,"utf-8");				
 			rq=producttempService.saveProductTempRQcode(urlstr);
 		}else {
@@ -244,7 +296,7 @@ public class MyProductTempController extends SSOController {
 		ReturnModel rq=new ReturnModel();		
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			String redirct_url="currentPage?workId="+cartId+"&uid="+user.getUserId();	
+			String redirct_url="apply/form?workId="+cartId+"&uid="+user.getUserId();	
 			String urlstr= ConfigUtil.getSingleValue("shareulr-base")+"redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
 			String url="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+URLEncoder.encode(urlstr,"utf-8");
 			
@@ -258,6 +310,7 @@ public class MyProductTempController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
 	
 	
 }

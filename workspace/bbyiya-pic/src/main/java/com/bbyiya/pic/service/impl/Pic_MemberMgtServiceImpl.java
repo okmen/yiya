@@ -1,5 +1,6 @@
 package com.bbyiya.pic.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -12,22 +13,28 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OUserordersMapper;
+import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.UAgentcustomersMapper;
 import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UChildreninfoMapper;
 import com.bbyiya.dao.UUsersMapper;
+import com.bbyiya.enums.CustomerSourceTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.BranchStatusEnum;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OUserorders;
+import com.bbyiya.model.PMyproducttemp;
+import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UChildreninfo;
 import com.bbyiya.model.UUsers;
+import com.bbyiya.pic.dao.IMyProductsDao;
 import com.bbyiya.pic.service.IPic_MemberMgtService;
+import com.bbyiya.pic.vo.product.MyProductListVo;
 import com.bbyiya.service.IBaseUserCommonService;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
@@ -56,7 +63,10 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 	
 	@Autowired
 	private OUserordersMapper orderMapper;
-	
+	@Autowired
+	private IMyProductsDao myProductsDao;
+	@Autowired
+	private PMyproducttempMapper tempMapper;
 	
 	public ReturnModel findBranchUserslistByBranchUserId(Long branchUserId){
 		ReturnModel rqModel=new ReturnModel();
@@ -143,16 +153,10 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 		return rqModel;
 	}
 	
-	public ReturnModel findCustomersByBranchUserId(Long branchUserId){
-		ReturnModel rq=new ReturnModel();
-		rq.setStatu(ReturnStatus.Success);
-		List<UAgentcustomers> customers= customerMapper.findCustomersByBranchUserId(branchUserId);
-		rq.setBasemodle(customers);
-		return rq;
-	}
+	
 	
 	/**
-	 * 根据AgentUserId得到Uagentcustomers列表
+	 * 根据AgentUserId得到Uagentcustomers待营销客户列表
 	 * @param branchUserId
 	 *   @return  
 	 */
@@ -164,7 +168,8 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 			rqModel.setBasemodle(null);
 			return rqModel;
 		}
-		List<UAgentcustomersVo> list= customerMapper.findCustomersByAgentUserId(branch.getAgentuserid());
+		//获取待营销客户列表
+		List<UAgentcustomersVo> list= customerMapper.findCustomersByAgentUserId(branch.getAgentuserid(),0);
 		
 		for (UAgentcustomersVo cus : list) {
 			if(cus.getCreatetime()!=null) cus.setCreatetimeStr(DateUtil.getTimeStr(cus.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
@@ -180,6 +185,66 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 			OUserorders order=orderMapper.findLatelyOrderByUserId(cus.getUserid());
 			if(order!=null){
 				cus.setLastBuyDateStr(DateUtil.getTimeStr(order.getOrdertime(), "yyyy-MM-dd HH:mm:ss"));
+			}
+		}
+		rqModel.setStatu(ReturnStatus.Success);
+		rqModel.setBasemodle(list);
+		return rqModel;
+	}
+	
+	/**
+	 * 根据BranchUserId得到已获取客户列表
+	 * @param branchUserId
+	 *   @return  
+	 */
+	public ReturnModel findMarketCustomerslistByBranchUserId(Long branchUserId){
+		ReturnModel rqModel=new ReturnModel();
+		UBranches branch=branchesMapper.selectByPrimaryKey(branchUserId);
+		if(branch==null){
+			rqModel.setStatu(ReturnStatus.Success);
+			rqModel.setBasemodle(null);
+			return rqModel;
+		}
+		//获取已获取客户列表
+		List<UAgentcustomersVo> list= customerMapper.findCustomersByBranchUserId(branch.getAgentuserid(),1);
+		for (UAgentcustomersVo cus : list) {
+			if(cus.getCreatetime()!=null) cus.setCreatetimeStr(DateUtil.getTimeStr(cus.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
+			UChildreninfo child=childMapper.selectByPrimaryKey(cus.getUserid());
+			if(child!=null){
+				if(child.getBirthday()!=null)
+					cus.setBabyBirthday(DateUtil.getTimeStr(child.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
+				else
+					cus.setBabyBirthday("");
+				cus.setBabyNickName(child.getNickname());
+			}	
+			OUserorders order=orderMapper.findLatelyOrderByUserId(cus.getUserid());
+			if(order!=null){
+				cus.setLastBuyDateStr(DateUtil.getTimeStr(order.getOrdertime(), "yyyy-MM-dd HH:mm:ss"));
+			}
+			//得到客户来源
+			if(cus.getSourcetype()==null){
+				cus.setSourcename("客户一对一");
+			}
+			else if(cus.getSourcetype()!=null&&cus.getSourcetype()==Integer.parseInt(CustomerSourceTypeEnum.oneinvite.toString())){
+				cus.setSourcename("客户一对一");
+			}else if(cus.getSourcetype()!=null&&cus.getSourcetype()==Integer.parseInt(CustomerSourceTypeEnum.temp.toString())){
+				PMyproducttemp temp=tempMapper.selectByPrimaryKey(cus.getExtid());
+				if(temp!=null){
+					cus.setSourcename(temp.getTitle());
+				}else{
+					cus.setSourcename("异业合作");
+				}
+			}
+			cus.setCartCount(0);
+			//得到制作中的作品集合
+			List<MyProductListVo> mylist=myProductsDao.findMyProductList(cus.getUserid(),cus.getPhone());
+			if(mylist!=null){
+				List<String> cartIdList=new ArrayList<String>();
+				cus.setCartCount(mylist.size());
+				for (MyProductListVo pvo : mylist) {
+					cartIdList.add(pvo.getCartid().toString());
+				}
+				cus.setCartIdList(cartIdList);
 			}
 		}
 		rqModel.setStatu(ReturnStatus.Success);

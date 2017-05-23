@@ -1,6 +1,10 @@
 package com.bbyiya.pic.web.user;
 
+import java.net.URLEncoder;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -9,17 +13,20 @@ import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
+import com.bbyiya.dao.PMyproducttempusersMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
+import com.bbyiya.model.PMyproducttempusers;
 import com.bbyiya.model.UUseraddress;
 import com.bbyiya.pic.dao.IMyProductsDao;
 import com.bbyiya.pic.service.ibs.IIbs_MyProductTempService;
@@ -27,12 +34,16 @@ import com.bbyiya.pic.vo.product.MyProductListVo;
 import com.bbyiya.pic.vo.product.MyProductTempVo;
 import com.bbyiya.pic.vo.product.YiyeSubmitParam;
 import com.bbyiya.service.IRegionService;
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.product.MyProductResultVo;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 @Controller
 @RequestMapping(value = "/myProduct/yiye")
@@ -55,7 +66,8 @@ public class YiyeMgtController  extends SSOController {
 	
 	@Resource(name = "ibs_MyProductTempService")
 	private IIbs_MyProductTempService ibs_tempService;
-	
+	@Autowired
+	private PMyproducttempusersMapper tempUsrMapper;
 	
 	
 	@ResponseBody
@@ -71,11 +83,11 @@ public class YiyeMgtController  extends SSOController {
 				if(mycart!=null){
 					PMyproducttemp temp= tempMapper.selectByPrimaryKey(mycart.getTempid());
 					if(temp!=null){
-						MyProductListVo myproduct= myproductDao.getMyProductByTempId(temp.getTempid(), user.getUserId());
-						if(myproduct!=null){
+						List<MyProductListVo> myproductList= myproductDao.getMyProductByTempId(temp.getTempid(), user.getUserId());
+						if(myproductList!=null&&myproductList.size()>0){
 							result.setIsInvited(1);
 							result.setApplyStatus(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString())); 
-							result.setCartId(myproduct.getCartid());
+							result.setCartId(myproductList.get(0).getCartid());
 						}else {
 							result.setTemp(temp); 
 							PMyproducttempapply apply= tempApplyMapper.getMyProducttempApplyByUserId(temp.getTempid(), user.getUserId());
@@ -137,6 +149,22 @@ public class YiyeMgtController  extends SSOController {
 				if(myproducts!=null&&myproducts.getIstemp()!=null&&myproducts.getTempid()!=null){
 					PMyproducttemp temp= tempMapper.selectByPrimaryKey(myproducts.getTempid());
 					if(temp!=null){
+						/*--------------------已经提交过申请---------------------------------------*/
+						PMyproducttempapply applyOld= tempApplyMapper.getMyProducttempApplyByUserId(temp.getTempid(), user.getUserId());
+						if(applyOld!=null){
+							if(applyOld.getStatus()!=null&&applyOld.getStatus().intValue()==Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString())){
+								List<MyProductListVo>list= myproductDao.getMyProductByTempId(temp.getTempid(), user.getUserId());
+								Map<String, Object> map = new HashMap<String, Object>();
+								map.put("tempId", myproducts.getTempid());
+								map.put("mycartid", list.get(0).getCartid());
+								rq.setBasemodle(map); 
+							}
+							rq.setStatu(ReturnStatus.Success);
+							rq.setStatusreson("提交申请成功！");
+							return JsonUtil.objectToJsonStr(rq);
+						}/*-----------------------------------------------------------------------*/
+						
+						//提交申请
 						PMyproducttempapply apply=new PMyproducttempapply();
 						apply.setTempid(myproducts.getTempid());
 						apply.setUserid(user.getUserId());
@@ -184,6 +212,95 @@ public class YiyeMgtController  extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	/**
+	 * 员工 -异业合作 模板 推广列表
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/mytemplist")
+	public String templist() throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			List<PMyproducttempusers>list=tempUsrMapper.findTemplistBySunUserId(user.getUserId(), 1);
+			if(list!=null&&list.size()>0){
+				for (PMyproducttempusers item : list) {
+					PMyproducttemp temp= tempMapper.selectByPrimaryKey(item.getTempid());
+					if(temp!=null){
+						item.setTempStatus(temp.getStatus()); 
+						String redirct_url="apply/form?workId="+URLEncoder.encode(temp.getCartid().toString(),"utf-8")+"&uid="+URLEncoder.encode(user.getUserId().toString(),"utf-8");
+						redirct_url=redirct_url+"&sid="+URLEncoder.encode(user.getUserId().toString(),"utf-8");
+						String urlstr= ConfigUtil.getSingleValue("shareulr-base")+"redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
+						urlstr="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+urlstr;
+						item.setqRcodeUrl(urlstr);
+					}
+					
+				}
+				rq.setBasemodle(list);
+			}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		rq.setStatu(ReturnStatus.Success);
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value = "/branchtemplist")
+	public String branchtemplist(@RequestParam(required = false, defaultValue = "1")int index,@RequestParam(required = false, defaultValue = "20")int size) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			PageHelper.startPage(index, size);
+			List<PMyproducttemp>list=tempMapper.findBranchMyProductTempList(user.getUserId());
+			PageInfo<PMyproducttemp> resultPage = new PageInfo<PMyproducttemp>(list);
+			rq.setBasemodle(resultPage); 
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		rq.setStatu(ReturnStatus.Success);
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 待审核、已通过、未通过 列表
+	 * @param tempid
+	 * @param status
+	 * @param index
+	 * @param size
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/applylist")
+	public String applylist(int tempid,int status, @RequestParam(required = false, defaultValue = "1")int index,@RequestParam(required = false, defaultValue = "20")int size) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			List<PMyproducttempapply>  applylist=tempApplyMapper.findMyProducttempApplyList(tempid, status);
+			PageInfo<PMyproducttempapply> reuslt=new PageInfo<PMyproducttempapply>(applylist); 
+			if(reuslt!=null&&reuslt.getList()!=null&&reuslt.getList().size()>0){
+				for (PMyproducttempapply apply : applylist) {
+					apply.setCreatetimestr(DateUtil.getTimeStr(apply.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
+					if(!ObjectUtil.isEmpty(apply.getVerfiytime())){
+						apply.setVerfiytimestr(DateUtil.getTimeStr(apply.getVerfiytime(), "yyyy-MM-dd HH:mm:ss"));
+					}
+					if(!ObjectUtil.isEmpty(apply.getBirthday())){
+						apply.setBirthdaystr(DateUtil.getTimeStr(apply.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
+					}
+				}
+			}		
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		rq.setStatu(ReturnStatus.Success);
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 	
 	
 	

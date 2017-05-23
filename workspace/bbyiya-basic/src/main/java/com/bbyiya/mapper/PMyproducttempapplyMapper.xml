@@ -34,7 +34,7 @@
   </select>
   <select id="getMyProducttempApplyByUserId" resultMap="BaseResultMap"  ><!-- 根据tempid,userid获取用户申请情况 -->
     select  <include refid="Base_Column_List" />
-    from p_myproducttempapply where TempId = #{tempid,jdbcType=INTEGER} and UserId=#{userid,jdbcType=BIGINT}
+    from p_myproducttempapply where TempId = #{tempid,jdbcType=INTEGER} and UserId=#{userid,jdbcType=BIGINT}  LIMIT 1
   </select>
   
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >

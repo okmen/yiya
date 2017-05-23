@@ -47,5 +47,5 @@ public interface IMyProductsDao {
 	 * @param userid
 	 * @return
 	 */
-    MyProductListVo getMyProductByTempId(@Param("tempid")Integer tempid,@Param("userid")Long userid);
+    List<MyProductListVo> getMyProductByTempId(@Param("tempid")Integer tempid,@Param("userid")Long userid);
 }

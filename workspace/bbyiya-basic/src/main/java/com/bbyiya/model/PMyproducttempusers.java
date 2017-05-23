@@ -16,6 +16,10 @@ public class PMyproducttempusers {
     private Integer passcount;
 
     private Date createtime;
+    
+    private String qRcodeUrl;
+    
+    private Integer tempStatus;
 
     public Long getId() {
         return id;
@@ -72,4 +76,21 @@ public class PMyproducttempusers {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+
+	public String getqRcodeUrl() {
+		return qRcodeUrl;
+	}
+
+	public void setqRcodeUrl(String qRcodeUrl) {
+		this.qRcodeUrl = qRcodeUrl;
+	}
+
+	public Integer getTempStatus() {
+		return tempStatus;
+	}
+
+	public void setTempStatus(Integer tempStatus) {
+		this.tempStatus = tempStatus;
+	}
+    
 }

@@ -19,7 +19,12 @@
     from p_myproducttempusers
     where UserId = #{userId,jdbcType=BIGINT} and TempId=#{tempId,jdbcType=BIGINT}
   </select>
-  
+   <select id="findTemplistBySunUserId" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from p_myproducttempusers
+    where UserId = #{userId,jdbcType=BIGINT} and Status=#{status,jdbcType=INTEGER} order by Id desc
+  </select>
   
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 

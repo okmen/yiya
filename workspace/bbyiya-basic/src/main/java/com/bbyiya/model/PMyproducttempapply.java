@@ -33,6 +33,7 @@ public class PMyproducttempapply {
     
     private Date birthday;
     private Integer isread;
+    private String receiver;
 
     /*****************添加的VO字段*************************/
 
@@ -197,6 +198,14 @@ public class PMyproducttempapply {
 	}
 	public void setIsread(Integer isread) {
 		this.isread = isread;
+	}
+
+	public String getReceiver() {
+		return receiver;
+	}
+
+	public void setReceiver(String receiver) {
+		this.receiver = receiver;
 	}
     
     

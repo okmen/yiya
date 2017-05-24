@@ -13,11 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OUserordersMapper;
+import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.UAgentcustomersMapper;
 import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UChildreninfoMapper;
+import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.CustomerSourceTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
@@ -31,15 +33,18 @@ import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UChildreninfo;
+import com.bbyiya.model.UUseraddress;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.dao.IMyProductsDao;
 import com.bbyiya.pic.service.IPic_MemberMgtService;
 import com.bbyiya.pic.vo.product.MyProductListVo;
 import com.bbyiya.service.IBaseUserCommonService;
+import com.bbyiya.service.IRegionService;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.agent.UAgentcustomersVo;
+import com.bbyiya.vo.product.MyProductResultVo;
 
 @Service("pic_memberMgtService")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
@@ -64,9 +69,13 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 	@Autowired
 	private OUserordersMapper orderMapper;
 	@Autowired
-	private IMyProductsDao myProductsDao;
+	private PMyproductsMapper myproductsMapper;
 	@Autowired
 	private PMyproducttempMapper tempMapper;
+	@Autowired
+	private UUseraddressMapper addressMapper;
+	@Resource(name = "regionServiceImpl")
+	private IRegionService regionService;
 	
 	public ReturnModel findBranchUserslistByBranchUserId(Long branchUserId){
 		ReturnModel rqModel=new ReturnModel();
@@ -186,6 +195,15 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 			if(order!=null){
 				cus.setLastBuyDateStr(DateUtil.getTimeStr(order.getOrdertime(), "yyyy-MM-dd HH:mm:ss"));
 			}
+			
+			//得到客户收货地址
+			UUseraddress address=addressMapper.get_UUserAddressDefault(cus.getUserid());
+			if(address!=null){
+				String province=regionService.getProvinceName(address.getProvince());
+				String city=regionService.getCityName(address.getCity());
+				String area=regionService.getAresName(address.getArea());
+				cus.setAddress(province+city+area+address.getStreetdetail());
+			}
 		}
 		rqModel.setStatu(ReturnStatus.Success);
 		rqModel.setBasemodle(list);
@@ -237,14 +255,18 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 			}
 			cus.setCartCount(0);
 			//得到制作中的作品集合
-			List<MyProductListVo> mylist=myProductsDao.findMyProductList(cus.getUserid(),cus.getPhone());
+			List<MyProductResultVo> mylist=myproductsMapper.findMyInviteProductslist(cus.getUserid(),cus.getPhone(),branchUserId);
 			if(mylist!=null){
-				List<String> cartIdList=new ArrayList<String>();
 				cus.setCartCount(mylist.size());
-				for (MyProductListVo pvo : mylist) {
-					cartIdList.add(pvo.getCartid().toString());
-				}
-				cus.setCartIdList(cartIdList);
+				cus.setCartIdList(mylist);
+			}
+			//得到客户收货地址
+			UUseraddress address=addressMapper.get_UUserAddressDefault(cus.getUserid());
+			if(address!=null){
+				String province=regionService.getProvinceName(address.getProvince());
+				String city=regionService.getCityName(address.getCity());
+				String area=regionService.getAresName(address.getArea());
+				cus.setAddress(province+city+area+address.getStreetdetail());
 			}
 		}
 		rqModel.setStatu(ReturnStatus.Success);

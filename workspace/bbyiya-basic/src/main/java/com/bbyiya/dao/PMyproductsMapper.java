@@ -64,7 +64,7 @@ public interface PMyproductsMapper {
 	PMyproducts getMyProductsByProductId(@Param("userId") Long userId,@Param("productId")Long productId, @Param("status") Integer status);
 
 	/**
-	 * 获取影楼分销作品 情况（跟踪）
+	 * 获取影楼(客户一对一)分销作品 情况
 	 * @param userIds
 	 * @param status
 	 * @param invitestatus
@@ -73,11 +73,18 @@ public interface PMyproductsMapper {
 	List<MyProductResultVo> findMyProductslistForBranch(@Param("list")List<Long> list,@Param("status") Integer status,@Param("invitestatus")Integer invitestatus);
 	
 	/**
-	 * 获取影楼分销作品 情况（跟踪）
+	 * 获取模板下的已获取客户作品
 	 * @param userIds
 	 * @param status
 	 * @param invitestatus
 	 * @return
 	 */
 	List<MyProductResultVo> findMyProductslistForTempId(@Param("list")List<Long> list,@Param("tempid") Integer tempid);
+	
+	/**
+	 * 获取客户受邀请制作中作品列表
+	 * @param invitestatus
+	 * @return
+	 */
+	List<MyProductResultVo> findMyInviteProductslist(@Param("inviteUserId")Long inviteUserId,@Param("phone")String phone,@Param("branchUserId")Long branchUserId);
 }

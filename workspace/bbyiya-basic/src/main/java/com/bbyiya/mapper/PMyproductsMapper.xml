@@ -83,8 +83,15 @@ where a.CartId=b.CartId and a.Status!=3 and a.Status!=4 and a.IsTemp=0 and (a.Te
     order by CreateTime desc 
   </select>
   
+  <!-- 06 find 我受邀的作品列表包括客户一对一加异业合作  -->
+  <select id="findMyInviteProductslist" resultMap="MyProductResultVO" >
+   select a.* from p_myproducts a,p_myproductsinvites b 
+		where a.CartId=b.CartId and a.Status!=3 and a.Status!=4 and a.IsTemp!=1 and (b.Status=3 or b.Status=4) and (b.InviteUserId=#{inviteUserId,jdbcType=BIGINT} or b.InvitePhone=#{phone,jdbcType=VARCHAR}) and b.UserId=#{branchUserId,jdbcType=BIGINT} 
+    order by b.CreateTime desc 
+  </select>
   
-   <select id="getMyProductsByProductId" resultMap="BaseResultMap" ><!-- 05 get 通过 UserId ，ProductId, Status 获取作品 -->
+   <!-- 07 get 通过 UserId ，ProductId, Status 获取作品 -->
+   <select id="getMyProductsByProductId" resultMap="BaseResultMap" >
     select <include refid="Base_Column_List" />
     from p_myproducts
     where UserId = #{userId,jdbcType=BIGINT} and ProductId=#{productId,jdbcType=BIGINT} and Status=#{status,jdbcType=INTEGER} order by  CartId desc 

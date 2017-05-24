@@ -4,6 +4,7 @@ package com.bbyiya.vo.agent;
 import java.util.List;
 
 import com.bbyiya.model.UAgentcustomers;
+import com.bbyiya.vo.product.MyProductResultVo;
 
 public class UAgentcustomersVo extends UAgentcustomers{
 	private String babyNickName; //宝宝昵称
@@ -11,8 +12,9 @@ public class UAgentcustomersVo extends UAgentcustomers{
 	private String lastBuyDateStr; // 最近购买日期
 	private String createtimeStr; //创建时间字符串类型
 	private Integer cartCount ; //制作的作品数
-	private List<String> cartIdList; //作品ID集合
+	private List<MyProductResultVo> cartIdList; //作品ID集合
 	private String sourcename;//客户来源名称
+	private String address; //收货地址
 	public String getBabyNickName() {
 		return babyNickName;
 	}
@@ -43,10 +45,10 @@ public class UAgentcustomersVo extends UAgentcustomers{
 	public void setCartCount(Integer cartCount) {
 		this.cartCount = cartCount;
 	}
-	public List<String> getCartIdList() {
+	public List<MyProductResultVo> getCartIdList() {
 		return cartIdList;
 	}
-	public void setCartIdList(List<String> cartIdList) {
+	public void setCartIdList(List<MyProductResultVo> cartIdList) {
 		this.cartIdList = cartIdList;
 	}
 	public String getSourcename() {
@@ -54,6 +56,12 @@ public class UAgentcustomersVo extends UAgentcustomers{
 	}
 	public void setSourcename(String sourcename) {
 		this.sourcename = sourcename;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
 	}
 	
 

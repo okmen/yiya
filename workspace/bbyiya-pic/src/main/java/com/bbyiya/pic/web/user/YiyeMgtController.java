@@ -198,6 +198,8 @@ public class YiyeMgtController  extends SSOController {
 						}
 						tempApplyMapper.insert(apply);
 						
+						temp.setApplycount(temp.getApplycount()==null?1:temp.getApplycount()+1);
+						tempMapper.updateByPrimaryKeySelective(temp); 
 						if(!isNeedVer){//TODO 不需要审核 调取 新增作品、客户信息
 							rq=ibs_tempService.doAcceptOrAutoTempApplyOpt(apply);
 						}else {
@@ -328,6 +330,16 @@ public class YiyeMgtController  extends SSOController {
 			PageHelper.startPage(index, size);
 			List<PMyproducttempapply>  applylist=tempApplyMapper.findMyProducttempApplyByUserId(user.getUserId());
 			PageInfo<PMyproducttempapply> reuslt=new PageInfo<PMyproducttempapply>(applylist); 
+			if(reuslt.getList()!=null&&reuslt.getList().size()>0){
+				for (PMyproducttempapply pp : reuslt.getList()) {
+					PMyproducttemp temp= tempMapper.selectByPrimaryKey(pp.getTempid()); 
+					if(temp!=null){
+						pp.setCartId(temp.getCartid());
+						pp.setTempName(temp.getTitle());
+					}
+					pp.setCreatetimestr(DateUtil.getTimeStr(pp.getCreatetime(), "yyyy-MM-dd HH:mm:ss")); 
+				} 
+			}
 			rq.setBasemodle(reuslt);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);

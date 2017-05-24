@@ -274,18 +274,18 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	 */
 	public ReturnModel audit_TempApplyUser(Long adminUserId,Long tempapplyid,Integer status){
 		ReturnModel rq=new ReturnModel();
-		rq.setStatu(ReturnStatus.SystemError);	
 		PMyproducttempapply apply=myproducttempapplyMapper.selectByPrimaryKey(tempapplyid);
 		if(apply!=null){	
-			apply.setStatus(status);
 			//审核通过操作  新增一份作品ID，插入影楼客户信息
 			if(status==Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString())){
 				apply.setVerfiytime(new Date());	
 				apply.setIsread(0);//消息状态置为未读
 				rq=doAcceptOrAutoTempApplyOpt(apply);			
 			}else{
-				rq.setStatusreson("拒绝成功！");
+				rq.setStatu(ReturnStatus.Success);
+				rq.setStatusreson("拒绝成功");
 			}
+			apply.setStatus(status);
 			myproducttempapplyMapper.updateByPrimaryKey(apply);			
 		}else{
 			rq.setStatu(ReturnStatus.SystemError);
@@ -308,7 +308,15 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		if(temp==null){
 			rq.setStatu(ReturnStatus.SystemError);
 			rq.setStatusreson("模板不存在！");
+			return rq;
 		}
+		//判断是否已审核通过已生成过客户扫码的作品
+		if(apply.getStatus()!=null&&apply.getStatus()==Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString())){
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("审核已通过！");
+			return rq;
+		}
+		
 		//得到模板作品
 		PMyproducts myproducts= myMapper.selectByPrimaryKey(temp.getCartid());
 		if(myproducts!=null){	
@@ -408,9 +416,14 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 					cus.setUserid(apply.getUserid());
 					cus.setStatus(1);
 					cus.setPhone(invoMo.getInvitephone());
-					UUsers user=usersMapper.selectByPrimaryKey(apply.getUserid());
-					if(user!=null){
-						cus.setName(user.getNickname());
+					cus.setAddress(apply.getAdress());
+					if(ObjectUtil.isEmpty(apply.getUsername())){
+						UUsers user=usersMapper.selectByPrimaryKey(apply.getUserid());
+						if(user!=null){
+							cus.setName(user.getNickname());
+						}
+					}else{
+						cus.setName(apply.getUsername());
 					}
 					cus.setCreatetime(new Date());
 					cus.setIsmarket(1);

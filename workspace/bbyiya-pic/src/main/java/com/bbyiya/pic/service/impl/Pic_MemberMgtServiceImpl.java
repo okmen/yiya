@@ -195,14 +195,15 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 			if(order!=null){
 				cus.setLastBuyDateStr(DateUtil.getTimeStr(order.getOrdertime(), "yyyy-MM-dd HH:mm:ss"));
 			}
-			
 			//得到客户收货地址
-			UUseraddress address=addressMapper.get_UUserAddressDefault(cus.getUserid());
-			if(address!=null){
-				String province=regionService.getProvinceName(address.getProvince());
-				String city=regionService.getCityName(address.getCity());
-				String area=regionService.getAresName(address.getArea());
-				cus.setAddress(province+city+area+address.getStreetdetail());
+			if(ObjectUtil.isEmpty(cus.getAddress())){
+				UUseraddress address=addressMapper.get_UUserAddressDefault(cus.getUserid());
+				if(address!=null){
+					String province=regionService.getProvinceName(address.getProvince());
+					String city=regionService.getCityName(address.getCity());
+					String area=regionService.getAresName(address.getArea());
+					cus.setAddress(province+city+area+address.getStreetdetail());
+				}
 			}
 		}
 		rqModel.setStatu(ReturnStatus.Success);
@@ -261,13 +262,16 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 				cus.setCartIdList(mylist);
 			}
 			//得到客户收货地址
-			UUseraddress address=addressMapper.get_UUserAddressDefault(cus.getUserid());
-			if(address!=null){
-				String province=regionService.getProvinceName(address.getProvince());
-				String city=regionService.getCityName(address.getCity());
-				String area=regionService.getAresName(address.getArea());
-				cus.setAddress(province+city+area+address.getStreetdetail());
+			if(ObjectUtil.isEmpty(cus.getAddress())){
+				UUseraddress address=addressMapper.get_UUserAddressDefault(cus.getUserid());
+				if(address!=null){
+					String province=regionService.getProvinceName(address.getProvince());
+					String city=regionService.getCityName(address.getCity());
+					String area=regionService.getAresName(address.getArea());
+					cus.setAddress(province+city+area+address.getStreetdetail());
+				}
 			}
+			
 		}
 		rqModel.setStatu(ReturnStatus.Success);
 		rqModel.setBasemodle(list);

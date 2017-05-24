@@ -14,6 +14,8 @@ public class UAgentcustomers {
     private String phone;
 
     private String name;
+    
+    private String address;
 
     private Integer status;
 
@@ -99,6 +101,13 @@ public class UAgentcustomers {
 
     public void setName(String name) {
         this.name = name == null ? null : name.trim();
+    }
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address == null ? null : address.trim();
     }
 
     public Integer getStatus() {

@@ -8,18 +8,20 @@
     <result column="AgentUserId" property="agentuserid" jdbcType="BIGINT" />
     <result column="Phone" property="phone" jdbcType="VARCHAR" />
     <result column="Name" property="name" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
     <result column="Status" property="status" jdbcType="INTEGER" />
     <result column="Remark" property="remark" jdbcType="VARCHAR" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
-     <result column="IsMarket" property="ismarket" jdbcType="INTEGER" />
+    <result column="IsMarket" property="ismarket" jdbcType="INTEGER" />
     <result column="SourceType" property="sourcetype" jdbcType="INTEGER" />
     <result column="StaffUserId" property="staffuserid" jdbcType="BIGINT" />
     <result column="ExtId" property="extid" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    CustomerId, UserId, BranchUserId, AgentUserId, Phone, Name, Status, Remark, CreateTime, 
-    IsMarket, SourceType, StaffUserId
+    CustomerId, UserId, BranchUserId, AgentUserId, Phone, Name, address, Status, Remark, 
+    CreateTime, IsMarket, SourceType, StaffUserId, ExtId
   </sql>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -51,7 +53,7 @@
     from u_agentcustomers
     where AgentUserId = #{agentUserId,jdbcType=BIGINT} and UserId= #{userId,jdbcType=BIGINT}
   </select>
-  
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from u_agentcustomers
     where CustomerId = #{customerid,jdbcType=BIGINT}
@@ -59,14 +61,14 @@
   <insert id="insert" parameterType="com.bbyiya.model.UAgentcustomers" >
     insert into u_agentcustomers (CustomerId, UserId, BranchUserId, 
       AgentUserId, Phone, Name, 
-      Status, Remark, CreateTime, 
-      IsMarket, SourceType, StaffUserId, 
-      ExtId)
+      address, Status, Remark, 
+      CreateTime, IsMarket, SourceType, 
+      StaffUserId, ExtId)
     values (#{customerid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{branchuserid,jdbcType=BIGINT}, 
       #{agentuserid,jdbcType=BIGINT}, #{phone,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{status,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
-      #{ismarket,jdbcType=INTEGER}, #{sourcetype,jdbcType=INTEGER}, #{staffuserid,jdbcType=BIGINT}, 
-      #{extid,jdbcType=INTEGER})
+      #{address,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{ismarket,jdbcType=INTEGER}, #{sourcetype,jdbcType=INTEGER}, 
+      #{staffuserid,jdbcType=BIGINT}, #{extid,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.UAgentcustomers" >
     insert into u_agentcustomers
@@ -88,6 +90,9 @@
       </if>
       <if test="name != null" >
         Name,
+      </if>
+      <if test="address != null" >
+        address,
       </if>
       <if test="status != null" >
         Status,
@@ -130,6 +135,9 @@
       <if test="name != null" >
         #{name,jdbcType=VARCHAR},
       </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
       <if test="status != null" >
         #{status,jdbcType=INTEGER},
       </if>
@@ -171,6 +179,9 @@
       <if test="name != null" >
         Name = #{name,jdbcType=VARCHAR},
       </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
       <if test="status != null" >
         Status = #{status,jdbcType=INTEGER},
       </if>
@@ -202,6 +213,7 @@
       AgentUserId = #{agentuserid,jdbcType=BIGINT},
       Phone = #{phone,jdbcType=VARCHAR},
       Name = #{name,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
       Status = #{status,jdbcType=INTEGER},
       Remark = #{remark,jdbcType=VARCHAR},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},

@@ -232,6 +232,7 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 							 customer.setPhone(address.getPhone());
 							 customer.setName(address.getReciver());
 							 customer.setRemark(address.getStreetdetail());
+							 customer.setAddress(address.getStreetdetail());
 							 customer.setIsmarket(0);
 							 customer.setSourcetype(Integer.parseInt(CustomerSourceTypeEnum.other.toString()));
 							 memberMgtService.addCustomer(branchUserId, customer);

@@ -3,156 +3,158 @@ package com.bbyiya.model;
 import java.util.Date;
 
 public class PMyproducttempapply {
-    private Long tempapplyid;
+	private Long tempapplyid;
 
-    private Integer tempid;
+	private Integer tempid;
 
-    private Long userid;
-    
-    private String mobilephone;
+	private Long userid;
 
-    private Integer province;
+	private String mobilephone;
 
-    private Integer city;
+	private Integer province;
 
-    private Integer area;
+	private Integer city;
 
-    private String street;
+	private Integer area;
 
-    private String adress;
+	private String street;
 
-    private Integer isdue;
+	private String adress;
 
-    private Long companyuserid;
+	private Integer isdue;
 
-    private Integer status;
+	private Long companyuserid;
 
-    private Date createtime;
+	private Integer status;
 
-    private Date verfiytime;
-    
-    private Date birthday;
-    private Integer isread;
-    private String receiver;
+	private Date createtime;
 
-    /*****************添加的VO字段*************************/
+	private Date verfiytime;
 
-   
-    private String createtimestr;
-    private String verfiytimestr;
-    private String birthdaystr;
-    private String username;//客户名称
-    public Long getTempapplyid() {
-        return tempapplyid;
-    }
+	private Date birthday;
+	private Integer isread;
+	private String receiver;
 
-    public void setTempapplyid(Long tempapplyid) {
-        this.tempapplyid = tempapplyid;
-    }
+	/***************** 添加的VO字段 *************************/
 
-    public Integer getTempid() {
-        return tempid;
-    }
+	private String tempName;
+	private Long cartId;
+	private String createtimestr;
+	private String verfiytimestr;
+	private String birthdaystr;
+	private String username;// 客户名称
 
-    public void setTempid(Integer tempid) {
-        this.tempid = tempid;
-    }
+	public Long getTempapplyid() {
+		return tempapplyid;
+	}
 
-    public Long getUserid() {
-        return userid;
-    }
+	public void setTempapplyid(Long tempapplyid) {
+		this.tempapplyid = tempapplyid;
+	}
 
-    public void setUserid(Long userid) {
-        this.userid = userid;
-    }
+	public Integer getTempid() {
+		return tempid;
+	}
 
-    public String getMobilephone() {
-        return mobilephone;
-    }
+	public void setTempid(Integer tempid) {
+		this.tempid = tempid;
+	}
 
-    public void setMobilephone(String mobilephone) {
-        this.mobilephone = mobilephone == null ? null : mobilephone.trim();
-    }
+	public Long getUserid() {
+		return userid;
+	}
 
-    public Integer getProvince() {
-        return province;
-    }
+	public void setUserid(Long userid) {
+		this.userid = userid;
+	}
 
-    public void setProvince(Integer province) {
-        this.province = province;
-    }
+	public String getMobilephone() {
+		return mobilephone;
+	}
 
-    public Integer getCity() {
-        return city;
-    }
+	public void setMobilephone(String mobilephone) {
+		this.mobilephone = mobilephone == null ? null : mobilephone.trim();
+	}
 
-    public void setCity(Integer city) {
-        this.city = city;
-    }
+	public Integer getProvince() {
+		return province;
+	}
 
-    public Integer getArea() {
-        return area;
-    }
+	public void setProvince(Integer province) {
+		this.province = province;
+	}
 
-    public void setArea(Integer area) {
-        this.area = area;
-    }
+	public Integer getCity() {
+		return city;
+	}
 
-    public String getStreet() {
-        return street;
-    }
+	public void setCity(Integer city) {
+		this.city = city;
+	}
 
-    public void setStreet(String street) {
-        this.street = street == null ? null : street.trim();
-    }
+	public Integer getArea() {
+		return area;
+	}
 
-    public String getAdress() {
-        return adress;
-    }
+	public void setArea(Integer area) {
+		this.area = area;
+	}
 
-    public void setAdress(String adress) {
-        this.adress = adress == null ? null : adress.trim();
-    }
+	public String getStreet() {
+		return street;
+	}
 
-    public Integer getIsdue() {
-        return isdue;
-    }
+	public void setStreet(String street) {
+		this.street = street == null ? null : street.trim();
+	}
 
-    public void setIsdue(Integer isdue) {
-        this.isdue = isdue;
-    }
+	public String getAdress() {
+		return adress;
+	}
 
-    public Long getCompanyuserid() {
-        return companyuserid;
-    }
+	public void setAdress(String adress) {
+		this.adress = adress == null ? null : adress.trim();
+	}
 
-    public void setCompanyuserid(Long companyuserid) {
-        this.companyuserid = companyuserid;
-    }
+	public Integer getIsdue() {
+		return isdue;
+	}
 
-    public Integer getStatus() {
-        return status;
-    }
+	public void setIsdue(Integer isdue) {
+		this.isdue = isdue;
+	}
 
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
+	public Long getCompanyuserid() {
+		return companyuserid;
+	}
 
-    public Date getCreatetime() {
-        return createtime;
-    }
+	public void setCompanyuserid(Long companyuserid) {
+		this.companyuserid = companyuserid;
+	}
 
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
-    }
+	public Integer getStatus() {
+		return status;
+	}
 
-    public Date getVerfiytime() {
-        return verfiytime;
-    }
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
 
-    public void setVerfiytime(Date verfiytime) {
-        this.verfiytime = verfiytime;
-    }
+	public Date getCreatetime() {
+		return createtime;
+	}
+
+	public void setCreatetime(Date createtime) {
+		this.createtime = createtime;
+	}
+
+	public Date getVerfiytime() {
+		return verfiytime;
+	}
+
+	public void setVerfiytime(Date verfiytime) {
+		this.verfiytime = verfiytime;
+	}
 
 	public String getCreatetimestr() {
 		return createtimestr;
@@ -185,6 +187,7 @@ public class PMyproducttempapply {
 	public void setBirthdaystr(String birthdaystr) {
 		this.birthdaystr = birthdaystr;
 	}
+
 	public String getUsername() {
 		return username;
 	}
@@ -196,6 +199,7 @@ public class PMyproducttempapply {
 	public Integer getIsread() {
 		return isread;
 	}
+
 	public void setIsread(Integer isread) {
 		this.isread = isread;
 	}
@@ -207,6 +211,23 @@ public class PMyproducttempapply {
 	public void setReceiver(String receiver) {
 		this.receiver = receiver;
 	}
-    
-    
+
+	public String getTempName() {
+		return tempName;
+	}
+
+	public void setTempName(String tempName) {
+		this.tempName = tempName;
+	}
+
+	public Long getCartId() {
+		return cartId;
+	}
+
+	public void setCartId(Long cartId) {
+		this.cartId = cartId;
+	}
+
+	
+
 }

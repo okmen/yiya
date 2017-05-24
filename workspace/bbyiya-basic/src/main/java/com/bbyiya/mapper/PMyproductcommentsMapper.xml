@@ -32,6 +32,12 @@
     from p_myproductcomments
     where CartId = #{cartid,jdbcType=BIGINT} GROUP BY UserId  ORDER BY Id DESC 
   </select>
+  <select id="countCommentByUserId"  resultType="java.lang.Integer" ><!-- 02作品评论者头像列表 -->
+    select count(*)
+    from p_myproductcomments
+    where CartId = #{cartid,jdbcType=BIGINT} and UserId= #{userid,jdbcType=BIGINT}
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from p_myproductcomments
     where Id = #{id,jdbcType=BIGINT}

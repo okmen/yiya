@@ -18,6 +18,14 @@ public interface PMyproductcommentsMapper {
     int updateByPrimaryKeySelective(PMyproductcomments record);
 
     int updateByPrimaryKey(PMyproductcomments record);
+    
+    /**
+     * 
+     * @param cartid
+     * @param userid
+     * @return
+     */
+    int countCommentByUserId(@Param("cartid")Long cartid,@Param("userid")Long userid);
     /**
      * 作品评论列表
      * @param cartid

@@ -10,11 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bbyiya.dao.PCommentstempMapper;
 import com.bbyiya.dao.PCommentstipsMapper;
 import com.bbyiya.dao.PMyproductcommentsMapper;
+import com.bbyiya.dao.PMyproductextMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.PCommentstemp;
 import com.bbyiya.model.PCommentstips;
 import com.bbyiya.model.PMyproductcomments;
+import com.bbyiya.model.PMyproductext;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.service.IPic_CommentService;
 import com.bbyiya.utils.ConfigUtil;
@@ -34,7 +36,8 @@ public class Pic_CommentServiceImpl implements IPic_CommentService{
 	private UUsersMapper usersMapper;
 	@Autowired
 	private PMyproductcommentsMapper myproductcommentsMapper;
-	
+	@Autowired
+	private PMyproductextMapper myproductextMapper;
 	
 	public List<PCommentstemp> findCommentResultList(Long productId){
 		List<PCommentstemp> list=commentstempMapper.findTempsByProductId(productId);
@@ -66,9 +69,14 @@ public class Pic_CommentServiceImpl implements IPic_CommentService{
 			rqModel.setStatusreson("用户不存在");
 			return rqModel;
 		}
+		int count=myproductcommentsMapper.countCommentByUserId(param.getCartid(),userId);
 		param.setUserid(userId);
 		param.setCreatetime(new Date());
 		myproductcommentsMapper.insertSelective(param);
+		PMyproductext ext=new PMyproductext();
+		ext.setCartid(param.getCartid());
+		ext.setCommentscount(count+1);
+		myproductextMapper.insert(ext);
 		rqModel.setStatu(ReturnStatus.Success);
 		rqModel.setStatusreson("成功！"); 
 		return rqModel;

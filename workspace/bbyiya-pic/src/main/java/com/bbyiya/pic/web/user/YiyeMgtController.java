@@ -21,6 +21,7 @@ import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
 import com.bbyiya.dao.PMyproducttempusersMapper;
 import com.bbyiya.dao.UUseraddressMapper;
+import com.bbyiya.enums.MyProductTempStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
 import com.bbyiya.model.PMyproducts;
@@ -39,7 +40,6 @@ import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
-import com.bbyiya.vo.product.MyProductResultVo;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
 import com.github.pagehelper.PageHelper;
@@ -149,6 +149,11 @@ public class YiyeMgtController  extends SSOController {
 				if(myproducts!=null&&myproducts.getIstemp()!=null&&myproducts.getTempid()!=null){
 					PMyproducttemp temp= tempMapper.selectByPrimaryKey(myproducts.getTempid());
 					if(temp!=null){
+						if(temp.getStatus()!=null&&temp.getStatus().intValue()!=Integer.parseInt(MyProductTempStatusEnum.enable.toString())){
+							rq.setStatu(ReturnStatus.ParamError);
+							rq.setStatusreson("不好意思，活动已过期（或已失效）");
+							return JsonUtil.objectToJsonStr(rq);
+						}
 						/*--------------------已经提交过申请---------------------------------------*/
 						PMyproducttempapply applyOld= tempApplyMapper.getMyProducttempApplyByUserId(temp.getTempid(), user.getUserId());
 						if(applyOld!=null){

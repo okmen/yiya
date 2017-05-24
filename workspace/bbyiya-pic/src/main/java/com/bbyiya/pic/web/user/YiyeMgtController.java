@@ -281,6 +281,7 @@ public class YiyeMgtController  extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
+			PageHelper.startPage(index, size);
 			List<PMyproducttempapply>  applylist=tempApplyMapper.findMyProducttempApplyList(tempid, status);
 			PageInfo<PMyproducttempapply> reuslt=new PageInfo<PMyproducttempapply>(applylist); 
 			if(reuslt!=null&&reuslt.getList()!=null&&reuslt.getList().size()>0){
@@ -318,6 +319,7 @@ public class YiyeMgtController  extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
+			PageHelper.startPage(index, size);
 			List<PMyproducttempapply>  applylist=tempApplyMapper.findMyProducttempApplyByUserId(user.getUserId());
 			PageInfo<PMyproducttempapply> reuslt=new PageInfo<PMyproducttempapply>(applylist); 
 			rq.setBasemodle(reuslt);

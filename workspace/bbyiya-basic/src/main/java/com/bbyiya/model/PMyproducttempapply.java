@@ -8,7 +8,7 @@ public class PMyproducttempapply {
     private Integer tempid;
 
     private Long userid;
-
+    
     private String mobilephone;
 
     private Integer province;
@@ -32,12 +32,15 @@ public class PMyproducttempapply {
     private Date verfiytime;
     
     private Date birthday;
-    
     private Integer isread;
-    
+
+    /*****************添加的VO字段*************************/
+
+   
     private String createtimestr;
     private String verfiytimestr;
     private String birthdaystr;
+    private String username;//客户名称
     public Long getTempapplyid() {
         return tempapplyid;
     }
@@ -181,11 +184,17 @@ public class PMyproducttempapply {
 	public void setBirthdaystr(String birthdaystr) {
 		this.birthdaystr = birthdaystr;
 	}
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
 	public Integer getIsread() {
 		return isread;
 	}
-
 	public void setIsread(Integer isread) {
 		this.isread = isread;
 	}

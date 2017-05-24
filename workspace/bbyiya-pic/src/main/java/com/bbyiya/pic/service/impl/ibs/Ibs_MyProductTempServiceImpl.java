@@ -255,6 +255,8 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 				if(!ObjectUtil.isEmpty(apply.getBirthday())){
 					apply.setBirthdaystr(DateUtil.getTimeStr(apply.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
 				}
+				UUsers user=usersMapper.selectByPrimaryKey(apply.getUserid());
+				if(user!=null) apply.setUsername(user.getNickname());
 			}
 		}		
 		rq.setBasemodle(reuslt);
@@ -278,7 +280,8 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			apply.setStatus(status);
 			//审核通过操作  新增一份作品ID，插入影楼客户信息
 			if(status==Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString())){
-				apply.setVerfiytime(new Date());				
+				apply.setVerfiytime(new Date());	
+				apply.setIsread(0);//消息状态置为未读
 				rq=doAcceptOrAutoTempApplyOpt(apply);			
 			}else{
 				rq.setStatusreson("拒绝成功！");

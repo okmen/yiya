@@ -29,8 +29,9 @@
     select 
     <include refid="Base_Column_List" />
     from p_myproducttemp
-    where BranchUserId = #{branchuserid,jdbcType=BIGINT} and Status!=2 order by Status desc,CreateTime desc
+    where BranchUserId = #{branchuserid,jdbcType=BIGINT} and Status!=2 order by CreateTime desc
   </select>
+  <!-- 获取影楼 需要审核的模板列表 -->
   <select id="findBranchMyProductTempNeedVerList" resultMap="BaseResultMap" >
     select  <include refid="Base_Column_List" />
     from p_myproducttemp

@@ -86,7 +86,7 @@ where a.CartId=b.CartId and a.Status!=3 and a.Status!=4 and a.IsTemp=0 and (a.Te
   <!-- 06 find 我受邀的作品列表包括客户一对一加异业合作  -->
   <select id="findMyInviteProductslist" resultMap="MyProductResultVO" >
    select a.* from p_myproducts a,p_myproductsinvites b 
-		where a.CartId=b.CartId and a.Status!=3 and a.Status!=4 and a.IsTemp!=1 and (b.Status=3 or b.Status=4) and (b.InviteUserId=#{inviteUserId,jdbcType=BIGINT} or b.InvitePhone=#{phone,jdbcType=VARCHAR}) and b.UserId=#{branchUserId,jdbcType=BIGINT} 
+		where a.CartId=b.CartId and a.Status!=3 and a.Status!=4 and a.IsTemp!=1 and (b.Status=3 or b.Status=4) and (b.InviteUserId=#{inviteUserId,jdbcType=BIGINT} or  b.InvitePhone=#{phone,jdbcType=VARCHAR}) and b.UserId=#{branchUserId,jdbcType=BIGINT} 
     order by b.CreateTime desc 
   </select>
   

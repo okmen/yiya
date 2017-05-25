@@ -53,6 +53,7 @@ import com.bbyiya.pic.vo.agent.UBranchVo;
 import com.bbyiya.service.IBaseUserCommonService;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -764,12 +765,18 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 	 * @return
 	 */
 	public UBranchVo getBranchInfo(Long branchUserId){	
-		UBranchVo branch=agentDao.getUBranchVoByBranchUserId(branchUserId);
-		if(branch!=null){
-			branch.setProviceName(regionService.getProvinceName(branch.getProvince())) ;
-			branch.setCityName(regionService.getCityName(branch.getCity())) ;
-			branch.setAreaName(regionService.getAresName(branch.getArea())) ;	
-			branch.setAgentArealist(getAgentArealistByAgentUserID(branch.getAgentuserid())); 
+		//加入缓存半个小时
+		String keyString="ubranchvo_"+branchUserId;
+		UBranchVo branch=(UBranchVo) RedisUtil.getObject(keyString);
+		if(branch==null){
+			branch=agentDao.getUBranchVoByBranchUserId(branchUserId);
+			if(branch!=null){
+				branch.setProviceName(regionService.getProvinceName(branch.getProvince())) ;
+				branch.setCityName(regionService.getCityName(branch.getCity())) ;
+				branch.setAreaName(regionService.getAresName(branch.getArea())) ;	
+				branch.setAgentArealist(getAgentArealistByAgentUserID(branch.getAgentuserid())); 
+			}
+			RedisUtil.setObject(keyString, branch, 1800);
 		}		
 		return branch;		
 	}

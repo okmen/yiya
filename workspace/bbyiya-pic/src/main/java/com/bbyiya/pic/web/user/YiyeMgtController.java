@@ -159,13 +159,17 @@ public class YiyeMgtController  extends SSOController {
 						if(applyOld!=null){
 							if(applyOld.getStatus()!=null&&applyOld.getStatus().intValue()==Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString())){
 								List<MyProductListVo>list= myproductDao.getMyProductByTempId(temp.getTempid(), user.getUserId());
-								Map<String, Object> map = new HashMap<String, Object>();
-								map.put("tempId", myproducts.getTempid());
-								map.put("mycartid", list.get(0).getCartid());
-								rq.setBasemodle(map); 
+								if(list!=null&&list.size()>0){
+									Map<String, Object> map = new HashMap<String, Object>();
+									map.put("tempId", myproducts.getTempid());
+									map.put("mycartid", list.get(0).getCartid());
+									rq.setBasemodle(map);
+									rq.setStatu(ReturnStatus.Success);
+									return JsonUtil.objectToJsonStr(rq);
+								} 
 							}
-							rq.setStatu(ReturnStatus.Success);
-							rq.setStatusreson("提交申请成功！");
+							rq.setStatu(ReturnStatus.ParamError);
+							rq.setStatusreson("您已提交过申请！");
 							return JsonUtil.objectToJsonStr(rq);
 						}/*-----------------------------------------------------------------------*/
 						
@@ -186,18 +190,13 @@ public class YiyeMgtController  extends SSOController {
 						apply.setBirthday(param.getDateTime());
 						apply.setCreatetime(new Date());
 						apply.setCompanyuserid(param.getSubUserId());
+						apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.apply.toString()));
 						
 						boolean isNeedVer=false;
 						if(temp.getNeedverifer()!=null&&temp.getNeedverifer().intValue()>0){
 							//需要审核
-							apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.apply.toString()));
 							isNeedVer=true;
-						}else {
-							//不需要审核
-							apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString()));
 						}
-						tempApplyMapper.insert(apply);
-						
 						if(param.getSubUserId()>0){
 							PMyproducttempusers tempUser= tempUsrMapper.selectByUserIdAndTempId(param.getSubUserId(), temp.getTempid());
 							if(tempUser!=null){
@@ -205,17 +204,22 @@ public class YiyeMgtController  extends SSOController {
 								tempUsrMapper.updateByPrimaryKeySelective(tempUser); 
 							}
 						}
-						
+						//异业模板 申请人数+1
 						temp.setApplycount(temp.getApplycount()==null?1:temp.getApplycount()+1);
 						tempMapper.updateByPrimaryKeySelective(temp); 
 						
 						
-						if(!isNeedVer){//TODO 不需要审核 调取 新增作品、客户信息
+						if(!isNeedVer){// 不需要审核 调取 新增作品、客户信息
 							rq=ibs_tempService.doAcceptOrAutoTempApplyOpt(apply);
-						}else {
-							rq.setStatu(ReturnStatus.Success);
-							rq.setStatusreson("提交申请成功！");
+							if(rq.getStatu().equals(ReturnStatus.Success)){
+								apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString()));
+							}
 						}
+						//插入申请提交信息
+						tempApplyMapper.insert(apply);
+						
+						rq.setStatu(ReturnStatus.Success);
+						rq.setStatusreson("提交申请成功！");
 					}
 				}else {
 					rq.setStatusreson("此活动已失效！");

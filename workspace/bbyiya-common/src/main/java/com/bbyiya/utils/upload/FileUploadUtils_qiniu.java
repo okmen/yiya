@@ -57,7 +57,7 @@ public class FileUploadUtils_qiniu {
 			Response res = uploadManager.put(FilePath, key, getUpToken());
 			JSONObject object = JSONObject.fromObject(res.bodyString());
 			if (object != null) {
-				return ConfigUtil.getSingleValue("qiniu_imagedomain") + String.valueOf(object.get("key"));
+				return ConfigUtil.getSingleValue("qiniu_imagedomain_cdn") + String.valueOf(object.get("key"));
 			}
 		} catch (Exception e) {
 			// TODO: handle exception

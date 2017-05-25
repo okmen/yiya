@@ -60,7 +60,7 @@ public class InviteMgtController  extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq=myProductService.processInvite(user.getMobilePhone(), cartId, status);
+			rq=myProductService.processInvite(cartId,user.getUserId(), status);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期，请重新登录");

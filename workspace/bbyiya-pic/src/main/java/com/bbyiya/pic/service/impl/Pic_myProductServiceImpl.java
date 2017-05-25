@@ -81,6 +81,8 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 	private IMyProductsDao myProductsDao;
 	@Autowired
 	private UUsersMapper usersMapper;
+	@Autowired
+	private PMyproducttempapplyMapper tempApplyMapper;
 	/**
 	 * 协同编辑 邀请 
 	 */
@@ -507,7 +509,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 	
 	public ReturnModel processInvite(String phone, Long cartId, int status) {
 		ReturnModel rq = new ReturnModel();
-		PMyproductsinvites invite = inviteMapper.getInviteByPhoneAndCartId(phone, cartId); //inviteMapper.selectByPrimaryKey(inviteId);
+		PMyproductsinvites invite = inviteMapper.getInviteByPhoneAndCartId(phone, cartId);
 		if (invite != null) {
 			if (phone.equals(invite.getInvitephone())) {
 				invite.setStatus(status);
@@ -521,8 +523,29 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 		rq.setStatusreson("已经过期的邀请！");
 		return rq;
 	}
-	@Autowired
-	private PMyproducttempapplyMapper tempApplyMapper;
+	
+	public ReturnModel processInvite(Long cartId,Long userId, int status) {
+		ReturnModel rq = new ReturnModel();
+		PMyproducts myproducts= myproductsMapper.selectByPrimaryKey(cartId);
+		if(myproducts!=null&&myproducts.getInvitestatus()!=null&&myproducts.getInvitestatus().intValue()>0){
+			myproducts.setInvitestatus(status);
+			myproductsMapper.updateByPrimaryKeySelective(myproducts);
+		}
+		List<PMyproductsinvites> invitelist = inviteMapper.findListByCartId(cartId);
+		for (PMyproductsinvites pp : invitelist) {
+			if(pp.getInviteuserid()!=null&&pp.getInviteuserid().longValue()==userId){
+				pp.setStatus(status);
+				inviteMapper.updateByPrimaryKeySelective(pp);
+			}else if (pp.getUserid()!=null&&pp.getUserid().longValue()==userId) {
+				pp.setStatus(status);
+				inviteMapper.updateByPrimaryKeySelective(pp);
+			}
+		}
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("处理成功！");
+		return rq;
+	}
+	
 	/**
 	 * 我的 个人信息提示
 	 */

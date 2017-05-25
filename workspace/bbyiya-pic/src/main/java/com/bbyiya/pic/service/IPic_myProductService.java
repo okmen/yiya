@@ -21,6 +21,14 @@ public interface IPic_myProductService {
 	 * @return
 	 */
 	ReturnModel processInvite(String phone, Long cartId, int status);
+	/**
+	 * 协同邀请 处理
+	 * @param cartId
+	 * @param userId
+	 * @param status
+	 * @return
+	 */
+	ReturnModel processInvite(Long cartId,Long userId, int status);
 	
 	/**
 	 * 我的个人提示信息

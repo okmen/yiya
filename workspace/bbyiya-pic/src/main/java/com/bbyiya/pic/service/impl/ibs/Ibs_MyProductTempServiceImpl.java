@@ -162,6 +162,14 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 				}else{//禁用
 					temp.setStatus(Integer.parseInt(MyProductTempStatusEnum.disabled.toString()));			
 					myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.disabled.toString()));
+					//将模板的待审核用户的状态全置为审核失败
+					List<PMyproducttempapply>  applylist=myproducttempapplyMapper.findMyProducttempApplyList(tempid, Integer.parseInt(MyProducttempApplyStatusEnum.apply.toString()));
+					if(applylist!=null&&applylist.size()>0){
+						for (PMyproducttempapply apply : applylist) {
+							apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.refuse.toString()));
+							myproducttempapplyMapper.updateByPrimaryKeySelective(apply);
+						}
+					}
 				}
 			}
 			myMapper.updateByPrimaryKey(myproduct);
@@ -190,6 +198,14 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.deleted.toString()));
 			myMapper.updateByPrimaryKey(myproduct);
 			myproducttempMapper.updateByPrimaryKey(temp);
+			//将模板的待审核用户的状态全置为审核失败
+			List<PMyproducttempapply>  applylist=myproducttempapplyMapper.findMyProducttempApplyList(tempid, Integer.parseInt(MyProducttempApplyStatusEnum.apply.toString()));
+			if(applylist!=null&&applylist.size()>0){
+				for (PMyproducttempapply apply : applylist) {
+					apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.refuse.toString()));
+					myproducttempapplyMapper.updateByPrimaryKeySelective(apply);
+				}
+			}
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("删除操作成功");
 		}else{

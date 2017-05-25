@@ -31,6 +31,11 @@
     from p_myproducttemp
     where BranchUserId = #{branchuserid,jdbcType=BIGINT} and Status!=2 order by Status desc,CreateTime desc
   </select>
+  <select id="findBranchMyProductTempNeedVerList" resultMap="BaseResultMap" >
+    select  <include refid="Base_Column_List" />
+    from p_myproducttemp
+    where BranchUserId = #{branchuserid,jdbcType=BIGINT} and  NeedVerifer=1 order by CreateTime desc
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from p_myproducttemp
     where TempId = #{tempid,jdbcType=INTEGER}

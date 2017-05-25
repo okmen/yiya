@@ -198,8 +198,18 @@ public class YiyeMgtController  extends SSOController {
 						}
 						tempApplyMapper.insert(apply);
 						
+						if(param.getSubUserId()>0){
+							PMyproducttempusers tempUser= tempUsrMapper.selectByUserIdAndTempId(param.getSubUserId(), temp.getTempid());
+							if(tempUser!=null){
+								tempUser.setApplycount(tempUser.getApplycount()==null?1:tempUser.getApplycount()+1);
+								tempUsrMapper.updateByPrimaryKeySelective(tempUser); 
+							}
+						}
+						
 						temp.setApplycount(temp.getApplycount()==null?1:temp.getApplycount()+1);
 						tempMapper.updateByPrimaryKeySelective(temp); 
+						
+						
 						if(!isNeedVer){//TODO 不需要审核 调取 新增作品、客户信息
 							rq=ibs_tempService.doAcceptOrAutoTempApplyOpt(apply);
 						}else {
@@ -240,7 +250,7 @@ public class YiyeMgtController  extends SSOController {
 						String redirct_url="apply/form?workId="+URLEncoder.encode(temp.getCartid().toString(),"utf-8")+"&uid="+URLEncoder.encode(user.getUserId().toString(),"utf-8");
 						redirct_url=redirct_url+"&sid="+URLEncoder.encode(user.getUserId().toString(),"utf-8");
 						String urlstr= ConfigUtil.getSingleValue("shareulr-base")+"redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
-						urlstr="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+urlstr;
+						urlstr="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+URLEncoder.encode(urlstr,"utf-8");
 						item.setqRcodeUrl(urlstr);
 					}
 					
@@ -255,7 +265,13 @@ public class YiyeMgtController  extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-	
+	/**
+	 * M12-02 工作任务-影楼的模板列表
+	 * @param index
+	 * @param size
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/branchtemplist")
 	public String branchtemplist(@RequestParam(required = false, defaultValue = "1")int index,@RequestParam(required = false, defaultValue = "20")int size) throws Exception {
@@ -263,7 +279,7 @@ public class YiyeMgtController  extends SSOController {
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
 			PageHelper.startPage(index, size);
-			List<PMyproducttemp>list=tempMapper.findBranchMyProductTempList(user.getUserId());
+			List<PMyproducttemp>list=tempMapper.findBranchMyProductTempNeedVerList(user.getUserId());
 			PageInfo<PMyproducttemp> resultPage = new PageInfo<PMyproducttemp>(list);
 			rq.setBasemodle(resultPage); 
 		}else {
@@ -275,7 +291,7 @@ public class YiyeMgtController  extends SSOController {
 	}
 	
 	/**
-	 * 待审核、已通过、未通过 列表
+	 * M12-03 待审核、已通过、未通过 列表
 	 * @param tempid
 	 * @param status
 	 * @param index

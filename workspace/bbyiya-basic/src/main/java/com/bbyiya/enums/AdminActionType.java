@@ -4,7 +4,11 @@ public enum AdminActionType {
 	/**
      * 代理商退驻
      *     */
-	agent_quit(1);
+	agent_quit(1),
+	/**
+	 * 给供应商充值
+	 */
+	chongzhi(2);
 
     private final int Type;
 

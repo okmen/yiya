@@ -69,7 +69,13 @@ public class YiyeMgtController  extends SSOController {
 	@Autowired
 	private PMyproducttempusersMapper tempUsrMapper;
 	
-	
+	/**
+	 * M11-03 异业合作-模板详情 
+	 * c端
+	 * @param workId
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/detail")
 	public String detail(String workId) throws Exception {
@@ -114,7 +120,8 @@ public class YiyeMgtController  extends SSOController {
 	}
 	
 	/**
-	 * 接受异业模板邀请 、申请模板相册
+	 * M11-01 用户提交申请
+	 * M11-02 异业合作-接受邀请（无需申请）
 	 * @param commentJson
 	 * @return
 	 * @throws Exception
@@ -236,7 +243,8 @@ public class YiyeMgtController  extends SSOController {
 	}
 	
 	/**
-	 * 员工 -异业合作 模板 推广列表
+	 * M12-01 工作任务-营销二维码列表
+	 * 
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/mytemplist")
@@ -333,7 +341,7 @@ public class YiyeMgtController  extends SSOController {
 	}
 	
 	/**
-	 * 我参与的活动列表
+	 * M13-01 参与的活动-参与活动的列表
 	 * @param tempid
 	 * @param status
 	 * @param index
@@ -370,7 +378,7 @@ public class YiyeMgtController  extends SSOController {
 	}
 	
 	/**
-	 * 消息已读
+	 * M13-02 参与的活动-已阅读
 	 * @return
 	 * @throws Exception
 	 */

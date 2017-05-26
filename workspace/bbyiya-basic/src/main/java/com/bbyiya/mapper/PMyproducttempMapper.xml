@@ -174,7 +174,7 @@
     update p_myproducttemp
     set BranchUserId = #{branchuserid,jdbcType=BIGINT},
       Title = #{title,jdbcType=VARCHAR},
-      Status = #{status,jdbcType=INTEGER},
+      Status = #{status,jdbcType=INTEGER}, 
       Count = #{count,jdbcType=INTEGER},
       Remark = #{remark,jdbcType=VARCHAR},
       CartId = #{cartid,jdbcType=BIGINT},

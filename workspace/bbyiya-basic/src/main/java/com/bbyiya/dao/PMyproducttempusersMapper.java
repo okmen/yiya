@@ -27,4 +27,10 @@ public interface PMyproducttempusersMapper {
      * @return
      */
     List<PMyproducttempusers> findTemplistBySunUserId(@Param("userId")Long sunUserId,@Param("status")Integer status);
+    /**
+     * 根据模板得到员工模板权限列表
+     * @param tempId
+     * @return
+     */
+    List<PMyproducttempusers> findTempUserListByTempId(@Param("tempId")int tempId);
 }

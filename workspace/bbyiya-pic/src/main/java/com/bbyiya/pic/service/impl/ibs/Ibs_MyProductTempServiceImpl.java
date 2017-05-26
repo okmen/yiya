@@ -170,6 +170,15 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 							myproducttempapplyMapper.updateByPrimaryKeySelective(apply);
 						}
 					}
+					
+					//禁用员工模板权限
+					List<PMyproducttempusers> tempuserList=myTempUserMapper.findTempUserListByTempId(tempid);
+					if(tempuserList!=null&&tempuserList.size()>0){
+						for (PMyproducttempusers tempuser : tempuserList) {
+							tempuser.setStatus(0);
+							myTempUserMapper.updateByPrimaryKeySelective(tempuser);
+						}
+					}
 				}
 			}
 			myMapper.updateByPrimaryKey(myproduct);
@@ -206,6 +215,14 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 					myproducttempapplyMapper.updateByPrimaryKeySelective(apply);
 				}
 			}
+			//删除员工模板权限
+			List<PMyproducttempusers> tempuserList=myTempUserMapper.findTempUserListByTempId(tempid);
+			if(tempuserList!=null&&tempuserList.size()>0){
+				for (PMyproducttempusers tempuser : tempuserList) {
+					myTempUserMapper.deleteByPrimaryKey(tempuser.getId());
+				}
+			}
+			
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("删除操作成功");
 		}else{
@@ -271,8 +288,12 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 				if(!ObjectUtil.isEmpty(apply.getBirthday())){
 					apply.setBirthdaystr(DateUtil.getTimeStr(apply.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
 				}
-				UUsers user=usersMapper.selectByPrimaryKey(apply.getUserid());
-				if(user!=null) apply.setUsername(user.getNickname());
+				if(ObjectUtil.isEmpty(apply.getReceiver())){
+					UUsers user=usersMapper.selectByPrimaryKey(apply.getUserid());
+					if(user!=null) apply.setUsername(user.getNickname());
+				}else{
+					apply.setUsername(apply.getReceiver());
+				}
 			}
 		}		
 		rq.setBasemodle(reuslt);

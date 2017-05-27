@@ -40,6 +40,11 @@
     select  <include refid="Base_Column_List" />
     from p_myproducttempapply where TempId = #{tempid,jdbcType=INTEGER} and UserId=#{userid,jdbcType=BIGINT}  LIMIT 1
   </select>
+  <!-- 根据tempid,userid获取用户申请情况 -->
+  <select id="getMyProducttempApplyByCartId" resultMap="BaseResultMap"  >
+    select  <include refid="Base_Column_List" />
+    from p_myproducttempapply where  CartId=#{cartId,jdbcType=BIGINT}  LIMIT 1
+  </select>
   <!-- 根据用户 userid获取用户申请情况 -->
   <select id="findMyProducttempApplyByUserId" resultMap="BaseResultMap"  >
     select  <include refid="Base_Column_List" />

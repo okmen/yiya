@@ -30,6 +30,7 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.InviteStatus;
 import com.bbyiya.enums.pic.InviteType;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
+import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.enums.user.UserStatusEnum;
 import com.bbyiya.model.PMyproductchildinfo;
@@ -37,6 +38,7 @@ import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproductsinvites;
 import com.bbyiya.model.PMyproducttemp;
+import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UBranchusers;
@@ -83,6 +85,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 	private UUsersMapper usersMapper;
 	@Autowired
 	private PMyproducttempapplyMapper tempApplyMapper;
+
 	/**
 	 * Ð­Í¬±à¼­ ÑûÇë 
 	 */
@@ -539,6 +542,16 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 			}else if (pp.getUserid()!=null&&pp.getUserid().longValue()==userId) {
 				pp.setStatus(status);
 				inviteMapper.updateByPrimaryKeySelective(pp);
+			}
+		}
+		if(status==Integer.parseInt(InviteStatus.ok.toString())&&myproducts!=null&&myproducts.getTempid()!=null){
+			PMyproducttempapply apply= tempApplyMapper.getMyProducttempApplyByCartId(cartId);
+			if(apply==null){
+				apply=tempApplyMapper.getMyProducttempApplyByUserId(myproducts.getTempid(), userId);
+			}
+			if(apply!=null){
+				apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString()));
+				tempApplyMapper.updateByPrimaryKeySelective(apply);
 			}
 		}
 		rq.setStatu(ReturnStatus.Success);

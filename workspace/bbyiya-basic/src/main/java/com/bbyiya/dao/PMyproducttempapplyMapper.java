@@ -37,6 +37,12 @@ public interface PMyproducttempapplyMapper {
      * @return
      */
     PMyproducttempapply getMyProducttempApplyByUserId(@Param("tempid")Integer tempid,@Param("userid")Long userId);
+    /**
+     * 根据cartId获取活动申请记录
+     * @param cartid
+     * @return
+     */
+    PMyproducttempapply getMyProducttempApplyByCartId(@Param("cartId")Long cartid);
     
     /**
      * 获取用户参与活动的模板申请列表

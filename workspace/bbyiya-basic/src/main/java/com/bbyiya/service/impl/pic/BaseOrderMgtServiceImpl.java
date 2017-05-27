@@ -23,6 +23,7 @@ import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.PMyproductsMapper;
+import com.bbyiya.dao.PMyproducttempapplyMapper;
 import com.bbyiya.dao.PProductsMapper;
 import com.bbyiya.dao.PProductstylepropertyMapper;
 import com.bbyiya.dao.PProductstylesMapper;
@@ -46,6 +47,7 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.AgentStatusEnum;
 import com.bbyiya.enums.pic.BranchStatusEnum;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
+import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
 import com.bbyiya.model.EErrors;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproductdetails;
@@ -54,6 +56,7 @@ import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
+import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.model.PPostmodel;
 import com.bbyiya.model.PProducts;
 import com.bbyiya.model.PProductstyles;
@@ -285,6 +288,14 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				mycart.setStatus(Integer.parseInt(MyProductStatusEnum.ordered.toString()));
 				mycart.setUpdatetime(new Date()); 
 				myproductMapper.updateByPrimaryKeySelective(mycart);
+				//-----------------------异业合作---------------------------------------------------------
+				if(Integer.parseInt(OrderTypeEnum.brachOrder.toString())==orderType && mycart.getTempid()!=null){
+					PMyproducttempapply apply= tempApplyMapper.getMyProducttempApplyByCartId(param.getCartId());
+					if(apply!=null){
+						apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.pass.toString()));
+						tempApplyMapper.updateByPrimaryKeySelective(apply);
+					}
+				}//-----------------------------------------------------------------------------------
 			}else {
 				throw new Exception("作品不存在！");
 			}
@@ -298,7 +309,8 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		}
 		return rq;
 	}
-	
+	@Autowired
+	private PMyproducttempapplyMapper tempApplyMapper;
 	
 	public ReturnModel submitOrder_new(UserOrderSubmitParam param) {
 		ReturnModel rq = new ReturnModel();

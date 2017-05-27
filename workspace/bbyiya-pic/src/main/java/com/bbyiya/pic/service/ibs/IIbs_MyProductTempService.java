@@ -101,7 +101,7 @@ public interface IIbs_MyProductTempService {
 	 * @param status
 	 * @return
 	 */
-	ReturnModel audit_TempApplyProduct(Long userId, Long cartid, Integer status);
+	ReturnModel audit_TempApplyProduct(Long userId, Long cartid, Integer status,String reason);
 
 	
 }

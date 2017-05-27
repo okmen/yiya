@@ -595,7 +595,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	 * 审核模板申请用户作品是否通过
 	 * @return
 	 */
-	public ReturnModel audit_TempApplyProduct(Long userId,Long cartid,Integer status){
+	public ReturnModel audit_TempApplyProduct(Long userId,Long cartid,Integer status,String reason){
 		ReturnModel rq=new ReturnModel();
 		if(cartid==null){
 			rq.setStatu(ReturnStatus.ParamError);
@@ -607,10 +607,16 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			rq.setStatusreson("参数错误：status为空！");
 			return rq;
 		}
+		if (!ObjectUtil.isEmpty(reason) && !ObjectUtil.validSqlStr(reason)) {
+			rq.setStatu(ReturnStatus.ParamError_2);
+			rq.setStatusreson("不通过原因存在危险");
+			return rq;
+		}
 		
 		PMyproducttempapply tempapply=myproducttempapplyMapper.getMyProducttempApplyByCartId(cartid);
 		if(tempapply!=null){
 			tempapply.setStatus(status);
+			tempapply.setReason(reason);
 			myproducttempapplyMapper.updateByPrimaryKeySelective(tempapply);
 			
 			if(status==Integer.parseInt(MyProducttempApplyStatusEnum.nopass.toString())){

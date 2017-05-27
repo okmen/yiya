@@ -91,8 +91,16 @@ public class YiyeMgtController  extends SSOController {
 					if(temp!=null){
 						List<MyProductListVo> myproductList= myproductDao.getMyProductByTempId(temp.getTempid(), user.getUserId());
 						if(myproductList!=null&&myproductList.size()>0){
+							PMyproducttempapply apply= tempApplyMapper.getMyProducttempApplyByCartId(myproductList.get(0).getCartid());
+							if(apply==null){
+								apply=tempApplyMapper.getMyProducttempApplyByUserId(temp.getTempid(), user.getUserId());
+							}
+							if(apply!=null){
+								result.setApplyStatus(apply.getStatus());  
+								result.setReason(apply.getReason());
+							} 
 							result.setIsInvited(1);
-							result.setApplyStatus(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString())); 
+//							result.setApplyStatus(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString())); 
 							result.setCartId(myproductList.get(0).getCartid());
 						}else {
 							result.setTemp(temp); 

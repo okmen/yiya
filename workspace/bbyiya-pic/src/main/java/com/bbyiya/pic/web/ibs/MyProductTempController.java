@@ -259,14 +259,14 @@ public class MyProductTempController extends SSOController {
 	
 	
 	/**
-	 * 审核板申请用户的作品
+	 * 审核板申请用户的作品不通过
 	 * @param tempApplyId
 	 * @return
 	 * @throws Exception
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/audit_TempApplyProduct")
-	public String audit_TempApplyProduct(Long cartid,Integer status) throws Exception {
+	public String audit_TempApplyProduct(Long cartid,Integer status,String reason) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
@@ -275,7 +275,7 @@ public class MyProductTempController extends SSOController {
 				rq.setStatusreson("status参数不能为空！");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			rq=producttempService.audit_TempApplyProduct(user.getUserId(), cartid, status);
+			rq=producttempService.audit_TempApplyProduct(user.getUserId(), cartid, status,reason);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

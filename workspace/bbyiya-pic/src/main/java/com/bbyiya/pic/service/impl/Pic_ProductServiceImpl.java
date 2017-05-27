@@ -803,8 +803,30 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 							}
 
 						}
+						
+						// 得到来源，即模板名称
+						if (item.getTempid() != null) {
+							PMyproducttemp temp = tempMapper.selectByPrimaryKey(item.getTempid());
+							if (temp != null && temp.getTitle() != null) {
+								item.setTempTitle(temp.getTitle());
+							}
+						}
+						//得到活动状态
+						PMyproducttempapply apply= tempapplyMapper.getMyProducttempApplyByCartId(item.getCartid());
+						if(apply==null){
+							apply=tempapplyMapper.getMyProducttempApplyByUserId(item.getTempid(), item.getInviteModel().getInviteuserid());
+						}
+						if(apply!=null){
+							item.setActiveStatus(apply.getStatus());
+						}
 
 					}
+				}
+				
+				// 得到制作类型
+				PProducts product = productsMapper.selectByPrimaryKey(item.getProductid());
+				if (product != null && product.getTitle() != null) {
+					item.setProductTitle(product.getTitle());
 				}
 				// 作品详情（图片集合）
 				List<PMyproductdetails> detailslist = myDetaiMapper.findMyProductdetails(item.getCartid());
@@ -834,23 +856,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					item.setBirthdayStr(DateUtil.getTimeStr(childinfo.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
 					item.setIsDue(childinfo.getIsdue()==null?0:childinfo.getIsdue());
 				}
-				// 得到制作类型
-				PProducts product = productsMapper.selectByPrimaryKey(item.getProductid());
-				if (product != null && product.getTitle() != null) {
-					item.setProductTitle(product.getTitle());
-				}
-				// 得到来源，即模板名称
-				if (item.getTempid() != null) {
-					PMyproducttemp temp = tempMapper.selectByPrimaryKey(item.getTempid());
-					if (temp != null && temp.getTitle() != null) {
-						item.setTempTitle(temp.getTitle());
-					}
-				}
-				//得到活动状态
-				PMyproducttempapply tempapply=tempapplyMapper.getMyProducttempApplyByCartId(item.getCartid());
-				if(tempapply!=null){
-					item.setActiveStatus(tempapply.getStatus());
-				}
+				
 				// 得到作品订单集合
 				List<OUserorders> orderList = orderDao.findOrderListByCartId(item.getCartid());
 				List<String> orderNoList = new ArrayList<String>();

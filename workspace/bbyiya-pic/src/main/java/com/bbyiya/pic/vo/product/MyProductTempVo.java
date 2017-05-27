@@ -1,12 +1,15 @@
 package com.bbyiya.pic.vo.product;
 
 import com.bbyiya.model.PMyproducttemp;
+import com.bbyiya.model.PMyproducttempapply;
 
 public class MyProductTempVo {
 	private PMyproducttemp temp;
+//	private PMyproducttempapply apply;
 	private int applyStatus;
 	private int isInvited;
 	private Long cartId;
+	private String reason;
 	
 	public int getIsInvited() {
 		return isInvited;
@@ -31,6 +34,18 @@ public class MyProductTempVo {
 	}
 	public void setApplyStatus(int applyStatus) {
 		this.applyStatus = applyStatus;
+	}
+//	public PMyproducttempapply getApply() {
+//		return apply;
+//	}
+//	public void setApply(PMyproducttempapply apply) {
+//		this.apply = apply;
+//	}
+	public String getReason() {
+		return reason;
+	}
+	public void setReason(String reason) {
+		this.reason = reason;
 	}
 	
 	

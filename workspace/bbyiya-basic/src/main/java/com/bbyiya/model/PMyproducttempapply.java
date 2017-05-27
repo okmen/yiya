@@ -35,6 +35,7 @@ public class PMyproducttempapply {
 	private Integer isread;
 	private String receiver;
 	private Long cartid;
+	private String reason;
 
 	/***************** 添加的VO字段 *************************/
 
@@ -83,6 +84,14 @@ public class PMyproducttempapply {
 
 	public void setMobilephone(String mobilephone) {
 		this.mobilephone = mobilephone == null ? null : mobilephone.trim();
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
 	}
 
 	public Integer getProvince() {

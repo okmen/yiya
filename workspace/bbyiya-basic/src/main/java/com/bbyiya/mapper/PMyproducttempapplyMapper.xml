@@ -19,10 +19,11 @@
     <result column="Birthday" property="birthday" jdbcType="TIMESTAMP" />
     <result column="IsRead" property="isread" jdbcType="INTEGER" />
     <result column="Receiver" jdbcType="VARCHAR" property="receiver" />
+    <result column="CartId" property="cartid" jdbcType="BIGINT" />
   </resultMap>
   <sql id="Base_Column_List" >
     TempApplyId, TempId, UserId, Mobilephone, Province, City, Area, Street, Adress, IsDue, 
-    CompanyUserId, Status, CreateTime, VerfiyTime, Birthday, IsRead, Receiver
+    CompanyUserId, Status, CreateTime, VerfiyTime, Birthday, IsRead, Receiver, CartId
   </sql>
   
   <!-- 得到模板待审核的报名人数 -->
@@ -67,13 +68,15 @@
       Area, Street, Adress, 
       IsDue, CompanyUserId, Status, 
       CreateTime, VerfiyTime, Birthday, 
-      IsRead, Receiver)
+      IsRead, Receiver, CartId
+      )
     values (#{tempapplyid,jdbcType=BIGINT}, #{tempid,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, 
       #{mobilephone,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, 
       #{area,jdbcType=INTEGER}, #{street,jdbcType=VARCHAR}, #{adress,jdbcType=VARCHAR}, 
       #{isdue,jdbcType=INTEGER}, #{companyuserid,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, 
       #{createtime,jdbcType=TIMESTAMP}, #{verfiytime,jdbcType=TIMESTAMP}, #{birthday,jdbcType=TIMESTAMP}, 
-      #{isread,jdbcType=INTEGER}, #{receiver,jdbcType=VARCHAR})
+      #{isread,jdbcType=INTEGER}, #{receiver,jdbcType=VARCHAR}, #{cartid,jdbcType=BIGINT}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproducttempapply" >
     insert into p_myproducttempapply
@@ -129,6 +132,9 @@
       <if test="receiver != null" >
         Receiver,
       </if>
+      <if test="cartid != null" >
+        CartId,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="tempapplyid != null" >
@@ -181,6 +187,9 @@
       </if>
       <if test="receiver != null" >
         #{receiver,jdbcType=VARCHAR},
+      </if>
+      <if test="cartid != null" >
+        #{cartid,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -235,6 +244,9 @@
       <if test="receiver != null" >
         Receiver = #{receiver,jdbcType=VARCHAR},
       </if>
+      <if test="cartid != null" >
+        CartId = #{cartid,jdbcType=BIGINT},
+      </if>
     </set>
     where TempApplyId = #{tempapplyid,jdbcType=BIGINT}
   </update>
@@ -255,7 +267,8 @@
       VerfiyTime = #{verfiytime,jdbcType=TIMESTAMP},
       Birthday = #{birthday,jdbcType=TIMESTAMP},
       IsRead = #{isread,jdbcType=INTEGER},
-      Receiver = #{receiver,jdbcType=VARCHAR}
+      Receiver = #{receiver,jdbcType=VARCHAR},
+      CartId = #{cartid,jdbcType=BIGINT}
     where TempApplyId = #{tempapplyid,jdbcType=BIGINT}
   </update>
 </mapper>

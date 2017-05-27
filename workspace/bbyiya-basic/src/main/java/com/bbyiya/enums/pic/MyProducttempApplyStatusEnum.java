@@ -12,7 +12,21 @@ public enum MyProducttempApplyStatusEnum {
     /**
      * 已拒绝
      */
-    refuse(2);
+    refuse(2),
+    
+    /**
+     * 作品制作完成
+     */
+    complete(3),
+    /**
+     * 作品审核不通过
+     */
+    nopass(4),
+    /**
+     * 下单审核通过
+     */
+    pass(5);
+    
     private final int Type;
 
     private MyProducttempApplyStatusEnum(int step)

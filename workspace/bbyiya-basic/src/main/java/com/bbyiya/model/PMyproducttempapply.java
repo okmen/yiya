@@ -34,6 +34,7 @@ public class PMyproducttempapply {
 	private Date birthday;
 	private Integer isread;
 	private String receiver;
+	private Long cartid;
 
 	/***************** 添加的VO字段 *************************/
 
@@ -62,6 +63,14 @@ public class PMyproducttempapply {
 
 	public Long getUserid() {
 		return userid;
+	}
+
+	public Long getCartid() {
+		return cartid;
+	}
+
+	public void setCartid(Long cartid) {
+		this.cartid = cartid;
 	}
 
 	public void setUserid(Long userid) {
@@ -227,7 +236,5 @@ public class PMyproducttempapply {
 	public void setCartId(Long cartId) {
 		this.cartId = cartId;
 	}
-
-	
 
 }

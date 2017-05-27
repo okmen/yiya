@@ -18,6 +18,7 @@ import com.bbyiya.dao.PMyproductextMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproductsinvitesMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
+import com.bbyiya.dao.PMyproducttempapplyMapper;
 import com.bbyiya.dao.PProductdetailsMapper;
 import com.bbyiya.dao.PProductsMapper;
 import com.bbyiya.dao.PScenesMapper;
@@ -36,6 +37,7 @@ import com.bbyiya.model.PMyproductext;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproductsinvites;
 import com.bbyiya.model.PMyproducttemp;
+import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.model.PProductdetails;
 import com.bbyiya.model.PProducts;
 import com.bbyiya.model.PScenes;
@@ -92,6 +94,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private PMyproductchildinfoMapper mychildMapper;
 	@Autowired
 	private PMyproducttempMapper tempMapper;
+	
+	@Autowired
+	private PMyproducttempapplyMapper tempapplyMapper;
 	@Autowired
 	private PMyproductextMapper myextMapper;
 	/*-------------------用户信息------------------------------------------------*/
@@ -840,6 +845,11 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					if (temp != null && temp.getTitle() != null) {
 						item.setTempTitle(temp.getTitle());
 					}
+				}
+				//得到活动状态
+				PMyproducttempapply tempapply=tempapplyMapper.getMyProducttempApplyByCartId(item.getCartid());
+				if(tempapply!=null){
+					item.setActiveStatus(tempapply.getStatus());
 				}
 				// 得到作品订单集合
 				List<OUserorders> orderList = orderDao.findOrderListByCartId(item.getCartid());

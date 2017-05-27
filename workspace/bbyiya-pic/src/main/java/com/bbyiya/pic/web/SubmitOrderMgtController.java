@@ -145,6 +145,7 @@ public class SubmitOrderMgtController extends SSOController {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("µÇÂ¼¹ýÆÚ");
 		}
+//		System.out.println(JsonUtil.objectToJsonStr(rq));
 		return JsonUtil.objectToJsonStr(rq);
 	}
 

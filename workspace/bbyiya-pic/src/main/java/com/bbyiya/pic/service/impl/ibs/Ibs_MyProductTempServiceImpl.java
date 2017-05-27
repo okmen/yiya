@@ -317,7 +317,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			if(status==Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString())){
 				apply.setVerfiytime(new Date());	
 				apply.setIsread(0);//消息状态置为未读
-				rq=doAcceptOrAutoTempApplyOpt(apply);			
+				rq=doAcceptOrAutoTempApplyOpt(apply);	
 			}else{
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("拒绝成功");
@@ -441,6 +441,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 				myTempUserMapper.updateByPrimaryKeySelective(tempuser);
 			}
 			
+			
 			//添加影楼已获取的客户信息
 			UBranchusers branchuser=branchuserMapper.selectByPrimaryKey(myproducts.getUserid());
 			if(branchuser!=null){
@@ -481,6 +482,9 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("tempId", myproducts.getTempid());
 			map.put("mycartid", newproducts.getCartid());
+			
+			//反写申请记录的cartid
+			apply.setCartid(newproducts.getCartid());			
 			rq.setBasemodle(map);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("审核通过");
@@ -582,6 +586,42 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			tempuser.setStatus(status);
 			myTempUserMapper.updateByPrimaryKeySelective(tempuser);
 		}
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("设置成功！");
+		return rq;
+	}
+	
+	/**
+	 * 审核模板申请用户作品是否通过
+	 * @return
+	 */
+	public ReturnModel audit_TempApplyProduct(Long userId,Long cartid,Integer status){
+		ReturnModel rq=new ReturnModel();
+		if(cartid==null){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("参数错误：cartid为空！");
+			return rq;
+		}		
+		if(status==null){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("参数错误：status为空！");
+			return rq;
+		}
+		
+		PMyproducttempapply tempapply=myproducttempapplyMapper.getMyProducttempApplyByCartId(cartid);
+		if(tempapply!=null){
+			tempapply.setStatus(status);
+			myproducttempapplyMapper.updateByPrimaryKeySelective(tempapply);
+			
+			if(status==Integer.parseInt(MyProducttempApplyStatusEnum.nopass.toString())){
+				PMyproductsinvites invites=inviteMapper.getInviteByPhoneAndCartId(tempapply.getMobilephone(), cartid);
+				if(invites!=null){
+					invites.setStatus(Integer.parseInt(InviteStatus.agree.toString()));
+					inviteMapper.updateByPrimaryKeySelective(invites);
+				}
+			}
+		}
+		
 		rq.setStatu(ReturnStatus.Success);
 		rq.setStatusreson("设置成功！");
 		return rq;

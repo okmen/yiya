@@ -257,6 +257,33 @@ public class MyProductTempController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	
+	/**
+	 * 审核板申请用户的作品
+	 * @param tempApplyId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/audit_TempApplyProduct")
+	public String audit_TempApplyProduct(Long cartid,Integer status) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(status==null){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("status参数不能为空！");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			rq=producttempService.audit_TempApplyProduct(user.getUserId(), cartid, status);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 	/**
 	 * 保存模板的二维码图片
 	 * @param cartId

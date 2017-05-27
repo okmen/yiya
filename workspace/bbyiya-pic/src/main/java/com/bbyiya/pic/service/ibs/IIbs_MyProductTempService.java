@@ -94,6 +94,14 @@ public interface IIbs_MyProductTempService {
 	 * @return
 	 */
 	ReturnModel doAcceptOrAutoTempApplyOpt(PMyproducttempapply apply);
+	/**
+	 * 审核模板申请用户作品是否通过
+	 * @param userId
+	 * @param cartid
+	 * @param status
+	 * @return
+	 */
+	ReturnModel audit_TempApplyProduct(Long userId, Long cartid, Integer status);
 
 	
 }

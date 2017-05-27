@@ -35,7 +35,11 @@ public class MyProductResultVo extends PMyproducts{
 	private Integer commentsCount;
 	//是否预产期
 	private Integer isDue;
+	//订单号集合
 	private List<String> orderNoList;
+	
+	//活动状态
+	private Integer activeStatus;
 	
 	public int getCount() {
 		return count;
@@ -132,6 +136,12 @@ public class MyProductResultVo extends PMyproducts{
 	}
 	public void setIsDue(Integer isDue) {
 		this.isDue = isDue;
+	}
+	public Integer getActiveStatus() {
+		return activeStatus;
+	}
+	public void setActiveStatus(Integer activeStatus) {
+		this.activeStatus = activeStatus;
 	}
 	
 	

@@ -98,6 +98,8 @@ public class YiyeMgtController  extends SSOController {
 							if(apply!=null){
 								result.setApplyStatus(apply.getStatus());  
 								result.setReason(apply.getReason());
+							}else {
+								result.setApplyStatus(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString())); 
 							} 
 							result.setIsInvited(1);
 //							result.setApplyStatus(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString())); 

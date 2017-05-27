@@ -30,6 +30,7 @@ import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
+import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproductchildinfo;
 import com.bbyiya.model.PMyproductdetails;
@@ -819,7 +820,15 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 						if(apply!=null){
 							item.setActiveStatus(apply.getStatus());
 						}
-
+						
+						// 得到来源，即模板名称
+						if (item.getTempid() != null) {
+							PMyproducttemp temp = tempMapper.selectByPrimaryKey(item.getTempid());
+							if (temp != null && temp.getTitle() != null) {
+								item.setTempTitle(temp.getTitle());
+							}
+						}
+						
 					}
 				}
 				
@@ -873,6 +882,24 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					item.setCommentsCount(myext.getCommentscount()==null?0:myext.getCommentscount());
 				}
 				
+				//得到活动状态
+				PMyproducttempapply apply= tempapplyMapper.getMyProducttempApplyByCartId(item.getCartid());
+				if(apply==null){
+					apply=tempapplyMapper.getMyProducttempApplyByUserId(item.getTempid(), item.getInviteModel().getInviteuserid());
+				}
+				if(apply!=null){
+					item.setActiveStatus(apply.getStatus());
+				}else{
+					if(item.getCount()<12){
+						//制作中
+						item.setActiveStatus(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString()));
+					}else{
+						//制作完成
+						item.setActiveStatus(Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString()));
+						
+					}
+				}
+
 			}
 		}
 		return mylist;

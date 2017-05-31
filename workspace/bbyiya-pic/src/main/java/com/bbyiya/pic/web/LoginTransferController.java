@@ -70,7 +70,6 @@ public class LoginTransferController extends SSOController {
 		ReturnModel rqModel = getWxLogin(code, state);
 		if (rqModel.getStatu().equals(ReturnStatus.Success)) {
 			return "redirect:" + ConfigUtil.getSingleValue("loginbackurl_ibs");
-			//+ "?ticket=" + ((LoginSuccessResult) rqModel.getBasemodle()).getTicket()
 		} else {
 			addlog(rqModel.getStatusreson());
 			return "/index";
@@ -107,6 +106,7 @@ public class LoginTransferController extends SSOController {
 					param.setLoginType(Integer.parseInt(LoginTypeEnum.weixin.toString()));
 					String nickName=String.valueOf(userJson.get("nickname"));
 					if(!ObjectUtil.isEmpty(nickName)&&!"null".equals(nickName)){
+						nickName=ObjectUtil.filterEmoji(nickName);
 						param.setNickName(nickName);
 					}
 					String headimgurl=String.valueOf(userJson.get("headimgurl"));

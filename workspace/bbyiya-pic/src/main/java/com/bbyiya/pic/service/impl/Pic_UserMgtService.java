@@ -20,7 +20,6 @@ import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.service.IPic_UserMgtService;
 import com.bbyiya.service.IUserLoginService;
 import com.bbyiya.utils.ObjectUtil;
-import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.utils.SendSMSByMobile;
 import com.bbyiya.utils.encrypt.MD5Encrypt;
 import com.bbyiya.vo.ReturnModel;
@@ -87,7 +86,7 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 		} catch (Exception e) {
 			rq.setStatu(ReturnStatus.SystemError);
 			rq.setStatusreson("×¢²áÊ§°Ü£¡");
-			RedisUtil.setObject("register:", e); 
+			rq.setBasemodle(e); 
 		}
 		return rq;
 	}

@@ -812,22 +812,6 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 								item.setTempTitle(temp.getTitle());
 							}
 						}
-						//得到活动状态
-						PMyproducttempapply apply= tempapplyMapper.getMyProducttempApplyByCartId(item.getCartid());
-						if(apply==null){
-							apply=tempapplyMapper.getMyProducttempApplyByUserId(item.getTempid(), item.getInviteModel().getInviteuserid());
-						}
-						if(apply!=null){
-							item.setActiveStatus(apply.getStatus());
-						}
-						
-						// 得到来源，即模板名称
-						if (item.getTempid() != null) {
-							PMyproducttemp temp = tempMapper.selectByPrimaryKey(item.getTempid());
-							if (temp != null && temp.getTitle() != null) {
-								item.setTempTitle(temp.getTitle());
-							}
-						}
 						
 					}
 				}

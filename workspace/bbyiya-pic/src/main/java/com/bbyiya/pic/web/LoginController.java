@@ -2,6 +2,8 @@ package com.bbyiya.pic.web;
 
 import java.net.URLEncoder;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
@@ -148,8 +150,8 @@ public class LoginController extends SSOController {
 		LoginTempVo logintemp= (LoginTempVo)RedisUtil.getObject(request.getSession().getId());
 		if (model != null) {
 			String openid = String.valueOf(model.get("openid"));
-			String access_token = String.valueOf(model.get("access_token"));
-			if (!ObjectUtil.isEmpty(openid) && !ObjectUtil.isEmpty(access_token) && !"null".equals(openid) && !"null".equals(access_token)) {
+//			String access_token = String.valueOf(model.get("access_token"));
+			if (!ObjectUtil.isEmpty(openid) && !"null".equals(openid) ) {
 
 //				String userInfoUrl = "https://api.weixin.qq.com/sns/userinfo";
 //				String data2 = "access_token=" + access_token + "&openid=" + openid;//+"&lang=zh_CN";
@@ -159,7 +161,7 @@ public class LoginController extends SSOController {
 				String data2 = "access_token=" + WxPublicUtils.getAccessToken() + "&openid=" + openid;
 				String userInfoJson = HttpRequestHelper.sendPost(userInfoUrl, data2);
 				JSONObject userJson = JSONObject.fromObject(userInfoJson);
-				if (userInfoJson != null) {
+				if (userInfoJson != null&&userJson!=null) {
 					OtherLoginParam param = new OtherLoginParam();
 					param.setOpenId(openid);
 					param.setLoginType(Integer.parseInt(LoginTypeEnum.weixin.toString()));
@@ -170,6 +172,7 @@ public class LoginController extends SSOController {
 						return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLoginInfo&response_type=code&scope=snsapi_userinfo#wechat_redirect" ;		
 					}
 					if(!ObjectUtil.isEmpty(nickName)&&!"null".equals(nickName)){
+						
 						param.setNickName(nickName);
 					}
 					if(!ObjectUtil.isEmpty(headimg)&&!"null".equals(headimg)){
@@ -193,17 +196,21 @@ public class LoginController extends SSOController {
 					if (ReturnStatus.Success.equals(rqModel.getStatu()) && !ObjectUtil.isEmpty(rqModel.getBasemodle())) {
 						addLoginLogAndCookie(rqModel.getBasemodle(),Integer.parseInt(LoginTypeEnum.weixin.toString())); 
 					}
+					
 				} else {
 					rqModel.setStatu(ReturnStatus.SystemError);
 					rqModel.setStatusreson("获取用户信息失败");
+					addlog(result); 	
 				}
 			} else {
 				rqModel.setStatu(ReturnStatus.ParamError);
 				rqModel.setStatusreson(String.valueOf(model.get("errmsg")));
+				addlog(result); 
 			}
 		} else {
 			rqModel.setStatu(ReturnStatus.SystemError);
 			rqModel.setStatusreson("获取微信登录权限失败");
+			addlog(result); 
 		}
 		if (rqModel.getStatu().equals(ReturnStatus.Success)) {
 			//用户跳转
@@ -254,6 +261,7 @@ public class LoginController extends SSOController {
 					String nickName=String.valueOf(userJson.get("nickname"));
 					String headimg=String.valueOf(userJson.get("headimgurl"));
 					if(!ObjectUtil.isEmpty(nickName)&&!"null".equals(nickName)){
+						nickName=ObjectUtil.filterEmoji(nickName);
 						param.setNickName(nickName);
 					}
 					if(!ObjectUtil.isEmpty(headimg)&&!"null".equals(headimg)){
@@ -326,6 +334,7 @@ public class LoginController extends SSOController {
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
+			addlog("e3:"+e.getMessage());
 		}
 	}
 	
@@ -345,4 +354,19 @@ public class LoginController extends SSOController {
 		}
 	}
 
+	
+	public  String filterEmoji(String source) { 
+        if(source != null)
+        {
+            Pattern emoji = Pattern.compile ("[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\u2600-\u27ff]",Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE ) ;
+            Matcher emojiMatcher = emoji.matcher(source);
+            if ( emojiMatcher.find())
+            {
+                source = emojiMatcher.replaceAll("*");
+                return source ;
+            }
+        return source;
+       }
+       return source; 
+    }
 }

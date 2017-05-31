@@ -29,8 +29,14 @@ public class PMyproducttemp {
 
     private String discription;
     
+    private String tempcodeurl;
+
+    private String tempcodesm;
+    
+    /*************************Vo****************************/
+    
     //二维码地址
-  	private String codeurl;
+  	private String codeurl; //异业扫码二维码
   	/**
   	 * 待审核数量
   	 */
@@ -124,7 +130,21 @@ public class PMyproducttemp {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+    public String getTempcodeurl() {
+        return tempcodeurl;
+    }
 
+    public void setTempcodeurl(String tempcodeurl) {
+        this.tempcodeurl = tempcodeurl == null ? null : tempcodeurl.trim();
+    }
+
+    public String getTempcodesm() {
+        return tempcodesm;
+    }
+
+    public void setTempcodesm(String tempcodesm) {
+        this.tempcodesm = tempcodesm == null ? null : tempcodesm.trim();
+    }
 	public String getCodeurl() {
 		return codeurl;
 	}

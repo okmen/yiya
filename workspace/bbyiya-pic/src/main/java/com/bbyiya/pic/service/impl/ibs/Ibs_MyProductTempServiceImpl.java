@@ -83,7 +83,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	/**
 	 * 添加模板
 	 * */
-	public ReturnModel addMyProductTemp(Long userid,String title,String remark,Long productid,int needVerifer,String discription){
+	public ReturnModel addMyProductTemp(Long userid,String title,String remark,Long productid,int needVerifer,String discription,String codeurl,String codesm){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);	
 		
@@ -106,6 +106,8 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		temp.setCartid(myproduct.getCartid());	
 		temp.setNeedverifer(needVerifer);
 		temp.setDiscription(discription);
+		temp.setTempcodeurl(codeurl);
+		temp.setTempcodesm(codesm);
 		myproducttempMapper.insertReturnId(temp);
 		
 		myproduct.setTempid(temp.getTempid());
@@ -122,7 +124,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	/**
 	 * 修改模板
 	 * */
-	public ReturnModel editMyProductTemp(String title,String remark,Integer tempid,int needVerifer,String discription){
+	public ReturnModel editMyProductTemp(String title,String remark,Integer tempid,int needVerifer,String discription,String codeurl,String codesm){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);	
 		PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempid);
@@ -131,6 +133,8 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			temp.setRemark(remark);
 			temp.setNeedverifer(needVerifer);
 			temp.setDiscription(discription);
+			temp.setTempcodeurl(codeurl);
+			temp.setTempcodesm(codesm);
 			myproducttempMapper.updateByPrimaryKey(temp);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("修改模板成功！");
@@ -618,7 +622,6 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			tempapply.setStatus(status);
 			tempapply.setReason(reason);
 			myproducttempapplyMapper.updateByPrimaryKeySelective(tempapply);
-			
 			if(status==Integer.parseInt(MyProducttempApplyStatusEnum.nopass.toString())){
 				PMyproductsinvites invites=inviteMapper.getInviteByPhoneAndCartId(tempapply.getMobilephone(), cartid);
 				if(invites!=null){

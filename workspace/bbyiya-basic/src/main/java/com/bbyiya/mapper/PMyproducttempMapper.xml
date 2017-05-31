@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.bbyiya.dao.PMyproducttempMapper" >
-  <resultMap id="BaseResultMap" type="com.bbyiya.model.PMyproducttemp" >
-    <id column="TempId" property="tempid" jdbcType="INTEGER" />
-    <result column="BranchUserId" property="branchuserid" jdbcType="BIGINT" />
-    <result column="Title" property="title" jdbcType="VARCHAR" />
-    <result column="Status" property="status" jdbcType="INTEGER" />
-    <result column="Count" property="count" jdbcType="INTEGER" />
-    <result column="Remark" property="remark" jdbcType="VARCHAR" />
-    <result column="CartId" property="cartid" jdbcType="BIGINT" />
-    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
-     <result column="NeedVerifer" property="needverifer" jdbcType="INTEGER" />
-    <result column="Discription" property="discription" jdbcType="VARCHAR" />
-    <result column="ApplyCount" property="applycount" jdbcType="INTEGER" />
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.PMyproducttemp">
+    <id column="TempId" jdbcType="INTEGER" property="tempid" />
+    <result column="BranchUserId" jdbcType="BIGINT" property="branchuserid" />
+    <result column="Title" jdbcType="VARCHAR" property="title" />
+    <result column="Status" jdbcType="INTEGER" property="status" />
+    <result column="Count" jdbcType="INTEGER" property="count" />
+    <result column="Remark" jdbcType="VARCHAR" property="remark" />
+    <result column="CartId" jdbcType="BIGINT" property="cartid" />
+    <result column="CreateTime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="NeedVerifer" jdbcType="INTEGER" property="needverifer" />
+    <result column="Discription" jdbcType="VARCHAR" property="discription" />
+    <result column="TempCodeUrl" jdbcType="VARCHAR" property="tempcodeurl" />
+    <result column="TempCodeSm" jdbcType="VARCHAR" property="tempcodesm" />
+    <result column="ApplyCount" jdbcType="INTEGER" property="applycount" />
   </resultMap>
-  <sql id="Base_Column_List" >
+  <sql id="Base_Column_List">
     TempId, BranchUserId, Title, Status, Count, Remark, CartId, CreateTime, NeedVerifer, 
-    Discription, ApplyCount
+    Discription, TempCodeUrl, TempCodeSm, ApplyCount
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -37,6 +39,7 @@
     from p_myproducttemp
     where BranchUserId = #{branchuserid,jdbcType=BIGINT} and  NeedVerifer=1 and Status=1  order by CreateTime desc
   </select> 
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from p_myproducttemp
     where TempId = #{tempid,jdbcType=INTEGER}
@@ -49,17 +52,20 @@
     values (#{tempid,jdbcType=INTEGER}, #{branchuserid,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
       #{status,jdbcType=INTEGER}, #{count,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
       #{cartid,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}, #{needverifer,jdbcType=INTEGER}, 
-      #{discription,jdbcType=VARCHAR}, #{applycount,jdbcType=INTEGER})
+      #{discription,jdbcType=VARCHAR}, #{tempcodeurl,jdbcType=VARCHAR}, #{tempcodesm,jdbcType=VARCHAR}, #{applycount,jdbcType=INTEGER})
   </insert>
+  
    <insert id="insert" parameterType="com.bbyiya.model.PMyproducttemp" >
     insert into p_myproducttemp (TempId, BranchUserId, Title, 
       Status, Count, Remark, 
       CartId, CreateTime, NeedVerifer, 
-      Discription, ApplyCount)
+      Discription, TempCodeUrl, TempCodeSm, 
+      ApplyCount)
     values (#{tempid,jdbcType=INTEGER}, #{branchuserid,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
       #{status,jdbcType=INTEGER}, #{count,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
       #{cartid,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}, #{needverifer,jdbcType=INTEGER}, 
-      #{discription,jdbcType=VARCHAR}, #{applycount,jdbcType=INTEGER})
+      #{discription,jdbcType=VARCHAR}, #{tempcodeurl,jdbcType=VARCHAR}, #{tempcodesm,jdbcType=VARCHAR}, 
+      #{applycount,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproducttemp" >
     insert into p_myproducttemp
@@ -93,6 +99,12 @@
       </if>
       <if test="discription != null" >
         Discription,
+      </if>
+      <if test="tempcodeurl != null" >
+        TempCodeUrl,
+      </if>
+      <if test="tempcodesm != null" >
+        TempCodeSm,
       </if>
       <if test="applycount != null" >
         ApplyCount,
@@ -129,6 +141,12 @@
       <if test="discription != null" >
         #{discription,jdbcType=VARCHAR},
       </if>
+      <if test="tempcodeurl != null" >
+        #{tempcodeurl,jdbcType=VARCHAR},
+      </if>
+      <if test="tempcodesm != null" >
+        #{tempcodesm,jdbcType=VARCHAR},
+      </if>
       <if test="applycount != null" >
         #{applycount,jdbcType=INTEGER},
       </if>
@@ -164,6 +182,12 @@
       <if test="discription != null" >
         Discription = #{discription,jdbcType=VARCHAR},
       </if>
+      <if test="tempcodeurl != null" >
+        TempCodeUrl = #{tempcodeurl,jdbcType=VARCHAR},
+      </if>
+      <if test="tempcodesm != null" >
+        TempCodeSm = #{tempcodesm,jdbcType=VARCHAR},
+      </if>
       <if test="applycount != null" >
         ApplyCount = #{applycount,jdbcType=INTEGER},
       </if>
@@ -174,13 +198,15 @@
     update p_myproducttemp
     set BranchUserId = #{branchuserid,jdbcType=BIGINT},
       Title = #{title,jdbcType=VARCHAR},
-      Status = #{status,jdbcType=INTEGER}, 
+      Status = #{status,jdbcType=INTEGER},
       Count = #{count,jdbcType=INTEGER},
       Remark = #{remark,jdbcType=VARCHAR},
       CartId = #{cartid,jdbcType=BIGINT},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
       NeedVerifer = #{needverifer,jdbcType=INTEGER},
       Discription = #{discription,jdbcType=VARCHAR},
+      TempCodeUrl = #{tempcodeurl,jdbcType=VARCHAR},
+      TempCodeSm = #{tempcodesm,jdbcType=VARCHAR},
       ApplyCount = #{applycount,jdbcType=INTEGER}
     where TempId = #{tempid,jdbcType=INTEGER}
   </update>

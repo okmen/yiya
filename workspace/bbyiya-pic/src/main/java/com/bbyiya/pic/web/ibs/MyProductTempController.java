@@ -31,14 +31,18 @@ public class MyProductTempController extends SSOController {
 	
 	/**
 	 * 添加模板
-	 * @param index
-	 * @param size
-	 * @return
+	 * @param title 模板标题
+	 * @param remark 备注
+	 * @param productid 产品款示
+	 * @param needverifer 是否需要审核
+	 * @param discription 活动需知
+	 * @param codeurl  二维码图片
+	 * @returnp
 	 * @throws Exception
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/addMyProductTemp")
-	public String addMyProductTemp(String title,String remark,String productid,String needverifer,String discription) throws Exception {
+	public String addMyProductTemp(String title,String remark,String productid,String needverifer,String discription,String codeurl,String codesm) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
@@ -57,7 +61,17 @@ public class MyProductTempController extends SSOController {
 				rq.setStatusreson("活动需知不能为空!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			rq=producttempService.addMyProductTemp(user.getUserId(), title, remark,ObjectUtil.parseLong(productid),ObjectUtil.parseInt(needverifer),discription );
+			if(!ObjectUtil.isEmpty(discription)&&!ObjectUtil.validSqlStr(discription)){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("活动需知存在危险字符!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			if(!ObjectUtil.isEmpty(codesm)&&!ObjectUtil.validSqlStr(codesm)){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("二维码文字说明在危险字符!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			rq=producttempService.addMyProductTemp(user.getUserId(), title, remark,ObjectUtil.parseLong(productid),ObjectUtil.parseInt(needverifer),discription,codeurl,codesm );
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
@@ -74,7 +88,7 @@ public class MyProductTempController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/editMyProductTemp")
-	public String editMyProductTemp(String title,String remark,Integer tempid,String needverifer,String discription) throws Exception {
+	public String editMyProductTemp(String title,String remark,Integer tempid,String needverifer,String discription,String codeurl,String codesm) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
@@ -88,7 +102,17 @@ public class MyProductTempController extends SSOController {
 				rq.setStatusreson("活动需知不能为空!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			rq=producttempService.editMyProductTemp(title, remark, tempid,ObjectUtil.parseInt(needverifer),discription );
+			if(!ObjectUtil.isEmpty(discription)&&!ObjectUtil.validSqlStr(discription)){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("活动需知存在危险字符!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			if(!ObjectUtil.isEmpty(codesm)&&!ObjectUtil.validSqlStr(codesm)){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("二维码文字说明在危险字符!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			rq=producttempService.editMyProductTemp(title, remark, tempid,ObjectUtil.parseInt(needverifer),discription,codeurl,codesm);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

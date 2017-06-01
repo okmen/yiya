@@ -29,4 +29,11 @@ public interface IIbs_OrderManageService {
 	List<OrderCountResultVO> find_ibsOrderExportExcelbyUpUserid(Long userId,
 			Integer status, String startTime, String endTime, int index,
 			int size);
+	/**
+	 * 影楼内部异业作品下单前得到作品的相关地址
+	 * @param userId
+	 * @param cartid
+	 * @return
+	 */
+	ReturnModel getMyProductAddressList(Long userId, Long cartid);
 }

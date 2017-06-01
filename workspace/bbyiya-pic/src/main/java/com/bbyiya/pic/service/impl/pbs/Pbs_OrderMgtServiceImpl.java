@@ -89,14 +89,14 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 				UBranches branch=branchesMapper.selectByPrimaryKey(order.getBranchuserid());
 				if(branch!=null){
 					product.setBranchesName(branch.getBranchcompanyname());
-					product.setBranchesPhone(branch.getPhone());
-					product.setBranchesUserName(branch.getUsername());
 				}
 				int orderType = order.getOrdertype() == null ? 0 : order.getOrdertype();
 				order.setOrdertype(orderType);
 				//影楼直接下单
 				if (orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
 					product.setBranchesAddress(address.getProvince()+address.getCity()+address.getDistrict()+address.getStreetdetail());
+					product.setBranchesPhone(address.getPhone());
+					product.setBranchesUserName(address.getReciver());
 				}else{
 					//普通用户下单如果是影楼抢单
 					if(order.getIsbranch()!=null&&order.getIsbranch()==1){

@@ -153,7 +153,27 @@ public class OrderIBSController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	
+	/**
+	 * 影楼内部下单前得到作品的相关地址 （影楼地址和申请用户的地址）
+	 * @param index
+	 * @param size
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getMyProductAddressList")
+	public String getMyProductAddressList(Long cartid) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=ibs_OrderManageService.getMyProductAddressList(user.getUserId(), cartid);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	/**
 	 * IBS数据统计导出Excel
 	 * @param request

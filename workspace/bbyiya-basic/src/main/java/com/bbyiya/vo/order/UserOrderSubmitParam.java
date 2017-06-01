@@ -3,6 +3,8 @@ package com.bbyiya.vo.order;
 import java.io.Serializable;
 
 import com.bbyiya.model.OOrderproducts;
+import com.bbyiya.vo.address.OrderaddressParam;
+import com.bbyiya.vo.address.OrderaddressVo;
 
 public class UserOrderSubmitParam implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -18,7 +20,7 @@ public class UserOrderSubmitParam implements Serializable {
 	private Integer postModelId;
 	private Double postPrice;
 	private OOrderproducts orderproducts;
-	
+	private OrderaddressParam addressparam;
 	
 	public Long getUserId() {
 		return userId;
@@ -86,6 +88,12 @@ public class UserOrderSubmitParam implements Serializable {
 	}
 	public void setPostPrice(Double postPrice) {
 		this.postPrice = postPrice;
+	}
+	public OrderaddressParam getAddressparam() {
+		return addressparam;
+	}
+	public void setAddressparam(OrderaddressParam addressparam) {
+		this.addressparam = addressparam;
 	}
 	
 	

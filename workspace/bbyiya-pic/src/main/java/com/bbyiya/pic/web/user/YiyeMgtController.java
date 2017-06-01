@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.common.vo.ResultMsg;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
@@ -25,6 +26,7 @@ import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.enums.MyProductTempStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
+import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
@@ -342,7 +344,8 @@ public class YiyeMgtController  extends SSOController {
 	}
 	
 	/**
-	 * M12-02 工作任务-影楼的模板列表
+	 * M12-02 工作任务-影楼管理员的模板列表
+	 * M12-04 工作任务-影楼员工的模板列表
 	 * @param index
 	 * @param size
 	 * @return
@@ -354,10 +357,19 @@ public class YiyeMgtController  extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			PageHelper.startPage(index, size);
-			List<PMyproducttemp>list=tempMapper.findBranchMyProductTempNeedVerList(user.getUserId());
-			PageInfo<PMyproducttemp> resultPage = new PageInfo<PMyproducttemp>(list);
-			rq.setBasemodle(resultPage); 
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)){
+				PageHelper.startPage(index, size);
+				List<PMyproducttemp>list=tempMapper.findBranchMyProductTempNeedVerList(user.getUserId());
+				PageInfo<PMyproducttemp> resultPage = new PageInfo<PMyproducttemp>(list);
+				rq.setBasemodle(resultPage); 
+				
+			}else if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.salesman)){
+				PageHelper.startPage(index, size);
+				List<PMyproducttemp>list=tempMapper.findBranchUserMyProductTempNeedVerList(user.getUserId());
+				PageInfo<PMyproducttemp> resultPage = new PageInfo<PMyproducttemp>(list);
+				rq.setBasemodle(resultPage); 
+			}
+			
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
@@ -365,6 +377,7 @@ public class YiyeMgtController  extends SSOController {
 		rq.setStatu(ReturnStatus.Success);
 		return JsonUtil.objectToJsonStr(rq);
 	}
+
 	
 	/**
 	 * M12-03 待审核、已通过、未通过 列表

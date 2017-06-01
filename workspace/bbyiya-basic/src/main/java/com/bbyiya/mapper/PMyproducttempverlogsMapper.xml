@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.PMyproducttempverlogsMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.PMyproducttempverlogs" >
+    <id column="LogId" property="logid" jdbcType="BIGINT" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="Content" property="content" jdbcType="VARCHAR" />
+    <result column="OpStatus" property="opstatus" jdbcType="INTEGER" />
+    <result column="TempId" property="tempid" jdbcType="INTEGER" />
+    <result column="CustomerUserId" property="customeruserid" jdbcType="BIGINT" />
+    <result column="CartId" property="cartid" jdbcType="BIGINT" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    LogId, UserId, Content, OpStatus, TempId, CustomerUserId, CartId, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from p_myproducttempverlogs
+    where LogId = #{logid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from p_myproducttempverlogs
+    where LogId = #{logid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.PMyproducttempverlogs" >
+    insert into p_myproducttempverlogs (LogId, UserId, Content, 
+      OpStatus, TempId, CustomerUserId, 
+      CartId, CreateTime)
+    values (#{logid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{content,jdbcType=VARCHAR}, 
+      #{opstatus,jdbcType=INTEGER}, #{tempid,jdbcType=INTEGER}, #{customeruserid,jdbcType=BIGINT}, 
+      #{cartid,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproducttempverlogs" >
+    insert into p_myproducttempverlogs
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="logid != null" >
+        LogId,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="content != null" >
+        Content,
+      </if>
+      <if test="opstatus != null" >
+        OpStatus,
+      </if>
+      <if test="tempid != null" >
+        TempId,
+      </if>
+      <if test="customeruserid != null" >
+        CustomerUserId,
+      </if>
+      <if test="cartid != null" >
+        CartId,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="logid != null" >
+        #{logid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="opstatus != null" >
+        #{opstatus,jdbcType=INTEGER},
+      </if>
+      <if test="tempid != null" >
+        #{tempid,jdbcType=INTEGER},
+      </if>
+      <if test="customeruserid != null" >
+        #{customeruserid,jdbcType=BIGINT},
+      </if>
+      <if test="cartid != null" >
+        #{cartid,jdbcType=BIGINT},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PMyproducttempverlogs" >
+    update p_myproducttempverlogs
+    <set >
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="content != null" >
+        Content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="opstatus != null" >
+        OpStatus = #{opstatus,jdbcType=INTEGER},
+      </if>
+      <if test="tempid != null" >
+        TempId = #{tempid,jdbcType=INTEGER},
+      </if>
+      <if test="customeruserid != null" >
+        CustomerUserId = #{customeruserid,jdbcType=BIGINT},
+      </if>
+      <if test="cartid != null" >
+        CartId = #{cartid,jdbcType=BIGINT},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where LogId = #{logid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PMyproducttempverlogs" >
+    update p_myproducttempverlogs
+    set UserId = #{userid,jdbcType=BIGINT},
+      Content = #{content,jdbcType=VARCHAR},
+      OpStatus = #{opstatus,jdbcType=INTEGER},
+      TempId = #{tempid,jdbcType=INTEGER},
+      CustomerUserId = #{customeruserid,jdbcType=BIGINT},
+      CartId = #{cartid,jdbcType=BIGINT},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where LogId = #{logid,jdbcType=BIGINT}
+  </update>
+</mapper>

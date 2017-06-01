@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.pic.service.ibs.IIbs_MyProductTempService;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
@@ -80,6 +82,40 @@ public class MyProductTempController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	/**
+	 * 
+	 * @param title
+	 * @param remark
+	 * @param tempid
+	 * @param needverifer
+	 * @param discription
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/editTempCodeUrl")
+	public String editTempCodeUrl(Integer tempid,String codeurl,String codesm) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(ObjectUtil.isEmpty(tempid)){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("参数错误，tempid为空!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			if(!ObjectUtil.isEmpty(codesm)&&!ObjectUtil.validSqlStr(codesm)){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("二维码文字说明在危险字符!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			rq=producttempService.editTempCodeUrl(tempid,codeurl,codesm);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	/**
 	 * 修改模板
 	 * @param index
 	 * @param size
@@ -88,7 +124,7 @@ public class MyProductTempController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/editMyProductTemp")
-	public String editMyProductTemp(String title,String remark,Integer tempid,String needverifer,String discription,String codeurl,String codesm) throws Exception {
+	public String editMyProductTemp(String title,String remark,Integer tempid,String needverifer,String discription) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
@@ -107,12 +143,8 @@ public class MyProductTempController extends SSOController {
 				rq.setStatusreson("活动需知存在危险字符!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			if(!ObjectUtil.isEmpty(codesm)&&!ObjectUtil.validSqlStr(codesm)){
-				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("二维码文字说明在危险字符!");
-				return JsonUtil.objectToJsonStr(rq);
-			}
-			rq=producttempService.editMyProductTemp(title, remark, tempid,ObjectUtil.parseInt(needverifer),discription,codeurl,codesm);
+			
+			rq=producttempService.editMyProductTemp(title, remark, tempid,ObjectUtil.parseInt(needverifer),discription);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
@@ -224,6 +256,12 @@ public class MyProductTempController extends SSOController {
 				rq.setStatusreson("status参数不能为空！");
 				return JsonUtil.objectToJsonStr(rq);
 			}
+			//判断用户是否有权限操作
+			if(!(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.salesman))){
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson("没有权限做此操作！");
+				return JsonUtil.objectToJsonStr(rq);
+			}
 			rq=producttempService.audit_TempApplyUser(user.getUserId(), tempApplyId, status);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
@@ -256,7 +294,7 @@ public class MyProductTempController extends SSOController {
 	
 	
 	/**
-	 * 设置员工模板负责权限
+	 * 设置员工模板负责二维码推广权限
 	 * @param tempApplyId
 	 * @return
 	 * @throws Exception
@@ -273,6 +311,31 @@ public class MyProductTempController extends SSOController {
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			rq=producttempService.setUserTempPermission(userId, tempid, status);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	/**
+	 * 设置员模板审核负责权限
+	 * @param tempApplyId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/setUserTempVerfiyPermission")
+	public String setUserTempVerfiyPermission(Long userId,Integer tempid,Integer status) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(status==null){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("status参数不能为空！");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			rq=producttempService.setUserTempVerfiyPermission(userId, tempid, status);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
@@ -361,7 +424,5 @@ public class MyProductTempController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	
-	
-	
+		
 }

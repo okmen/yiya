@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.PMyproducttempverusersMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.PMyproducttempverusers" >
+    <id column="VerId" property="verid" jdbcType="BIGINT" />
+    <result column="TempId" property="tempid" jdbcType="INTEGER" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    VerId, TempId, UserId, Status, CreateTime
+  </sql>
+  
+  
+   <select id="selectByUserIdAndTempId" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from p_myproducttempverusers
+    where UserId = #{userId,jdbcType=BIGINT} and TempId=#{tempId,jdbcType=BIGINT}
+  </select>
+  
+  <!-- 根据模板得到员工模板审核权限列表 -->
+  <select id="findTempVerfiyUserListByTempId" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from p_myproducttempverusers
+    where  TempId=#{tempId,jdbcType=BIGINT}
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from p_myproducttempverusers
+    where VerId = #{verid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from p_myproducttempverusers
+    where VerId = #{verid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.PMyproducttempverusers" >
+    insert into p_myproducttempverusers (VerId, TempId, UserId, 
+      Status, CreateTime)
+    values (#{verid,jdbcType=BIGINT}, #{tempid,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, 
+      #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproducttempverusers" >
+    insert into p_myproducttempverusers
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="verid != null" >
+        VerId,
+      </if>
+      <if test="tempid != null" >
+        TempId,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="verid != null" >
+        #{verid,jdbcType=BIGINT},
+      </if>
+      <if test="tempid != null" >
+        #{tempid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PMyproducttempverusers" >
+    update p_myproducttempverusers
+    <set >
+      <if test="tempid != null" >
+        TempId = #{tempid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where VerId = #{verid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PMyproducttempverusers" >
+    update p_myproducttempverusers
+    set TempId = #{tempid,jdbcType=INTEGER},
+      UserId = #{userid,jdbcType=BIGINT},
+      Status = #{status,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where VerId = #{verid,jdbcType=BIGINT}
+  </update>
+</mapper>

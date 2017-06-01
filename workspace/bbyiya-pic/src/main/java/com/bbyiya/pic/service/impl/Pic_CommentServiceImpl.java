@@ -73,10 +73,18 @@ public class Pic_CommentServiceImpl implements IPic_CommentService{
 		param.setUserid(userId);
 		param.setCreatetime(new Date());
 		myproductcommentsMapper.insertSelective(param);
-		PMyproductext ext=new PMyproductext();
-		ext.setCartid(param.getCartid());
-		ext.setCommentscount(count+1);
-		myproductextMapper.insert(ext);
+		PMyproductext ext=myproductextMapper.selectByPrimaryKey(param.getCartid());
+		if(ext==null){
+			 ext=new PMyproductext();
+			 ext.setCartid(param.getCartid());
+			 ext.setCommentscount(count+1);
+			 myproductextMapper.insert(ext);
+		}else {
+			ext.setCommentscount(count+1);
+			myproductextMapper.updateByPrimaryKeySelective(ext);
+		}
+		
+	
 		rqModel.setStatu(ReturnStatus.Success);
 		rqModel.setStatusreson("³É¹¦£¡"); 
 		return rqModel;

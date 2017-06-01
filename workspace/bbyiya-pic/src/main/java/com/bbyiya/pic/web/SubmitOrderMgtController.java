@@ -20,10 +20,11 @@ import com.bbyiya.model.PPostmodel;
 import com.bbyiya.pic.vo.order.SubmitOrderProductParam;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
 import com.bbyiya.service.pic.IBasePostMgtService;
-
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.address.OrderaddressParam;
+import com.bbyiya.vo.address.OrderaddressVo;
 import com.bbyiya.vo.order.UserOrderSubmitParam;
 import com.bbyiya.vo.order.UserOrderSubmitRepeatParam;
 import com.bbyiya.vo.user.LoginSuccessResult;
@@ -148,7 +149,90 @@ public class SubmitOrderMgtController extends SSOController {
 //		System.out.println(JsonUtil.objectToJsonStr(rq));
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	
+	/**
+	 * IBS影楼内部选地址下单
+	 * @param addressJsonStr
+	 * @param orderType
+	 * @param remark
+	 * @param productJsonStr
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/submitOrderIBS")
+	public String submitOrderIBS(String addressJsonStr, String orderType, String remark, String productJsonStr) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			SubmitOrderProductParam productParam = (SubmitOrderProductParam) JsonUtil.jsonStrToObject(productJsonStr, SubmitOrderProductParam.class);
+			OrderaddressParam addressParam=(OrderaddressParam)JsonUtil.jsonStrToObject(addressJsonStr, OrderaddressParam.class);
+			if (productParam != null&&addressParam!=null) {
+				OOrderproducts product = new OOrderproducts();
+				product.setProductid(productParam.getProductId());
+				product.setStyleid(productParam.getStyleId());
+				product.setCount(productParam.getCount());
+				
+				// 下单参数
+				UserOrderSubmitParam param = new UserOrderSubmitParam();
+				param.setUserId(user.getUserId());
+				param.setRemark(remark);
+				
+				if (productParam.getCartId() != null && productParam.getCartId() > 0) {
+					param.setCartId(productParam.getCartId());
+				}
+				int type = ObjectUtil.parseInt(orderType);
+				if (type > 0) {
+					param.setOrderType(type);
+				}
+				if(productParam.getPostModelId()!=null){
+					param.setPostModelId(productParam.getPostModelId()); 
+				} 
+				param.setOrderproducts(product);
+				if(addressParam.getCity()==null){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("地址参数有误：city为空");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				if(addressParam.getProvince()==null){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("地址参数有误：province为空");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				if(addressParam.getDistrict()==null){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("地址参数有误：district为空");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				if(addressParam.getStreetdetail()==null){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("地址参数有误：streetdetail为空");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				if(addressParam.getPhone()==null){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("参数有误,联系电话为空");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				if(addressParam.getReciver()==null){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("参数有误,联系人为空");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				param.setAddressparam(addressParam);
+				rq = orderMgtService.submitOrder_IBS(param);
+			} else {
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("参数有误");
+			}
 
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	/**
 	 * 再次下单
 	 * @param addrId

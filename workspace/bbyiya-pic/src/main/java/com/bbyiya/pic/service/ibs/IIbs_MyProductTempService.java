@@ -49,7 +49,7 @@ public interface IIbs_MyProductTempService {
 	 * @return
 	 */
 	ReturnModel editMyProductTemp(String title, String remark,
-			Integer tempid,int needVerifer,String discription,String codeurl,String codesm);
+			Integer tempid,int needVerifer,String discription);
 	/**
 	 * 获取影楼模板待审核用户列表
 	 * @param index
@@ -102,6 +102,23 @@ public interface IIbs_MyProductTempService {
 	 * @return
 	 */
 	ReturnModel audit_TempApplyProduct(Long userId, Long cartid, Integer status,String reason);
+	/**
+	 * 修改模板二维码信息
+	 * @param tempid
+	 * @param codeurl
+	 * @param codesm
+	 * @return
+	 */
+	ReturnModel editTempCodeUrl(Integer tempid, String codeurl, String codesm);
+	/**
+	 * 设置员工模板审核负责权限
+	 * @param userId
+	 * @param tempid
+	 * @param status
+	 * @return
+	 */
+	ReturnModel setUserTempVerfiyPermission(Long userId, Integer tempid,
+			Integer status);
 
 	
 }

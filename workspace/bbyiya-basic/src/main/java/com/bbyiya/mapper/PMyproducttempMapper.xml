@@ -33,11 +33,16 @@
     from p_myproducttemp
     where BranchUserId = #{branchuserid,jdbcType=BIGINT} and Status!=2 order by CreateTime desc
   </select>
-  <!-- 获取影楼 需要审核的模板列表 -->
+  <!-- 获取影楼管理员 需要审核的模板列表 -->
   <select id="findBranchMyProductTempNeedVerList" resultMap="BaseResultMap" >
     select  <include refid="Base_Column_List" />
     from p_myproducttemp
     where BranchUserId = #{branchuserid,jdbcType=BIGINT} and  NeedVerifer=1 and Status=1  order by CreateTime desc
+  </select> 
+  
+   <!-- 获取影楼员工 需要审核的模板列表 -->
+  <select id="findBranchUserMyProductTempNeedVerList" resultMap="BaseResultMap" >
+    select a.* from p_myproducttemp a,p_myproducttempverusers  b  where a.TempId=b.TempId  and a.NeedVerifer=1 and a.Status=1  and b.UserId=#{userid,jdbcType=BIGINT} and b.status=1  order by a.CreateTime desc
   </select> 
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
@@ -48,7 +53,7 @@
     insert into p_myproducttemp (TempId, BranchUserId, Title, 
       Status, Count, Remark, 
       CartId, CreateTime, NeedVerifer, 
-      Discription, ApplyCount)
+      Discription, TempCodeUrl, TempCodeSm, ApplyCount)
     values (#{tempid,jdbcType=INTEGER}, #{branchuserid,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
       #{status,jdbcType=INTEGER}, #{count,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
       #{cartid,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}, #{needverifer,jdbcType=INTEGER}, 
@@ -178,7 +183,7 @@
       </if>
       <if test="needverifer != null" >
         NeedVerifer = #{needverifer,jdbcType=INTEGER},
-      </if>
+      </if> 
       <if test="discription != null" >
         Discription = #{discription,jdbcType=VARCHAR},
       </if>

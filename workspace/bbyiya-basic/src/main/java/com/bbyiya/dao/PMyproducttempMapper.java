@@ -30,9 +30,15 @@ public interface PMyproducttempMapper {
      */
     List<PMyproducttemp> findBranchMyProductTempList(@Param("branchuserid") Long branchuserid);
     /**
-     * 获取影楼 需审核的异业合作模板列表
+     * 获取影楼管理员 需审核的异业合作模板列表
      * @param branchuserid
      * @return
      */
     List<PMyproducttemp> findBranchMyProductTempNeedVerList(@Param("branchuserid") Long branchuserid);
+    /**
+     * 获取影楼 员工需审核的异业合作模板列表
+     * @param branchuserid
+     * @return
+     */
+    List<PMyproducttemp> findBranchUserMyProductTempNeedVerList(@Param("userid") Long branchuserid);
 }

@@ -95,5 +95,11 @@ public interface IBaseOrderMgtService {
 	 * @return
 	 */
 	ReturnModel findUserOrderlist(Long userId,int index,int size);
+	/**
+	 * 选择地址下单
+	 * @param param
+	 * @return
+	 */
+	ReturnModel submitOrder_IBS(UserOrderSubmitParam param);
 
 }

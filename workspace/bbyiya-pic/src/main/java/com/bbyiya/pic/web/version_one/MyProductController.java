@@ -270,7 +270,6 @@ public class MyProductController extends SSOController {
 	@ResponseBody
 	@RequestMapping(value = "/getmyProductShowsCount")
 	public int getmyProductShowsCount(@RequestParam(required = false, defaultValue = "0") long cartId) throws Exception {
-//		String keyName = "yiya_myproduct21070217";
 		Map<Long, Integer> map = (Map<Long, Integer>) RedisUtil.getObject(cART_REDIS_BASE);
 		if(map!=null){
 			if(map.containsKey(cartId)){

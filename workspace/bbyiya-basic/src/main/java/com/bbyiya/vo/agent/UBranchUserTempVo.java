@@ -11,8 +11,8 @@ public class UBranchUserTempVo{
 
     private Long agentuserid;
 
-    private Integer status;//活动负责状态 0 不负责，1负责
-
+    private Integer status;//活动负责二维码推广状态 0 不负责，1负责
+    private Integer verfiystatus;//活动负责审核状态 0 不负责，1负责
     private String createtime;
     
     private int tempid;//模板
@@ -85,6 +85,12 @@ public class UBranchUserTempVo{
 	}
 	public void setCodeurl(String codeurl) {
 		this.codeurl = codeurl;
+	}
+	public Integer getVerfiystatus() {
+		return verfiystatus;
+	}
+	public void setVerfiystatus(Integer verfiystatus) {
+		this.verfiystatus = verfiystatus;
 	}
     
     

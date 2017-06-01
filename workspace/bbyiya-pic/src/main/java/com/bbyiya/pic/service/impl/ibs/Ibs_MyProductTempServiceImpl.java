@@ -23,6 +23,8 @@ import com.bbyiya.dao.PMyproductsinvitesMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
 import com.bbyiya.dao.PMyproducttempusersMapper;
+import com.bbyiya.dao.PMyproducttempverlogsMapper;
+import com.bbyiya.dao.PMyproducttempverusersMapper;
 import com.bbyiya.dao.UAgentcustomersMapper;
 import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UUsersMapper;
@@ -40,6 +42,8 @@ import com.bbyiya.model.PMyproductsinvites;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.model.PMyproducttempusers;
+import com.bbyiya.model.PMyproducttempverlogs;
+import com.bbyiya.model.PMyproducttempverusers;
 import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUsers;
@@ -78,6 +82,10 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	private UBranchusersMapper branchuserMapper;	
 	@Autowired
 	private PMyproducttempusersMapper myTempUserMapper;	
+	@Autowired
+	private PMyproducttempverusersMapper myTempveruserMapper;
+	@Autowired
+	private PMyproducttempverlogsMapper myTempVeruserlogMapper;
 	
 	
 	/**
@@ -106,8 +114,11 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		temp.setCartid(myproduct.getCartid());	
 		temp.setNeedverifer(needVerifer);
 		temp.setDiscription(discription);
-		temp.setTempcodeurl(codeurl);
-		temp.setTempcodesm(codesm);
+		if(!ObjectUtil.isEmpty(codeurl)){
+			temp.setTempcodeurl(codeurl);
+		}if(!ObjectUtil.isEmpty(codeurl)){
+			temp.setTempcodesm(codesm);
+		}
 		myproducttempMapper.insertReturnId(temp);
 		
 		myproduct.setTempid(temp.getTempid());
@@ -124,7 +135,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	/**
 	 * 修改模板
 	 * */
-	public ReturnModel editMyProductTemp(String title,String remark,Integer tempid,int needVerifer,String discription,String codeurl,String codesm){
+	public ReturnModel editMyProductTemp(String title,String remark,Integer tempid,int needVerifer,String discription){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);	
 		PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempid);
@@ -133,11 +144,29 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			temp.setRemark(remark);
 			temp.setNeedverifer(needVerifer);
 			temp.setDiscription(discription);
+			myproducttempMapper.updateByPrimaryKey(temp);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("修改模板成功！");
+		}else{
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("模板不存在！");
+		}
+		return rq;
+	}
+	
+	/**
+	 * 修改二维码信息
+	 * */
+	public ReturnModel editTempCodeUrl(Integer tempid,String codeurl,String codesm){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.SystemError);	
+		PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempid);
+		if(temp!=null){
 			temp.setTempcodeurl(codeurl);
 			temp.setTempcodesm(codesm);
 			myproducttempMapper.updateByPrimaryKey(temp);
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("修改模板成功！");
+			rq.setStatusreson("修改模板二维码成功！");
 		}else{
 			rq.setStatu(ReturnStatus.ParamError);
 			rq.setStatusreson("模板不存在！");
@@ -183,6 +212,14 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 							myTempUserMapper.updateByPrimaryKeySelective(tempuser);
 						}
 					}
+					//禁用员工员工模板审核权限
+					List<PMyproducttempverusers> tempveruserList=myTempveruserMapper.findTempVerfiyUserListByTempId(tempid);
+					if(tempveruserList!=null&&tempveruserList.size()>0){
+						for (PMyproducttempverusers tempveruser : tempveruserList) {
+							tempveruser.setStatus(0);
+							myTempveruserMapper.updateByPrimaryKeySelective(tempveruser);
+						}
+					}
 				}
 			}
 			myMapper.updateByPrimaryKey(myproduct);
@@ -224,6 +261,13 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			if(tempuserList!=null&&tempuserList.size()>0){
 				for (PMyproducttempusers tempuser : tempuserList) {
 					myTempUserMapper.deleteByPrimaryKey(tempuser.getId());
+				}
+			}
+			//员工员工模板审核权限
+			List<PMyproducttempverusers> tempveruserList=myTempveruserMapper.findTempVerfiyUserListByTempId(tempid);
+			if(tempveruserList!=null&&tempveruserList.size()>0){
+				for (PMyproducttempverusers tempveruser : tempveruserList) {
+					myTempveruserMapper.deleteByPrimaryKey(tempveruser.getVerid());
 				}
 			}
 			
@@ -317,17 +361,32 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		ReturnModel rq=new ReturnModel();
 		PMyproducttempapply apply=myproducttempapplyMapper.selectByPrimaryKey(tempapplyid);
 		if(apply!=null){	
+			String content="";
 			//审核通过操作  新增一份作品ID，插入影楼客户信息
 			if(status==Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString())){
 				apply.setVerfiytime(new Date());	
 				apply.setIsread(0);//消息状态置为未读
+				content="审核通过";
 				rq=doAcceptOrAutoTempApplyOpt(apply);	
-			}else{
+			}else if(status==Integer.parseInt(MyProducttempApplyStatusEnum.refuse.toString())){
 				rq.setStatu(ReturnStatus.Success);
+				content="审核不通过";
 				rq.setStatusreson("拒绝成功");
 			}
 			apply.setStatus(status);
-			myproducttempapplyMapper.updateByPrimaryKey(apply);			
+			myproducttempapplyMapper.updateByPrimaryKey(apply);	
+			
+			//插入审核日志表记录
+			PMyproducttempverlogs verlog=new PMyproducttempverlogs();
+			verlog.setCartid(apply.getCartid());
+			verlog.setContent(content);
+			verlog.setCreatetime(new Date());
+			verlog.setCustomeruserid(adminUserId);
+			verlog.setOpstatus(status);
+			verlog.setTempid(apply.getTempid());
+			verlog.setUserid(apply.getUserid());
+			myTempVeruserlogMapper.insert(verlog);
+			
 		}else{
 			rq.setStatu(ReturnStatus.SystemError);
 			rq.setStatusreson("找不到申请记录");
@@ -542,6 +601,11 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 					}
 				}
 				
+				usertemp.setVerfiystatus(0);
+				PMyproducttempverusers veruser=myTempveruserMapper.selectByUserIdAndTempId(buser.getUserid(), tempid);
+				if(veruser!=null){
+					usertemp.setVerfiystatus(veruser.getStatus()==null?0:veruser.getStatus());
+				}
 				usertemplist.add(usertemp);
 			}
 			
@@ -589,6 +653,44 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		}else{
 			tempuser.setStatus(status);
 			myTempUserMapper.updateByPrimaryKeySelective(tempuser);
+		}
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("设置成功！");
+		return rq;
+	}
+	
+	/**
+	 * 设置员工模板审核负责权限
+	 * @return
+	 */
+	public ReturnModel setUserTempVerfiyPermission(Long userId,Integer tempid,Integer status){
+		ReturnModel rq=new ReturnModel();
+		if(tempid==null){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("参数错误：tempid为空！");
+			return rq;
+		}
+		if(userId==null){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("参数错误：userId为空！");
+			return rq;
+		}
+		if(status==null){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("参数错误：status为空！");
+			return rq;
+		}
+		PMyproducttempverusers verfiytempuser=myTempveruserMapper.selectByUserIdAndTempId(userId, tempid);
+		if(verfiytempuser==null){
+			verfiytempuser=new PMyproducttempverusers();
+			verfiytempuser.setCreatetime(new Date());
+			verfiytempuser.setStatus(status);
+			verfiytempuser.setTempid(tempid);
+			verfiytempuser.setUserid(userId);		
+			myTempveruserMapper.insert(verfiytempuser);
+		}else{
+			verfiytempuser.setStatus(status);
+			myTempveruserMapper.updateByPrimaryKeySelective(verfiytempuser);
 		}
 		rq.setStatu(ReturnStatus.Success);
 		rq.setStatusreson("设置成功！");
@@ -657,6 +759,5 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		rq.setStatusreson("获图片成功！");
 		return rq;
 	}
-	
-	
+		
 }

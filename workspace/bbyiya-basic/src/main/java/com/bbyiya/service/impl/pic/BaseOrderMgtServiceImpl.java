@@ -77,6 +77,7 @@ import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.address.OrderaddressVo;
 import com.bbyiya.vo.order.UserBuyerOrderResult;
 import com.bbyiya.vo.order.UserOrderParam;
 import com.bbyiya.vo.order.UserOrderResult;
@@ -328,6 +329,45 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			long orderAddressId =0;
 			if(orderType==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){//影楼订单
 				orderAddressId = getOrderAddressIdByBranchUserId(param.getUserId(), orderType);
+			}else {//普通购买
+				orderAddressId  = getOrderAddressId(param.getAddrId());
+			}
+			if(orderAddressId>0){//
+				param.setOrderAddressId(orderAddressId);
+			} 
+			return submitOrder_common(param);
+		} catch (Exception e) {
+			addlog(e.getMessage()); 
+			throw new RuntimeException(e.getMessage());
+		}
+	}
+	
+	public ReturnModel submitOrder_IBS(UserOrderSubmitParam param) {
+		ReturnModel rq = new ReturnModel();
+		int orderType=param.getOrderType()==null?0:param.getOrderType();
+		try {
+			//订单参数，用户资格验证
+			rq=checkOrderParam(param);
+			if(!rq.getStatu().equals(ReturnStatus.Success))//未通过参数验证
+			{
+				return rq;
+			}
+			if(rq.getBasemodle()!=null){
+				param=(UserOrderSubmitParam)rq.getBasemodle();
+			}
+			long orderAddressId =0;
+			if(orderType==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){//影楼订单
+				OOrderaddress orderAddress = new OOrderaddress();
+				orderAddress.setUserid(param.getAddressparam().getUserid());
+				orderAddress.setPhone(param.getAddressparam().getPhone());
+				orderAddress.setReciver(param.getAddressparam().getReciver());				
+				orderAddress.setCity(regionService.getCityName(param.getAddressparam().getCity()));
+				orderAddress.setProvince(regionService.getProvinceName(param.getAddressparam().getProvince()));
+				orderAddress.setDistrict(regionService.getAresName(param.getAddressparam().getDistrict()));
+			    orderAddress.setStreetdetail(param.getAddressparam().getStreetdetail());
+				orderAddress.setCreatetime(new Date());
+				orderaddressMapper.insertReturnId(orderAddress);
+				orderAddressId=orderAddress.getOrderaddressid();
 			}else {//普通购买
 				orderAddressId  = getOrderAddressId(param.getAddrId());
 			}
@@ -729,9 +769,6 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		rq.setStatusreson("参数有误");
 		return rq;
 	}
-	
-	
-	
 	
 	/**
 	 * 用户订单，产品订单 共用（一个订单对应一个产品 ）

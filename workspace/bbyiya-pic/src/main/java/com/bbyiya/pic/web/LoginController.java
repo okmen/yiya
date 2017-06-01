@@ -2,8 +2,7 @@ package com.bbyiya.pic.web;
 
 import java.net.URLEncoder;
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 import javax.annotation.Resource;
 
@@ -172,7 +171,7 @@ public class LoginController extends SSOController {
 						return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLoginInfo&response_type=code&scope=snsapi_userinfo#wechat_redirect" ;		
 					}
 					if(!ObjectUtil.isEmpty(nickName)&&!"null".equals(nickName)){
-						
+						nickName=ObjectUtil.filterEmoji(nickName);
 						param.setNickName(nickName);
 					}
 					if(!ObjectUtil.isEmpty(headimg)&&!"null".equals(headimg)){
@@ -355,18 +354,18 @@ public class LoginController extends SSOController {
 	}
 
 	
-	public  String filterEmoji(String source) { 
-        if(source != null)
-        {
-            Pattern emoji = Pattern.compile ("[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\u2600-\u27ff]",Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE ) ;
-            Matcher emojiMatcher = emoji.matcher(source);
-            if ( emojiMatcher.find())
-            {
-                source = emojiMatcher.replaceAll("*");
-                return source ;
-            }
-        return source;
-       }
-       return source; 
-    }
+//	public  String filterEmoji(String source) { 
+//        if(source != null)
+//        {
+//            Pattern emoji = Pattern.compile ("[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\u2600-\u27ff]",Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE ) ;
+//            Matcher emojiMatcher = emoji.matcher(source);
+//            if ( emojiMatcher.find())
+//            {
+//                source = emojiMatcher.replaceAll("*");
+//                return source ;
+//            }
+//        return source;
+//       }
+//       return source; 
+//    }
 }

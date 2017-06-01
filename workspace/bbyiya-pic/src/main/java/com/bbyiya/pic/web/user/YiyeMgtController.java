@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bbyiya.common.vo.ResultMsg;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
@@ -72,7 +73,7 @@ public class YiyeMgtController  extends SSOController {
 	/**
 	 * M11-03 异业合作-模板详情 
 	 * c端
-	 * @param workId
+	 * @param workId 作品cartid
 	 * @return
 	 * @throws Exception
 	 */
@@ -87,8 +88,10 @@ public class YiyeMgtController  extends SSOController {
 			if(cartid>0){
 				PMyproducts mycart= myProductMapper.selectByPrimaryKey(cartid);
 				if(mycart!=null){
+					
 					PMyproducttemp temp= tempMapper.selectByPrimaryKey(mycart.getTempid());
 					if(temp!=null){
+						result.setTemp(temp); 
 						List<MyProductListVo> myproductList= myproductDao.getMyProductByTempId(temp.getTempid(), user.getUserId());
 						if(myproductList!=null&&myproductList.size()>0){
 							PMyproducttempapply apply= tempApplyMapper.getMyProducttempApplyByCartId(myproductList.get(0).getCartid());
@@ -102,10 +105,8 @@ public class YiyeMgtController  extends SSOController {
 								result.setApplyStatus(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString())); 
 							} 
 							result.setIsInvited(1);
-//							result.setApplyStatus(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString())); 
 							result.setCartId(myproductList.get(0).getCartid());
 						}else {
-							result.setTemp(temp); 
 							PMyproducttempapply apply= tempApplyMapper.getMyProducttempApplyByUserId(temp.getTempid(), user.getUserId());
 							if(apply!=null){
 								result.setApplyStatus(apply.getStatus());
@@ -214,6 +215,23 @@ public class YiyeMgtController  extends SSOController {
 							//需要审核
 							isNeedVer=true;
 						}
+						
+						if(!isNeedVer){// 不需要审核 调取 新增作品、客户信息
+							
+							//验证是否是免费领取的用户
+							ResultMsg rMsg=verUser(temp.getTempid().intValue(),user);
+							if(rMsg.getStatus()!=1){
+								rq.setStatu(ReturnStatus.ParamError);
+								rq.setStatusreson(rMsg.getMsg());
+								return JsonUtil.objectToJsonStr(rq); 
+							}
+							
+							rq=ibs_tempService.doAcceptOrAutoTempApplyOpt(apply);
+							if(rq.getStatu().equals(ReturnStatus.Success)){
+								apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString()));
+							}
+						}
+						
 						if(param.getSubUserId()>0){
 							PMyproducttempusers tempUser= tempUsrMapper.selectByUserIdAndTempId(param.getSubUserId(), temp.getTempid());
 							if(tempUser!=null){
@@ -225,13 +243,6 @@ public class YiyeMgtController  extends SSOController {
 						temp.setApplycount(temp.getApplycount()==null?1:temp.getApplycount()+1);
 						tempMapper.updateByPrimaryKeySelective(temp); 
 						
-						
-						if(!isNeedVer){// 不需要审核 调取 新增作品、客户信息
-							rq=ibs_tempService.doAcceptOrAutoTempApplyOpt(apply);
-							if(rq.getStatu().equals(ReturnStatus.Success)){
-								apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString()));
-							}
-						}
 						//插入申请提交信息
 						tempApplyMapper.insert(apply);
 						
@@ -250,6 +261,49 @@ public class YiyeMgtController  extends SSOController {
 			rq.setStatusreson("登录过期");
 		}
 		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 验证作品是否是 特殊活动作品（流量住免单作品）
+	 * @param tempId
+	 * @param user
+	 * @return
+	 */
+	public ResultMsg verUser(int tempId,LoginSuccessResult user){
+		ResultMsg result=new  ResultMsg();
+		boolean isok=true;
+		List<Map<String, String>> maplist= ConfigUtil.getMaplist("tempFrees");
+		if(maplist!=null&&maplist.size()>0){
+			for (Map<String, String> map : maplist) {
+				int tempFree=ObjectUtil.parseInt(map.get("tempid")) ;
+				if(tempFree==tempId){
+					if(user!=null&&!ObjectUtil.isEmpty(user.getMobilePhone())){
+						isok=false;
+						String phones=map.get("phones");
+						String[] phoneArr= phones.split(",");
+						if(phoneArr!=null&&phoneArr.length>0){
+							for (int i = 0; i < phoneArr.length; i++) {
+								if(!ObjectUtil.isEmpty(phoneArr[i])&&user.getMobilePhone().equals(phoneArr[i])){
+									result.setStatus(1); 
+									return result;
+								}
+							}
+						}
+					}else {
+						result.setStatus(-1);
+						result.setMsg("你似乎忘了绑定手机号呢，请先绑定手机号再来。");//此活动指定用户，您还没有在个人中心绑定手机号，无法确定身份，请前往个人中心进行绑定！
+						return result;
+					}
+				}
+			}
+		}
+		if(isok){
+			result.setStatus(1);
+		}else {
+			result.setStatus(-1);
+			result.setMsg("抱歉，您还没有获得活动参与资格!");
+		} 
+		return result;
 	}
 	
 	/**
@@ -416,6 +470,11 @@ public class YiyeMgtController  extends SSOController {
 	}
 	
 	
+	/**
+	 * 
+	 * @param json
+	 * @return
+	 */
 	public static YiyeSubmitParam getParam_YiyeSubmitParam(String json) {
 		JSONObject model = JSONObject.fromObject(json);
 		if (model != null) {

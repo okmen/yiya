@@ -32,7 +32,9 @@ public class MyProductMgtController extends SSOController {
 
 	@Autowired
 	private PMyproductsMapper myproductMapper;
-	
+
+	@Autowired
+	private PMyproductsinvitesMapper inviteMapper;
 	
 	@ResponseBody
 	@RequestMapping(value = "/mylist")
@@ -62,8 +64,6 @@ public class MyProductMgtController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-	@Autowired
-	private PMyproductsinvitesMapper inviteMapper;
 
 	/**
 	 * 获取作品二维码分享版本号

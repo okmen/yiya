@@ -515,6 +515,12 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 		PMyproductsinvites invite = inviteMapper.getInviteByPhoneAndCartId(phone, cartId);
 		if (invite != null) {
 			if (phone.equals(invite.getInvitephone())) {
+				if(invite.getInviteuserid()==null){
+					UUsers users= usersMapper.getUUsersByPhone(phone);
+					if(users!=null){
+						invite.setInviteuserid(users.getUserid()); 
+					} 
+				}
 				invite.setStatus(status);
 				inviteMapper.updateByPrimaryKeySelective(invite);
 				rq.setStatu(ReturnStatus.Success);
@@ -536,12 +542,19 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 		}
 		List<PMyproductsinvites> invitelist = inviteMapper.findListByCartId(cartId);
 		for (PMyproductsinvites pp : invitelist) {
-			if(pp.getInviteuserid()!=null&&pp.getInviteuserid().longValue()==userId){
+			if(pp.getInviteuserid()!=null&&pp.getInviteuserid().longValue()==userId){//接受、拒绝邀请
 				pp.setStatus(status);
 				inviteMapper.updateByPrimaryKeySelective(pp);
-			}else if (pp.getUserid()!=null&&pp.getUserid().longValue()==userId) {
+			}else if (pp.getUserid()!=null&&pp.getUserid().longValue()==userId) {//作品拥有者调去
 				pp.setStatus(status);
 				inviteMapper.updateByPrimaryKeySelective(pp);
+			}else if(pp.getInviteuserid()==null){//手机号要求（接受拒绝邀请）
+				UUsers users=usersMapper.getUUsersByUserID(userId);
+				if(users!=null&&myproducts.getUserid().longValue()!=users.getUserid().longValue()){
+					pp.setStatus(status);
+					pp.setInviteuserid(users.getUserid());
+					inviteMapper.updateByPrimaryKeySelective(pp);
+				}
 			}
 		}
 		if(status==Integer.parseInt(InviteStatus.ok.toString())&&myproducts!=null&&myproducts.getTempid()!=null){

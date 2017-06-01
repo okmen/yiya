@@ -44,6 +44,7 @@ public class UserInfoController  extends SSOController{
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
+			userInfoJson=ObjectUtil.filterEmoji(userInfoJson);
 			UUserInfoParam param=(UUserInfoParam)JsonUtil.jsonStrToObject(userInfoJson, UUserInfoParam.class);
 			if(param!=null){
 				rq= userInfoMgtService.editUUsers(user.getUserId(), param);
@@ -52,7 +53,6 @@ public class UserInfoController  extends SSOController{
 					if(loginUser!=null){
 						String ticket=super.getTicket();
 						if(ObjectUtil.isEmpty(ticket)){
-//							ticket=CookieUtils.getCookieBySessionId(request);
 							ticket=CookieUtils.getCookie_web(request);
 						}
 						RedisUtil.setObject(ticket, loginUser, 86400); 

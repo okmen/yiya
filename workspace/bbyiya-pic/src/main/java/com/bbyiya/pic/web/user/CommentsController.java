@@ -15,6 +15,7 @@ import com.bbyiya.model.PMyproductcomments;
 import com.bbyiya.pic.service.IPic_CommentService;
 import com.bbyiya.pic.utils.Json2Objects;
 import com.bbyiya.utils.JsonUtil;
+import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
@@ -61,6 +62,7 @@ public class CommentsController extends SSOController{
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
+			commentJson=ObjectUtil.filterEmoji(commentJson);
 			PMyproductcomments param = Json2Objects.getParam_PMyproductcomments(commentJson);
 			if (param != null) {
 				rq = commentService.addPinglun(user.getUserId(), param);

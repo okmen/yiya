@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.pic.InviteStatus;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.pic.service.IPic_myProductService;
 import com.bbyiya.utils.JsonUtil;
@@ -60,7 +61,11 @@ public class InviteMgtController  extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq=myProductService.processInvite(cartId,user.getUserId(), status);
+			if(status!=null&&status==Integer.parseInt(InviteStatus.ok.toString())){
+				rq=myProductService.processInvite(cartId,user.getUserId(), status);
+			}else {
+				rq=myProductService.processInvite(user.getMobilePhone(),cartId, status);
+			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期，请重新登录");

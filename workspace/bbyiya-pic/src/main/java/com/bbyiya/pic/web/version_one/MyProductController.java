@@ -17,6 +17,7 @@ import com.bbyiya.pic.service.IPic_ProductService;
 import com.bbyiya.pic.utils.Json2Objects;
 import com.bbyiya.pic.vo.product.MyProductParam;
 import com.bbyiya.utils.JsonUtil;
+import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
@@ -43,6 +44,7 @@ public class MyProductController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
+			myproductJson=ObjectUtil.filterEmoji(myproductJson);
 			MyProductParam param = Json2Objects.getParam_MyProductParam(myproductJson);
 			if (param != null) {
 				if (param.getDetails() != null && param.getDetails().size() > 12) {
@@ -76,6 +78,7 @@ public class MyProductController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
+			myproductJson=ObjectUtil.filterEmoji(myproductJson);
 			MyProductParam param = Json2Objects.getParam_MyProductParam(myproductJson);
 			if (param != null) {
 				if (param.getDetails() != null && param.getDetails().size() > 12) {

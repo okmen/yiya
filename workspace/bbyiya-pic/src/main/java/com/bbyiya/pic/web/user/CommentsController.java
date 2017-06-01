@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.PCommentstemp;
 import com.bbyiya.model.PMyproductcomments;
+
 import com.bbyiya.pic.service.IPic_CommentService;
 import com.bbyiya.pic.utils.Json2Objects;
 import com.bbyiya.utils.JsonUtil;
@@ -65,7 +66,7 @@ public class CommentsController extends SSOController{
 			commentJson=ObjectUtil.filterEmoji(commentJson);
 			PMyproductcomments param = Json2Objects.getParam_PMyproductcomments(commentJson);
 			if (param != null) {
-				rq = commentService.addPinglun(user.getUserId(), param);
+				rq = commentService.addPinglun(user.getUserId(), param); //this.addPinglun(user.getUserId(), param); //
 			} else {
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("参数不全");
@@ -76,6 +77,7 @@ public class CommentsController extends SSOController{
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
 	
 	/**
 	 * M08 作品评论-用户评论列表

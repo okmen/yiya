@@ -1,6 +1,5 @@
 package com.bbyiya.service.impl.pic;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -34,6 +33,13 @@ public class BaseUserAddressServiceImpl implements IBaseUserAddressService {
 
 	@Resource(name = "regionServiceImpl")
 	private IRegionService regionService;
+	
+	@Autowired
+	private UUsersMapper usersMapper;
+	@Autowired
+	private UBranchesMapper branchMapper;
+	@Autowired
+	private UBranchusersMapper branchusersMapper;
 
 	/**
 	 * edit/add user's addressInfo zy
@@ -119,13 +125,21 @@ public class BaseUserAddressServiceImpl implements IBaseUserAddressService {
 
 	public ReturnModel addOrEdit_UserAddressReturnAddressId(UUseraddress address) {
 		ReturnModel rq = new ReturnModel();
+		rq.setStatu(ReturnStatus.ParamError_2);
 		if (address != null && address.getUserid() != null && address.getUserid() > 0) {
+			if(ObjectUtil.isEmpty(address.getReciver())){
+				rq.setStatusreson("收货人信息不能为空！");
+				return rq;
+			}
 			if (!ObjectUtil.validSqlStr(address.getReciver())) {
-				rq.setStatu(ReturnStatus.ParamError_2);
 				rq.setStatusreson("收货人信息存在危险！");
 				return rq;
 			}
-			if (!ObjectUtil.isEmpty(address.getPhone()) && !ObjectUtil.validSqlStr(address.getPhone())) {
+			if(ObjectUtil.isEmpty(address.getPhone())){
+				rq.setStatusreson("联系方式不能为空！");
+				return rq;
+			}
+			if (!ObjectUtil.isMobile(address.getPhone())) {
 				rq.setStatu(ReturnStatus.ParamError_2);
 				rq.setStatusreson("手机号格式不对！");
 				return rq;
@@ -192,12 +206,7 @@ public class BaseUserAddressServiceImpl implements IBaseUserAddressService {
 			return null;
 		}
 	}
-	@Autowired
-	private UUsersMapper usersMapper;
-	@Autowired
-	private UBranchesMapper branchMapper;
-	@Autowired
-	private UBranchusersMapper branchusersMapper;
+	
 
 	public UUserAddressResult getBranchAddressResult(Long userId){
 		UUsers users = usersMapper.selectByPrimaryKey(userId);

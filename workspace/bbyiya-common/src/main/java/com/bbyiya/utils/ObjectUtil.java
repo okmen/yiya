@@ -589,11 +589,32 @@ public class ObjectUtil {
 	 * @return
 	 */
 	public static boolean isMobile(String mobiles){  
-//		  Pattern p = Pattern.compile("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$");  
-//		  Matcher m = p.matcher(mobiles);  
-//		  return m.matches();  
-		return true;
+		if(isChinaPhoneLegal(mobiles))
+			return true;
+		return isHKPhoneLegal(mobiles);
 	}  
+	
+	/**
+	 * 大陆手机号
+	 * @param str
+	 * @return
+	 */
+	public static boolean isChinaPhoneLegal(String str) {  
+        String regExp = "^((13[0-9])|(15[^4])|(18[0,2,3,5-9])|(17[0-8])|(147))\\d{8}$";  
+        Pattern p = Pattern.compile(regExp);  //
+        Matcher m = p.matcher(str);  
+        return m.matches();  
+    }  
+  
+    /** 
+     * 香港手机号码8位数，5|6|8|9开头+7位任意数 
+     */  
+    public static boolean isHKPhoneLegal(String str) {  
+        String regExp = "^(5|6|8|9)\\d{7}$";  
+        Pattern p = Pattern.compile(regExp);  
+        Matcher m = p.matcher(str);  
+        return m.matches();  
+    }  
 	
 	/**
 	 * 微信emoji表情过滤
@@ -601,17 +622,15 @@ public class ObjectUtil {
 	 * @return
 	 */
 	public static String filterEmoji(String source) { 
-        if(source != null)
-        {
-            Pattern emoji = Pattern.compile ("[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\u2600-\u27ff]",Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE ) ;
-            Matcher emojiMatcher = emoji.matcher(source);
-            if ( emojiMatcher.find())
-            {
-                source = emojiMatcher.replaceAll("*");
-                return source ;
-            }
-        return source;
-       }
-       return source; 
+		if (source != null) {
+			Pattern emoji = Pattern.compile("[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\u2600-\u27ff]", Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE);
+			Matcher emojiMatcher = emoji.matcher(source);
+			if (emojiMatcher.find()) {
+				source = emojiMatcher.replaceAll("*");
+				return source;
+			}
+			return source;
+		}
+		return source;
     }
 }

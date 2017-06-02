@@ -146,7 +146,6 @@ public class UserInfoMgtController extends SSOController {
 			if(rq.getStatu().equals(ReturnStatus.Success)){
 				String ticket= super.getTicket();
 				if(ObjectUtil.isEmpty(ticket)){
-//					ticket=CookieUtils.getCookieBySessionId(request);
 					ticket=CookieUtils.getCookie_web(request);
 				}
 				if(!ObjectUtil.isEmpty(ticket)){
@@ -181,6 +180,11 @@ public class UserInfoMgtController extends SSOController {
 		if (ObjectUtil.isEmpty(childInfoJson)) {
 			rq.setStatu(ReturnStatus.ParamError);
 			rq.setStatusreson("参数不能为空");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		if(!ObjectUtil.validSqlStr(childInfoJson)){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("参数有风险");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		// 宝宝信息参数model

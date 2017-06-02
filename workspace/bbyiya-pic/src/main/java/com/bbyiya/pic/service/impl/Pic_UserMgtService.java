@@ -120,7 +120,15 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 					userModel.setUserimg(param.getHeadImg());
 				} 
 				if(param.getUpUserId()!=null&&param.getUpUserId()>0){
-					userModel.setUpuserid(param.getUpUserId()); 
+					UUsers upUsers= userDao.getUUsersByUserID(param.getUpUserId());
+					if(upUsers!=null){
+						userModel.setUpuserid(param.getUpUserId()); 
+//						if(ValidateUtils.isIdentity(upUsers.getUpuserid(), UserIdentityEnums.branch)||
+//								ValidateUtils.isIdentity(upUsers.getUpuserid(), UserIdentityEnums.wei)){
+//							
+//						}
+					}
+					
 				}
 				userDao.insertReturnKeyId(userModel);
 				
@@ -173,9 +181,13 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 	
 	public ReturnModel setPwd(Long userId,String pwd,String phone,String vcode){
 		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.ParamError);
 		if(ObjectUtil.isEmpty(pwd)){
-			rq.setStatu(ReturnStatus.ParamError);
 			rq.setStatusreson("密码不能为空");
+			return rq;
+		}
+		if(!ObjectUtil.validSqlStr(pwd)){
+			rq.setStatusreson("密码有风险，重新设置！");
 			return rq;
 		}
 		ResultMsg msgResult= SendSMSByMobile.validateCode(phone, vcode, SendMsgEnums.register);

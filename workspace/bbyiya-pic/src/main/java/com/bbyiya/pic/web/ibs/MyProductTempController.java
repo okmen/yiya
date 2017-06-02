@@ -58,6 +58,11 @@ public class MyProductTempController extends SSOController {
 				rq.setStatusreson("产品ID不能为空!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
+			if(!ObjectUtil.isEmpty(title)&&!ObjectUtil.validSqlStr(title)){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("模板名称存在危险字符!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
 			if(ObjectUtil.parseInt(needverifer)==1&&ObjectUtil.isEmpty(discription)){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("活动需知不能为空!");
@@ -136,6 +141,11 @@ public class MyProductTempController extends SSOController {
 			if(ObjectUtil.parseInt(needverifer)==1&&ObjectUtil.isEmpty(discription)){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("活动需知不能为空!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			if(!ObjectUtil.isEmpty(title)&&!ObjectUtil.validSqlStr(title)){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("模板名称存在危险字符!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			if(!ObjectUtil.isEmpty(discription)&&!ObjectUtil.validSqlStr(discription)){

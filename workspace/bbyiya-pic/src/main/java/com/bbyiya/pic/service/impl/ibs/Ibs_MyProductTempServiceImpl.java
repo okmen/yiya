@@ -492,7 +492,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			inviteMapper.insert(invoMo);
 			
 			//模板客户获取数加1
-			int count=temp.getCount()==null?0:temp.getCount();
+			int count=(temp.getCount()==null?0:temp.getCount());
 			count++;
 			temp.setCount(count);				
 			myproducttempMapper.updateByPrimaryKeySelective(temp);

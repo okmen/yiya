@@ -210,7 +210,9 @@ public class PbsOrderMgtController extends SSOController {
 	
 	/**
 	 *查询订单运单号信息
-	 * 
+	 * @param expressCom   物流公司名称
+	 * @param expressOrder 运单号
+	 * @param expressCode  物流编码
 	 * @return
 	 * @throws Exception
 	 */
@@ -220,6 +222,12 @@ public class PbsOrderMgtController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
+			//校验运单号不能为非数字
+			if(!ObjectUtil.isEmpty(expressOrder)&&!ObjectUtil.IsNumber(expressOrder)){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("运单号必须输入为数字");
+				return JsonUtil.objectToJsonStr(rq);
+			}
 			rq=orderMgtService.editLogistics(orderId, expressCom, expressOrder,expressCode);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
@@ -241,6 +249,12 @@ public class PbsOrderMgtController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
+			//验证邮费不能输入负数
+			if(!ObjectUtil.isEmpty(postage)&&postage.longValue()<0){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("邮费不能为负数！");
+				return JsonUtil.objectToJsonStr(rq);
+			}
 			rq=orderMgtService.addPostage(orderId,postage);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
@@ -282,6 +296,19 @@ public class PbsOrderMgtController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
+			//校验运单号不能为非数字
+			if(!ObjectUtil.isEmpty(expressOrder)&&!ObjectUtil.IsNumber(expressOrder)){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("运单号必须输入为数字");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			//验证邮费不能输入负数
+			if(!ObjectUtil.isEmpty(postage)&&postage.longValue()<0){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("邮费不能为负数！");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			
 			rq=orderMgtService.MergeOrderLogistic(ordertype, orderIds, expressCom, expressOrder, postage,expressCode);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);

@@ -291,11 +291,11 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		PageInfo<PMyproducttemp> reuslt=new PageInfo<PMyproducttemp>(templist); 
 		if(reuslt!=null&&reuslt.getList()!=null&&reuslt.getList().size()>0){
 			for (PMyproducttemp temp : templist) {	
-				String redirct_url="apply/form?workId="+temp.getCartid()+"&uid="+userid;			
+				String redirct_url="apply/form?workId="+temp.getCartid();			
 				String urlstr="";
 				String url="";
 				try {
-					urlstr = ConfigUtil.getSingleValue("shareulr-base")+"redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
+					urlstr = ConfigUtil.getSingleValue("shareulr-base")+"uid="+URLEncoder.encode(userid.toString(),"utf-8")+"&redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
 					url="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+URLEncoder.encode(urlstr,"utf-8");				
 				} catch (UnsupportedEncodingException e1) {
 					// TODO Auto-generated catch block
@@ -587,11 +587,11 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 					//如果有负责权限
 					if(tempuser.getStatus()!=null&&tempuser.getStatus().intValue()==1){
 						PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempid);
-						String redirct_url="apply/form?workId="+temp.getCartid()+"&uid="+buser.getBranchuserid()+"&sid="+buser.getUserid();			
+						String redirct_url="apply/form?workId="+temp.getCartid()+"&sid="+buser.getUserid();			
 						String urlstr="";
 						String url="";
 						try {
-							urlstr = ConfigUtil.getSingleValue("shareulr-base")+"redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
+							urlstr = ConfigUtil.getSingleValue("shareulr-base")+"uid="+URLEncoder.encode(buser.getBranchuserid().toString(),"utf-8")+"&redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
 							url="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+URLEncoder.encode(urlstr,"utf-8");				
 						} catch (UnsupportedEncodingException e1) {
 							// TODO Auto-generated catch block

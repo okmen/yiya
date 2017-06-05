@@ -562,8 +562,9 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 			if(apply==null){
 				apply=tempApplyMapper.getMyProducttempApplyByUserId(myproducts.getTempid(), userId);
 			}
-			if(apply!=null){
-				apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString()));
+			if(apply!=null&&apply.getStatus()!=null&&apply.getStatus().intValue()!=Integer.parseInt(MyProducttempApplyStatusEnum.pass.toString())
+					&&apply.getStatus().intValue()!=Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString())){
+				apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString())); 
 				tempApplyMapper.updateByPrimaryKeySelective(apply);
 			}
 		}

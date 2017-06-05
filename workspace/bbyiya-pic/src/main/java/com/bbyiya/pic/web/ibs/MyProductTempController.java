@@ -394,11 +394,11 @@ public class MyProductTempController extends SSOController {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			String redirct_url="apply/form?workId="+URLEncoder.encode(cartId,"utf-8")+"&uid="+URLEncoder.encode(user.getUserId().toString(),"utf-8");
+			String redirct_url="apply/form?workId="+URLEncoder.encode(cartId,"utf-8");
 			if(ObjectUtil.parseLong(companyUserid)>0){
 				redirct_url=redirct_url+"&sid="+URLEncoder.encode(companyUserid.toString(),"utf-8");
 			}
-			String urlstr= ConfigUtil.getSingleValue("shareulr-base")+"redirct_url="+URLEncoder.encode(redirct_url,"utf-8");				
+			String urlstr= ConfigUtil.getSingleValue("shareulr-base")+"uid="+URLEncoder.encode(user.getUserId().toString(),"utf-8")+"&redirct_url="+URLEncoder.encode(redirct_url,"utf-8");				
 			rq=producttempService.saveProductTempRQcode(urlstr);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
@@ -420,8 +420,8 @@ public class MyProductTempController extends SSOController {
 		ReturnModel rq=new ReturnModel();		
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			String redirct_url="apply/form?workId="+cartId+"&uid="+user.getUserId();	
-			String urlstr= ConfigUtil.getSingleValue("shareulr-base")+"redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
+			String redirct_url="apply/form?workId="+cartId;	
+			String urlstr= ConfigUtil.getSingleValue("shareulr-base")+"uid="+URLEncoder.encode(user.getUserId().toString(),"utf-8")+"&redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
 			String url="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+URLEncoder.encode(urlstr,"utf-8");
 			
 			rq.setBasemodle(url);

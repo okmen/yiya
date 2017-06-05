@@ -53,11 +53,13 @@ public class MyProductsController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/findMyProductslistForTempId")
-	public String findMyProductslistForTempId(Integer tempid,@RequestParam(required = false, defaultValue = "1")int index,@RequestParam(required = false, defaultValue = "20")int size) throws Exception {
+	public String findMyProductslistForTempId(Integer tempid,Integer activeStatus,
+			@RequestParam(required = false, defaultValue = "")String keywords,
+			@RequestParam(required = false, defaultValue = "1")int index,@RequestParam(required = false, defaultValue = "20")int size) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq=proService.findMyProductslistForTempId(user.getUserId(), tempid, index, size);
+			rq=proService.findMyProductslistForTempId(user.getUserId(), tempid,activeStatus,keywords, index, size);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("µÇÂ¼¹ýÆÚ");

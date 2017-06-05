@@ -79,7 +79,7 @@ public interface PMyproductsMapper {
 	 * @param invitestatus
 	 * @return
 	 */
-	List<MyProductResultVo> findMyProductslistForTempId(@Param("list")List<Long> list,@Param("tempid") Integer tempid);
+	List<MyProductResultVo> findMyProductslistForTempId(@Param("list")List<Long> list,@Param("tempid") Integer tempid,@Param("activestatus")Integer activestatus,@Param("keywords")String keywords);
 	
 	/**
 	 * 获取客户受邀请制作中作品列表

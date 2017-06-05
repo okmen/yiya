@@ -44,7 +44,9 @@ public class UserInfoController  extends SSOController{
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			userInfoJson=ObjectUtil.filterEmoji(userInfoJson);
+			if(!ObjectUtil.isEmpty(userInfoJson)){
+				userInfoJson=ObjectUtil.filterUtf8Mb4(userInfoJson);
+			}
 			UUserInfoParam param=(UUserInfoParam)JsonUtil.jsonStrToObject(userInfoJson, UUserInfoParam.class);
 			if(param!=null){
 				rq= userInfoMgtService.editUUsers(user.getUserId(), param);

@@ -74,13 +74,19 @@ where a.CartId=b.CartId and a.Status!=3 and a.Status!=4 and a.IsTemp=0 and (a.Te
    <!-- 05 find 获取异业合作模板邀请的作品  -->
   <!-- status 1制作中、 2已下单 、3已删除、 4已禁用 -->
   <select id="findMyProductslistForTempId" resultMap="MyProductResultVO" >
-    select <include refid="Base_Column_List" /> from p_myproducts 
-		where Status!=3 and Status!=4 and IsTemp=0 and TempId=#{tempid,jdbcType=INTEGER} and  UserId in
+    select a.* from p_myproducts a,p_myproducttempapply b
+		where a.CartId=b.CartId and  a.Status!=3 and a.Status!=4 and a.IsTemp=0 and a.TempId=#{tempid,jdbcType=INTEGER} and  a.UserId in
     <foreach collection="list" item="uid" index="index"
             open="(" close=")" separator=",">
             #{uid}
     </foreach>
-    order by CreateTime desc 
+    <if test="activestatus != null" >
+        and  b.Status=#{activestatus,jdbcType=INTEGER}
+    </if>
+    <if test="keywords != null and keywords!=''" >
+        and  (a.Title  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) or a.Phone LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) )
+    </if>
+    order by a.CreateTime desc 
   </select>
   
   <!-- 06 find 我受邀的作品列表包括客户一对一加异业合作  -->

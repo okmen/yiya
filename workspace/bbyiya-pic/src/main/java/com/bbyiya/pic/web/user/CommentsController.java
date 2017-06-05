@@ -63,7 +63,9 @@ public class CommentsController extends SSOController{
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			commentJson=ObjectUtil.filterEmoji(commentJson);
+			if(!ObjectUtil.isEmpty(commentJson)){
+				commentJson=ObjectUtil.filterUtf8Mb4(commentJson);
+			}
 			PMyproductcomments param = Json2Objects.getParam_PMyproductcomments(commentJson);
 			if (param != null) {
 				rq = commentService.addPinglun(user.getUserId(), param); //this.addPinglun(user.getUserId(), param); //

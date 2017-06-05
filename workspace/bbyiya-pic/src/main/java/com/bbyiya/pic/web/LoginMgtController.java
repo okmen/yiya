@@ -104,6 +104,10 @@ public class LoginMgtController extends SSOController {
 		OtherLoginParam param = new OtherLoginParam();
 		param.setOpenId(openId);
 		param.setLoginType(loginType);
+		if(!ObjectUtil.isEmpty(nickName)){
+			nickName=java.net.URLDecoder.decode(nickName,"UTF-8");
+			nickName=ObjectUtil.filterUtf8Mb4(nickName);
+		}
 		param.setNickName(nickName);
 		param.setHeadImg(headImg);
 		if(ObjectUtil.isEmpty(upUid)){

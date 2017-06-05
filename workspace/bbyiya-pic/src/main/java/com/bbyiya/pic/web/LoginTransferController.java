@@ -106,7 +106,7 @@ public class LoginTransferController extends SSOController {
 					param.setLoginType(Integer.parseInt(LoginTypeEnum.weixin.toString()));
 					String nickName=String.valueOf(userJson.get("nickname"));
 					if(!ObjectUtil.isEmpty(nickName)&&!"null".equals(nickName)){
-						nickName=ObjectUtil.filterEmoji(nickName);
+						nickName=ObjectUtil.filterUtf8Mb4(nickName);
 						param.setNickName(nickName);
 					}
 					String headimgurl=String.valueOf(userJson.get("headimgurl"));

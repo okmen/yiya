@@ -715,7 +715,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	 * @param size
 	 * @return
 	 */
-	public ReturnModel findMyProductslistForTempId(Long branchUserId, Integer tempid,int index, int size) {
+	public ReturnModel findMyProductslistForTempId(Long branchUserId, Integer tempid,Integer activeStatus,String keywords,int index, int size) {
 		ReturnModel rq = new ReturnModel();
 		List<Long> idsList = new ArrayList<Long>();
 		idsList.add(branchUserId);
@@ -727,7 +727,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			}
 		}
 		PageHelper.startPage(index, size);
-		List<MyProductResultVo> mylist = myMapper.findMyProductslistForTempId(idsList,tempid);
+		List<MyProductResultVo> mylist = myMapper.findMyProductslistForTempId(idsList,tempid,activeStatus,keywords);
 		PageInfo<MyProductResultVo> resultPage = new PageInfo<MyProductResultVo>(mylist);
 		if (resultPage.getList() != null && resultPage.getList().size() > 0) {
 			for (MyProductResultVo vv : resultPage.getList()) {

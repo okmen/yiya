@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
+import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -653,6 +654,44 @@ public class ObjectUtil {
     }  
 	
 	/**
+	 * 过滤非 utf8 字符
+	 * @param source
+	 * @return
+	 */
+//	public static String filterEmoji(String source) { 
+//		if(isEmpty(source)){
+//			return source;
+//		}
+//		try {
+//			byte[] bytes = source.getBytes("UTF-8");
+//			ByteBuffer buffer = ByteBuffer.allocate(bytes.length);
+//			int i = 0;
+//			while (i < bytes.length) {
+//				short b = bytes[i];
+//				if (b > 0) {
+//					buffer.put(bytes[i++]);
+//					continue;
+//				}
+//				b += 256;
+//				if ((b ^ 0xC0) >> 4 == 0) {
+//					buffer.put(bytes, i, 2);
+//					i += 2;
+//				} else if ((b ^ 0xE0) >> 4 == 0) {
+//					buffer.put(bytes, i, 3);
+//					i += 3;
+//				} else if ((b ^ 0xF0) >> 4 == 0) {
+//					i += 4;
+//				}
+//			}
+//			buffer.flip();
+//			return new String(buffer.array(), "utf-8");
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//		}
+//		return filterEmojiStr(source);
+//    }
+	
+	/**
 	 * 微信emoji表情过滤
 	 * @param source
 	 * @return
@@ -669,4 +708,34 @@ public class ObjectUtil {
 		}
 		return source;
     }
+	
+	public static String filterUtf8Mb4(String text)  {
+		try {
+			byte[] bytes = text.getBytes("UTF-8");
+			ByteBuffer buffer = ByteBuffer.allocate(bytes.length);
+			int i = 0;
+			while (i < bytes.length) {
+				short b = bytes[i];
+				if (b > 0) {
+					buffer.put(bytes[i++]);
+					continue;
+				}
+				b += 256;
+				if ((b ^ 0xC0) >> 4 == 0) {
+					buffer.put(bytes, i, 2);
+					i += 2;
+				} else if ((b ^ 0xE0) >> 4 == 0) {
+					buffer.put(bytes, i, 3);
+					i += 3;
+				} else if ((b ^ 0xF0) >> 4 == 0) {
+					i += 4;
+				}
+			}
+			buffer.flip();
+			return new String(buffer.array(), "utf-8");
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return filterEmoji(text);
+	} 
 }

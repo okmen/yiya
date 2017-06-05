@@ -212,6 +212,11 @@ public class YiyeMgtController  extends SSOController {
 						apply.setCompanyuserid(param.getSubUserId());
 						apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.apply.toString()));
 						
+						//异业模板 申请人数+1
+						temp.setApplycount(temp.getApplycount()==null?1:temp.getApplycount()+1);
+						tempMapper.updateByPrimaryKeySelective(temp); 
+						
+	
 						boolean isNeedVer=false;
 						if(temp.getNeedverifer()!=null&&temp.getNeedverifer().intValue()>0){
 							//需要审核
@@ -241,10 +246,7 @@ public class YiyeMgtController  extends SSOController {
 								tempUsrMapper.updateByPrimaryKeySelective(tempUser); 
 							}
 						}
-						//异业模板 申请人数+1
-						temp.setApplycount(temp.getApplycount()==null?1:temp.getApplycount()+1);
-						tempMapper.updateByPrimaryKeySelective(temp); 
-						
+					
 						//插入申请提交信息
 						tempApplyMapper.insert(apply);
 						

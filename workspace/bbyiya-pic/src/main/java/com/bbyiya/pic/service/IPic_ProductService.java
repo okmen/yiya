@@ -116,6 +116,6 @@ public interface IPic_ProductService {
 	 * @return
 	 */
 	ReturnModel findMyProductslistForTempId(Long branchUserId, Integer tempid,
-			int index, int size);
+			Integer activeStatus,String keywords,int index, int size);
 	
 }

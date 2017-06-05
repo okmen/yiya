@@ -880,7 +880,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				OPayorder order = payOrderMapper.selectByPrimaryKey(userorder.getPayid());
 				if (order != null) {
 					if (order.getStatus().intValue() == Integer.parseInt(OrderStatusEnum.noPay.toString())) {
-						OPayorder payNew = getPayOrderNew(order);
+						OPayorder payNew = getPayOrderNew(order,userorder.getOrdertotalprice());
 						if(payNew!=null){
 							userorder.setPayid(payNew.getPayid()); 
 							userOrdersMapper.updateByPrimaryKeySelective(userorder);
@@ -913,7 +913,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	 * @param payorder
 	 * @return
 	 */
-	public OPayorder getPayOrderNew(OPayorder payorder){
+	public OPayorder getPayOrderNew(OPayorder payorder,Double orderTotalPrice){
 		if(payorder!=null){
 			int ordertype=payorder.getOrdertype()==null?Integer.parseInt(PayOrderTypeEnum.gouwu.toString()):payorder.getOrdertype();
 			if(ordertype==Integer.parseInt(PayOrderTypeEnum.gouwu.toString())){
@@ -924,7 +924,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					 prepayCalendar.add(Calendar.MINUTE, 100);
 					 Date preNew=prepayCalendar.getTime();
 					 Date nowtime=new Date();
-					 if(preNew.getTime()<nowtime.getTime()){//预付单过期
+					 if(preNew.getTime()<nowtime.getTime()||(orderTotalPrice==null||payorder.getTotalprice()==null||orderTotalPrice.doubleValue()!=payorder.getTotalprice().doubleValue())){//预付单过期
 						 OPayorder payorderNew=new OPayorder();
 						 payorderNew.setPayid(GenUtils.getOrderNo(payorder.getUserid())); 
 						 payorderNew.setUserorderid(payorder.getUserorderid());
@@ -937,7 +937,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 						 payOrderMapper.insert(payorderNew);
 						 return payorderNew;
 					 }
-					 System.out.println(DateUtil.getTimeStr(preNew, "yyyy-MM-dd HH:mm:ss")); 
+//					 System.out.println(DateUtil.getTimeStr(preNew, "yyyy-MM-dd HH:mm:ss")); 
 				}
 			}
 		}

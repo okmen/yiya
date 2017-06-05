@@ -108,7 +108,15 @@ public class LoginController extends SSOController {
 		OtherLoginParam param = new OtherLoginParam();
 		param.setOpenId(openId);
 		param.setLoginType(loginType);
-		param.setNickName(nickName);
+		if(!ObjectUtil.isEmpty(nickName)){
+			String msg=nickName;
+			nickName=java.net.URLDecoder.decode(nickName,"utf-8");
+			msg+=";n2="+nickName;
+			nickName=ObjectUtil.filterUtf8Mb4(nickName);
+			msg+=";n3="+nickName;
+			param.setNickName(nickName); 
+			addlog(msg); 
+		}
 		param.setHeadImg(headImg);
 		if(!ObjectUtil.isEmpty(upUid)){
 			param.setUpUserId(ObjectUtil.parseLong(upUid)); 
@@ -183,7 +191,7 @@ public class LoginController extends SSOController {
 						}
 						int m=logintemp.getLoginTo()==null?0:logintemp.getLoginTo();
 						if(m==1){ //photo≤‚ ‘µÿ÷∑
-							String paramtest="?headImg="+param.getHeadImg()+"&loginType="+param.getLoginType()+"&nickName="+ java.net.URLEncoder.encode(param.getNickName(),"UTF-8")+"&openId="+param.getOpenId()+"&upUid="+param.getUpUserId();
+							String paramtest="?headImg="+param.getHeadImg()+"&loginType="+param.getLoginType()+"&nickName="+ URLEncoder.encode(param.getNickName(),"utf-8")+"&openId="+param.getOpenId()+"&upUid="+param.getUpUserId();
 							if(!ObjectUtil.isEmpty(logintemp.getRedirect_url())&&!"null".equals(logintemp.getRedirect_url())){
 								paramtest+="&redirect_url="+URLEncoder.encode(logintemp.getRedirect_url(), "gb2312"); 
 							}
@@ -272,7 +280,7 @@ public class LoginController extends SSOController {
 						}
 						int m=logintemp.getLoginTo()==null?0:logintemp.getLoginTo();
 						if(m==1){ //photo≤‚ ‘µÿ÷∑
-							String paramtest="?headImg="+param.getHeadImg()+"&loginType="+param.getLoginType()+"&nickName="+ param.getNickName()+"&openId="+param.getOpenId()+"&upUid="+param.getUpUserId();
+							String paramtest="?headImg="+param.getHeadImg()+"&loginType="+param.getLoginType()+"&nickName="+ URLEncoder.encode(param.getNickName(),"utf-8")+"&openId="+param.getOpenId()+"&upUid="+param.getUpUserId();
 							if(!ObjectUtil.isEmpty(logintemp.getRedirect_url())&&!"null".equals(logintemp.getRedirect_url())){
 								paramtest+="&redirect_url="+URLEncoder.encode(logintemp.getRedirect_url(), "gb2312"); 
 							}

@@ -34,6 +34,8 @@ public class UUsers implements Serializable{
     private Date birthday;
     
     private Long upuserid;
+    
+    private Long sourseuserid;
 
     public Long getUserid() {
         return userid;
@@ -146,5 +148,14 @@ public class UUsers implements Serializable{
 	public void setCreatetimestr(String createtimestr) {
 		this.createtimestr = createtimestr;
 	}
+
+	public Long getSourseuserid() {
+		return sourseuserid;
+	}
+
+	public void setSourseuserid(Long sourseuserid) {
+		this.sourseuserid = sourseuserid;
+	}
+	
     
 }

@@ -8,12 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.common.enums.SendMsgEnums;
 import com.bbyiya.common.vo.ResultMsg;
 import com.bbyiya.dao.UOtherloginMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.dao.UUsertesterwxMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.enums.user.UserStatusEnum;
 import com.bbyiya.model.UOtherlogin;
 import com.bbyiya.model.UUsers;
@@ -123,12 +125,21 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 					UUsers upUsers= userDao.getUUsersByUserID(param.getUpUserId());
 					if(upUsers!=null){
 						userModel.setUpuserid(param.getUpUserId()); 
-//						if(ValidateUtils.isIdentity(upUsers.getUpuserid(), UserIdentityEnums.branch)||
-//								ValidateUtils.isIdentity(upUsers.getUpuserid(), UserIdentityEnums.wei)){
-//							
-//						}
+						//如果推荐人是流量主
+						if(ValidateUtils.isIdentity(upUsers.getUserid(), UserIdentityEnums.branch)||
+								ValidateUtils.isIdentity(upUsers.getUserid(), UserIdentityEnums.wei)){
+							userModel.setSourseuserid(upUsers.getUserid());
+						}
+						//如果推荐人的上级是b端或流量主
+						else if (ValidateUtils.isIdentity(upUsers.getUpuserid(), UserIdentityEnums.branch)||
+								ValidateUtils.isIdentity(upUsers.getUpuserid(), UserIdentityEnums.wei)){
+							userModel.setSourseuserid(upUsers.getUpuserid());
+						}
+						//如果推荐人有顶级推荐人
+						else if (upUsers.getSourseuserid()!=null&&upUsers.getSourseuserid()>0) {
+							userModel.setSourseuserid(upUsers.getSourseuserid()); 
+						}
 					}
-					
 				}
 				userDao.insertReturnKeyId(userModel);
 				

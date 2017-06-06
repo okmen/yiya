@@ -10,14 +10,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import net.sf.json.JSONObject;
+
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.pic.service.IPic_OrderMgtService;
 import com.bbyiya.pic.service.pbs.IPbs_OrderMgtService;
@@ -89,7 +93,7 @@ public class PbsOrderMgtController extends SSOController {
 	@ResponseBody
 	public String orderExportExcel(HttpServletRequest request, HttpServletResponse response,String myproductJson) throws MapperException {
 		// 列头
-		String[] headers =new String[21];
+		String[] headers =new String[24];
 		headers[0]="订单号";
 		headers[1]="用户ID号";
 		headers[2]="作品ID号";
@@ -98,20 +102,23 @@ public class PbsOrderMgtController extends SSOController {
 		headers[5]="产品型号";
 		headers[6]="代理商公司名称";
 		headers[7]="代理商联系人";
-		headers[8]="代理商电话";
-		headers[9]="代理商收货地址";
-		headers[10]="收货人姓名";
-		headers[11]="收货人电话";
-		headers[12]="收货省份";
-		headers[13]="收货市";
-		headers[14]="收货区域";
-		headers[15]="收货地址";		
-		headers[16]="订购份数";
-		headers[17]="订单实付";
-		headers[18]="订单状态";
-		headers[19]="物流公司";
-		headers[20]="运单号";
-		String[] fields = new String[21];
+		headers[8]="代理商电话";		
+		headers[9]="代理商省份";
+		headers[10]="代理商城市";
+		headers[11]="代理商区县";
+		headers[12]="代理商街道地址";
+		headers[13]="收货人姓名";
+		headers[14]="收货人电话";
+		headers[15]="收货省份";
+		headers[16]="收货市";
+		headers[17]="收货区域";
+		headers[18]="收货地址";		
+		headers[19]="订购份数";
+		headers[20]="订单实付";
+		headers[21]="订单状态";
+		headers[22]="物流公司";
+		headers[23]="运单号";
+		String[] fields = new String[24];
 		fields[0]="userorderid";
 		fields[1]="order.userid";
 		fields[2]="cartid";
@@ -120,19 +127,22 @@ public class PbsOrderMgtController extends SSOController {
 		fields[5]="propertystr";
 		fields[6]="branchesName";
 		fields[7]="branchesUserName";
-		fields[8]="branchesPhone";
-		fields[9]="branchesAddress";
-		fields[10]="reciver";
-		fields[11]="buyerPhone";
-		fields[12]="buyerprovince";
-		fields[13]="buyercity";
-		fields[14]="buyerdistrict";
-		fields[15]="buyerstreetdetail";
-		fields[16]="count";
-		fields[17]="order.ordertotalprice";
-		fields[18]="order.status";
-		fields[19]="order.expresscom";
-		fields[20]="order.expressorder";
+		fields[8]="branchesPhone";		
+		fields[9]="branchesprovince";
+		fields[10]="branchesrcity";
+		fields[11]="branchesdistrict";	
+		fields[12]="branchesAddress";
+		fields[13]="reciver";
+		fields[14]="buyerPhone";
+		fields[15]="buyerprovince";
+		fields[16]="buyercity";
+		fields[17]="buyerdistrict";
+		fields[18]="buyerstreetdetail";
+		fields[19]="count";
+		fields[20]="order.ordertotalprice";
+		fields[21]="order.status";
+		fields[22]="order.expresscom";
+		fields[23]="order.expressorder";
 		
 		//导出格式
 		String format =".xlsx";

@@ -212,7 +212,12 @@ public class SubmitOrderMgtController extends SSOController {
 				}
 				if(addressParam.getPhone()==null){
 					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("参数有误,联系电话为空");
+					rq.setStatusreson("参数有误,手机号为空");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				if(!ObjectUtil.isEmpty(addressParam.getPhone())&&!ObjectUtil.isMobile(addressParam.getPhone())){
+					rq.setStatu(ReturnStatus.ParamError_2);
+					rq.setStatusreson("手机号格式不对！");
 					return JsonUtil.objectToJsonStr(rq);
 				}
 				if(addressParam.getReciver()==null){

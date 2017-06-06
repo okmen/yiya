@@ -35,6 +35,7 @@ import com.bbyiya.pic.service.pbs.IPbs_OrderMgtService;
 import com.bbyiya.pic.utils.FileToZip;
 import com.bbyiya.pic.vo.order.PbsUserOrderResultVO;
 import com.bbyiya.pic.vo.order.SearchOrderParam;
+import com.bbyiya.service.IRegionService;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.FileUtils;
 import com.bbyiya.utils.ObjectUtil;
@@ -60,6 +61,8 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	private OOrderproductdetailsMapper detailMapper;
 	@Autowired
 	private OOrderaddressMapper addressMapper;
+	@Resource(name = "regionServiceImpl")
+	private IRegionService regionService;
 	
 	/*----------------------代理模块--------------------------*/
 	@Autowired
@@ -94,14 +97,21 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 				order.setOrdertype(orderType);
 				//影楼直接下单
 				if (orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
-					product.setBranchesAddress(address.getProvince()+address.getCity()+address.getDistrict()+address.getStreetdetail());
+					product.setBranchesprovince(address.getProvince());
+					product.setBranchesrcity(address.getCity());
+					product.setBranchesdistrict(address.getDistrict());
+					product.setBranchesAddress(address.getStreetdetail());
 					product.setBranchesPhone(address.getPhone());
 					product.setBranchesUserName(address.getReciver());
 				}else{
 					//普通用户下单如果是影楼抢单
 					if(order.getIsbranch()!=null&&order.getIsbranch()==1){
-						if(branch!=null)
-							product.setBranchesAddress(branch.getProvince()+branch.getCity()+branch.getArea()+branch.getStreetdetail());
+						if(branch!=null){
+							product.setBranchesprovince(regionService.getProvinceName(branch.getProvince()));
+							product.setBranchesrcity(regionService.getCityName(branch.getCity()));
+							product.setBranchesdistrict(regionService.getAresName(branch.getArea()));
+							product.setBranchesAddress(branch.getStreetdetail());
+						}
 					}
 					product.setReciver(address.getReciver());
 					product.setBuyerPhone(address.getPhone());

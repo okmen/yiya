@@ -9,6 +9,9 @@ public class PbsUserOrderResultVO extends OOrderproducts{
 	private String branchesName;
 	private String branchesUserName;
 	private String branchesPhone;
+	private String branchesprovince;
+	private String branchesrcity;
+	private String branchesdistrict;
 	private String branchesAddress;
 	
 	private String reciver;
@@ -112,6 +115,30 @@ public class PbsUserOrderResultVO extends OOrderproducts{
 
 	public void setBranchesUserName(String branchesUserName) {
 		this.branchesUserName = branchesUserName;
+	}
+
+	public String getBranchesprovince() {
+		return branchesprovince;
+	}
+
+	public void setBranchesprovince(String branchesprovince) {
+		this.branchesprovince = branchesprovince;
+	}
+
+	public String getBranchesrcity() {
+		return branchesrcity;
+	}
+
+	public void setBranchesrcity(String branchesrcity) {
+		this.branchesrcity = branchesrcity;
+	}
+
+	public String getBranchesdistrict() {
+		return branchesdistrict;
+	}
+
+	public void setBranchesdistrict(String branchesdistrict) {
+		this.branchesdistrict = branchesdistrict;
 	}
 	
 	

@@ -377,7 +377,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 	public ReturnModel acceptScanQrCodeInvite(Long userId,String phone,Long cartId,String vcode,Integer needVerfiCode,String version){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError); 
-		if(!ObjectUtil.isMobile(phone)){
+		if(!ObjectUtil.isEmpty(phone)&&!ObjectUtil.isMobile(phone)){
 			rq.setStatusreson("请输入正确的手机号");
 			return rq; 
 		}

@@ -47,7 +47,7 @@
     from u_agentcustomers
     where AgentUserId = #{agentUserId,jdbcType=BIGINT} and IsMarket=#{isMarket,jdbcType=BIGINT} order by CreateTime desc
   </select>
-  <select id="getCustomersByAgentUserId" resultMap="UAgentcustomersVoResult"  ><!-- 03 根据AgentUserId,buyerUserId 查询影楼的用户列表 -->
+  <select id="getCustomersByAgentUserId" resultMap="BaseResultMap"  ><!-- 03 根据AgentUserId,buyerUserId 查询影楼的用户列表 -->
     select 
     <include refid="Base_Column_List" />
     from u_agentcustomers

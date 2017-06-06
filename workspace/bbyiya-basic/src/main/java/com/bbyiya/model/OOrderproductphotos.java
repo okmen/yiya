@@ -19,6 +19,8 @@ public class OOrderproductphotos {
 
     private Date createtime;
 
+    private String printno;
+
     public Long getOdetailid() {
         return odetailid;
     }
@@ -81,5 +83,13 @@ public class OOrderproductphotos {
 
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
+    }
+
+    public String getPrintno() {
+        return printno;
+    }
+
+    public void setPrintno(String printno) {
+        this.printno = printno == null ? null : printno.trim();
     }
 }

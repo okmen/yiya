@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.OOrderproductphotosMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.OOrderproductphotos" >
+    <id column="OdetailId" property="odetailid" jdbcType="BIGINT" />
+    <result column="OrderProductId" property="orderproductid" jdbcType="VARCHAR" />
+    <result column="ImgUrl" property="imgurl" jdbcType="VARCHAR" />
+    <result column="Title" property="title" jdbcType="VARCHAR" />
+    <result column="Content" property="content" jdbcType="VARCHAR" />
+    <result column="SenenDes" property="senendes" jdbcType="VARCHAR" />
+    <result column="Sort" property="sort" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    OdetailId, OrderProductId, ImgUrl, Title, Content, SenenDes, Sort, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from o_orderproductphotos
+    where OdetailId = #{odetailid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from o_orderproductphotos
+    where OdetailId = #{odetailid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.OOrderproductphotos" >
+    insert into o_orderproductphotos (OdetailId, OrderProductId, ImgUrl, 
+      Title, Content, SenenDes, 
+      Sort, CreateTime)
+    values (#{odetailid,jdbcType=BIGINT}, #{orderproductid,jdbcType=VARCHAR}, #{imgurl,jdbcType=VARCHAR}, 
+      #{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{senendes,jdbcType=VARCHAR}, 
+      #{sort,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.OOrderproductphotos" >
+    insert into o_orderproductphotos
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="odetailid != null" >
+        OdetailId,
+      </if>
+      <if test="orderproductid != null" >
+        OrderProductId,
+      </if>
+      <if test="imgurl != null" >
+        ImgUrl,
+      </if>
+      <if test="title != null" >
+        Title,
+      </if>
+      <if test="content != null" >
+        Content,
+      </if>
+      <if test="senendes != null" >
+        SenenDes,
+      </if>
+      <if test="sort != null" >
+        Sort,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="odetailid != null" >
+        #{odetailid,jdbcType=BIGINT},
+      </if>
+      <if test="orderproductid != null" >
+        #{orderproductid,jdbcType=VARCHAR},
+      </if>
+      <if test="imgurl != null" >
+        #{imgurl,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="senendes != null" >
+        #{senendes,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.OOrderproductphotos" >
+    update o_orderproductphotos
+    <set >
+      <if test="orderproductid != null" >
+        OrderProductId = #{orderproductid,jdbcType=VARCHAR},
+      </if>
+      <if test="imgurl != null" >
+        ImgUrl = #{imgurl,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        Title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        Content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="senendes != null" >
+        SenenDes = #{senendes,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        Sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where OdetailId = #{odetailid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.OOrderproductphotos" >
+    update o_orderproductphotos
+    set OrderProductId = #{orderproductid,jdbcType=VARCHAR},
+      ImgUrl = #{imgurl,jdbcType=VARCHAR},
+      Title = #{title,jdbcType=VARCHAR},
+      Content = #{content,jdbcType=VARCHAR},
+      SenenDes = #{senendes,jdbcType=VARCHAR},
+      Sort = #{sort,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where OdetailId = #{odetailid,jdbcType=BIGINT}
+  </update>
+</mapper>

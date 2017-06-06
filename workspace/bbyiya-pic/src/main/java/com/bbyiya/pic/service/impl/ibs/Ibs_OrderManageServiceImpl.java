@@ -122,7 +122,7 @@ public class Ibs_OrderManageServiceImpl implements IIbs_OrderManageService{
 				orderAddress2.setCityName(regionService.getCityName(tempApply.getCity()));
 				orderAddress2.setProvinceName(regionService.getProvinceName(tempApply.getProvince()));
 				orderAddress2.setDistrictName(regionService.getAresName(tempApply.getArea()));
-				orderAddress2.setStreetdetail(tempApply.getAdress());
+				orderAddress2.setStreetdetail(tempApply.getStreet());
 				orderAddress2.setAddressType(1);
 				addressList.add(orderAddress2);
 			}

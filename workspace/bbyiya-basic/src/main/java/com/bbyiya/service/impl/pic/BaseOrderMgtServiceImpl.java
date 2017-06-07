@@ -17,6 +17,7 @@ import com.bbyiya.baseUtils.GenUtils;
 import com.bbyiya.dao.EErrorsMapper;
 import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OOrderproductdetailsMapper;
+import com.bbyiya.dao.OOrderproductphotosMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
 //import com.bbyiya.dao.OPayforuserorderMapper;
 import com.bbyiya.dao.OPayorderMapper;
@@ -51,6 +52,7 @@ import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
 import com.bbyiya.model.EErrors;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproductdetails;
+import com.bbyiya.model.OOrderproductphotos;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.OUserorders;
@@ -70,6 +72,7 @@ import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UCashlogs;
 import com.bbyiya.model.UUseraddress;
 import com.bbyiya.model.UUsers;
+import com.bbyiya.service.IBasePayService;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
 import com.bbyiya.service.pic.IBasePostMgtService;
@@ -95,6 +98,11 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	
 	@Resource(name = "basePostMgtServiceImpl")
 	private IBasePostMgtService postMgtService;
+	
+	@Resource(name = "basePayServiceImpl")
+	private IBasePayService basePayService;
+	
+	
 	@Autowired
 	private RegionMapper regionMapper;// 区域
 
@@ -117,12 +125,15 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	@Autowired
 	private OOrderproductsMapper oproductMapper;// 订单产品
 	@Autowired
+	private OOrderproductphotosMapper ophotoMapper;// 订单产品
+	
+	
+	@Autowired
 	private OUserordersMapper userOrdersMapper;// 订单
 	@Autowired
 	private OPayorderMapper payOrderMapper;// 支付单
 	@Autowired
 	private OOrderproductdetailsMapper odetailMapper;// 产品图片集合
-	
 	
 
 	/*------------------------用户信息模块----------------------------------*/
@@ -147,6 +158,9 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	private UAgentsMapper agentsMapper;
 	@Autowired
 	private UAgentcustomersMapper customerMapper;
+	
+	@Autowired
+	private PMyproducttempapplyMapper tempApplyMapper;
 	
 	/*---错误日志记录------------------------------------------*/
 	@Autowired
@@ -233,6 +247,28 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			//实际需要付款金额（包括邮费）ps:B端订单邮费后期pbs扣款
 			userOrder.setOrdertotalprice(totalPrice);
 			
+			
+			//从作品中取数插入o_orderproductphotos 获取此刻作品原图及文字信息
+			List<PMyproductdetails> myproductdetailsList=mydetailMapper.findMyProductdetails(param.getCartId());
+			if(myproductdetailsList!=null){
+				String base_code = param.getUserId() + "-" + param.getCartId();
+				int i = 1;
+				for (PMyproductdetails detail : myproductdetailsList) {
+					OOrderproductphotos photos=new OOrderproductphotos();
+					photos.setContent(detail.getContent());
+					photos.setCreatetime(detail.getCreatetime());
+					photos.setImgurl(detail.getImgurl());
+					photos.setOrderproductid(orderId);
+					photos.setPrintno(base_code + "-" + String.format("%02d", i));
+					photos.setSenendes(detail.getDescription());
+					photos.setSort(detail.getSort());
+					photos.setTitle(detail.getTitle());
+					ophotoMapper.insert(photos);
+					i++;
+				}
+			}
+			
+			
 			if (orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
 				//邮费 b端下单不录入邮费
 				userOrder.setPostage(0d); 
@@ -310,8 +346,8 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		}
 		return rq;
 	}
-	@Autowired
-	private PMyproducttempapplyMapper tempApplyMapper;
+	
+	
 	
 	public ReturnModel submitOrder_new(UserOrderSubmitParam param) {
 		ReturnModel rq = new ReturnModel();
@@ -393,6 +429,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		logMapper.insert(errors);
 	}
 	
+	
 	/**
 	 * 已下单的作品 再次下单
 	 * @param userId
@@ -425,8 +462,9 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					return rq;
 				}
 				// 03 订单作品
-				List<OOrderproductdetails> details = odetailMapper.findOrderProductDetailsByProductOrderId(oproduct.getOrderproductid());
-				if (details != null && details.size() > 0) {
+				//List<OOrderproductdetails> details = odetailMapper.findOrderProductDetailsByProductOrderId(oproduct.getOrderproductid());
+				List<OOrderproductphotos> photos=ophotoMapper.findOrderProductPhotosByProductOrderId(oproduct.getOrderproductid());
+				if (photos != null && photos.size() > 0) {
 					/*------------------------影楼内部订单------------------------------------------------*/
 					if ( param.getOrderType() == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
 						// 影楼金额是否足够
@@ -581,16 +619,30 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 							}
 							addPayOrder(userId, payId, payId, orderTotalPrice); // 插入支付订单记录
 						}
-						for (OOrderproductdetails dd : details) {
-							OOrderproductdetails det=new OOrderproductdetails();
-							det.setOrderproductid(orderProduct.getOrderproductid());
-							det.setBackimageurl(dd.getBackimageurl());
-							det.setCreatetime(new Date());
-							det.setImageurl(dd.getImageurl());
-							det.setPosition(dd.getPosition());
-							det.setPrintno(dd.getPrintno());
-							odetailMapper.insert(det);
-						}
+						
+//						for (OOrderproductdetails dd : details) {
+//							OOrderproductdetails det=new OOrderproductdetails();
+//							det.setOrderproductid(orderProduct.getOrderproductid());
+//							det.setBackimageurl(dd.getBackimageurl());
+//							det.setCreatetime(new Date());
+//							det.setImageurl(dd.getImageurl());
+//							det.setPosition(dd.getPosition());
+//							det.setPrintno(dd.getPrintno());
+//							odetailMapper.insert(det);
+//						}
+						for (OOrderproductphotos ph : photos) {
+							OOrderproductphotos phpt=new OOrderproductphotos();
+							phpt.setContent(ph.getContent());
+							phpt.setCreatetime(new Date());
+							phpt.setImgurl(ph.getImgurl());
+							phpt.setOrderproductid(orderProduct.getOrderproductid());
+							phpt.setPrintno(ph.getPrintno());
+							phpt.setSenendes(ph.getSenendes());
+							phpt.setSort(ph.getSort());
+							phpt.setTitle(ph.getTitle());
+							ophotoMapper.insert(phpt);
+							
+						} 
 						userOrdersMapper.insert(userOrder_Repeat);//插入订单
 						oproductMapper.insert(orderProduct);//插入订单产品
 						
@@ -1159,6 +1211,9 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			
 			accounts.setAvailableamount(accounts.getAvailableamount()-totalPrice);
 			accountsMapper.updateByPrimaryKeySelective(accounts); 
+			
+			//订单完成后新增销量
+			basePayService.addProductExt(userOrderId);
 			return true;
 		}
 		return false;

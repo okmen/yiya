@@ -1,5 +1,8 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
 import com.bbyiya.model.OOrderproductphotos;
 
 public interface OOrderproductphotosMapper {
@@ -14,4 +17,11 @@ public interface OOrderproductphotosMapper {
     int updateByPrimaryKeySelective(OOrderproductphotos record);
 
     int updateByPrimaryKey(OOrderproductphotos record);
+    
+    /**
+     * 查询订单图片
+     * @param orderproductId
+     * @return
+     */
+    List<OOrderproductphotos> findOrderProductPhotosByProductOrderId(@Param("orderProductId") String orderproductId);
 }

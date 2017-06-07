@@ -51,7 +51,7 @@
     select 
     <include refid="Base_Column_List" />
     from u_agentcustomers
-    where AgentUserId = #{agentUserId,jdbcType=BIGINT} and UserId= #{userId,jdbcType=BIGINT}
+    where AgentUserId = #{agentUserId,jdbcType=BIGINT} and UserId= #{userId,jdbcType=BIGINT} LIMIT 1
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >

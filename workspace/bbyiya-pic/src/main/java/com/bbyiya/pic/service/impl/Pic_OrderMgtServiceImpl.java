@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OOrderproductdetailsMapper;
+import com.bbyiya.dao.OOrderproductphotosMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductsMapper;
@@ -26,6 +27,7 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.BranchStatusEnum;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproductdetails;
+import com.bbyiya.model.OOrderproductphotos;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproducts;
@@ -36,6 +38,7 @@ import com.bbyiya.pic.service.IPic_MemberMgtService;
 import com.bbyiya.pic.service.IPic_OrderMgtService;
 import com.bbyiya.pic.vo.order.SearchOrderParam;
 import com.bbyiya.pic.vo.order.UserOrderResultVO;
+import com.bbyiya.pic.vo.order.ibs.OrderPhotoVo;
 import com.bbyiya.pic.vo.order.ibs.OrderProductVo;
 import com.bbyiya.pic.vo.order.ibs.OrderVo;
 import com.bbyiya.utils.ConfigUtil;
@@ -61,6 +64,8 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 	private OOrderproductsMapper orderProductMapper;
 	@Autowired
 	private OOrderproductdetailsMapper detailMapper;
+	@Autowired
+	private OOrderproductphotosMapper ophotosMapper;
 	@Autowired
 	private OOrderaddressMapper addressMapper;
 	/*----------------------代理模块--------------------------*/
@@ -276,7 +281,9 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 			vo.setStatus(order.getStatus());
 			vo.setUserid(order.getUserid());
 			vo.setBranchuserid(order.getBranchuserid());
-			vo.setPaytime(DateUtil.getTimeStr(order.getPaytime(), "yyyy-MM-dd HH:mm:ss") ); 
+			if(ObjectUtil.isEmpty(order.getPaytime())){
+				vo.setPaytime(DateUtil.getTimeStr(order.getPaytime(), "yyyy-MM-dd HH:mm:ss") );
+			}
 			vo.setExpresscom(order.getExpresscom());
 			vo.setExpressorder(order.getExpressorder());
 			vo.setPostage(order.getPostage());
@@ -295,6 +302,36 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 				}
 				vo.setOrderProduct(oproduct);
 			} 
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(vo); 
+			rq.setStatusreson("ok");
+		}else {
+			rq.setStatu(ReturnStatus.SystemError);
+			rq.setStatusreson("不存的订单");
+		}
+		return rq;
+	}
+	
+	/**
+	 * 获取订单作品图片
+	 * @param userOrderId
+	 * @return
+	 */
+	public ReturnModel getOrderPhotos(String userOrderId) {
+		ReturnModel rq=new ReturnModel();
+		OOrderproducts product=orderProductMapper.getOProductsByOrderId(userOrderId);
+		if (product != null) {
+			OrderPhotoVo vo = new OrderPhotoVo();
+			PMyproducts cart= myproductsMapper.selectByPrimaryKey(product.getCartid());
+			if(cart!=null){
+				vo.setCartauthor(cart.getAuthor());
+				vo.setCarttitle(cart.getTitle());
+				vo.setCartid(product.getCartid());
+			}
+			List<OOrderproductphotos> photoList=ophotosMapper.findOrderProductPhotosByProductOrderId(product.getOrderproductid());
+			if(photoList!=null&&photoList.size()>0){
+				vo.setPhotos(photoList);
+			}
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(vo); 
 			rq.setStatusreson("ok");

@@ -1,1 +1,98 @@
-﻿
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<appSettings>
+	<yp_single_url value="https://sms.yunpian.com/v2/sms/single_send.json"/><!-- 云片  -->
+	<yp_add_url value="https://sms.yunpian.com/v2/tpl/add.json"/><!-- 云片添加模板url -->
+	<yp_apikey value="593936c15fcc5c7824407d9953eb2bef"/><!-- 云片apikey -->
+	<qiniu_ACCESS_KEY value="vLHbgaYj8mfvPUTpMCYLbAetXh-Cg0Fk0R_FtAN_"/>
+	<qiniu_SECRET_KEY value="re1EvlR0FwlSv9YEYlJsHw_WRIcshxhbxilGvmRN"/>
+	<qiniu_imagedomain value="http://obbepyhga.bkt.clouddn.com/"/><!-- 图片域名 -->
+	<qiniu_imagedomain_cdn value="http://pic.bbyiya.com/"/><!-- 图片域名 -->
+	<scenelist><!-- 每日推荐 -->
+		<item id="1" productId="1001" title="出生前的合影" content="这是我出生前和妈妈的合影，那时候我竟然是生活在水中的，等我长大后，我希望妈妈能够告诉我那是一种怎样奇妙的景象。" tips="宝贝，虽然妈妈孕育你的过程并不那么轻松，但是能够拥有你，是我和爸爸一生中最骄傲的事情。"  />
+		<item id="2" productId="1001" title="迎接的仪式感" content="为了迎接我的到来，爸爸和妈妈给我准备了许多东西，并买了很多衣服，妈妈，你还不知道我的性别呢，不要买太多啦！" tips="你还没出生，我们却已经想把最好的都给你，这种为人母、为人父的心情让我们瞬间明白了责任二字的意义。" />
+		<item id="3" productId="1001" title="不可或缺的相片" content="这是我出生的地方，也是我人生的中转站。这里瞬间变成家人们充满期盼的地方。我不知道长大以后还会不会看到这个地方。" tips="为你留下这张照片，也是希望等你今后长大，问起我你在哪里出生，我好重新翻阅历史，告诉你那一天是怎样的经历。"  />
+		<item id="4" productId="1001" title="我的0岁生日" content="这里是我0岁生日的背景。尽管产房内只有我和妈妈两个人，但我能够感受到家人在产房外祈祷期盼的心情。因为0岁的生日，是每个人一生中最被重视的生日。" tips="我们为什么要过生日？因为那是值得纪念的日子，在所有的生日里，0岁生日是那么的特殊，也是最值得纪念的时刻。"  />
+		<item id="5" productId="1001" title="迎接生命的人" content="助产士和医生是比妈妈还要先见到我的人，是她们将我捧到妈妈面前，她们也是最希望我们平安的人。" tips="宝贝，这是我们最需要感谢的人，虽然我们和她们素不相识，但她们却让我们“相识”。"  />
+		<item id="6" productId="1001" title="第一次亲密接触" content="猛然离开妈妈的身体，我特别没有安全感，但是，当我紧紧挨着妈妈的胸口，我又听到了那熟悉的心跳，闻到了熟悉的味道，感受到妈妈的体温。" tips="当我第一次用双手拥抱着你，这让我真实感受到你的存在，你是那么弱小，哭声却那么的有力，我第一次有了做妈妈的感觉。"  />
+		<item id="7" productId="1001" title="熟悉的陌生人" content="当你抱起我，我能感受到强而有力的臂膀，你的呼唤声低沉又熟悉的声音也与妈妈不同。你温情地告诉我，你是我的爸爸。" tips="爸爸抱着你的画面，是妈妈眼中最温馨的画面。感谢你宝贝，你让爸爸从手足无措变成了内心柔软的父亲，成为了一个真正意义上的男人。" />
+		<item id="8" productId="1001" title="我更像谁" content="我并不知道我长的像谁，但是总听到爸爸妈妈说我的耳朵更像谁，鼻子更像谁。" tips="出生前我们曾努力想象你的样子，是更像爸爸还是更像妈妈。但你现在的样子，就是我最满意的样子。"  />
+		<item id="9" productId="1001" title="热闹的家" content="在我的小床里有许多玩偶，这是爸爸妈妈欢迎我回家的方式。他们是我人生中首批小伙伴，这也是我回家后第一次歇息的地方。" tips="从今天开始，你将在这里幸福快乐的成长，你也变成我们家中最受重视的一员啦。"  />
+		<item id="10" productId="1001" title="我的忠实粉丝" content="自从有了我，爸爸妈妈变成了我的头号粉丝，我睡觉，我醒着，我打哈欠、甚至于我哭，都成了爸妈最好的摄影素材，叔叔阿姨们，我是不是在你们的朋友圈里长期霸屏呀？" tips="你每天的样子都在不断发生着变化，为了不错过这些细微的点滴，我不停的用镜头记录着这一切，生怕遗漏某些重要的瞬间。"  />
+		<item id="11" productId="1001" title="我的小手小脚" content="妈妈爸爸最喜欢摆弄我的小手小脚。爸爸喜欢亲我的脚丫，妈妈总是舒展开我的小拳头，我的小手现在还不会自然张开呢，请给我点时间，也给你们一点点耐心去等待。" tips="你紧紧地握着小拳头，像是对这个世界的宣誓，长大后的你，会努力靠自己的力量开辟出属于自己的精彩人生。"  />
+		<item id="12" productId="1001" title="我最像天使的样子" content="出生后，别看我大量的时间都在睡觉，但其实我的脑袋里从来没停止过想象。" tips="你总在入睡时微笑，仿佛在说，妈妈我很幸福。那是我最爱你的样子，像个安静的天使。" />
+		<item id="13" productId="1001" title="光溜溜的我" content="爸爸妈妈对我的每一次抚摸，都能让我的身体和大脑有新的感知。也让我能更快乐健康的成长。" tips="当然要为你留一张光屁屁的照片，每次对你的抚摸都在表达我们对你深深地爱。"  />
+		<item id="14" productId="1001" title="看着我的眼睛" content="这张照片上虽然我和妈妈对视着，但其实我的眼睛只能看到20厘米以内的东西，尽管这样，我还是很努力的再寻找着妈妈的目光。" tips="你的眼睛纯净透明，是这世上最美的珍宝，那种对世界充满好奇的样子，就叫做纯真。"  />
+		<item id="15" productId="1001" title="我的身份证" content="放在我枕头旁边的东西叫做出生证，是我来到这个世界上的第一个官方证明，这么重要的物件当然要合影留念啦。" tips="这张出生证上登记着你的体重和身高，你是那么的小，爸爸妈妈希望你快快地长大。"  />			
+	</scenelist>
+	<stylebacks>
+		<item styleId="1001" backurl="http://pic.bbyiya.com/style-back-1101-20170320-02.png"/>
+		<item styleId="1002" backurl="http://pic.bbyiya.com/style-back-1101-20170320-011.png"/>
+		<item styleId="1101" backurl="http://pic.bbyiya.com/style-back-1201-20170320-02.png"/>
+		<item styleId="1102" backurl="http://pic.bbyiya.com/style-back-1201-20170320-01.png"/>
+		<item styleId="1201" backurl="http://pic.bbyiya.com/style-back-1301-20170320-02.png"/>
+		<item styleId="1202" backurl="http://pic.bbyiya.com/style-back-1301-20170320-01.png"/>
+		<item styleId="1301" backurl="http://pic.bbyiya.com/style-back-1401-20170320-02.png"/>
+		<item styleId="1302" backurl="http://pic.bbyiya.com/style-back-1401-20170320-01.png"/>
+		<item styleId="1401" backurl="http://pic.bbyiya.com/style-back-1001-20170320-02.png"/>
+		<item styleId="1402" backurl="http://pic.bbyiya.com/style-back-1001-20170320-01.png"/>
+	</stylebacks>
+	<styleCovers>
+		<item styleId="1001" url="http://pic.bbyiya.com/cover-1101-201703210-01.jpg"/>
+		<item styleId="1002" url="http://pic.bbyiya.com/cover-1101-201703210-02.jpg"/>
+		<item styleId="1101" url="http://pic.bbyiya.com/cover-1201-201703210-01.jpg"/>
+		<item styleId="1102" url="http://pic.bbyiya.com/cover-1201-201703210-02.jpg"/>
+		<item styleId="1201" url="http://pic.bbyiya.com/cover-1301-201703210-01.jpg"/>
+		<item styleId="1202" url="http://pic.bbyiya.com/cover-1301-201703210-02.jpg"/>
+		<item styleId="1301" url="http://pic.bbyiya.com/cover-1401-201703210-01.jpg"/>
+		<item styleId="1302" url="http://pic.bbyiya.com/cover-1401-201703210-02.jpg"/>
+		<item styleId="1401" url="http://pic.bbyiya.com/cover-1001-201703210-01.jpg"/>
+		<item styleId="1402" url="http://pic.bbyiya.com/cover-1001-201703210-02.jpg"/>
+	</styleCovers>
+	<backcoordinate><!-- 相册背面文字坐标 -->
+		<item  type="1" contentTop="51.6" contentLeft="25.6" contentRight="71.7"  titleTop="66.4" contentBottom="44" contentSize="34" titleSize="50" color="#3e3c38"/>
+		<item  type="0" contentTop="38.7" contentLeft="23.2" contentRight="76.1"  titleTop="59" contentBottom="51.6" contentSize="30" titleSize="38" color="#3e3c38"/>
+	</backcoordinate>
+	<frontcoordinate><!-- 相册正面文字坐标 -->
+		<item  type="1" contentSize="33" lineHeight="55"  color="#595857" letterSpacing="5" />
+		<item  type="0" contentSize="30" lineHeight="40"  color="#595857" letterSpacing="0" />
+	</frontcoordinate>
+	<indexImgs>
+		<item index="1" imageurl="http://pic.bbyiya.com/12photo0418-index-1.jpg" />
+		<item index="2" imageurl="http://pic.bbyiya.com/12photo0418-index-2.jpg" />
+		<item index="3" imageurl="http://pic.bbyiya.com/12photo0417-index-3.jpg" />
+	</indexImgs>
+	<o_excludedareas ><!-- 不能下单的区域 -->
+		<item type="1" codes="710000,810000,820000" />
+		<item type="3" codes="460321,460322,460323" />
+	</o_excludedareas>
+	<!-- 物流公司信息 -->
+	<postInfo>
+		<item code="tiantian" name="天天快递"/>
+		<item code="shunfeng" name="顺丰速运"/>
+	</postInfo>
+	<wxBackUrl  value="https://mpic.bbyiya.com/wxpay/WxPayNotify"/><!-- 微信公众号支付回写地址 -->
+	<wxAppBackUrl  value="https://mpic.bbyiya.com/wxapppay/WxPayNotify"/><!-- 微信app支付回写地址 -->
+	<wxQuery value="https://api.mch.weixin.qq.com/pay/orderquery"/><!-- 微信订单查询 -->
+	<loginbackurl value="http://photo.bbyiya.com?v＝1704081/"/>
+	<photo-net-url value="http://photo-net.bbyiya.com"/><!-- c端测试 -->
+	<currentDomain value="http://photo-net.bbyiya.com/#/"/><!-- 当前c端域名 -->
+	<mpic-net-url value="https://api.bbyiya.com/login/wxLoginTest"/><!-- mpic接口测试url -->
+	<loginbackurl_ibs value="http://photo.bbyiya.com/ibs/index.html"/><!-- ibs首页 -->
+	<shareulr-base value="https://mpic.bbyiya.com/login/transfer?m=1&amp;"/>
+	<currentRedisKey-Base value="mpic_net" />
+	<default-headimg value="http://pic.bbyiya.com/userdefaultimg-2017-0303-01.png" /><!-- 默认头像 -->
+	<default-comments value="咿呀十二官方给你点个赞！"/>
+	<testcode value="yiya123456"  count="50"/>
+	<wxaccessVerion value="170522"/>
+	<testcodeNum value="yiya123456" /><!-- 咿呀测试用户 -->
+	<mobileValidate value="^((13[0-9])|(15[^4])|(18[0,2,3,5-9])|(17[0-8])|(147))\\d{8}$"/>
+	<adminUsers>
+		<item userId="37"/>
+		<item userId="35"/>
+		<item userId="991"/>
+	</adminUsers>
+	<tempFrees>
+		<free tempid="45" phones="13854397026,18679989010,18954129719,18210950756,15105198599,13975160315,13926355966,13964462055,13979771097,15982157095,13563506609,18526481782,15005370709,15266077699,13544081082,18636820786,18344145573,13611789544,13352860119,13105088657,18823703658,13403591234,13318611804,13963168819,18501983995,18033293536,18010182919,13558169917,17604326110,18686550921,13093315225,18706692021,15554665302,13632644992,18612595167,13308426762,13543007185,18263361127,15986036580,13061101855,15135082541,13199888030,13632676702,13550289370,13602419459,15940983163,13424976042,13886164395,18863858417,13928219682,13726065452,18933399315,13913906076,15820949611,13726858827,13510694211,13928537199,13864539616,13610813661,13579158205,15880243077,13420996017,13691766799,15863375192,18088849299,18938916848,18266193266,13644905163,13287726028,15801632090,15630258109,18688939870,18741865200,15195443656,13589355224,15011136621,13839803542,18601788729,18641862446,13501231954,13760996230,13534040019,13602622630,15250065819,15166318512,15715739926,13480602156,18263122013,13910141874,13690059428,15019915173,18654619433,13825975182,18611082102,15987173006,13920975660,18671229621,13134419134,13920831158"/>
+		<free tempid="47" phones="15817447911,13920408886,18353969811,15904555116,13516776899,15063822291,18994359080,18610184880,15887150825,15969917337,13518167193,13078969013,13857617122,13927402343,18957730813,15069192570,18934530167,15010842959,13821434773,15014302054,13424777631,13559870513,13311826051,13895382139,18702984424,15511375369,15987090895,15055473519,18930141130,13132288891,15937514117,13654126366,13961120034,13640003790,18202033667,18646724000,18905346470,15592100008,15536283216,18002553656,13736057443,18950596003,18333606446,13434153308,18035263196,13556694186,13650083672,13666676583,13723724214,17732013962"/>
+</tempFrees>
+</appSettings>

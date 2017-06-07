@@ -60,4 +60,8 @@ public interface IPic_OrderMgtService {
 	List<OOrderproductdetails> getOrderProductdetails(String orderProductId);
 	
 	ReturnModel getOrderProductdetailsByUserOrderId(String userOrderId);
+	/**
+	 * 获取订单作品原图
+	 */
+	ReturnModel getOrderPhotos(String userOrderId);
 }

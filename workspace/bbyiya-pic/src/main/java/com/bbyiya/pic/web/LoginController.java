@@ -109,13 +109,9 @@ public class LoginController extends SSOController {
 		param.setOpenId(openId);
 		param.setLoginType(loginType);
 		if(!ObjectUtil.isEmpty(nickName)){
-			String msg=nickName;
 			nickName=java.net.URLDecoder.decode(nickName,"utf-8");
-			msg+=";n2="+nickName;
 			nickName=ObjectUtil.filterUtf8Mb4(nickName);
-			msg+=";n3="+nickName;
 			param.setNickName(nickName); 
-			addlog(msg); 
 		}
 		param.setHeadImg(headImg);
 		if(!ObjectUtil.isEmpty(upUid)){
@@ -357,23 +353,6 @@ public class LoginController extends SSOController {
 			errors.setCreatetime(new Date()); 
 			errorMapper.insert(errors);
 		} catch (Exception e) {
-			// TODO: handle exception
 		}
 	}
-
-	
-//	public  String filterEmoji(String source) { 
-//        if(source != null)
-//        {
-//            Pattern emoji = Pattern.compile ("[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\u2600-\u27ff]",Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE ) ;
-//            Matcher emojiMatcher = emoji.matcher(source);
-//            if ( emojiMatcher.find())
-//            {
-//                source = emojiMatcher.replaceAll("*");
-//                return source ;
-//            }
-//        return source;
-//       }
-//       return source; 
-//    }
 }

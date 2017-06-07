@@ -1168,21 +1168,6 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		if (user != null) {
 			PMyproductdetails detail = myDetaiMapper.selectByPrimaryKey(dpId);
 			if (detail != null) {
-				// PMyproducts myproduct =
-				// myMapper.selectByPrimaryKey(detail.getCartid());
-				// if (myproduct != null) {
-				// detail.setImgurl("");
-				// detail.setContent("");
-				// detail.setSceneid(null);
-				// detail.setTitle("");
-				// detail.setDescription("");
-				// detail.setSort(myDetaiMapper.getMaxSort(detail.getCartid())+1);
-				// myDetaiMapper.updateByPrimaryKey(detail);
-				// myDetaiMapper.deleteByPrimaryKey(dpId);
-				// rq.setStatu(ReturnStatus.Success);
-				// rq.setStatusreson("删除成功！");
-				// return rq;
-				// }
 				myDetaiMapper.deleteByPrimaryKey(dpId);
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("删除成功！");
@@ -1194,6 +1179,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		return rq;
 	}
 
+	/**
+	 * 获取款式坐标
+	 */
 	public ReturnModel getStyleCoordResult(Long styleId) {
 		ReturnModel rq = new ReturnModel();
 		List<PStylecoordinate> list = styleCoordMapper.findlistByStyleId(styleId);
@@ -1220,20 +1208,28 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					}
 				}
 				Map<String, Object> mapWord = new HashMap<String, Object>();
-
-				if (type == 1) { // 横版
-					mapWord.put("size", 33);
-					mapWord.put("color", "#595857");
-					mapWord.put("lineHeight", 55);
-					mapWord.put("letterSpacing", 5);
-
-				} else {// 竖版
-					mapWord.put("size", 29);
-					mapWord.put("color", "#595857");
-					mapWord.put("lineHeight", 40);
-					mapWord.put("letterSpacing", 0);
-
+				
+				//相册正面文字大小、行高、间距，字体颜色
+				List<Map<String, String>> mapcoordlist=ConfigUtil.getMaplist("frontcoordinate");
+				for (Map<String, String> frontMap : mapcoordlist) {
+					if (type == ObjectUtil.parseLong(frontMap.get("type"))) {
+						mapWord.put("size", frontMap.get("contentSize"));
+						mapWord.put("color", frontMap.get("color"));
+						mapWord.put("lineHeight", frontMap.get("lineHeight"));
+						mapWord.put("letterSpacing", frontMap.get("letterSpacing"));
+					}
 				}
+//				if (type == 1) { // 横版
+//					mapWord.put("size", 33);
+//					mapWord.put("color", "#595857");
+//					mapWord.put("lineHeight", 55);
+//					mapWord.put("letterSpacing", 5);
+//				} else {// 竖版
+//					mapWord.put("size", 30);
+//					mapWord.put("color", "#595857");
+//					mapWord.put("lineHeight", 48);
+//					mapWord.put("letterSpacing", 0);
+//				}
 				map.put("word-mod", mapWord);
 				arrayList.add(map);
 			}

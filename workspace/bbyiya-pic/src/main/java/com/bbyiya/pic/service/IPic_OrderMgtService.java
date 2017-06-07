@@ -64,4 +64,12 @@ public interface IPic_OrderMgtService {
 	 * 获取订单作品原图
 	 */
 	ReturnModel getOrderPhotos(String userOrderId);
+	
+	/**
+	 * 获取订单作品图片列表
+	 * @param userOrderId
+	 * @return
+	 */
+	ReturnModel findOrderProductPhotosByUserOrderId(String userOrderId);
+
 }

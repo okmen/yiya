@@ -19,6 +19,7 @@ import com.bbyiya.dao.OOrderproductdetailsMapper;
 import com.bbyiya.dao.OOrderproductphotosMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OUserordersMapper;
+import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.enums.CustomerSourceTypeEnum;
@@ -30,6 +31,7 @@ import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproductphotos;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OUserorders;
+import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UBranches;
@@ -68,6 +70,8 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 	private OOrderproductphotosMapper ophotosMapper;
 	@Autowired
 	private OOrderaddressMapper addressMapper;
+	@Autowired
+	private PMyproductdetailsMapper mydetailMapper;
 	/*----------------------代理模块--------------------------*/
 	@Autowired
 	private UBranchesMapper branchesMapper;
@@ -329,9 +333,28 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 				vo.setCartid(product.getCartid());
 			}
 			List<OOrderproductphotos> photoList=ophotosMapper.findOrderProductPhotosByProductOrderId(product.getOrderproductid());
+			if(photoList==null){
+				List<PMyproductdetails> detailsList=mydetailMapper.findMyProductdetails(product.getCartid());
+				if(detailsList!=null&&detailsList.size()>0){
+					photoList=new ArrayList<OOrderproductphotos>();
+					for (PMyproductdetails pde : detailsList) {
+						OOrderproductphotos photo=new OOrderproductphotos();
+						photo.setContent(pde.getContent());
+						photo.setCreatetime(new Date());
+						photo.setImgurl(pde.getImgurl());
+						photo.setOrderproductid(product.getOrderproductid());
+						photo.setSenendes(pde.getDescription());
+						photo.setSort(pde.getSort());
+						photo.setTitle(pde.getTitle());
+						photoList.add(photo);
+					}
+				}
+			}
+			
 			if(photoList!=null&&photoList.size()>0){
 				vo.setPhotos(photoList);
 			}
+			
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(vo); 
 			rq.setStatusreson("ok");
@@ -413,6 +436,52 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 		}
 		return rq;
 	}
+	
+	
+	public ReturnModel findOrderProductPhotosByUserOrderId(String userOrderId){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.SystemError);
+		OUserorders userorders=userOrdersMapper.selectByPrimaryKey(userOrderId);
+		OOrderproducts orderproducts= orderProductMapper.getOProductsByOrderId(userOrderId);
+		if(userorders!=null&&orderproducts!=null){
+			List<OOrderproductphotos> photosList= ophotosMapper.findOrderProductPhotosByProductOrderId(orderproducts.getOrderproductid());
+			if(photosList!=null&&photosList.size()>0){
+				rq.setBasemodle(photosList);
+				rq.setStatu(ReturnStatus.Success);
+				rq.setStatusreson("成功");
+			}else if(orderproducts.getCartid()!=null){
+				List<PMyproductdetails> details= mydetailMapper.findMyProductdetails(orderproducts.getCartid());
+				if(details!=null&&details.size()>0){
+					photosList=new ArrayList<OOrderproductphotos>();
+					Date nowtime=new Date();
+					String base_code = userorders.getUserid() + "-" + orderproducts.getCartid();
+					int i=1;
+					for (PMyproductdetails dd : details) {
+						OOrderproductphotos ph=new OOrderproductphotos();
+						ph.setOrderproductid(orderproducts.getOrderproductid());
+						ph.setImgurl(dd.getImgurl());
+						ph.setContent(dd.getContent());
+						ph.setSenendes(dd.getDescription());
+						ph.setTitle(dd.getTitle());
+						ph.setSort(dd.getSort());
+						ph.setCreatetime(nowtime);
+						ph.setPrintno(base_code + "-" + String.format("%02d",i)); 
+						i++;
+						photosList.add(ph);
+						ophotosMapper.insert(ph);
+					}
+					rq.setBasemodle(photosList);
+					rq.setStatu(ReturnStatus.Success);
+				}else {
+					rq.setStatusreson("找不到作品详情图片");
+				} 
+			}else {
+				rq.setStatusreson("找不到作品编号cartid");
+			}
+		}
+		return rq;
+	}
+	
 	
 	public void downloadImg(List<UserOrderResultVO> orderlist,String basePath){
 		try {

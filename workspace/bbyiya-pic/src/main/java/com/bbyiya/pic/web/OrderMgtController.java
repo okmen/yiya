@@ -295,6 +295,26 @@ public class OrderMgtController extends SSOController {
 	}
 	
 	/**
+	 *  O09-1 再次订购产品详情浏览效果
+	 * @param userOrderId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getOrderProductPhotos")
+	public String getOrderProductPhotos(@RequestParam(required = false, defaultValue = "0") String userOrderId) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=orderService.findOrderProductPhotosByUserOrderId(userOrderId);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
 	 * 根据OrderProductId得到OrderProductdetails
 	 * 用于客户端下载图片用
 	 * @param orderProductId

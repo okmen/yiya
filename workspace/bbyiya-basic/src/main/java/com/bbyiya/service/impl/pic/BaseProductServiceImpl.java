@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.dao.PProductsMapper;
 import com.bbyiya.dao.PProductstyledesMapper;
+import com.bbyiya.dao.PProductstyleexpMapper;
 import com.bbyiya.dao.PProductstylepropertyMapper;
 import com.bbyiya.dao.PProductstylesMapper;
 import com.bbyiya.dao.PScenebacksMapper;
@@ -21,6 +22,7 @@ import com.bbyiya.dao.PStylebackgroundsMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.PProducts;
 import com.bbyiya.model.PProductstyledes;
+import com.bbyiya.model.PProductstyleexp;
 import com.bbyiya.model.PProductstyles;
 import com.bbyiya.model.PScenebacks;
 import com.bbyiya.model.PStylebackgrounds;
@@ -50,6 +52,9 @@ public class BaseProductServiceImpl implements IBaseProductService {
 	private PStylebackgroundsMapper stylebackgroundsMapper;// 款式制作背景图
 	@Autowired
 	private PScenebacksMapper scenebacksMapper;// 场景背面图文
+	//款式扩展表
+	@Autowired
+	private PProductstyleexpMapper styleExpMapper;
 
 	@Resource(name = "baseOrderMgtServiceImpl")
 	private IBaseOrderMgtService orderMgtService;
@@ -59,12 +64,17 @@ public class BaseProductServiceImpl implements IBaseProductService {
 		return results;
 	}
 
+	
 	// 获取产品详情（包括各种款式属性）
 	public ProductResult getProductResult(Long productId) {
 		ProductResult result = productsMapper.getProductResultByProductId(productId);
 		List<PProductStyleResult> styleList = styleMapper.findStylesResultByProductId(productId);
 		if (result!=null&& styleList != null) {
 			for (PProductStyleResult style : styleList) {
+				PProductstyleexp exp= styleExpMapper.selectByPrimaryKey(style.getStyleId());
+				if(exp!=null){
+					style.setSellCount(exp.getSalecount()); 
+				}
 				//款式介绍图集
 				List<PProductstyledes> desImgs = styleDesMapper.findImgsByStyleId(style.getStyleId());
 				if (desImgs != null && desImgs.size() > 0) {

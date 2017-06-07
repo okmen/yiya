@@ -3,6 +3,7 @@ package com.bbyiya.pic.web.notify;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Date;
 import java.util.SortedMap;
 
 import javax.annotation.Resource;
@@ -67,12 +68,10 @@ public class WxNotifyController {
 	 * @throws IOException
 	 * @throws MapperException
 	 */
-//	@ResponseBody
 	@RequestMapping(value = "/WxPayNotify", method = { RequestMethod.POST, RequestMethod.GET })
 	public String wxpayNotify(HttpServletRequest request, HttpServletResponse response, Model model){
 		String msg="1";
 		try {
-			
 			String xmlStr = readReqStr(request);
 			SortedMap<String, String> notifymap = WxUtil.xmlToMap(xmlStr);
 			if (notifymap == null || notifymap.size() < 1) {
@@ -100,31 +99,23 @@ public class WxNotifyController {
 				addlog(msg);
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
 			msg+="error:"+e.getMessage();
 			addlog(msg);
 		}
 		return "error";
 	}
 
+	/**
+	 * 订单签名验证，支付回写处理
+	 * @param transaction_id
+	 * @param payId
+	 * @return
+	 */
 	private String queryWxOrder(String transaction_id, String payId) {
-//		List<NameValuePair> paramlist = new ArrayList<NameValuePair>();
-//		paramlist.add(new BasicNameValuePair("appid", WxPayConfig.APPID));
-//		paramlist.add(new BasicNameValuePair("mch_id", WxPayConfig.PARNER));
-//		paramlist.add(new BasicNameValuePair("nonce_str", WxPayUtils.genNonceStr()));
-//		paramlist.add(new BasicNameValuePair("out_trade_no", payId));
-//		paramlist.add(new BasicNameValuePair("transaction_id", transaction_id));
-//		
-//		/*-------------------------------------------------------------*/
-//		String sign = WxPayUtils.genPackageSign(paramlist);
-//		paramlist.add(new BasicNameValuePair("sign", sign));
-//		String xmlstring = WxUtil.toXml(paramlist);
-//		String xmlResult = WxUtil.httpsRequest("https://api.mch.weixin.qq.com/pay/orderquery", xmlstring);
-//		SortedMap<String, String> map = ParamUtils.xml2Map(xmlResult);
 		SortedMap<String, String> map=WxPayUtils.queryWxOrder(transaction_id, payId);
 		if (WxUtil.isWXsign(map, WxPayConfig.AppSecret)) {
 			if (map != null && map.get("return_code").equals("SUCCESS") && map.get("result_code").equals("SUCCESS") && map.get("trade_state").equals("SUCCESS")) {
-				// 会写订单状态 TODO 回写订单状态
+				// 会写订单状态 
 				boolean paySuccess = orderMgtService.paySuccessProcess(payId);
 				if (paySuccess) {
 					return "success";
@@ -167,8 +158,9 @@ public class WxNotifyController {
 	
 	public void addlog(String msg){
 		EErrors errors=new EErrors();
-		errors.setClassname("payorderBack");
+		errors.setClassname(this.getClass().getName());
 		errors.setMsg(msg);
+		errors.setCreatetime(new Date()); 
 		errorMapper.insert(errors);
 	}
 

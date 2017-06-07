@@ -14,6 +14,8 @@ import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.OPayorderextMapper;
 import com.bbyiya.dao.OUserordersMapper;
+import com.bbyiya.dao.PProductstyleexpMapper;
+import com.bbyiya.dao.PProductstylesMapper;
 import com.bbyiya.dao.UAccountsMapper;
 import com.bbyiya.dao.UBranchtransaccountsMapper;
 import com.bbyiya.dao.UBranchtransamountlogMapper;
@@ -26,9 +28,13 @@ import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.PayTypeEnum;
 import com.bbyiya.model.EErrors;
 import com.bbyiya.model.OOrderproductdetails;
+import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.OPayorderext;
 import com.bbyiya.model.OUserorders;
+import com.bbyiya.model.PProductstyledes;
+import com.bbyiya.model.PProductstyleexp;
+import com.bbyiya.model.PProductstyles;
 import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UBranchtransaccounts;
 import com.bbyiya.model.UBranchtransamountlog;
@@ -66,6 +72,13 @@ public class BasePayServiceImpl implements IBasePayService{
 	private UUseraddressMapper addressMapper;// 用户收货地址
 	@Autowired
 	private UUsersMapper usersMapper;
+	
+	/*-----------------------产品模块--------------------------------------------*/
+	@Autowired
+	private PProductstyleexpMapper styltExpMapper;
+	@Autowired
+	private PProductstylesMapper styleMapper;
+	
 	/*-- ---------------------错误日志记录-------------------------------------------*/
 	@Autowired
 	private EErrorsMapper logMapper;
@@ -171,12 +184,16 @@ public class BasePayServiceImpl implements IBasePayService{
 					return true;
 				}
 			} catch (Exception e) {
-				addlog("订单支付回写："+e.getMessage());
+				addlog("payId:"+payId+",方法paySuccessProcess。"+e.getMessage());
 			}
 		}
 		return false;
 	}
 
+	/**
+	 * 上级订单
+	 * @param payorder
+	 */
 	public void addOrderExtend(OPayorder payorder){
 		try {
 			UUsers user= usersMapper.selectByPrimaryKey(payorder.getUserid());
@@ -191,22 +208,53 @@ public class BasePayServiceImpl implements IBasePayService{
 				oextMapper.insert(ext);
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
-			addlog("订单结算："+e.getMessage());
+			addlog("userOrderId:"+payorder.getUserorderid()+",方法addOrderExtend。"+e.getMessage());
 		}
-		
 	}
+	
+	
+	/**
+	 * 订单完成后新增销量
+	 */
+	public void addProductExt(String userOrderId){
+		try {
+			OOrderproducts oproduct= oproductMapper.getOProductsByOrderId(userOrderId);
+			if(oproduct!=null&&oproduct.getSalesuserid()!=null){
+				PProductstyleexp styleExp= styltExpMapper.selectByPrimaryKey(oproduct.getSalesuserid());
+				if(styleExp!=null){
+					int count=styleExp.getSalecount()==null?0:styleExp.getSalecount();
+					styleExp.setSalecount(count+oproduct.getCount()); 
+				}else {
+					PProductstyles style=styleMapper.selectByPrimaryKey(oproduct.getStyleid());
+					if(style!=null){
+						styleExp=new PProductstyleexp();
+						styleExp.setStyleid(oproduct.getStyleid());
+						styleExp.setProductid(style.getProductid());
+						styleExp.setSalecount(oproduct.getCount());
+						styltExpMapper.insert(styleExp);
+					}
+				}
+			}
+		} catch (Exception e) {
+			addlog("userOrderId："+userOrderId+",方法addProductExt。"+e); 
+		}
+	}
+	
 	/**
 	 * 插入错误Log
 	 * 
 	 * @param msg
 	 */
 	public void addlog(String msg) {
-		EErrors errors = new EErrors();
-		errors.setClassname(this.getClass().getName());
-		errors.setMsg(msg);
-		errors.setCreatetime(new Date()); 
-		logMapper.insert(errors);
+		try {
+			EErrors errors = new EErrors();
+			errors.setClassname(this.getClass().getName());
+			errors.setMsg(msg);
+			errors.setCreatetime(new Date()); 
+			logMapper.insert(errors);
+		} catch (Exception e) {
+			
+		}
 	}
 
 }

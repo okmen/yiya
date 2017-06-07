@@ -3,11 +3,13 @@ package com.bbyiya.pic.web.notify;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Date;
 import java.util.SortedMap;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 
 
 
@@ -117,8 +119,9 @@ public class WxAppNotifyController {
 	
 	public void addlog(String msg){
 		EErrors errors=new EErrors();
-		errors.setClassname("apppayorderBack");
+		errors.setClassname(this.getClass().getName()); 
 		errors.setMsg(msg);
+		errors.setCreatetime(new Date()); 
 		errorMapper.insert(errors);
 	}
 }

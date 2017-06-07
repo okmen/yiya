@@ -17,6 +17,7 @@ public class PProductStyleResult implements Serializable {
 	private String productTitle;
 	private Date createtime;
 	private String createTimeStr;
+	private Integer sellCount;
 	public Long getStyleId() {
 		return styleId;
 	}
@@ -76,6 +77,12 @@ public class PProductStyleResult implements Serializable {
 	}
 	public void setCreatetime(Date createtime) {
 		this.createtime = createtime;
+	}
+	public Integer getSellCount() {
+		return sellCount;
+	}
+	public void setSellCount(Integer sellCount) {
+		this.sellCount = sellCount;
 	}
 	
 	

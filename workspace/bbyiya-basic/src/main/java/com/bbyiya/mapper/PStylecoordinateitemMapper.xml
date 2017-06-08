@@ -21,6 +21,13 @@
     delete from p_stylecoordinateitem
     where CoordId = #{coordid,jdbcType=BIGINT}
   </delete>
+  <!-- 新增返回主键Id -->
+  <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="CoordId"  parameterType="com.bbyiya.model.PStylecoordinateitem" >
+    insert into p_stylecoordinateitem (CoordId, PointLeft, PointTop, 
+      PointHight, PointWidth)
+    values (#{coordid,jdbcType=BIGINT}, #{pointleft,jdbcType=DECIMAL}, #{pointtop,jdbcType=DECIMAL}, 
+      #{pointhight,jdbcType=DECIMAL}, #{pointwidth,jdbcType=DECIMAL})
+  </insert>
   <insert id="insert" parameterType="com.bbyiya.model.PStylecoordinateitem" >
     insert into p_stylecoordinateitem (CoordId, PointLeft, PointTop, 
       PointHight, PointWidth)

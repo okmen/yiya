@@ -527,14 +527,17 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 		OUserorders userorders=userOrdersMapper.selectByPrimaryKey(userOrderId);
 		OOrderproducts orderproducts= orderProductMapper.getOProductsByOrderId(userOrderId);
 		if(userorders!=null&&orderproducts!=null){
+			Map<String, Object> map=new HashMap<String, Object>();
+			//订单作品宝宝信息
+			PMyproductchildinfo child= pmyChildMapper.selectByPrimaryKey(orderproducts.getCartid());
+			if(child!=null){
+				child.setBirthdayStr(DateUtil.getTimeStr(child.getBirthday(), "yyyy-MM-dd"));  
+				map.put("child", child);
+			}
+			//订单图片信息
 			List<OOrderproductphotos> photosList= ophotosMapper.findOrderProductPhotosByProductOrderId(orderproducts.getOrderproductid());
 			if(photosList!=null&&photosList.size()>0){
-				Map<String, Object> map=new HashMap<String, Object>();
 				map.put("photos", photosList);
-				PMyproductchildinfo child= pmyChildMapper.selectByPrimaryKey(orderproducts.getCartid());
-				if(child!=null){
-					map.put("child", child);
-				}
 				rq.setStatu(ReturnStatus.Success);
 				rq.setBasemodle(map); 
 				return rq;
@@ -559,12 +562,7 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 						photosList.add(ph);
 						ophotosMapper.insert(ph);
 					}
-					Map<String, Object> map=new HashMap<String, Object>();
 					map.put("photos", photosList);
-					PMyproductchildinfo child= pmyChildMapper.selectByPrimaryKey(orderproducts.getCartid());
-					if(child!=null){
-						map.put("child", child);
-					}
 					rq.setStatu(ReturnStatus.Success);
 				}else {
 					rq.setStatusreson("找不到作品详情图片");

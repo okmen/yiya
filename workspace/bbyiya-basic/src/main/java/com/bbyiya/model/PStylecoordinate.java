@@ -5,12 +5,22 @@ public class PStylecoordinate {
 
     private Long styleid;
 
+    /**
+     * 打印号坐标ID
+     */
     private Integer nocoordid;
-
+    /**
+     * 图片坐标ID
+     */
     private Integer piccoordid;
-
+    /**
+     * 文字内容坐标
+     */
     private Integer wordcoordid;
 
+    /**
+     * 1表示横构图，2竖构图
+     */
     private Integer type;
 
     public Long getId() {

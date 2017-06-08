@@ -18,6 +18,8 @@ public class PMyproductchildinfo {
     
     private Integer isdue;
     
+    private String birthdayStr;
+    
     public Integer getIsdue() {
 		return isdue;
 	}
@@ -73,4 +75,13 @@ public class PMyproductchildinfo {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+
+	public String getBirthdayStr() {
+		return birthdayStr;
+	}
+
+	public void setBirthdayStr(String birthdayStr) {
+		this.birthdayStr = birthdayStr;
+	}
+    
 }

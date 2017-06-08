@@ -28,11 +28,11 @@ public class CustomerController extends SSOController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/list")
-	public String memberslist() throws Exception {
+	public String memberslist(int index,int size) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq=memberMgtService.findCustomerslistByAgentUserId(user.getUserId());
+			rq=memberMgtService.findCustomerslistByAgentUserId(user.getUserId(),index,size);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
@@ -47,11 +47,11 @@ public class CustomerController extends SSOController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/marketlist")
-	public String marketlist() throws Exception {
+	public String marketlist(int index,int size) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq=memberMgtService.findMarketCustomerslistByBranchUserId(user.getUserId());
+			rq=memberMgtService.findMarketCustomerslistByBranchUserId(user.getUserId(),index,size);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

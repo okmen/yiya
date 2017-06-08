@@ -42,5 +42,11 @@ public interface IPbs_OrderMgtService {
 	ReturnModel MergeOrderLogistic(int ordertype, String orderIds,
 			String expressCom, String expressOrder, Double postage,String expressCode)
 			throws Exception;
+	/**
+	 * œ¬‘ÿ‘≠ ºÕº∆¨
+	 * @param orderlist
+	 * @return
+	 */
+	String pbsdownloadOriginalImage(List<PbsUserOrderResultVO> orderlist);
 	
 }

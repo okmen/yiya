@@ -1,6 +1,5 @@
 package com.bbyiya.pic.service.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,16 +27,13 @@ import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproducttemp;
-import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UChildreninfo;
 import com.bbyiya.model.UUseraddress;
 import com.bbyiya.model.UUsers;
-import com.bbyiya.pic.dao.IMyProductsDao;
 import com.bbyiya.pic.service.IPic_MemberMgtService;
-import com.bbyiya.pic.vo.product.MyProductListVo;
 import com.bbyiya.service.IBaseUserCommonService;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.utils.DateUtil;
@@ -45,6 +41,8 @@ import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.agent.UAgentcustomersVo;
 import com.bbyiya.vo.product.MyProductResultVo;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 @Service("pic_memberMgtService")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
@@ -169,7 +167,7 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 	 * @param branchUserId
 	 *   @return  
 	 */
-	public ReturnModel findCustomerslistByAgentUserId(Long branchUserId){
+	public ReturnModel findCustomerslistByAgentUserId(Long branchUserId,int index,int size){
 		ReturnModel rqModel=new ReturnModel();
 		UBranches branch=branchesMapper.selectByPrimaryKey(branchUserId);
 		if(branch==null){
@@ -177,6 +175,7 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 			rqModel.setBasemodle(null);
 			return rqModel;
 		}
+		PageHelper.startPage(index, size);
 		//获取待营销客户列表
 		List<UAgentcustomersVo> list= customerMapper.findCustomersByAgentUserId(branch.getAgentuserid(),0);
 		
@@ -206,8 +205,9 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 				}
 			}
 		}
+		PageInfo<UAgentcustomersVo> resultPage = new PageInfo<UAgentcustomersVo>(list);
 		rqModel.setStatu(ReturnStatus.Success);
-		rqModel.setBasemodle(list);
+		rqModel.setBasemodle(resultPage);
 		return rqModel;
 	}
 	
@@ -216,7 +216,7 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 	 * @param branchUserId
 	 *   @return  
 	 */
-	public ReturnModel findMarketCustomerslistByBranchUserId(Long branchUserId){
+	public ReturnModel findMarketCustomerslistByBranchUserId(Long branchUserId,int index,int size){
 		ReturnModel rqModel=new ReturnModel();
 		UBranches branch=branchesMapper.selectByPrimaryKey(branchUserId);
 		if(branch==null){
@@ -225,7 +225,9 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 			return rqModel;
 		}
 		//获取已获取客户列表
+		PageHelper.startPage(index, size);
 		List<UAgentcustomersVo> list= customerMapper.findCustomersByBranchUserId(branch.getAgentuserid(),1);
+		
 		for (UAgentcustomersVo cus : list) {
 			if(cus.getCreatetime()!=null) cus.setCreatetimeStr(DateUtil.getTimeStr(cus.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
 			UChildreninfo child=childMapper.selectByPrimaryKey(cus.getUserid());
@@ -273,8 +275,10 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 			}
 			
 		}
+		PageInfo<UAgentcustomersVo> resultPage = new PageInfo<UAgentcustomersVo>(list);
+
 		rqModel.setStatu(ReturnStatus.Success);
-		rqModel.setBasemodle(list);
+		rqModel.setBasemodle(resultPage);
 		return rqModel;
 	}
 	

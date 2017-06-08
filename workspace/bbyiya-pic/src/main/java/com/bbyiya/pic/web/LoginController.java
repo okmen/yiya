@@ -112,6 +112,7 @@ public class LoginController extends SSOController {
 			nickName=java.net.URLDecoder.decode(nickName,"utf-8");
 			nickName=ObjectUtil.filterUtf8Mb4(nickName);
 			param.setNickName(nickName); 
+			addlog("nickname:"+nickName); 
 		}
 		param.setHeadImg(headImg);
 		if(!ObjectUtil.isEmpty(upUid)){

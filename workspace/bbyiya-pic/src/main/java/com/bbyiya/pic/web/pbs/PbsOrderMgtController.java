@@ -17,9 +17,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
-import org.apache.log4j.Logger;
+
+//import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.enums.ReturnStatus;
@@ -41,7 +43,7 @@ import com.sdicons.json.mapper.MapperException;
 @Controller
 @RequestMapping(value = "/pbs/order")
 public class PbsOrderMgtController extends SSOController {
-	private Logger Log = Logger.getLogger(PbsOrderMgtController.class);
+//	private Logger Log = Logger.getLogger(PbsOrderMgtController.class);
 	@Resource(name = "pbs_orderMgtService")
 	private IPbs_OrderMgtService orderMgtService;
 	
@@ -82,6 +84,27 @@ public class PbsOrderMgtController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	/**
+	 * pbs 订单图片列表，作品宝宝信息
+	 * @param userOrderId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getOrderProductPhotos")
+	public String getOrderProductPhotos(@RequestParam(required = false, defaultValue = "0") String userOrderId) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=orderService.getOrderProductInfoByUserOrderId(userOrderId);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 	
 	/**
 	 * 导出Excel
@@ -373,7 +396,7 @@ public class PbsOrderMgtController extends SSOController {
 	
 	
 	/**
-	 * 单个订单下载图片
+	 * 单个订单下载合成图片
 	 * @param myproductJson
 	 * @return
 	 * @throws Exception
@@ -389,13 +412,38 @@ public class PbsOrderMgtController extends SSOController {
 			PageInfo<PbsUserOrderResultVO> page=orderMgtService.find_pbsOrderList(param, 0, 0);
 			//rq=orderService.find_orderList(param);
 			if(ObjectUtil.parseInt(isDownload)>0){
-//				if(ObjectUtil.isEmpty(fileDir)){
-//					rq.setStatu(ReturnStatus.ParamError);
-//					rq.setStatusreson("请输入要保存到本地的文件路径");
-//					return JsonUtil.objectToJsonStr(rq);
-//				}
 				if(page!=null&&page.getList()!=null&&page.getList().size()>0){
 					String path=orderMgtService.pbsdownloadImg(page.getList());
+					rq.setBasemodle(path);
+					rq.setStatu(ReturnStatus.Success);
+					rq.setStatusreson("下载图片成功");
+				}
+			}
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("你的登录已过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 单个订单下载原图片
+	 * @param myproductJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/singleDownLoadOriginalImage")
+	public String singleDownLoadOriginalImage(String orderId,String isDownload) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			SearchOrderParam param= new SearchOrderParam();
+			param.setOrderNo(orderId);
+			PageInfo<PbsUserOrderResultVO> page=orderMgtService.find_pbsOrderList(param, 0, 0);
+			if(ObjectUtil.parseInt(isDownload)>0){
+				if(page!=null&&page.getList()!=null&&page.getList().size()>0){
+					String path=orderMgtService.pbsdownloadOriginalImage(page.getList());
 					rq.setBasemodle(path);
 					rq.setStatu(ReturnStatus.Success);
 					rq.setStatusreson("下载图片成功");

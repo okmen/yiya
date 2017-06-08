@@ -84,7 +84,7 @@ where a.CartId=b.CartId and a.Status!=3 and a.Status!=4 and a.IsTemp=0 and (a.Te
         and  b.Status=#{activestatus,jdbcType=INTEGER}
     </if>
     <if test="keywords != null and keywords!=''" >
-        and  (a.Title  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) or a.Phone LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) )
+        and  (a.Title  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) or b.Mobilephone LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) )
     </if>
     order by a.CreateTime desc 
   </select>

@@ -71,5 +71,11 @@ public interface IPic_OrderMgtService {
 	 * @return
 	 */
 	ReturnModel findOrderProductPhotosByUserOrderId(String userOrderId);
+	/**
+	 * pbs合成时订单图片信息
+	 * @param userOrderId
+	 * @return
+	 */
+	ReturnModel getOrderProductInfoByUserOrderId(String userOrderId);
 
 }

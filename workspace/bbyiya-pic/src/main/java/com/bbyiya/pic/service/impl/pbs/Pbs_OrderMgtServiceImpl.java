@@ -1,6 +1,7 @@
 package com.bbyiya.pic.service.impl.pbs;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,8 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OOrderproductdetailsMapper;
+import com.bbyiya.dao.OOrderproductphotosMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OUserordersMapper;
+import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.dao.UBranchtransaccountsMapper;
 import com.bbyiya.dao.UBranchtransamountlogMapper;
@@ -25,7 +28,9 @@ import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproductdetails;
+import com.bbyiya.model.OOrderproductphotos;
 import com.bbyiya.model.OUserorders;
+import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UBranchtransaccounts;
 import com.bbyiya.model.UBranchtransamountlog;
@@ -59,10 +64,16 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	private OOrderproductsMapper orderProductMapper;
 	@Autowired
 	private OOrderproductdetailsMapper detailMapper;
+	
+	@Autowired
+	private OOrderproductphotosMapper photoMapper;
 	@Autowired
 	private OOrderaddressMapper addressMapper;
 	@Resource(name = "regionServiceImpl")
 	private IRegionService regionService;
+	
+	@Autowired
+	private PMyproductdetailsMapper mydetailMapper;
 	
 	/*----------------------代理模块--------------------------*/
 	@Autowired
@@ -377,7 +388,6 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			FileUtils.isDirExists(basePath+sep+file_temp+sep+order.getBuyeruserid()+"-"+order.getProducttitle()+"-"+order.getPropertystr().replaceAll("/", "-")+"×"+order.getCount()+"("+order.getUserorderid()+")");
 			int i=1;			
 			List<OOrderproductdetails> detallist=orderDao.findOrderProductDetailsByProductOrderId(order.getOrderproductid());
-			
 			for (OOrderproductdetails detail : detallist) {
 				if(detail.getImageurl()!=null)
 					detail.setImageurl("http://pic.bbyiya.com/"+detail.getImageurl());
@@ -413,6 +423,69 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			
 		}
 		
+		//压缩成zip文件		
+		FileToZip z = new FileToZip();  
+		z.zip(basePath+sep+file_temp, basePath+sep+file_temp+".zip"); 	
+		File file = new File(basePath+sep+file_temp+".zip");
+		z.deleteDirectory(basePath+sep+file_temp);
+		return file.getPath();
+	}
+	
+	/**
+	 * 下载原始图片
+	 */
+	public String pbsdownloadOriginalImage(List<PbsUserOrderResultVO> orderlist){
+		String sep=System.getProperty("file.separator");
+		String  basePath = System.getProperty("user.home") +sep + "imagedownloadtemp"+sep+"orderImg";
+		FileUtils.isDirExists(basePath);
+		Calendar c1 =  Calendar.getInstance();
+		Date nowtime=new Date();
+		c1.setTime(nowtime); 
+		String file_temp=DateUtil.getTimeStr(c1.getTime(), "yyyyMMddHHmm");
+		//创建文件夹
+		FileUtils.isDirExists(basePath+sep+file_temp);
+		for (PbsUserOrderResultVO order : orderlist) {
+			//为了兼容以前的版本，如果没有订单原图，则取作品的原图
+			List<OOrderproductphotos> photoList=photoMapper.findOrderProductPhotosByProductOrderId(order.getOrderproductid());
+			if(photoList==null||photoList.size()<=0){
+				List<PMyproductdetails> detailsList=mydetailMapper.findMyProductdetails(order.getCartid());
+				if(detailsList!=null&&detailsList.size()>0){
+					photoList=new ArrayList<OOrderproductphotos>();
+					for (PMyproductdetails pde : detailsList) {
+						OOrderproductphotos photo=new OOrderproductphotos();
+						photo.setContent(pde.getContent());
+						photo.setCreatetime(new Date());
+						photo.setImgurl(pde.getImgurl());
+						photo.setOrderproductid(order.getOrderproductid());
+						photo.setSenendes(pde.getDescription());
+						photo.setSort(pde.getSort());
+						photo.setTitle(pde.getTitle());
+						photoList.add(photo);
+					}
+				}
+			}
+
+			FileUtils.isDirExists(basePath+sep+file_temp+sep+order.getBuyeruserid()+"-"+order.getProducttitle()+"-"+order.getPropertystr().replaceAll("/", "-")+"×"+order.getCount()+"("+order.getUserorderid()+")");
+			int i=1;		
+			for (OOrderproductphotos photo : photoList) {
+				if(photo.getImgurl()!=null)
+					photo.setImgurl("http://pic.bbyiya.com/"+photo.getImgurl());
+				String file_dir=basePath+sep+file_temp+sep+order.getBuyeruserid()+"-"+order.getProducttitle()+"-"+order.getPropertystr().replaceAll("/", "-")+"×"+order.getCount()+"("+order.getUserorderid()+")";
+				String fileFull_name=file_dir+sep+i+".jpg";
+				if(!FileUtils.isFileExists(fileFull_name)){
+					try {
+						if(!ObjectUtil.isEmpty(photo.getImgurl())){
+							FileDownloadUtils.download(photo.getImgurl(),fileFull_name);
+						}
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				i++;
+				
+			}
+		}
 		//压缩成zip文件		
 		FileToZip z = new FileToZip();  
 		z.zip(basePath+sep+file_temp, basePath+sep+file_temp+".zip"); 	

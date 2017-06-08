@@ -92,7 +92,7 @@ public class PbsOrderMgtController extends SSOController {
 	 * @throws Exception
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/getOrderProductPhotos")
+	@RequestMapping(value = "/getOrderProductInfoPhotos")
 	public String getOrderProductPhotos(@RequestParam(required = false, defaultValue = "0") String userOrderId) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();

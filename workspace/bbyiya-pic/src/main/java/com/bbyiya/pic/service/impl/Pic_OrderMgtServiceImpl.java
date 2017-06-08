@@ -529,10 +529,16 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 		if(userorders!=null&&orderproducts!=null){
 			List<OOrderproductphotos> photosList= ophotosMapper.findOrderProductPhotosByProductOrderId(orderproducts.getOrderproductid());
 			if(photosList!=null&&photosList.size()>0){
-				rq.setBasemodle(photosList);
+				Map<String, Object> map=new HashMap<String, Object>();
+				map.put("photos", photosList);
+				PMyproductchildinfo child= pmyChildMapper.selectByPrimaryKey(orderproducts.getCartid());
+				if(child!=null){
+					map.put("child", child);
+				}
 				rq.setStatu(ReturnStatus.Success);
-				rq.setStatusreson("³É¹¦");
-			}else if(orderproducts.getCartid()!=null){
+				rq.setBasemodle(map); 
+				return rq;
+			}else if(orderproducts.getCartid()!=null) {
 				List<PMyproductdetails> details= mydetailMapper.findMyProductdetails(orderproducts.getCartid());
 				if(details!=null&&details.size()>0){
 					photosList=new ArrayList<OOrderproductphotos>();

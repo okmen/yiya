@@ -679,7 +679,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		return rq;
 	}
 
-	public ReturnModel findMyProductsForBranch(Long branchUserId, Integer status, Integer inviteStatus, int index, int size) {
+	public ReturnModel findMyProductsForBranch(Long branchUserId, Integer status, Integer inviteStatus,String keywords, int index, int size) {
 		ReturnModel rq = new ReturnModel();
 		List<Long> idsList = new ArrayList<Long>();
 		idsList.add(branchUserId);
@@ -691,7 +691,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			}
 		}
 		PageHelper.startPage(index, size);
-		List<MyProductResultVo> mylist = myMapper.findMyProductslistForBranch(idsList, status, inviteStatus);
+		List<MyProductResultVo> mylist = myMapper.findMyProductslistForBranch(idsList, status, inviteStatus,keywords);
 		PageInfo<MyProductResultVo> resultPage = new PageInfo<MyProductResultVo>(mylist);
 		if (resultPage.getList() != null && resultPage.getList().size() > 0) {
 			for (MyProductResultVo vv : resultPage.getList()) {

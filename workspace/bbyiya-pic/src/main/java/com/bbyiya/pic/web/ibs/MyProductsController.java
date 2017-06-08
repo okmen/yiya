@@ -32,11 +32,12 @@ public class MyProductsController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/findMyProductsForBranch")
-	public String findMyProductsForBranch(@RequestParam(required = false, defaultValue = "1")int index,@RequestParam(required = false, defaultValue = "20")int size) throws Exception {
+	public String findMyProductsForBranch(Integer inviteStatus,@RequestParam(required = false, defaultValue = "")String keywords,
+			@RequestParam(required = false, defaultValue = "1")int index,@RequestParam(required = false, defaultValue = "20")int size) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq=proService.findMyProductsForBranch(user.getUserId(),null,null,index,size);
+			rq=proService.findMyProductsForBranch(user.getUserId(),null,inviteStatus,keywords,index,size);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("µÇÂ¼¹ýÆÚ");

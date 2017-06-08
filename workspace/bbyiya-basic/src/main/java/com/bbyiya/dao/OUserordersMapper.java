@@ -43,6 +43,12 @@ public interface OUserordersMapper {
      */
     List<OUserorders> findOrdersByBranchUserId(@Param("branchUserId")Long branchUserId,@Param("status") Integer status);
     
+    /**
+     * 获取最新的几条订单记录
+     * @param status
+     * @return
+     */
+    List<OUserorders> findOrderListLasts(@Param("status") Integer status);
     
     /**
      * 获取用户订单列表

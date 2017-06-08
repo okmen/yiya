@@ -67,8 +67,12 @@ where a.CartId=b.CartId and a.Status!=3 and a.Status!=4 and a.IsTemp=0 and (a.Te
         and  a.Status=#{status,jdbcType=INTEGER}
     </if>
     <if test="invitestatus != null" >
-        and  a.InviteStatus=#{invitestatus,jdbcType=INTEGER}
+        and  b.Status=#{invitestatus,jdbcType=INTEGER}
     </if>
+     <if test="keywords != null and keywords!=''" >
+        and  (a.Title  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) or b.InvitePhone LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) )
+    </if>
+    
     order by b.CreateTime desc 
   </select>
    <!-- 05 find 获取异业合作模板邀请的作品  -->

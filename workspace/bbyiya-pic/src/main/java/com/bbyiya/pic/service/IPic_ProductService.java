@@ -90,7 +90,7 @@ public interface IPic_ProductService {
 	 * @param size
 	 * @return
 	 */
-	ReturnModel findMyProductsForBranch(Long branchUserId,Integer status,Integer inviteStatus, int index,int size);
+	ReturnModel findMyProductsForBranch(Long branchUserId,Integer status,Integer inviteStatus,String keywords, int index,int size);
 	
 	/*-------------------------------delete É¾³ý²Ù×÷------------------------------------------------------*/
 	/**

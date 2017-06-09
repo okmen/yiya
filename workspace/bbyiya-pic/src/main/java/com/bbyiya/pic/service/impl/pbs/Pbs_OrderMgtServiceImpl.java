@@ -144,8 +144,14 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	public ReturnModel editLogistics(String orderId,String expressCom,String expressOrder,String expressCode) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		OUserorders userorders = userOrdersMapper.selectByPrimaryKey(orderId);
+		
 		//查找运单号相同的订单号
 		if(userorders!=null){
+			if(userorders.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
+				rq.setStatu(ReturnStatus.ParamError);		
+				rq.setStatusreson("未支付的订单不能添加物流信息！");
+				return rq;
+			}
 			List<OUserorders> orderList=orderDao.findUserOrderByExpressOrder(userorders.getExpressorder(), userorders.getExpresscom());
 			if(orderList!=null&&orderList.size()>0){
 				for (OUserorders order : orderList) {
@@ -187,6 +193,12 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 		ReturnModel rq = new ReturnModel();
 		OUserorders userorders = userOrdersMapper.selectByPrimaryKey(orderId);
 		if(userorders!=null){
+			if(userorders.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
+				rq.setStatu(ReturnStatus.ParamError);		
+				rq.setStatusreson("未支付的订单不能添加运费！");
+				return rq;
+			}
+			
 			if(postage==null)postage=0.0;
 			//首次填写运单号，则执行自动扣运费款操作
 			if(userorders.getPostage()==null||userorders.getPostage().doubleValue()<=0){
@@ -259,6 +271,11 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 		if(orderArr!=null&&orderArr.length>0){
 			for (String orderid : orderArr) {
 				OUserorders order=userOrdersMapper.selectByPrimaryKey(orderid);
+				if(order.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
+					rq.setStatu(ReturnStatus.ParamError);		
+					rq.setStatusreson("存在未支付的订单，不能进行运单合单操作！");
+					return rq;
+				}
 				if(order!=null){
 					int type=order.getOrdertype()==null?0:order.getOrdertype();
 					if(!typeHash.containsKey(type)){

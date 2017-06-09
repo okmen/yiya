@@ -289,7 +289,7 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 			vo.setStatus(order.getStatus());
 			vo.setUserid(order.getUserid());
 			vo.setBranchuserid(order.getBranchuserid());
-			if(ObjectUtil.isEmpty(order.getPaytime())){
+			if(!ObjectUtil.isEmpty(order.getPaytime())){
 				vo.setPaytime(DateUtil.getTimeStr(order.getPaytime(), "yyyy-MM-dd HH:mm:ss") );
 			}
 			vo.setExpresscom(order.getExpresscom());

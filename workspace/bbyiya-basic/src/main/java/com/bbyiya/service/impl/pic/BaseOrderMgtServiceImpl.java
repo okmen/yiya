@@ -200,7 +200,6 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		userOrder.setRemark(param.getRemark());
 		userOrder.setOrdertype(param.getOrderType());//订单类型
 		userOrder.setOrdertime(ordertime);
-		userOrder.setPaytime(ordertime);
 		userOrder.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
 		userOrder.setIsbranch(0); 
 		userOrder.setPostmodelid(param.getPostModelId()); 

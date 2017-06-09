@@ -599,7 +599,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 								// 影楼订单，直接预存款支付 ， 插入支付记录
 								if (payOrder_logAdd(param.getBranchUserId(), orderId, orderId, totalPrice)) {
 									
-									userOrder_Repeat.setStatus(Integer.parseInt(OrderStatusEnum.waitFoSend.toString()));
+									userOrder_Repeat.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
 									userOrder_Repeat.setPaytime(new Date());
 									userOrder_Repeat.setPaytype(Integer.parseInt(PayTypeEnum.yiyaCash.toString()));
 								} else {

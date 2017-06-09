@@ -50,7 +50,7 @@
 	</styleCovers>
 	<backcoordinate><!-- 相册背面文字坐标 -->
 		<item  type="1" contentTop="51.6" contentLeft="25.6" contentRight="71.7"  titleTop="66.4" contentBottom="44" contentSize="34" titleSize="50" color="#3e3c38"/>
-		<item  type="0" contentTop="38.7" contentLeft="23.2" contentRight="76.1"  titleTop="59" contentBottom="51.6" contentSize="30" titleSize="38" color="#3e3c38"/>
+		<item  type="0" contentTop="38.7" contentLeft="23.2" contentRight="76.1"  titleTop="59" contentBottom="48.4" contentSize="30" titleSize="38" color="#3e3c38"/>
 	</backcoordinate>
 	<frontcoordinate><!-- 相册正面文字坐标 -->
 		<item  type="1" contentSize="33" lineHeight="55"  color="#595857" letterSpacing="5" />
@@ -69,6 +69,7 @@
 	<postInfo>
 		<item code="tiantian" name="天天快递"/>
 		<item code="shunfeng" name="顺丰速运"/>
+		<item code="zhongtong" name="中通快递"/>
 	</postInfo>
 	<wxBackUrl  value="https://mpic.bbyiya.com/wxpay/WxPayNotify"/><!-- 微信公众号支付回写地址 -->
 	<wxAppBackUrl  value="https://mpic.bbyiya.com/wxapppay/WxPayNotify"/><!-- 微信app支付回写地址 -->

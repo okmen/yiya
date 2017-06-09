@@ -205,7 +205,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 				
 				//自动扣除代理商运费账户的
 				UBranchtransaccounts branchTransAccount=branchesTransMapper.selectByPrimaryKey(userorders.getBranchuserid());
-				if(branchTransAccount!=null&&branchTransAccount.getAvailableamount()!=null&&branchTransAccount.getAvailableamount().doubleValue()>=postage.doubleValue()){
+				//if(branchTransAccount!=null&&branchTransAccount.getAvailableamount()!=null&&branchTransAccount.getAvailableamount().doubleValue()>0){
 					UBranchtransamountlog branchTranLog=new UBranchtransamountlog();
 					branchTranLog.setAmount(-1*postage);
 					branchTranLog.setBranchuserid(branchTransAccount.getBranchuserid());
@@ -215,11 +215,11 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					branchesTransLogMapper.insert(branchTranLog);
 					branchTransAccount.setAvailableamount(branchTransAccount.getAvailableamount()-postage);
 					branchesTransMapper.updateByPrimaryKeySelective(branchTransAccount);
-				}else{
-					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("运费账户余额不足，请充值后再填运单!");
-					return rq;
-				}
+//				}else{
+//					rq.setStatu(ReturnStatus.ParamError);
+//					rq.setStatusreson("运费账户余额不足，请充值后再填运单!");
+//					return rq;
+//				}
 			}else if(userorders.getPostage()!=null&&userorders.getPostage().doubleValue()>0){
 				rq.setStatu(ReturnStatus.OrderError);
 				rq.setStatusreson("已完成运费自动扣款操作，不能修改！");

@@ -563,6 +563,7 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 						ophotosMapper.insert(ph);
 					}
 					map.put("photos", photosList);
+					rq.setBasemodle(map);
 					rq.setStatu(ReturnStatus.Success);
 				}else {
 					rq.setStatusreson("找不到作品详情图片");

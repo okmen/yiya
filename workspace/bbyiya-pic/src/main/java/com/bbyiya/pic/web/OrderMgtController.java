@@ -301,7 +301,7 @@ public class OrderMgtController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq=orderService.findOrderProductPhotosByUserOrderId(userOrderId);
+			rq=orderService.getOrderProductInfoByUserOrderId(userOrderId);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("µÇÂ¼¹ýÆÚ");

@@ -30,7 +30,7 @@ public class CtsSSOController {
 			if (ObjectUtil.isEmpty(ticket)) {
 				// 获取cookie的tiket的值
 //				ticket = CookieUtils.getCookieByName(request, "ticket");
-				ticket = CookieUtils.getCookieBySessionId(request);
+				ticket = CookieUtils.getCookie_web(request);
 				if (ObjectUtil.isEmpty(ticket)) {
 					return null;
 				}

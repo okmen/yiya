@@ -37,7 +37,7 @@ public class UAdminService implements IUAdminService{
 			for (Map<String, String> map : users) {
 				if(map.get("username").equals(username)&&map.get("pwd").equals(pwdMd5)){
 					UAdmin user=new UAdmin();
-					user.setAdminid(ObjectUtil.parseInt(map.get("adminId")));
+					
 					user.setUsername((map.get("username")));
 					rqModel.setStatu(ReturnStatus.Success);
 					rqModel.setBasemodle(getAdminLoginSuccessResult(user)); 
@@ -49,29 +49,11 @@ public class UAdminService implements IUAdminService{
 		rqModel.setStatu(ReturnStatus.LoginError_1);
 		rqModel.setStatusreson("用户名或密码错误");
 		return rqModel;
-		// 存入数据库
-//		UAdmin admin= adminMapper.getUAdminByUsername(username);
-//		if(admin!=null){
-//			if(!admin.getPassword().equals(MD5Encrypt.encrypt(pwd))){
-//				rqModel.setStatu(ReturnStatus.LoginError_1);
-//				rqModel.setStatusreson("登录密码错误");
-//				return rqModel;
-//			}else {
-//				rqModel.setStatu(ReturnStatus.Success);
-//				rqModel.setBasemodle(admin); 
-//				rqModel.setStatusreson("登录成功");
-//			}
-//		}else {
-//			rqModel.setStatu(ReturnStatus.LoginError);
-//			rqModel.setStatusreson("用户名不存在");
-//		}
-//		return rqModel;
 	}
 	
 	public AdminLoginSuccessResult getAdminLoginSuccessResult(UAdmin user){
 		if(user!=null){
 			AdminLoginSuccessResult loginSuccess=new AdminLoginSuccessResult();
-			loginSuccess.setAdminid(user.getAdminid());
 			loginSuccess.setUsername(user.getUsername()); 
 			return loginSuccess;
 		}

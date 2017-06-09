@@ -181,6 +181,8 @@ public class BasePayServiceImpl implements IBasePayService{
 					payOrder.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString())); 
 					payOrderMapper.updateByPrimaryKeySelective(payOrder);
 					return true;
+				}else {
+					addlog("payId:"+payId+",方法paySuccessProcess。不在可支付的状态！");
 				}
 			} catch (Exception e) {
 				addlog("payId:"+payId+",方法paySuccessProcess。"+e.getMessage());

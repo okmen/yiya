@@ -255,12 +255,18 @@ public class PbsOrderMgtController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
+			if(ObjectUtil.isEmpty(expressOrder)){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("运单号不有为空，请输入运单号");
+				return JsonUtil.objectToJsonStr(rq);
+			}
 			//校验运单号不能为非数字
 			if(!ObjectUtil.isEmpty(expressOrder)&&!ObjectUtil.IsNumber(expressOrder)){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("运单号必须输入为数字");
 				return JsonUtil.objectToJsonStr(rq);
 			}
+			
 			rq=orderMgtService.editLogistics(orderId, expressCom, expressOrder,expressCode);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
@@ -329,6 +335,11 @@ public class PbsOrderMgtController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
+			if(ObjectUtil.isEmpty(expressOrder)){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("运单号不有为空，请输入运单号！");
+				return JsonUtil.objectToJsonStr(rq);
+			}
 			//校验运单号不能为非数字
 			if(!ObjectUtil.isEmpty(expressOrder)&&!ObjectUtil.IsNumber(expressOrder)){
 				rq.setStatu(ReturnStatus.ParamError);

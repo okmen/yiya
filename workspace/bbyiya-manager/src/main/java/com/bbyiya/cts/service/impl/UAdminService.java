@@ -37,7 +37,11 @@ public class UAdminService implements IUAdminService{
 			for (Map<String, String> map : users) {
 				if(map.get("username").equals(username)&&map.get("pwd").equals(pwdMd5)){
 					UAdmin user=new UAdmin();
+<<<<<<< HEAD
+					//user.setAdminid(ObjectUtil.parseInt(map.get("adminId")));
+=======
 					
+>>>>>>> branch 'dev/zy' of https://github.com/okmen/yiya.git
 					user.setUsername((map.get("username")));
 					rqModel.setStatu(ReturnStatus.Success);
 					rqModel.setBasemodle(getAdminLoginSuccessResult(user)); 
@@ -54,6 +58,10 @@ public class UAdminService implements IUAdminService{
 	public AdminLoginSuccessResult getAdminLoginSuccessResult(UAdmin user){
 		if(user!=null){
 			AdminLoginSuccessResult loginSuccess=new AdminLoginSuccessResult();
+<<<<<<< HEAD
+			//loginSuccess.setAdminid(user.getAdminid());
+=======
+>>>>>>> branch 'dev/zy' of https://github.com/okmen/yiya.git
 			loginSuccess.setUsername(user.getUsername()); 
 			return loginSuccess;
 		}

@@ -30,6 +30,7 @@ import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.CustomerSourceTypeEnum;
 import com.bbyiya.enums.MyProductTempStatusEnum;
+import com.bbyiya.enums.MyProductTempType;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.InviteStatus;
 import com.bbyiya.enums.pic.InviteType;
@@ -48,9 +49,11 @@ import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.service.ibs.IIbs_MyProductTempService;
+import com.bbyiya.pic.vo.product.MyProductTempAddParam;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.FileUtils;
+import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.PageInfoUtil;
 import com.bbyiya.utils.QRCodeUtil;
@@ -91,13 +94,13 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	/**
 	 * 添加模板
 	 * */
-	public ReturnModel addMyProductTemp(Long userid,String title,String remark,Long productid,int needVerifer,String discription,String codeurl,String codesm){
+	public ReturnModel addMyProductTemp(Long userid,MyProductTempAddParam param){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);	
 		
 		PMyproducts myproduct = new PMyproducts();	
 		myproduct.setUserid(userid);
-		myproduct.setProductid(productid);
+		myproduct.setProductid(param.getProductid());
 		myproduct.setCreatetime(new Date());
 		myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.ok.toString()));
 		myproduct.setUpdatetime(new Date());	
@@ -108,17 +111,22 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		temp.setBranchuserid(userid);
 		temp.setCount(0);
 		temp.setCreatetime(new Date());
-		temp.setRemark(remark);
+		temp.setRemark(param.getRemark());
 		temp.setStatus(Integer.parseInt(MyProductTempStatusEnum.enable.toString()));
-		temp.setTitle(title);
+		temp.setTitle(param.getTitle());
 		temp.setCartid(myproduct.getCartid());	
-		temp.setNeedverifer(needVerifer);
-		temp.setDiscription(discription);
-		if(!ObjectUtil.isEmpty(codeurl)){
-			temp.setTempcodeurl(codeurl);
-		}if(!ObjectUtil.isEmpty(codeurl)){
-			temp.setTempcodesm(codesm);
+		temp.setNeedverifer(param.getNeedverifer());
+		temp.setDiscription(param.getDiscription());
+		if(!ObjectUtil.isEmpty(param.getCodeurl())){
+			temp.setTempcodeurl(param.getCodeurl());
+		}if(!ObjectUtil.isEmpty(param.getCodesm())){
+			temp.setTempcodesm(param.getCodesm());
 		}
+		temp.setStyleid(param.getStyleId());
+		temp.setIsautoorder(param.getIsAutoOrder());
+		temp.setOrderhours(param.getOrderHours());
+		temp.setApplycount(0);//报名人数为0时不限制
+		temp.setType(Integer.parseInt(MyProductTempType.normal.toString()));//默认为普通类型
 		myproducttempMapper.insertReturnId(temp);
 		
 		myproduct.setTempid(temp.getTempid());
@@ -135,15 +143,20 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	/**
 	 * 修改模板
 	 * */
-	public ReturnModel editMyProductTemp(String title,String remark,Integer tempid,int needVerifer,String discription){
+	public ReturnModel editMyProductTemp(MyProductTempAddParam param){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);	
-		PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempid);
+		PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(param.getTempid());
 		if(temp!=null){
-			temp.setTitle(title);
-			temp.setRemark(remark);
-			temp.setNeedverifer(needVerifer);
-			temp.setDiscription(discription);
+			temp.setTitle(param.getTitle());
+			temp.setRemark(param.getRemark());
+			temp.setNeedverifer(param.getNeedverifer());
+			temp.setDiscription(param.getDiscription());
+			temp.setTempcodesm(param.getCodesm());
+			temp.setTempcodeurl(param.getCodeurl());
+			temp.setIsautoorder(param.getIsAutoOrder());
+			temp.setOrderhours(param.getOrderHours());
+			temp.setStyleid(param.getStyleId());
 			myproducttempMapper.updateByPrimaryKey(temp);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("修改模板成功！");
@@ -176,7 +189,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	
 	/**
 	 * 启用或禁用模板
-	 * @param type
+	 * @param type 1:启用   0禁用  3 结束活动  
 	 * @param tempid
 	 * @return
 	 */
@@ -190,11 +203,43 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			if(myproduct!=null){
 				//启用
 				if(type==1){
+					//如果活动是结束状态不能再开启
+					if(temp.getStatus()!=null&&temp.getStatus().intValue()==Integer.parseInt(MyProductTempStatusEnum.over.toString())){
+						rq.setStatu(ReturnStatus.ParamError);
+						rq.setStatusreson("已结束的活动不能再开启");
+						return rq;
+					}
 					temp.setStatus(Integer.parseInt(MyProductTempStatusEnum.enable.toString()));			
 					myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.ok.toString()));				
-				}else{//禁用
-					temp.setStatus(Integer.parseInt(MyProductTempStatusEnum.disabled.toString()));			
-					myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.disabled.toString()));
+				}else if(type==0||type==3){
+					if(type==0){//禁用
+						//如果活动是结束状态不能再开启
+						if(temp.getStatus()!=null&&temp.getStatus().intValue()==Integer.parseInt(MyProductTempStatusEnum.over.toString())){
+							rq.setStatu(ReturnStatus.ParamError);
+							rq.setStatusreson("已结束的活动不能再修改活动状态！");
+							return rq;
+						}
+						temp.setStatus(Integer.parseInt(MyProductTempStatusEnum.disabled.toString()));			
+						myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.disabled.toString()));
+					}
+					if(type==3){//结束活动状态
+						temp.setStatus(Integer.parseInt(MyProductTempStatusEnum.over.toString()));			
+						myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.deleted.toString()));
+						
+						//将参与中的用户置为活动失败，得到状态为1 3 4状态的用户  
+						List<Integer> statuslist=new ArrayList<Integer>();
+						statuslist.add(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString()));//已审核
+						statuslist.add(Integer.parseInt(MyProducttempApplyStatusEnum.nopass.toString()));//作品审核不通过
+						statuslist.add(Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString()));//作品制作完成
+						List<PMyproducttempapply>  applyInlist=myproducttempapplyMapper.findMyProducttempApplyInList(tempid, statuslist);
+						if(applyInlist!=null&&applyInlist.size()>0){
+							for (PMyproducttempapply applyin : applyInlist) {
+								applyin.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.fails.toString()));
+								myproducttempapplyMapper.updateByPrimaryKeySelective(applyin);
+							}
+						}
+					}
+					
 					//将模板的待审核用户的状态全置为审核失败
 					List<PMyproducttempapply>  applylist=myproducttempapplyMapper.findMyProducttempApplyList(tempid, Integer.parseInt(MyProducttempApplyStatusEnum.apply.toString()));
 					if(applylist!=null&&applylist.size()>0){
@@ -203,7 +248,6 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 							myproducttempapplyMapper.updateByPrimaryKeySelective(apply);
 						}
 					}
-					
 					//禁用员工模板权限
 					List<PMyproducttempusers> tempuserList=myTempUserMapper.findTempUserListByTempId(tempid);
 					if(tempuserList!=null&&tempuserList.size()>0){
@@ -220,6 +264,10 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 							myTempveruserMapper.updateByPrimaryKeySelective(tempveruser);
 						}
 					}
+				}else{
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("type参数传入错误");
+					return rq;
 				}
 			}
 			myMapper.updateByPrimaryKey(myproduct);
@@ -243,6 +291,11 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		rq.setStatu(ReturnStatus.SystemError);		
 		PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempid);	
 		if(temp!=null){
+			if(temp.getStatus()!=null&&temp.getStatus().intValue()==Integer.parseInt(MyProductTempStatusEnum.enable.toString())){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("不好意思，已开启的活动不能删除，请先结束该活动再删除！");
+				return rq;
+			}
 			PMyproducts myproduct =myMapper.selectByPrimaryKey(temp.getCartid());
 			temp.setStatus(Integer.parseInt(MyProductTempStatusEnum.del.toString()));			
 			myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.deleted.toString()));
@@ -291,7 +344,8 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		PageInfo<PMyproducttemp> reuslt=new PageInfo<PMyproducttemp>(templist); 
 		if(reuslt!=null&&reuslt.getList()!=null&&reuslt.getList().size()>0){
 			for (PMyproducttemp temp : templist) {	
-				String redirct_url="apply/form?workId="+temp.getCartid();			
+				if(temp.getType()==null) temp.setType(0);
+				String redirct_url="apply/form?workId="+temp.getCartid()+"&type="+temp.getType();			
 				String urlstr="";
 				String url="";
 				try {
@@ -587,7 +641,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 					//如果有负责权限
 					if(tempuser.getStatus()!=null&&tempuser.getStatus().intValue()==1){
 						PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempid);
-						String redirct_url="apply/form?workId="+temp.getCartid()+"&sid="+buser.getUserid();			
+						String redirct_url="apply/form?workId="+temp.getCartid()+"&sid="+buser.getUserid()+"&type="+temp.getType();			
 						String urlstr="";
 						String url="";
 						try {
@@ -738,6 +792,76 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		return rq;
 	}
 	
+	
+	/**
+	 *设置活动最大报名人数
+	 * @return
+	 */
+	public ReturnModel setTempMaxApplyCount(Long userId,Integer tempid,Integer maxApplyCount){
+		ReturnModel rq=new ReturnModel();
+		if(tempid==null){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("参数错误：tempid为空！");
+			return rq;
+		}		
+		if(maxApplyCount==null){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("参数错误：maxApplyCount为空！");
+			return rq;
+		}
+		PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempid);
+		if(temp!=null){
+			//得到总报名人数
+			int applycount=(temp.getApplycount()==null?0:temp.getApplycount());
+			if(maxApplyCount.intValue()!=0&&maxApplyCount.intValue()<applycount){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("报名人数限制不得小于总报名人数！");
+				return rq;
+			}
+			temp.setMaxapplycount(maxApplyCount);	
+			myproducttempMapper.updateByPrimaryKeySelective(temp);
+		}
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("设置成功！");
+		return rq;
+	}
+	
+	/**
+	 *设置活动完成目标
+	 * @return
+	 */
+	public ReturnModel setTempCompletecondition(Long userId,Integer tempid,Integer blessCount,Integer maxCompleteCount){
+		ReturnModel rq=new ReturnModel();
+		if(tempid==null){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("参数错误：tempid为空！");
+			return rq;
+		}		
+		if(blessCount==null){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("参数错误：blessCount为空！");
+			return rq;
+		}
+		if(maxCompleteCount==null){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("参数错误：maxCompleteCount为空！");
+			return rq;
+		}
+		PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempid);
+		if(temp!=null){
+			if(temp.getStatus()!=null&&temp.getStatus().intValue()==Integer.parseInt(MyProductTempStatusEnum.enable.toString())){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("不好意思，活动已开启不能修改这些设置");
+				return rq;
+			}
+			temp.setBlesscount(blessCount);
+			temp.setMaxcompletecount(maxCompleteCount);
+			myproducttempMapper.updateByPrimaryKeySelective(temp);
+		}
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("设置成功！");
+		return rq;
+	}
 	/**
 	 * 保存模板二维码图片
 	 * @return

@@ -30,6 +30,13 @@ public interface PMyproducttempapplyMapper {
      * @return
      */
     List<PMyproducttempapply> findMyProducttempApplyList(@Param("tempid") Integer tempid,@Param("status") Integer status);
+    
+    /**
+     * 得到已参与中的用户列表
+     * @param tempid
+     * @return
+     */
+    List<PMyproducttempapply> findMyProducttempApplyInList(@Param("tempid") Integer tempid, @Param("statuslist")List<Integer> statuslist);
     /**
      * 根据tempid 、userid获取用户申请情况
      * @param tempid

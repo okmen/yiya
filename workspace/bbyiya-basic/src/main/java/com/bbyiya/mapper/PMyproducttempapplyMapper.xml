@@ -37,6 +37,17 @@
     select  <include refid="Base_Column_List" />
     from p_myproducttempapply where TempId = #{tempid,jdbcType=INTEGER} and Status=#{status,jdbcType=INTEGER}
   </select>
+  
+   <!--根据模板ID得到参与中的用户列表 -->
+  <select id="findMyProducttempApplyInList" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select  <include refid="Base_Column_List" />
+    from p_myproducttempapply where TempId = #{tempid,jdbcType=INTEGER} and Status in 
+     <foreach collection="statuslist" item="status" index="index"
+            open="(" close=")" separator=",">
+            #{status}
+    </foreach>
+  </select>
+  
   <!-- 根据tempid,userid获取用户申请情况 -->
   <select id="getMyProducttempApplyByUserId" resultMap="BaseResultMap"  >
     select  <include refid="Base_Column_List" />

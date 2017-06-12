@@ -33,6 +33,22 @@ public class PMyproducttemp {
 
     private String tempcodesm;
     
+    private Integer type;
+
+    private Long styleid;
+
+    private Integer maxapplycount;
+
+    private Integer completecount;
+
+    private Integer maxcompletecount;
+
+    private Integer blesscount;
+
+    private Integer isautoorder;
+
+    private Integer orderhours;
+    
     /*************************Vo****************************/
     
     //二维码地址
@@ -167,6 +183,70 @@ public class PMyproducttemp {
 
 	public void setCreatetimestr(String createtimestr) {
 		this.createtimestr = createtimestr;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public Long getStyleid() {
+		return styleid;
+	}
+
+	public void setStyleid(Long styleid) {
+		this.styleid = styleid;
+	}
+
+	public Integer getMaxapplycount() {
+		return maxapplycount;
+	}
+
+	public void setMaxapplycount(Integer maxapplycount) {
+		this.maxapplycount = maxapplycount;
+	}
+
+	public Integer getCompletecount() {
+		return completecount;
+	}
+
+	public void setCompletecount(Integer completecount) {
+		this.completecount = completecount;
+	}
+
+	public Integer getMaxcompletecount() {
+		return maxcompletecount;
+	}
+
+	public void setMaxcompletecount(Integer maxcompletecount) {
+		this.maxcompletecount = maxcompletecount;
+	}
+
+	public Integer getBlesscount() {
+		return blesscount;
+	}
+
+	public void setBlesscount(Integer blesscount) {
+		this.blesscount = blesscount;
+	}
+
+	public Integer getIsautoorder() {
+		return isautoorder;
+	}
+
+	public void setIsautoorder(Integer isautoorder) {
+		this.isautoorder = isautoorder;
+	}
+
+	public Integer getOrderhours() {
+		return orderhours;
+	}
+
+	public void setOrderhours(Integer orderhours) {
+		this.orderhours = orderhours;
 	}
     
     

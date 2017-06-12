@@ -265,7 +265,7 @@ public class SubmitOrderMgtController extends SSOController {
 					param.setOrderType(0);
 					if(param.getPostModelId()==null||param.getPostModelId()<=0){
 						rq.setStatu(ReturnStatus.ParamError);
-						rq.setStatusreson("快递方式有误");
+						rq.setStatusreson("请选择快递方式！");
 						return JsonUtil.objectToJsonStr(rq);
 					}
 				}

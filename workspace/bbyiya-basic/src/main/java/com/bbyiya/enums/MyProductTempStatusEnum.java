@@ -12,7 +12,11 @@ public enum MyProductTempStatusEnum {
     /**
      * 已删除
      */
-    del(2);
+    del(2),
+    /**
+     * 活动结束
+     */
+    over(3);
 
     private final int Type;
 

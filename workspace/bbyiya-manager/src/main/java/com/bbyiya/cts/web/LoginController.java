@@ -33,7 +33,7 @@ public class LoginController  extends CtsSSOController{
 	@RequestMapping(value = "/login")
 	public  String login(Model model) throws Exception {
 		return "login";
-	}
+	}  
 	/**
 	 * µÇÂ¼³É¹¦·µ»ØÒ³
 	 * @param model

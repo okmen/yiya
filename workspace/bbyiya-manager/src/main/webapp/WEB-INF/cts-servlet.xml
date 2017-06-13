@@ -108,6 +108,30 @@
 			</bean>
 		</mvc:message-converters>
 	</mvc:annotation-driven>
+	
+	<!-- 定时器服务  -->
+	<bean id="HeartbeatJobDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass" value="com.bbyiya.cts.job.HeartbeatJob"></property>
+		<property name="jobDataAsMap">
+			<map>
+				<description>jobDataAsMap</description>
+			</map>
+		</property>
+	</bean>
+	<!-- 另一种触发器是CornTrigger -->
+	<bean id="cornTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="HeartbeatJobDetail" />
+		<!-- 每个300s触发 -->
+		<property name="cronExpression" value="0 0/1 * * * ?" />
+	</bean>
+	<!-- 定义核心调度器 -->
+	<bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<ref bean="cornTrigger" />  
+		</property>
+	</bean>
+	
+	
 	<!-- 对模型视图名称的解析，在请求时模型视图名称添加前后缀 -->
 	<bean
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver"

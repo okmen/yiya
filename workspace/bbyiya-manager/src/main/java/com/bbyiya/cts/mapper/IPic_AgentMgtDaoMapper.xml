@@ -50,5 +50,5 @@
     City, Area, StreetDetail, BusinessLicense, BusinessScope, ShopImg, TeamImg, Remark, 
     Status, CreateTime, ProcessTime
   </sql>
-  
+   
 </mapper>

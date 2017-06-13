@@ -52,7 +52,7 @@
     where TempId = #{tempid,jdbcType=INTEGER} and Status!=3 order by  CartId desc 
   </select>
   
-  <!-- 获取我的作品列表（包括被邀约的作品） -->
+  <!-- 获取我的作品列表（包括被邀约的作品）排除活动的作品 -->
   <!--<select id="findMyProductList" resultMap="MyProductListVO" >
    SELECT a.*,b.InvitePhone,b.CreateTime as InviteTime,b.Status as InStatus  from p_myproducts a LEFT JOIN p_myproductsinvites b on a.CartId=b.CartId
    WHERE a.UserId=#{userId,jdbcType=BIGINT} 
@@ -62,9 +62,8 @@
   </select>-->
    <select id="findMyProductList" resultMap="MyProductListVO" >
    SELECT a.*,b.InvitePhone,case when (b.UserID=#{userId,jdbcType=BIGINT} or b.UserId is null) then a.CreateTime else b.CreateTime end as InviteTime,b.Status as InStatus  from p_myproducts a LEFT JOIN p_myproductsinvites b on a.CartId=b.CartId
-   WHERE a.UserId=#{userId,jdbcType=BIGINT} and a.Status!=3 and (a.IsTemp is null or a.IsTemp=0)
-   OR (b.InvitePhone=#{phone,jdbcType=VARCHAR} and (b.InviteType is null or b.InviteType=0) and b.Status!=2  and a.Status!=3)
-   OR (b.InviteUserId=#{userId,jdbcType=BIGINT} and b.InviteType=1 and b.Status=3  and a.Status!=3)
+   WHERE (a.UserId=#{userId,jdbcType=BIGINT} and a.Status!=3 and (a.TempId is null or a.TempId='' ))
+   OR ((b.InvitePhone=#{phone,jdbcType=VARCHAR} OR b.InviteUserId=#{userId,jdbcType=BIGINT}) and (a.TempId is null or a.TempId='') and b.Status!=2  and a.Status!=3)
    ORDER BY InviteTime DESC 
   </select>
   <select id="getMyProductVO" resultMap="MyProductListVO" ><!-- get 获取作品详情 -->

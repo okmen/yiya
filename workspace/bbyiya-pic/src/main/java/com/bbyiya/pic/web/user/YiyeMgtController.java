@@ -90,7 +90,6 @@ public class YiyeMgtController  extends SSOController {
 			if(cartid>0){
 				PMyproducts mycart= myProductMapper.selectByPrimaryKey(cartid);
 				if(mycart!=null){
-					
 					PMyproducttemp temp= tempMapper.selectByPrimaryKey(mycart.getTempid());
 					if(temp!=null){
 						result.setTemp(temp); 
@@ -160,11 +159,11 @@ public class YiyeMgtController  extends SSOController {
 					rq.setStatusreson("地址信息不能为空！");
 					return JsonUtil.objectToJsonStr(rq);
 				}
-				UUseraddress address=addressMapper.get_UUserAddressByKeyId(param.getAddressId());
-				if(address==null){
-					rq.setStatusreson("地址信息不存在！");
-					return JsonUtil.objectToJsonStr(rq);
-				}
+//				UUseraddress address=addressMapper.get_UUserAddressByKeyId(param.getAddressId());
+//				if(address==null){
+//					rq.setStatusreson("地址信息不存在！");
+//					return JsonUtil.objectToJsonStr(rq);
+//				}
 				PMyproducts myproducts= myProductMapper.selectByPrimaryKey(param.getCartId());
 				if(myproducts!=null&&myproducts.getIstemp()!=null&&myproducts.getTempid()!=null){
 					PMyproducttemp temp= tempMapper.selectByPrimaryKey(myproducts.getTempid());
@@ -173,6 +172,13 @@ public class YiyeMgtController  extends SSOController {
 							rq.setStatu(ReturnStatus.ParamError);
 							rq.setStatusreson("不好意思，活动已过期（或已失效）");
 							return JsonUtil.objectToJsonStr(rq);
+						}
+						if((temp.getNeedverifer()==null||temp.getNeedverifer().intValue()!=1)&& temp.getMaxapplycount()!=null&&temp.getMaxapplycount().intValue()>0){
+							if(temp.getApplycount()!=null&&temp.getApplycount().intValue()>=temp.getMaxapplycount().intValue()){
+								rq.setStatu(ReturnStatus.ParamError);
+								rq.setStatusreson("不好意思，活动太火爆了，参与的人数已经爆了！");  
+								return JsonUtil.objectToJsonStr(rq);
+							}
 						}
 						/*--------------------已经提交过申请---------------------------------------*/
 						PMyproducttempapply applyOld= tempApplyMapper.getMyProducttempApplyByUserId(temp.getTempid(), user.getUserId());
@@ -197,13 +203,13 @@ public class YiyeMgtController  extends SSOController {
 						PMyproducttempapply apply=new PMyproducttempapply();
 						apply.setTempid(myproducts.getTempid());
 						apply.setUserid(user.getUserId());
-						apply.setReceiver(address.getReciver()); 
-						apply.setMobilephone(address.getPhone());
-						apply.setProvince(address.getProvince());
-						apply.setCity(address.getCity());
-						apply.setStreet(address.getStreetdetail());
-						apply.setArea(address.getArea());
-						apply.setAdress(regionService.getProvinceName(address.getProvince())+regionService.getCityName(address.getCity())+regionService.getAresName(address.getArea())+address.getStreetdetail());
+//						apply.setReceiver(address.getReciver()); 
+//						apply.setMobilephone(address.getPhone());
+//						apply.setProvince(address.getProvince());
+//						apply.setCity(address.getCity());
+//						apply.setStreet(address.getStreetdetail());
+//						apply.setArea(address.getArea());
+//						apply.setAdress(regionService.getProvinceName(address.getProvince())+regionService.getCityName(address.getCity())+regionService.getAresName(address.getArea())+address.getStreetdetail());
 						if(param.getDateTime().getTime()>(new Date()).getTime()){
 							apply.setIsdue(1);
 						}
@@ -266,6 +272,136 @@ public class YiyeMgtController  extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	/**
+	 * M11-01 用户提交申请
+	 * M11-02 异业合作-接受邀请（无需申请）
+	 * @param commentJson
+	 * @return
+	 * @throws Exception
+	 */
+//	@ResponseBody
+//	@RequestMapping(value = "/applyOrAcceptNew")
+//	public String accessNew(String commentJson) throws Exception {
+//		ReturnModel rq = new ReturnModel();
+//		rq.setStatu(ReturnStatus.ParamError);
+//		LoginSuccessResult user = super.getLoginUser();
+//		if (user != null) {
+//			YiyeSubmitParam param = getParam_YiyeSubmitParam(commentJson);
+//			if (param != null) {
+//				if(param.getCartId()<=0){
+//					rq.setStatusreson("作品信息为空！");
+//					return JsonUtil.objectToJsonStr(rq);
+//				}
+//				if(ObjectUtil.isEmpty(param.getDateTime())){
+//					rq.setStatusreson("宝宝生日/预产期不能为空！");
+//					return JsonUtil.objectToJsonStr(rq);
+//				}
+//				if(param.getAddressId()<=0){
+//					rq.setStatusreson("地址信息不能为空！");
+//					return JsonUtil.objectToJsonStr(rq);
+//				}
+//				PMyproducts myproducts= myProductMapper.selectByPrimaryKey(param.getCartId());
+//				if(myproducts!=null&&myproducts.getIstemp()!=null&&myproducts.getTempid()!=null){
+//					PMyproducttemp temp= tempMapper.selectByPrimaryKey(myproducts.getTempid());
+//					if(temp!=null){
+//						if(temp.getStatus()!=null&&temp.getStatus().intValue()!=Integer.parseInt(MyProductTempStatusEnum.enable.toString())){
+//							rq.setStatu(ReturnStatus.ParamError);
+//							rq.setStatusreson("不好意思，活动已过期（或已失效）");
+//							return JsonUtil.objectToJsonStr(rq);
+//						}
+//						if((temp.getNeedverifer()==null||temp.getNeedverifer().intValue()!=1)&& temp.getMaxapplycount()!=null&&temp.getMaxapplycount().intValue()>0){
+//							if(temp.getApplycount()!=null&&temp.getApplycount().intValue()>=temp.getMaxapplycount().intValue()){
+//								rq.setStatu(ReturnStatus.ParamError);
+//								rq.setStatusreson("不好意思，活动太火爆了，参与的人数已经爆了！");  
+//								return JsonUtil.objectToJsonStr(rq);
+//							}
+//						}
+//						/*--------------------已经提交过申请---------------------------------------*/
+//						PMyproducttempapply applyOld= tempApplyMapper.getMyProducttempApplyByUserId(temp.getTempid(), user.getUserId());
+//						if(applyOld!=null){
+//							if(applyOld.getStatus()!=null&&applyOld.getStatus().intValue()==Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString())){
+//								List<MyProductListVo>list= myproductDao.getMyProductByTempId(temp.getTempid(), user.getUserId());
+//								if(list!=null&&list.size()>0){
+//									Map<String, Object> map = new HashMap<String, Object>();
+//									map.put("tempId", myproducts.getTempid());
+//									map.put("mycartid", list.get(0).getCartid());
+//									rq.setBasemodle(map);
+//									rq.setStatu(ReturnStatus.Success);
+//									return JsonUtil.objectToJsonStr(rq);
+//								} 
+//							}
+//							rq.setStatu(ReturnStatus.ParamError);
+//							rq.setStatusreson("您已提交过申请！");
+//							return JsonUtil.objectToJsonStr(rq);
+//						}/*-----------------------------------------------------------------------*/
+//						
+//						//提交申请
+//						PMyproducttempapply apply=new PMyproducttempapply();
+//						apply.setTempid(myproducts.getTempid());
+//						apply.setUserid(user.getUserId());
+//						if(param.getDateTime().getTime()>(new Date()).getTime()){
+//							apply.setIsdue(1);
+//						}
+//						apply.setBirthday(param.getDateTime());
+//						apply.setCreatetime(new Date());
+//						apply.setCompanyuserid(param.getSubUserId());
+//						apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.apply.toString()));
+//						
+//						//异业模板 申请人数+1
+//						temp.setApplycount(temp.getApplycount()==null?1:temp.getApplycount()+1);
+//						tempMapper.updateByPrimaryKeySelective(temp); 
+//						
+//	
+//						boolean isNeedVer=false;
+//						if(temp.getNeedverifer()!=null&&temp.getNeedverifer().intValue()>0){
+//							//需要审核
+//							isNeedVer=true;
+//						}
+//						
+//						if(!isNeedVer){// 不需要审核 调取 新增作品、客户信息
+//							
+//							//验证是否是免费领取的用户
+//							ResultMsg rMsg=verUser(temp.getTempid().intValue(),user);
+//							if(rMsg.getStatus()!=1){
+//								rq.setStatu(ReturnStatus.ParamError);
+//								rq.setStatusreson(rMsg.getMsg());
+//								return JsonUtil.objectToJsonStr(rq); 
+//							}
+//							
+//							rq=ibs_tempService.doAcceptOrAutoTempApplyOpt(apply);
+//							if(rq.getStatu().equals(ReturnStatus.Success)){
+//								apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString()));
+//							}
+//						}
+//						
+//						if(param.getSubUserId()>0){
+//							PMyproducttempusers tempUser= tempUsrMapper.selectByUserIdAndTempId(param.getSubUserId(), temp.getTempid());
+//							if(tempUser!=null){
+//								tempUser.setApplycount(tempUser.getApplycount()==null?1:tempUser.getApplycount()+1);
+//								tempUsrMapper.updateByPrimaryKeySelective(tempUser); 
+//							}
+//						}
+//					
+//						//插入申请提交信息
+//						tempApplyMapper.insert(apply);
+//						
+//						rq.setStatu(ReturnStatus.Success);
+//						rq.setStatusreson("提交申请成功！");
+//					}
+//				}else {
+//					rq.setStatusreson("此活动已失效！");
+//					return JsonUtil.objectToJsonStr(rq); 
+//				}
+//			} else {
+//				rq.setStatusreson("参数不全");
+//			}
+//		} else {
+//			rq.setStatu(ReturnStatus.LoginError);
+//			rq.setStatusreson("登录过期");
+//		}
+//		return JsonUtil.objectToJsonStr(rq);
+//	}
 	
 	/**
 	 * 验证作品是否是 特殊活动作品（流量住免单作品）

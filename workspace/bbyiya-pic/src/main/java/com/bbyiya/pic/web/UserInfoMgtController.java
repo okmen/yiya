@@ -162,6 +162,38 @@ public class UserInfoMgtController extends SSOController {
 	}
 	
 	/**
+	 * 绑定手机
+	 * @param vcode
+	 * @param phone
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/bindMobilephone")
+	public String bindMobilephone(String vcode ,String phone) throws Exception {
+		LoginSuccessResult user = super.getLoginUser();
+		ReturnModel rq = new ReturnModel();
+		if (user != null) {
+			rq=loginService.bindMobilephone(user.getUserId(), phone, vcode);
+			if(rq.getStatu().equals(ReturnStatus.Success)){
+				String ticket= super.getTicket();
+				if(ObjectUtil.isEmpty(ticket)){
+					ticket=CookieUtils.getCookie_web(request);
+				}
+				if(!ObjectUtil.isEmpty(ticket)){
+					 RedisUtil.setObject(ticket, rq.getBasemodle(), 86400); 
+					 rq.setStatusreson("设置成功！");
+					 return JsonUtil.objectToJsonStr(rq); 
+				}
+			}
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
 	 * 新增宝宝信息
 	 * @param childInfoJson
 	 * @return

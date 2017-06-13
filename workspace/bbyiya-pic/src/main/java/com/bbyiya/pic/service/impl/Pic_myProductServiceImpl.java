@@ -6,23 +6,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.common.enums.MsgStatusEnums;
 import com.bbyiya.common.enums.SendMsgEnums;
 import com.bbyiya.common.vo.ResultMsg;
 import com.bbyiya.dao.PMyproductchildinfoMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
+import com.bbyiya.dao.PMyproductextMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproductsinvitesMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
 import com.bbyiya.dao.PScenesMapper;
 import com.bbyiya.dao.UAgentcustomersMapper;
-import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.CustomerSourceTypeEnum;
@@ -31,29 +32,27 @@ import com.bbyiya.enums.pic.InviteStatus;
 import com.bbyiya.enums.pic.InviteType;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
 import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
-import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.enums.user.UserStatusEnum;
 import com.bbyiya.model.PMyproductchildinfo;
 import com.bbyiya.model.PMyproductdetails;
+import com.bbyiya.model.PMyproductext;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproductsinvites;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.model.UAgentcustomers;
-import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.dao.IMyProductsDao;
 import com.bbyiya.pic.service.IPic_myProductService;
+import com.bbyiya.pic.service.ibs.IIbs_MyProductTempService;
 import com.bbyiya.pic.vo.product.MyProductListVo;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.SendSMSByMobile;
-import com.bbyiya.utils.encrypt.MD5Encrypt;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.product.MyProductResultVo;
-import com.bbyiya.vo.user.LoginSuccessResult;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 @Service("pic_myProductService")
@@ -85,7 +84,8 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 	private UUsersMapper usersMapper;
 	@Autowired
 	private PMyproducttempapplyMapper tempApplyMapper;
-
+	@Autowired
+	private PMyproductextMapper myproductextMapper;
 	/**
 	 * 协同编辑 邀请 
 	 */
@@ -533,6 +533,13 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 		return rq;
 	}
 	
+	@Resource(name = "ibs_MyProductTempService")
+	private IIbs_MyProductTempService tempServiceImpl;
+	
+	/**
+	 * 完成活动
+	 * 
+	 */
 	public ReturnModel processInvite(Long cartId,Long userId, int status) {
 		ReturnModel rq = new ReturnModel();
 		PMyproducts myproducts= myproductsMapper.selectByPrimaryKey(cartId);
@@ -545,7 +552,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 			if(pp.getInviteuserid()!=null&&pp.getInviteuserid().longValue()==userId){//接受、拒绝邀请
 				pp.setStatus(status);
 				inviteMapper.updateByPrimaryKeySelective(pp);
-			}else if (pp.getUserid()!=null&&pp.getUserid().longValue()==userId) {//作品拥有者调去
+			}else if (pp.getUserid()!=null&&pp.getUserid().longValue()==userId) {//作品拥有者调取
 				pp.setStatus(status);
 				inviteMapper.updateByPrimaryKeySelective(pp);
 			}else if(pp.getInviteuserid()==null){//手机号要求（接受拒绝邀请）
@@ -563,9 +570,37 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				apply=tempApplyMapper.getMyProducttempApplyByUserId(myproducts.getTempid(), userId);
 			}
 			if(apply!=null&&apply.getStatus()!=null&&apply.getStatus().intValue()!=Integer.parseInt(MyProducttempApplyStatusEnum.pass.toString())
-					&&apply.getStatus().intValue()!=Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString())){
-				apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString())); 
-				tempApplyMapper.updateByPrimaryKeySelective(apply);
+					&&apply.getStatus().intValue()!=Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString())
+					&&apply.getStatus().intValue()!=Integer.parseInt(MyProducttempApplyStatusEnum.fails.toString())) {
+				//完成活动要求 设置
+				PMyproducttemp temp=tempMapper.selectByPrimaryKey(apply.getTempid());
+				if(temp!=null){
+					//是否达到积攒要求
+					boolean ishaveComplete=false;
+					//达到积攒要求
+					if(temp.getBlesscount()!=null&&temp.getBlesscount().intValue()>0){
+						PMyproductext exp=myproductextMapper.selectByPrimaryKey(cartId);
+						if(exp.getCommentscount()!=null&&exp.getCommentscount().intValue()>=temp.getBlesscount().intValue()){
+							ishaveComplete=true;
+						}
+					}else {//不需要积攒
+						ishaveComplete=true;
+					}
+					if(ishaveComplete){
+						apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString())); 
+						tempApplyMapper.updateByPrimaryKeySelective(apply);
+						//活动完成人数
+						int compeleteCount=temp.getCompletecount()==null?0:temp.getCompletecount();
+						temp.setCompletecount(compeleteCount+1);
+						tempMapper.updateByPrimaryKeySelective(temp);
+						if(temp.getMaxcompletecount()!=null&&temp.getMaxcompletecount().intValue()>0){
+							if(temp.getCompletecount().intValue()>=temp.getMaxcompletecount().intValue()){
+								//活动结束 TODO
+								tempServiceImpl.editMyProductTempStatus(3, temp.getTempid());
+							}
+						}
+					}
+				}
 			}
 		}
 		rq.setStatu(ReturnStatus.Success);

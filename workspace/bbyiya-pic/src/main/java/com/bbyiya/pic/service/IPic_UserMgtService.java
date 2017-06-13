@@ -20,4 +20,12 @@ public interface IPic_UserMgtService {
 	 * @return
 	 */
 	ReturnModel setPwd(Long userId,String pwd,String phone,String vcode);
+	/**
+	 * °ó¶¨ÊÖ»ú
+	 * @param userId
+	 * @param phone
+	 * @param vcode
+	 * @return
+	 */
+	ReturnModel bindMobilephone(Long userId,String phone,String vcode);
 }

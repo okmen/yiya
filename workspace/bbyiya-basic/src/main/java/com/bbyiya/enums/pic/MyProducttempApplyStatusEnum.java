@@ -25,7 +25,11 @@ public enum MyProducttempApplyStatusEnum {
     /**
      * 下单审核通过
      */
-    pass(5);
+    pass(5),
+    /**
+     * 因活动结束而导致活动失败
+     */
+    fails(6);
     
     private final int Type;
 

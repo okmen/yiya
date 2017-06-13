@@ -1,6 +1,7 @@
 package com.bbyiya.pic.service.ibs;
 
 import com.bbyiya.model.PMyproducttempapply;
+import com.bbyiya.pic.vo.product.MyProductTempAddParam;
 import com.bbyiya.vo.ReturnModel;
 
 public interface IIbs_MyProductTempService {
@@ -11,7 +12,7 @@ public interface IIbs_MyProductTempService {
 	 * @param remark
 	 * @return
 	 */
-	ReturnModel addMyProductTemp(Long userid, String title, String remark,Long productid,int needVerifer,String discription,String codeurl,String codesm);
+	ReturnModel addMyProductTemp(Long userid,MyProductTempAddParam param);
 	/**
 	 * 启用或禁用模板
 	 * @param type
@@ -48,8 +49,7 @@ public interface IIbs_MyProductTempService {
 	 * @param tempid
 	 * @return
 	 */
-	ReturnModel editMyProductTemp(String title, String remark,
-			Integer tempid,int needVerifer,String discription);
+	ReturnModel editMyProductTemp(MyProductTempAddParam param);
 	/**
 	 * 获取影楼模板待审核用户列表
 	 * @param index
@@ -119,6 +119,25 @@ public interface IIbs_MyProductTempService {
 	 */
 	ReturnModel setUserTempVerfiyPermission(Long userId, Integer tempid,
 			Integer status);
+	/**
+	 * 设置活动最大报名人数
+	 * @param userId
+	 * @param tempid
+	 * @param maxApplyCount
+	 * @return
+	 */
+	ReturnModel setTempMaxApplyCount(Long userId, Integer tempid,
+			Integer maxApplyCount);
+	/**
+	 * 设置活动完成目标
+	 * @param userId
+	 * @param tempid
+	 * @param blessCount
+	 * @param maxCompleteCount
+	 * @return
+	 */
+	ReturnModel setTempCompletecondition(Long userId, Integer tempid,
+			Integer blessCount, Integer maxCompleteCount);
 
 	
 }

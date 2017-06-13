@@ -5,6 +5,8 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
+import net.sf.json.JSONObject;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +16,8 @@ import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.pic.service.ibs.IIbs_MyProductTempService;
+import com.bbyiya.pic.vo.order.SearchOrderParam;
+import com.bbyiya.pic.vo.product.MyProductTempAddParam;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.JsonUtil;
@@ -44,41 +48,52 @@ public class MyProductTempController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/addMyProductTemp")
-	public String addMyProductTemp(String title,String remark,String productid,String needverifer,String discription,String codeurl,String codesm) throws Exception {
+	public String addMyProductTemp(String myproductTempJson) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			if(ObjectUtil.isEmpty(title)){
-				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("模板名称不能为空!");
+			MyProductTempAddParam param = (MyProductTempAddParam)JsonUtil.jsonStrToObject(myproductTempJson,MyProductTempAddParam.class);			
+			if (param == null) {
+				rq.setStatu(ReturnStatus.ParamError_1);
+				rq.setStatusreson("参数不全");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			if(ObjectUtil.isEmpty(productid)){
+			if(ObjectUtil.isEmpty(param.getTitle())){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("活动名称不能为空!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			if(ObjectUtil.isEmpty(param.getProductid())){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("产品ID不能为空!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			if(!ObjectUtil.isEmpty(title)&&!ObjectUtil.validSqlStr(title)){
+			if(ObjectUtil.isEmpty(param.getStyleId())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("模板名称存在危险字符!");
+				rq.setStatusreson("活动奖品不能为空!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			if(ObjectUtil.parseInt(needverifer)==1&&ObjectUtil.isEmpty(discription)){
+			if(!ObjectUtil.isEmpty(param.getTitle())&&!ObjectUtil.validSqlStr(param.getTitle())){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("活动名称存在危险字符!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			if(param.getNeedverifer()==1&&ObjectUtil.isEmpty(param.getDiscription())){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("活动需知不能为空!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			if(!ObjectUtil.isEmpty(discription)&&!ObjectUtil.validSqlStr(discription)){
+			if(!ObjectUtil.isEmpty(param.getDiscription())&&!ObjectUtil.validSqlStr(param.getDiscription())){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("活动需知存在危险字符!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			if(!ObjectUtil.isEmpty(codesm)&&!ObjectUtil.validSqlStr(codesm)){
+			if(!ObjectUtil.isEmpty(param.getCodesm())&&!ObjectUtil.validSqlStr(param.getCodesm())){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("二维码文字说明在危险字符!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			rq=producttempService.addMyProductTemp(user.getUserId(), title, remark,ObjectUtil.parseLong(productid),ObjectUtil.parseInt(needverifer),discription,codeurl,codesm );
+			rq=producttempService.addMyProductTemp(user.getUserId(), param);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
@@ -129,32 +144,49 @@ public class MyProductTempController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/editMyProductTemp")
-	public String editMyProductTemp(String title,String remark,Integer tempid,String needverifer,String discription) throws Exception {
+	public String editMyProductTemp(String myproductTempJson) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			if(ObjectUtil.isEmpty(title)){
-				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("模板名称不能为空!");
+			MyProductTempAddParam param = (MyProductTempAddParam)JsonUtil.jsonStrToObject(myproductTempJson,MyProductTempAddParam.class);			
+			if (param == null) {
+				rq.setStatu(ReturnStatus.ParamError_1);
+				rq.setStatusreson("参数不全");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			if(ObjectUtil.parseInt(needverifer)==1&&ObjectUtil.isEmpty(discription)){
+			if(ObjectUtil.isEmpty(param.getTempid())){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("活动ID不能为空!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			if(ObjectUtil.isEmpty(param.getTitle())){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("活动名称不能为空!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			
+			if(!ObjectUtil.isEmpty(param.getTitle())&&!ObjectUtil.validSqlStr(param.getTitle())){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("活动名称存在危险字符!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			if(param.getNeedverifer()==1&&ObjectUtil.isEmpty(param.getDiscription())){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("活动需知不能为空!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			if(!ObjectUtil.isEmpty(title)&&!ObjectUtil.validSqlStr(title)){
-				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("模板名称存在危险字符!");
-				return JsonUtil.objectToJsonStr(rq);
-			}
-			if(!ObjectUtil.isEmpty(discription)&&!ObjectUtil.validSqlStr(discription)){
+			if(!ObjectUtil.isEmpty(param.getDiscription())&&!ObjectUtil.validSqlStr(param.getDiscription())){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("活动需知存在危险字符!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
+			if(!ObjectUtil.isEmpty(param.getCodesm())&&!ObjectUtil.validSqlStr(param.getCodesm())){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("二维码文字说明在危险字符!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
 			
-			rq=producttempService.editMyProductTemp(title, remark, tempid,ObjectUtil.parseInt(needverifer),discription);
+			rq=producttempService.editMyProductTemp(param);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
@@ -164,7 +196,7 @@ public class MyProductTempController extends SSOController {
 	}
 	/**
 	 * 启用或禁用模板
-	 * @param type
+	 * @param type 1:启用   0禁用  3 结束活动  
 	 * @param tempId
 	 * @return
 	 * @throws Exception
@@ -356,7 +388,7 @@ public class MyProductTempController extends SSOController {
 	
 	
 	/**
-	 * 审核板申请用户的作品不通过
+	 * 审核模板申请用户的作品不通过
 	 * @param tempApplyId
 	 * @return
 	 * @throws Exception
@@ -382,6 +414,58 @@ public class MyProductTempController extends SSOController {
 	}
 	
 	/**
+	 * 设置活动报名人数限制
+	 * @param tempid
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/setTempMaxApplyCount")
+	public String setTempMaxApplyCount(Integer tempid,Integer maxApplyCount) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(tempid==null){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("tempid参数不能为空！");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			rq=producttempService.setTempMaxApplyCount(user.getUserId(),tempid,maxApplyCount);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 设置活动完成条件
+	 * @param tempid
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/setTempCompletecondition")
+	public String setTempCompletecondition(Integer tempid,Integer blessCount,Integer maxCompleteCount) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(tempid==null){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("tempid参数不能为空！");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			rq=producttempService.setTempCompletecondition(user.getUserId(),tempid,blessCount,maxCompleteCount);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
 	 * 保存模板的二维码图片
 	 * @param cartId
 	 * @param companyUserid 员工ID
@@ -390,11 +474,11 @@ public class MyProductTempController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/downProductTempRQcode")
-	public String downProductTempRQcode(String cartId,String companyUserid) throws Exception {
+	public String downProductTempRQcode(String cartId,String companyUserid,String type) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			String redirct_url="apply/form?workId="+URLEncoder.encode(cartId,"utf-8");
+			String redirct_url="apply/form?workId="+URLEncoder.encode(cartId,"utf-8")+"&type="+URLEncoder.encode(type,"utf-8");
 			if(ObjectUtil.parseLong(companyUserid)>0){
 				redirct_url=redirct_url+"&sid="+URLEncoder.encode(companyUserid.toString(),"utf-8");
 			}
@@ -416,11 +500,11 @@ public class MyProductTempController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getProductTempRQcode")
-	public String getProductTempRQcode(String cartId) throws Exception {
+	public String getProductTempRQcode(String cartId,String type) throws Exception {
 		ReturnModel rq=new ReturnModel();		
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			String redirct_url="apply/form?workId="+cartId;	
+			String redirct_url="apply/form?workId="+cartId+"&type="+type;	
 			String urlstr= ConfigUtil.getSingleValue("shareulr-base")+"uid="+URLEncoder.encode(user.getUserId().toString(),"utf-8")+"&redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
 			String url="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+URLEncoder.encode(urlstr,"utf-8");
 			
@@ -434,5 +518,7 @@ public class MyProductTempController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	
 		
 }

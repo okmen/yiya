@@ -155,10 +155,10 @@ public class YiyeMgtController  extends SSOController {
 					rq.setStatusreson("宝宝生日/预产期不能为空！");
 					return JsonUtil.objectToJsonStr(rq);
 				}
-				if(param.getAddressId()<=0){
-					rq.setStatusreson("地址信息不能为空！");
-					return JsonUtil.objectToJsonStr(rq);
-				}
+//				if(param.getAddressId()<=0){
+//					rq.setStatusreson("地址信息不能为空！");
+//					return JsonUtil.objectToJsonStr(rq);
+//				}
 //				UUseraddress address=addressMapper.get_UUserAddressByKeyId(param.getAddressId());
 //				if(address==null){
 //					rq.setStatusreson("地址信息不存在！");
@@ -179,6 +179,12 @@ public class YiyeMgtController  extends SSOController {
 								rq.setStatusreson("不好意思，活动太火爆了，参与的人数已经爆了！");  
 								return JsonUtil.objectToJsonStr(rq);
 							}
+						}
+						//报名人数不能超过最大最报名人数
+						if(temp.getApplycount().intValue()>=temp.getMaxapplycount().intValue()){
+							rq.setStatu(ReturnStatus.ParamError);
+							rq.setStatusreson("不好意思，活动报名人数已满！");
+							return JsonUtil.objectToJsonStr(rq);
 						}
 						/*--------------------已经提交过申请---------------------------------------*/
 						PMyproducttempapply applyOld= tempApplyMapper.getMyProducttempApplyByUserId(temp.getTempid(), user.getUserId());

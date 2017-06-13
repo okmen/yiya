@@ -41,4 +41,11 @@ public interface PMyproducttempMapper {
      * @return
      */
     List<PMyproducttemp> findBranchUserMyProductTempNeedVerList(@Param("userid") Long branchuserid);
+    
+    /**
+     * 根据状态获取所有活动列表
+     * @param branchuserid
+     * @return
+     */
+    List<PMyproducttemp> findAllTempByStatus(@Param("status") Integer status);
 }

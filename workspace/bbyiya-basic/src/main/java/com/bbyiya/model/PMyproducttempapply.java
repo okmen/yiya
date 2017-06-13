@@ -30,6 +30,8 @@ public class PMyproducttempapply {
 	private Date createtime;
 
 	private Date verfiytime;
+	
+	private Date completetime;
 
 	private Date birthday;
 	private Integer isread;
@@ -189,7 +191,15 @@ public class PMyproducttempapply {
 	public void setVerfiytimestr(String verfiytimestr) {
 		this.verfiytimestr = verfiytimestr;
 	}
+	
+    public Date getCompletetime() {
+        return completetime;
+    }
 
+    public void setCompletetime(Date completetime) {
+        this.completetime = completetime;
+    }
+    
 	public Date getBirthday() {
 		return birthday;
 	}

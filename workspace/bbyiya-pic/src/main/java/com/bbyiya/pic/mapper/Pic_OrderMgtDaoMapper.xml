@@ -106,9 +106,9 @@
     select 
     a.OrderProductId, a.UserOrderId, a.ProductId, a.StyleId, a.BuyerUserId, a.ProductTitle, a.Price, 
     a.BranchUserId, a.SalesUserId, a.PropertyStr, a.Count,a.ProductImg,a.CartId
-    from o_orderproducts a inner join o_userorders b on a.UserOrderId=b.UserOrderId where 1=1 
+    from o_orderproducts a inner join o_userorders b on a.UserOrderId=b.UserOrderId  inner join o_orderaddress c on b.OrderAddressId=c.OrderAddressId where 1=1 
     <if test="orderNo != null" >
-        AND b.UserOrderId LIKE  CONCAT('%', #{orderNo,jdbcType=VARCHAR},'%' )  
+        AND (b.UserOrderId LIKE  CONCAT('%', #{orderNo,jdbcType=VARCHAR},'%' ) OR c.Phone LIKE  CONCAT('%', #{orderNo,jdbcType=VARCHAR},'%' ) ) 
     </if>
     <if test="startTimeStr != null  and startTimeStr !='' " ><!--  #{startTime,jdbcType=TIMESTAMP}  -->
         AND b.PayTime &gt;= #{startTimeStr,jdbcType=VARCHAR}

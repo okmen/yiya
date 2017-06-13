@@ -189,6 +189,36 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 		return rq;
 	}
 	
+	public ReturnModel bindMobilephone(Long userId,String phone,String vcode){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.ParamError);
+		ResultMsg msgResult= SendSMSByMobile.validateCode(phone, vcode, SendMsgEnums.register);
+		if(msgResult.getStatus()==1) {
+			UUsers userPhone=userDao.getUUsersByPhone(phone);
+			if(userPhone!=null&&userPhone.getUserid().longValue()!=userId){
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson("该手机号已经绑定其他用户！");
+				return rq;
+			}
+			UUsers user= userDao.getUUsersByUserID(userId);
+			if(user!=null){
+				user.setMobilephone(phone);
+				user.setStatus(Integer.parseInt(UserStatusEnum.noPwd.toString())); 
+				userDao.updateByPrimaryKey(user);
+				LoginSuccessResult result = baseLoginService.getLoginSuccessResult_Common(user);
+				rq.setStatu(ReturnStatus.Success); 
+				rq.setBasemodle(result); 
+			}else {
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson("系统错误");
+			}
+		}else {
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson(msgResult.getMsg()); 
+		}
+		return rq;
+		
+	}
 	
 	public ReturnModel setPwd(Long userId,String pwd,String phone,String vcode){
 		ReturnModel rq=new ReturnModel();

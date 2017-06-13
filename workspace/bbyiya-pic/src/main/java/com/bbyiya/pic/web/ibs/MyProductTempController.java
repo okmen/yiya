@@ -182,7 +182,7 @@ public class MyProductTempController extends SSOController {
 			}
 			if(!ObjectUtil.isEmpty(param.getCodesm())&&!ObjectUtil.validSqlStr(param.getCodesm())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("二维码文字说明在危险字符!");
+				rq.setStatusreson("二维码文字说明存在危险字符!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			

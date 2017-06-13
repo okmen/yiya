@@ -24,7 +24,7 @@ public class CtsMusicServiceImpl implements ICtsMusicService{
 			if(model.getMusicid()!=null&&model.getMusicid()>0){
 				musicsMapper.updateByPrimaryKeySelective(model);
 				rqModel.setStatu(ReturnStatus.Success);
-				rqModel.setStatusreson("修改成功"); 
+				rqModel.setStatusreson("修改成功");  
 			}else {
 				musicsMapper.insert(model);
 				rqModel.setStatu(ReturnStatus.Success);

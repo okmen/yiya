@@ -2,15 +2,23 @@ package com.bbyiya.pic.web.version_one;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bbyiya.dao.PMyproductsMapper;
+import com.bbyiya.dao.PMyproducttempapplyMapper;
+import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.InviteStatus;
 import com.bbyiya.model.PMyproducts;
+import com.bbyiya.model.PMyproducttempapply;
+import com.bbyiya.model.UUseraddress;
 import com.bbyiya.pic.service.IPic_myProductService;
+import com.bbyiya.service.IRegionService;
 import com.bbyiya.utils.JsonUtil;
+import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
@@ -21,6 +29,15 @@ public class InviteMgtController  extends SSOController {
 	@Resource(name = "pic_myProductService")
 	private IPic_myProductService myProductService;
 	
+	@Autowired
+	private UUseraddressMapper addressMapper;
+	@Autowired
+	private PMyproducttempapplyMapper tempApplyMapper;
+	@Autowired
+	private PMyproductsMapper myproductsMapper;
+	
+	@Resource(name = "regionServiceImpl")
+	private IRegionService regionService;
 	/**
 	 * 发送 协同编辑 邀请
 	 * @param province
@@ -47,9 +64,10 @@ public class InviteMgtController  extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+
 	
 	/**
-	 * 处理我的邀请
+	 * 处理我的邀请(已完成活动)
 	 * @param phone
 	 * @param cartId
 	 * @return
@@ -57,13 +75,42 @@ public class InviteMgtController  extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/processInvite")
-	public String processInvite(Long cartId,Integer status) throws Exception {
+	public String processInvite(Long cartId,Integer status,String addressId) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
+			
 			if(status!=null&&status==Integer.parseInt(InviteStatus.ok.toString())){
+				//更新用户活动收获地址信息
+				long userAddressId=ObjectUtil.parseLong(addressId);
+				if(userAddressId>0){
+					UUseraddress address=addressMapper.get_UUserAddressByKeyId(userAddressId);
+					if(address==null){
+						rq.setStatusreson("地址信息不存在！");
+						return JsonUtil.objectToJsonStr(rq);
+					}
+					PMyproducttempapply apply= tempApplyMapper.getMyProducttempApplyByCartId(cartId);
+					if(apply==null){
+						PMyproducts myproducts= myproductsMapper.selectByPrimaryKey(cartId);
+						if(myproducts!=null&&myproducts.getTempid()!=null){
+							apply=tempApplyMapper.getMyProducttempApplyByUserId(myproducts.getTempid(), user.getUserId());
+						}
+					}
+					if(apply!=null){
+						apply.setReceiver(address.getReciver()); 
+						apply.setMobilephone(address.getPhone());
+						apply.setProvince(address.getProvince());
+						apply.setCity(address.getCity());
+						apply.setStreet(address.getStreetdetail());
+						apply.setArea(address.getArea());
+						apply.setAdress(regionService.getProvinceName(address.getProvince())+regionService.getCityName(address.getCity())+regionService.getAresName(address.getArea())+address.getStreetdetail());
+						tempApplyMapper.updateByPrimaryKeySelective(apply);
+					}
+				}//收获地址信息（完）------------------
+				
 				rq=myProductService.processInvite(cartId,user.getUserId(), status);
 			}else {
+				//旧版的状态更新
 				rq=myProductService.processInvite(user.getMobilePhone(),cartId, status);
 			}
 		}else {

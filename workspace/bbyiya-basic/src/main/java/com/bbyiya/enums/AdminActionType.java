@@ -8,7 +8,13 @@ public enum AdminActionType {
 	/**
 	 * 给供应商充值
 	 */
-	chongzhi(2);
+	chongzhi(2),
+	
+	/**
+	 * 活动作品自动下单
+	 */
+	autoTempOrder(3);
+
 
     private final int Type;
 

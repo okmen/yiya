@@ -12,6 +12,7 @@ import com.bbyiya.cts.service.ITempAutoOrderSumbitService;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
+import com.bbyiya.dao.UAdminactionlogsMapper;
 import com.bbyiya.enums.MyProductTempStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.OOrderproducts;
@@ -36,6 +37,7 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 	
 	@Autowired
 	private PMyproducttempapplyMapper applyMapper;
+	
 	
 	@Resource(name = "baseOrderMgtServiceImpl")
 	private IBaseOrderMgtService orderMgtService;

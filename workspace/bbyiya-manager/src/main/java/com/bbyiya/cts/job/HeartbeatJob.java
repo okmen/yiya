@@ -5,16 +5,20 @@ package com.bbyiya.cts.job;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
+import org.apache.log4j.Logger;
 import javax.annotation.Resource;
 
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import com.bbyiya.cts.service.ITempAutoOrderSumbitService;
 import com.bbyiya.cts.vo.job.JobTime;
+import com.bbyiya.dao.UAdminactionlogsMapper;
+import com.bbyiya.enums.AdminActionType;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.model.UAdminactionlogs;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.HttpRequestHelper;
 import com.bbyiya.utils.ObjectUtil;
@@ -22,6 +26,9 @@ import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.ReturnModel;
 
 public class HeartbeatJob extends QuartzJobBean {
+	
+	private Logger Log = Logger.getLogger(HeartbeatJob.class);
+	
 	@Override
 	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
 		this.JobRun();
@@ -68,7 +75,8 @@ public class HeartbeatJob extends QuartzJobBean {
 
 	@Resource(name = "tempAutoOrderSumbitService")
 	private ITempAutoOrderSumbitService autoOrderService;
-	
+	@Autowired
+	private UAdminactionlogsMapper adminMapper;
 	public void doLocalServiceMothod(String serviceId){
 		
 		try {
@@ -76,20 +84,32 @@ public class HeartbeatJob extends QuartzJobBean {
 				ReturnModel rq=autoOrderService.dotempAutoOrderSumbit();
 				if(!rq.getStatu().equals(ReturnStatus.Success))//未通过参数验证
 				{
-					System.out.println("自动下单失败！"+rq.getStatusreson());
+					//addActionLog(0L,"自动下单失败！"+rq.getStatusreson(),Integer.parseInt(AdminActionType.autoTempOrder.toString()));
+					Log.error("自动下单失败！"+rq.getStatusreson());
 				}else{
-					System.out.println("自动下单成功执行！");
+					//System.out.println("自动下单成功执行！");
+					//addActionLog(0L,"自动下单成功执行！",Integer.parseInt(AdminActionType.autoTempOrder.toString()));
+					Log.info("自动下单成功执行！");
 				}
 			}else{
-				System.out.println("无方法执行！");
+				//System.out.println("无方法执行！");
 			}
 		} catch (Exception e) {
-			System.out.println(serviceId+"方法执行出错！");
-			// TODO: handle exception
+			Log.error(serviceId+"方法执行出错！");
+			//addActionLog(0L,serviceId+"方法执行出错！",Integer.parseInt(AdminActionType.autoTempOrder.toString()));
 		}
 		
 		
 	}
 	
+	public void addActionLog(Long userId,String msg,int type){
+		UAdminactionlogs log=new UAdminactionlogs();
+		log.setUserid(userId);
+		log.setContent(msg);
+		log.setUsername("平台管理人员");
+		log.setType(type);
+		log.setCreatetime(new Date());
+		adminMapper.insert(log);
+	}
 	
 }

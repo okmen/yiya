@@ -12,12 +12,12 @@ import com.bbyiya.dao.PMyproductsinvitesMapper;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproductsinvites;
-import com.bbyiya.pic.vo.order.SubmitOrderProductParam;
 import com.bbyiya.pic.vo.product.MyProductParam;
 import com.bbyiya.utils.HttpRequestHelper;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.upload.FileUploadUtils_qiniu;
+import com.bbyiya.vo.order.SubmitOrderProductParam;
 import com.bbyiya.web.base.SSOController;
 import com.sdicons.json.mapper.MapperException;
 

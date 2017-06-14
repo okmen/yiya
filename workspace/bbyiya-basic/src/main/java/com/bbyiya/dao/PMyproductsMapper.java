@@ -89,5 +89,5 @@ public interface PMyproductsMapper {
 	List<MyProductResultVo> findMyInviteProductslist(@Param("inviteUserId")Long inviteUserId,@Param("phone")String phone,@Param("branchUserId")Long branchUserId);
 	
 	
-	List<MyProductResultVo> findCanOrderMyProducts(@Param("tempid") Integer tempid,@Param("ordertme") Integer ordertme);
+	List<PMyproducts> findCanOrderMyProducts(@Param("tempid") Integer tempid,@Param("ordertime") Integer ordertime);
 }

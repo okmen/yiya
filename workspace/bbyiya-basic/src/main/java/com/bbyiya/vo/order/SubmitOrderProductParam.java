@@ -1,4 +1,4 @@
-package com.bbyiya.pic.vo.order;
+package com.bbyiya.vo.order;
 
 import java.io.Serializable;
 

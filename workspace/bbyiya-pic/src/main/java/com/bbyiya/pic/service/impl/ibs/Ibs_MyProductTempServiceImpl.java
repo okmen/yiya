@@ -102,7 +102,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		myproduct.setUserid(userid);
 		myproduct.setProductid(param.getProductid());
 		myproduct.setCreatetime(new Date());
-		myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.ok.toString()));
+		myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.disabled.toString()));
 		myproduct.setUpdatetime(new Date());	
 		myproduct.setIstemp(1);
 		myMapper.insertReturnId(myproduct);
@@ -112,7 +112,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		temp.setCount(0);
 		temp.setCreatetime(new Date());
 		temp.setRemark(param.getRemark());
-		temp.setStatus(Integer.parseInt(MyProductTempStatusEnum.enable.toString()));
+		temp.setStatus(Integer.parseInt(MyProductTempStatusEnum.disabled.toString()));
 		temp.setTitle(param.getTitle());
 		temp.setCartid(myproduct.getCartid());	
 		temp.setNeedverifer(param.getNeedverifer());

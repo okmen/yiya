@@ -2,6 +2,7 @@ package com.bbyiya.pic.vo.order;
 
 import java.io.Serializable;
 import java.util.List;
+import com.bbyiya.vo.order.SubmitOrderProductParam;
 
 public class SubmitOrderParam implements Serializable{
 	private static final long serialVersionUID = 1L;

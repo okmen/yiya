@@ -588,6 +588,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 					}
 					if(ishaveComplete){
 						apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString())); 
+						apply.setCompletetime(new Date()); //设置完成时间
 						tempApplyMapper.updateByPrimaryKeySelective(apply);
 						//活动完成人数
 						int compeleteCount=temp.getCompletecount()==null?0:temp.getCompletecount();

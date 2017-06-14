@@ -22,6 +22,9 @@ public class MyProductsResult extends PMyproducts{
 	private Long userIdentity;
 	private int tempStatus;
 	private Long tempCartId;
+	
+	//参与活动的情况
+	private MyProductsTempVo tempVo;
 	/**
 	 * 分享页不同相册的小图标
 	 */
@@ -32,6 +35,9 @@ public class MyProductsResult extends PMyproducts{
 	private List<MyProductsDetailsResult> detailslist;
 	
 	private UChildInfoParam childInfo;
+	
+	
+	/*-------------------------------------------------------*/
 	
 	public int getCount() {
 		return count;
@@ -51,12 +57,6 @@ public class MyProductsResult extends PMyproducts{
 	public void setIsOrder(int isOrder) {
 		this.isOrder = isOrder;
 	}
-//	public String getDescription() {
-//		return description;
-//	}
-//	public void setDescription(String description) {
-//		this.description = description;
-//	}
 	public List<MyProductsDetailsResult> getDetailslist() {
 		return detailslist;
 	}
@@ -104,6 +104,12 @@ public class MyProductsResult extends PMyproducts{
 	}
 	public void setTempCartId(Long tempCartId) {
 		this.tempCartId = tempCartId;
+	}
+	public MyProductsTempVo getTempVo() {
+		return tempVo;
+	}
+	public void setTempVo(MyProductsTempVo tempVo) {
+		this.tempVo = tempVo;
 	}
 	
 	

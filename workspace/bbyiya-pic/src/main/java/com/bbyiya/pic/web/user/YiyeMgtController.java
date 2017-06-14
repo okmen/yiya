@@ -180,12 +180,7 @@ public class YiyeMgtController  extends SSOController {
 								return JsonUtil.objectToJsonStr(rq);
 							}
 						}
-						//报名人数不能超过最大最报名人数
-						if(temp.getApplycount().intValue()>=temp.getMaxapplycount().intValue()){
-							rq.setStatu(ReturnStatus.ParamError);
-							rq.setStatusreson("不好意思，活动报名人数已满！");
-							return JsonUtil.objectToJsonStr(rq);
-						}
+						
 						/*--------------------已经提交过申请---------------------------------------*/
 						PMyproducttempapply applyOld= tempApplyMapper.getMyProducttempApplyByUserId(temp.getTempid(), user.getUserId());
 						if(applyOld!=null){

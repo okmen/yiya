@@ -21,4 +21,5 @@ public interface ICtsMusicService {
 	 */
 	Page<SMusics> find_SMusicsResult(MusicAddParam param,int pageIndex,int pageSize);
 	
+	
 }

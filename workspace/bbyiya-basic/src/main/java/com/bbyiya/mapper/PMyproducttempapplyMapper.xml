@@ -16,6 +16,7 @@
     <result column="Status" property="status" jdbcType="INTEGER" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="VerfiyTime" property="verfiytime" jdbcType="TIMESTAMP" />
+    <result column="CompleteTime" property="completetime" jdbcType="DATE" />
     <result column="Birthday" property="birthday" jdbcType="TIMESTAMP" />
     <result column="IsRead" property="isread" jdbcType="INTEGER" />
     <result column="Receiver" jdbcType="VARCHAR" property="receiver" />
@@ -24,7 +25,7 @@
   </resultMap>
   <sql id="Base_Column_List" >
     TempApplyId, TempId, UserId, Mobilephone, Province, City, Area, Street, Adress, IsDue, 
-    CompanyUserId, Status, CreateTime, VerfiyTime, Birthday, IsRead, Receiver, CartId, 
+    CompanyUserId, Status, CreateTime, VerfiyTime, CompleteTime, Birthday, IsRead, Receiver, CartId, 
     Reason
   </sql>
   
@@ -85,16 +86,16 @@
       Mobilephone, Province, City, 
       Area, Street, Adress, 
       IsDue, CompanyUserId, Status, 
-      CreateTime, VerfiyTime, Birthday, 
-      IsRead, Receiver, CartId, 
-      Reason)
+      CreateTime, VerfiyTime, CompleteTime, 
+      Birthday, IsRead, Receiver, 
+      CartId, Reason)
     values (#{tempapplyid,jdbcType=BIGINT}, #{tempid,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, 
       #{mobilephone,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, 
       #{area,jdbcType=INTEGER}, #{street,jdbcType=VARCHAR}, #{adress,jdbcType=VARCHAR}, 
       #{isdue,jdbcType=INTEGER}, #{companyuserid,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{verfiytime,jdbcType=TIMESTAMP}, #{birthday,jdbcType=TIMESTAMP}, 
-      #{isread,jdbcType=INTEGER}, #{receiver,jdbcType=VARCHAR}, #{cartid,jdbcType=BIGINT}, 
-      #{reason,jdbcType=VARCHAR})
+      #{createtime,jdbcType=TIMESTAMP}, #{verfiytime,jdbcType=TIMESTAMP}, #{completetime,jdbcType=DATE}, 
+      #{birthday,jdbcType=TIMESTAMP}, #{isread,jdbcType=INTEGER}, #{receiver,jdbcType=VARCHAR}, 
+      #{cartid,jdbcType=BIGINT}, #{reason,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproducttempapply" >
     insert into p_myproducttempapply
@@ -140,6 +141,9 @@
       </if>
       <if test="verfiytime != null" >
         VerfiyTime,
+      </if>
+      <if test="completetime != null" >
+        CompleteTime,
       </if>
       <if test="birthday != null" >
         Birthday,
@@ -200,6 +204,9 @@
       <if test="verfiytime != null" >
         #{verfiytime,jdbcType=TIMESTAMP},
       </if>
+      <if test="completetime != null" >
+        #{completetime,jdbcType=DATE},
+      </if>
       <if test="birthday != null" >
         #{birthday,jdbcType=TIMESTAMP},
       </if>
@@ -259,6 +266,9 @@
       <if test="verfiytime != null" >
         VerfiyTime = #{verfiytime,jdbcType=TIMESTAMP},
       </if>
+      <if test="completetime != null" >
+        CompleteTime = #{completetime,jdbcType=DATE},
+      </if>
       <if test="birthday != null" >
         Birthday = #{birthday,jdbcType=TIMESTAMP},
       </if>
@@ -292,6 +302,7 @@
       Status = #{status,jdbcType=INTEGER},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
       VerfiyTime = #{verfiytime,jdbcType=TIMESTAMP},
+      CompleteTime = #{completetime,jdbcType=DATE},
       Birthday = #{birthday,jdbcType=TIMESTAMP},
       IsRead = #{isread,jdbcType=INTEGER},
       Receiver = #{receiver,jdbcType=VARCHAR},

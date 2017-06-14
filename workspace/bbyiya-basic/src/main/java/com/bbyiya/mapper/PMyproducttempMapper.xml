@@ -54,6 +54,14 @@
     select a.* from p_myproducttemp a,p_myproducttempverusers  b  where a.TempId=b.TempId  and a.NeedVerifer=1 and a.Status=1  and b.UserId=#{userid,jdbcType=BIGINT} and b.status=1  order by a.CreateTime desc
   </select> 
   
+  <!-- 根据状态获取所有活动列表 -->
+  <select id="findAllTempByStatus" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from p_myproducttemp
+    where status = #{status,jdbcType=INTEGER}
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from p_myproducttemp
     where TempId = #{tempid,jdbcType=INTEGER}

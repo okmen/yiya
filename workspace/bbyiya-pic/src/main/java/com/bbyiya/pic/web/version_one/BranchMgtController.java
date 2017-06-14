@@ -9,13 +9,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.dao.EErrorsMapper;
 import com.bbyiya.dao.UBranchinfotempMapper;
+import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.enums.user.UserStatusEnum;
 import com.bbyiya.model.UAgentapply;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UBranchinfotemp;
+import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.service.IPic_BranchMgtService;
 import com.bbyiya.pic.service.IPic_ProductService;
 import com.bbyiya.pic.utils.Json2Objects;
@@ -41,6 +45,8 @@ public class BranchMgtController extends SSOController {
 	private IRegionService regionService;
 	@Autowired
 	private EErrorsMapper logger;
+	@Autowired
+	private UUsersMapper userMapper;
 	/**
 	 * B01 招商报名
 	 * @param companyJson
@@ -132,6 +138,53 @@ public class BranchMgtController extends SSOController {
 			}else {
 				rq.setStatu(ReturnStatus.LoginError_2);
 				rq.setStatusreson("未完成注册");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * cts协助代理商 提交申请
+	 * @param agentJson
+	 * @param branchUserId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/cts_agentApply")
+	public String cts_agentApply(String agentJson,long branchUserId) throws Exception {
+		ReturnModel rq=new ReturnModel(); 
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
+				try {
+					UUsers branchUsers= userMapper.getUUsersByUserID(branchUserId);
+					if(branchUsers!=null){
+						if(!ObjectUtil.isEmpty(branchUsers.getMobilephone())){
+							UAgentapply applyInfo=(UAgentapply)JsonUtil.jsonStrToObject(agentJson, UAgentapply.class);
+							rq =branchService.applyAgent(branchUserId, applyInfo);
+						}else {
+							rq.setStatu(ReturnStatus.ParamError);
+							rq.setStatusreson("用户未绑定手机号！");
+						}
+					}else {
+						rq.setStatu(ReturnStatus.ParamError);
+						rq.setStatusreson("找不到用户！（"+branchUserId+"可能是无效用户）");
+					}
+				} catch (Exception e) {
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("参数有误101");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+			}else {
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("无此权限");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 		}else {

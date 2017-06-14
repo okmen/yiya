@@ -56,6 +56,7 @@ import com.bbyiya.pic.vo.product.MyProductListVo;
 import com.bbyiya.pic.vo.product.MyProductParam;
 import com.bbyiya.pic.vo.product.MyProductsDetailsResult;
 import com.bbyiya.pic.vo.product.MyProductsResult;
+import com.bbyiya.pic.vo.product.MyProductsTempVo;
 import com.bbyiya.pic.vo.product.ProductSampleResultVO;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
@@ -979,6 +980,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 						}
 					}// 判断用户是否接受模板邀请(over)---------------
 				}
+			}else if (myproduct.getTempid()!=null&&myproduct.getTempid().intValue()>0&&myproduct.getInviteUserId()!=null&&(myproduct.getInviteUserId().longValue()==userId||myproduct.getUserid().longValue()==userId)) {
+				//----------用户此作品参与了 异业合作 活动----------------------------------------------------------------
+				myproduct.setTempVo(getMyProductsTempVo(userId,myproduct));  
 			}
 
 			UUsers myUser = userId == myproduct.getUserid().longValue() ? user : usersMapper.selectByPrimaryKey(myproduct.getUserid());
@@ -1011,6 +1015,45 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		}
 		rq.setStatu(ReturnStatus.Success);
 		return rq;
+	}
+	
+	/**
+	 * 作品参与活动
+	 * @param userId
+	 * @param myproduct
+	 * @return
+	 */
+	private MyProductsTempVo getMyProductsTempVo(Long userId, MyProductsResult myproduct){
+		PMyproducttemp mtemp = mtempMapper.selectByPrimaryKey(myproduct.getTempid());
+		if(mtemp!=null){
+			MyProductsTempVo vo=new MyProductsTempVo();
+			//是否限定完成人数
+			if(mtemp.getMaxcompletecount()!=null&&mtemp.getMaxcompletecount()>0){
+				vo.setIsLimitQuotas(1); 
+				vo.setRemainingCount(mtemp.getMaxcompletecount()-(mtemp.getCompletecount()==null?0:mtemp.getCompletecount()));
+			}
+			if(mtemp.getBlesscount()!=null&&mtemp.getBlesscount().intValue()>0){
+				vo.setIsLimitCommentsCount(1);
+				//规定评论数量
+				vo.setMaxcommentCount(mtemp.getBlesscount()); 
+				//作品评论数量
+				PMyproductext myproductext= myextMapper.selectByPrimaryKey(myproduct.getCartid());
+				if(myproductext!=null){
+					vo.setCommentCount(myproductext.getCommentscount()==null?0:myproductext.getCommentscount());
+				}else { 
+					vo.setCommentCount(0); 
+				}
+			}
+			PMyproducttempapply apply= tempapplyMapper.getMyProducttempApplyByCartId(myproduct.getCartid());
+			if(apply==null){
+				apply=tempapplyMapper.getMyProducttempApplyByUserId(myproduct.getTempid(), userId);
+			}
+			if(apply!=null){
+				vo.setMytempStatus(apply.getStatus());
+			}
+			return vo;
+		}
+		return null;
 	}
 	
 	/**

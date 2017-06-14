@@ -24,7 +24,7 @@ public interface IPic_BranchMgtService {
 	 */
 	ReturnModel applyAgent(Long userId,UAgentapply applyInfo);
 	
-	ReturnModel findAgentApplyList(AgentSearchParam param);
+	ReturnModel findAgentApplyList(AgentSearchParam param,int index,int size);
 	
 	ReturnModel findBranchVoList(AgentSearchParam param,int index, int size);
 	/**

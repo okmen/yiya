@@ -68,7 +68,7 @@ public class AgentBranchController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/findAgentApplylist")
-	public String findAgentApplylist(String userId, String status) throws Exception {
+	public String findAgentApplylist(String userId, String status,int index,int size) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
@@ -81,7 +81,7 @@ public class AgentBranchController extends SSOController {
 			} 
 			
 			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){
-				rq = branchService.findAgentApplyList(param);
+				rq = branchService.findAgentApplyList(param,index,size);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
 				rq.setStatusreson("ÎÞÈ¨ÏÞ");

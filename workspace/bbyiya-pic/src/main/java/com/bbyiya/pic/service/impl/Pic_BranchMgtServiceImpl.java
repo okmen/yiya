@@ -146,11 +146,13 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		return rqModel;
 	}
 	
-	public ReturnModel findAgentApplyList(AgentSearchParam param){
+	public ReturnModel findAgentApplyList(AgentSearchParam param,int index,int size){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.Success);
+		PageHelper.startPage(index, size);
 		List<UAgentApplyVo> list=agentDao.findUAgentapplyVOList(param);
-		rq.setBasemodle(list);
+		PageInfo<UAgentApplyVo> result=new PageInfo<UAgentApplyVo>(list);
+		rq.setBasemodle(result);
 		return rq;
 	}
 	

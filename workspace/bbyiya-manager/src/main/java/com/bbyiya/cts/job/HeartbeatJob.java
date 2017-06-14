@@ -48,7 +48,8 @@ public class HeartbeatJob extends QuartzJobBean {
 							//达到job的执行时间
 							if(ObjectUtil.parseInt(job.get("ispost"))==1){
 								HttpRequestHelper.sendPost(job.get("posturl"),""); 
-							}else{//调去本地
+							}else{
+								//调去本地
 								doLocalServiceMothod(job.get("id"));
 							}
 							//达到job启动条件，执行job任务

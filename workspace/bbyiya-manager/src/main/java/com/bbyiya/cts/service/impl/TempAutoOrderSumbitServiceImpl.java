@@ -19,13 +19,11 @@ import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
-import com.bbyiya.service.pic.IBasePostMgtService;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.address.OrderaddressParam;
 import com.bbyiya.vo.order.SubmitOrderProductParam;
 import com.bbyiya.vo.order.UserOrderSubmitParam;
-import com.bbyiya.vo.product.MyProductResultVo;
 
 @Service("tempAutoOrderSumbitService")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
@@ -41,12 +39,7 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 	
 	@Resource(name = "baseOrderMgtServiceImpl")
 	private IBaseOrderMgtService orderMgtService;
-	/**
-	 * ิห  ทั
-	 */
-	@Resource(name = "basePostMgtServiceImpl")
-	private IBasePostMgtService postMgtService;
-	
+
 
 	public ReturnModel dotempAutoOrderSumbit(){
 		ReturnModel rq=new ReturnModel();

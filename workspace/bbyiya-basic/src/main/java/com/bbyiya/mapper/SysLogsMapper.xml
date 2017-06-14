@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.SysLogsMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.SysLogs" >
+    <id column="LogId" property="logid" jdbcType="BIGINT" />
+    <result column="JobId" property="jobid" jdbcType="VARCHAR" />
+    <result column="JobName" property="jobname" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.bbyiya.model.SysLogs" extends="BaseResultMap" >
+    <result column="Content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    LogId, JobId, JobName, CreateTime
+  </sql>
+  <sql id="Blob_Column_List" >
+    Content
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from sys_logs
+    where LogId = #{logid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from sys_logs
+    where LogId = #{logid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.SysLogs" >
+    insert into sys_logs (LogId, JobId, JobName, 
+      CreateTime, Content)
+    values (#{logid,jdbcType=BIGINT}, #{jobid,jdbcType=VARCHAR}, #{jobname,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.SysLogs" >
+    insert into sys_logs
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="logid != null" >
+        LogId,
+      </if>
+      <if test="jobid != null" >
+        JobId,
+      </if>
+      <if test="jobname != null" >
+        JobName,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+      <if test="content != null" >
+        Content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="logid != null" >
+        #{logid,jdbcType=BIGINT},
+      </if>
+      <if test="jobid != null" >
+        #{jobid,jdbcType=VARCHAR},
+      </if>
+      <if test="jobname != null" >
+        #{jobname,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.SysLogs" >
+    update sys_logs
+    <set >
+      <if test="jobid != null" >
+        JobId = #{jobid,jdbcType=VARCHAR},
+      </if>
+      <if test="jobname != null" >
+        JobName = #{jobname,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null" >
+        Content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where LogId = #{logid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.bbyiya.model.SysLogs" >
+    update sys_logs
+    set JobId = #{jobid,jdbcType=VARCHAR},
+      JobName = #{jobname,jdbcType=VARCHAR},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      Content = #{content,jdbcType=LONGVARCHAR}
+    where LogId = #{logid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.SysLogs" >
+    update sys_logs
+    set JobId = #{jobid,jdbcType=VARCHAR},
+      JobName = #{jobname,jdbcType=VARCHAR},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where LogId = #{logid,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -293,7 +293,12 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		if(temp!=null){
 			if(temp.getStatus()!=null&&temp.getStatus().intValue()==Integer.parseInt(MyProductTempStatusEnum.enable.toString())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("不好意思，已开启的活动不能删除，请先结束该活动再删除！");
+				rq.setStatusreson("不好意思，已开启的活动不能删除！");
+				return rq;
+			}
+			if(temp.getStatus()!=null&&temp.getStatus().intValue()==Integer.parseInt(MyProductTempStatusEnum.over.toString())){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("不好意思，已结束的活动不能删除！");
 				return rq;
 			}
 			PMyproducts myproduct =myMapper.selectByPrimaryKey(temp.getCartid());
@@ -336,11 +341,11 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	 * 查询模板列表
 	 * @return
 	 */
-	public ReturnModel findMyProductTempList(int index,int size,Long userid){
+	public ReturnModel findMyProductTempList(int index,int size,Long userid,Integer status,String keywords){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);		
 		PageHelper.startPage(index, size);	
-		List<PMyproducttemp>  templist=myproducttempMapper.findBranchMyProductTempList(userid);
+		List<PMyproducttemp>  templist=myproducttempMapper.findBranchMyProductTempList(userid,status,keywords);
 		PageInfo<PMyproducttemp> reuslt=new PageInfo<PMyproducttemp>(templist); 
 		if(reuslt!=null&&reuslt.getList()!=null&&reuslt.getList().size()>0){
 			for (PMyproducttemp temp : templist) {	

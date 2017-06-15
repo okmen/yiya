@@ -22,6 +22,8 @@ public class OrderVo implements Serializable {
 	private String expresscom;//快递公司
 
 	private String expressorder;//快递单号
+	
+	private String expresscode;//物流编码
 
 	private Double postage;//运费
 	
@@ -110,8 +112,16 @@ public class OrderVo implements Serializable {
 	public void setPostage(Double postage) {
 		this.postage = postage;
 	}
-	
 
+	public String getExpresscode() {
+		return expresscode;
+	}
+
+	public void setExpresscode(String expresscode) {
+		this.expresscode = expresscode;
+	}
+	
+	
 	
 	
 	

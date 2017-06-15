@@ -68,7 +68,7 @@ public class AgentBranchController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/findAgentApplylist")
-	public String findAgentApplylist(String userId, String status,int index,int size) throws Exception {
+	public String findAgentApplylist(String userId, String status,String keywords,int index,int size) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
@@ -78,6 +78,9 @@ public class AgentBranchController extends SSOController {
 				param.setUserId(userid);
 			if(!ObjectUtil.isEmpty(status)){
 				param.setStatus(ObjectUtil.parseInt(status)); 
+			} 
+			if(!ObjectUtil.isEmpty(keywords)){
+				param.setBranchcompanyname(keywords);
 			} 
 			
 			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){
@@ -101,7 +104,7 @@ public class AgentBranchController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/findBranchApplylist")
-	public String findBranchApplylist(Integer index,Integer size,String userId, String status,String branchcompanyname,String username) throws Exception {
+	public String findBranchApplylist(Integer index,Integer size,String userId, String status,String keywords) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
@@ -112,12 +115,10 @@ public class AgentBranchController extends SSOController {
 			if(!ObjectUtil.isEmpty(status)){
 				param.setStatus(ObjectUtil.parseInt(status)); 
 			} 
-			if(!ObjectUtil.isEmpty(branchcompanyname)){
-				param.setBranchcompanyname(branchcompanyname); 
+			if(!ObjectUtil.isEmpty(keywords)){
+				param.setBranchcompanyname(keywords); 
 			} 
-			if(!ObjectUtil.isEmpty(username)){
-				param.setUsername(username); 
-			} 
+			
 			if(index==null) index=0;
 			if(size==null) size=20;
 			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){

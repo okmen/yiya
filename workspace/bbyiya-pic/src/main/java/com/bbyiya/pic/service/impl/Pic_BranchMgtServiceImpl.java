@@ -426,7 +426,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 				}				
 			}
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("审核成功");
+			rq.setStatusreson("设置成功");
 		} else {
 			rq.setStatu(ReturnStatus.SystemError);
 			rq.setStatusreson("找不到申请记录");
@@ -556,15 +556,20 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			branchesMapper.insertSelective(branch);
 			
 			//影楼内部账号录入
-			UBranchusers branchuser=new UBranchusers();
-			branchuser.setAgentuserid(apply.getAgentuserid());
-			branchuser.setBranchuserid(apply.getAgentuserid());
-			branchuser.setCreatetime(new Date());
-			branchuser.setName(apply.getContactname());
-			branchuser.setPhone(apply.getPhone());
-			branchuser.setStatus(Integer.parseInt(BranchStatusEnum.ok.toString()));
-			branchuser.setUserid(apply.getAgentuserid());		
-			branchuserMapper.insert(branchuser);
+			UBranchusers branchuser=branchuserMapper.selectByPrimaryKey(apply.getAgentuserid());
+			if(branchuser==null){
+				branchuser=new UBranchusers();
+				branchuser.setAgentuserid(apply.getAgentuserid());
+				branchuser.setBranchuserid(apply.getAgentuserid());
+				branchuser.setCreatetime(new Date());
+				branchuser.setName(apply.getContactname());
+				branchuser.setPhone(apply.getPhone());
+				branchuser.setStatus(Integer.parseInt(BranchStatusEnum.ok.toString()));
+				branchuser.setUserid(apply.getAgentuserid());	
+				branchuserMapper.insert(branchuser);
+			}
+					
+			
 			
 			//更新代理身份标识
 			userBasic.addUserIdentity(apply.getAgentuserid(),UserIdentityEnums.branch);  

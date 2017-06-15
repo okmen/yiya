@@ -583,7 +583,7 @@ public class YiyeMgtController  extends SSOController {
 					PMyproducttemp temp= tempMapper.selectByPrimaryKey(pp.getTempid()); 
 					if(temp!=null){
 						if(pp.getCartid()==null||pp.getCartid().longValue()<=0){
-							pp.setCartId(temp.getCartid());
+							pp.setCartid(temp.getCartid());
 						}
 						if(temp.getStyleid()!=null&&temp.getStyleid().longValue()>0){
 							PProductstyles style= styleMapper.selectByPrimaryKey(temp.getStyleid());

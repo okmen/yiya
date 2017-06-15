@@ -5,7 +5,9 @@ package com.bbyiya.cts.job;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.log4j.Logger;
+
 import javax.annotation.Resource;
 
 import org.quartz.JobExecutionContext;
@@ -15,9 +17,10 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import com.bbyiya.cts.service.ITempAutoOrderSumbitService;
 import com.bbyiya.cts.vo.job.JobTime;
-import com.bbyiya.dao.UAdminactionlogsMapper;
+import com.bbyiya.dao.SysLogsMapper;
 import com.bbyiya.enums.AdminActionType;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.model.SysLogs;
 import com.bbyiya.model.UAdminactionlogs;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.HttpRequestHelper;
@@ -76,19 +79,17 @@ public class HeartbeatJob extends QuartzJobBean {
 	@Resource(name = "tempAutoOrderSumbitService")
 	private ITempAutoOrderSumbitService autoOrderService;
 	@Autowired
-	private UAdminactionlogsMapper adminMapper;
-	public void doLocalServiceMothod(String serviceId){
-		
+	private SysLogsMapper syslogMapper;
+	public void doLocalServiceMothod(String serviceId){	
 		try {
 			if(serviceId.equalsIgnoreCase("dotempAutoOrderSumbit")){
 				ReturnModel rq=autoOrderService.dotempAutoOrderSumbit();
 				if(!rq.getStatu().equals(ReturnStatus.Success))//未通过参数验证
 				{
-					//addActionLog(0L,"自动下单失败！"+rq.getStatusreson(),Integer.parseInt(AdminActionType.autoTempOrder.toString()));
+					addSysLog("自动下单失败！"+rq.getStatusreson(),serviceId,"自动下单");
 					Log.error("自动下单失败！"+rq.getStatusreson());
 				}else{
-					//System.out.println("自动下单成功执行！");
-					//addActionLog(0L,"自动下单成功执行！",Integer.parseInt(AdminActionType.autoTempOrder.toString()));
+					//addSysLog("自动下单成功执行！",serviceId,"自动下单");
 					Log.info("自动下单成功执行！");
 				}
 			}else{
@@ -96,20 +97,19 @@ public class HeartbeatJob extends QuartzJobBean {
 			}
 		} catch (Exception e) {
 			Log.error(serviceId+"方法执行出错！");
-			//addActionLog(0L,serviceId+"方法执行出错！",Integer.parseInt(AdminActionType.autoTempOrder.toString()));
+			addSysLog(serviceId+"方法执行出错！",serviceId,"自动下单");
 		}
 		
 		
 	}
 	
-	public void addActionLog(Long userId,String msg,int type){
-		UAdminactionlogs log=new UAdminactionlogs();
-		log.setUserid(userId);
+	public void addSysLog(String msg,String jobid,String jobname){
+		SysLogs log=new SysLogs();
 		log.setContent(msg);
-		log.setUsername("平台管理人员");
-		log.setType(type);
+		log.setJobid(jobid);
+		log.setJobname(jobname);
 		log.setCreatetime(new Date());
-		adminMapper.insert(log);
+		syslogMapper.insert(log);
 	}
 	
 }

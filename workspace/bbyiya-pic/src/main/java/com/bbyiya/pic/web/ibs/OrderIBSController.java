@@ -68,12 +68,13 @@ public class OrderIBSController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/myOrderlist")
-	public String myOrderlist(@RequestParam(required = false, defaultValue = "2") int status) throws Exception {
+	public String myOrderlist(@RequestParam(required = false, defaultValue = "1") int status,
+			@RequestParam(required = false, defaultValue = "") String keywords,int index,int size) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
 			if (ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)) {
-				rq = orderService.findMyOrderlist(user.getUserId(), status);
+				rq = orderService.findMyOrderlist(user.getUserId(), status,keywords,index,size);
 			} else {
 				rq.setStatu(ReturnStatus.SystemError_1);
 				rq.setStatusreson("您还不是代理商，没有权限");

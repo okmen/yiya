@@ -49,8 +49,13 @@ import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.FileUtils;
 import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.utils.PageInfoUtil;
 import com.bbyiya.utils.upload.FileDownloadUtils;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.agent.UBranchUserTempVo;
+import com.bbyiya.vo.order.UserBuyerOrderResult;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.sdicons.json.validator.impl.predicates.Str;
 
 @Service("pic_orderMgtService")
@@ -161,14 +166,16 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 	}
 	@Autowired
 	private PMyproductsMapper myproductsMapper;
-	public ReturnModel findMyOrderlist(Long branchUserId,Integer status){
+	public ReturnModel findMyOrderlist(Long branchUserId,Integer status,String keywords,int index,int size){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.Success);
+		PageHelper.startPage(index, size);
 		//订单列表
-		List<OUserorders> userorders= userOrdersMapper.findOrdersByBranchUserId(branchUserId,status);
-		if(userorders!=null&&userorders.size()>0){
+		List<OUserorders> userorders= userOrdersMapper.findOrdersByBranchUserId(branchUserId,status,keywords);
+		PageInfo<OUserorders> resultPage=new PageInfo<OUserorders>(userorders); 
+		if(resultPage!=null&&resultPage.getList()!=null&&resultPage.getList().size()>0){
 			List<Long> ids = new ArrayList<Long>();
-			for (OUserorders oo : userorders) {
+			for (OUserorders oo : resultPage.getList()) {
 				ids.add(oo.getOrderaddressid());
 			}
 			//订单的收货地址
@@ -201,8 +208,9 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 					vo.setOrderProduct(oproduct);
 				}
 				resultlist.add(vo);
-			}
-			rq.setBasemodle(resultlist);
+			}	
+			PageInfoUtil<OrderVo> resultPagelist=new PageInfoUtil<OrderVo>(resultPage, resultlist);
+			rq.setBasemodle(resultPagelist);
 		}
 		rq.setStatusreson("ok");
 		return rq;

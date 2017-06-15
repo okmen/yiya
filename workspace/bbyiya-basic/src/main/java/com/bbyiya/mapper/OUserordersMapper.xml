@@ -67,9 +67,16 @@
   </select>
   <select id="findOrdersByBranchUserId" resultMap="BaseResultMap"  ><!-- 03 获取本店的订单 （代理） -->
     select 
-    <include refid="Base_Column_List" />
-    from o_userorders
-    where BranchUserId = #{branchUserId,jdbcType=BIGINT} and Status=#{status,jdbcType=INTEGER} order by PayTime desc,OrderTime desc
+    a.*
+    from o_userorders a left join o_orderaddress b on a.OrderAddressId=b.OrderAddressId 
+    where a.BranchUserId = #{branchUserId,jdbcType=BIGINT} 
+     <if test="status != null" >
+       and a.Status=#{status,jdbcType=INTEGER}
+    </if>
+    <if test="keywords != null and keywords!=''" >
+        and  (a.UserOrderId  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) or b.Reciver  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) or b.Phone LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) )
+    </if>
+    order by a.PayTime desc,a.OrderTime desc
   </select>
   <select id="findOrderListLasts" resultMap="BaseResultMap"  ><!-- 04 获取本店的订单 （代理） -->
     select 

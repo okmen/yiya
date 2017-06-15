@@ -41,7 +41,7 @@ public interface OUserordersMapper {
      * @param branchUserId
      * @return
      */
-    List<OUserorders> findOrdersByBranchUserId(@Param("branchUserId")Long branchUserId,@Param("status") Integer status);
+    List<OUserorders> findOrdersByBranchUserId(@Param("branchUserId")Long branchUserId,@Param("status") Integer status,@Param("keywords") String keywords);
     
     /**
      * 获取最新的几条订单记录

@@ -1,17 +1,21 @@
 package com.bbyiya.cts.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.cts.job.HeartbeatJob;
 import com.bbyiya.cts.service.ITempAutoOrderSumbitService;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
+import com.bbyiya.dao.SysLogsMapper;
 import com.bbyiya.dao.UAdminactionlogsMapper;
 import com.bbyiya.enums.MyProductTempStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
@@ -19,6 +23,7 @@ import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
+import com.bbyiya.model.SysLogs;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -29,6 +34,9 @@ import com.bbyiya.vo.order.UserOrderSubmitParam;
 @Service("tempAutoOrderSumbitService")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
 public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitService{
+	
+	private Logger Log = Logger.getLogger(TempAutoOrderSumbitServiceImpl.class);
+	
 	@Autowired
 	private PMyproductsMapper myproductMapper;
 	
@@ -38,11 +46,13 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 	@Autowired
 	private PMyproducttempapplyMapper applyMapper;
 	
+	@Autowired
+	private SysLogsMapper syslogMapper;
+
 	
 	@Resource(name = "baseOrderMgtServiceImpl")
 	private IBaseOrderMgtService orderMgtService;
-
-
+	
 	public ReturnModel dotempAutoOrderSumbit(){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.Success);
@@ -136,12 +146,30 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 						rq.setStatu(ReturnStatus.ParamError);
 						rq.setStatusreson("参数有误");
 					}
-				}
-			}
+					if(!rq.getStatu().equals(ReturnStatus.Success))//未通过参数验证
+					{
+						addSysLog("作品"+productParam.getCartId()+"自动下单失败！原因："+rq.getStatusreson(),"dotempAutoOrderSumbit","下单失败");
+						Log.error("作品"+productParam.getCartId()+"自动下单失败！原因："+rq.getStatusreson());
+					}else{
+						Log.info("作品"+productParam.getCartId()+"自动下单成功！");
+						addSysLog("作品"+productParam.getCartId()+"自动下单成功！","dotempAutoOrderSumbit","下单成功");
+					}
+					
+				}//end For 1
+				
+			}//end For 2
 			
 		}
 		
 		return rq;
 	}
 	
+	public void addSysLog(String msg,String jobid,String jobname){
+		SysLogs log=new SysLogs();
+		log.setContent(msg);
+		log.setJobid(jobid);
+		log.setJobname(jobname);
+		log.setCreatetime(new Date());
+		syslogMapper.insert(log);
+	}
 }

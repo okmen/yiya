@@ -5,28 +5,20 @@ package com.bbyiya.cts.job;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.log4j.Logger;
-
 import javax.annotation.Resource;
-
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
-
 import com.bbyiya.cts.service.ITempAutoOrderSumbitService;
 import com.bbyiya.cts.vo.job.JobTime;
 import com.bbyiya.dao.SysLogsMapper;
-import com.bbyiya.enums.AdminActionType;
-import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.SysLogs;
-import com.bbyiya.model.UAdminactionlogs;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.HttpRequestHelper;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
-import com.bbyiya.vo.ReturnModel;
 
 public class HeartbeatJob extends QuartzJobBean {
 	
@@ -83,15 +75,8 @@ public class HeartbeatJob extends QuartzJobBean {
 	public void doLocalServiceMothod(String serviceId){	
 		try {
 			if(serviceId.equalsIgnoreCase("dotempAutoOrderSumbit")){
-				ReturnModel rq=autoOrderService.dotempAutoOrderSumbit();
-				if(!rq.getStatu().equals(ReturnStatus.Success))//未通过参数验证
-				{
-					addSysLog("自动下单失败！"+rq.getStatusreson(),serviceId,"自动下单");
-					Log.error("自动下单失败！"+rq.getStatusreson());
-				}else{
-					//addSysLog("自动下单成功执行！",serviceId,"自动下单");
-					Log.info("自动下单成功执行！");
-				}
+				autoOrderService.dotempAutoOrderSumbit();	
+				Log.info(serviceId+"执行自动单下单操作！");
 			}else{
 				//System.out.println("无方法执行！");
 			}

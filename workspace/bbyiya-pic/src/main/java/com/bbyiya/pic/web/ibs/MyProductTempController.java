@@ -245,11 +245,11 @@ public class MyProductTempController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getMyProductTempList")
-	public String getMyProductTempList(int index,int size) throws Exception {
+	public String getMyProductTempList(int index,int size,Integer status,String keywords) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq=producttempService.findMyProductTempList(index, size, user.getUserId());
+			rq=producttempService.findMyProductTempList(index, size, user.getUserId(),status,keywords);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("µÇÂ¼¹ýÆÚ");

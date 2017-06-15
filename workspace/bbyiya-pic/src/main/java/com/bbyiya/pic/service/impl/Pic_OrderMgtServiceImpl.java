@@ -302,6 +302,7 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 			}
 			vo.setExpresscom(order.getExpresscom());
 			vo.setExpressorder(order.getExpressorder());
+			vo.setExpresscode(order.getExpresscode());
 			vo.setPostage(order.getPostage());
 			vo.setAddress(addressMapper.selectByPrimaryKey(order.getOrderaddressid()));
 			OOrderproducts product=orderProductMapper.getOProductsByOrderId(userOrderId);

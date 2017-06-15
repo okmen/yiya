@@ -74,6 +74,9 @@
     <if test="status != null" >
        and  Status = #{status,jdbcType=INTEGER}
     </if>
+     <if test="branchcompanyname != null" > 
+       and  (AgentCompanyName LIKE  CONCAT('%', #{branchcompanyname,jdbcType=VARCHAR},'%' ) OR  UserName LIKE  CONCAT('%', #{branchcompanyname,jdbcType=VARCHAR},'%' ) OR  Phone LIKE  CONCAT('%', #{branchcompanyname,jdbcType=VARCHAR},'%' ))
+    </if>
   </select>
   
   <!-- 获取影楼 列表 -->
@@ -88,12 +91,10 @@
     <if test="status != null" >
        and  Status = #{status,jdbcType=INTEGER}
     </if>
-    <if test="branchcompanyname != null" >
-       and  BranchCompanyName = #{branchcompanyname,jdbcType=VARCHAR}
+    <if test="branchcompanyname != null" > 
+       and  (BranchCompanyName LIKE  CONCAT('%', #{branchcompanyname,jdbcType=VARCHAR},'%' ) OR  UserName LIKE  CONCAT('%', #{branchcompanyname,jdbcType=VARCHAR},'%' ) OR  Phone LIKE  CONCAT('%', #{branchcompanyname,jdbcType=VARCHAR},'%' ))
     </if>
-     <if test="username != null" >
-       and  UserName = #{username,jdbcType=VARCHAR}
-    </if>
+ 
   </select>
   <!-- 通过影楼userId获取影楼信息result -->
   <select id="getUBranchVoByBranchUserId" resultMap="UBranchVoResult" parameterType="java.lang.Long" >

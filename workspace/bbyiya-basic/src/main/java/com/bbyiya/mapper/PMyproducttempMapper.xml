@@ -40,7 +40,14 @@
     select 
     <include refid="Base_Column_List" />
     from p_myproducttemp
-    where BranchUserId = #{branchuserid,jdbcType=BIGINT} and Status!=2 order by CreateTime desc
+    where BranchUserId = #{branchuserid,jdbcType=BIGINT} and Status!=2 
+    <if test="status != null" >
+       and  Status = #{status,jdbcType=INTEGER}
+    </if>
+     <if test="keywords != null" > 
+       and  Title LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' )
+    </if>
+    order by CreateTime desc
   </select>
   <!-- 获取影楼管理员 需要审核的模板列表 -->
   <select id="findBranchMyProductTempNeedVerList" resultMap="BaseResultMap" >

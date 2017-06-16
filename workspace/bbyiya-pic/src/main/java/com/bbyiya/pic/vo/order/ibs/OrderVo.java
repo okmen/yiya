@@ -30,6 +30,10 @@ public class OrderVo implements Serializable {
 	private OOrderaddress address;
 
 	private OrderProductVo orderProduct;
+
+	private String sourcetype;//订单来源 0活动作品  1客户一对一  2 活动码作品  3 其它
+	
+	private Integer tempid;//活动ID
 	
 	public String getUserorderid() {
 		return userorderid;
@@ -119,6 +123,23 @@ public class OrderVo implements Serializable {
 
 	public void setExpresscode(String expresscode) {
 		this.expresscode = expresscode;
+	}
+
+	
+	public String getSourcetype() {
+		return sourcetype;
+	}
+
+	public void setSourcetype(String sourcetype) {
+		this.sourcetype = sourcetype;
+	}
+
+	public Integer getTempid() {
+		return tempid;
+	}
+
+	public void setTempid(Integer tempid) {
+		this.tempid = tempid;
 	}
 	
 	

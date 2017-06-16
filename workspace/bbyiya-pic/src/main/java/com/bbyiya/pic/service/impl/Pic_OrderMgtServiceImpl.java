@@ -22,11 +22,14 @@ import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductchildinfoMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.PMyproductsMapper;
+import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.enums.CustomerSourceTypeEnum;
+import com.bbyiya.enums.MyProductTempType;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.BranchStatusEnum;
+import com.bbyiya.enums.pic.InviteStatus;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproductphotos;
@@ -35,6 +38,7 @@ import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproductchildinfo;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
+import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.pic.dao.IPic_OrderMgtDao;
@@ -84,6 +88,9 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 	private UBranchesMapper branchesMapper;
 	@Autowired
 	private PMyproductchildinfoMapper pmyChildMapper;
+	@Autowired
+	private PMyproducttempMapper tempdMapper;
+	
 	/**
 	 * 获取订单列表
 	 * @param userId
@@ -204,6 +211,25 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 					if(cart!=null){
 						oproduct.setCartAuthor(cart.getAuthor());
 						oproduct.setCartTitle(cart.getTitle());
+						if(!ObjectUtil.isEmpty(cart.getTempid())){
+							PMyproducttemp temp=tempdMapper.selectByPrimaryKey(cart.getTempid());
+							if(temp!=null){
+								vo.setTempid(cart.getTempid());
+								if(temp.getType()==null||temp.getType().intValue()==Integer.parseInt(MyProductTempType.normal.toString()))
+									vo.setSourcetype("0");//来源于普通活动
+								else if(temp.getType()!=null&&temp.getType().intValue()==Integer.parseInt(MyProductTempType.code.toString()))
+									vo.setSourcetype("2");//来源于活动码活动
+								else
+									vo.setSourcetype("3");//其它自动下单
+							}
+							
+						}else{
+							if(cart.getInvitestatus()==null||cart.getInvitestatus().intValue()==Integer.parseInt(InviteStatus.lgnore.toString()))
+								vo.setSourcetype("1");// 来源于客户一对一
+							else
+								vo.setSourcetype("3");
+						}
+						
 					}
 					vo.setOrderProduct(oproduct);
 				}

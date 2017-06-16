@@ -515,19 +515,35 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 	public void addAgentInfo(UAgentapply apply){
 		if(apply!=null){
 			//代理商录入
-			UAgents agentModel=new UAgents();
-			agentModel.setAgentuserid(apply.getAgentuserid());
-			agentModel.setAgentcompanyname(apply.getAgentcompanyname());
-			agentModel.setContactname(apply.getContactname());
-			agentModel.setPhone(apply.getPhone());
-			agentModel.setProvince(apply.getProvince());
-			agentModel.setCity(apply.getCity());
-			agentModel.setArea(apply.getArea());
-			agentModel.setStreetdetail(apply.getStreetdetail());
-			agentModel.setStatus(Integer.parseInt(AgentStatusEnum.ok.toString()));
-			agentModel.setCreatetime(new Date());
-			agentModel.setProcesstime(new Date());
-			agentsMapper.insertSelective(agentModel);
+			UAgents agentModel=agentsMapper.selectByPrimaryKey(apply.getAgentuserid());
+			if(agentModel==null){
+				agentModel=new UAgents();
+				agentModel.setAgentuserid(apply.getAgentuserid());
+				agentModel.setAgentcompanyname(apply.getAgentcompanyname());
+				agentModel.setContactname(apply.getContactname());
+				agentModel.setPhone(apply.getPhone());
+				agentModel.setProvince(apply.getProvince());
+				agentModel.setCity(apply.getCity());
+				agentModel.setArea(apply.getArea());
+				agentModel.setStreetdetail(apply.getStreetdetail());
+				agentModel.setStatus(Integer.parseInt(AgentStatusEnum.ok.toString()));
+				agentModel.setCreatetime(new Date());
+				agentModel.setProcesstime(new Date());
+				agentsMapper.insertSelective(agentModel);
+			}else{
+				agentModel.setAgentcompanyname(apply.getAgentcompanyname());
+				agentModel.setContactname(apply.getContactname());
+				agentModel.setPhone(apply.getPhone());
+				agentModel.setProvince(apply.getProvince());
+				agentModel.setCity(apply.getCity());
+				agentModel.setArea(apply.getArea());
+				agentModel.setStreetdetail(apply.getStreetdetail());
+				agentModel.setStatus(Integer.parseInt(AgentStatusEnum.ok.toString()));
+				agentModel.setProcesstime(new Date());
+				agentsMapper.updateByPrimaryKey(agentModel);
+			}
+			
+			
 			//更新代理身份标识
 			userBasic.addUserIdentity(apply.getAgentuserid(),UserIdentityEnums.agent); 
 			

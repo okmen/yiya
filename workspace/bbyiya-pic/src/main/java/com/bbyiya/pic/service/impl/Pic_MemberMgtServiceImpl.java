@@ -167,7 +167,7 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 	 * @param branchUserId
 	 *   @return  
 	 */
-	public ReturnModel findCustomerslistByAgentUserId(Long branchUserId,int index,int size){
+	public ReturnModel findCustomerslistByAgentUserId(Long branchUserId,String keywords,int index,int size){
 		ReturnModel rqModel=new ReturnModel();
 		UBranches branch=branchesMapper.selectByPrimaryKey(branchUserId);
 		if(branch==null){
@@ -177,7 +177,7 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 		}
 		PageHelper.startPage(index, size);
 		//获取待营销客户列表
-		List<UAgentcustomersVo> list= customerMapper.findCustomersByAgentUserId(branch.getAgentuserid(),0);
+		List<UAgentcustomersVo> list= customerMapper.findCustomersByAgentUserId(branch.getAgentuserid(),keywords,0);
 		
 		for (UAgentcustomersVo cus : list) {
 			if(cus.getCreatetime()!=null) cus.setCreatetimeStr(DateUtil.getTimeStr(cus.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
@@ -216,7 +216,7 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 	 * @param branchUserId
 	 *   @return  
 	 */
-	public ReturnModel findMarketCustomerslistByBranchUserId(Long branchUserId,int index,int size){
+	public ReturnModel findMarketCustomerslistByBranchUserId(Long branchUserId,String keywords,int index,int size){
 		ReturnModel rqModel=new ReturnModel();
 		UBranches branch=branchesMapper.selectByPrimaryKey(branchUserId);
 		if(branch==null){
@@ -226,7 +226,7 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 		}
 		//获取已获取客户列表
 		PageHelper.startPage(index, size);
-		List<UAgentcustomersVo> list= customerMapper.findCustomersByBranchUserId(branch.getAgentuserid(),1);
+		List<UAgentcustomersVo> list= customerMapper.findCustomersByBranchUserId(branch.getAgentuserid(),keywords,1);
 		
 		for (UAgentcustomersVo cus : list) {
 			if(cus.getCreatetime()!=null) cus.setCreatetimeStr(DateUtil.getTimeStr(cus.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));

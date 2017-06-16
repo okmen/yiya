@@ -213,10 +213,16 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 					myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.ok.toString()));				
 				}else if(type==0||type==3){
 					if(type==0){//禁用
-						//如果活动是结束状态不能再开启
+						//如果活动是结束状态不能再禁用
 						if(temp.getStatus()!=null&&temp.getStatus().intValue()==Integer.parseInt(MyProductTempStatusEnum.over.toString())){
 							rq.setStatu(ReturnStatus.ParamError);
 							rq.setStatusreson("已结束的活动不能再修改活动状态！");
+							return rq;
+						}
+						//如果活动进行状态，则不能再禁用
+						if(temp.getStatus()!=null&&temp.getStatus().intValue()==Integer.parseInt(MyProductTempStatusEnum.enable.toString())){
+							rq.setStatu(ReturnStatus.ParamError);
+							rq.setStatusreson("已开启的活动不能再禁用！");
 							return rq;
 						}
 						temp.setStatus(Integer.parseInt(MyProductTempStatusEnum.disabled.toString()));			

@@ -47,6 +47,7 @@ public class PMyproducttempapply {
 	private String verfiytimestr;
 	private String birthdaystr;
 	private String username;// 客户名称
+	private String styleImg;
 
 	public Long getTempapplyid() {
 		return tempapplyid;
@@ -254,6 +255,14 @@ public class PMyproducttempapply {
 
 	public void setCartId(Long cartId) {
 		this.cartId = cartId;
+	}
+
+	public String getStyleImg() {
+		return styleImg;
+	}
+
+	public void setStyleImg(String styleImg) {
+		this.styleImg = styleImg;
 	}
 
 }

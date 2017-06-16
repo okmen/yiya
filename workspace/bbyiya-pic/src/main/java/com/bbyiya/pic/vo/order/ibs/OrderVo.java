@@ -34,6 +34,7 @@ public class OrderVo implements Serializable {
 	private String sourcetype;//订单来源 0活动作品  1客户一对一  2 活动码作品  3 其它
 	
 	private Integer tempid;//活动ID
+	
 	public String getUserorderid() {
 		return userorderid;
 	}

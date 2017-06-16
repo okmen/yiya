@@ -22,6 +22,7 @@ import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
 import com.bbyiya.dao.PMyproducttempusersMapper;
+import com.bbyiya.dao.PProductstylesMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.enums.MyProductTempStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
@@ -31,6 +32,7 @@ import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.model.PMyproducttempusers;
+import com.bbyiya.model.PProductstyles;
 import com.bbyiya.model.UUseraddress;
 import com.bbyiya.pic.dao.IMyProductsDao;
 import com.bbyiya.pic.service.ibs.IIbs_MyProductTempService;
@@ -556,6 +558,8 @@ public class YiyeMgtController  extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	@Autowired
+	private PProductstylesMapper styleMapper;
 	/**
 	 * M13-01 参与的活动-参与活动的列表
 	 * @param tempid
@@ -578,7 +582,23 @@ public class YiyeMgtController  extends SSOController {
 				for (PMyproducttempapply pp : reuslt.getList()) {
 					PMyproducttemp temp= tempMapper.selectByPrimaryKey(pp.getTempid()); 
 					if(temp!=null){
-						pp.setCartId(temp.getCartid());
+						if(pp.getCartid()==null||pp.getCartid().longValue()<=0){
+							pp.setCartId(temp.getCartid());
+						}
+						if(temp.getStyleid()!=null&&temp.getStyleid().longValue()>0){
+							PProductstyles style= styleMapper.selectByPrimaryKey(temp.getStyleid());
+							if(style!=null){
+								pp.setStyleImg(style.getDefaultimg());
+							}
+						}else {
+							PMyproducts myproducts=myProductMapper.selectByPrimaryKey(pp.getCartid());
+							if(myproducts!=null){
+								PProductstyles style= styleMapper.selectByPrimaryKey(myproducts.getProductid());
+								if(style!=null){
+									pp.setStyleImg(style.getDefaultimg());
+								}
+							}
+						}
 						pp.setTempName(temp.getTitle());
 					}
 					pp.setCreatetimestr(DateUtil.getTimeStr(pp.getCreatetime(), "yyyy-MM-dd HH:mm:ss")); 

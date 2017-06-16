@@ -33,11 +33,11 @@ public class GenUtils {
 	public static String[] numbers=new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
 	/**
-	 * 生成 随机编号
+	 * 生成8位uuid 随机码
 	 * @param size
 	 * @return
 	 */
-	public static String generateUuid_Char() {
+	public static String generateUuid_Char8() {
 		StringBuffer shortBuffer = new StringBuffer();
 		String uuid = UUID.randomUUID().toString().replace("-", "");
 		for (int i = 0; i < 8; i++) {

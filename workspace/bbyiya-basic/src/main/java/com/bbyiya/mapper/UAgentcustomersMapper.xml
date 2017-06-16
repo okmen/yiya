@@ -38,14 +38,22 @@
     select 
     <include refid="Base_Column_List" />
     from u_agentcustomers
-    where BranchUserId = #{branchUserId,jdbcType=BIGINT} and IsMarket=#{isMarket,jdbcType=BIGINT} order by CreateTime desc
+    where BranchUserId = #{branchUserId,jdbcType=BIGINT} and IsMarket=#{isMarket,jdbcType=BIGINT} 
+    <if test="keywords != null and keywords!=''" >
+        and  (UserId  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) OR Name  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) OR Phone  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) )
+    </if>
+    order by CreateTime desc
   </select>
    <!-- 根据AgentUserId获取影楼的待营销用户列表结果类Result -->
   <select id="findCustomersByAgentUserId" resultMap="UAgentcustomersVoResult"  ><!-- 02 根据AgentUserId查询影楼的用户列表 -->
     select 
     <include refid="Base_Column_List" />
     from u_agentcustomers
-    where AgentUserId = #{agentUserId,jdbcType=BIGINT} and IsMarket=#{isMarket,jdbcType=BIGINT} order by CreateTime desc
+    where AgentUserId = #{agentUserId,jdbcType=BIGINT} and IsMarket=#{isMarket,jdbcType=BIGINT}
+     <if test="keywords != null and keywords!=''" >
+        and  (UserId  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) OR Name  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) OR Phone  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' )  )
+    </if> 
+    order by CreateTime desc
   </select>
   <select id="getCustomersByAgentUserId" resultMap="BaseResultMap"  ><!-- 03 根据AgentUserId,buyerUserId 查询影楼的用户列表 -->
     select 

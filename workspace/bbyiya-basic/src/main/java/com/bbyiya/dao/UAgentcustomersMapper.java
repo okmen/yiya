@@ -24,14 +24,14 @@ public interface UAgentcustomersMapper {
      * @param branchUserId
      * @return
      */
-    List<UAgentcustomersVo> findCustomersByBranchUserId(@Param("branchUserId") Long branchUserId,@Param("isMarket") int isMarket);
+    List<UAgentcustomersVo> findCustomersByBranchUserId(@Param("branchUserId") Long branchUserId,@Param("keywords") String keywords,@Param("isMarket") int isMarket);
     
     /**
      * 根据AgentUserId获取影楼的用户列表
      * @param branchUserId
      * @return
      */
-    List<UAgentcustomersVo> findCustomersByAgentUserId(@Param("agentUserId") Long agentUserId,@Param("isMarket") int isMarket);
+    List<UAgentcustomersVo> findCustomersByAgentUserId(@Param("agentUserId") Long agentUserId,@Param("keywords") String keywords,@Param("isMarket") int isMarket);
     
     /**
      * 根据代理userId， 买家Userid

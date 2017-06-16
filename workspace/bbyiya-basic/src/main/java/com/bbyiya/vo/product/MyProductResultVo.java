@@ -41,6 +41,8 @@ public class MyProductResultVo extends PMyproducts{
 	//活动状态
 	private Integer activeStatus;
 	
+	private String address;
+	
 	public int getCount() {
 		return count;
 	}
@@ -142,6 +144,12 @@ public class MyProductResultVo extends PMyproducts{
 	}
 	public void setActiveStatus(Integer activeStatus) {
 		this.activeStatus = activeStatus;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
 	}
 	
 	

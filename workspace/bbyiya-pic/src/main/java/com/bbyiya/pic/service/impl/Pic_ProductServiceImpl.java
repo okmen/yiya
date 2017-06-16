@@ -6,11 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.jasper.tagplugins.jstl.core.If;
+import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductchildinfoMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
@@ -26,8 +25,8 @@ import com.bbyiya.dao.PStylecoordinateMapper;
 import com.bbyiya.dao.PStylecoordinateitemMapper;
 import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UChildreninfoMapper;
+import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
-import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
 import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
@@ -58,6 +57,7 @@ import com.bbyiya.pic.vo.product.MyProductsDetailsResult;
 import com.bbyiya.pic.vo.product.MyProductsResult;
 import com.bbyiya.pic.vo.product.MyProductsTempVo;
 import com.bbyiya.pic.vo.product.ProductSampleResultVO;
+import com.bbyiya.service.pic.IBaseUserAddressService;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
@@ -66,6 +66,7 @@ import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.product.MyProductResultVo;
 import com.bbyiya.vo.product.ProductSampleVo;
 import com.bbyiya.vo.user.UChildInfoParam;
+import com.bbyiya.vo.user.UUserAddressResult;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
@@ -110,6 +111,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private OUserordersMapper orderMapper;
 	@Autowired
 	private UChildreninfoMapper childMapper;
+	@Autowired
+	private UUseraddressMapper uaddressMapper;
 
 	/*----------------pic-dao----------------------------------*/
 	@Autowired
@@ -120,6 +123,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private IPic_ProductDao productDao;
 	@Autowired
 	private IPic_OrderMgtDao orderDao;
+	
+	@Resource(name = "baseUserAddressServiceImpl")
+	private IBaseUserAddressService baseAddressService;
 
 	public ReturnModel getProductSamples(Long productId) {
 		ReturnModel rq = new ReturnModel();
@@ -812,6 +818,13 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 							if (temp != null && temp.getTitle() != null) {
 								item.setTempTitle(temp.getTitle());
 							}
+						}else{
+							//来源于客户一对一
+							UUserAddressResult address=baseAddressService.getUserAddressResult(inviteusers.getUserid(), null);
+							if(address!=null){
+								item.setAddress(address.getProvinceName()+address.getCityName()+address.getCityName()+address.getStreetdetail());
+							}
+							
 						}
 						
 					}
@@ -874,6 +887,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				}
 				if(apply!=null){
 					item.setActiveStatus(apply.getStatus());
+					item.setAddress(apply.getAdress());
 				}else{
 					if(item.getCount()<12){
 						//制作中

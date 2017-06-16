@@ -42,7 +42,7 @@ public class PMyproducttempapply {
 	/***************** 添加的VO字段 *************************/
 
 	private String tempName;
-	private Long cartId;
+//	private Long cartId;
 	private String createtimestr;
 	private String verfiytimestr;
 	private String birthdaystr;
@@ -249,13 +249,13 @@ public class PMyproducttempapply {
 		this.tempName = tempName;
 	}
 
-	public Long getCartId() {
-		return cartId;
-	}
-
-	public void setCartId(Long cartId) {
-		this.cartId = cartId;
-	}
+//	public Long getCartId() {
+//		return cartId;
+//	}
+//
+//	public void setCartId(Long cartId) {
+//		this.cartId = cartId;
+//	}
 
 	public String getStyleImg() {
 		return styleImg;

@@ -1011,7 +1011,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				}
 			}
 			// --作品图片信息-------
-			myproduct.setDetailslist(getMyProductsDetailsResultList(myproduct.getUserid(), cartId));
+			myproduct.setDetailslist(getMyProductsDetailsResultList(userId, cartId));
 
 			// 作品宝宝信息----------------------------------------------------------------------------
 			PMyproductchildinfo childInfo = mychildMapper.selectByPrimaryKey(cartId);

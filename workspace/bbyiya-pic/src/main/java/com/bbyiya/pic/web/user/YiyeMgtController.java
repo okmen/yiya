@@ -178,7 +178,7 @@ public class YiyeMgtController  extends SSOController {
 							rq.setStatusreson("不好意思，活动已过期（或已失效）");
 							return JsonUtil.objectToJsonStr(rq);
 						}
-						if((temp.getNeedverifer()==null||temp.getNeedverifer().intValue()!=1)&& temp.getMaxapplycount()!=null&&temp.getMaxapplycount().intValue()>0){
+						if(temp.getMaxapplycount()!=null&&temp.getMaxapplycount().intValue()>0){
 							if(temp.getApplycount()!=null&&temp.getApplycount().intValue()>=temp.getMaxapplycount().intValue()){
 								rq.setStatu(ReturnStatus.ParamError);
 								rq.setStatusreson("不好意思，活动太火爆了，参与的人数已经爆了！");  
@@ -210,7 +210,7 @@ public class YiyeMgtController  extends SSOController {
 						apply.setTempid(myproducts.getTempid());
 						apply.setUserid(user.getUserId());
 //						apply.setReceiver(address.getReciver()); 
-//						apply.setMobilephone(address.getPhone());
+						apply.setMobilephone(user.getMobilePhone()); 
 //						apply.setProvince(address.getProvince());
 //						apply.setCity(address.getCity());
 //						apply.setStreet(address.getStreetdetail());

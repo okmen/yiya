@@ -68,7 +68,7 @@ public class CommentsController extends SSOController{
 			}
 			PMyproductcomments param = Json2Objects.getParam_PMyproductcomments(commentJson);
 			if (param != null) {
-				rq = commentService.addPinglun(user.getUserId(), param); //this.addPinglun(user.getUserId(), param); //
+				rq = commentService.addPinglun(user.getUserId(), param); 
 			} else {
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("参数不全");

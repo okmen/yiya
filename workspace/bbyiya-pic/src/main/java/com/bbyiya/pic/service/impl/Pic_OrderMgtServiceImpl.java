@@ -225,9 +225,9 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 							
 						}else{
 							if(cart.getInvitestatus()==null||cart.getInvitestatus().intValue()==Integer.parseInt(InviteStatus.lgnore.toString()))
-								vo.setSourcetype("1");// 来源于客户一对一
-							else
 								vo.setSourcetype("3");
+							else
+								vo.setSourcetype("1");// 来源于客户一对一
 						}
 						
 					}

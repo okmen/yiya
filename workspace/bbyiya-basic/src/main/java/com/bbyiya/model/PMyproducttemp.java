@@ -49,6 +49,12 @@ public class PMyproducttemp {
 
     private Integer orderhours;
     
+    private Integer isbranchaddress;
+
+    private Date begintime;
+
+    private Date endtime;
+    
     /*************************Vo****************************/
     
     //二维码地址
@@ -247,6 +253,30 @@ public class PMyproducttemp {
 
 	public void setOrderhours(Integer orderhours) {
 		this.orderhours = orderhours;
+	}
+
+	public Integer getIsbranchaddress() {
+		return isbranchaddress;
+	}
+
+	public void setIsbranchaddress(Integer isbranchaddress) {
+		this.isbranchaddress = isbranchaddress;
+	}
+
+	public Date getBegintime() {
+		return begintime;
+	}
+
+	public void setBegintime(Date begintime) {
+		this.begintime = begintime;
+	}
+
+	public Date getEndtime() {
+		return endtime;
+	}
+
+	public void setEndtime(Date endtime) {
+		this.endtime = endtime;
 	}
     
     

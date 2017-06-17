@@ -210,7 +210,7 @@ public class YiyeMgtController  extends SSOController {
 						apply.setTempid(myproducts.getTempid());
 						apply.setUserid(user.getUserId());
 //						apply.setReceiver(address.getReciver()); 
-//						apply.setMobilephone(address.getPhone());
+						apply.setMobilephone(user.getMobilePhone()); 
 //						apply.setProvince(address.getProvince());
 //						apply.setCity(address.getCity());
 //						apply.setStreet(address.getStreetdetail());

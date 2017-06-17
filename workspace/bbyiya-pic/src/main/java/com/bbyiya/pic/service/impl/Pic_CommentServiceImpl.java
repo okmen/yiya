@@ -69,21 +69,23 @@ public class Pic_CommentServiceImpl implements IPic_CommentService{
 			rqModel.setStatusreson("用户不存在");
 			return rqModel;
 		}
-		int count=myproductcommentsMapper.countCommentByUserId(param.getCartid(),userId);
 		param.setUserid(userId);
 		param.setCreatetime(new Date());
-		myproductcommentsMapper.insertSelective(param);
+		//新增评论
 		PMyproductext ext=myproductextMapper.selectByPrimaryKey(param.getCartid());
 		if(ext==null){
 			 ext=new PMyproductext();
 			 ext.setCartid(param.getCartid());
-			 ext.setCommentscount(count+1);
+			 ext.setCommentscount(1); 
 			 myproductextMapper.insert(ext);
 		}else {
-			ext.setCommentscount(count+1);
-			myproductextMapper.updateByPrimaryKeySelective(ext);
+			int count=myproductcommentsMapper.countCommentByUserId(param.getCartid(),userId);
+			if(count<=0){
+				ext.setCommentscount(ext.getCommentscount()+1); 
+				myproductextMapper.updateByPrimaryKeySelective(ext);
+			}
 		}
-		
+		myproductcommentsMapper.insertSelective(param);
 	
 		rqModel.setStatu(ReturnStatus.Success);
 		rqModel.setStatusreson("成功！"); 

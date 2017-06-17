@@ -232,11 +232,11 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 						temp.setStatus(Integer.parseInt(MyProductTempStatusEnum.over.toString()));			
 						myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.deleted.toString()));
 						
-						//将参与中的用户置为活动失败，得到状态为1 3 4状态的用户  
+						//将参与中的用户置为活动失败，得到状态为1 4状态的用户  
 						List<Integer> statuslist=new ArrayList<Integer>();
 						statuslist.add(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString()));//已审核
 						statuslist.add(Integer.parseInt(MyProducttempApplyStatusEnum.nopass.toString()));//作品审核不通过
-						statuslist.add(Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString()));//作品制作完成
+						//statuslist.add(Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString()));//作品制作完成
 						List<PMyproducttempapply>  applyInlist=myproducttempapplyMapper.findMyProducttempApplyInList(tempid, statuslist);
 						if(applyInlist!=null&&applyInlist.size()>0){
 							for (PMyproducttempapply applyin : applyInlist) {

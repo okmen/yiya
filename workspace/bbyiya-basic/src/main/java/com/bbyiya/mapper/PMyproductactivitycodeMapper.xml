@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.PMyproductactivitycodeMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.PMyproductactivitycode" >
+    <id column="CodeNo" property="codeno" jdbcType="VARCHAR" />
+    <result column="BranchUserId" property="branchuserid" jdbcType="BIGINT" />
+    <result column="TempId" property="tempid" jdbcType="INTEGER" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="CartId" property="cartid" jdbcType="BIGINT" />
+    <result column="UsedTime" property="usedtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CodeNo, BranchUserId, TempId, Status, CreateTime, UserId, CartId, UsedTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from p_myproductactivitycode
+    where CodeNo = #{codeno,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from p_myproductactivitycode
+    where CodeNo = #{codeno,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.PMyproductactivitycode" >
+    insert into p_myproductactivitycode (CodeNo, BranchUserId, TempId, 
+      Status, CreateTime, UserId, 
+      CartId, UsedTime)
+    values (#{codeno,jdbcType=VARCHAR}, #{branchuserid,jdbcType=BIGINT}, #{tempid,jdbcType=INTEGER}, 
+      #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{userid,jdbcType=BIGINT}, 
+      #{cartid,jdbcType=BIGINT}, #{usedtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproductactivitycode" >
+    insert into p_myproductactivitycode
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="codeno != null" >
+        CodeNo,
+      </if>
+      <if test="branchuserid != null" >
+        BranchUserId,
+      </if>
+      <if test="tempid != null" >
+        TempId,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="cartid != null" >
+        CartId,
+      </if>
+      <if test="usedtime != null" >
+        UsedTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="codeno != null" >
+        #{codeno,jdbcType=VARCHAR},
+      </if>
+      <if test="branchuserid != null" >
+        #{branchuserid,jdbcType=BIGINT},
+      </if>
+      <if test="tempid != null" >
+        #{tempid,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="cartid != null" >
+        #{cartid,jdbcType=BIGINT},
+      </if>
+      <if test="usedtime != null" >
+        #{usedtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PMyproductactivitycode" >
+    update p_myproductactivitycode
+    <set >
+      <if test="branchuserid != null" >
+        BranchUserId = #{branchuserid,jdbcType=BIGINT},
+      </if>
+      <if test="tempid != null" >
+        TempId = #{tempid,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="cartid != null" >
+        CartId = #{cartid,jdbcType=BIGINT},
+      </if>
+      <if test="usedtime != null" >
+        UsedTime = #{usedtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where CodeNo = #{codeno,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PMyproductactivitycode" >
+    update p_myproductactivitycode
+    set BranchUserId = #{branchuserid,jdbcType=BIGINT},
+      TempId = #{tempid,jdbcType=INTEGER},
+      Status = #{status,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      UserId = #{userid,jdbcType=BIGINT},
+      CartId = #{cartid,jdbcType=BIGINT},
+      UsedTime = #{usedtime,jdbcType=TIMESTAMP}
+    where CodeNo = #{codeno,jdbcType=VARCHAR}
+  </update>
+</mapper>

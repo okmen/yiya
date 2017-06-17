@@ -23,11 +23,15 @@
     <result column="BlessCount" property="blesscount" jdbcType="INTEGER" />
     <result column="IsAutoOrder" property="isautoorder" jdbcType="INTEGER" />
     <result column="OrderHours" property="orderhours" jdbcType="INTEGER" />
+    <result column="IsBranchAddress" property="isbranchaddress" jdbcType="INTEGER" />
+    <result column="BeginTime" property="begintime" jdbcType="TIMESTAMP" />
+    <result column="EndTime" property="endtime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List">
     TempId, BranchUserId, Title, Status, Count, Remark, CartId, CreateTime, NeedVerifer, 
     Discription, TempCodeUrl, TempCodeSm, ApplyCount, Type, StyleId, MaxApplyCount, CompleteCount, 
-    MaxCompleteCount, BlessCount, IsAutoOrder, OrderHours
+    MaxCompleteCount, BlessCount, IsAutoOrder, OrderHours, IsBranchAddress, BeginTime, 
+    EndTime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -74,13 +78,14 @@
     where TempId = #{tempid,jdbcType=INTEGER}
   </delete>
   <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="tempid" parameterType="com.bbyiya.model.PMyproducttemp" >
-    insert into p_myproducttemp (TempId, BranchUserId, Title, 
+     insert into p_myproducttemp (TempId, BranchUserId, Title, 
       Status, Count, Remark, 
       CartId, CreateTime, NeedVerifer, 
       Discription, TempCodeUrl, TempCodeSm, 
       ApplyCount, Type, StyleId, 
       MaxApplyCount, CompleteCount, MaxCompleteCount, 
-      BlessCount, IsAutoOrder, OrderHours
+      BlessCount, IsAutoOrder, OrderHours, 
+      IsBranchAddress, BeginTime, EndTime
       )
     values (#{tempid,jdbcType=INTEGER}, #{branchuserid,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
       #{status,jdbcType=INTEGER}, #{count,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
@@ -88,7 +93,8 @@
       #{discription,jdbcType=VARCHAR}, #{tempcodeurl,jdbcType=VARCHAR}, #{tempcodesm,jdbcType=VARCHAR}, 
       #{applycount,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{styleid,jdbcType=BIGINT}, 
       #{maxapplycount,jdbcType=INTEGER}, #{completecount,jdbcType=INTEGER}, #{maxcompletecount,jdbcType=INTEGER}, 
-      #{blesscount,jdbcType=INTEGER}, #{isautoorder,jdbcType=INTEGER}, #{orderhours,jdbcType=INTEGER}
+      #{blesscount,jdbcType=INTEGER}, #{isautoorder,jdbcType=INTEGER}, #{orderhours,jdbcType=INTEGER}, 
+      #{isbranchaddress,jdbcType=INTEGER}, #{begintime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insert" parameterType="com.bbyiya.model.PMyproducttemp" >
@@ -98,7 +104,8 @@
       Discription, TempCodeUrl, TempCodeSm, 
       ApplyCount, Type, StyleId, 
       MaxApplyCount, CompleteCount, MaxCompleteCount, 
-      BlessCount, IsAutoOrder, OrderHours
+      BlessCount, IsAutoOrder, OrderHours, 
+      IsBranchAddress, BeginTime, EndTime
       )
     values (#{tempid,jdbcType=INTEGER}, #{branchuserid,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
       #{status,jdbcType=INTEGER}, #{count,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
@@ -106,7 +113,8 @@
       #{discription,jdbcType=VARCHAR}, #{tempcodeurl,jdbcType=VARCHAR}, #{tempcodesm,jdbcType=VARCHAR}, 
       #{applycount,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{styleid,jdbcType=BIGINT}, 
       #{maxapplycount,jdbcType=INTEGER}, #{completecount,jdbcType=INTEGER}, #{maxcompletecount,jdbcType=INTEGER}, 
-      #{blesscount,jdbcType=INTEGER}, #{isautoorder,jdbcType=INTEGER}, #{orderhours,jdbcType=INTEGER}
+      #{blesscount,jdbcType=INTEGER}, #{isautoorder,jdbcType=INTEGER}, #{orderhours,jdbcType=INTEGER}, 
+      #{isbranchaddress,jdbcType=INTEGER}, #{begintime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproducttemp" >
@@ -175,6 +183,15 @@
       <if test="orderhours != null" >
         OrderHours,
       </if>
+      <if test="isbranchaddress != null" >
+        IsBranchAddress,
+      </if>
+      <if test="begintime != null" >
+        BeginTime,
+      </if>
+      <if test="endtime != null" >
+        EndTime,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="tempid != null" >
@@ -239,6 +256,15 @@
       </if>
       <if test="orderhours != null" >
         #{orderhours,jdbcType=INTEGER},
+      </if>
+      <if test="isbranchaddress != null" >
+        #{isbranchaddress,jdbcType=INTEGER},
+      </if>
+      <if test="begintime != null" >
+        #{begintime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime != null" >
+        #{endtime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -305,6 +331,15 @@
       <if test="orderhours != null" >
         OrderHours = #{orderhours,jdbcType=INTEGER},
       </if>
+      <if test="isbranchaddress != null" >
+        IsBranchAddress = #{isbranchaddress,jdbcType=INTEGER},
+      </if>
+      <if test="begintime != null" >
+        BeginTime = #{begintime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime != null" >
+        EndTime = #{endtime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where TempId = #{tempid,jdbcType=INTEGER}
   </update>
@@ -329,7 +364,10 @@
       MaxCompleteCount = #{maxcompletecount,jdbcType=INTEGER},
       BlessCount = #{blesscount,jdbcType=INTEGER},
       IsAutoOrder = #{isautoorder,jdbcType=INTEGER},
-      OrderHours = #{orderhours,jdbcType=INTEGER}
+      OrderHours = #{orderhours,jdbcType=INTEGER},
+      IsBranchAddress = #{isbranchaddress,jdbcType=INTEGER},
+      BeginTime = #{begintime,jdbcType=TIMESTAMP},
+      EndTime = #{endtime,jdbcType=TIMESTAMP}
     where TempId = #{tempid,jdbcType=INTEGER}
   </update>
 </mapper>

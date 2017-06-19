@@ -162,6 +162,10 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			temp.setIsautoorder(param.getIsAutoOrder());
 			temp.setOrderhours(param.getOrderHours());
 			temp.setStyleid(param.getStyleId());
+			if(ObjectUtil.isEmpty(param.getIsbranchaddress())){
+				param.setIsbranchaddress(0);
+			}
+			temp.setIsbranchaddress(param.getIsbranchaddress());
 			myproducttempMapper.updateByPrimaryKey(temp);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("修改模板成功！");

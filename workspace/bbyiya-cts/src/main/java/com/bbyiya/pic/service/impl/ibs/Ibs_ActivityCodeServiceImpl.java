@@ -168,8 +168,7 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 		PageInfo<PMyproductactivitycode> resultPage = new PageInfo<PMyproductactivitycode>(codelist);
 		List<ActivityCodeProductVO> codevoList=new ArrayList<ActivityCodeProductVO>();
 		
-		if (resultPage.getList() != null && resultPage.getList().size() > 0) {
-			
+		if (resultPage.getList() != null && resultPage.getList().size() > 0) {	
 			for (PMyproductactivitycode code : resultPage.getList()) {
 				ActivityCodeProductVO codevo=new ActivityCodeProductVO();
 				codevo.setCode(code);
@@ -196,13 +195,16 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 					UUsers user=usersMapper.selectByPrimaryKey(code.getUserid());
 					codevo.setInvitedName(user.getNickname());
 				}
-				
-				
+				//0未使用，1已使用 
+				codevo.setActiveStatus(code.getStatus());
 				if(!ObjectUtil.isEmpty(code.getCartid())){
 					PMyproducts myproduct=myMapper.selectByPrimaryKey(code.getCartid());
 					if(myproduct!=null){
 						codevo.setTitle(myproduct.getTitle());
 						codevo.setCreatetimestr(DateUtil.getTimeStr(myproduct.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
+						if(ObjectUtil.isEmpty(myproduct.getUpdatetime())){
+							codevo.setUpdatetimestr(DateUtil.getTimeStr(myproduct.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
+						}
 						codevo.setUpdatetimestr(DateUtil.getTimeStr(myproduct.getUpdatetime(), "yyyy-MM-dd HH:mm:ss"));
 						codevo.setIsDue(0);//默认不是预产期
 						// 得到宝宝生日
@@ -215,6 +217,8 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 						if(tempapply!=null){
 							codevo.setPhone(tempapply.getMobilephone());
 							codevo.setAddress(tempapply.getAdress());
+							//1已使用 3制作已完成 4作品审核不通过5下单审核通过
+							codevo.setActiveStatus(tempapply.getStatus());
 						}
 						// 得到作品订单集合
 						List<OUserorders> orderList = orderMapper.findOrderListByCartId(myproduct.getCartid());
@@ -233,7 +237,7 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 						}
 					}
 				}
-				
+				codevoList.add(codevo);
 			}
 		}
 		PageInfoUtil<ActivityCodeProductVO> resultPageList=new PageInfoUtil<ActivityCodeProductVO>(resultPage,codevoList);

@@ -329,7 +329,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				//-----------------------异业合作---------------------------------------------------------
 				if(Integer.parseInt(OrderTypeEnum.brachOrder.toString())==orderType && mycart.getTempid()!=null){
 					PMyproducttempapply apply= tempApplyMapper.getMyProducttempApplyByCartId(param.getCartId());
-					if(apply!=null){
+					if(apply!=null&&apply.getStatus()!=null&&apply.getStatus().intValue()==Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString())){
 						apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.pass.toString()));
 						tempApplyMapper.updateByPrimaryKeySelective(apply);
 					}

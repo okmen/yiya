@@ -1,5 +1,9 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.PMyproductactivitycode;
 
 public interface PMyproductactivitycodeMapper {
@@ -14,4 +18,7 @@ public interface PMyproductactivitycodeMapper {
     int updateByPrimaryKeySelective(PMyproductactivitycode record);
 
     int updateByPrimaryKey(PMyproductactivitycode record);
+    
+    
+    List<PMyproductactivitycode> findActivitycodelistForTempId(@Param("tempid") Integer tempid,@Param("activestatus")Integer invitestatus,@Param("keywords")String keywords);
 }

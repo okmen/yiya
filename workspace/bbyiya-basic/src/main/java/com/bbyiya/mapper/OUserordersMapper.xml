@@ -84,6 +84,12 @@
     from o_userorders 
     where  Status=#{status,jdbcType=INTEGER} order by PayTime desc,OrderTime desc
   </select>
+  
+  <!-- 根据作品ID得到订单列表  -->
+   <select id="findOrderListByCartId" resultMap="BaseResultMap"  parameterType="java.lang.Long" >
+    select a.* from o_userorders a,o_orderproducts b where a.UserOrderId=b.UserOrderId and b.CartId=#{cartid,jdbcType=BIGINT}   
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from o_userorders
     where UserOrderId = #{userorderid,jdbcType=VARCHAR}

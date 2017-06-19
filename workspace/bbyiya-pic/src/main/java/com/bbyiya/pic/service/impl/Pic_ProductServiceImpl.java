@@ -819,12 +819,13 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 								item.setTempTitle(temp.getTitle());
 							}
 						}else{
-							//来源于客户一对一
-							UUserAddressResult address=baseAddressService.getUserAddressResult(inviteusers.getUserid(), null);
-							if(address!=null){
-								item.setAddress(address.getProvinceName()+address.getCityName()+address.getCityName()+address.getStreetdetail());
+							if(inviteusers!=null){
+								//来源于客户一对一
+								UUserAddressResult address=baseAddressService.getUserAddressResult(inviteusers.getUserid(), null);
+								if(address!=null){
+									item.setAddress(address.getProvinceName()+address.getCityName()+address.getCityName()+address.getStreetdetail());
+								}
 							}
-							
 						}
 						
 					}

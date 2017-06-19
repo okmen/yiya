@@ -56,4 +56,11 @@ public interface OUserordersMapper {
      * @return
      */
     OUserorders findLatelyOrderByUserId(@Param("userId") Long userId);
+    
+    /**
+	 * 根据作品ID得到订单
+	 * @param cartid
+	 * @return
+	 */
+	List<OUserorders> findOrderListByCartId(@Param("cartid") Long cartid);
 }

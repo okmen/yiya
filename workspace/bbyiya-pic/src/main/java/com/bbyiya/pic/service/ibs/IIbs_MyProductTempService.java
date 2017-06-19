@@ -108,7 +108,7 @@ public interface IIbs_MyProductTempService {
 	 * @param codesm
 	 * @return
 	 */
-	ReturnModel editTempCodeUrl(Integer tempid, String codeurl, String codesm);
+	ReturnModel editTempCodeUrl(Integer tempid, String codeurl, String codesm,String discription);
 	/**
 	 * 设置员工模板审核负责权限
 	 * @param userId

@@ -20,6 +20,23 @@
     from p_myproductactivitycode
     where CodeNo = #{codeno,jdbcType=VARCHAR}
   </select>
+  
+  
+  <!-- 01 find 获取一个批次下的活动码  -->
+  <!-- status 0未使用 1制作中、 2已下单 、3已删除、 4已禁用 -->
+  <select id="findActivitycodelistForTempId" resultMap="BaseResultMap" >
+    select a.* from p_myproductactivitycode a left join  p_myproducttempapply b  on a.TempId=b.TempId 
+		where  a.Status!=3 and a.TempId=#{tempid,jdbcType=INTEGER} 
+    <if test="activestatus != null" >
+        and  a.Status=#{activestatus,jdbcType=INTEGER}
+    </if>
+    <if test="keywords != null and keywords!=''" >
+        and  (a.CodeNo  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' )  or a.CartId  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' )  or b.Mobilephone LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) )
+    </if>
+    order by a.CreateTime desc 
+  </select>
+  
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from p_myproductactivitycode
     where CodeNo = #{codeno,jdbcType=VARCHAR}

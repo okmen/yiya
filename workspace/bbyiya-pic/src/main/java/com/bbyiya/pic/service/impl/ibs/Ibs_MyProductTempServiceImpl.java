@@ -126,6 +126,10 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		temp.setIsautoorder(param.getIsAutoOrder());
 		temp.setOrderhours(param.getOrderHours());
 		temp.setApplycount(0);//报名人数为0时不限制
+		if(ObjectUtil.isEmpty(param.getIsbranchaddress())){
+			param.setIsbranchaddress(0);
+		}
+		temp.setIsbranchaddress(param.getIsbranchaddress());
 		temp.setType(Integer.parseInt(MyProductTempType.normal.toString()));//默认为普通类型
 		myproducttempMapper.insertReturnId(temp);
 		
@@ -139,6 +143,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		rq.setStatusreson("添加模板成功！");
 		return rq;
 	}
+	
 	
 	/**
 	 * 修改模板
@@ -157,6 +162,10 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			temp.setIsautoorder(param.getIsAutoOrder());
 			temp.setOrderhours(param.getOrderHours());
 			temp.setStyleid(param.getStyleId());
+			if(ObjectUtil.isEmpty(param.getIsbranchaddress())){
+				param.setIsbranchaddress(0);
+			}
+			temp.setIsbranchaddress(param.getIsbranchaddress());
 			myproducttempMapper.updateByPrimaryKey(temp);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("修改模板成功！");
@@ -170,13 +179,14 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	/**
 	 * 修改二维码信息
 	 * */
-	public ReturnModel editTempCodeUrl(Integer tempid,String codeurl,String codesm){
+	public ReturnModel editTempCodeUrl(Integer tempid,String codeurl,String codesm,String discription){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);	
 		PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempid);
 		if(temp!=null){
 			temp.setTempcodeurl(codeurl);
 			temp.setTempcodesm(codesm);
+			temp.setDiscription(discription);
 			myproducttempMapper.updateByPrimaryKey(temp);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("修改模板二维码成功！");

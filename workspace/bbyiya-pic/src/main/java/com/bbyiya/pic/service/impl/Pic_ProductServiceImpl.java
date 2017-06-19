@@ -795,6 +795,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					List<PMyproductsinvites> invites = inviteMapper.findListByCartId(item.getCartid());
 					if (invites != null && invites.size() > 0) {
 						item.setInviteModel(invites.get(0));
+						item.setInvitestatus(invites.get(0).getStatus());
 						UUsers inviteusers = null;
 						if (!ObjectUtil.isEmpty(invites.get(0).getInvitephone())) {
 							inviteusers = usersMapper.getUUsersByPhone(invites.get(0).getInvitephone());

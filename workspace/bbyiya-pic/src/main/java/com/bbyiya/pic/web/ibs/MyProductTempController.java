@@ -113,7 +113,7 @@ public class MyProductTempController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/editTempCodeUrl")
-	public String editTempCodeUrl(Integer tempid,String codeurl,String codesm) throws Exception {
+	public String editTempCodeUrl(Integer tempid,String codeurl,String codesm,String discription) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
@@ -127,7 +127,7 @@ public class MyProductTempController extends SSOController {
 				rq.setStatusreson("二维码文字说明在危险字符!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			rq=producttempService.editTempCodeUrl(tempid,codeurl,codesm);
+			rq=producttempService.editTempCodeUrl(tempid,codeurl,codesm,discription);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

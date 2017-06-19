@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.common.vo.ResultMsg;
+import com.bbyiya.dao.PMyproductactivitycodeMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
@@ -25,15 +26,17 @@ import com.bbyiya.dao.PMyproducttempusersMapper;
 import com.bbyiya.dao.PProductstylesMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.enums.MyProductTempStatusEnum;
+import com.bbyiya.enums.MyProductTempType;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.pic.ActivityCodeStatusEnum;
 import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
 import com.bbyiya.enums.user.UserIdentityEnums;
+import com.bbyiya.model.PMyproductactivitycode;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.model.PMyproducttempusers;
 import com.bbyiya.model.PProductstyles;
-import com.bbyiya.model.UUseraddress;
 import com.bbyiya.pic.dao.IMyProductsDao;
 import com.bbyiya.pic.service.ibs.IIbs_MyProductTempService;
 import com.bbyiya.pic.vo.product.MyProductListVo;
@@ -73,6 +76,9 @@ public class YiyeMgtController  extends SSOController {
 	private IIbs_MyProductTempService ibs_tempService;
 	@Autowired
 	private PMyproducttempusersMapper tempUsrMapper;
+
+	@Autowired
+	private PMyproductactivitycodeMapper codeMapper;
 	
 	/**
 	 * M11-03 异业合作-模板详情 
@@ -136,6 +142,7 @@ public class YiyeMgtController  extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	
 	/**
 	 * M11-01 用户提交申请
 	 * M11-02 异业合作-接受邀请（无需申请）
@@ -160,29 +167,40 @@ public class YiyeMgtController  extends SSOController {
 					rq.setStatusreson("宝宝生日/预产期不能为空！");
 					return JsonUtil.objectToJsonStr(rq);
 				}
-//				if(param.getAddressId()<=0){
-//					rq.setStatusreson("地址信息不能为空！");
-//					return JsonUtil.objectToJsonStr(rq);
-//				}
-//				UUseraddress address=addressMapper.get_UUserAddressByKeyId(param.getAddressId());
-//				if(address==null){
-//					rq.setStatusreson("地址信息不存在！");
-//					return JsonUtil.objectToJsonStr(rq);
-//				}
 				PMyproducts myproducts= myProductMapper.selectByPrimaryKey(param.getCartId());
 				if(myproducts!=null&&myproducts.getIstemp()!=null&&myproducts.getTempid()!=null){
 					PMyproducttemp temp= tempMapper.selectByPrimaryKey(myproducts.getTempid());
 					if(temp!=null){
 						if(temp.getStatus()!=null&&temp.getStatus().intValue()!=Integer.parseInt(MyProductTempStatusEnum.enable.toString())){
-							rq.setStatu(ReturnStatus.ParamError);
 							rq.setStatusreson("不好意思，活动已过期（或已失效）");
 							return JsonUtil.objectToJsonStr(rq);
 						}
 						if(temp.getMaxapplycount()!=null&&temp.getMaxapplycount().intValue()>0){
 							if(temp.getApplycount()!=null&&temp.getApplycount().intValue()>=temp.getMaxapplycount().intValue()){
-								rq.setStatu(ReturnStatus.ParamError);
 								rq.setStatusreson("不好意思，活动太火爆了，参与的人数已经爆了！");  
 								return JsonUtil.objectToJsonStr(rq);
+							}
+						}
+						//--    活动码活动  验证活动码可用性   ---------------------------------------------
+						if(temp.getType()!=null&&temp.getType().intValue()==Integer.parseInt(MyProductTempType.code.toString())){
+							if(ObjectUtil.isEmpty(param.getCodenum())){
+								rq.setStatusreson("请输入活动码！");
+								return JsonUtil.objectToJsonStr(rq);
+							}
+							PMyproductactivitycode codeMod = codeMapper.selectByPrimaryKey(param.getCodenum());
+							if (codeMod != null) {
+								if (codeMod.getStatus() != null && codeMod.getStatus().intValue() == Integer.parseInt(ActivityCodeStatusEnum.used.toString())) {
+									rq.setStatusreson("不好意思，您的活动码已经使用过！");
+									return JsonUtil.objectToJsonStr(rq);
+								} else if (codeMod.getStatus() == null || codeMod.getStatus().intValue() == Integer.parseInt(ActivityCodeStatusEnum.notuse.toString())) {
+									if(temp.getTempid().intValue()!=codeMod.getTempid().intValue()){
+										rq.setStatusreson("不好意思，您的活动码不支持在本活动使用！（PS:活动码只能在指定活动中使用！）");
+										return JsonUtil.objectToJsonStr(rq);
+									}
+								} else {
+									rq.setStatusreson("不好意思，您的活动码失效！");
+									return JsonUtil.objectToJsonStr(rq);
+								}
 							}
 						}
 						
@@ -209,14 +227,8 @@ public class YiyeMgtController  extends SSOController {
 						PMyproducttempapply apply=new PMyproducttempapply();
 						apply.setTempid(myproducts.getTempid());
 						apply.setUserid(user.getUserId());
-//						apply.setReceiver(address.getReciver()); 
 						apply.setMobilephone(user.getMobilePhone()); 
-//						apply.setProvince(address.getProvince());
-//						apply.setCity(address.getCity());
-//						apply.setStreet(address.getStreetdetail());
-//						apply.setArea(address.getArea());
-//						apply.setAdress(regionService.getProvinceName(address.getProvince())+regionService.getCityName(address.getCity())+regionService.getAresName(address.getArea())+address.getStreetdetail());
-						if(param.getDateTime().getTime()>(new Date()).getTime()){
+						if(param.getDateTime().getTime()>(new Date()).getTime()){//是否是预产期
 							apply.setIsdue(1);
 						}
 						apply.setBirthday(param.getDateTime());
@@ -228,7 +240,7 @@ public class YiyeMgtController  extends SSOController {
 						temp.setApplycount(temp.getApplycount()==null?1:temp.getApplycount()+1);
 						tempMapper.updateByPrimaryKeySelective(temp); 
 						
-	
+						//是否需要审核
 						boolean isNeedVer=false;
 						if(temp.getNeedverifer()!=null&&temp.getNeedverifer().intValue()>0){
 							//需要审核
@@ -236,7 +248,6 @@ public class YiyeMgtController  extends SSOController {
 						}
 						
 						if(!isNeedVer){// 不需要审核 调取 新增作品、客户信息
-							
 							//验证是否是免费领取的用户
 							ResultMsg rMsg=verUser(temp.getTempid().intValue(),user);
 							if(rMsg.getStatus()!=1){
@@ -247,7 +258,25 @@ public class YiyeMgtController  extends SSOController {
 							
 							rq=ibs_tempService.doAcceptOrAutoTempApplyOpt(apply);
 							if(rq.getStatu().equals(ReturnStatus.Success)){
+								//不需要审核，直接通过审核
 								apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString()));
+								
+								//------------------------  活动码兑换-***********************************--------------------
+								if(temp.getType()!=null&&temp.getType().intValue()==Integer.parseInt(MyProductTempType.code.toString())){
+									PMyproductactivitycode codeMod = codeMapper.selectByPrimaryKey(param.getCodenum());
+									codeMod.setUsedtime(new Date());
+									codeMod.setUserid(user.getUserId());
+									codeMod.setStatus(1);
+									try {
+										Map<String, Object> mapr= (Map<String, Object>)rq.getBasemodle();
+										if(mapr!=null){
+											codeMod.setCartid((Long)mapr.get("mycartid"));
+										}
+									} catch (Exception e) {
+										
+									}
+									codeMapper.updateByPrimaryKey(codeMod);
+								}
 							}
 						}
 						

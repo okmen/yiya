@@ -12,6 +12,7 @@ public class YiyeSubmitParam implements Serializable{
 	private long addressId;
 	private String dateTimeStr;
 	private long dateTimeVal;
+	private String codenum;
 	public long getDateTimeVal() {
 		return dateTimeVal;
 	}
@@ -54,6 +55,12 @@ public class YiyeSubmitParam implements Serializable{
 	}
 	public void setDateTime(Date dateTime) {
 		this.dateTime = dateTime;
+	}
+	public String getCodenum() {
+		return codenum;
+	}
+	public void setCodenum(String codenum) {
+		this.codenum = codenum;
 	}
 	
 

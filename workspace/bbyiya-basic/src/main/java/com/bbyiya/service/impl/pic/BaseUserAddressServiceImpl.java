@@ -140,8 +140,11 @@ public class BaseUserAddressServiceImpl implements IBaseUserAddressService {
 				return rq;
 			}
 			if (!ObjectUtil.isMobile(address.getPhone())) {
-				rq.setStatu(ReturnStatus.ParamError_2);
 				rq.setStatusreson("手机号格式不对！");
+				return rq;
+			}
+			if(address.getArea()==null){
+				rq.setStatusreson("请选择所在区县！");
 				return rq;
 			}
 			if (!ObjectUtil.isEmpty(address.getStreetdetail()) && !ObjectUtil.validSqlStr(address.getStreetdetail())) {

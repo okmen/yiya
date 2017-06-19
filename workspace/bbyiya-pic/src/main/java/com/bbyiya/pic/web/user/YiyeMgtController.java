@@ -571,6 +571,10 @@ public class YiyeMgtController  extends SSOController {
 			if(subUserId>0){
 				param.setSubUserId(subUserId);
 			} 
+			String codenum=String.valueOf(model.get("codenum"));
+			if(!(ObjectUtil.isEmpty(codenum)||"null".equals(codenum))){
+				param.setCodenum(codenum);
+			}
 			String dateTimeStr =String.valueOf(model.get("dateTimeStr"));
 			long dateVal=ObjectUtil.parseLong(String.valueOf(model.get("dateTimeVal")));
 			if(!(ObjectUtil.isEmpty(dateTimeStr)||"null".equals(dateTimeStr))){

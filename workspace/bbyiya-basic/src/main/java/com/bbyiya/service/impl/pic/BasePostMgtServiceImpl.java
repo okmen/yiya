@@ -73,9 +73,11 @@ public class BasePostMgtServiceImpl implements IBasePostMgtService{
 	public PPostmodel getPostmodel(Integer postModelId,Integer areaId){
 		PPostmodel model=postmodelMapper.selectByPrimaryKey(postModelId);
 		if(model!=null){
-			PPostmodelareas areamod = postmodelareasMapper.getPostAreaModel(postModelId, areaId);
-			if(areamod!=null){
-				model.setAmount(areamod.getAmount());
+			if(areaId!=null&&areaId.intValue()>0){
+				PPostmodelareas areamod = postmodelareasMapper.getPostAreaModel(postModelId, areaId);
+				if(areamod!=null){
+					model.setAmount(areamod.getAmount());
+				}
 			}
 		}
 		return model;

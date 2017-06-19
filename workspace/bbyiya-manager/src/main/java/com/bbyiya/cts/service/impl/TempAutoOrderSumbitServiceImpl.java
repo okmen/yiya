@@ -10,13 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bbyiya.cts.job.HeartbeatJob;
 import com.bbyiya.cts.service.ITempAutoOrderSumbitService;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
 import com.bbyiya.dao.SysLogsMapper;
-import com.bbyiya.dao.UAdminactionlogsMapper;
+import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.enums.MyProductTempStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.OOrderproducts;
@@ -24,6 +23,8 @@ import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.model.SysLogs;
+import com.bbyiya.model.UBranches;
+import com.bbyiya.service.IRegionService;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -47,7 +48,13 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 	private PMyproducttempapplyMapper applyMapper;
 	
 	@Autowired
+	private UBranchesMapper branchesMapper;
+
+	@Autowired
 	private SysLogsMapper syslogMapper;
+	
+	@Resource(name = "regionServiceImpl")
+	private IRegionService regionService;
 
 	
 	@Resource(name = "baseOrderMgtServiceImpl")
@@ -75,15 +82,32 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 					productParam.setCount(1);
 					productParam.setCartId(myproduct.getCartid());
 					
-					PMyproducttempapply tempapply=applyMapper.getMyProducttempApplyByCartId(myproduct.getCartid());
 					OrderaddressParam addressParam=new OrderaddressParam();
-					addressParam.setUserid(tempapply.getUserid());
-					addressParam.setCity(tempapply.getCity());
-					addressParam.setDistrict(tempapply.getArea());
-					addressParam.setPhone(tempapply.getMobilephone());
-					addressParam.setProvince(tempapply.getProvince());
-					addressParam.setReciver(tempapply.getReceiver());
-					addressParam.setStreetdetail(tempapply.getStreet());
+					//使用影楼地址
+					if(temp.getIsbranchaddress()!=null&&temp.getIsbranchaddress().intValue()==1){
+						UBranches branches=branchesMapper.selectByPrimaryKey(temp.getBranchuserid());
+						if (branches != null) {
+							addressParam.setUserid(branches.getBranchuserid());
+							addressParam.setPhone(branches.getPhone());
+							addressParam.setReciver(branches.getUsername());
+							addressParam.setCity(branches.getCity());
+							addressParam.setProvince(branches.getProvince());
+							addressParam.setDistrict(branches.getArea());
+							addressParam.setStreetdetail(branches.getStreetdetail());
+						}
+					}else{
+						PMyproducttempapply tempapply=applyMapper.getMyProducttempApplyByCartId(myproduct.getCartid());					
+						//用户报名地址
+						addressParam.setUserid(tempapply.getUserid());
+						addressParam.setCity(tempapply.getCity());
+						addressParam.setDistrict(tempapply.getArea());
+						addressParam.setPhone(tempapply.getMobilephone());
+						addressParam.setProvince(tempapply.getProvince());
+						addressParam.setReciver(tempapply.getReceiver());
+						addressParam.setStreetdetail(tempapply.getStreet());
+					}
+					
+					
 					if (productParam != null&&addressParam!=null) {
 						OOrderproducts product = new OOrderproducts();
 						product.setProductid(productParam.getProductId());
@@ -108,44 +132,47 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 						if(addressParam.getCity()==null){
 							rq.setStatu(ReturnStatus.ParamError);
 							rq.setStatusreson("地址参数有误：city为空");
-							return rq;
+							
 						}
 						if(addressParam.getProvince()==null){
 							rq.setStatu(ReturnStatus.ParamError);
 							rq.setStatusreson("地址参数有误：province为空");
-							return rq;
+							
 						}
 						if(addressParam.getDistrict()==null){
 							rq.setStatu(ReturnStatus.ParamError);
 							rq.setStatusreson("地址参数有误：district为空");
-							return rq;
+							
 						}
 						if(addressParam.getStreetdetail()==null){
 							rq.setStatu(ReturnStatus.ParamError);
 							rq.setStatusreson("地址参数有误：streetdetail为空");
-							return rq;
+							
 						}
 						if(addressParam.getPhone()==null){
 							rq.setStatu(ReturnStatus.ParamError);
 							rq.setStatusreson("参数有误,手机号为空");
-							return rq;
+							
 						}
 						if(!ObjectUtil.isEmpty(addressParam.getPhone())&&!ObjectUtil.isMobile(addressParam.getPhone())){
 							rq.setStatu(ReturnStatus.ParamError_2);
 							rq.setStatusreson("手机号格式不对！");
-							return rq;
+							
 						}
 						if(addressParam.getReciver()==null){
 							rq.setStatu(ReturnStatus.ParamError);
 							rq.setStatusreson("参数有误,联系人为空");
-							return rq;
+							
 						}
 						param.setAddressparam(addressParam);
 						rq = orderMgtService.submitOrder_IBS(param);
 					} else {
 						rq.setStatu(ReturnStatus.ParamError);
 						rq.setStatusreson("参数有误");
+						
 					}
+					
+					
 					if(!rq.getStatu().equals(ReturnStatus.Success))//未通过参数验证
 					{
 						addSysLog("作品"+productParam.getCartId()+"自动下单失败！原因："+rq.getStatusreson(),"dotempAutoOrderSumbit","下单失败");

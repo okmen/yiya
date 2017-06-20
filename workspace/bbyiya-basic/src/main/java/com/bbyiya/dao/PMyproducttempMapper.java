@@ -28,7 +28,7 @@ public interface PMyproducttempMapper {
      * @param branchUserId
      * @return
      */
-    List<PMyproducttemp> findBranchMyProductTempList(@Param("branchuserid") Long branchuserid,@Param("status") Integer status,@Param("keywords") String keywords);
+    List<PMyproducttemp> findBranchMyProductTempList(@Param("branchuserid") Long branchuserid,@Param("status") Integer status,@Param("keywords") String keywords,@Param("type")Integer type);
     /**
      * 获取影楼管理员 需审核的异业合作模板列表
      * @param branchuserid

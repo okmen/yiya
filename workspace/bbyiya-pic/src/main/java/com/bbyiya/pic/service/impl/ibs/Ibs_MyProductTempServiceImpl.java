@@ -357,11 +357,11 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	 * 查询模板列表
 	 * @return
 	 */
-	public ReturnModel findMyProductTempList(int index,int size,Long userid,Integer status,String keywords){
+	public ReturnModel findMyProductTempList(int index,int size,Long userid,Integer status,String keywords,Integer type){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);		
 		PageHelper.startPage(index, size);	
-		List<PMyproducttemp>  templist=myproducttempMapper.findBranchMyProductTempList(userid,status,keywords);
+		List<PMyproducttemp>  templist=myproducttempMapper.findBranchMyProductTempList(userid,status,keywords,type);
 		PageInfo<PMyproducttemp> reuslt=new PageInfo<PMyproducttemp>(templist); 
 		if(reuslt!=null&&reuslt.getList()!=null&&reuslt.getList().size()>0){
 			for (PMyproducttemp temp : templist) {	

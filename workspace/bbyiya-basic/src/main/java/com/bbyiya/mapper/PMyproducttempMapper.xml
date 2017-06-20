@@ -45,6 +45,9 @@
     <include refid="Base_Column_List" />
     from p_myproducttemp
     where BranchUserId = #{branchuserid,jdbcType=BIGINT} and Status!=2 
+     <if test="type != null" >
+       and  Type = #{type,jdbcType=INTEGER}
+    </if>
     <if test="status != null" >
        and  Status = #{status,jdbcType=INTEGER}
     </if>

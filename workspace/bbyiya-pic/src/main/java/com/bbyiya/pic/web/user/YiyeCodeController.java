@@ -58,6 +58,8 @@ public class YiyeCodeController extends SSOController {
 						rq.setStatusreson("不好意思，您的活动码失效！");
 						return JsonUtil.objectToJsonStr(rq);
 					}
+				}else {
+					rq.setStatusreson("很遗憾，你输入的活动码不正确，未能获得活动资格！");
 				}
 			} else {
 				rq.setStatu(ReturnStatus.ParamError);

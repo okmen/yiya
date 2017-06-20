@@ -405,23 +405,6 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 					}
 					temp.setProductName(producttitle);
 				}
-				/*
-				 * // 获取产品信息
-				PProducts products = productsMapper.selectByPrimaryKey(tempproduct.getProductid());
-				PProductstyles styles = styleMapper.selectByPrimaryKey(temp.getStyleid());
-				String producttitle=products.getTitle();
-				if (products != null && styles != null) {
-					if(styles.getStyleid()%2==0){
-						producttitle=producttitle+"-坚板-"+styles.getPrice();
-					}else{
-						producttitle=producttitle+"-横板-"+styles.getPrice();
-					}
-					codevo.setProductTitle(producttitle);
-				}
-				 */
-				
-				
-				
 			}
 		}
 		

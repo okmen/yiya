@@ -32,7 +32,7 @@ public interface IIbs_MyProductTempService {
 	 * @param userid
 	 * @return
 	 */
-	ReturnModel findMyProductTempList(int index, int size, Long userid,Integer status,String keywords);
+	ReturnModel findMyProductTempList(int index, int size, Long userid,Integer status,String keywords,Integer type);
 	/**
 	 * ±£´æÄ£°å¶şÎ¬ÂëÍ¼Æ¬
 	 * @param url

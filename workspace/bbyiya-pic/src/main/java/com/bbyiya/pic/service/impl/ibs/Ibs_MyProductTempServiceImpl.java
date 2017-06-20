@@ -25,6 +25,8 @@ import com.bbyiya.dao.PMyproducttempapplyMapper;
 import com.bbyiya.dao.PMyproducttempusersMapper;
 import com.bbyiya.dao.PMyproducttempverlogsMapper;
 import com.bbyiya.dao.PMyproducttempverusersMapper;
+import com.bbyiya.dao.PProductsMapper;
+import com.bbyiya.dao.PProductstylesMapper;
 import com.bbyiya.dao.UAgentcustomersMapper;
 import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UUsersMapper;
@@ -45,6 +47,8 @@ import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.model.PMyproducttempusers;
 import com.bbyiya.model.PMyproducttempverlogs;
 import com.bbyiya.model.PMyproducttempverusers;
+import com.bbyiya.model.PProducts;
+import com.bbyiya.model.PProductstyles;
 import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUsers;
@@ -89,6 +93,11 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	private PMyproducttempverusersMapper myTempveruserMapper;
 	@Autowired
 	private PMyproducttempverlogsMapper myTempVeruserlogMapper;
+	@Autowired
+	private PProductsMapper productsMapper;
+	@Autowired
+	private PProductstylesMapper styleMapper;
+
 	
 	
 	/**
@@ -357,11 +366,12 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	 * 查询模板列表
 	 * @return
 	 */
-	public ReturnModel findMyProductTempList(int index,int size,Long userid,Integer status,String keywords){
+	public ReturnModel findMyProductTempList(int index,int size,Long userid,Integer status,String keywords,Integer type){
 		ReturnModel rq=new ReturnModel();
-		rq.setStatu(ReturnStatus.SystemError);		
+		rq.setStatu(ReturnStatus.SystemError);
+		if(type==null) type=0;
 		PageHelper.startPage(index, size);	
-		List<PMyproducttemp>  templist=myproducttempMapper.findBranchMyProductTempList(userid,status,keywords);
+		List<PMyproducttemp>  templist=myproducttempMapper.findBranchMyProductTempList(userid,status,keywords,type);
 		PageInfo<PMyproducttemp> reuslt=new PageInfo<PMyproducttemp>(templist); 
 		if(reuslt!=null&&reuslt.getList()!=null&&reuslt.getList().size()>0){
 			for (PMyproducttemp temp : templist) {	
@@ -381,6 +391,20 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 				//得到待审核数量
 				Integer checkCount=myproducttempapplyMapper.getNeedCheckApllyCountByTemp(temp.getTempid(),Integer.parseInt(MyProducttempApplyStatusEnum.apply.toString()));
 				temp.setNeedCheckCount(checkCount==null?0:checkCount);
+				
+				PProductstyles styles = styleMapper.selectByPrimaryKey(temp.getStyleid());
+				PMyproducts tempproduct=myMapper.selectByPrimaryKey(temp.getCartid());
+				PProducts products = productsMapper.selectByPrimaryKey(tempproduct.getProductid());
+				
+				if (products != null && styles != null) {
+					String producttitle=products.getTitle();
+					if(styles.getStyleid()%2==0){
+						producttitle=producttitle+"-坚板-"+styles.getPrice();
+					}else{
+						producttitle=producttitle+"-横板-"+styles.getPrice();
+					}
+					temp.setProductName(producttitle);
+				}
 			}
 		}
 		

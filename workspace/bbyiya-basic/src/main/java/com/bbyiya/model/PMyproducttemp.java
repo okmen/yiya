@@ -64,6 +64,7 @@ public class PMyproducttemp {
   	 */
   	private Integer needCheckCount; 
   	private String createtimestr;
+  	private String productName;//产品名称
 
     public Integer getNeedverifer() {
 		return needverifer;
@@ -277,6 +278,14 @@ public class PMyproducttemp {
 
 	public void setEndtime(Date endtime) {
 		this.endtime = endtime;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
 	}
     
     

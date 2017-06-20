@@ -359,7 +359,8 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	 */
 	public ReturnModel findMyProductTempList(int index,int size,Long userid,Integer status,String keywords,Integer type){
 		ReturnModel rq=new ReturnModel();
-		rq.setStatu(ReturnStatus.SystemError);		
+		rq.setStatu(ReturnStatus.SystemError);
+		if(type==null) type=0;
 		PageHelper.startPage(index, size);	
 		List<PMyproducttemp>  templist=myproducttempMapper.findBranchMyProductTempList(userid,status,keywords,type);
 		PageInfo<PMyproducttemp> reuslt=new PageInfo<PMyproducttemp>(templist); 

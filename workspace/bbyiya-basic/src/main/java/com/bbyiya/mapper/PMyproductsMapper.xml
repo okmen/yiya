@@ -110,7 +110,7 @@ where a.CartId=b.CartId and a.Status!=3 and a.Status!=4 and a.IsTemp=0 and (a.Te
   
   <!-- 08 获取可自动下单的活动作品 -->
    <select id="findCanOrderMyProducts" resultMap="BaseResultMap" >
-   select a.* from p_myproducts a inner join  p_myproducttempapply b  on a.CartId=b.CartId 
+   select DISTINCT a.* from p_myproducts a inner join  p_myproducttempapply b  on a.CartId=b.CartId 
 		where  a.Status!=3 and a.Status!=4 and a.IsTemp=0 and a.TempId=#{tempid,jdbcType=INTEGER}   
 and TIMESTAMPDIFF(HOUR, b.CompleteTime, now())>=#{ordertime,jdbcType=INTEGER}  
 and b.Status=3 

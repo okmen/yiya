@@ -21,12 +21,13 @@
     <result column="IsRead" property="isread" jdbcType="INTEGER" />
     <result column="Receiver" jdbcType="VARCHAR" property="receiver" />
     <result column="CartId" property="cartid" jdbcType="BIGINT" />
-     <result column="Reason" property="reason" jdbcType="VARCHAR" />
+    <result column="Reason" property="reason" jdbcType="VARCHAR" />
+    <result column="Sort" property="sort" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     TempApplyId, TempId, UserId, Mobilephone, Province, City, Area, Street, Adress, IsDue, 
     CompanyUserId, Status, CreateTime, VerfiyTime, CompleteTime, Birthday, IsRead, Receiver, CartId, 
-    Reason
+    Reason, Sort
   </sql>
   
   <!-- 得到模板待审核的报名人数 -->
@@ -81,21 +82,23 @@
     delete from p_myproducttempapply
     where TempApplyId = #{tempapplyid,jdbcType=BIGINT}
   </delete>
- <insert id="insert" parameterType="com.bbyiya.model.PMyproducttempapply" >
+<insert id="insert" parameterType="com.bbyiya.model.PMyproducttempapply" >
     insert into p_myproducttempapply (TempApplyId, TempId, UserId, 
       Mobilephone, Province, City, 
       Area, Street, Adress, 
       IsDue, CompanyUserId, Status, 
       CreateTime, VerfiyTime, CompleteTime, 
       Birthday, IsRead, Receiver, 
-      CartId, Reason)
+      CartId, Reason, Sort
+      )
     values (#{tempapplyid,jdbcType=BIGINT}, #{tempid,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, 
       #{mobilephone,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, 
       #{area,jdbcType=INTEGER}, #{street,jdbcType=VARCHAR}, #{adress,jdbcType=VARCHAR}, 
       #{isdue,jdbcType=INTEGER}, #{companyuserid,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{verfiytime,jdbcType=TIMESTAMP}, #{completetime,jdbcType=DATE}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{verfiytime,jdbcType=TIMESTAMP}, #{completetime,jdbcType=TIMESTAMP}, 
       #{birthday,jdbcType=TIMESTAMP}, #{isread,jdbcType=INTEGER}, #{receiver,jdbcType=VARCHAR}, 
-      #{cartid,jdbcType=BIGINT}, #{reason,jdbcType=VARCHAR})
+      #{cartid,jdbcType=BIGINT}, #{reason,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproducttempapply" >
     insert into p_myproducttempapply
@@ -160,6 +163,9 @@
       <if test="reason != null" >
         Reason,
       </if>
+      <if test="sort != null" >
+        Sort,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="tempapplyid != null" >
@@ -205,7 +211,7 @@
         #{verfiytime,jdbcType=TIMESTAMP},
       </if>
       <if test="completetime != null" >
-        #{completetime,jdbcType=DATE},
+        #{completetime,jdbcType=TIMESTAMP},
       </if>
       <if test="birthday != null" >
         #{birthday,jdbcType=TIMESTAMP},
@@ -221,6 +227,9 @@
       </if>
       <if test="reason != null" >
         #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -267,7 +276,7 @@
         VerfiyTime = #{verfiytime,jdbcType=TIMESTAMP},
       </if>
       <if test="completetime != null" >
-        CompleteTime = #{completetime,jdbcType=DATE},
+        CompleteTime = #{completetime,jdbcType=TIMESTAMP},
       </if>
       <if test="birthday != null" >
         Birthday = #{birthday,jdbcType=TIMESTAMP},
@@ -283,6 +292,9 @@
       </if>
       <if test="reason != null" >
         Reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        Sort = #{sort,jdbcType=INTEGER},
       </if>
     </set>
     where TempApplyId = #{tempapplyid,jdbcType=BIGINT}
@@ -302,12 +314,13 @@
       Status = #{status,jdbcType=INTEGER},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
       VerfiyTime = #{verfiytime,jdbcType=TIMESTAMP},
-      CompleteTime = #{completetime,jdbcType=DATE},
+      CompleteTime = #{completetime,jdbcType=TIMESTAMP},
       Birthday = #{birthday,jdbcType=TIMESTAMP},
       IsRead = #{isread,jdbcType=INTEGER},
       Receiver = #{receiver,jdbcType=VARCHAR},
       CartId = #{cartid,jdbcType=BIGINT},
-      Reason = #{reason,jdbcType=VARCHAR}
+      Reason = #{reason,jdbcType=VARCHAR},
+      Sort = #{sort,jdbcType=INTEGER}
     where TempApplyId = #{tempapplyid,jdbcType=BIGINT}
   </update>
 </mapper>

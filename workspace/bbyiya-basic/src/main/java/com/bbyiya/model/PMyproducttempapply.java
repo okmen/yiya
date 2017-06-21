@@ -38,6 +38,7 @@ public class PMyproducttempapply {
 	private String receiver;
 	private Long cartid;
 	private String reason;
+	private Integer sort;
 
 	/***************** 添加的VO字段 *************************/
 
@@ -59,6 +60,14 @@ public class PMyproducttempapply {
 
 	public Integer getTempid() {
 		return tempid;
+	}
+
+	public Integer getSort() {
+		return sort;
+	}
+
+	public void setSort(Integer sort) {
+		this.sort = sort;
 	}
 
 	public void setTempid(Integer tempid) {

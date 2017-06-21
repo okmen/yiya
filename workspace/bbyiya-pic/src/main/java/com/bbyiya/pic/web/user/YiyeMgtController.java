@@ -201,6 +201,9 @@ public class YiyeMgtController  extends SSOController {
 									rq.setStatusreson("不好意思，您的活动码失效！");
 									return JsonUtil.objectToJsonStr(rq);
 								}
+							}else {
+								rq.setStatusreson("很遗憾，你输入的活动码不正确，未能获得活动资格！");
+								return JsonUtil.objectToJsonStr(rq);
 							}
 						}
 						
@@ -571,6 +574,10 @@ public class YiyeMgtController  extends SSOController {
 			if(subUserId>0){
 				param.setSubUserId(subUserId);
 			} 
+			String codenum=String.valueOf(model.get("codenum"));
+			if(!(ObjectUtil.isEmpty(codenum)||"null".equals(codenum))){
+				param.setCodenum(codenum);
+			}
 			String dateTimeStr =String.valueOf(model.get("dateTimeStr"));
 			long dateVal=ObjectUtil.parseLong(String.valueOf(model.get("dateTimeVal")));
 			if(!(ObjectUtil.isEmpty(dateTimeStr)||"null".equals(dateTimeStr))){

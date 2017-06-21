@@ -767,17 +767,17 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					for (Map<String, String> map : exmapList) {
 						 if("1".equals(map.get("type"))){
 							 String aress=map.get("codes");
-							 if(aress.contains(addr.getProvince().toString())){
+							 if(aress.contains(String.valueOf(addr.getProvince()))){
 								 rq.setStatusreson(regionService.getProvinceName(addr.getProvince())+"暂时不支持配送！"); 
 								 return rq;
 							 }
 						 }else if ("2".equals(map.get("type"))) {
-							 if(map.get("codes").contains(addr.getCity().toString())){
+							 if(map.get("codes").contains(String.valueOf(addr.getCity()))){
 								 rq.setStatusreson(regionService.getCityName(addr.getCity())+"暂时不支持配送！"); 
 								 return rq;
 							 }
 						 }else if ("3".equals(map.get("type"))) {
-							 if(map.get("codes").contains(addr.getArea().toString())){
+							 if(map.get("codes").contains(String.valueOf(addr.getArea()))){
 								 rq.setStatusreson(regionService.getAresName(addr.getArea())+"暂时不支持配送！"); 
 								 return rq;
 							 }
@@ -808,11 +808,13 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			/*-------------------------快递（完）------------------------------------------*/
 			
 			/*-------------------------区域代理分配---------------------------------------------------*/
-			RAreaplans areaplans= areaplansMapper.selectByPrimaryKey(addr.getArea());
-			if(areaplans!=null&&areaplans.getAgentuserid()!=null&&areaplans.getAgentuserid()>0){
-				UAgents agent= agentsMapper.selectByPrimaryKey(areaplans.getAgentuserid());
-				if(agent!=null&&agent.getStatus()!=null&&agent.getStatus()==Integer.parseInt(AgentStatusEnum.ok.toString())){
-					param.setAgentUserId(agent.getAgentuserid());
+			if(addr.getArea()!=null){
+				RAreaplans areaplans= areaplansMapper.selectByPrimaryKey(addr.getArea());
+				if(areaplans!=null&&areaplans.getAgentuserid()!=null&&areaplans.getAgentuserid()>0){
+					UAgents agent= agentsMapper.selectByPrimaryKey(areaplans.getAgentuserid());
+					if(agent!=null&&agent.getStatus()!=null&&agent.getStatus()==Integer.parseInt(AgentStatusEnum.ok.toString())){
+						param.setAgentUserId(agent.getAgentuserid());
+					}
 				}
 			}
 			rq.setStatu(ReturnStatus.Success); 

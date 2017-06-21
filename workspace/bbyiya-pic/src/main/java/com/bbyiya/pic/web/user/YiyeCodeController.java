@@ -1,5 +1,8 @@
 package com.bbyiya.pic.web.user;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -7,10 +10,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.dao.PMyproductactivitycodeMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
+import com.bbyiya.dao.PProductstylesMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.ActivityCodeStatusEnum;
 import com.bbyiya.model.PMyproductactivitycode;
 import com.bbyiya.model.PMyproducttemp;
+import com.bbyiya.model.PProductstyles;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -25,6 +30,8 @@ public class YiyeCodeController extends SSOController {
 	@Autowired
 	private PMyproducttempMapper tempMapper;
 
+	@Autowired
+	private PProductstylesMapper styleMapper;
 	/**
 	 * 活动码验证
 	 * 
@@ -50,6 +57,16 @@ public class YiyeCodeController extends SSOController {
 						PMyproducttemp temp= tempMapper.selectByPrimaryKey(codeMod.getTempid());
 						if(temp!=null&&temp.getTempid().intValue()==tempId){
 							rq.setStatu(ReturnStatus.Success);
+							Map<String, Object> map=new HashMap<String, Object>();
+							if(temp.getStyleid()!=null){
+								PProductstyles style= styleMapper.selectByPrimaryKey(temp.getStyleid());
+								if(style!=null){
+									map.put("price", style.getPrice());
+									map.put("property", style.getPropertystr());
+									rq.setBasemodle(map); 
+								}
+							}
+							
 						}else {
 							rq.setStatu(ReturnStatus.ParamError);
 							rq.setStatusreson("不好意思，您的活动码不支持在本活动使用！（PS:活动码只能在指定活动中使用！）");
@@ -58,6 +75,8 @@ public class YiyeCodeController extends SSOController {
 						rq.setStatusreson("不好意思，您的活动码失效！");
 						return JsonUtil.objectToJsonStr(rq);
 					}
+				}else {
+					rq.setStatusreson("很遗憾，你输入的活动码不正确，未能获得活动资格！");
 				}
 			} else {
 				rq.setStatu(ReturnStatus.ParamError);

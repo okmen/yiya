@@ -27,6 +27,7 @@ import com.bbyiya.model.UBranches;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
 import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.address.OrderaddressParam;
 import com.bbyiya.vo.order.SubmitOrderProductParam;
@@ -72,6 +73,16 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 				//得到活动下所有可下单的作品列表
 				List<PMyproducts> productlist=myproductMapper.findCanOrderMyProducts(temp.getTempid(), temp.getOrderhours());
 				for (PMyproducts myproduct : productlist) {
+					//避免重复下单操作
+					String key="cartid_"+myproduct.getCartid();
+					String cartid=(String)RedisUtil.getObject(key);
+					if(cartid!=null){
+						//已下过单
+						continue;
+					}else{
+						RedisUtil.setObject(key, cartid, 3600);
+					}
+					
 					//调用下单接口
 					SubmitOrderProductParam productParam=new SubmitOrderProductParam();
 					productParam.setProductId(myproduct.getProductid());
@@ -174,7 +185,8 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 					
 					
 					if(!rq.getStatu().equals(ReturnStatus.Success))//未通过参数验证
-					{
+					{	
+						RedisUtil.delete(key);
 						addSysLog("作品"+productParam.getCartId()+"自动下单失败！原因："+rq.getStatusreson(),"dotempAutoOrderSumbit","下单失败");
 						Log.error("作品"+productParam.getCartId()+"自动下单失败！原因："+rq.getStatusreson());
 					}else{

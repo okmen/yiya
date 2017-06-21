@@ -76,7 +76,7 @@ public class HeartbeatJob extends QuartzJobBean {
 		try {
 			if(serviceId.equalsIgnoreCase("dotempAutoOrderSumbit")){
 				autoOrderService.dotempAutoOrderSumbit();	
-				Log.info(serviceId+"执行自动下单操作！");
+				Log.info(serviceId+"执行自动下单操作完成！");
 			}else{
 				//System.out.println("无方法执行！");
 			}

@@ -399,6 +399,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 				PProducts products = productsMapper.selectByPrimaryKey(tempproduct.getProductid());
 				
 				if (products != null && styles != null) {
+					temp.setProductid(products.getProductid());
 					String producttitle=products.getTitle();
 					if(styles.getStyleid()%2==0){
 						producttitle=producttitle+"-Êú°æ-"+styles.getPrice();

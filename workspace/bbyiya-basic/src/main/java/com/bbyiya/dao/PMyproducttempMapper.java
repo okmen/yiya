@@ -48,4 +48,6 @@ public interface PMyproducttempMapper {
      * @return
      */
     List<PMyproducttemp> findAllAutoOrderTempByStatus(@Param("status") Integer status);
+    
+    List<PMyproducttemp> findAllTemp(@Param("tempid")Integer tempid);
 }

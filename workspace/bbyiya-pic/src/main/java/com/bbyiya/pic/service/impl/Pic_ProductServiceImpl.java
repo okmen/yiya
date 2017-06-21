@@ -890,6 +890,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				if(apply!=null){
 					item.setActiveStatus(apply.getStatus());
 					item.setAddress(apply.getAdress());
+					item.setSort(apply.getSort());
 				}else{
 					if(item.getCount()<12){
 						//ÖÆ×÷ÖÐ

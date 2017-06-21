@@ -74,6 +74,8 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	@Autowired
 	private PMyproductsMapper myMapper;
 	@Autowired
+	private PMyproducttempapplyMapper applyMapper;
+	@Autowired
 	private PMyproductdetailsMapper myDetaiMapper;
 	@Autowired
 	private PMyproducttempapplyMapper myproducttempapplyMapper;
@@ -399,9 +401,9 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 				if (products != null && styles != null) {
 					String producttitle=products.getTitle();
 					if(styles.getStyleid()%2==0){
-						producttitle=producttitle+"-坚板-"+styles.getPrice();
+						producttitle=producttitle+"-竖版-"+styles.getPrice();
 					}else{
-						producttitle=producttitle+"-横板-"+styles.getPrice();
+						producttitle=producttitle+"-横版-"+styles.getPrice();
 					}
 					temp.setProductName(producttitle);
 				}
@@ -652,7 +654,12 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 				}
 			}
 			//反写申请记录的cartid
-			apply.setCartid(newproducts.getCartid());			
+			apply.setCartid(newproducts.getCartid());	
+			//是模板第几个能通过的人，反写序号
+			Integer sort=applyMapper.getMaxSortByTempId(temp.getTempid());
+			sort=(sort==null)?1:sort.intValue()+1;
+			apply.setSort(sort);
+			
 			rq.setBasemodle(map);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("审核通过");
@@ -913,6 +920,8 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		rq.setStatusreson("设置成功！");
 		return rq;
 	}
+	
+	
 	/**
 	 * 保存模板二维码图片
 	 * @return

@@ -55,6 +55,7 @@ public class PMyproducttemp {
 
     private Date endtime;
     
+
     /*************************Vo****************************/
     
     //二维码地址
@@ -65,6 +66,7 @@ public class PMyproducttemp {
   	private Integer needCheckCount; 
   	private String createtimestr;
   	private String productName;//产品名称
+  	 private Long productid;
 
     public Integer getNeedverifer() {
 		return needverifer;
@@ -286,6 +288,14 @@ public class PMyproducttemp {
 
 	public void setProductName(String productName) {
 		this.productName = productName;
+	}
+
+	public Long getProductid() {
+		return productid;
+	}
+
+	public void setProductid(Long productid) {
+		this.productid = productid;
 	}
     
     

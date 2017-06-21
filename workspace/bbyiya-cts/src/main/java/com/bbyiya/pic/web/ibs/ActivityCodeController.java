@@ -48,6 +48,11 @@ public class ActivityCodeController extends SSOController {
 				rq.setStatusreson("参数不全");
 				return JsonUtil.objectToJsonStr(rq);
 			}
+			if(ObjectUtil.isEmpty(param.getTitle())){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("活动名称不能为空!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
 			if(ObjectUtil.isEmpty(param.getProductid())){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("对应产品不能为空!");
@@ -66,6 +71,11 @@ public class ActivityCodeController extends SSOController {
 			if(param.getApplycount()!=null&&param.getApplycount()<=0){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("生成数量必须大于零!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			if(!ObjectUtil.isEmpty(param.getTitle())&&!ObjectUtil.validSqlStr(param.getTitle())){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("活动名称存在危险字符!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			if(!ObjectUtil.isEmpty(param.getCodesm())&&!ObjectUtil.validSqlStr(param.getCodesm())){
@@ -125,6 +135,38 @@ public class ActivityCodeController extends SSOController {
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	
+	
+	@ResponseBody
+	@RequestMapping(value = "/getActivityCodeDetail")
+	public String getActivityCodeDetail(Integer tempid) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){		
+			rq=activitycodeService.getActivityCodeDetail(tempid);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	/**
+	 * 重置活动下的已报名的序号
+	 * @param cartId
+	 * @param type
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/reSetTempApplySort")
+	public String resetAllTempApplySort(Integer tempid) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		rq=activitycodeService.resetAllTempApplySort(tempid);
+		return JsonUtil.objectToJsonStr(rq);
+		
 	}
 		
 }

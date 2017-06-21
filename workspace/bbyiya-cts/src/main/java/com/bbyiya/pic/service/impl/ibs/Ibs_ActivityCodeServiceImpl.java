@@ -42,6 +42,7 @@ import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.model.PProducts;
 import com.bbyiya.model.PProductstyles;
+import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.service.ibs.IIbs_ActivityCodeService;
 import com.bbyiya.pic.vo.product.ActivityCodeProductVO;
@@ -50,6 +51,7 @@ import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.PageInfoUtil;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.product.MyProductResultVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
@@ -123,7 +125,7 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 		temp.setStyleid(param.getStyleId());
 		temp.setIsautoorder(1);//默认都是自动下单0 手工下单，1自动下单
 		temp.setOrderhours(0); 
-		temp.setApplycount(param.getApplycount()==null?0:param.getApplycount());//报名人数为0时不限制
+		temp.setMaxapplycount(param.getApplycount()==null?0:param.getApplycount());//报名人数为0时不限制
 		temp.setBlesscount(param.getBlesscount()==null?0:param.getBlesscount());//收集祝福数
 		if(ObjectUtil.isEmpty(param.getIsbranchaddress())){
 			param.setIsbranchaddress(0);
@@ -155,6 +157,28 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 		return rq;
 	}
 	
+	/**
+	 * 活动码详情
+	 * */
+	public ReturnModel getActivityCodeDetail(Integer tempid){
+		ReturnModel rq=new ReturnModel();
+		if(ObjectUtil.isEmpty(tempid)){
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("tempid参数为空");
+			return rq;
+		}
+		PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempid);
+		if(temp!=null){
+			PMyproducts product=myMapper.selectByPrimaryKey(temp.getCartid());
+			temp.setProductid(product.getProductid());
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("temp", temp);
+		rq.setBasemodle(map);
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("成功！");
+		return rq;
+	}
 	
 	/**
 	 * 根据模板ID得到作品列表
@@ -188,9 +212,9 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 				String producttitle=products.getTitle();
 				if (products != null && styles != null) {
 					if(styles.getStyleid()%2==0){
-						producttitle=producttitle+"-坚板-"+styles.getPrice();
+						producttitle=producttitle+"-竖版-"+styles.getPrice();
 					}else{
-						producttitle=producttitle+"-横板-"+styles.getPrice();
+						producttitle=producttitle+"-横版-"+styles.getPrice();
 					}
 					codevo.setProductTitle(producttitle);
 				}
@@ -292,6 +316,45 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 			rq.setStatu(ReturnStatus.ParamError);
 			rq.setStatusreson("活动码不存在");
 		}
+		return rq;
+	}
+	
+	
+	/**
+	 *重置活动下的已报名的序号
+	 * @return
+	 */
+	public ReturnModel resetAllTempApplySort(Integer tempid){
+		ReturnModel rq=new ReturnModel();
+		//获取活动列表
+		List<PMyproducttemp> templist=myproducttempMapper.findAllTemp(tempid);
+		if(templist!=null&&templist.size()>0){
+			for (PMyproducttemp temp : templist) {
+				
+				List<Long> idsList = new ArrayList<Long>();
+				idsList.add(temp.getBranchuserid());
+				// 获取影楼的工作人员列表
+				List<UBranchusers> userList = branchusersMapper.findMemberslistByBranchUserId(temp.getBranchuserid());
+				if (userList != null && userList.size() > 0) {
+					for (UBranchusers uu : userList) {
+						idsList.add(uu.getUserid());
+					}
+				}
+				List<MyProductResultVo> mylist = myMapper.findMyProductslistForTempId(idsList,tempid,null,null);
+				
+				if(mylist!=null&&mylist.size()>0){
+					int count=mylist.size();
+					for (MyProductResultVo vo : mylist) {
+						PMyproducttempapply apply=tempapplyMapper.getMyProducttempApplyByCartId(vo.getCartid());
+						apply.setSort(count);
+						tempapplyMapper.updateByPrimaryKey(apply);
+						count=count-1;
+					}
+				}
+			}
+		}
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("设置成功！");
 		return rq;
 	}
 	

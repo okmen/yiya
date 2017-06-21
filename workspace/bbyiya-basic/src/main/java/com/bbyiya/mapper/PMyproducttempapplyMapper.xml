@@ -71,6 +71,10 @@
     from p_myproducttempapply  where  UserId=#{userid,jdbcType=BIGINT} and (IsRead is null or IsRead=0)
   </select>
   
+  <!-- 得到模板已通过申请的最大序号 -->
+  <select id="getMaxSortByTempId" resultType="java.lang.Integer"  parameterType="java.lang.Integer" >
+    select max(Sort) from p_myproducttempapply where TempId = #{tempid,jdbcType=INTEGER} and STATUS!=0 and STATUS!=2
+  </select>
   
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 

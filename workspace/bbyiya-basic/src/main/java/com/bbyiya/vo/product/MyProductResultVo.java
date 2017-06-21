@@ -42,7 +42,8 @@ public class MyProductResultVo extends PMyproducts{
 	private Integer activeStatus;
 	
 	private String address;
-	
+	//报名序号
+	private Integer sort;
 	public int getCount() {
 		return count;
 	}
@@ -150,6 +151,12 @@ public class MyProductResultVo extends PMyproducts{
 	}
 	public void setAddress(String address) {
 		this.address = address;
+	}
+	public Integer getSort() {
+		return sort;
+	}
+	public void setSort(Integer sort) {
+		this.sort = sort;
 	}
 	
 	

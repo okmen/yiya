@@ -519,6 +519,4 @@ public class MyProductTempController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-	
-		
 }

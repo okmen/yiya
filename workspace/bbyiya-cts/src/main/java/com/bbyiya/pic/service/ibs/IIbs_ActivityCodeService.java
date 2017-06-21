@@ -30,6 +30,17 @@ public interface IIbs_ActivityCodeService {
 	 * @return
 	 */
 	ReturnModel deleteActivityCode(String codeno);
+	/**
+	 * 重置活动下的已报名的序号
+	 * @return
+	 */
+	ReturnModel resetAllTempApplySort(Integer tempid);
+	/**
+	 * 活动码详情
+	 * @param tempid
+	 * @return
+	 */
+	ReturnModel getActivityCodeDetail(Integer tempid);
 	
 
 	

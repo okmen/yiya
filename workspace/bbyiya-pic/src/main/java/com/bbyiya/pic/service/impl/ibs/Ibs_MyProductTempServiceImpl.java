@@ -644,7 +644,13 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("tempId", myproducts.getTempid());
 			map.put("mycartid", newproducts.getCartid());
-			
+			if(temp!=null&&temp.getStyleid()!=null){
+				PProductstyles style= styleMapper.selectByPrimaryKey(temp.getStyleid());
+				if(style!=null){
+					map.put("price", style.getPrice());
+					map.put("property", style.getPropertystr());
+				}
+			}
 			//·´Ð´ÉêÇë¼ÇÂ¼µÄcartid
 			apply.setCartid(newproducts.getCartid());			
 			rq.setBasemodle(map);

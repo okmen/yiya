@@ -26,6 +26,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 
 import com.bbyiya.model.OUserorders;
+import com.bbyiya.model.PMyproductsinvites;
 
 
 /**
@@ -238,10 +239,32 @@ public class ExportExcel<T> {
 						if (value2 != null) {
 							textValue = value2.toString();
 						}
+					}else if (value instanceof PMyproductsinvites) {
+						// 关联AosCell处理
+						Class cCls = value.getClass();
+						Method getCMethod = cCls.getMethod(GetterUtil.toGetter(mnames[1]), new Class[] {});
+						Object value2 = getCMethod.invoke(value, new Object[]{});
+						if (value2 != null) {
+							textValue = value2.toString();
+						}
 					} else {
 						// 其它数据类型都当作字符串简单处理
 						if (value != null) {
 							textValue = value.toString();
+						}
+						//活动状态, 1 制作中 3制作已完成 4作品审核不通过 5 下单成功 6因活动结束而导致活动失败
+						if(fieldName.equalsIgnoreCase("activeStatus")){
+							if(value.toString().equals("1")){
+								textValue="制作中";
+							}else if(value.toString().equals("3")){
+								textValue="制作已完成";
+							}else if(value.toString().equals("4")){
+								textValue="作品不通过";
+							}else if(value.toString().equals("5")){
+								textValue="下单成功";
+							}else if(value.toString().equals("6")){
+								textValue="活动已结束";
+							}
 						}
 					} 
 

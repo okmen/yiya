@@ -204,8 +204,9 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 						codevo.setCreatetimestr(DateUtil.getTimeStr(myproduct.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
 						if(ObjectUtil.isEmpty(myproduct.getUpdatetime())){
 							codevo.setUpdatetimestr(DateUtil.getTimeStr(myproduct.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
+						}else{
+							codevo.setUpdatetimestr(DateUtil.getTimeStr(myproduct.getUpdatetime(), "yyyy-MM-dd HH:mm:ss"));
 						}
-						codevo.setUpdatetimestr(DateUtil.getTimeStr(myproduct.getUpdatetime(), "yyyy-MM-dd HH:mm:ss"));
 						codevo.setIsDue(0);//默认不是预产期
 						// 得到宝宝生日
 						PMyproductchildinfo childinfo = mychildMapper.selectByPrimaryKey(myproduct.getCartid());

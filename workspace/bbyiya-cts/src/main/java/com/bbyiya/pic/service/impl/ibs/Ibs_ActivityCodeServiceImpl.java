@@ -15,6 +15,7 @@ import com.bbyiya.baseUtils.GenUtils;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductactivitycodeMapper;
 import com.bbyiya.dao.PMyproductchildinfoMapper;
+import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.PMyproductextMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproductsinvitesMapper;
@@ -34,6 +35,7 @@ import com.bbyiya.enums.pic.MyProductStatusEnum;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproductactivitycode;
 import com.bbyiya.model.PMyproductchildinfo;
+import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproductext;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
@@ -58,6 +60,8 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 	private PMyproducttempMapper myproducttempMapper;
 	@Autowired
 	private PMyproductsMapper myMapper;
+	@Autowired
+	private PMyproductdetailsMapper myDetaiMapper;
 	@Autowired
 	private PMyproductactivitycodeMapper activitycodeMapper;
 	@Autowired
@@ -107,7 +111,7 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 		temp.setCreatetime(new Date());
 		temp.setRemark(param.getRemark());
 		temp.setStatus(Integer.parseInt(MyProductTempStatusEnum.enable.toString()));
-		temp.setTitle("活动码活动");
+		temp.setTitle(param.getTitle());
 		temp.setCartid(myproduct.getCartid());	
 		temp.setNeedverifer(0); //不需要审核   0不需要，1 需要
 		temp.setDiscription(param.getDiscription()); //活动需知
@@ -207,6 +211,24 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 						}else{
 							codevo.setUpdatetimestr(DateUtil.getTimeStr(myproduct.getUpdatetime(), "yyyy-MM-dd HH:mm:ss"));
 						}
+						
+						// 作品详情（图片集合）
+						List<PMyproductdetails> detailslist = myDetaiMapper.findMyProductdetails(code.getCartid());
+						int i = 0;
+						if (detailslist != null && detailslist.size() > 0) {
+							for (PMyproductdetails dd : detailslist) {
+								if (!ObjectUtil.isEmpty(dd.getImgurl())) {
+									if (dd.getSort() != null && dd.getSort().intValue() == 0) {
+										codevo.setHeadImg("http://pic.bbyiya.com/" + dd.getImgurl() + "?imageView2/2/w/200");
+									}
+									i++;
+								}
+							}
+						}
+						if (ObjectUtil.isEmpty(codevo.getHeadImg())) {
+							codevo.setHeadImg("http://pic.bbyiya.com/484983733454448354.png");
+						}
+						codevo.setCount(i);
 						codevo.setIsDue(0);//默认不是预产期
 						// 得到宝宝生日
 						PMyproductchildinfo childinfo = mychildMapper.selectByPrimaryKey(myproduct.getCartid());

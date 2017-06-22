@@ -6,7 +6,6 @@ public class ActivityCodeProductVO{
 	
 	private PMyproductactivitycode code;
 	private String invitedName;//客户昵称	
-	private String invitephone;
     //宝宝生日
   	private String birthdayStr;
   	
@@ -44,10 +43,6 @@ public class ActivityCodeProductVO{
 
 	public String getInvitedName() {
 		return invitedName;
-	}
-
-	public String getInvitephone() {
-		return invitephone;
 	}
 
 	public String getBirthdayStr() {
@@ -102,9 +97,6 @@ public class ActivityCodeProductVO{
 		this.invitedName = invitedName;
 	}
 
-	public void setInvitephone(String invitephone) {
-		this.invitephone = invitephone;
-	}
 
 	public void setBirthdayStr(String birthdayStr) {
 		this.birthdayStr = birthdayStr;

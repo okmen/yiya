@@ -263,7 +263,7 @@ public class YiyeMgtController  extends SSOController {
 							if(rq.getStatu().equals(ReturnStatus.Success)){
 								//不需要审核，直接通过审核
 								apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString()));
-								
+								apply.setVerfiytime(new Date());
 								//------------------------  活动码兑换-***********************************--------------------
 								if(temp.getType()!=null&&temp.getType().intValue()==Integer.parseInt(MyProductTempType.code.toString())){
 									PMyproductactivitycode codeMod = codeMapper.selectByPrimaryKey(param.getCodenum());

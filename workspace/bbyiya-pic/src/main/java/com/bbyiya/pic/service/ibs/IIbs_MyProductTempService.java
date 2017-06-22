@@ -137,6 +137,7 @@ public interface IIbs_MyProductTempService {
 	 */
 	ReturnModel setTempCompletecondition(Long userId, Integer tempid,
 			Integer blessCount, Integer maxCompleteCount);
+	
 
 	
 }

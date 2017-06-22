@@ -25,7 +25,7 @@
   <!-- 01 find 获取一个批次下的活动码  -->
   <!-- status 0未使用 1制作中、 2已下单 、3已删除、 4已禁用 -->
   <select id="findActivitycodelistForTempId" resultMap="BaseResultMap" >
-    select a.* from p_myproductactivitycode a left join  p_myproducttempapply b  on a.TempId=b.TempId 
+    select DISTINCT a.* from p_myproductactivitycode a left join  p_myproducttempapply b  on a.TempId=b.TempId 
 		where  a.Status!=3 and a.TempId=#{tempid,jdbcType=INTEGER} 
     <if test="activestatus != null" >
         and  a.Status=#{activestatus,jdbcType=INTEGER}

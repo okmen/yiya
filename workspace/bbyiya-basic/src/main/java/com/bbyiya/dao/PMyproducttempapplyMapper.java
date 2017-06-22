@@ -63,4 +63,12 @@ public interface PMyproducttempapplyMapper {
      * @return
      */
     int countMyProducttempApplyByUserIdNews(@Param("userid")Long userId);
+    
+    /**
+     * 得到模板待审核的报名人数
+     * @param tempid
+     * @return
+     */
+    Integer getMaxSortByTempId(@Param("tempid") Integer tempid);
+   
 }

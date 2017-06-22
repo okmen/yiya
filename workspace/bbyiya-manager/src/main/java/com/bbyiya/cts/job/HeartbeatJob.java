@@ -23,6 +23,12 @@ import com.bbyiya.utils.RedisUtil;
 public class HeartbeatJob extends QuartzJobBean {
 	
 	private Logger Log = Logger.getLogger(HeartbeatJob.class);
+	@Resource(name = "tempAutoOrderSumbitService")
+	private ITempAutoOrderSumbitService autoOrderService;
+	@Autowired
+	private SysLogsMapper syslogMapper;
+	
+	
 	
 	@Override
 	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
@@ -39,7 +45,6 @@ public class HeartbeatJob extends QuartzJobBean {
 			Log.info("dotempAutoOrderSumbit执行自动下单操作完成！");
 		} catch (Exception e) {
 			Log.error("dotempAutoOrderSumbit方法执行出错！");
-			addSysLog("dotempAutoOrderSumbit方法执行出错！","dotempAutoOrderSumbit","自动下单");
 		}
 			
 		
@@ -78,34 +83,30 @@ public class HeartbeatJob extends QuartzJobBean {
 //		}
 	}
 
-	@Resource(name = "tempAutoOrderSumbitService")
-	private ITempAutoOrderSumbitService autoOrderService;
-	@Autowired
-	private SysLogsMapper syslogMapper;
 	
-	public void doLocalServiceMothod(String serviceId){	
-		try {
-			if(serviceId.equalsIgnoreCase("dotempAutoOrderSumbit")){
-				autoOrderService.dotempAutoOrderSumbit();	
-				Log.info(serviceId+"执行自动下单操作完成！");
-			}else{
-				//System.out.println("无方法执行！");
-			}
-		} catch (Exception e) {
-			Log.error(serviceId+"方法执行出错！");
-			addSysLog(serviceId+"方法执行出错！",serviceId,"自动下单");
-		}
+//	public void doLocalServiceMothod(String serviceId){	
+//		try {
+//			if(serviceId.equalsIgnoreCase("dotempAutoOrderSumbit")){
+//				autoOrderService.dotempAutoOrderSumbit();	
+//				Log.info(serviceId+"执行自动下单操作完成！");
+//			}else{
+//				//System.out.println("无方法执行！");
+//			}
+//		} catch (Exception e) {
+//			Log.error(serviceId+"方法执行出错！");
+//			addSysLog(serviceId+"方法执行出错！",serviceId,"自动下单");
+//		}
+//		
 		
-		
-	}
-	
-	public void addSysLog(String msg,String jobid,String jobname){
-		SysLogs log=new SysLogs();
-		log.setContent(msg);
-		log.setJobid(jobid);
-		log.setJobname(jobname);
-		log.setCreatetime(new Date());
-		syslogMapper.insert(log);
-	}
+//	}
+//	
+//	public void addSysLog(String msg,String jobid,String jobname){
+//		SysLogs log=new SysLogs();
+//		log.setContent(msg);
+//		log.setJobid(jobid);
+//		log.setJobname(jobname);
+//		log.setCreatetime(new Date());
+//		syslogMapper.insert(log);
+//	}
 	
 }

@@ -7,6 +7,8 @@
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
 	<description>bbyiya-cts</description>
+	
+	
 	<filter>
 		<filter-name>characterEncodingFilter</filter-name>
 		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
@@ -63,7 +65,7 @@
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
-			<param-value>/WEB-INF/cts-servlet.xml</param-value>
+			<param-value>/WEB-INF/cts-servlet.xml,/WEB-INF/applicationContext-quartz.xml</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>

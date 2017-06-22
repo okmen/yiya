@@ -23,12 +23,12 @@
   
   
   <!-- 01 find 获取一个批次下的活动码  -->
-  <!-- status 0未使用 1制作中、 2已下单 、3已删除、 4已禁用 -->
+  <!-- status 0未使用 1已使用 3制作已完成 4作品审核不通过5下单审核通过 -->
   <select id="findActivitycodelistForTempId" resultMap="BaseResultMap" >
-    select DISTINCT a.* from p_myproductactivitycode a left join  p_myproducttempapply b  on a.TempId=b.TempId 
+    select DISTINCT a.* from p_myproductactivitycode a left join  p_myproducttempapply b  on (a.TempId=b.TempId and a.UserId=b.UserId)
 		where  a.Status!=3 and a.TempId=#{tempid,jdbcType=INTEGER} 
     <if test="activestatus != null" >
-        and  a.Status=#{activestatus,jdbcType=INTEGER}
+        and  b.Status=#{activestatus,jdbcType=INTEGER}
     </if>
     <if test="keywords != null and keywords!=''" >
         and  (a.CodeNo  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' )  or a.CartId  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' )  or b.Mobilephone LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) )

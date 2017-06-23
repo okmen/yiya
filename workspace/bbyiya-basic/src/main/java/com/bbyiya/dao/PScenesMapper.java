@@ -25,10 +25,5 @@ public interface PScenesMapper {
      */
     List<PScenes> findScenesByProductId(@Param("productId")Long productId);
     
-    /**
-     * 获取场景列表
-     * @param productId
-     * @return
-     */
     List<PScenes> findScenesByProductIdOrkeyword(@Param("productId")Long productId,@Param("keywords")String keywords);
 }

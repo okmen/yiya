@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.DMyproductdiscountmodelMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.DMyproductdiscountmodel" >
+    <id column="StyleId" property="styleid" jdbcType="BIGINT" />
+    <result column="Amount" property="amount" jdbcType="DOUBLE" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    StyleId, Amount, Status
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from d_myproductdiscountmodel
+    where StyleId = #{styleid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from d_myproductdiscountmodel
+    where StyleId = #{styleid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.DMyproductdiscountmodel" >
+    insert into d_myproductdiscountmodel (StyleId, Amount, Status
+      )
+    values (#{styleid,jdbcType=BIGINT}, #{amount,jdbcType=DOUBLE}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.DMyproductdiscountmodel" >
+    insert into d_myproductdiscountmodel
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="styleid != null" >
+        StyleId,
+      </if>
+      <if test="amount != null" >
+        Amount,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="styleid != null" >
+        #{styleid,jdbcType=BIGINT},
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=DOUBLE},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.DMyproductdiscountmodel" >
+    update d_myproductdiscountmodel
+    <set >
+      <if test="amount != null" >
+        Amount = #{amount,jdbcType=DOUBLE},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where StyleId = #{styleid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.DMyproductdiscountmodel" >
+    update d_myproductdiscountmodel
+    set Amount = #{amount,jdbcType=DOUBLE},
+      Status = #{status,jdbcType=INTEGER}
+    where StyleId = #{styleid,jdbcType=BIGINT}
+  </update>
+</mapper>

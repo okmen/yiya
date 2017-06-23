@@ -44,7 +44,9 @@ public class HeartbeatJob extends QuartzJobBean {
 			autoOrderService.dotempAutoOrderSumbit();
 			Log.info("dotempAutoOrderSumbit执行自动下单操作完成！");
 		} catch (Exception e) {
-			Log.error("dotempAutoOrderSumbit方法执行出错！");
+			Log.error(e.toString());
+			Log.error("dotempAutoOrderSumbit方法执行出错！"+e.getMessage());
+			e.printStackTrace();
 		}
 			
 		

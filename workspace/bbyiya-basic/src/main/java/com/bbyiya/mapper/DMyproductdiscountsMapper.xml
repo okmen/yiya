@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.DMyproductdiscountsMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.DMyproductdiscounts" >
+    <id column="CartId" property="cartid" jdbcType="BIGINT" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="DiscountType" property="discounttype" jdbcType="INTEGER" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="Amount" property="amount" jdbcType="DOUBLE" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="UsedTime" property="usedtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CartId, UserId, DiscountType, Status, Amount, CreateTime, UsedTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from d_myproductdiscounts
+    where CartId = #{cartid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from d_myproductdiscounts
+    where CartId = #{cartid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.DMyproductdiscounts" >
+    insert into d_myproductdiscounts (CartId, UserId, DiscountType, 
+      Status, Amount, CreateTime, 
+      UsedTime)
+    values (#{cartid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{discounttype,jdbcType=INTEGER}, 
+      #{status,jdbcType=INTEGER}, #{amount,jdbcType=DOUBLE}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{usedtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.DMyproductdiscounts" >
+    insert into d_myproductdiscounts
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="cartid != null" >
+        CartId,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="discounttype != null" >
+        DiscountType,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="amount != null" >
+        Amount,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+      <if test="usedtime != null" >
+        UsedTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="cartid != null" >
+        #{cartid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="discounttype != null" >
+        #{discounttype,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=DOUBLE},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="usedtime != null" >
+        #{usedtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.DMyproductdiscounts" >
+    update d_myproductdiscounts
+    <set >
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="discounttype != null" >
+        DiscountType = #{discounttype,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="amount != null" >
+        Amount = #{amount,jdbcType=DOUBLE},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="usedtime != null" >
+        UsedTime = #{usedtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where CartId = #{cartid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.DMyproductdiscounts" >
+    update d_myproductdiscounts
+    set UserId = #{userid,jdbcType=BIGINT},
+      DiscountType = #{discounttype,jdbcType=INTEGER},
+      Status = #{status,jdbcType=INTEGER},
+      Amount = #{amount,jdbcType=DOUBLE},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      UsedTime = #{usedtime,jdbcType=TIMESTAMP}
+    where CartId = #{cartid,jdbcType=BIGINT}
+  </update>
+</mapper>

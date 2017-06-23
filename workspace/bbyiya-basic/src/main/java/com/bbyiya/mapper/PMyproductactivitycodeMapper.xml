@@ -27,7 +27,10 @@
   <select id="findActivitycodelistForTempId" resultMap="BaseResultMap" >
     select DISTINCT a.* from p_myproductactivitycode a left join  p_myproducttempapply b  on (a.TempId=b.TempId and a.UserId=b.UserId)
 		where  a.Status!=3 and a.TempId=#{tempid,jdbcType=INTEGER} 
-    <if test="activestatus != null" >
+	<if test="activestatus != null and activestatus==0" >
+        and  a.Status=#{activestatus,jdbcType=INTEGER}
+    </if>	
+    <if test="activestatus != null and activestatus!=0" >
         and  b.Status=#{activestatus,jdbcType=INTEGER}
     </if>
     <if test="keywords != null and keywords!=''" >

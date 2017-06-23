@@ -27,6 +27,7 @@ import com.bbyiya.dao.UAgentcustomersMapper;
 import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.CustomerSourceTypeEnum;
+import com.bbyiya.enums.MyProductTempStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.InviteStatus;
 import com.bbyiya.enums.pic.InviteType;
@@ -597,7 +598,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 						if(temp.getMaxcompletecount()!=null&&temp.getMaxcompletecount().intValue()>0){
 							if(temp.getCompletecount().intValue()>=temp.getMaxcompletecount().intValue()){
 								//»î¶¯½áÊø TODO
-								tempServiceImpl.editMyProductTempStatus(3, temp.getTempid());
+								tempServiceImpl.editMyProductTempStatus(Integer.parseInt(MyProductTempStatusEnum.over.toString()), temp.getTempid());
 							}
 						}
 					}

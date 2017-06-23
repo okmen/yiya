@@ -1,5 +1,9 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.DMyproductdiscountmodel;
 
 public interface DMyproductdiscountmodelMapper {
@@ -14,4 +18,10 @@ public interface DMyproductdiscountmodelMapper {
     int updateByPrimaryKeySelective(DMyproductdiscountmodel record);
 
     int updateByPrimaryKey(DMyproductdiscountmodel record);
+    /**
+     * 通过阶段 获取款式折扣列表
+     * @param productId
+     * @return
+     */
+    List<DMyproductdiscountmodel> findListByProductId(@Param("productId")Long productId);
 }

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,7 @@ import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.service.ibs.IIbs_MyProductTempService;
 import com.bbyiya.pic.vo.product.MyProductTempAddParam;
+import com.bbyiya.service.pic.IBaseDiscountService;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.FileUtils;
@@ -100,7 +102,11 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	@Autowired
 	private PProductstylesMapper styleMapper;
 
-	
+	/**
+	 * 优惠信息
+	 */
+	@Resource(name = "baseDiscountServiceImpl")
+	private IBaseDiscountService discountService;
 	
 	/**
 	 * 添加模板
@@ -273,6 +279,12 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 						for (PMyproducttempapply apply : applylist) {
 							apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.refuse.toString()));
 							myproducttempapplyMapper.updateByPrimaryKeySelective(apply);
+							
+							//活动失败的参与作品 分发优惠
+							if(apply.getCartid()!=null&&apply.getCartid().longValue()>0){
+								discountService.addTempDiscount(apply.getCartid());
+							}
+							
 						}
 					}
 					//禁用员工模板权限

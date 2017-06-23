@@ -5,9 +5,10 @@
     <id column="StyleId" property="styleid" jdbcType="BIGINT" />
     <result column="Amount" property="amount" jdbcType="DOUBLE" />
     <result column="Status" property="status" jdbcType="INTEGER" />
+      <result column="ProductId" property="productid" jdbcType="BIGINT" />
   </resultMap>
   <sql id="Base_Column_List" >
-    StyleId, Amount, Status
+    StyleId, Amount, Status, ProductId
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -15,15 +16,22 @@
     from d_myproductdiscountmodel
     where StyleId = #{styleid,jdbcType=BIGINT}
   </select>
+  <select id="findListByProductId" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from d_myproductdiscountmodel
+    where ProductId = #{productId,jdbcType=BIGINT}
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from d_myproductdiscountmodel
     where StyleId = #{styleid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.DMyproductdiscountmodel" >
-    insert into d_myproductdiscountmodel (StyleId, Amount, Status
-      )
-    values (#{styleid,jdbcType=BIGINT}, #{amount,jdbcType=DOUBLE}, #{status,jdbcType=INTEGER}
-      )
+    insert into d_myproductdiscountmodel (StyleId, Amount, Status, 
+      ProductId)
+    values (#{styleid,jdbcType=BIGINT}, #{amount,jdbcType=DOUBLE}, #{status,jdbcType=INTEGER}, 
+      #{productid,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.DMyproductdiscountmodel" >
     insert into d_myproductdiscountmodel
@@ -37,6 +45,9 @@
       <if test="status != null" >
         Status,
       </if>
+      <if test="productid != null" >
+        ProductId,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="styleid != null" >
@@ -47,6 +58,9 @@
       </if>
       <if test="status != null" >
         #{status,jdbcType=INTEGER},
+      </if>
+      <if test="productid != null" >
+        #{productid,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -59,13 +73,17 @@
       <if test="status != null" >
         Status = #{status,jdbcType=INTEGER},
       </if>
+      <if test="productid != null" >
+        ProductId = #{productid,jdbcType=BIGINT},
+      </if>
     </set>
     where StyleId = #{styleid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.DMyproductdiscountmodel" >
     update d_myproductdiscountmodel
     set Amount = #{amount,jdbcType=DOUBLE},
-      Status = #{status,jdbcType=INTEGER}
+      Status = #{status,jdbcType=INTEGER},
+      ProductId = #{productid,jdbcType=BIGINT}
     where StyleId = #{styleid,jdbcType=BIGINT}
   </update>
 </mapper>

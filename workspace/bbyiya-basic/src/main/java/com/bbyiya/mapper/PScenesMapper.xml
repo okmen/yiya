@@ -31,7 +31,7 @@
     select 
     <include refid="Base_Column_List" />
     from p_scenes where 1=1
-    <if test="productId!=null">
+    <if test="productId!=null and productId!=''">
     	and  ProductId = #{productId,jdbcType=BIGINT}
     </if>
     <if test="keywords != null and keywords!=''" >

@@ -11,6 +11,7 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.pic.service.cts.IScenseService;
 import com.bbyiya.utils.JsonUtil;
+import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
@@ -19,7 +20,7 @@ import com.bbyiya.web.base.SSOController;
 @RequestMapping(value = "/cts/scenes")
 public class ScenesController extends SSOController {
 	
-	@Resource(name = "ibs_ActivityCodeService")
+	@Resource(name = "scenseService")
 	private IScenseService scenseService;
 	/**
 	 * Ìí¼Ó³¡¾°
@@ -51,6 +52,9 @@ public class ScenesController extends SSOController {
 	@RequestMapping(value = "/getScenseList")
 	public String getScenseList(Integer index,Integer size,String productid,String keywords) throws Exception {
 		ReturnModel rq=new ReturnModel();
+		if(ObjectUtil.isEmpty(index)) index=0;
+		if(ObjectUtil.isEmpty(size)) size=0;
+		
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){

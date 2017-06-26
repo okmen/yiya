@@ -346,8 +346,10 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 					int count=mylist.size();
 					for (MyProductResultVo vo : mylist) {
 						PMyproducttempapply apply=tempapplyMapper.getMyProducttempApplyByCartId(vo.getCartid());
-						apply.setSort(count);
-						tempapplyMapper.updateByPrimaryKey(apply);
+						if(apply!=null){
+							apply.setSort(count);
+							tempapplyMapper.updateByPrimaryKey(apply);
+						}
 						count=count-1;
 					}
 				}

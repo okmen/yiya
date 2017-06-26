@@ -144,4 +144,8 @@
    <select id="findOrderListByCartId" resultMap="BaseResultMap"  parameterType="java.lang.Long" >
     select a.* from o_userorders a,o_orderproducts b where a.UserOrderId=b.UserOrderId and b.CartId=#{cartid,jdbcType=BIGINT}   
   </select>
+  <!-- 根据作品ID和影楼ID得到订单列表  -->
+   <select id="findOrderListByCartIdAndBranchUserID" resultMap="BaseResultMap"  parameterType="java.lang.Long" >
+    select a.* from o_userorders a,o_orderproducts b where a.UserOrderId=b.UserOrderId and b.CartId=#{cartid,jdbcType=BIGINT}  and a.UserId=#{branchuserid,jdbcType=BIGINT}
+  </select>
 </mapper>

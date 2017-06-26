@@ -10,6 +10,7 @@ import java.util.List;
 
 
 
+
 import org.apache.ibatis.annotations.Param;
 
 import com.bbyiya.model.OOrderproductdetails;
@@ -49,10 +50,16 @@ public interface IPic_OrderMgtDao {
 	 */
 	List<OUserorders> findOrderListByCartId(@Param("cartid") Long cartid);
 	/**
-	 * 根据作品ID得到未支付或图片未上传订单
+	 * 根据作品ID得到订单
 	 * @param cartid
 	 * @return
 	 */
 	List<OUserorders> findNoPayOrderListByCartId(@Param("cartid") Long cartid);
+	/**
+	 * 根据作品ID及影楼ID得到订单
+	 * @param cartid
+	 * @return
+	 */
+	List<OUserorders> findOrderListByCartIdAndBranchUserID(@Param("cartid") Long cartid,@Param("branchuserid") Long branchuserid);
 	
 }

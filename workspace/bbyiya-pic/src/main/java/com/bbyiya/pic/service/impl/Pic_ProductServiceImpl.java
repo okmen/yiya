@@ -866,8 +866,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					item.setIsDue(childinfo.getIsdue()==null?0:childinfo.getIsdue());
 				}
 				
-				// 得到作品订单集合
-				List<OUserorders> orderList = orderDao.findOrderListByCartId(item.getCartid());
+				
+				List<OUserorders> orderList = orderDao.findOrderListByCartIdAndBranchUserID(item.getCartid(),item.getUserid());
 				List<String> orderNoList = new ArrayList<String>();
 				for (OUserorders order : orderList) {
 					orderNoList.add(order.getUserorderid());

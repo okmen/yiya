@@ -340,7 +340,7 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 						idsList.add(uu.getUserid());
 					}
 				}
-				List<MyProductResultVo> mylist = myMapper.findMyProductslistForTempId(idsList,tempid,null,null);
+				List<MyProductResultVo> mylist = myMapper.findMyProductslistForTempId(idsList,temp.getTempid(),null,null);
 				
 				if(mylist!=null&&mylist.size()>0){
 					int count=mylist.size();

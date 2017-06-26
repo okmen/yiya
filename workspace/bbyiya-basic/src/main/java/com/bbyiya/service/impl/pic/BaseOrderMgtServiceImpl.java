@@ -49,6 +49,7 @@ import com.bbyiya.enums.pic.AgentStatusEnum;
 import com.bbyiya.enums.pic.BranchStatusEnum;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
 import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
+import com.bbyiya.model.DMyproductdiscountmodel;
 import com.bbyiya.model.EErrors;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproductdetails;
@@ -74,6 +75,7 @@ import com.bbyiya.model.UUseraddress;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IBasePayService;
 import com.bbyiya.service.IRegionService;
+import com.bbyiya.service.pic.IBaseDiscountService;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
 import com.bbyiya.service.pic.IBasePostMgtService;
 import com.bbyiya.utils.ConfigUtil;
@@ -168,7 +170,8 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	
 	@Autowired
 	private UBranchtransaccountsMapper transMapper;
-	
+	@Resource(name = "baseDiscountServiceImpl")
+	private IBaseDiscountService discountService;
 
 	/**
 	 * 提交订单（param已经被验证）
@@ -296,7 +299,20 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					orderTotalPrice+=param.getPostPrice();
 					userOrder.setOrdertotalprice(orderTotalPrice);//订单总价 
 				}
-				 // 插入支付订单记录
+				//是否优惠购买
+				if(userOrder.getUserid()!=null&&param.getCartId()!=null){
+					List<DMyproductdiscountmodel> dislit=discountService.findMycartDiscount(userOrder.getUserid(), param.getCartId());
+					if(dislit!=null&&dislit.size()>0){
+						for (DMyproductdiscountmodel dis : dislit) {
+							if(styles.getStyleid().longValue()==dis.getStyleid().longValue()){
+								orderTotalPrice=orderTotalPrice-dis.getAmount();
+								userOrder.setOrdertotalprice(orderTotalPrice); 
+							}
+						}
+					}
+				}
+				
+				// 插入支付订单记录
 				addPayOrder(param.getUserId(), payId, payId, orderTotalPrice);
 				// 插入客户记录------------------------------------------------------
 				if(userOrder.getAgentuserid()!=null&&userOrder.getAgentuserid()>0){
@@ -1142,6 +1158,28 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 //			}
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(model);
+		}else { 
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("不存在此订单");
+		}
+		return rq;
+	}
+	
+	public ReturnModel getPayOrderInfo(Long userId, String payId) {
+		ReturnModel rq=new ReturnModel();
+		OPayorder orderInfo=payOrderMapper.selectByPrimaryKey(payId);
+		if(orderInfo!=null){
+			if(orderInfo.getStatus()!=null&&orderInfo.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
+//				UserOrderResult model = new UserOrderResult();
+				Map<String, Object> map=new HashMap<String, Object>();
+				map.put("payId", payId);
+				map.put("totalPrice", orderInfo.getTotalprice());
+				rq.setStatu(ReturnStatus.Success);
+				rq.setBasemodle(map);
+			}else {
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson("订单不在可支付的状态！");
+			}
 		}else { 
 			rq.setStatu(ReturnStatus.ParamError);
 			rq.setStatusreson("不存在此订单");

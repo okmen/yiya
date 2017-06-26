@@ -67,6 +67,14 @@ public interface IBaseOrderMgtService {
 	 * @return
 	 */
 	ReturnModel getOrderInfo(Long userId, String orderId);
+	
+	/**
+	 * 获取支付信息
+	 * @param userId
+	 * @param payId
+	 * @return
+	 */
+	ReturnModel getPayOrderInfo(Long userId, String payId);
 
 	/**
 	 * 支付订单成功处理

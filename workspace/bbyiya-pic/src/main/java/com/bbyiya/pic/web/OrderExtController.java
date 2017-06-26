@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,12 +23,11 @@ import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.OOrderproducts;
-import com.bbyiya.model.OPayorderext;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproductsinvites;
 import com.bbyiya.model.PProductstyles;
-import com.bbyiya.model.PStylecoordinate;
 import com.bbyiya.model.UUsers;
+import com.bbyiya.service.pic.IBaseOrderMgtService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
@@ -50,6 +51,16 @@ public class OrderExtController  extends SSOController {
 	private PMyproductsinvitesMapper inviteMapper;
 	@Autowired
 	private UUsersMapper userMapper;
+	@Resource(name="baseOrderMgtServiceImpl")
+	private IBaseOrderMgtService orderservice;
+	
+	
+	/**
+	 * 获取最近支付的订单（选择相册款式 页 用，随机显示下单用户）
+	 * @param count
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/getorder")
 	public String getbuyorderinfo(@RequestParam(required = false, defaultValue = "10")int count) throws Exception {
@@ -63,6 +74,27 @@ public class OrderExtController  extends SSOController {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
 			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * O04-1 支付-获取支付信息
+	 * 获取支付信息
+	 * @param payId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getPayInfoNew")
+	public String getPayInfo(String payId) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			rq = orderservice.getPayOrderInfo(user.getUserId(), payId);
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
@@ -103,7 +135,7 @@ public class OrderExtController  extends SSOController {
 					}
 				}
 			}
-			RedisUtil.setObject(key, list, 60); 
+			RedisUtil.setObject(key, list, 300); 
 		}
 		return list;
 	}

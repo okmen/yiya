@@ -11,6 +11,7 @@ public class PProductStyleResult implements Serializable {
 	private Long productId;
 	private String propertyStr;
 	private Double price;
+	private Double discountAmount;
 	private String defaultImg;
 	private String description;
 	private List<String> detailImgs;
@@ -18,6 +19,7 @@ public class PProductStyleResult implements Serializable {
 	private Date createtime;
 	private String createTimeStr;
 	private Integer sellCount;
+	
 	public Long getStyleId() {
 		return styleId;
 	}
@@ -83,6 +85,12 @@ public class PProductStyleResult implements Serializable {
 	}
 	public void setSellCount(Integer sellCount) {
 		this.sellCount = sellCount;
+	}
+	public Double getDiscountAmount() {
+		return discountAmount;
+	}
+	public void setDiscountAmount(Double discountAmount) {
+		this.discountAmount = discountAmount;
 	}
 	
 	

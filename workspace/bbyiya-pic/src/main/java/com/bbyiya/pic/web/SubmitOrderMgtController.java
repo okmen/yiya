@@ -23,7 +23,6 @@ import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.address.OrderaddressParam;
-import com.bbyiya.vo.address.OrderaddressVo;
 import com.bbyiya.vo.order.SubmitOrderProductParam;
 import com.bbyiya.vo.order.UserOrderSubmitParam;
 import com.bbyiya.vo.order.UserOrderSubmitRepeatParam;
@@ -103,14 +102,6 @@ public class SubmitOrderMgtController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-//			if(user.getUserId()!=null&&user.getUserId().longValue()==75){
-//				
-//			}
-//			else if(!istime()){
-//				rq.setStatu(ReturnStatus.ParamError);
-//				rq.setStatusreson("14:00-16:00 系统上线准备中，16:00 正式启动！激动人心的时刻即将到来！！ ");
-//				return JsonUtil.objectToJsonStr(rq);
-//			}
 			SubmitOrderProductParam productParam = (SubmitOrderProductParam) JsonUtil.jsonStrToObject(productJsonStr, SubmitOrderProductParam.class);
 			if (productParam != null) {
 				OOrderproducts product = new OOrderproducts();
@@ -146,7 +137,6 @@ public class SubmitOrderMgtController extends SSOController {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
 		}
-//		System.out.println(JsonUtil.objectToJsonStr(rq));
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	

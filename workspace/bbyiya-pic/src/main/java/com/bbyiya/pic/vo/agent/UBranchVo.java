@@ -10,6 +10,8 @@ public class UBranchVo extends UBranches{
 	private String areaName;
 	private List<String> agentArealist;
 	private Integer userCount;//发展的用户数
+	private Double goodsAmount; //货款金额
+	private Double transAmount; //邮费金额
 	public String getProviceName() {
 		return proviceName;
 	}
@@ -39,6 +41,18 @@ public class UBranchVo extends UBranches{
 	}
 	public void setUserCount(Integer userCount) {
 		this.userCount = userCount;
+	}
+	public Double getGoodsAmount() {
+		return goodsAmount;
+	}
+	public Double getTransAmount() {
+		return transAmount;
+	}
+	public void setGoodsAmount(Double goodsAmount) {
+		this.goodsAmount = goodsAmount;
+	}
+	public void setTransAmount(Double transAmount) {
+		this.transAmount = transAmount;
 	}
 	
 	

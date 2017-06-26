@@ -296,6 +296,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					orderTotalPrice+=param.getPostPrice();
 					userOrder.setOrdertotalprice(orderTotalPrice);//订单总价 
 				}
+				
 				 // 插入支付订单记录
 				addPayOrder(param.getUserId(), payId, payId, orderTotalPrice);
 				// 插入客户记录------------------------------------------------------

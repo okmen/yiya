@@ -118,7 +118,8 @@ public class BasePostMgtServiceImpl implements IBasePostMgtService{
 		if(result!=null&&result.getList()!=null&&result.getList().size()>0){
 			for (PPostModelAreasVo pvo : postList) {
 				PPostmodel model=postmodelMapper.selectByPrimaryKey(pvo.getPostmodelid());
-				pvo.setPostModelName(model.getName());
+				if(model!=null)
+					pvo.setPostModelName(model.getName());
 			}
 		}
 		rq.setBasemodle(result);

@@ -82,7 +82,7 @@
     <include refid="Base_Column_List" />
     from p_myproducttemp
     where status !=2
-     <if test="tempid != null" >
+     <if test="tempid != null and tempid!=''" >
        and  TempId = #{tempid,jdbcType=INTEGER}
     </if>
   </select>

@@ -24,4 +24,6 @@ public interface PScenesMapper {
      * @return
      */
     List<PScenes> findScenesByProductId(@Param("productId")Long productId);
+    
+    List<PScenes> findScenesByProductIdOrkeyword(@Param("productId")Long productId,@Param("keywords")String keywords);
 }

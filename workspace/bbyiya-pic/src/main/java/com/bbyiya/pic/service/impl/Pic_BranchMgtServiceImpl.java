@@ -169,6 +169,19 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			branchvo.setCityName(regionService.getCityName(branchvo.getCity())) ;
 			branchvo.setAreaName(regionService.getAresName(branchvo.getArea())) ;
 			branchvo.setAgentArealist(getAgentArealist(branchvo.getArea()));  
+			UAccounts account=accountsMapper.selectByPrimaryKey(branchvo.getBranchuserid());
+			if(account!=null){
+				branchvo.setGoodsAmount(account.getAvailableamount());
+			}else{
+				branchvo.setGoodsAmount(0.0);
+			}
+			UBranchtransaccounts transaccount=transaccountsMapper.selectByPrimaryKey(branchvo.getBranchuserid());
+			if(transaccount!=null){
+				branchvo.setTransAmount(transaccount.getAvailableamount());
+			}else{
+				branchvo.setGoodsAmount(0.0);
+			}
+			
 		}
 		
 		rq.setBasemodle(result);

@@ -1,6 +1,7 @@
 package com.bbyiya.pic.web.user;
 
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.common.vo.ResultMsg;
+import com.bbyiya.dao.DMyproductdiscountYiyeMapper;
+import com.bbyiya.dao.DMyproductdiscountmodelMapper;
+import com.bbyiya.dao.DMyproductdiscountsMapper;
 import com.bbyiya.dao.PMyproductactivitycodeMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
@@ -31,6 +35,9 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.ActivityCodeStatusEnum;
 import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
 import com.bbyiya.enums.user.UserIdentityEnums;
+import com.bbyiya.model.DMyproductdiscountYiye;
+import com.bbyiya.model.DMyproductdiscountmodel;
+import com.bbyiya.model.DMyproductdiscounts;
 import com.bbyiya.model.PMyproductactivitycode;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
@@ -43,6 +50,7 @@ import com.bbyiya.pic.vo.product.MyProductListVo;
 import com.bbyiya.pic.vo.product.MyProductTempVo;
 import com.bbyiya.pic.vo.product.YiyeSubmitParam;
 import com.bbyiya.service.IRegionService;
+import com.bbyiya.service.pic.IBaseDiscountService;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.JsonUtil;
@@ -81,6 +89,12 @@ public class YiyeMgtController  extends SSOController {
 	private PMyproductactivitycodeMapper codeMapper;
 	
 	/**
+	 * 优惠信息
+	 */
+	@Resource(name = "baseDiscountServiceImpl")
+	private IBaseDiscountService discountService;
+	
+	/**
 	 * M11-03 异业合作-模板详情 
 	 * c端
 	 * @param workId 作品cartid
@@ -93,20 +107,26 @@ public class YiyeMgtController  extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
+			//返回结果model
 			MyProductTempVo result=new MyProductTempVo();
+			//作品id
 			long cartid=ObjectUtil.parseLong(workId);
 			if(cartid>0){
+				//我的作品信息
 				PMyproducts mycart= myProductMapper.selectByPrimaryKey(cartid);
-				if(mycart!=null){
+				if(mycart!=null&&mycart.getTempid()!=null&&mycart.getTempid().intValue()>0) {
+					//异业合作 模板信息 
 					PMyproducttemp temp= tempMapper.selectByPrimaryKey(mycart.getTempid());
 					if(temp!=null){
+						//异业合作默认款式id
 						if(temp.getStyleid()==null||temp.getStyleid()<=0){
 							temp.setStyleid(mycart.getProductid()); 
 						}
-						result.setTemp(temp); 
+						//我的模板 申请信息
+						PMyproducttempapply apply=null;
 						List<MyProductListVo> myproductList= myproductDao.getMyProductByTempId(temp.getTempid(), user.getUserId());
 						if(myproductList!=null&&myproductList.size()>0){
-							PMyproducttempapply apply= tempApplyMapper.getMyProducttempApplyByCartId(myproductList.get(0).getCartid());
+							apply= tempApplyMapper.getMyProducttempApplyByCartId(myproductList.get(0).getCartid());
 							if(apply==null){
 								apply=tempApplyMapper.getMyProducttempApplyByUserId(temp.getTempid(), user.getUserId());
 							}
@@ -119,13 +139,30 @@ public class YiyeMgtController  extends SSOController {
 							result.setIsInvited(1);
 							result.setCartId(myproductList.get(0).getCartid());
 						}else {
-							PMyproducttempapply apply= tempApplyMapper.getMyProducttempApplyByUserId(temp.getTempid(), user.getUserId());
+							apply= tempApplyMapper.getMyProducttempApplyByUserId(temp.getTempid(), user.getUserId());
 							if(apply!=null){
 								result.setApplyStatus(apply.getStatus());
 							}else {
 								result.setApplyStatus(-1); 
 							}
 						} 
+						//活动结束 是否有优惠购买资格
+						if(temp.getStatus()!=null&&temp.getStatus().intValue()==Integer.parseInt(MyProductTempStatusEnum.over.toString())){
+							if(apply!=null&&apply.getStatus()!=null&&apply.getStatus()==Integer.parseInt(MyProducttempApplyStatusEnum.fails.toString())){
+							    if(apply.getCartid()!=null){
+							    	List<DMyproductdiscountmodel> listdis=discountService.findMycartDiscount(user.getUserId(), apply.getCartid());
+							    	if(listdis!=null&&listdis.size()>0){
+				    					for (DMyproductdiscountmodel dd : listdis) {
+				    						dd.setPrice(styleMapper.selectByPrimaryKey(dd.getStyleid()).getPrice()); 
+										}
+				    					result.setDiscountList(listdis);
+				    				}else {
+				    					discountService.addTempDiscount(apply.getCartid()); 
+									}
+							    }
+							}
+						}
+						result.setTemp(temp);
 						rq.setStatu(ReturnStatus.Success);
 						rq.setBasemodle(result);
 						return JsonUtil.objectToJsonStr(rq);

@@ -109,13 +109,13 @@ public class JsonUtil {
 	 * @return List<?>
 	 * @throws
 	 */
-	public static List<?> jsonToList(String jsonStr) {
-		List<?> objList = null;
-		if (gson != null) {
-			java.lang.reflect.Type type = new com.google.gson.reflect.TypeToken<List<?>>() {
-			}.getType();
-			objList = gson.fromJson(jsonStr, type);
-		}
-		return objList;
-	}
+//	public static List<?> jsonToList(String jsonStr) {
+//		List<?> objList = null;
+//		if (gson != null) {
+//			java.lang.reflect.Type type = new com.google.gson.reflect.TypeToken<List<?>>() {
+//			}.getType();
+//			objList = gson.fromJson(jsonStr, type);
+//		}
+//		return objList;
+//	}
 }

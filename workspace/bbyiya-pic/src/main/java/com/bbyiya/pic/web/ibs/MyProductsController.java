@@ -95,30 +95,32 @@ public class MyProductsController extends SSOController {
 	public String tempProductExportExcel(Integer tempid,Integer activeStatus,
 			@RequestParam(required = false, defaultValue = "")String keywords) throws Exception {
 		// 列头
-		String[] headers =new String[11];
-		headers[0]="作品ID";
-		headers[1]="作品名称";
-		headers[2]="本店员工";
-		headers[3]="客户昵称";
-		headers[4]="宝宝生日";
-		headers[5]="活动状态";
-		headers[6]="制作类型";
-		headers[7]="作品进度";
-		headers[8]="评论数";	
-		headers[9]="客户手机";	
-		headers[10]="收货地址";	
-		String[] fields = new String[11];
-		fields[0]="cartid";
-		fields[1]="title";
-		fields[2]="userName";
-		fields[3]="invitedName";
-		fields[4]="birthdayStr";
-		fields[5]="activeStatus";
-		fields[6]="productTitle";
-		fields[7]="count";
-		fields[8]="commentsCount";
-		fields[9]="inviteModel.invitephone";
-		fields[10]="address";
+		String[] headers =new String[12];
+		headers[0]="序号";
+		headers[1]="作品ID";
+		headers[2]="作品名称";
+		headers[3]="本店员工";
+		headers[4]="客户昵称";
+		headers[5]="宝宝生日";
+		headers[6]="活动状态";
+		headers[7]="制作类型";
+		headers[8]="作品进度";
+		headers[9]="评论数";	
+		headers[10]="客户手机";	
+		headers[11]="收货地址";	
+		String[] fields = new String[12];
+		fields[0]="sort";
+		fields[1]="cartid";
+		fields[2]="title";
+		fields[3]="userName";
+		fields[4]="invitedName";
+		fields[5]="birthdayStr";
+		fields[6]="activeStatus";
+		fields[7]="productTitle";
+		fields[8]="count";
+		fields[9]="commentsCount";
+		fields[10]="inviteModel.invitephone";
+		fields[11]="address";
 		
 		//导出格式
 		String format =".xlsx";

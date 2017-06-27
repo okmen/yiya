@@ -269,6 +269,11 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 							for (PMyproducttempapply applyin : applyInlist) {
 								applyin.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.fails.toString()));
 								myproducttempapplyMapper.updateByPrimaryKeySelective(applyin);
+								
+								//活动失败的参与作品 分发优惠
+								if(applyin.getCartid()!=null&&applyin.getCartid().longValue()>0){
+									discountService.addTempDiscount(applyin.getCartid());
+								}
 							}
 						}
 					}
@@ -279,11 +284,6 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 						for (PMyproducttempapply apply : applylist) {
 							apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.refuse.toString()));
 							myproducttempapplyMapper.updateByPrimaryKeySelective(apply);
-							
-							//活动失败的参与作品 分发优惠
-							if(apply.getCartid()!=null&&apply.getCartid().longValue()>0){
-								discountService.addTempDiscount(apply.getCartid());
-							}
 							
 						}
 					}

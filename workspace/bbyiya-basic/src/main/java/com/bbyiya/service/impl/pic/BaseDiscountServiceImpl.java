@@ -8,16 +8,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.dao.DMyproductdiscountYiyeMapper;
 import com.bbyiya.dao.DMyproductdiscountmodelMapper;
 import com.bbyiya.dao.DMyproductdiscountsMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
+import com.bbyiya.dao.UUsersMapper;
+import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.DMyproductdiscountYiye;
 import com.bbyiya.model.DMyproductdiscountmodel;
 import com.bbyiya.model.DMyproductdiscounts;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttempapply;
+import com.bbyiya.model.UUsers;
 import com.bbyiya.service.pic.IBaseDiscountService;
 import com.bbyiya.utils.JsonUtil;
 
@@ -35,7 +39,8 @@ public class BaseDiscountServiceImpl implements IBaseDiscountService {
 	private DMyproductdiscountmodelMapper disModMapper;
 	@Autowired
 	private PMyproductsMapper mycartMapper;
-	
+	@Autowired
+	private UUsersMapper userMapper;
 	
 	@SuppressWarnings("null")
 	public void addTempDiscount(Long cartId) {
@@ -51,6 +56,10 @@ public class BaseDiscountServiceImpl implements IBaseDiscountService {
 						//我参加了异业合作
 						PMyproducttempapply apply = applyMapper.getMyProducttempApplyByCartId(cartId);
 						if(apply!=null){
+							UUsers users= userMapper.selectByPrimaryKey(apply.getUserid());
+							if(users!=null&&users.getIdentity()!=null&&(ValidateUtils.isIdentity(users.getIdentity(), UserIdentityEnums.branch)||ValidateUtils.isIdentity(users.getIdentity(), UserIdentityEnums.salesman))){
+								return ;
+							}
 							mydis=new DMyproductdiscounts();
 							mydis.setCartid(cartId); 
 							mydis.setUserid(apply.getUserid());
@@ -80,13 +89,16 @@ public class BaseDiscountServiceImpl implements IBaseDiscountService {
 			}
 		}
 	}
-	
+	/**
+	 * 获取我作品的优惠
+	 */
 	public List<DMyproductdiscountmodel> findMycartDiscount(long userId,Long cartId){
 		DMyproductdiscounts mydiscount= discountMapper.selectByPrimaryKey(cartId);
 		if(mydiscount!=null&&mydiscount.getUserid()!=null&&mydiscount.getUserid().longValue()==userId){
 			if(mydiscount.getStatus()!=null&&mydiscount.getStatus().intValue()==0){
 				DMyproductdiscountYiye dis_yiye= discountDetailMapper.selectByPrimaryKey(cartId);
 				if(dis_yiye!=null){
+					@SuppressWarnings("unchecked")
 					List<DMyproductdiscountmodel> list=(List<DMyproductdiscountmodel>)JsonUtil.jsonStrToObject(dis_yiye.getDiscountjson(), DMyproductdiscountmodel.class) ;
     				if(list!=null&&list.size()>0){
     					return list;
@@ -95,5 +107,22 @@ public class BaseDiscountServiceImpl implements IBaseDiscountService {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * 使用作品优惠购买
+	 * 
+	 */
+	public boolean useMycartDiscount(long userId,Long cartId){
+		DMyproductdiscounts mydiscount= discountMapper.selectByPrimaryKey(cartId);
+		if(mydiscount!=null&&mydiscount.getUserid()!=null&&mydiscount.getUserid().longValue()==userId){
+			if(mydiscount.getStatus()!=null&&mydiscount.getStatus().intValue()==0){
+				mydiscount.setStatus(1);
+				mydiscount.setUsedtime(new Date());
+				discountMapper.updateByPrimaryKeySelective(mydiscount);
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -149,14 +149,14 @@ public class YiyeMgtController  extends SSOController {
 						//活动结束 是否有优惠购买资格
 						if(temp.getStatus()!=null&&temp.getStatus().intValue()==Integer.parseInt(MyProductTempStatusEnum.over.toString())){
 							if(apply!=null&&apply.getStatus()!=null&&apply.getStatus()==Integer.parseInt(MyProducttempApplyStatusEnum.fails.toString())){
-							    if(apply.getCartid()!=null){
+							    if(apply.getCartid()!=null&&!(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.salesman))){
 							    	List<DMyproductdiscountmodel> listdis=discountService.findMycartDiscount(user.getUserId(), apply.getCartid());
 							    	if(listdis!=null&&listdis.size()>0){
 				    					for (DMyproductdiscountmodel dd : listdis) {
 				    						dd.setPrice(styleMapper.selectByPrimaryKey(dd.getStyleid()).getPrice()); 
 										}
 				    					result.setDiscountList(listdis);
-				    				}else {
+				    				}else{
 				    					discountService.addTempDiscount(apply.getCartid()); 
 									}
 							    }
@@ -194,6 +194,10 @@ public class YiyeMgtController  extends SSOController {
 		rq.setStatu(ReturnStatus.ParamError);
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.salesman)){
+				rq.setStatusreson("影楼用户无法参与活动");
+				return  JsonUtil.objectToJsonStr(rq);
+			}
 			YiyeSubmitParam param = getParam_YiyeSubmitParam(commentJson);
 			if (param != null) {
 				if(param.getCartId()<=0){

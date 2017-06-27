@@ -138,7 +138,8 @@ public class MyProductController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			rq = proService.getMyProductInfo(user.getUserId(), cartId);
+//			rq = proService.getMyProductInfo(user.getUserId(), cartId);
+			rq=proService.getMyProductInfoNew(user.getUserId(),cartId); 
 		} else {// ·ÇµÇÂ¼·ÖÏíÒ³
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("Î´µÇÂ¼");

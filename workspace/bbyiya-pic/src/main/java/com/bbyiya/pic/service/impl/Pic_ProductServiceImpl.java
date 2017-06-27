@@ -98,10 +98,13 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	@Autowired
 	private PMyproducttempMapper tempMapper;
 	
+	
 	@Autowired
 	private PMyproducttempapplyMapper tempapplyMapper;
 	@Autowired
 	private PMyproductextMapper myextMapper;
+	
+	
 	/*-------------------用户信息------------------------------------------------*/
 	@Autowired
 	private UUsersMapper usersMapper;
@@ -866,8 +869,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					item.setIsDue(childinfo.getIsdue()==null?0:childinfo.getIsdue());
 				}
 				
-				// 得到作品订单集合
-				List<OUserorders> orderList = orderDao.findOrderListByCartId(item.getCartid());
+				
+				List<OUserorders> orderList = orderDao.findOrderListByCartIdAndBranchUserID(item.getCartid(),item.getUserid());
 				List<String> orderNoList = new ArrayList<String>();
 				for (OUserorders order : orderList) {
 					orderNoList.add(order.getUserorderid());
@@ -939,8 +942,6 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		return rq;
 	}
 
-	@Autowired
-	private PMyproducttempMapper mtempMapper;
 
 	/**
 	 * 我的作品详情 （用户操作页 ） 需要登录
@@ -977,7 +978,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			
 			// 如果是否是模板作品------------------------
 			if (myproduct.getIstemp() != null && myproduct.getIstemp() > 0 && myproduct.getTempid() != null && myproduct.getTempid() > 0) {
-				PMyproducttemp mtemp = mtempMapper.selectByPrimaryKey(myproduct.getTempid());
+				PMyproducttemp mtemp = tempMapper.selectByPrimaryKey(myproduct.getTempid());
 				if (mtemp != null) {
 					myproduct.setTempStatus(mtemp.getStatus() == null ? 0 : mtemp.getStatus());
 					// 判断用户是否接受模板邀请---------------
@@ -1034,6 +1035,122 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		return rq;
 	}
 	
+	
+	public ReturnModel getMyProductInfoNew(long userId,long cartId){
+		ReturnModel rq=new ReturnModel();
+		MyProductsResult myproductRedis=getCartDetailsRedis(userId,cartId);
+		if(myproductRedis!=null){
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(myproductRedis);
+		}else {
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("作品不存在");
+		}
+		return rq;
+	}
+	
+	private MyProductsResult getCartDetailsRedis(long userId,Long cartId){
+		String keycart=ConfigUtil.getSingleValue("currentRedisKey-Base")+"_cartIdMy_"+cartId;
+		MyProductsResult myproductRedis=(MyProductsResult)RedisUtil.getObject(keycart);
+		if(myproductRedis!=null){
+			//非本人作品  直接调取缓存
+			if(!((myproductRedis.getUserid()!=null&&myproductRedis.getUserid().longValue()==userId)||(myproductRedis.getInviteUserId()!=null&&myproductRedis.getInviteUserId().longValue()==userId))){
+				return myproductRedis;
+			}
+		}
+		MyProductsResult result=getCartDetails(userId,cartId);
+		if(result!=null&&result.getDetailslist()!=null&&result.getDetailslist().size()>=12){
+			RedisUtil.setObject(keycart, result, 600);
+		}
+		return result;
+	}
+	/**
+	 * 获取作品信息
+	 * @param userId
+	 * @param cartId
+	 * @return
+	 */
+	public MyProductsResult getCartDetails(long userId,Long cartId){
+		MyProductsResult myproduct = myProductsDao.getMyProductResultVo(cartId);
+		if (myproduct == null) {
+			return null;
+		}
+		UUsers user = usersMapper.getUUsersByUserID(userId);
+		if (myproduct != null && myproduct.getStatus() != null && myproduct.getStatus().intValue() == Integer.parseInt(MyProductStatusEnum.ordered.toString())) {
+			myproduct.setIsOrder(1);
+		}
+		//获取协同编辑者的userId------------------------------------
+		if (myproduct.getInvitestatus() != null && myproduct.getInvitestatus() > 0) {
+			List<PMyproductsinvites> invites = inviteMapper.findListByCartId(cartId);
+			if (invites != null && invites.size() > 0) {
+				if(invites.get(0).getInviteuserid()!=null){
+					myproduct.setInviteUserId(invites.get(0).getInviteuserid());
+				}else if (!ObjectUtil.isEmpty(invites.get(0).getInvitephone())) {
+					UUsers inviteUser=usersMapper.getUUsersByPhone(invites.get(0).getInvitephone());
+					if(inviteUser!=null){
+						myproduct.setInviteUserId(inviteUser.getUserid());
+					}
+				}
+			}
+		}/*---------------------------------*/
+		
+		// 如果是否是模板作品------------------------
+		if (myproduct.getIstemp() != null && myproduct.getIstemp() > 0 && myproduct.getTempid() != null && myproduct.getTempid() > 0) {
+			PMyproducttemp mtemp = tempMapper.selectByPrimaryKey(myproduct.getTempid());
+			if (mtemp != null) {
+				myproduct.setTempStatus(mtemp.getStatus() == null ? 0 : mtemp.getStatus());
+				// 判断用户是否接受模板邀请---------------
+				if (userId != myproduct.getUserid().longValue()) {
+					List<MyProductListVo> myprolist = myProductsDao.getMyProductResultByTempId(myproduct.getTempid());
+					if (myprolist != null && myprolist.size() > 0) {
+						for (MyProductListVo ll : myprolist) {
+							List<PMyproductsinvites> invlist = inviteMapper.findListByCartId(ll.getCartid());
+							if (invlist != null && invlist.size() > 0) {
+								for (PMyproductsinvites iv : invlist) {
+									if (iv.getInviteuserid() != null && iv.getInviteuserid().longValue() == userId) {
+										myproduct.setTempCartId(ll.getCartid());
+									}
+								}
+							}
+						}
+					}
+				}// 判断用户是否接受模板邀请(over)---------------
+			}
+		}else if (myproduct.getTempid()!=null&&myproduct.getTempid().intValue()>0&&myproduct.getInviteUserId()!=null&&(myproduct.getInviteUserId().longValue()==userId||myproduct.getUserid().longValue()==userId)) {
+			//----------用户此作品参与了 异业合作 活动----------------------------------------------------------------
+			myproduct.setTempVo(getMyProductsTempVo(userId,myproduct));  
+		}
+
+		UUsers myUser = userId == myproduct.getUserid().longValue() ? user : usersMapper.selectByPrimaryKey(myproduct.getUserid());
+		if (myUser != null && !ObjectUtil.isEmpty(myUser.getNickname())) {
+			myproduct.setMyNickName(myUser.getNickname());
+			myproduct.setUserIdentity(myUser.getIdentity());
+		}
+		if (ObjectUtil.isEmpty(myproduct.getDescription())) {
+			PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
+			if (product != null) {
+				myproduct.setDescription(product.getDescription());
+			}
+		}
+		// --作品图片信息-------
+		myproduct.setDetailslist(getMyProductsDetailsResultList(userId, cartId));
+
+		// 作品宝宝信息----------------------------------------------------------------------------
+		PMyproductchildinfo childInfo = mychildMapper.selectByPrimaryKey(cartId);
+		if (childInfo != null) {
+			UChildInfoParam childInfoParam = new UChildInfoParam();
+			if (!ObjectUtil.isEmpty(childInfo.getNickname())) {
+				childInfoParam.setNickName(childInfo.getNickname());
+			}
+			if (!ObjectUtil.isEmpty(childInfo.getBirthday())) {
+				childInfoParam.setBirthday(DateUtil.getTimeStr(childInfo.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
+			}
+			myproduct.setChildInfo(childInfoParam);
+		}
+		
+		return myproduct;
+	}
+	
 	/**
 	 * 作品参与活动
 	 * @param userId
@@ -1041,7 +1158,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	 * @return
 	 */
 	private MyProductsTempVo getMyProductsTempVo(Long userId, MyProductsResult myproduct){
-		PMyproducttemp mtemp = mtempMapper.selectByPrimaryKey(myproduct.getTempid());
+		PMyproducttemp mtemp = tempMapper.selectByPrimaryKey(myproduct.getTempid());
 		if(mtemp!=null){
 			MyProductsTempVo vo=new MyProductsTempVo();
 			//是否限定完成人数

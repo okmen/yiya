@@ -305,8 +305,11 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					if(dislit!=null&&dislit.size()>0){
 						for (DMyproductdiscountmodel dis : dislit) {
 							if(styles.getStyleid().longValue()==dis.getStyleid().longValue()){
-								orderTotalPrice=orderTotalPrice-dis.getAmount();
-								userOrder.setOrdertotalprice(orderTotalPrice); 
+								//使用优惠
+								if(discountService.useMycartDiscount(userOrder.getUserid(), param.getCartId())){
+									orderTotalPrice=orderTotalPrice-dis.getAmount();
+									userOrder.setOrdertotalprice(orderTotalPrice); 
+								}
 							}
 						}
 					}

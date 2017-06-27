@@ -1,6 +1,9 @@
 package com.bbyiya.pic.vo.product;
 
 import java.io.Serializable;
+import java.util.List;
+
+import com.bbyiya.model.DMyproductdiscountmodel;
 
 public class MyProductsTempVo implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -19,6 +22,8 @@ public class MyProductsTempVo implements Serializable{
 	private Integer commentCount;
 	
 	private int mytempStatus;
+	
+	private List<DMyproductdiscountmodel> discountList;
 	
 	public int getIsLimitQuotas() {
 		return isLimitQuotas;
@@ -55,6 +60,12 @@ public class MyProductsTempVo implements Serializable{
 	}
 	public void setMytempStatus(int mytempStatus) {
 		this.mytempStatus = mytempStatus;
+	}
+	public List<DMyproductdiscountmodel> getDiscountList() {
+		return discountList;
+	}
+	public void setDiscountList(List<DMyproductdiscountmodel> discountList) {
+		this.discountList = discountList;
 	}
 	
 	

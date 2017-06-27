@@ -7,9 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductchildinfoMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
@@ -20,6 +22,7 @@ import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
 import com.bbyiya.dao.PProductdetailsMapper;
 import com.bbyiya.dao.PProductsMapper;
+import com.bbyiya.dao.PProductstylesMapper;
 import com.bbyiya.dao.PScenesMapper;
 import com.bbyiya.dao.PStylecoordinateMapper;
 import com.bbyiya.dao.PStylecoordinateitemMapper;
@@ -30,6 +33,7 @@ import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
 import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
+import com.bbyiya.model.DMyproductdiscountmodel;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproductchildinfo;
 import com.bbyiya.model.PMyproductdetails;
@@ -57,6 +61,7 @@ import com.bbyiya.pic.vo.product.MyProductsDetailsResult;
 import com.bbyiya.pic.vo.product.MyProductsResult;
 import com.bbyiya.pic.vo.product.MyProductsTempVo;
 import com.bbyiya.pic.vo.product.ProductSampleResultVO;
+import com.bbyiya.service.pic.IBaseDiscountService;
 import com.bbyiya.service.pic.IBaseUserAddressService;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
@@ -79,6 +84,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private PProductsMapper productsMapper;
 	@Autowired
 	private PProductdetailsMapper detailMapper;
+	@Autowired
+	private PProductstylesMapper styleMapper;
 	/*---------------------坐标模板---------------------------------*/
 	@Autowired
 	private PStylecoordinateMapper styleCoordMapper;
@@ -129,7 +136,11 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	
 	@Resource(name = "baseUserAddressServiceImpl")
 	private IBaseUserAddressService baseAddressService;
-
+	//优惠信息
+	@Resource(name = "baseDiscountServiceImpl")
+	private IBaseDiscountService discountService;
+	
+	
 	public ReturnModel getProductSamples(Long productId) {
 		ReturnModel rq = new ReturnModel();
 		ProductSampleVo product = productsMapper.getProductBaseVoByProId(productId);
@@ -1061,6 +1072,15 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		MyProductsResult result=getCartDetails(userId,cartId);
 		if(result!=null&&result.getDetailslist()!=null&&result.getDetailslist().size()>=12){
 			RedisUtil.setObject(keycart, result, 600);
+			if(result.getTempVo()!=null&&result.getInviteUserId()!=null&&result.getInviteUserId().longValue()==userId){
+				List<DMyproductdiscountmodel> disList= discountService.findMycartDiscount(userId, cartId);
+				if(disList!=null&&disList.size()>0){
+					for (DMyproductdiscountmodel dd : disList) {
+						dd.setPrice(styleMapper.selectByPrimaryKey(dd.getStyleid()).getPrice()); 
+					}
+					result.getTempVo().setDiscountList(disList); 
+				}
+			}
 		}
 		return result;
 	}
@@ -1070,7 +1090,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	 * @param cartId
 	 * @return
 	 */
-	public MyProductsResult getCartDetails(long userId,Long cartId){
+	private MyProductsResult getCartDetails(long userId,Long cartId){
 		MyProductsResult myproduct = myProductsDao.getMyProductResultVo(cartId);
 		if (myproduct == null) {
 			return null;
@@ -1132,7 +1152,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				myproduct.setDescription(product.getDescription());
 			}
 		}
-		// --作品图片信息-------
+		// --作品图片列表 信息-------
 		myproduct.setDetailslist(getMyProductsDetailsResultList(userId, cartId));
 
 		// 作品宝宝信息----------------------------------------------------------------------------
@@ -1152,7 +1172,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	}
 	
 	/**
-	 * 作品参与活动
+	 * 异业活动 作品参与活动
 	 * @param userId
 	 * @param myproduct
 	 * @return

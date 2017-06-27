@@ -156,7 +156,8 @@ public class YiyeMgtController  extends SSOController {
 				    						dd.setPrice(styleMapper.selectByPrimaryKey(dd.getStyleid()).getPrice()); 
 										}
 				    					result.setDiscountList(listdis);
-				    				}else{
+				    				}
+							    	else{
 				    					discountService.addTempDiscount(apply.getCartid()); 
 									}
 							    }

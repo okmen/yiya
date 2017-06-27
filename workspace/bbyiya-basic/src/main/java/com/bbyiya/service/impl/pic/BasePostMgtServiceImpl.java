@@ -116,7 +116,7 @@ public class BasePostMgtServiceImpl implements IBasePostMgtService{
 		PageInfo<PPostModelAreasVo> result=new PageInfo<PPostModelAreasVo>(postList);
 		
 		if(result!=null&&result.getList()!=null&&result.getList().size()>0){
-			for (PPostModelAreasVo pvo : postList) {
+			for (PPostModelAreasVo pvo : result.getList()) {
 				PPostmodel model=postmodelMapper.selectByPrimaryKey(pvo.getPostmodelid());
 				if(model!=null)
 					pvo.setPostModelName(model.getName());

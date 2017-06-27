@@ -152,6 +152,20 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		PageHelper.startPage(index, size);
 		List<UAgentApplyVo> list=agentDao.findUAgentapplyVOList(param);
 		PageInfo<UAgentApplyVo> result=new PageInfo<UAgentApplyVo>(list);
+		for (UAgentApplyVo agentvo : result.getList()) {
+			UAccounts account=accountsMapper.selectByPrimaryKey(agentvo.getAgentuserid());
+			if(account!=null){
+				agentvo.setGoodsAmount(account.getAvailableamount());
+			}else{
+				agentvo.setGoodsAmount(0.0);
+			}
+			UBranchtransaccounts transaccount=transaccountsMapper.selectByPrimaryKey(agentvo.getAgentuserid());
+			if(transaccount!=null){
+				agentvo.setTransAmount(transaccount.getAvailableamount());
+			}else{
+				agentvo.setGoodsAmount(0.0);
+			}
+		}
 		rq.setBasemodle(result);
 		return rq;
 	}

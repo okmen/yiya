@@ -163,7 +163,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			if(transaccount!=null){
 				agentvo.setTransAmount(transaccount.getAvailableamount());
 			}else{
-				agentvo.setGoodsAmount(0.0);
+				agentvo.setTransAmount(0.0);
 			}
 		}
 		rq.setBasemodle(result);
@@ -370,6 +370,8 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		UAgentapply apply= agentapplyMapper.selectByPrimaryKey(agentUserId); 
 		if(apply!=null){
 			apply.setStatus(status); 
+			apply.setProcesstime(new Date());//处理时间
+			apply.setReason(msg);
 			agentapplyMapper.updateByPrimaryKeySelective(apply);
 			if(status==Integer.parseInt(AgentStatusEnum.ok.toString())){//成为代理
 				RAreaplans areaplans= areaplansMapper.selectByPrimaryKey(apply.getArea());
@@ -409,11 +411,13 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 						areaplansMapper.insert(areaMod);
 					}
 				}
+				
+				//代理商 申请信息复制到正式代理表
+				this.addAgentInfo(apply);
+				rq.setStatu(ReturnStatus.Success);
+				rq.setStatusreson("审核成功");
 			}
-			//代理商 申请信息复制到正式代理表
-			this.addAgentInfo(apply);
-			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("审核成功");
+			
 		}else {
 			rq.setStatu(ReturnStatus.SystemError);
 			rq.setStatusreson("找不到申请资料");
@@ -431,6 +435,8 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		UBranches apply= branchesMapper.selectByPrimaryKey(branchUserId); 
 		if(apply!=null){
 			apply.setStatus(status);
+			apply.setReason(msg);
+			apply.setProcesstime(new Date());
 			branchesMapper.updateByPrimaryKeySelective(apply);
 			if(status==Integer.parseInt(BranchStatusEnum.ok.toString())){
 				userBasic.addUserIdentity(branchUserId,UserIdentityEnums.branch); 

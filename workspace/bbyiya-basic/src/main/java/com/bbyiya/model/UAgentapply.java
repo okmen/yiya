@@ -38,6 +38,8 @@ public class UAgentapply {
     private Date createtime;
     
     private Date processtime;
+    
+    private String reason;
 
     public Long getAgentuserid() {
         return agentuserid;
@@ -182,5 +184,13 @@ public class UAgentapply {
 	public void setProcesstime(Date processtime) {
 		this.processtime = processtime;
 	}
+	
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason == null ? null : reason.trim();
+    }
     
 }

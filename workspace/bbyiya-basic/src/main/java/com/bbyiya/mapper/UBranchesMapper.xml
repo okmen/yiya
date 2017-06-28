@@ -20,11 +20,12 @@
     <result column="Status" property="status" jdbcType="INTEGER" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="ProcessTime" property="processtime" jdbcType="TIMESTAMP" />
+    <result column="Reason" property="reason" jdbcType="VARCHAR" />
   </resultMap>
-  <sql id="Base_Column_List" >
+   <sql id="Base_Column_List" >
     BranchUserId, BranchCompanyName, AgentUserId, UserName, ContactName, Phone, Province, 
     City, Area, StreetDetail, BusinessLicense, BusinessScope, ShopImg, TeamImg, Remark, 
-    Status, CreateTime, ProcessTime
+    Status, CreateTime, ProcessTime, Reason
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -42,15 +43,15 @@
       Province, City, Area, 
       StreetDetail, BusinessLicense, BusinessScope, 
       ShopImg, TeamImg, Remark, 
-      Status, CreateTime, ProcessTime
-      )
+      Status, CreateTime, ProcessTime, 
+      Reason)
     values (#{branchuserid,jdbcType=BIGINT}, #{branchcompanyname,jdbcType=VARCHAR}, #{agentuserid,jdbcType=BIGINT}, 
       #{username,jdbcType=VARCHAR}, #{contactname,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
       #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, #{area,jdbcType=INTEGER}, 
       #{streetdetail,jdbcType=VARCHAR}, #{businesslicense,jdbcType=VARCHAR}, #{businessscope,jdbcType=VARCHAR}, 
       #{shopimg,jdbcType=VARCHAR}, #{teamimg,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
-      #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{processtime,jdbcType=TIMESTAMP}
-      )
+      #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{processtime,jdbcType=TIMESTAMP}, 
+      #{reason,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.UBranches" >
     insert into u_branches
@@ -109,6 +110,9 @@
       <if test="processtime != null" >
         ProcessTime,
       </if>
+      <if test="reason != null" >
+        Reason,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="branchuserid != null" >
@@ -164,6 +168,9 @@
       </if>
       <if test="processtime != null" >
         #{processtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="reason != null" >
+        #{reason,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -221,6 +228,9 @@
       <if test="processtime != null" >
         ProcessTime = #{processtime,jdbcType=TIMESTAMP},
       </if>
+      <if test="reason != null" >
+        Reason = #{reason,jdbcType=VARCHAR},
+      </if>
     </set>
     where BranchUserId = #{branchuserid,jdbcType=BIGINT}
   </update>
@@ -242,7 +252,8 @@
       Remark = #{remark,jdbcType=VARCHAR},
       Status = #{status,jdbcType=INTEGER},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
-      ProcessTime = #{processtime,jdbcType=TIMESTAMP}
+      ProcessTime = #{processtime,jdbcType=TIMESTAMP},
+      Reason = #{reason,jdbcType=VARCHAR}
     where BranchUserId = #{branchuserid,jdbcType=BIGINT}
   </update>
 </mapper>

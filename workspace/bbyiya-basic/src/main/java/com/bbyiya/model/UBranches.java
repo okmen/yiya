@@ -38,6 +38,8 @@ public class UBranches {
     private Date createtime;
 
     private Date processtime;
+    
+    private String reason;
 
     public Long getBranchuserid() {
         return branchuserid;
@@ -181,5 +183,13 @@ public class UBranches {
 
     public void setProcesstime(Date processtime) {
         this.processtime = processtime;
+    }
+    
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason == null ? null : reason.trim();
     }
 }

@@ -1,22 +1,23 @@
 package com.bbyiya.utils;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.log4j.Logger;
 
 import net.sf.json.JSONObject;
 
 import com.bbyiya.common.enums.MsgStatusEnums;
 import com.bbyiya.common.enums.SendMsgEnums;
 import com.bbyiya.common.vo.ResultMsg;
+import com.bbyiya.common.vo.SmsParam;
 /**
  * 短信发送类
  * @author Administrator
  *
  */
 public class SendSMSByMobile {
-//	static String UID = ConfigUtil.getSingleValue("smsuid");
-//	static String PWD = ConfigUtil.getSingleValue("smspwd");
-//	static String URL = "http://c.kf10000.com/sdk/SMS";
 	
 	/**
 	 * 参考api文档 https://www.yunpian.com/api2.0/sms.html
@@ -27,42 +28,17 @@ public class SendSMSByMobile {
 	/**
 	 * 新增模板
 	 */
-	private static String ADD_URL=ConfigUtil.getSingleValue("yp_add_url");
+//	private static String ADD_URL=ConfigUtil.getSingleValue("yp_add_url");
 	/**
 	 * key
 	 */
 	private static String APIKEY=ConfigUtil.getSingleValue("yp_apikey");
 
+	public static Logger loger = Logger.getLogger(SendSMSByMobile.class);
 	
-	/*
-	 * 短信改造 cmd 命令字 send 发送短信 uid 帐号 非空 psw 密码 非空 密码需要MD5 32位加密,不区分大小写； subid
-	 * 扩展号（6位以内） mobiles 手机号码 多个号码用逗号隔开最多500个号码,建议100个提交一次; msgid 消息编号 整型
-	 * 客户端生成，唯一性；每提交一次msgid要不同； msg 消息内容 GBK 编码格式，需要urlencoder；
-	 */
-	/*
-	private static String sendSMS(String mobile, String content) {
-		String returnMsg = "";
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("cmd", "send");
-		map.put("uid", UID);
-		try {
-			map.put("psw", MD5Encrypt.encrypt(PWD));
-			map.put("mobiles", mobile);
-			map.put("msgid", String.valueOf(Math.random()).substring(2, 6));
-			map.put("msg",URLEncoder.encode(content.replace("[", "【").replace("]", "】"), "GBK"));
-
-			returnMsg = HttpRequestHelper.doGetMethod(URL, map);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		if ("100".equals(returnMsg))
-			return "1";
-		else
-			return returnMsg;
-	}*/
 	
 	/**
-	 * 单条短信发送
+	 * 单条短信发送（验证短信）
 	 * @param mobile
 	 * @param content
 	 * @return
@@ -76,31 +52,55 @@ public class SendSMSByMobile {
 			map.put("text",content);
 			returnMsg = HttpRequestHelper.post_httpClient(SINGER_URL, map);
 		} catch (Exception e) {
-			e.printStackTrace();
+			loger.error(e);
 		}
 		return returnMsg;
 	}
+	
 	/**
-	 * 新增云片短信模板
+	 * 通知类短信发送（多个相同类容）
+	 * @param mobiles 多个手机号以,隔开，一次不要超过1000条且短信内容条数必须与手机号个数相等
+	 * @param content 短信内容，多个短信内容请使用UTF-8做urlencode；使用逗号分隔，一次不要超过1000条且短信内容条数必须与手机号个数相等
 	 * @return
 	 */
-	public static String addTemp_yunpian() {
+	public static String batchSend(String mobiles, String contents) {
 		String returnMsg = "";
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("apikey", APIKEY);
 		try {
-			String content="【咿呀科技】您的验证码是#code#";
-			map.put("tpl_content",content);
-			returnMsg = HttpRequestHelper.post_httpClient(ADD_URL, map);
+			map.put("mobile", mobiles);
+			map.put("text",contents);
+			returnMsg = HttpRequestHelper.post_httpClient("https://sms.yunpian.com/v2/sms/batch_send.json", map);
+//			System.out.println(returnMsg); 
 		} catch (Exception e) {
-			e.printStackTrace();
+			loger.error(e); 
 		}
 		return returnMsg;
 	}
+	
+	
+	
+	
+//	/**
+//	 * 新增云片短信模板
+//	 * @return
+//	 */
+//	public static String addTemp_yunpian() {
+//		String returnMsg = "";
+//		Map<String, String> map = new HashMap<String, String>();
+//		map.put("apikey", APIKEY);
+//		try {
+//			String content="【咿呀科技】您的验证码是#code#";
+//			map.put("tpl_content",content);
+//			returnMsg = HttpRequestHelper.post_httpClient(ADD_URL, map);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		return returnMsg;
+//	}
 
 	/**
 	 * 发送短信
-	 * 
 	 * @param type
 	 * @param moblie
 	 * @return
@@ -115,7 +115,54 @@ public class SendSMSByMobile {
 		return null;
 	}
 	
+	/**
+	 * 短信发送
+	 * @param msgType
+	 * @param mobile
+	 * @param param
+	 * @return
+	 */
+	public static boolean sendSmsReturnJson(int msgType,String mobile,SmsParam param){
+		String msg="";
+		//注册验证码
+		if(msgType==Integer.parseInt(SendMsgEnums.register.toString())){
+			//验证码
+			String verifyCode = String.valueOf(Math.random()).substring(2, 6);
+			msg="【咿呀科技】您的验证码是"+verifyCode;
+			//注册验证码
+			String key=mobile+"-"+msgType;
+			//验证码5分钟有效
+			RedisUtil.setObject(key, verifyCode,300); 
+			String returnMsg=sendSMS_yunpian(mobile, msg);
+			if(ObjectUtil.isEmpty(returnMsg)){
+				return false;
+			}
+		}
+		//用户充值
+		else if (msgType==Integer.parseInt(SendMsgEnums.recharge.toString())) {
+			msg="【咿呀科技】尊敬的用户，您的帐号于"+DateUtil.getTimeStr(new Date(), "yyyy-MM-dd HH:mm")+"成功充值"+param.getAmount()+"元。（客服电话：13760131762）。";
+			batchSend(mobile, msg); 
+		}
+		//已发货-短信通知
+		else if (msgType==Integer.parseInt(SendMsgEnums.delivery.toString())) {
+			if(!(param==null||ObjectUtil.isEmpty(param.getTransName())||ObjectUtil.isEmpty(param.getTransNum()))){
+				msg="【咿呀科技】尊敬的用户，您在咿呀十二制作购买的相册已发货，快递单号："+param.getTransNum()+"["+param.getTransName()+"]。（客服电话：13760131762）。"; 
+				batchSend(mobile, msg); 
+			}
+		}
+		return true;
+	}
 	
+	/**
+	 * 短信群发
+	 * @param msgType
+	 * @param mobiles
+	 * @param param
+	 * @return
+	 */
+//	public static String sendSms(int msgType,String[] mobiles,SmsParam param){
+//		return "";
+//	}
 	
 	
 	/**
@@ -124,16 +171,16 @@ public class SendSMSByMobile {
 	 * @param moblie
 	 * @return JSONObject （{code:0 发送成功，msg:失败的原因}）
 	 */
-	public static JSONObject sendSmsReturnObject(SendMsgEnums type, String moblie) {
-		if (type.equals(SendMsgEnums.register)) {
-			String verifyCode = String.valueOf(Math.random()).substring(2, 6);
-			String key=moblie+"-"+Integer.parseInt(type.toString());
-			RedisUtil.setObject(key, verifyCode,300); 
-			String resultString= sendSMS_yunpian(moblie, "【咿呀科技】您的验证码是"+verifyCode);
-			return JSONObject.fromObject(resultString);
-		}
-		return null;
-	}
+//	public static JSONObject sendSmsReturnObject(SendMsgEnums type, String moblie) {
+//		if (type.equals(SendMsgEnums.register)) {
+//			String verifyCode = String.valueOf(Math.random()).substring(2, 6);
+//			String key=moblie+"-"+Integer.parseInt(type.toString());
+//			RedisUtil.setObject(key, verifyCode,300); 
+//			String resultString= sendSMS_yunpian(moblie, "【咿呀科技】您的验证码是"+verifyCode);
+//			return JSONObject.fromObject(resultString);
+//		}
+//		return null;
+//	}
 	
 	/**
 	 * 验证码验证

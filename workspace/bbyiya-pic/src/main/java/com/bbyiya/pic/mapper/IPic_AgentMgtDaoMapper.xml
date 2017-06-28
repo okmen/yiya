@@ -19,11 +19,13 @@
     <result column="Remark" property="remark" jdbcType="VARCHAR" />
     <result column="Status" property="status" jdbcType="INTEGER" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="ProcessTime" property="processtime" jdbcType="TIMESTAMP" />
+    <result column="Reason" property="reason" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="UAgentapply_Column_List" >
     AgentUserId, AgentCompanyName, ContactName, UserName, Phone, Province, City, Area, 
     StreetDetail, IdCard, BusinessLicense, BusinessScope, ShopImg, TeamImg, Remark, Status, 
-    CreateTime
+    CreateTime, ProcessTime, Reason
   </sql>
   <resultMap id="UBranchesMap" type="com.bbyiya.model.UBranches" >
     <id column="BranchUserId" property="branchuserid" jdbcType="BIGINT" />
@@ -44,11 +46,12 @@
     <result column="Status" property="status" jdbcType="INTEGER" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="ProcessTime" property="processtime" jdbcType="TIMESTAMP" />
+    <result column="Reason" property="reason" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="UBranches_Column_List" >
     BranchUserId, BranchCompanyName, AgentUserId, UserName, ContactName, Phone, Province, 
     City, Area, StreetDetail, BusinessLicense, BusinessScope, ShopImg, TeamImg, Remark, 
-    Status, CreateTime, ProcessTime
+    Status, CreateTime, ProcessTime, Reason
   </sql>
    <!-- 代理商申请信息Model-->
   <resultMap id="UAgentapplyVOResult" type="com.bbyiya.pic.vo.agent.UAgentApplyVo" extends="UAgentapplyMap">  

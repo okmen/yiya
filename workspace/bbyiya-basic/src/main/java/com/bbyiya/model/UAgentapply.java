@@ -36,6 +36,8 @@ public class UAgentapply {
     private Integer status;
 
     private Date createtime;
+    
+    private Date processtime;
 
     public Long getAgentuserid() {
         return agentuserid;
@@ -171,6 +173,14 @@ public class UAgentapply {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public Date getProcesstime() {
+		return processtime;
+	}
+
+	public void setProcesstime(Date processtime) {
+		this.processtime = processtime;
 	}
     
 }

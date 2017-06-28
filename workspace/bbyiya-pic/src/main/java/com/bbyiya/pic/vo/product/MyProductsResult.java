@@ -10,11 +10,9 @@ public class MyProductsResult extends PMyproducts{
 	private static final long serialVersionUID = 1L;
 	//作品图片数量
 	private int count;
-	//作品默认图片
-	private String headImg;
 	//是否下单
 	private int isOrder;
-	
+	//被邀请人userId
 	private Long inviteUserId;
 	//邀请人昵称
 	private String myNickName;
@@ -33,7 +31,9 @@ public class MyProductsResult extends PMyproducts{
 	 * 作品详细图片
 	 */
 	private List<MyProductsDetailsResult> detailslist;
-	
+	/**
+	 * 宝宝生日信息
+	 */
 	private UChildInfoParam childInfo;
 	
 	
@@ -44,12 +44,6 @@ public class MyProductsResult extends PMyproducts{
 	}
 	public void setCount(int count) {
 		this.count = count;
-	}
-	public String getHeadImg() {
-		return headImg;
-	}
-	public void setHeadImg(String headImg) {
-		this.headImg = headImg;
 	}
 	public int getIsOrder() {
 		return isOrder;

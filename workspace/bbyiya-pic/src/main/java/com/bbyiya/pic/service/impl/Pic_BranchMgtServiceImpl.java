@@ -370,6 +370,8 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		UAgentapply apply= agentapplyMapper.selectByPrimaryKey(agentUserId); 
 		if(apply!=null){
 			apply.setStatus(status); 
+			apply.setProcesstime(new Date());//处理时间
+			apply.setRemark(msg);//备注
 			agentapplyMapper.updateByPrimaryKeySelective(apply);
 			if(status==Integer.parseInt(AgentStatusEnum.ok.toString())){//成为代理
 				RAreaplans areaplans= areaplansMapper.selectByPrimaryKey(apply.getArea());
@@ -409,11 +411,13 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 						areaplansMapper.insert(areaMod);
 					}
 				}
+				
+				//代理商 申请信息复制到正式代理表
+				this.addAgentInfo(apply);
+				rq.setStatu(ReturnStatus.Success);
+				rq.setStatusreson("审核成功");
 			}
-			//代理商 申请信息复制到正式代理表
-			this.addAgentInfo(apply);
-			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("审核成功");
+			
 		}else {
 			rq.setStatu(ReturnStatus.SystemError);
 			rq.setStatusreson("找不到申请资料");

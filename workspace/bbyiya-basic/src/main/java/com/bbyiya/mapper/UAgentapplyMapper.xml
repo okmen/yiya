@@ -19,11 +19,12 @@
     <result column="Remark" property="remark" jdbcType="VARCHAR" />
     <result column="Status" property="status" jdbcType="INTEGER" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="ProcessTime" property="processtime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     AgentUserId, AgentCompanyName, ContactName, UserName, Phone, Province, City, Area, 
     StreetDetail, IdCard, BusinessLicense, BusinessScope, ShopImg, TeamImg, Remark, Status, 
-    CreateTime
+    CreateTime, ProcessTime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -41,13 +42,15 @@
       City, Area, StreetDetail, 
       IdCard, BusinessLicense, BusinessScope, 
       ShopImg, TeamImg, Remark, 
-      Status, CreateTime)
+      Status, CreateTime, ProcessTime
+      )
     values (#{agentuserid,jdbcType=BIGINT}, #{agentcompanyname,jdbcType=VARCHAR}, #{contactname,jdbcType=VARCHAR}, 
       #{username,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, 
       #{city,jdbcType=INTEGER}, #{area,jdbcType=INTEGER}, #{streetdetail,jdbcType=VARCHAR}, 
       #{idcard,jdbcType=VARCHAR}, #{businesslicense,jdbcType=VARCHAR}, #{businessscope,jdbcType=VARCHAR}, 
       #{shopimg,jdbcType=VARCHAR}, #{teamimg,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
-      #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP})
+      #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{processtime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.UAgentapply" >
     insert into u_agentapply
@@ -103,6 +106,9 @@
       <if test="createtime != null" >
         CreateTime,
       </if>
+      <if test="processtime != null" >
+        ProcessTime,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="agentuserid != null" >
@@ -155,6 +161,9 @@
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="processtime != null" >
+        #{processtime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -209,6 +218,9 @@
       <if test="createtime != null" >
         CreateTime = #{createtime,jdbcType=TIMESTAMP},
       </if>
+      <if test="processtime != null" >
+        ProcessTime = #{processtime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where AgentUserId = #{agentuserid,jdbcType=BIGINT}
   </update>
@@ -229,7 +241,8 @@
       TeamImg = #{teamimg,jdbcType=VARCHAR},
       Remark = #{remark,jdbcType=VARCHAR},
       Status = #{status,jdbcType=INTEGER},
-      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      ProcessTime = #{processtime,jdbcType=TIMESTAMP}
     where AgentUserId = #{agentuserid,jdbcType=BIGINT}
   </update>
 </mapper>

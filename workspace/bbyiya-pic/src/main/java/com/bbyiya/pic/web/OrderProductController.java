@@ -12,12 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PProductsMapper;
 import com.bbyiya.dao.PProductstyleexpMapper;
 import com.bbyiya.dao.PProductstylesMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.DMyproductdiscountmodel;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PProducts;
@@ -65,7 +67,11 @@ public class OrderProductController extends SSOController {
 		if(user!=null){
 			List<PProductStyleResult> stylelist = styleMapper.findStylesResultByProductId(productId);
 			if (stylelist != null && stylelist.size() > 0) {
-				List<DMyproductdiscountmodel> disList = discountService.findMycartDiscount(user.getUserId(), cartId);
+				List<DMyproductdiscountmodel> disList = null;
+				//普通用户才有优惠购买资格
+				if(!(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.salesman))){
+					disList=discountService.findMycartDiscount(user.getUserId(), cartId);
+				}
 				for (PProductStyleResult style : stylelist) {
 					PProductstyleexp exp= styleExpMapper.selectByPrimaryKey(style.getStyleId());
 					if(exp!=null){
@@ -107,9 +113,13 @@ public class OrderProductController extends SSOController {
 		if (user != null) {
 			PProductstyles style = styleMapper.selectByPrimaryKey(styleId);
 			PMyproducts mycart= mycartMapper.selectByPrimaryKey(cartId);
-//			List<PMyproductdetails> details= detailMapper.findMyProductdetails(cartId);
 			if (style != null) {
-				List<DMyproductdiscountmodel> disList = discountService.findMycartDiscount(user.getUserId(), cartId);
+				List<DMyproductdiscountmodel> disList =null;
+				//普通用户才有优惠购买资格
+				if(!(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.salesman))){
+					disList=discountService.findMycartDiscount(user.getUserId(), cartId);
+				}
+				discountService.findMycartDiscount(user.getUserId(), cartId);
 				PProducts product = productMapper.selectByPrimaryKey(style.getProductid());
 				if (product != null) {
 					Map<String, Object> map = new HashMap<String, Object>();

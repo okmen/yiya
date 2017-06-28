@@ -38,7 +38,7 @@ public interface IBaseOrderMgtService {
 	ReturnModel submitOrder_repeat(Long userId, UserOrderSubmitRepeatParam param) throws Exception;
 
 	/**
-	 * 去支付
+	 * 去支付-支付页（调去支付前使用）
 	 */
 	ReturnModel getPayOrderByOrderId(String orderId);
 
@@ -76,13 +76,7 @@ public interface IBaseOrderMgtService {
 	 */
 	ReturnModel getPayOrderInfo(Long userId, String payId);
 
-	/**
-	 * 支付订单成功处理
-	 * 
-	 * @param payId
-	 * @return
-	 */
-//	boolean paySuccessProcess(String payId);
+	
 	
 	/**
 	 * 插入支付信息（账户充值 可用）

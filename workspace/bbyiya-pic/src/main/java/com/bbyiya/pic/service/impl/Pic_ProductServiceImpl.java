@@ -7,9 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductchildinfoMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
@@ -20,6 +22,7 @@ import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
 import com.bbyiya.dao.PProductdetailsMapper;
 import com.bbyiya.dao.PProductsMapper;
+import com.bbyiya.dao.PProductstylesMapper;
 import com.bbyiya.dao.PScenesMapper;
 import com.bbyiya.dao.PStylecoordinateMapper;
 import com.bbyiya.dao.PStylecoordinateitemMapper;
@@ -30,6 +33,7 @@ import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
 import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
+import com.bbyiya.model.DMyproductdiscountmodel;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproductchildinfo;
 import com.bbyiya.model.PMyproductdetails;
@@ -57,6 +61,7 @@ import com.bbyiya.pic.vo.product.MyProductsDetailsResult;
 import com.bbyiya.pic.vo.product.MyProductsResult;
 import com.bbyiya.pic.vo.product.MyProductsTempVo;
 import com.bbyiya.pic.vo.product.ProductSampleResultVO;
+import com.bbyiya.service.pic.IBaseDiscountService;
 import com.bbyiya.service.pic.IBaseUserAddressService;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
@@ -79,6 +84,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private PProductsMapper productsMapper;
 	@Autowired
 	private PProductdetailsMapper detailMapper;
+	@Autowired
+	private PProductstylesMapper styleMapper;
 	/*---------------------坐标模板---------------------------------*/
 	@Autowired
 	private PStylecoordinateMapper styleCoordMapper;
@@ -98,10 +105,13 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	@Autowired
 	private PMyproducttempMapper tempMapper;
 	
+	
 	@Autowired
 	private PMyproducttempapplyMapper tempapplyMapper;
 	@Autowired
 	private PMyproductextMapper myextMapper;
+	
+	
 	/*-------------------用户信息------------------------------------------------*/
 	@Autowired
 	private UUsersMapper usersMapper;
@@ -126,7 +136,11 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	
 	@Resource(name = "baseUserAddressServiceImpl")
 	private IBaseUserAddressService baseAddressService;
-
+	//优惠信息
+	@Resource(name = "baseDiscountServiceImpl")
+	private IBaseDiscountService discountService;
+	
+	
 	public ReturnModel getProductSamples(Long productId) {
 		ReturnModel rq = new ReturnModel();
 		ProductSampleVo product = productsMapper.getProductBaseVoByProId(productId);
@@ -939,8 +953,6 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		return rq;
 	}
 
-	@Autowired
-	private PMyproducttempMapper mtempMapper;
 
 	/**
 	 * 我的作品详情 （用户操作页 ） 需要登录
@@ -977,7 +989,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			
 			// 如果是否是模板作品------------------------
 			if (myproduct.getIstemp() != null && myproduct.getIstemp() > 0 && myproduct.getTempid() != null && myproduct.getTempid() > 0) {
-				PMyproducttemp mtemp = mtempMapper.selectByPrimaryKey(myproduct.getTempid());
+				PMyproducttemp mtemp = tempMapper.selectByPrimaryKey(myproduct.getTempid());
 				if (mtemp != null) {
 					myproduct.setTempStatus(mtemp.getStatus() == null ? 0 : mtemp.getStatus());
 					// 判断用户是否接受模板邀请---------------
@@ -1034,14 +1046,139 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		return rq;
 	}
 	
+	
+	public ReturnModel getMyProductInfoNew(long userId,long cartId){
+		ReturnModel rq=new ReturnModel();
+		MyProductsResult myproductRedis=getCartDetailsRedis(userId,cartId);
+		if(myproductRedis!=null){
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(myproductRedis);
+		}else {
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("作品不存在");
+		}
+		return rq;
+	}
+	
+	private MyProductsResult getCartDetailsRedis(long userId,Long cartId){
+		String keycart=ConfigUtil.getSingleValue("currentRedisKey-Base")+"_cartIdMy_"+cartId;
+		MyProductsResult myproductRedis=(MyProductsResult)RedisUtil.getObject(keycart);
+		if(myproductRedis!=null){
+			//非本人作品  直接调取缓存
+			if(!((myproductRedis.getUserid()!=null&&myproductRedis.getUserid().longValue()==userId)||(myproductRedis.getInviteUserId()!=null&&myproductRedis.getInviteUserId().longValue()==userId))){
+				return myproductRedis;
+			}
+		}
+		MyProductsResult result=getCartDetails(userId,cartId);
+		if(result!=null&&result.getDetailslist()!=null&&result.getDetailslist().size()>=12){
+			RedisUtil.setObject(keycart, result, 600);
+			if(result.getTempVo()!=null&&result.getInviteUserId()!=null&&result.getInviteUserId().longValue()==userId){
+				List<DMyproductdiscountmodel> disList= discountService.findMycartDiscount(userId, cartId);
+				if(disList!=null&&disList.size()>0){
+					for (DMyproductdiscountmodel dd : disList) {
+						dd.setPrice(styleMapper.selectByPrimaryKey(dd.getStyleid()).getPrice()); 
+					}
+					result.getTempVo().setDiscountList(disList); 
+				}
+			}
+		}
+		return result;
+	}
 	/**
-	 * 作品参与活动
+	 * 获取作品信息
+	 * @param userId
+	 * @param cartId
+	 * @return
+	 */
+	private MyProductsResult getCartDetails(long userId,Long cartId){
+		MyProductsResult myproduct = myProductsDao.getMyProductResultVo(cartId);
+		if (myproduct == null) {
+			return null;
+		}
+		UUsers user = usersMapper.getUUsersByUserID(userId);
+		if (myproduct != null && myproduct.getStatus() != null && myproduct.getStatus().intValue() == Integer.parseInt(MyProductStatusEnum.ordered.toString())) {
+			myproduct.setIsOrder(1);
+		}
+		//获取协同编辑者的userId------------------------------------
+		if (myproduct.getInvitestatus() != null && myproduct.getInvitestatus() > 0) {
+			List<PMyproductsinvites> invites = inviteMapper.findListByCartId(cartId);
+			if (invites != null && invites.size() > 0) {
+				if(invites.get(0).getInviteuserid()!=null){
+					myproduct.setInviteUserId(invites.get(0).getInviteuserid());
+				}else if (!ObjectUtil.isEmpty(invites.get(0).getInvitephone())) {
+					UUsers inviteUser=usersMapper.getUUsersByPhone(invites.get(0).getInvitephone());
+					if(inviteUser!=null){
+						myproduct.setInviteUserId(inviteUser.getUserid());
+					}
+				}
+			}
+		}/*---------------------------------*/
+		
+		// 如果是否是模板作品------------------------
+		if (myproduct.getIstemp() != null && myproduct.getIstemp() > 0 && myproduct.getTempid() != null && myproduct.getTempid() > 0) {
+			PMyproducttemp mtemp = tempMapper.selectByPrimaryKey(myproduct.getTempid());
+			if (mtemp != null) {
+				myproduct.setTempStatus(mtemp.getStatus() == null ? 0 : mtemp.getStatus());
+				// 判断用户是否接受模板邀请---------------
+				if (userId != myproduct.getUserid().longValue()) {
+					List<MyProductListVo> myprolist = myProductsDao.getMyProductResultByTempId(myproduct.getTempid());
+					if (myprolist != null && myprolist.size() > 0) {
+						for (MyProductListVo ll : myprolist) {
+							List<PMyproductsinvites> invlist = inviteMapper.findListByCartId(ll.getCartid());
+							if (invlist != null && invlist.size() > 0) {
+								for (PMyproductsinvites iv : invlist) {
+									if (iv.getInviteuserid() != null && iv.getInviteuserid().longValue() == userId) {
+										myproduct.setTempCartId(ll.getCartid());
+									}
+								}
+							}
+						}
+					}
+				}// 判断用户是否接受模板邀请(over)---------------
+			}
+		}else if (myproduct.getTempid()!=null&&myproduct.getTempid().intValue()>0&&myproduct.getInviteUserId()!=null&&(myproduct.getInviteUserId().longValue()==userId||myproduct.getUserid().longValue()==userId)) {
+			//----------用户此作品参与了 异业合作 活动----------------------------------------------------------------
+			myproduct.setTempVo(getMyProductsTempVo(userId,myproduct));  
+		}
+
+		UUsers myUser = userId == myproduct.getUserid().longValue() ? user : usersMapper.selectByPrimaryKey(myproduct.getUserid());
+		if (myUser != null && !ObjectUtil.isEmpty(myUser.getNickname())) {
+			myproduct.setMyNickName(myUser.getNickname());
+			myproduct.setUserIdentity(myUser.getIdentity());
+		}
+		if (ObjectUtil.isEmpty(myproduct.getDescription())) {
+			PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
+			if (product != null) {
+				myproduct.setDescription(product.getDescription());
+			}
+		}
+		// --作品图片列表 信息-------
+		myproduct.setDetailslist(getMyProductsDetailsResultList(userId, cartId));
+
+		// 作品宝宝信息----------------------------------------------------------------------------
+		PMyproductchildinfo childInfo = mychildMapper.selectByPrimaryKey(cartId);
+		if (childInfo != null) {
+			UChildInfoParam childInfoParam = new UChildInfoParam();
+			if (!ObjectUtil.isEmpty(childInfo.getNickname())) {
+				childInfoParam.setNickName(childInfo.getNickname());
+			}
+			if (!ObjectUtil.isEmpty(childInfo.getBirthday())) {
+				childInfoParam.setBirthday(DateUtil.getTimeStr(childInfo.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
+			}
+			myproduct.setChildInfo(childInfoParam);
+		}
+		
+		return myproduct;
+	}
+	
+	/**
+	 * 异业活动 作品参与活动
 	 * @param userId
 	 * @param myproduct
 	 * @return
 	 */
 	private MyProductsTempVo getMyProductsTempVo(Long userId, MyProductsResult myproduct){
-		PMyproducttemp mtemp = mtempMapper.selectByPrimaryKey(myproduct.getTempid());
+		PMyproducttemp mtemp = tempMapper.selectByPrimaryKey(myproduct.getTempid());
 		if(mtemp!=null){
 			MyProductsTempVo vo=new MyProductsTempVo();
 			//是否限定完成人数

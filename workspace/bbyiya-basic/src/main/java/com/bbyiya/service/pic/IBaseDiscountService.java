@@ -17,4 +17,11 @@ public interface IBaseDiscountService {
 	 * @param cartId
 	 */
 	void addTempDiscount(Long cartId) ;
+	/**
+	 * 使用优惠
+	 * @param userId
+	 * @param cartId
+	 * @return
+	 */
+	boolean useMycartDiscount(long userId,Long cartId);
 }

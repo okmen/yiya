@@ -416,7 +416,11 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 				this.addAgentInfo(apply);
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("审核成功");
+			}else{
+				rq.setStatu(ReturnStatus.Success);
+				rq.setStatusreson("拒绝成功");
 			}
+			
 			
 		}else {
 			rq.setStatu(ReturnStatus.SystemError);

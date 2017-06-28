@@ -79,9 +79,9 @@ public class OrderExtController  extends SSOController {
 	}
 	
 	/**
-	 * O04-1 支付-获取支付信息
+	 * O04-1 支付-获取支付信息(支付页)
 	 * 获取支付信息
-	 * @param payId
+	 * @param payId（userOrderId）
 	 * @return
 	 * @throws Exception
 	 */

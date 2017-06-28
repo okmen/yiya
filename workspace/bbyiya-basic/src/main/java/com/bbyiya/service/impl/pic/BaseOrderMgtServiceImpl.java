@@ -991,27 +991,33 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		if(payorder!=null){
 			int ordertype=payorder.getOrdertype()==null?Integer.parseInt(PayOrderTypeEnum.gouwu.toString()):payorder.getOrdertype();
 			if(ordertype==Integer.parseInt(PayOrderTypeEnum.gouwu.toString())){
-				if(payorder.getPrepaytime()!=null){
+				boolean isNew=false;
+				if(payorder.getPrepaytime()!=null) {
 					 Date prepayTime=payorder.getPrepaytime();
 					 Calendar prepayCalendar = Calendar.getInstance();
 					 prepayCalendar.setTime(prepayTime);
 					 prepayCalendar.add(Calendar.MINUTE, 100);
 					 Date preNew=prepayCalendar.getTime();
 					 Date nowtime=new Date();
-					 if(preNew.getTime()<nowtime.getTime()||(orderTotalPrice==null||payorder.getTotalprice()==null||orderTotalPrice.doubleValue()!=payorder.getTotalprice().doubleValue())){//预付单过期
-						 OPayorder payorderNew=new OPayorder();
-						 payorderNew.setPayid(GenUtils.getOrderNo(payorder.getUserid())); 
-						 payorderNew.setUserorderid(payorder.getUserorderid());
-						 payorderNew.setUserid(payorder.getUserid());
-						 payorderNew.setPaytype(payorder.getPaytype());
-						 payorderNew.setTotalprice(payorder.getTotalprice());
-						 payorderNew.setStatus(payorder.getStatus());
-						 payorderNew.setOrdertype(payorder.getOrdertype());
-						 payorderNew.setCreatetime(new Date());
-						 payOrderMapper.insert(payorderNew);
-						 return payorderNew;
+					 if(preNew.getTime()<nowtime.getTime()){
+						 isNew=true;
 					 }
-//					 System.out.println(DateUtil.getTimeStr(preNew, "yyyy-MM-dd HH:mm:ss")); 
+				}
+				if((orderTotalPrice==null||payorder.getTotalprice()==null||orderTotalPrice.doubleValue()!=payorder.getTotalprice().doubleValue())){//预付单过期
+					isNew =true;
+				}
+				if(isNew){
+					OPayorder payorderNew = new OPayorder();
+					payorderNew.setPayid(GenUtils.getOrderNo(payorder.getUserid()));
+					payorderNew.setUserorderid(payorder.getUserorderid());
+					payorderNew.setUserid(payorder.getUserid());
+					payorderNew.setPaytype(payorder.getPaytype());
+					payorderNew.setTotalprice(orderTotalPrice);
+					payorderNew.setStatus(payorder.getStatus());
+					payorderNew.setOrdertype(payorder.getOrdertype());
+					payorderNew.setCreatetime(new Date());
+					payOrderMapper.insert(payorderNew);
+					return payorderNew;
 				}
 			}
 		}
@@ -1168,25 +1174,35 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		return rq;
 	}
 	
-	public ReturnModel getPayOrderInfo(Long userId, String payId) {
+	public ReturnModel getPayOrderInfo(Long userId, String userOrderId) {
 		ReturnModel rq=new ReturnModel();
-		OPayorder orderInfo=payOrderMapper.selectByPrimaryKey(payId);
-		if(orderInfo!=null){
-			if(orderInfo.getStatus()!=null&&orderInfo.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
-//				UserOrderResult model = new UserOrderResult();
-				Map<String, Object> map=new HashMap<String, Object>();
-				map.put("payId", payId);
-				map.put("totalPrice", orderInfo.getTotalprice());
-				rq.setStatu(ReturnStatus.Success);
-				rq.setBasemodle(map);
-			}else {
-				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("订单不在可支付的状态！");
+		OUserorders userorders=userOrdersMapper.selectByPrimaryKey(userOrderId);
+		if(userorders!=null){
+			OPayorder orderInfo=payOrderMapper.selectByPrimaryKey(userorders.getPayid());
+			if(userorders.getStatus()!=null&&userorders.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())&&orderInfo!=null){
+				OPayorder payNew=getPayOrderNew(orderInfo, userorders.getOrdertotalprice());
+				if(payNew!=null){
+					userorders.setPayid(payNew.getPayid()); 
+					userOrdersMapper.updateByPrimaryKeySelective(userorders);
+					orderInfo.setTotalprice(payNew.getTotalprice()); 
+				}
+				if(orderInfo.getStatus()!=null&&orderInfo.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
+					Map<String, Object> map=new HashMap<String, Object>();
+					map.put("payId", userorders.getPayid());
+					map.put("totalPrice", orderInfo.getTotalprice());
+					rq.setStatu(ReturnStatus.Success);
+					rq.setBasemodle(map);
+				}else {
+					rq.setStatu(ReturnStatus.SystemError);
+					rq.setStatusreson("订单不在可支付的状态！");
+				}
+			}else { 
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("不存在此订单");
 			}
-		}else { 
-			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("不存在此订单");
 		}
+		
+		
 		return rq;
 	}
 

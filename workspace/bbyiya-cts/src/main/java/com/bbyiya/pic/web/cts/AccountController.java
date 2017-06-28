@@ -73,7 +73,7 @@ public class AccountController  extends SSOController{
 		LoginSuccessResult user=super.getLoginUser();
 		double amountPrice=ObjectUtil.parseDouble(amount);
 		if(user!=null) {
-			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
 				UUsers branch= userMapper.getUUsersByUserID(branchuserid);
 				if(branch!=null&&ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.branch)) {
 					UAccounts accounts=accountMapper.selectByPrimaryKey(branchuserid);
@@ -155,7 +155,7 @@ public class AccountController  extends SSOController{
 		LoginSuccessResult user=super.getLoginUser();
 		double amountPrice=ObjectUtil.parseDouble(amount);
 		if(user!=null) {
-			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
 				UUsers branch= userMapper.getUUsersByUserID(branchuserid);
 				if(branch!=null&&ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.branch)) {
 					UBranchtransaccounts transaccount=transaccountMapper.selectByPrimaryKey(branchuserid);

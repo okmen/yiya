@@ -435,6 +435,8 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		UBranches apply= branchesMapper.selectByPrimaryKey(branchUserId); 
 		if(apply!=null){
 			apply.setStatus(status);
+			apply.setRemark(msg);
+			apply.setProcesstime(new Date());
 			branchesMapper.updateByPrimaryKeySelective(apply);
 			if(status==Integer.parseInt(BranchStatusEnum.ok.toString())){
 				userBasic.addUserIdentity(branchUserId,UserIdentityEnums.branch); 

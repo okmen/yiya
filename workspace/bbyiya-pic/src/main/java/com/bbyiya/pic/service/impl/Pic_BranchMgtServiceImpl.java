@@ -371,7 +371,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		if(apply!=null){
 			apply.setStatus(status); 
 			apply.setProcesstime(new Date());//处理时间
-			apply.setRemark(msg);//备注
+			apply.setReason(msg);
 			agentapplyMapper.updateByPrimaryKeySelective(apply);
 			if(status==Integer.parseInt(AgentStatusEnum.ok.toString())){//成为代理
 				RAreaplans areaplans= areaplansMapper.selectByPrimaryKey(apply.getArea());
@@ -435,7 +435,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		UBranches apply= branchesMapper.selectByPrimaryKey(branchUserId); 
 		if(apply!=null){
 			apply.setStatus(status);
-			apply.setRemark(msg);
+			apply.setReason(msg);
 			apply.setProcesstime(new Date());
 			branchesMapper.updateByPrimaryKeySelective(apply);
 			if(status==Integer.parseInt(BranchStatusEnum.ok.toString())){

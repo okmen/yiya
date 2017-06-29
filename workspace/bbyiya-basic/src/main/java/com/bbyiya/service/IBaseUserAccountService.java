@@ -26,7 +26,7 @@ public interface IBaseUserAccountService {
 	 */
 	UBranchtransaccounts getBranchAccounts(Long branchUserId);
 	/**
-	 * 查询代理商运费账户流水记录
+	 * 查询代理商运费账户流水记录（过期）
 	 * @param userId
 	 * @param type
 	 * @param index
@@ -35,4 +35,25 @@ public interface IBaseUserAccountService {
 	 */
 	ReturnModel findUBranchTansAmountlog(Long userId, Integer type, int index,
 			int size);
+	/**
+	 * 账户流水记录 (2017-06-29)
+	 * 统一账户
+	 * @param userId
+	 * @param type
+	 * @param index
+	 * @param size
+	 * @return
+	 */
+	ReturnModel findAcountsLogsPageResult(Long userId, Integer type, int index, int size) ;
+	/**
+	 * 账户变动 -新增账户流水
+	 * @param userId
+	 * @param type
+	 * @param amount
+	 * @param PayId
+	 * @param transOrderId
+	 * @return
+	 * @throws Exception
+	 */
+	boolean add_accountsLog(long userId,int type,Double amount,String PayId,String transOrderId)throws Exception;
 }

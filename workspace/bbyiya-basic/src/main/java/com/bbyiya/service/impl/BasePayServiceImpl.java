@@ -3,6 +3,8 @@ package com.bbyiya.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,7 @@ import com.bbyiya.dao.UBranchtransamountlogMapper;
 import com.bbyiya.dao.UCashlogsMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
+import com.bbyiya.enums.AccountLogType;
 import com.bbyiya.enums.AmountType;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.PayOrderTypeEnum;
@@ -40,6 +43,7 @@ import com.bbyiya.model.UBranchtransamountlog;
 import com.bbyiya.model.UCashlogs;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IBasePayService;
+import com.bbyiya.service.IBaseUserAccountService;
 import com.bbyiya.utils.ObjectUtil;
 
 @Service("basePayServiceImpl")
@@ -88,6 +92,9 @@ public class BasePayServiceImpl implements IBasePayService{
 	@Autowired
 	private UBranchtransamountlogMapper transLogMapper;
 	
+	@Resource(name = "baseUserAccountService")
+	private IBaseUserAccountService accountService;
+	
 	
 	/**
 	 * 订单支付成功 回写
@@ -99,7 +106,7 @@ public class BasePayServiceImpl implements IBasePayService{
 				if (payOrder != null && payOrder.getStatus()!=null && payOrder.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())) {
 					int orderType=payOrder.getOrdertype()==null?0:payOrder.getOrdertype();
 					/*-------------------------代理商货款充值-----------------------------------------------------*/
-					if(orderType==Integer.parseInt(PayOrderTypeEnum.chongzhi.toString())){
+					if(orderType==Integer.parseInt(PayOrderTypeEnum.chongzhi.toString())) {
 						UCashlogs log=new UCashlogs();
 						log.setAmount(payOrder.getTotalprice());
 						log.setUserid(payOrder.getUserid());
@@ -126,7 +133,9 @@ public class BasePayServiceImpl implements IBasePayService{
 							accounts.setAvailableamount(totalPriceTemp);
 							accountsMapper.insert(accounts);
 						}
-					}/*-----------------------------货款充值（完）-------------------------------------*/
+//						accountService.add_accountsLog(payOrder.getUserid(), Integer.parseInt(AccountLogType.get_recharge.toString()), payOrder.getTotalprice(), payId, "");
+					}
+					/*-----------------------------货款充值（完）-------------------------------------*/
 					/*-----------------------------代理商邮费 充值------------------------------------------*/
 					else if (orderType==Integer.parseInt(PayOrderTypeEnum.postage.toString())) {
 						//供应商邮费充值
@@ -150,6 +159,7 @@ public class BasePayServiceImpl implements IBasePayService{
 							transAccount.setAvailableamount(payOrder.getTotalprice());
 							transMapper.insert(transAccount);
 						}
+//						accountService.add_accountsLog(payOrder.getUserid(), Integer.parseInt(AccountLogType.get_recharge.toString()), payOrder.getTotalprice(), payId, "");
 					}/*-------------------------------------------------------------------*/
 					
 					/************************------------普通购物------------------********************************/

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.UAccountslogsMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.UAccountslogs" >
+    <id column="LogId" property="logid" jdbcType="BIGINT" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="Type" property="type" jdbcType="INTEGER" />
+    <result column="Amount" property="amount" jdbcType="DOUBLE" />
+    <result column="OrderId" property="orderid" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    LogId, UserId, Type, Amount, OrderId, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from u_accountslogs
+    where LogId = #{logid,jdbcType=BIGINT}
+  </select>
+  <select id="findAccountsLogs" resultMap="BaseResultMap" ><!-- 查看用户账户流水记录 -->
+    select 
+    <include refid="Base_Column_List" />
+    from u_accountslogs
+    where UserId = #{userId,jdbcType=BIGINT} 
+    <if test="accountLogType != null" >
+       and Type= #{accountLogType,jdbcType=INTEGER}
+    </if>
+    order by LogId desc 
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from u_accountslogs
+    where LogId = #{logid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.UAccountslogs" >
+    insert into u_accountslogs (LogId, UserId, Type, 
+      Amount, OrderId, CreateTime
+      )
+    values (#{logid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{type,jdbcType=INTEGER}, 
+      #{amount,jdbcType=DOUBLE}, #{orderid,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.UAccountslogs" >
+    insert into u_accountslogs
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="logid != null" >
+        LogId,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="type != null" >
+        Type,
+      </if>
+      <if test="amount != null" >
+        Amount,
+      </if>
+      <if test="orderid != null" >
+        OrderId,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="logid != null" >
+        #{logid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=DOUBLE},
+      </if>
+      <if test="orderid != null" >
+        #{orderid,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.UAccountslogs" >
+    update u_accountslogs
+    <set >
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="type != null" >
+        Type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="amount != null" >
+        Amount = #{amount,jdbcType=DOUBLE},
+      </if>
+      <if test="orderid != null" >
+        OrderId = #{orderid,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where LogId = #{logid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.UAccountslogs" >
+    update u_accountslogs
+    set UserId = #{userid,jdbcType=BIGINT},
+      Type = #{type,jdbcType=INTEGER},
+      Amount = #{amount,jdbcType=DOUBLE},
+      OrderId = #{orderid,jdbcType=VARCHAR},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where LogId = #{logid,jdbcType=BIGINT}
+  </update>
+</mapper>

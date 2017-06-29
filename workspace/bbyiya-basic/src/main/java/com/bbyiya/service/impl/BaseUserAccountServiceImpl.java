@@ -1,5 +1,6 @@
 package com.bbyiya.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,15 +10,19 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.UAccountsMapper;
+import com.bbyiya.dao.UAccountslogsMapper;
 import com.bbyiya.dao.UBranchtransaccountsMapper;
 import com.bbyiya.dao.UBranchtransamountlogMapper;
 import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UCashlogsMapper;
+import com.bbyiya.enums.AccountLogType;
 import com.bbyiya.enums.AmountType;
+import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.UAccounts;
+import com.bbyiya.model.UAccountslogs;
 import com.bbyiya.model.UBranchtransaccounts;
 import com.bbyiya.model.UBranchusers;
 import com.bbyiya.service.IBaseUserAccountService;
@@ -48,6 +53,9 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 	private UBranchusersMapper branchusersMapper;
 	@Autowired 
 	private OPayorderMapper payMapper;
+	/*-------------------账户流水----------------------------------------*/
+	@Autowired
+	private UAccountslogsMapper accountslogsMapper;
 	
 	/**
 	 * 获取用户账户信息
@@ -68,7 +76,6 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 	 * 获取代理商邮费账户信息
 	 */
 	public UBranchtransaccounts getBranchAccounts(Long userId){
-		
 		UBranchtransaccounts accounts=branchAccountMapper.selectByPrimaryKey(userId);
 		if(accounts!=null)
 			return accounts;
@@ -143,5 +150,75 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 		return rq;
 	}
 	
+	/**
+	 * 账户流水
+	 */
+	public ReturnModel findAcountsLogsPageResult(Long userId, Integer type, int index, int size) {
+		ReturnModel rq = new ReturnModel();
+		PageHelper.startPage(index, size);
+		List<UAccountslogs> logs = accountslogsMapper.findAccountsLogs(userId, type);
+		PageInfo<UAccountslogs> resultPage = new PageInfo<UAccountslogs>(logs);
+		if (resultPage.getList() != null && resultPage.getList().size() > 0) {
+			for (UAccountslogs log : resultPage.getList()) {
+				log.setCreatetimestr(DateUtil.getTimeStr(log.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
+			}
+		}
+		rq.setStatu(ReturnStatus.Success);
+		rq.setBasemodle(resultPage);
+		return rq;
+	}
+	
+	/**
+	 * 
+	 * @param userId
+	 * @param type
+	 * @param amount
+	 * @param PayId
+	 * @param transOrderId
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean add_accountsLog(long userId,int type,Double amount,String PayId,String transOrderId)throws Exception{
+		if(amount==null||userId<=0)
+			return false;
+		UAccounts accounts=accountsMapper.selectByPrimaryKey(userId);
+		//1.流水记录
+		UAccountslogs log=new UAccountslogs();
+		log.setUserid(userId);
+		log.setCreatetime(new Date());
+		log.setType(type);
+		//如果是账户充值
+		if(type==Integer.parseInt(AccountLogType.get_recharge.toString())){
+			log.setAmount(Math.abs(amount)); 
+			log.setOrderid(PayId); 
+			accountslogsMapper.insert(log);
+		}
+		//购物消费
+		else if (type==Integer.parseInt(AccountLogType.use_payment.toString())) {
+			log.setAmount((-1)*Math.abs(amount)); 
+			log.setOrderid(PayId); 
+			accountslogsMapper.insert(log);
+		}
+		//快递消费
+		else if (type==Integer.parseInt(AccountLogType.use_freight.toString())) {
+			log.setAmount((-1)*Math.abs(amount)); 
+			log.setOrderid(transOrderId); 
+			accountslogsMapper.insert(log);
+		}else {
+			return false;
+		}
+		//-----------账户金额修正--------------------------------------------------
+		if(accounts!=null){
+			double totalamount=accounts.getAvailableamount()==null?0d:accounts.getAvailableamount();
+			accounts.setAvailableamount(totalamount+log.getAmount()); 
+			accountsMapper.updateByPrimaryKeySelective(accounts);
+		}else {
+			accounts=new UAccounts();
+			accounts.setUserid(userId); 
+			accounts.setAvailableamount(log.getAmount());
+			accountsMapper.insert(accounts);
+		}
+		return true;
+	}
 	
 }

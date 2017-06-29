@@ -35,6 +35,7 @@ import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
+import com.sdicons.json.mapper.MapperException;
 
 @Controller
 @RequestMapping(value = "/cts/account")
@@ -58,6 +59,8 @@ public class AccountController  extends SSOController{
 	@Autowired
 	private UAdminMapper adminMapper;
 	
+	@Resource(name = "baseUserAccountService")
+	private IBaseUserAccountService accountService;
 	
 	/**
 	 * cts ”√ªß≥‰÷µ
@@ -197,4 +200,5 @@ public class AccountController  extends SSOController{
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+
 }

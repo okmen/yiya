@@ -24,6 +24,7 @@ import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.dao.UBranchtransaccountsMapper;
 import com.bbyiya.dao.UBranchtransamountlogMapper;
+import com.bbyiya.enums.AccountLogType;
 import com.bbyiya.enums.AmountType;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.OrderTypeEnum;
@@ -42,6 +43,7 @@ import com.bbyiya.pic.service.pbs.IPbs_OrderMgtService;
 import com.bbyiya.pic.utils.FileToZip;
 import com.bbyiya.pic.vo.order.PbsUserOrderResultVO;
 import com.bbyiya.pic.vo.order.SearchOrderParam;
+import com.bbyiya.service.IBaseUserAccountService;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.FileUtils;
@@ -85,6 +87,9 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	private UBranchtransaccountsMapper branchesTransMapper;
 	@Autowired
 	private UBranchtransamountlogMapper branchesTransLogMapper;
+	
+	@Resource(name = "baseUserAccountService")
+	private IBaseUserAccountService accountService;
 	
 	public PageInfo<PbsUserOrderResultVO> find_pbsOrderList(SearchOrderParam param,int index,int size){
 		if(param==null)
@@ -212,28 +217,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			if(postage==null)postage=0.0;
 			//首次填写运单号，则执行自动扣运费款操作
 			if(userorders.getPostage()==null||userorders.getPostage().doubleValue()<=0){
-				
-				//自动扣除代理商运费账户的
-				UBranchtransaccounts branchTransAccount=branchesTransMapper.selectByPrimaryKey(userorders.getBranchuserid());
-				if(branchTransAccount==null){
-					branchTransAccount=new UBranchtransaccounts();
-					branchTransAccount.setAvailableamount(0.0);
-					branchTransAccount.setBranchuserid(userorders.getBranchuserid());
-					branchesTransMapper.insert(branchTransAccount);
-				}
-				if(branchTransAccount.getAvailableamount()==null){
-					branchTransAccount.setAvailableamount(0.0);
-				}
-				UBranchtransamountlog branchTranLog=new UBranchtransamountlog();
-				branchTranLog.setAmount(-1*postage);
-				branchTranLog.setBranchuserid(branchTransAccount.getBranchuserid());
-				branchTranLog.setCreatetime(new Date());
-				branchTranLog.setPayid(userorders.getPayid());
-				branchTranLog.setType(Integer.parseInt(AmountType.lost.toString()));
-				branchesTransLogMapper.insert(branchTranLog);
-				branchTransAccount.setAvailableamount(branchTransAccount.getAvailableamount()-postage);
-				branchesTransMapper.updateByPrimaryKeySelective(branchTransAccount);
-			
+				accountService.add_accountsLog(userorders.getBranchuserid(), Integer.parseInt(AccountLogType.use_freight.toString()), postage, userorders.getPayid(), userorders.getUserorderid());
 			}else if(userorders.getPostage()!=null&&userorders.getPostage().doubleValue()>0){
 				rq.setStatu(ReturnStatus.OrderError);
 				rq.setStatusreson("已完成运费自动扣款操作，不能修改！");

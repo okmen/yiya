@@ -18,6 +18,7 @@ import com.bbyiya.dao.UBranchtransaccountsMapper;
 import com.bbyiya.dao.UBranchtransamountlogMapper;
 import com.bbyiya.dao.UCashlogsMapper;
 import com.bbyiya.dao.UUsersMapper;
+import com.bbyiya.enums.AccountLogType;
 import com.bbyiya.enums.AdminActionType;
 import com.bbyiya.enums.AmountType;
 import com.bbyiya.enums.ReturnStatus;
@@ -79,43 +80,18 @@ public class AccountController  extends SSOController{
 			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
 				UUsers branch= userMapper.getUUsersByUserID(branchuserid);
 				if(branch!=null&&ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.branch)) {
-					UAccounts accounts=accountMapper.selectByPrimaryKey(branchuserid);
-					if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount()>1000){
-						if(amountPrice>10){
-							rq.setStatu(ReturnStatus.SystemError);
-							rq.setStatusreson("该用户账户已有金额"+accounts.getAvailableamount());
-							return JsonUtil.objectToJsonStr(rq);
-						}
-					}
 					String payId=GenUtils.getOrderNo(9999l); 
-					UCashlogs log=new UCashlogs();
-					log.setAmount(amountPrice);
-					log.setUserid(branchuserid);
-					log.setPayid(payId);
-					log.setUsetype(Integer.parseInt(AmountType.get.toString()));//充值
-					log.setCreatetime(new Date());
-					cashlogMapper.insert(log);
-					UCashlogs freeLog=new UCashlogs();
-					freeLog.setAmount(amountPrice*2);
-					freeLog.setUserid(branchuserid);
-					freeLog.setPayid(payId);
-					freeLog.setUsetype(Integer.parseInt(AmountType.free.toString()));//充值
-					freeLog.setCreatetime(new Date());
-					cashlogMapper.insert(freeLog);
-					//充值 金额 = 实际金额*3 
-					Double totalPriceTemp=amountPrice*3;
-					if(accounts!=null){
-						accounts.setAvailableamount(accounts.getAvailableamount()+totalPriceTemp);
-						accountMapper.updateByPrimaryKeySelective(accounts);
-					}else {
-						accounts=new UAccounts();
-						accounts.setUserid(branchuserid);
-						accounts.setAvailableamount(totalPriceTemp);
-						accountMapper.insert(accounts);
+					boolean result=accountService.add_accountsLog(branchuserid, Integer.parseInt(AccountLogType.get_recharge.toString()), amountPrice, payId, "");
+					if(result){
+						UAccounts accounts=accountMapper.selectByPrimaryKey(branchuserid);
+						addActionLog(user.getUserId(),"[账户充值]操作成功！充值金额："+amountPrice+"元！充值用户 userId:"+branchuserid);
+						rq.setStatusreson("充值成功！账户可用金额："+accounts.getAvailableamount()+"元!"); 
+						rq.setStatu(ReturnStatus.Success);
+					}else{
+						rq.setStatusreson("充值失败！"); 
+						rq.setStatu(ReturnStatus.SystemError);
 					}
-					addActionLog(user.getUserId(),"[账户充值]操作成功！充值金额："+totalPriceTemp+"元！充值用户 userId:"+branchuserid);
-					rq.setStatusreson("充值成功！账户可用金额："+accounts.getAvailableamount()+"元!"); 
-					rq.setStatu(ReturnStatus.Success);
+					
 				}else {
 					rq.setStatu(ReturnStatus.SystemError);
 					rq.setStatusreson("该用户不是影楼身份！"); 

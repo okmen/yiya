@@ -34,7 +34,7 @@ public class ScenesController extends SSOController {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
 				rq=scenseService.addorUpdateScense(user.getUserId(), myScenseJson);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
@@ -57,7 +57,7 @@ public class ScenesController extends SSOController {
 		
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
 				rq=scenseService.getScenseList(index, size, keywords, productid);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);

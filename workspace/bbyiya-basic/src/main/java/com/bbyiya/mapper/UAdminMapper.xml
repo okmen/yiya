@@ -10,6 +10,19 @@
   <sql id="Base_Column_List" >
     UserId, UserName, Type, CreateTime
   </sql>
+  
+  
+  <select id="findAdminUserList" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from u_admin where 1=1
+    <if test="keywords != null and keywords!=''" >
+        and  (UserName  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' )  or UserId LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) )
+    </if>
+    order by CreateTime desc
+  </select>
+  
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />

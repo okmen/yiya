@@ -11,25 +11,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.baseUtils.GenUtils;
 import com.bbyiya.baseUtils.ValidateUtils;
-import com.bbyiya.dao.UAccountsMapper;
-import com.bbyiya.dao.UAdminMapper;
-import com.bbyiya.dao.UAdminactionlogsMapper;
-import com.bbyiya.dao.UBranchtransaccountsMapper;
-import com.bbyiya.dao.UBranchtransamountlogMapper;
-import com.bbyiya.dao.UCashlogsMapper;
-import com.bbyiya.dao.UUsersMapper;
-import com.bbyiya.enums.AdminActionType;
-import com.bbyiya.enums.AmountType;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.user.UserIdentityEnums;
-import com.bbyiya.model.UAccounts;
-import com.bbyiya.model.UAdmin;
-import com.bbyiya.model.UAdminactionlogs;
-import com.bbyiya.model.UBranchtransaccounts;
-import com.bbyiya.model.UBranchtransamountlog;
-import com.bbyiya.model.UCashlogs;
-import com.bbyiya.model.UUsers;
-import com.bbyiya.service.IBaseUserAccountService;
+import com.bbyiya.pic.service.cts.IUserService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -40,15 +24,8 @@ import com.bbyiya.web.base.SSOController;
 @RequestMapping(value = "/cts/user")
 public class UserMgtController  extends SSOController{
 
-	
-	@Autowired
-	private UUsersMapper userMapper;
-	
-	@Autowired
-	private UAdminactionlogsMapper actLogMapper;
-	@Autowired
-	private UAdminMapper adminMapper;
-	
+	@Resource(name = "ctsuserService")
+	private IUserService userService;
 	
 	/**
 	 * cts 添加内部员工账号
@@ -59,17 +36,15 @@ public class UserMgtController  extends SSOController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/addCtsUser")
-	public String chongzhi(long userid,String  amount) throws Exception {
+	public String addCtsUser(String phone) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user=super.getLoginUser();
-		
 		if(user!=null) {
 			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){
-				
-				
+				rq=userService.addCtsUser(user.getUserId(), phone);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("权限不足！");
+				rq.setStatusreson("不是cts管理员，权限不足！");
 			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
@@ -78,18 +53,44 @@ public class UserMgtController  extends SSOController{
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-	public void addActionLog(Long userId,String msg){
-		UAdminactionlogs log=new UAdminactionlogs();
-		log.setUserid(userId);
-		log.setContent(msg);
-		UAdmin admin= adminMapper.selectByPrimaryKey(userId);
-		if(admin!=null){
-			log.setUsername(admin.getUsername());
+	@ResponseBody
+	@RequestMapping(value = "/deleteCtsUser")
+	public String deleteCtsUser(String userid) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user=super.getLoginUser();
+		if(user!=null) {
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){
+				rq=userService.deleteCtsUser(ObjectUtil.parseLong(userid));
+			}else {
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson("不是cts管理员，权限不足！");
+			}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
 		}
-		log.setType(Integer.parseInt(AdminActionType.chongzhi.toString()));
-		log.setCreatetime(new Date());
-		actLogMapper.insert(log);
+		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/findCtsMemberlist")
+	public String findCtsMemberlist(String keywords,int index,int size) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user=super.getLoginUser();
+		if(user!=null) {
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){
+				rq=userService.findCtsMemberlist(keywords, index, size);
+			}else {
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson("不是cts管理员，权限不足！");
+			}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 	
 	
 }

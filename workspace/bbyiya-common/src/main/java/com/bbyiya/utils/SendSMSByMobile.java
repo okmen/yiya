@@ -146,7 +146,7 @@ public class SendSMSByMobile {
 		//已发货-短信通知
 		else if (msgType==Integer.parseInt(SendMsgEnums.delivery.toString())) {
 			if(!(param==null||ObjectUtil.isEmpty(param.getTransName())||ObjectUtil.isEmpty(param.getTransNum()))){
-				msg="【咿呀科技】尊敬的用户，您在咿呀十二制作购买的相册已发货，快递单号："+param.getTransNum()+"["+param.getTransName()+"]。（客服电话：13760131762）。"; 
+				msg="【咿呀科技】尊敬的用户，您制作的相册已发货，快递单号："+param.getTransNum()+"["+param.getTransName()+"]"; 
 				batchSend(mobile, msg); 
 			}
 		}

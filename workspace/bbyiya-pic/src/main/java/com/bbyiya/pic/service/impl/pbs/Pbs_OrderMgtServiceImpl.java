@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.common.enums.SendMsgEnums;
+import com.bbyiya.common.vo.SmsParam;
 import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OOrderproductdetailsMapper;
 import com.bbyiya.dao.OOrderproductphotosMapper;
@@ -44,6 +46,7 @@ import com.bbyiya.service.IRegionService;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.FileUtils;
 import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.utils.SendSMSByMobile;
 import com.bbyiya.utils.upload.FileDownloadUtils;
 import com.bbyiya.vo.ReturnModel;
 import com.github.pagehelper.PageHelper;
@@ -159,24 +162,31 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					order.setExpressorder(expressOrder);
 					order.setExpresscode(expressCode);
 					order.setDeliverytime(new Date()); 
-					int orderType = order.getOrdertype() == null ? 0 : order.getOrdertype();
-					//if(orderType==Integer.parseInt(OrderTypeEnum.nomal.toString())){
 					//修改订单状态为已发货状态
 					order.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
-					//}			
 					userOrdersMapper.updateByPrimaryKeySelective(order);
 				}
 			}
 			//  修改本张订单 
 			if(userorders.getOrdertype()==null) userorders.setOrdertype(0);
-			//if(userorders.getOrdertype()==Integer.parseInt(OrderTypeEnum.nomal.toString())){
+			
 			//修改订单状态为已发货状态
 			userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
-			//} 			
+					
 			userorders.setExpresscom(expressCom);
 			userorders.setExpressorder(expressOrder);
 			userorders.setExpresscode(expressCode);
 			userOrdersMapper.updateByPrimaryKeySelective(userorders);
+			
+			//发送短信--已发货
+			OOrderaddress addr=addressMapper.selectByPrimaryKey(userorders.getOrderaddressid());
+			if(addr!=null){
+				SmsParam sendparam=new SmsParam();
+				sendparam.setTransName(expressCom);
+				sendparam.setTransNum(expressOrder);
+				SendSMSByMobile.sendSmS(Integer.parseInt(SendMsgEnums.delivery.toString()), addr.getPhone(), sendparam);
+			}
+			
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(userorders);
 			rq.setStatusreson("修改运单号成功!");

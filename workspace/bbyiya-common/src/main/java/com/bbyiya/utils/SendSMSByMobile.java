@@ -122,7 +122,7 @@ public class SendSMSByMobile {
 	 * @param param
 	 * @return
 	 */
-	public static boolean sendSmsReturnJson(int msgType,String mobile,SmsParam param){
+	public static boolean sendSmS(int msgType,String mobile,SmsParam param){
 		String msg="";
 		//注册验证码
 		if(msgType==Integer.parseInt(SendMsgEnums.register.toString())){

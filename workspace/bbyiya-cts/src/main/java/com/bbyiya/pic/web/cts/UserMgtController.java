@@ -86,7 +86,7 @@ public class UserMgtController  extends SSOController{
 			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
+			rq.setStatusreson("登录过期!");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

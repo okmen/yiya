@@ -39,6 +39,7 @@ import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UCashlogsMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
+import com.bbyiya.enums.AccountLogType;
 import com.bbyiya.enums.CustomerSourceTypeEnum;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.OrderTypeEnum;
@@ -74,6 +75,7 @@ import com.bbyiya.model.UCashlogs;
 import com.bbyiya.model.UUseraddress;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IBasePayService;
+import com.bbyiya.service.IBaseUserAccountService;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.service.pic.IBaseDiscountService;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
@@ -104,6 +106,8 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	@Resource(name = "basePayServiceImpl")
 	private IBasePayService basePayService;
 	
+	@Resource(name = "baseUserAccountService")
+	private IBaseUserAccountService accountService;
 	
 	@Autowired
 	private RegionMapper regionMapper;// 区域
@@ -496,19 +500,12 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 								param.setAgentUserId(branches.getAgentuserid());
 								double totalprice = style.getAgentprice() * param.getCount();
 								UAccounts accounts = accountsMapper.selectByPrimaryKey(branches.getBranchuserid());
-								if (accounts != null && accounts.getAvailableamount() != null && accounts.getAvailableamount() >= totalprice) {
-									// 影楼的运费款 查询
-									UBranchtransaccounts transAccount = transMapper.selectByPrimaryKey(branches.getBranchuserid());
-									if (transAccount == null || transAccount.getAvailableamount() == null || transAccount.getAvailableamount() <= 0) {
-										rq.setStatu(ReturnStatus.CashError);
-										rq.setStatusreson("影楼的运费款不足，无法下单！请通知管理员进行充值，以免影响您的业务！ ");
-										return rq;
-									}
-								} else {
+								if(accounts==null||accounts.getAvailableamount() == null|| accounts.getAvailableamount() <totalprice){
 									rq.setStatu(ReturnStatus.CashError);
-									rq.setStatusreson("影楼预存货款不足，无法下单！请通知管理员进行充值，以免影响您的业务！");
+									rq.setStatusreson("影楼账户余额不足，无法下单！请通知管理员进行充值，以免影响您的业务！");
 									return rq;
 								}
+								
 							} else {
 								rq.setStatusreson("不是有效的合作伙伴！");
 								return rq;
@@ -750,13 +747,6 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 							double totalprice=style.getAgentprice()*count;
 							UAccounts accounts= accountsMapper.selectByPrimaryKey(branches.getBranchuserid());
 							if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount()>=totalprice){
-								 //影楼的运费款 查询
-								 UBranchtransaccounts transAccount= transMapper.selectByPrimaryKey(branches.getBranchuserid());
-								 if(transAccount==null||transAccount.getAvailableamount()==null||transAccount.getAvailableamount()<=0){
-									 rq.setStatu(ReturnStatus.CashError);
-									 rq.setStatusreson("影楼的运费款不足，无法下单！请通知管理员进行充值，以免影响您的业务！ ");
-									 return rq;
-								 }
 								 rq.setStatu(ReturnStatus.Success);
 								 param.setBranchUserId(branches.getBranchuserid());
 								 param.setAgentUserId(branches.getAgentuserid()); 
@@ -764,7 +754,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 								 return rq;
 							}else {
 								rq.setStatu(ReturnStatus.CashError); 
-								rq.setStatusreson("影楼预存货款不足，无法下单！请通知管理员进行充值，以免影响您的业务！");
+								rq.setStatusreson("影楼账户余额不足，无法下单！请通知管理员进行充值，以免影响您的业务！");
 								return rq;
 							}
 						}else {
@@ -1260,17 +1250,9 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			payorder.setTotalprice(totalPrice);
 			payorder.setCreatetime(new Date());
 			payOrderMapper.insert(payorder);
-			//消费记录
-			UCashlogs cashLog=new UCashlogs();
-			cashLog.setAmount(-1*totalPrice);
-			cashLog.setPayid(payId);
-			cashLog.setUserid(userId);
-			cashLog.setUsetype(1);//购物
-			cashLog.setCreatetime(new Date());
-			cashlogsMapper.insert(cashLog);
 			
-			accounts.setAvailableamount(accounts.getAvailableamount()-totalPrice);
-			accountsMapper.updateByPrimaryKeySelective(accounts); 
+			//消费扣减余额
+			accountService.add_accountsLog(userId, Integer.parseInt(AccountLogType.use_payment.toString()), totalPrice, payId, userOrderId);
 			
 			//订单完成后新增销量
 			basePayService.addProductExt(userOrderId);

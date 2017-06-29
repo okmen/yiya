@@ -12,8 +12,20 @@ public enum SendMsgEnums {
     /**
      * 用户登陆 value =2
      */
-    login(3)
+    login(3),
     
+    /**
+     * 用户充值
+     */
+    recharge(4),
+    /**
+     * 订单支付
+     */
+    payOrder(5),
+    /**
+     * 已发货(发货通知)
+     */
+    delivery(6)
     ;
 
     private final int Type;

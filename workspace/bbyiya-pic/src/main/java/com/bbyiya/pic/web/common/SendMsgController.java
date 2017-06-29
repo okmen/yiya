@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.common.enums.SendMsgEnums;
+import com.bbyiya.common.vo.SmsParam;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.user.UserStatusEnum;
@@ -75,11 +76,38 @@ public class SendMsgController {
 				rq.setStatusreson("发送成功");
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson(String.valueOf(model.get("msg"))); 
+				rq.setStatusreson("短信发送失败"); //String.valueOf(model.get("msg"))
 			}
 		}else {
 			rq.setStatu(ReturnStatus.SystemError);
 			rq.setStatusreson(result); 
+		}
+		return JsonUtil.objectToJsonStr(rq); 
+    }
+	
+	@ResponseBody
+    @RequestMapping(value = "/sendMsg2")
+    public String sendMsg2(String phone,String type,String amount) throws MapperException
+    {
+		ReturnModel rq=new ReturnModel();
+		SmsParam param=new SmsParam();
+		param.setAmount(ObjectUtil.parseDouble(amount));
+		int typeInt=ObjectUtil.parseInt(type);
+		if(typeInt==6){
+			param.setTransName("天天快递");
+			param.setTransNum("9543321");
+		} 
+		boolean result=SendSMSByMobile.sendSmS(ObjectUtil.parseInt(type), phone,param);
+		if(!result){
+			rq.setStatusreson("参数有误");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		JSONObject model = JSONObject.fromObject(result);
+		if(model!=null){
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("发送成功");
+		}else {
+			rq.setStatu(ReturnStatus.SystemError);
 		}
 		return JsonUtil.objectToJsonStr(rq); 
     }

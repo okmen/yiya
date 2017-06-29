@@ -194,7 +194,7 @@ public class ActivityCodeController extends SSOController {
 	public String activityCodeProductExportExcel(Integer tempid,Integer activeStatus,
 			@RequestParam(required = false, defaultValue = "")String keywords) throws Exception {
 		// 列头
-		String[] headers =new String[10];
+		String[] headers =new String[11];
 		headers[0]="活动码";
 		headers[1]="对应产品";
 		headers[2]="活动状态";
@@ -203,9 +203,10 @@ public class ActivityCodeController extends SSOController {
 		headers[5]="作品进度";
 		headers[6]="评论数";
 		headers[7]="客户手机";
-		headers[8]="开始制作时间";
-		headers[9]="最近更新时间";	
-		String[] fields = new String[10];
+		headers[8]="收货地址";
+		headers[9]="开始制作时间";
+		headers[10]="最近更新时间";	
+		String[] fields = new String[11];
 		fields[0]="code.codeno";
 		fields[1]="productTitle";
 		fields[2]="activeStatus";
@@ -214,8 +215,9 @@ public class ActivityCodeController extends SSOController {
 		fields[5]="count";
 		fields[6]="commentsCount";
 		fields[7]="phone";
-		fields[8]="createtimestr";
-		fields[9]="updatetimestr";
+		fields[8]="address";
+		fields[9]="createtimestr";
+		fields[10]="updatetimestr";
 		
 		
 		//导出格式

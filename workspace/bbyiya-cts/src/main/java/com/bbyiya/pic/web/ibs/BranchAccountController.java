@@ -34,12 +34,12 @@ public class BranchAccountController  extends SSOController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/accountLog")
-	public String findAcountsLogsPageResult(Long userId, Integer type, int index, int size) throws MapperException {
+	public String findAcountsLogsPageResult(Integer type, int index, int size) throws MapperException {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)){
-				rq= accountService.findAcountsLogsPageResult(userId, type, index, size);
+				rq= accountService.findAcountsLogsPageResult(user.getUserId(), type, index, size);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError_1);
 				rq.setStatusreson("È¨ÏÞ²»×ã");

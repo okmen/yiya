@@ -1,5 +1,6 @@
 package com.bbyiya.service.impl.pic;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -1247,12 +1248,16 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			payorder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
 			payorder.setPaytype(Integer.parseInt(PayTypeEnum.yiyaCash.toString()));
 			payorder.setPaytime(new Date()); 
-			payorder.setTotalprice(totalPrice);
+			//三折
+			double payprice=totalPrice/3;
+			DecimalFormat    df   = new DecimalFormat("######0.00"); 
+			payprice=Double.parseDouble(df.format(payprice));
+			payorder.setTotalprice(payprice);
 			payorder.setCreatetime(new Date());
 			payOrderMapper.insert(payorder);
 			
 			//消费扣减余额
-			accountService.add_accountsLog(userId, Integer.parseInt(AccountLogType.use_payment.toString()), totalPrice, payId, userOrderId);
+			accountService.add_accountsLog(userId, Integer.parseInt(AccountLogType.use_payment.toString()), payprice, payId, userOrderId);
 			
 			//订单完成后新增销量
 			basePayService.addProductExt(userOrderId);

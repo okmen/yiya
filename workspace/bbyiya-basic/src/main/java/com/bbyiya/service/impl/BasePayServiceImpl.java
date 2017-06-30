@@ -107,59 +107,59 @@ public class BasePayServiceImpl implements IBasePayService{
 					int orderType=payOrder.getOrdertype()==null?0:payOrder.getOrdertype();
 					/*-------------------------代理商货款充值-----------------------------------------------------*/
 					if(orderType==Integer.parseInt(PayOrderTypeEnum.chongzhi.toString())) {
-						UCashlogs log=new UCashlogs();
-						log.setAmount(payOrder.getTotalprice());
-						log.setUserid(payOrder.getUserid());
-						log.setPayid(payId);
-						log.setUsetype(Integer.parseInt(AmountType.get.toString()));//充值
-						log.setCreatetime(new Date());
-						cashlogsMapper.insert(log);
-						UCashlogs freeLog=new UCashlogs();
-						freeLog.setAmount(payOrder.getTotalprice()*2);
-						freeLog.setUserid(payOrder.getUserid());
-						freeLog.setPayid(payId);
-						freeLog.setUsetype(Integer.parseInt(AmountType.free.toString()));//充值
-						freeLog.setCreatetime(new Date());
-						cashlogsMapper.insert(freeLog);
-						//充值 金额 = 实际金额*3 
-						Double totalPriceTemp=payOrder.getTotalprice()*3;
-						UAccounts accounts=accountsMapper.selectByPrimaryKey(payOrder.getUserid());
-						if(accounts!=null){
-							accounts.setAvailableamount(accounts.getAvailableamount()+totalPriceTemp);
-							accountsMapper.updateByPrimaryKeySelective(accounts);
-						}else {
-							accounts=new UAccounts();
-							accounts.setUserid(payOrder.getUserid());
-							accounts.setAvailableamount(totalPriceTemp);
-							accountsMapper.insert(accounts);
-						}
-//						accountService.add_accountsLog(payOrder.getUserid(), Integer.parseInt(AccountLogType.get_recharge.toString()), payOrder.getTotalprice(), payId, "");
+//						UCashlogs log=new UCashlogs();
+//						log.setAmount(payOrder.getTotalprice());
+//						log.setUserid(payOrder.getUserid());
+//						log.setPayid(payId);
+//						log.setUsetype(Integer.parseInt(AmountType.get.toString()));//充值
+//						log.setCreatetime(new Date());
+//						cashlogsMapper.insert(log);
+//						UCashlogs freeLog=new UCashlogs();
+//						freeLog.setAmount(payOrder.getTotalprice()*2);
+//						freeLog.setUserid(payOrder.getUserid());
+//						freeLog.setPayid(payId);
+//						freeLog.setUsetype(Integer.parseInt(AmountType.free.toString()));//充值
+//						freeLog.setCreatetime(new Date());
+//						cashlogsMapper.insert(freeLog);
+//						//充值 金额 = 实际金额*3 
+//						Double totalPriceTemp=payOrder.getTotalprice()*3;
+//						UAccounts accounts=accountsMapper.selectByPrimaryKey(payOrder.getUserid());
+//						if(accounts!=null){
+//							accounts.setAvailableamount(accounts.getAvailableamount()+totalPriceTemp);
+//							accountsMapper.updateByPrimaryKeySelective(accounts);
+//						}else {
+//							accounts=new UAccounts();
+//							accounts.setUserid(payOrder.getUserid());
+//							accounts.setAvailableamount(totalPriceTemp);
+//							accountsMapper.insert(accounts);
+//						}
+						accountService.add_accountsLog(payOrder.getUserid(), Integer.parseInt(AccountLogType.get_recharge.toString()), payOrder.getTotalprice(), payId, "");
 					}
 					/*-----------------------------货款充值（完）-------------------------------------*/
 					/*-----------------------------代理商邮费 充值------------------------------------------*/
 					else if (orderType==Integer.parseInt(PayOrderTypeEnum.postage.toString())) {
 						//供应商邮费充值
-						UBranchtransamountlog translog=new UBranchtransamountlog();
-						translog.setBranchuserid(payOrder.getUserid());
-						translog.setPayid(payId);
-						translog.setAmount(payOrder.getTotalprice());
-						translog.setType(Integer.parseInt(AmountType.get.toString()));
-						translog.setCreatetime(new Date());
-						transLogMapper.insert(translog);
-						
-						//邮费账户金额更新
-						UBranchtransaccounts transAccount= transMapper.selectByPrimaryKey(payOrder.getUserid());
-						if(transAccount!=null){  
-							double amount=transAccount.getAvailableamount()==null?0d:transAccount.getAvailableamount();
-							transAccount.setAvailableamount(amount+payOrder.getTotalprice());
-							transMapper.updateByPrimaryKey(transAccount);
-						}else {
-							transAccount=new UBranchtransaccounts();
-							transAccount.setBranchuserid(payOrder.getUserid());
-							transAccount.setAvailableamount(payOrder.getTotalprice());
-							transMapper.insert(transAccount);
-						}
-//						accountService.add_accountsLog(payOrder.getUserid(), Integer.parseInt(AccountLogType.get_recharge.toString()), payOrder.getTotalprice(), payId, "");
+//						UBranchtransamountlog translog=new UBranchtransamountlog();
+//						translog.setBranchuserid(payOrder.getUserid());
+//						translog.setPayid(payId);
+//						translog.setAmount(payOrder.getTotalprice());
+//						translog.setType(Integer.parseInt(AmountType.get.toString()));
+//						translog.setCreatetime(new Date());
+//						transLogMapper.insert(translog);
+//						
+//						//邮费账户金额更新
+//						UBranchtransaccounts transAccount= transMapper.selectByPrimaryKey(payOrder.getUserid());
+//						if(transAccount!=null){  
+//							double amount=transAccount.getAvailableamount()==null?0d:transAccount.getAvailableamount();
+//							transAccount.setAvailableamount(amount+payOrder.getTotalprice());
+//							transMapper.updateByPrimaryKey(transAccount);
+//						}else {
+//							transAccount=new UBranchtransaccounts();
+//							transAccount.setBranchuserid(payOrder.getUserid());
+//							transAccount.setAvailableamount(payOrder.getTotalprice());
+//							transMapper.insert(transAccount);
+//						}
+						accountService.add_accountsLog(payOrder.getUserid(), Integer.parseInt(AccountLogType.get_recharge.toString()), payOrder.getTotalprice(), payId, "");
 					}/*-------------------------------------------------------------------*/
 					
 					/************************------------普通购物------------------********************************/
@@ -181,7 +181,7 @@ public class BasePayServiceImpl implements IBasePayService{
 								userorders.setPaytime(new Date()); 
 								userOrdersMapper.updateByPrimaryKeySelective(userorders);
 								//分提成
-								addOrderExtend(payOrder);
+//								addOrderExtend(payOrder);
 							}
 						}
 					}

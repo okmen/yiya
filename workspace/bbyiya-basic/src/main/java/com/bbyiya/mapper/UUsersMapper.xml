@@ -65,16 +65,16 @@
   
   
   <insert id="insertReturnKeyId" useGeneratedKeys="true" keyProperty="userid" parameterType="com.bbyiya.model.UUsers" >
-   insert into u_users (UserID, PassWord, MobilePhone, 
+    insert into u_users (UserID, PassWord, MobilePhone, 
       MobileBind, Status, Identity, 
       UserImg, NickName, Email, 
       CreateTime, Sign, Birthday, 
-      UpUserId)
+      UpUserId, SourseUserId)
     values (#{userid,jdbcType=BIGINT}, #{password,jdbcType=VARCHAR}, #{mobilephone,jdbcType=VARCHAR}, 
       #{mobilebind,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{identity,jdbcType=BIGINT}, 
       #{userimg,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
       #{createtime,jdbcType=TIMESTAMP}, #{sign,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, 
-      #{upuserid,jdbcType=BIGINT})
+      #{upuserid,jdbcType=BIGINT}, #{sourseuserid,jdbcType=BIGINT})
   </insert>
   <insert id="insert" parameterType="com.bbyiya.model.UUsers" >
     insert into u_users (UserID, PassWord, MobilePhone, 

@@ -4,6 +4,8 @@ import java.net.URLEncoder;
 import java.util.Date;
 
 
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import net.sf.json.JSONObject;
@@ -69,9 +71,16 @@ public class LoginController extends SSOController {
 		if(branch_userid>0||!ObjectUtil.isEmpty(m)||!ObjectUtil.isEmpty(redirct_url)){  
 			LoginTempVo loginTemp=new LoginTempVo();
 			loginTemp.setUpUserId(branch_userid);
-			loginTemp.setLoginTo(ObjectUtil.parseInt(m));
+			int loginTo=ObjectUtil.parseInt(m);
+			loginTemp.setLoginTo(loginTo);
 			if(!ObjectUtil.isEmpty(redirct_url)&&!"null".equals(redirct_url)){
 				loginTemp.setRedirect_url(redirct_url); 
+				if(branch_userid<=0){
+					Map<String, String> paramUrl=ObjectUtil.getUrlParam(redirct_url);
+					if(paramUrl!=null&&!ObjectUtil.isEmpty(paramUrl.get("uid"))){
+						loginTemp.setUpUserId(ObjectUtil.parseLong(paramUrl.get("uid")));  
+					}
+				}
 			}
 			RedisUtil.setObject(keyId, loginTemp, 30);
 		}else {

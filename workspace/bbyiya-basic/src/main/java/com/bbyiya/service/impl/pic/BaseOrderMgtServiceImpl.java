@@ -282,7 +282,10 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				//邮费 b端下单不录入邮费
 				userOrder.setPostage(0d); 
 				UAccounts accounts= accountsMapper.selectByPrimaryKey(param.getBranchUserId());
-				if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount()>=totalPrice) {
+				double payprice=totalPrice/3;
+				DecimalFormat    df   = new DecimalFormat("######0.00"); 
+				payprice=Double.parseDouble(df.format(payprice));
+				if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount()>=payprice) {
 					// 影楼订单，直接预存款支付 ， 插入支付记录
 					if(payOrder_logAdd(param.getBranchUserId(),orderId,orderId,totalPrice)){
 						userOrder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
@@ -613,7 +616,10 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 							// 邮费 b端下单不录入邮费
 							userOrder_Repeat.setPostage(0d);
 							UAccounts accounts = accountsMapper.selectByPrimaryKey(param.getBranchUserId());
-							if (accounts != null && accounts.getAvailableamount() != null && accounts.getAvailableamount() >= totalPrice) {
+							double payprice=totalPrice/3;
+							DecimalFormat    df   = new DecimalFormat("######0.00"); 
+							payprice=Double.parseDouble(df.format(payprice));
+							if (accounts != null && accounts.getAvailableamount() != null && accounts.getAvailableamount() >= payprice) {
 								// 影楼订单，直接预存款支付 ， 插入支付记录
 								if (payOrder_logAdd(param.getBranchUserId(), orderId, orderId, totalPrice)) {
 									
@@ -745,7 +751,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					if(branchusers!=null&&branchusers.getBranchuserid()!=null) {
 						UBranches branches=branchesMapper.selectByPrimaryKey(branchusers.getBranchuserid());
 						if(branches!=null&&branches.getStatus()!=null&&branches.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.ok.toString())){
-							double totalprice=style.getAgentprice()*count;
+							double totalprice=(style.getAgentprice()*count)/3;
 							UAccounts accounts= accountsMapper.selectByPrimaryKey(branches.getBranchuserid());
 							if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount()>=totalprice){
 								 rq.setStatu(ReturnStatus.Success);

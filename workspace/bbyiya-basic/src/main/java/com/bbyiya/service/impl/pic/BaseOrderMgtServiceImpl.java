@@ -1245,7 +1245,11 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	 */
 	public boolean payOrder_logAdd(Long userId, String payId, String userOrderId, Double totalPrice) throws Exception{
 		UAccounts accounts=accountsMapper.selectByPrimaryKey(userId);
-		if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount().doubleValue()>=totalPrice.doubleValue()){
+		//三折
+		double payprice=totalPrice/3;
+		DecimalFormat    df   = new DecimalFormat("######0.00"); 
+		payprice=Double.parseDouble(df.format(payprice));
+		if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount().doubleValue()>=payprice){
 						
 			OPayorder payorder = new OPayorder();
 			payorder.setPayid(payId);
@@ -1254,10 +1258,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			payorder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
 			payorder.setPaytype(Integer.parseInt(PayTypeEnum.yiyaCash.toString()));
 			payorder.setPaytime(new Date()); 
-			//三折
-			double payprice=totalPrice/3;
-			DecimalFormat    df   = new DecimalFormat("######0.00"); 
-			payprice=Double.parseDouble(df.format(payprice));
+			
 			payorder.setTotalprice(payprice);
 			payorder.setCreatetime(new Date());
 			payOrderMapper.insert(payorder);

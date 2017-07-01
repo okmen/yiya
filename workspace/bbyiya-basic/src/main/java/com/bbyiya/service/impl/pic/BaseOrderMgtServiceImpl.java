@@ -285,7 +285,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				double payprice=totalPrice/3;
 				DecimalFormat    df   = new DecimalFormat("######0.00"); 
 				payprice=Double.parseDouble(df.format(payprice));
-				if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount()>=payprice) {
+				if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount().doubleValue()>=payprice) {
 					// 影楼订单，直接预存款支付 ， 插入支付记录
 					if(payOrder_logAdd(param.getBranchUserId(),orderId,orderId,totalPrice)){
 						userOrder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
@@ -619,7 +619,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 							double payprice=totalPrice/3;
 							DecimalFormat    df   = new DecimalFormat("######0.00"); 
 							payprice=Double.parseDouble(df.format(payprice));
-							if (accounts != null && accounts.getAvailableamount() != null && accounts.getAvailableamount() >= payprice) {
+							if (accounts != null && accounts.getAvailableamount() != null && accounts.getAvailableamount().doubleValue() >= payprice) {
 								// 影楼订单，直接预存款支付 ， 插入支付记录
 								if (payOrder_logAdd(param.getBranchUserId(), orderId, orderId, totalPrice)) {
 									
@@ -753,7 +753,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 						if(branches!=null&&branches.getStatus()!=null&&branches.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.ok.toString())){
 							double totalprice=(style.getAgentprice()*count)/3;
 							UAccounts accounts= accountsMapper.selectByPrimaryKey(branches.getBranchuserid());
-							if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount()>=totalprice){
+							if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount().doubleValue()>=totalprice){
 								 rq.setStatu(ReturnStatus.Success);
 								 param.setBranchUserId(branches.getBranchuserid());
 								 param.setAgentUserId(branches.getAgentuserid()); 

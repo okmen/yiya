@@ -73,6 +73,14 @@ public interface PMyproductsMapper {
 	List<MyProductResultVo> findMyProductslistForBranch(@Param("list")List<Long> list,@Param("status") Integer status,@Param("invitestatus")Integer invitestatus,@Param("keywords")String keywords);
 	
 	/**
+	 * 获取影楼员工协助客户的作品列表
+	 * @param userIds
+	 * @param status
+	 * @param invitestatus
+	 * @return
+	 */
+	List<MyProductResultVo> findMyProductsSourceCustomerOfBranch(@Param("list")List<Long> list,@Param("status") Integer status,@Param("invitestatus")Integer invitestatus,@Param("keywords")String keywords);
+	/**
 	 * 获取模板下的已获取客户作品
 	 * @param userIds
 	 * @param status

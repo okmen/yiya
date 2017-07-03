@@ -216,6 +216,7 @@ public class BasePayServiceImpl implements IBasePayService{
 				ext.setUpuserid(user.getUpuserid());
 				ext.setTotalprice(payorder.getTotalprice());
 				ext.setCreatetime(new Date());
+				ext.setStatus(payorder.getStatus());
 				oextMapper.insert(ext);
 			}
 		} catch (Exception e) {

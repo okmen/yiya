@@ -116,6 +116,27 @@ and TIMESTAMPDIFF(HOUR, b.CompleteTime, now())>=#{ordertime,jdbcType=INTEGER}
 and b.Status=3 
   </select>
  
+  <!-- 09 find 影楼员工协助客户的作品列表（客户对影楼的作品）  -->
+  <select id="findMyProductsSourceCustomerOfBranch" resultMap="MyProductResultVO" >
+    select a.* from p_myproducts a,p_myproductsinvites b 
+where a.CartId=b.CartId and a.Status!=3 and a.Status!=4 and a.IsTemp=0 and (a.TempId is null or a.TempId='') and b.Status!=2  and  b.InviteUserId in
+    <foreach collection="list" item="uid" index="index"
+            open="(" close=")" separator=",">
+            #{uid}
+    </foreach>
+    <if test="status != null" >
+        and  a.Status=#{status,jdbcType=INTEGER}
+    </if>
+    <if test="invitestatus != null" >
+        and  b.Status=#{invitestatus,jdbcType=INTEGER}
+    </if>
+     <if test="keywords != null and keywords!=''" >
+        and  (a.UserId =#{keywords,jdbcType=VARCHAR} Or a.CartId=#{keywords,jdbcType=VARCHAR} OR a.Title  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) or b.InvitePhone LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) )
+    </if>
+    
+    order by b.CreateTime desc 
+  </select>
+  
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from p_myproducts

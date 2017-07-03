@@ -405,17 +405,17 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			throw new RuntimeException(e.getMessage());
 		}
 	}
-	public boolean istime(){
-		String closeStr="2017-07-03 18:00:00";
-		String openStr="2017-07-03 21:00:00";
-		Date closeTime=DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", closeStr);
-		Date openTime=DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", openStr);
-		Date nowtime=new Date();
-		if(nowtime.getTime()>=closeTime.getTime()&&nowtime.getTime()<=openTime.getTime()){
-			return false;
-		}
-		return true;
-	}
+//	public boolean istime(){
+//		String closeStr="2017-07-03 18:00:00";
+//		String openStr="2017-07-03 21:00:00";
+//		Date closeTime=DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", closeStr);
+//		Date openTime=DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", openStr);
+//		Date nowtime=new Date();
+//		if(nowtime.getTime()>=closeTime.getTime()&&nowtime.getTime()<=openTime.getTime()){
+//			return false;
+//		}
+//		return true;
+//	}
 	
 	public ReturnModel submitOrder_IBS(UserOrderSubmitParam param) {
 		ReturnModel rq = new ReturnModel();
@@ -432,11 +432,11 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			}
 			long orderAddressId =0;
 			if(orderType==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){//影楼订单
-				if(!istime()){
-					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("系统升级中，暂时关闭影楼下单功能，2017-07-03 21:00:00 开放使用！");
-					return rq;
-				}
+//				if(!istime()){
+//					rq.setStatu(ReturnStatus.ParamError);
+//					rq.setStatusreson("系统升级中，暂时关闭影楼下单功能，2017-07-03 21:00:00 开放使用！");
+//					return rq;
+//				}
 				OOrderaddress orderAddress = new OOrderaddress();
 				orderAddress.setUserid(param.getAddressparam().getUserid());
 				orderAddress.setPhone(param.getAddressparam().getPhone());

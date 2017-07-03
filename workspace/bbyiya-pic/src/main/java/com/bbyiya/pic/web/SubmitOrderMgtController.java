@@ -1,5 +1,6 @@
 package com.bbyiya.pic.web;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -19,6 +20,7 @@ import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.PPostmodel;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
 import com.bbyiya.service.pic.IBasePostMgtService;
+import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -75,17 +77,17 @@ public class SubmitOrderMgtController extends SSOController {
 	 * 系统上线准备期间
 	 * @return
 	 */
-//	public boolean istime(){
-//		String closeStr="2017-04-07 14:00:00";
-//		String openStr="2017-04-07 16:00:00";
-//		Date closeTime=DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", closeStr);
-//		Date openTime=DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", openStr);
-//		Date nowtime=new Date();
-//		if(nowtime.getTime()>=closeTime.getTime()&&nowtime.getTime()<=openTime.getTime()){
-//			return false;
-//		}
-//		return true;
-//	}
+	public boolean istime(){
+		String closeStr="2017-07-03 18:00:00";
+		String openStr="2017-07-03 21:00:00";
+		Date closeTime=DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", closeStr);
+		Date openTime=DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", openStr);
+		Date nowtime=new Date();
+		if(nowtime.getTime()>=closeTime.getTime()&&nowtime.getTime()<=openTime.getTime()){
+			return false;
+		}
+		return true;
+	}
 	/**
 	 * 提交订单
 	 * 
@@ -122,6 +124,11 @@ public class SubmitOrderMgtController extends SSOController {
 				int type = ObjectUtil.parseInt(orderType);
 				if (type > 0) {
 					param.setOrderType(type);
+					if(!istime()){
+						rq.setStatu(ReturnStatus.ParamError);
+						rq.setStatusreson("系统升级中，暂时关闭影楼下单功能，2017-07-03 21:00:00 开放使用！");
+						return JsonUtil.objectToJsonStr(rq);
+					}
 				}
 				if(productParam.getPostModelId()!=null){
 					param.setPostModelId(productParam.getPostModelId()); 
@@ -156,6 +163,11 @@ public class SubmitOrderMgtController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
+			if(!istime()){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("系统升级中，暂时关闭影楼下单功能，2017-07-03 21:00:00 开放使用！");
+				return JsonUtil.objectToJsonStr(rq);
+			}
 			SubmitOrderProductParam productParam = (SubmitOrderProductParam) JsonUtil.jsonStrToObject(productJsonStr, SubmitOrderProductParam.class);
 			OrderaddressParam addressParam=(OrderaddressParam)JsonUtil.jsonStrToObject(addressJsonStr, OrderaddressParam.class);
 			if (productParam != null&&addressParam!=null) {
@@ -242,15 +254,15 @@ public class SubmitOrderMgtController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-//			if(!istime()){ 
-//				rq.setStatu(ReturnStatus.ParamError);
-//				rq.setStatusreson("14:00-16:00 系统上线准备中，16:00 正式启动！激动人心的时刻即将到来！！ ");
-//				return JsonUtil.objectToJsonStr(rq);
-//			}
 			UserOrderSubmitRepeatParam param=(UserOrderSubmitRepeatParam)JsonUtil.jsonStrToObject(orderJson,UserOrderSubmitRepeatParam.class);
 			if(param!=null){
 				if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.salesman)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)){
 					param.setOrderType(Integer.parseInt(OrderTypeEnum.brachOrder.toString()));
+					if(!istime()){
+						rq.setStatu(ReturnStatus.ParamError);
+						rq.setStatusreson("系统升级中，暂时关闭影楼下单功能，2017-07-03 21:00:00 开放使用！");
+						return JsonUtil.objectToJsonStr(rq);
+					}
 				}else {
 					param.setOrderType(0);
 					if(param.getPostModelId()==null||param.getPostModelId()<=0){

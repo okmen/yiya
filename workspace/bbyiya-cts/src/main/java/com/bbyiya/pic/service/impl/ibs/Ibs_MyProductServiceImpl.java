@@ -145,21 +145,10 @@ public class Ibs_MyProductServiceImpl implements IIbs_MyproductService{
 					if (invites != null && invites.size() > 0) {
 						item.setInviteModel(invites.get(0));
 						item.setInvitestatus(invites.get(0).getStatus());
-						UUsers inviteusers = null;
-						if (!ObjectUtil.isEmpty(invites.get(0).getInvitephone())) {
-							inviteusers = usersMapper.getUUsersByPhone(invites.get(0).getInvitephone());
-						}
-						if (inviteusers == null && !ObjectUtil.isEmpty(invites.get(0).getInviteuserid())) {
-							inviteusers = usersMapper.selectByPrimaryKey(invites.get(0).getInviteuserid());
-						}
-						if (inviteusers != null) {
-							item.setInvitedName(inviteusers.getNickname());
-							if (item.getInviteModel() != null) {
-								if (ObjectUtil.isEmpty(item.getInviteModel().getInvitephone())) {
-									item.getInviteModel().setInvitephone(inviteusers.getMobilephone());
-								}
-							}
-
+						UBranchusers branchuser=branchusersMapper.selectByPrimaryKey(invites.get(0).getInviteuserid());
+						if(branchuser!=null){
+							item.setInvitedName(branchuser.getName());
+							item.getInviteModel().setInvitephone(branchuser.getPhone());
 						}
 						
 						// 得到来源，即模板名称

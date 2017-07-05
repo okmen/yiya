@@ -134,7 +134,11 @@ public class LoginController extends SSOController {
 		}
 		if(!ObjectUtil.isEmpty(redirect_url)&&!"null".equals(redirect_url)){
 			addlog("url:"+ConfigUtil.getSingleValue("currentDomain")+redirect_url); 
-			return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+redirect_url;
+			if(redirect_url.contains("http")){
+				return "redirect:" + redirect_url;
+			}else {
+				return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+redirect_url;
+			}
 		}
 		return "redirect:" + ConfigUtil.getSingleValue("photo-net-url") ;
 	}
@@ -313,8 +317,12 @@ public class LoginController extends SSOController {
 		if (rqModel.getStatu().equals(ReturnStatus.Success)) {
 			//ÓÃ»§Ìø×ª
 			if(logintemp!=null&&!ObjectUtil.isEmpty(logintemp.getRedirect_url())){
-				
-				return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+logintemp.getRedirect_url(); 
+				if(logintemp.getRedirect_url().contains("http")){
+					return "redirect:" + logintemp.getRedirect_url();
+				}else {
+					return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+logintemp.getRedirect_url();
+				}
+//				return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+logintemp.getRedirect_url(); 
 			}
 			return "redirect:" + ConfigUtil.getSingleValue("loginbackurl") ;
 		} else {

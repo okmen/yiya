@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.UAgentapplyareasMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.UAgentapplyareas" >
+    <id column="AcodeId" property="acodeid" jdbcType="BIGINT" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="ProvinceCode" property="provincecode" jdbcType="INTEGER" />
+    <result column="CityCode" property="citycode" jdbcType="INTEGER" />
+    <result column="AreaCode" property="areacode" jdbcType="INTEGER" />
+    <result column="Address" property="address" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    AcodeId, UserId, ProvinceCode, CityCode, AreaCode, Address
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from u_agentapplyareas
+    where AcodeId = #{acodeid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from u_agentapplyareas
+    where AcodeId = #{acodeid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.UAgentapplyareas" >
+    insert into u_agentapplyareas (AcodeId, UserId, ProvinceCode, 
+      CityCode, AreaCode, Address
+      )
+    values (#{acodeid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{provincecode,jdbcType=INTEGER}, 
+      #{citycode,jdbcType=INTEGER}, #{areacode,jdbcType=INTEGER}, #{address,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.UAgentapplyareas" >
+    insert into u_agentapplyareas
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="acodeid != null" >
+        AcodeId,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="provincecode != null" >
+        ProvinceCode,
+      </if>
+      <if test="citycode != null" >
+        CityCode,
+      </if>
+      <if test="areacode != null" >
+        AreaCode,
+      </if>
+      <if test="address != null" >
+        Address,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="acodeid != null" >
+        #{acodeid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="provincecode != null" >
+        #{provincecode,jdbcType=INTEGER},
+      </if>
+      <if test="citycode != null" >
+        #{citycode,jdbcType=INTEGER},
+      </if>
+      <if test="areacode != null" >
+        #{areacode,jdbcType=INTEGER},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.UAgentapplyareas" >
+    update u_agentapplyareas
+    <set >
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="provincecode != null" >
+        ProvinceCode = #{provincecode,jdbcType=INTEGER},
+      </if>
+      <if test="citycode != null" >
+        CityCode = #{citycode,jdbcType=INTEGER},
+      </if>
+      <if test="areacode != null" >
+        AreaCode = #{areacode,jdbcType=INTEGER},
+      </if>
+      <if test="address != null" >
+        Address = #{address,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where AcodeId = #{acodeid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.UAgentapplyareas" >
+    update u_agentapplyareas
+    set UserId = #{userid,jdbcType=BIGINT},
+      ProvinceCode = #{provincecode,jdbcType=INTEGER},
+      CityCode = #{citycode,jdbcType=INTEGER},
+      AreaCode = #{areacode,jdbcType=INTEGER},
+      Address = #{address,jdbcType=VARCHAR}
+    where AcodeId = #{acodeid,jdbcType=BIGINT}
+  </update>
+</mapper>

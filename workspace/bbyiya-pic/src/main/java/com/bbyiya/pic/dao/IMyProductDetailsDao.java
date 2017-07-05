@@ -9,13 +9,13 @@ import com.bbyiya.pic.vo.product.MyProductsDetailsResult;
 public interface IMyProductDetailsDao {
 
 	/**
-	 * 根据作品ID获取作品详情列表
+	 * 鏍规嵁浣滃搧ID鑾峰彇浣滃搧璇︽儏鍒楄〃
 	 * @param cartid
 	 * @return
 	 */
 	List<MyProductsDetailsResult> findMyProductDetailsResult(@Param("cartId")Long cartid);
 	/**
-	 * 根据作品Id删除 作品详情
+	 * 鏍规嵁浣滃搧Id鍒犻櫎 浣滃搧璇︽儏
 	 * @param cartId
 	 */
 	void deleMyProductDetailsByCartId(@Param("cartId")Long cartId);

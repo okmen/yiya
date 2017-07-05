@@ -10,20 +10,20 @@ public class StyleCoordinateEditParam implements Serializable{
 	private Long coId; 
 	private Long styleId;
 	/**
-	 * 1±íÊ¾ºáÍ¼£¬2Êú¹¹Í¼
+	 * 1è¡¨ç¤ºæ¨ªå›¾ï¼Œ2ç«–æ„å›¾
 	 */
 	private int type;
 	private String typeName;
 	/**
-	 * ´òÓ¡ºÅ×ø±ê
+	 * æ‰“å°å·åæ ‡
 	 */
 	private PStylecoordinateitem numberMod;
 	/**
-	 * Í¼Æ¬×ø±ê
+	 * å›¾ç‰‡åæ ‡
 	 */
 	private PStylecoordinateitem picMod;
 	/**
-	 * ÎÄ×ÖÄÚÈİ×ø±ê
+	 * æ–‡å­—å†…å®¹åæ ‡
 	 */
 	private PStylecoordinateitem contentMod;
 	

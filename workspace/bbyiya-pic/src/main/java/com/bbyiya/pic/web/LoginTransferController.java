@@ -32,7 +32,7 @@ import com.bbyiya.web.base.SSOController;
 @RequestMapping(value = "/login")
 public class LoginTransferController extends SSOController {
 	/**
-	 * µÇÂ½¡¢ ×¢²á service
+	 * ç™»é™†ã€ æ³¨å†Œ service
 	 */
 	@Resource(name = "pic_userMgtService")
 	private IPic_UserMgtService loginService;
@@ -47,7 +47,7 @@ public class LoginTransferController extends SSOController {
 	
 
 	/**
-	 * IBSµÇÂ¼ ÖĞ×ªÒ³
+	 * IBSç™»å½• ä¸­è½¬é¡µ
 	 * 
 	 * @return
 	 * @throws Exception
@@ -59,7 +59,7 @@ public class LoginTransferController extends SSOController {
 
 
 	/**
-	 * IBS Î¢ĞÅµÇÂ¼
+	 * IBS å¾®ä¿¡ç™»å½•
 	 * 
 	 * @param code
 	 * @return
@@ -77,7 +77,7 @@ public class LoginTransferController extends SSOController {
 	}
 
 	/**
-	 * Î¢ĞÅµÇÂ¼
+	 * å¾®ä¿¡ç™»å½•
 	 * 
 	 * @param code
 	 * @param state
@@ -119,7 +119,7 @@ public class LoginTransferController extends SSOController {
 					}
 				} else {
 					rqModel.setStatu(ReturnStatus.SystemError);
-					rqModel.setStatusreson("»ñÈ¡ÓÃ»§ĞÅÏ¢Ê§°Ü");
+					rqModel.setStatusreson("è·å–ç”¨æˆ·ä¿¡æ¯å¤±è´¥");
 				}
 			} else {
 				rqModel.setStatu(ReturnStatus.ParamError);
@@ -127,13 +127,13 @@ public class LoginTransferController extends SSOController {
 			}
 		} else {
 			rqModel.setStatu(ReturnStatus.SystemError);
-			rqModel.setStatusreson("»ñÈ¡Î¢ĞÅµÇÂ¼È¨ÏŞÊ§°Ü");
+			rqModel.setStatusreson("è·å–å¾®ä¿¡ç™»å½•æƒé™å¤±è´¥");
 		}
 		return rqModel;
 	}
 
 	/**
-	 * ¼ÓÈësession, cookie
+	 * åŠ å…¥session, cookie
 	 * 
 	 * @param obj
 	 */
@@ -159,7 +159,7 @@ public class LoginTransferController extends SSOController {
 	}
 
 	/**
-	 * ²åÈë´íÎóLog
+	 * æ’å…¥é”™è¯¯Log
 	 * 
 	 * @param msg
 	 */

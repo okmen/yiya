@@ -25,8 +25,8 @@ public class Pic_PayMgtServiceImpl implements IPic_PayMgtService {
 	private OPayorderMapper payMapper;
 
 	/**
-	 * Î¢ĞÅ¹«ÖÚºÅÖ§¸¶ »ñÈ¡Ö§¸¶²ÎÊı
-	 * @param orderNo Ö§¸¶id
+	 * å¾®ä¿¡å…¬ä¼—å·æ”¯ä»˜ è·å–æ”¯ä»˜å‚æ•°
+	 * @param orderNo æ”¯ä»˜id
 	 * @param openid
 	 * @param ip
 	 * @return
@@ -35,7 +35,7 @@ public class Pic_PayMgtServiceImpl implements IPic_PayMgtService {
 		ReturnModel rq = new ReturnModel();
 		if (ObjectUtil.isEmpty(orderNo) || ObjectUtil.isEmpty(ip)) {
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("²ÎÊı´íÎó");
+			rq.setStatusreson("å‚æ•°é”™è¯¯");
 			return rq;
 		}
 		try {
@@ -48,7 +48,7 @@ public class Pic_PayMgtServiceImpl implements IPic_PayMgtService {
 					prepay_id = payorder.getPrepayid();
 				}
 			}
-			// Ëæ»ú×Ö·û´®
+			// éšæœºå­—ç¬¦ä¸²
 			String nonceStr = WxPayUtils.genNonceStr();
 			if (ObjectUtil.isEmpty(prepay_id)) {
 				Map<String, Object> map = WxPayUtils.doInBackground(ip, openid, totalPrice, orderNo, nonceStr);
@@ -72,7 +72,7 @@ public class Pic_PayMgtServiceImpl implements IPic_PayMgtService {
 					}
 				} else {
 					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("ÏµÍ³´íÎó");
+					rq.setStatusreson("ç³»ç»Ÿé”™è¯¯");
 					return rq;
 				}
 			}
@@ -93,7 +93,7 @@ public class Pic_PayMgtServiceImpl implements IPic_PayMgtService {
 		ReturnModel rq = new ReturnModel();
 		if (ObjectUtil.isEmpty(orderNo) || ObjectUtil.isEmpty(ip)) {
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("²ÎÊı´íÎó");
+			rq.setStatusreson("å‚æ•°é”™è¯¯");
 			return rq;
 		}
 		try {
@@ -106,7 +106,7 @@ public class Pic_PayMgtServiceImpl implements IPic_PayMgtService {
 					prepay_id = payorder.getPrepayid();
 				}
 			}
-			// Ëæ»ú×Ö·û´®
+			// éšæœºå­—ç¬¦ä¸²
 			String nonceStr = WxAppPayUtils.genNonceStr();
 			if (ObjectUtil.isEmpty(prepay_id)) {
 				Map<String, Object> map = WxAppPayUtils.doInBackground(ip, totalPrice, orderNo, nonceStr);
@@ -130,7 +130,7 @@ public class Pic_PayMgtServiceImpl implements IPic_PayMgtService {
 					}
 				} else {
 					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("ÏµÍ³´íÎó");
+					rq.setStatusreson("ç³»ç»Ÿé”™è¯¯");
 					return rq;
 				}
 			}
@@ -150,7 +150,7 @@ public class Pic_PayMgtServiceImpl implements IPic_PayMgtService {
 		ReturnModel rq = new ReturnModel();
 		if (ObjectUtil.isEmpty(orderNo) || ObjectUtil.isEmpty(ip)) {
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("²ÎÊı´íÎó");
+			rq.setStatusreson("å‚æ•°é”™è¯¯");
 			return rq;
 		}
 		WxPayParam param=new WxPayParam();

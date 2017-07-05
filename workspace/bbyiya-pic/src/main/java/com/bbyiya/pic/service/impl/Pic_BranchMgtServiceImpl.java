@@ -63,13 +63,13 @@ import com.github.pagehelper.PageInfo;
 public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 	@Resource(name = "regionServiceImpl")
 	private IRegionService regionService;
-	//ÓÃ»§¹«¹²Ä£¿é
+	//ç”¨æˆ·å…¬å…±æ¨¡å—
 	@Resource(name = "baseUserCommon")
 	private IBaseUserCommonService userBasic;
 	
 	@Autowired
 	private UBranchareapriceMapper branchAreaMapper;
-	//ÇøÓò±í
+	//åŒºåŸŸè¡¨
 	@Autowired
 	private RegionMapper regionMapper;
 	@Autowired
@@ -91,18 +91,18 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 	private UBranchusersMapper branchuserMapper;
 	
 	@Autowired
-	private UBranchtransaccountsMapper transaccountsMapper;//ÕË»§ĞÅÏ¢
-	//------------------------ÓÃ»§ĞÅÏ¢-------------------
+	private UBranchtransaccountsMapper transaccountsMapper;//è´¦æˆ·ä¿¡æ¯
+	//------------------------ç”¨æˆ·ä¿¡æ¯-------------------
 	@Autowired
 	private UUsersMapper usersMapper;	
 	@Autowired
-	private UUserresponsesMapper userresponseMapper;//ÓÃ»§·´À¡
+	private UUserresponsesMapper userresponseMapper;//ç”¨æˆ·åé¦ˆ
 	@Autowired
-	private UAccountsMapper accountsMapper;//ÕË»§ĞÅÏ¢
+	private UAccountsMapper accountsMapper;//è´¦æˆ·ä¿¡æ¯
 	@Autowired
-	private SysMessageMapper sysMessageMapper;//ÏµÍ³ÏûÏ¢
+	private SysMessageMapper sysMessageMapper;//ç³»ç»Ÿæ¶ˆæ¯
 	@Autowired
-	private UAdminactionlogsMapper adminlogMapper;//¹ÜÀíÔ±ÈÕÖ¾ĞÅÏ¢
+	private UAdminactionlogsMapper adminlogMapper;//ç®¡ç†å‘˜æ—¥å¿—ä¿¡æ¯
 	
 	
 	public ReturnModel getBranchAreaPrice(Integer province,Integer city,Integer district){
@@ -203,7 +203,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 	}
 	
 	/**
-	 * ´úÀíÉÌÉêÇë
+	 * ä»£ç†å•†ç”³è¯·
 	 */
 	public ReturnModel applyAgent(Long userId,UAgentapply applyInfo){
 		ReturnModel rq=new ReturnModel();
@@ -211,33 +211,33 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		if(apply!=null){
 			if(apply.getStatus()!=null&&apply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.ok.toString())){
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("ÄúÒÑ¾­ÊÇ´úÀíÉÌÁË£¬²»ÄÜÌá½»ÉêÇë£¡");
+				rq.setStatusreson("æ‚¨å·²ç»æ˜¯ä»£ç†å•†äº†ï¼Œä¸èƒ½æäº¤ç”³è¯·ï¼");
 				return rq;
 			}
 //			rq.setStatu(ReturnStatus.SystemError);
-//			rq.setStatusreson("ÄúÒÑÌá½»¹ıÉêÇë£¬²»ÄÜÖØ¸´Ìá½»");
+//			rq.setStatusreson("æ‚¨å·²æäº¤è¿‡ç”³è¯·ï¼Œä¸èƒ½é‡å¤æäº¤");
 //			return rq;
 			applyInfo.setAgentuserid(apply.getAgentuserid());
 		}
 		rq.setStatu(ReturnStatus.SystemError);
 		if(applyInfo==null){
-			rq.setStatusreson("²ÎÊıÓĞÎó");
+			rq.setStatusreson("å‚æ•°æœ‰è¯¯");
 			return rq;
 		}
 		if(ObjectUtil.isEmpty(applyInfo.getAgentcompanyname())){
-			rq.setStatusreson("¹«Ë¾Ãû³Æ²»ÄÜÎª¿Õ");
+			rq.setStatusreson("å…¬å¸åç§°ä¸èƒ½ä¸ºç©º");
 			return rq;
 		}
 		if(ObjectUtil.isEmpty(applyInfo.getIdcard())){
-			rq.setStatusreson("Éí·İÖ¤ĞÅÏ¢²»ÄÜÎª¿Õ");
+			rq.setStatusreson("èº«ä»½è¯ä¿¡æ¯ä¸èƒ½ä¸ºç©º");
 			return rq;
 		} 
 		if(ObjectUtil.isEmpty(applyInfo.getContactname())){
-			rq.setStatusreson("ÁªÏµÈË±ØĞëÌî");
+			rq.setStatusreson("è”ç³»äººå¿…é¡»å¡«");
 			return rq;
 		} 
 		if(ObjectUtil.isEmpty(applyInfo.getBusinesslicense())){
-			rq.setStatusreson("ÓªÒµÖ´ÕÕ±ØĞëÌî");
+			rq.setStatusreson("è¥ä¸šæ‰§ç…§å¿…é¡»å¡«");
 			return rq;
 		} 
 		if(!ObjectUtil.validSqlStr(applyInfo.getAgentcompanyname())
@@ -250,7 +250,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 				||!ObjectUtil.validSqlStr(applyInfo.getTeamimg())
 				||!ObjectUtil.validSqlStr(applyInfo.getRemark())
 				){
-			rq.setStatusreson("´æÔÚ·Ç·¨×Ö·û");
+			rq.setStatusreson("å­˜åœ¨éæ³•å­—ç¬¦");
 			return rq;
 		}
 		applyInfo.setAgentuserid(userId);
@@ -262,7 +262,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			agentapplyMapper.insert(applyInfo);
 		}
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("Ìá½»³É¹¦£¬µÈ´ıÉóºË£¡"); 
+		rq.setStatusreson("æäº¤æˆåŠŸï¼Œç­‰å¾…å®¡æ ¸ï¼"); 
 		return rq;
 	}
 	
@@ -273,41 +273,41 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		if(apply!=null){
 			if(apply.getStatus()!=null&&apply.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.ok.toString())){
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("ÄúÒÑ¾­ÊÇºÏ×÷ÉÌÁË£¬²»ÄÜÔÙ´ÎÌá½»£¡");
+				rq.setStatusreson("æ‚¨å·²ç»æ˜¯åˆä½œå•†äº†ï¼Œä¸èƒ½å†æ¬¡æäº¤ï¼");
 				return rq;
 			}
 			applyInfo.setBranchuserid(apply.getBranchuserid());
 //			rq.setStatu(ReturnStatus.SystemError);
-//			rq.setStatusreson("ÄúÒÑÌá½»¹ıÉêÇë£¬²»ÄÜÖØ¸´Ìá½»");
+//			rq.setStatusreson("æ‚¨å·²æäº¤è¿‡ç”³è¯·ï¼Œä¸èƒ½é‡å¤æäº¤");
 //			return rq;
 		}
 		rq.setStatu(ReturnStatus.SystemError);
 		if(applyInfo==null){
-			rq.setStatusreson("²ÎÊıÓĞÎó");
+			rq.setStatusreson("å‚æ•°æœ‰è¯¯");
 			return rq;
 		}
 		if(ObjectUtil.isEmpty(applyInfo.getBranchcompanyname())){
-			rq.setStatusreson("¹«Ë¾Ãû³Æ²»ÄÜÎª¿Õ");
+			rq.setStatusreson("å…¬å¸åç§°ä¸èƒ½ä¸ºç©º");
 			return rq;
 		}
 		if(applyInfo.getAgentuserid()==null||applyInfo.getAgentuserid()<=0){
-			rq.setStatusreson("´úÀíÉÌßŞÑ½ºÅ±ØĞëÌî");
+			rq.setStatusreson("ä»£ç†å•†å’¿å‘€å·å¿…é¡»å¡«");
 			return rq;
 		}
 
 		UAgentapply agentapply= agentapplyMapper.selectByPrimaryKey(applyInfo.getAgentuserid());
 		if(agentapply==null){
-			rq.setStatusreson("ÕÒ²»µ½ÏàÓ¦µÄ´úÀíÉÌĞÅÏ¢£¡");
+			rq.setStatusreson("æ‰¾ä¸åˆ°ç›¸åº”çš„ä»£ç†å•†ä¿¡æ¯ï¼");
 			return rq;
 		}
 		if(agentapply.getAgentuserid().longValue()==applyInfo.getBranchuserid()){
-			rq.setStatusreson("ÄúÒÑ¾­Ìá½»¹ı´úÀíÉêÇë£¬²»ÄÜÔÙÉêÇë·Öµê£¡");
+			rq.setStatusreson("æ‚¨å·²ç»æäº¤è¿‡ä»£ç†ç”³è¯·ï¼Œä¸èƒ½å†ç”³è¯·åˆ†åº—ï¼");
 			return rq;
 		}
-		//µ±Ç°ÓÃ»§ÒÑ¾­Ìá½»¹ı´úÀíÉêÇë
+		//å½“å‰ç”¨æˆ·å·²ç»æäº¤è¿‡ä»£ç†ç”³è¯·
 		UAgentapply agentBranchApply= agentapplyMapper.selectByPrimaryKey(applyInfo.getBranchuserid());
 		if(agentBranchApply!=null){
-			rq.setStatusreson("ÄúÒÑ¾­Ìá½»¹ı´úÀíÉêÇë£¬²»ÄÜÔÙÉêÇë·Öµê£¡");
+			rq.setStatusreson("æ‚¨å·²ç»æäº¤è¿‡ä»£ç†ç”³è¯·ï¼Œä¸èƒ½å†ç”³è¯·åˆ†åº—ï¼");
 			return rq;
 		}
 		List<Integer> agentArealist=getAgentAreaCodelist(agentapply.getArea());
@@ -320,15 +320,15 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			}
 		}
 		if(!isInArea){
-			rq.setStatusreson("¶Ô²»Æğ£¬ÃÅµê²»ÔÚ´úÀíÇøÓò£¡");
+			rq.setStatusreson("å¯¹ä¸èµ·ï¼Œé—¨åº—ä¸åœ¨ä»£ç†åŒºåŸŸï¼");
 			return rq; 
 		}
 		if(ObjectUtil.isEmpty(applyInfo.getUsername())){
-			rq.setStatusreson("ÁªÏµÈË±ØĞëÌî");
+			rq.setStatusreson("è”ç³»äººå¿…é¡»å¡«");
 			return rq;
 		} 
 		if(ObjectUtil.isEmpty(applyInfo.getBusinesslicense())){
-			rq.setStatusreson("ÓªÒµÖ´ÕÕ±ØĞëÌî");
+			rq.setStatusreson("è¥ä¸šæ‰§ç…§å¿…é¡»å¡«");
 			return rq;
 		} 
 		if(!ObjectUtil.validSqlStr(applyInfo.getBranchcompanyname())
@@ -340,7 +340,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 				||!ObjectUtil.validSqlStr(applyInfo.getTeamimg())
 				||!ObjectUtil.validSqlStr(applyInfo.getRemark())
 				){
-			rq.setStatusreson("´æÔÚ·Ç·¨×Ö·û");
+			rq.setStatusreson("å­˜åœ¨éæ³•å­—ç¬¦");
 			return rq;
 		}
 		applyInfo.setBranchuserid(userId);
@@ -352,16 +352,16 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			branchesMapper.insert(applyInfo);
 		}
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("Ìá½»³É¹¦£¬µÈ´ıÉóºË£¡"); 
+		rq.setStatusreson("æäº¤æˆåŠŸï¼Œç­‰å¾…å®¡æ ¸ï¼"); 
 		return rq;
 	}
 	
 	
 	/**
-	 * ´úÀíÉÌÉóºË
+	 * ä»£ç†å•†å®¡æ ¸
 	 * @param adminId
 	 * @param agentUserId
-	 * @param status 1Í¨¹ı²¢ÒÑ¾­½»·Ñ£¬2²»Í¨¹ı£¬3Í¨¹ı´ı½»·Ñ
+	 * @param status 1é€šè¿‡å¹¶å·²ç»äº¤è´¹ï¼Œ2ä¸é€šè¿‡ï¼Œ3é€šè¿‡å¾…äº¤è´¹
 	 * @param msg
 	 * @return
 	 */
@@ -370,15 +370,15 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		UAgentapply apply= agentapplyMapper.selectByPrimaryKey(agentUserId); 
 		if(apply!=null){
 			apply.setStatus(status); 
-			apply.setProcesstime(new Date());//´¦ÀíÊ±¼ä
+			apply.setProcesstime(new Date());//å¤„ç†æ—¶é—´
 			apply.setReason(msg);
 			agentapplyMapper.updateByPrimaryKeySelective(apply);
-			if(status==Integer.parseInt(AgentStatusEnum.ok.toString())){//³ÉÎª´úÀí
+			if(status==Integer.parseInt(AgentStatusEnum.ok.toString())){//æˆä¸ºä»£ç†
 				RAreaplans areaplans= areaplansMapper.selectByPrimaryKey(apply.getArea());
-				if(areaplans!=null&&areaplans.getAreaid()!=null){//´úÀíÇøÓò±íÓĞÊı¾İ
+				if(areaplans!=null&&areaplans.getAreaid()!=null){//ä»£ç†åŒºåŸŸè¡¨æœ‰æ•°æ®
 					if(areaplans.getIsagent()!=null&&areaplans.getIsagent()>0){
 						rq.setStatu(ReturnStatus.SystemError);
-						rq.setStatusreson("¸ÃÇøÓòÒÑ¾­ÓĞ´úÀí("+areaplans.getAgentuserid()+")");
+						rq.setStatusreson("è¯¥åŒºåŸŸå·²ç»æœ‰ä»£ç†("+areaplans.getAgentuserid()+")");
 						return rq;
 					}
 					List<RAreaplans> arealist= agentAreaDao.findRAreaplansByAreaId(areaplans.getAreaid());
@@ -390,18 +390,18 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 						}
 					}else {
 						rq.setStatu(ReturnStatus.SystemError);
-						rq.setStatusreson("ÏµÍ³´íÎó£¨101£©");
+						rq.setStatusreson("ç³»ç»Ÿé”™è¯¯ï¼ˆ101ï¼‰");
 					}
-				}else {//²»ÔÚ¹æ»®ÄÚµÄÇøÓò£¨×îµÍ´úÀí£©
+				}else {//ä¸åœ¨è§„åˆ’å†…çš„åŒºåŸŸï¼ˆæœ€ä½ä»£ç†ï¼‰
 					RAreas area= regionMapper.getAreaByCode(apply.getArea());
 					if(area!=null){
-						//´úÀíµ¥Ôª²¹³ä
+						//ä»£ç†å•å…ƒè¡¥å……
 						RAreaplansagentprice areaPlanModel=new RAreaplansagentprice();
 						areaPlanModel.setAgentamount(0D);
 						areaPlanModel.setStep(4);
 						areaPlanModel.setPrepayamount(1000D);
 						areaplansagentpriceMapper.insertResultId(areaPlanModel);
-						//´úÀíÇøÓò¸üĞÂ
+						//ä»£ç†åŒºåŸŸæ›´æ–°
 						RAreaplans areaMod=new RAreaplans();
 						areaMod.setAreacode(apply.getArea());
 						areaMod.setAreaid(areaPlanModel.getAreaid());
@@ -412,19 +412,19 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 					}
 				}
 				
-				//´úÀíÉÌ ÉêÇëĞÅÏ¢¸´ÖÆµ½ÕıÊ½´úÀí±í
+				//ä»£ç†å•† ç”³è¯·ä¿¡æ¯å¤åˆ¶åˆ°æ­£å¼ä»£ç†è¡¨
 				this.addAgentInfo(apply);
 				rq.setStatu(ReturnStatus.Success);
-				rq.setStatusreson("ÉóºË³É¹¦");
+				rq.setStatusreson("å®¡æ ¸æˆåŠŸ");
 			}else{
 				rq.setStatu(ReturnStatus.Success);
-				rq.setStatusreson("¾Ü¾ø³É¹¦");
+				rq.setStatusreson("æ‹’ç»æˆåŠŸ");
 			}
 			
 			
 		}else {
 			rq.setStatu(ReturnStatus.SystemError);
-			rq.setStatusreson("ÕÒ²»µ½ÉêÇë×ÊÁÏ");
+			rq.setStatusreson("æ‰¾ä¸åˆ°ç”³è¯·èµ„æ–™");
 		} 
 		return rq;
 	}
@@ -432,7 +432,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 	
 	
 	/**
-	 * Ó°Â¥ÉóºË
+	 * å½±æ¥¼å®¡æ ¸
 	 */
 	public ReturnModel audit_BranchApply(Long adminId,Long branchUserId,int status,String msg){
 		ReturnModel rq=new ReturnModel();
@@ -447,7 +447,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 				
 				UBranchusers branchuser = branchuserMapper.selectByPrimaryKey(branchUserId);
 				if(branchuser==null){
-					//Ó°Â¥ÄÚ²¿ÕËºÅÂ¼Èë
+					//å½±æ¥¼å†…éƒ¨è´¦å·å½•å…¥
 					branchuser=new UBranchusers();
 					branchuser.setAgentuserid(apply.getAgentuserid());
 					branchuser.setBranchuserid(apply.getAgentuserid());
@@ -463,82 +463,82 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 				}				
 			}
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("ÉèÖÃ³É¹¦");
+			rq.setStatusreson("è®¾ç½®æˆåŠŸ");
 		} else {
 			rq.setStatu(ReturnStatus.SystemError);
-			rq.setStatusreson("ÕÒ²»µ½ÉêÇë¼ÇÂ¼");
+			rq.setStatusreson("æ‰¾ä¸åˆ°ç”³è¯·è®°å½•");
 		} 
 		return rq;
 	}
 	
 	/**
-	 * ´úÀíÉÌÍË×¤
+	 * ä»£ç†å•†é€€é©»
 	 */
 	public ReturnModel agentTuiZhu(String adminname,Long adminId,Long agentUserId){
 		ReturnModel rq=new ReturnModel();
 		UAgents agent=agentsMapper.selectByPrimaryKey(agentUserId);
 		if(agent!=null){
-			//1.´úÀíÉÌµÄÓ°Â¥ÄÚ²¿Ô±¹¤Éí·İÇå³ı ,Çå³ıÉí·İºóÉ¾³ı
+			//1.ä»£ç†å•†çš„å½±æ¥¼å†…éƒ¨å‘˜å·¥èº«ä»½æ¸…é™¤ ,æ¸…é™¤èº«ä»½ååˆ é™¤
 			List<UBranchusers>  branchusersList=branchuserMapper.findMemberslistByAgentUserId(agentUserId);
 			for (UBranchusers branchuser : branchusersList) {
 				userBasic.removeUserIdentity(branchuser.getUserid(), UserIdentityEnums.salesman);
 				branchuserMapper.deleteByPrimaryKey(branchuser.getUserid());
 			}
-			//2.´úÀíÇøÓòÇåÀí
+			//2.ä»£ç†åŒºåŸŸæ¸…ç†
 			List<RAreaplans> areaplansList=agentAreaDao.findRAreaplansByAgentUserId(agentUserId);
 			for (RAreaplans areaplan : areaplansList) {
 				areaplan.setAgentuserid(null);
 				areaplan.setIsagent(null);
 				areaplansMapper.updateByPrimaryKey(areaplan);
 			}
-			//3.Ó°Â¥ĞÅÏ¢±íÇåÀí (u_branches)
+			//3.å½±æ¥¼ä¿¡æ¯è¡¨æ¸…ç† (u_branches)
 			List<UBranchVo> branchList=agentDao.findUBranchVoListByAgentUserId(agentUserId);
 			for (UBranchVo branch : branchList) {
 				
-				//3.1ÇåÀí´úÀíÉÌÔË·ÑÕË»§±í
+				//3.1æ¸…ç†ä»£ç†å•†è¿è´¹è´¦æˆ·è¡¨
 				UBranchtransaccounts branchTransAccount=transaccountsMapper.selectByPrimaryKey(branch.getBranchuserid());
 				if(branchTransAccount!=null){
 					branchTransAccount.setAvailableamount(0.0);
 					transaccountsMapper.updateByPrimaryKey(branchTransAccount);
 				}
-				//3.2. Çå³ı´úÀíÉÌÕË»§¿ÉÓÃÓà¶î
+				//3.2. æ¸…é™¤ä»£ç†å•†è´¦æˆ·å¯ç”¨ä½™é¢
 				UAccounts count=accountsMapper.selectByPrimaryKey(branch.getBranchuserid());
 				if(count!=null){
 					count.setAvailableamount(0.0);
 					accountsMapper.updateByPrimaryKey(count);
 				}	
-				//3.3ĞŞ¸ÄÓ°Â¥×´Ì¬
+				//3.3ä¿®æ”¹å½±æ¥¼çŠ¶æ€
 				branch.setStatus(Integer.parseInt(BranchStatusEnum.tuizhu.toString()));
-				//3.4ĞŞ¸ÄÓ°Â¥ÓÃ»§Éí·İ
+				//3.4ä¿®æ”¹å½±æ¥¼ç”¨æˆ·èº«ä»½
 				userBasic.removeUserIdentity(branch.getBranchuserid(), UserIdentityEnums.branch);
 				branchesMapper.updateByPrimaryKey(branch);
 			}
 					
 			
-			//4.ĞŞ¸Ä´úÀíÉÌµÄ×´Ì¬¼°ÓÃ»§Éí·İ
+			//4.ä¿®æ”¹ä»£ç†å•†çš„çŠ¶æ€åŠç”¨æˆ·èº«ä»½
 			userBasic.removeUserIdentity(agentUserId, UserIdentityEnums.agent);			
 			agent.setStatus(Integer.parseInt(AgentStatusEnum.tuizhu.toString()));		
 			agentsMapper.updateByPrimaryKeySelective(agent);
 			
-			//5.ÇåÀí´úÀíÉêÇë±í
+			//5.æ¸…ç†ä»£ç†ç”³è¯·è¡¨
 			UAgentapply agentApply=agentapplyMapper.selectByPrimaryKey(agentUserId);
 			if(agentApply!=null){
 				agentApply.setStatus(Integer.parseInt(AgentStatusEnum.tuizhu.toString()));
 				agentapplyMapper.updateByPrimaryKeySelective(agentApply);
 			}
-			//6.²åÈëctsÈÕÖ¾±í
+			//6.æ’å…¥ctsæ—¥å¿—è¡¨
 			UAdminactionlogs log=new UAdminactionlogs();
-			log.setContent("´úÀíÉÌÍË×¤²Ù×÷£¬agentUserId:"+agentUserId);
+			log.setContent("ä»£ç†å•†é€€é©»æ“ä½œï¼ŒagentUserId:"+agentUserId);
 			log.setCreatetime(new Date());
 			log.setType(Integer.parseInt(AdminActionType.agent_quit.toString()));
 			log.setUserid(adminId);
 			log.setUsername(adminname);
 			adminlogMapper.insert(log);
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("ÍË×¤³É¹¦");
+			rq.setStatusreson("é€€é©»æˆåŠŸ");
 		} else {
 			rq.setStatu(ReturnStatus.SystemError);
-			rq.setStatusreson("ÕÒ²»µ½´úÀíÉÌ¼ÇÂ¼");
+			rq.setStatusreson("æ‰¾ä¸åˆ°ä»£ç†å•†è®°å½•");
 		} 
 		return rq;
 	}
@@ -546,12 +546,12 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 
 
 	/**
-	 * ´úÀíÉÌÍ¨¹ıÉóºË£¬Â¼Èë´úÀíÉÌĞÅÏ¢¡¢´úÀíÉÌÓ°Â¥ĞÅÏ¢£¬´úÀíÉÌÉí·İ±êÊ¶
+	 * ä»£ç†å•†é€šè¿‡å®¡æ ¸ï¼Œå½•å…¥ä»£ç†å•†ä¿¡æ¯ã€ä»£ç†å•†å½±æ¥¼ä¿¡æ¯ï¼Œä»£ç†å•†èº«ä»½æ ‡è¯†
 	 * @param apply
 	 */
 	public void addAgentInfo(UAgentapply apply){
 		if(apply!=null){
-			//´úÀíÉÌÂ¼Èë
+			//ä»£ç†å•†å½•å…¥
 			UAgents agentModel=agentsMapper.selectByPrimaryKey(apply.getAgentuserid());
 			if(agentModel==null){
 				agentModel=new UAgents();
@@ -581,10 +581,10 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			}
 			
 			
-			//¸üĞÂ´úÀíÉí·İ±êÊ¶
+			//æ›´æ–°ä»£ç†èº«ä»½æ ‡è¯†
 			userBasic.addUserIdentity(apply.getAgentuserid(),UserIdentityEnums.agent); 
 			
-			//Ó°Â¥Â¼Èë
+			//å½±æ¥¼å½•å…¥
 			UBranches branch= branchesMapper.selectByPrimaryKey(apply.getAgentuserid());
 			if(branch==null){
 				branch=new UBranches();
@@ -608,7 +608,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			branch.setProcesstime(new Date());
 			branchesMapper.insertSelective(branch);
 			
-			//Ó°Â¥ÄÚ²¿ÕËºÅÂ¼Èë
+			//å½±æ¥¼å†…éƒ¨è´¦å·å½•å…¥
 			UBranchusers branchuser=branchuserMapper.selectByPrimaryKey(apply.getAgentuserid());
 			if(branchuser==null){
 				branchuser=new UBranchusers();
@@ -624,7 +624,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 					
 			
 			
-			//¸üĞÂ´úÀíÉí·İ±êÊ¶
+			//æ›´æ–°ä»£ç†èº«ä»½æ ‡è¯†
 			userBasic.addUserIdentity(apply.getAgentuserid(),UserIdentityEnums.branch);  
 		}
 	}
@@ -644,14 +644,14 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			map.put("applyInfo", agentapply);
 			if(agentapply.getStatus()!=null){
 				if(agentapply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.ok.toString())){
-					map.put("msg", "ÒÑ¾­³ÉÎª´úÀíÉÌ");
+					map.put("msg", "å·²ç»æˆä¸ºä»£ç†å•†");
 				}else if (agentapply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.applying.toString())) {
-					map.put("msg", "ÉêÇëÖĞ");
+					map.put("msg", "ç”³è¯·ä¸­");
 				}else if (agentapply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.no.toString())) {
-					map.put("msg", "ÉêÇë²»Í¨¹ı¡£");
+					map.put("msg", "ç”³è¯·ä¸é€šè¿‡ã€‚");
 				}
 			}else {
-				map.put("msg", "ÉêÇëÖĞ");
+				map.put("msg", "ç”³è¯·ä¸­");
 			}
 		}else {
 			map.put("isApplyed", 0);
@@ -678,14 +678,14 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			map.put("applyInfo", branch);
 			if(branch.getStatus()!=null){
 				if(branch.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.ok.toString())){
-					map.put("msg", "ÒÑ¾­³ÉÎª´úÀíÉÌ");
+					map.put("msg", "å·²ç»æˆä¸ºä»£ç†å•†");
 				}else if (branch.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.applying.toString())) {
-					map.put("msg", "ÉêÇëÖĞ");
+					map.put("msg", "ç”³è¯·ä¸­");
 				}else if (branch.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.no.toString())) {
-					map.put("msg", "ÉêÇë²»Í¨¹ı¡£");
+					map.put("msg", "ç”³è¯·ä¸é€šè¿‡ã€‚");
 				}
 			}else {
-				map.put("msg", "ÉêÇëÖĞ");
+				map.put("msg", "ç”³è¯·ä¸­");
 			}
 		}else {
 			map.put("isApplyed", 0);
@@ -698,7 +698,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 	
 	private List<String> getAgentArealist(Integer areaCode){
 		RAreaplans areaplans= areaplansMapper.selectByPrimaryKey(areaCode);
-		if(areaplans!=null){//ÇøÓòÔÚ¹æ»®µ¥ÔªÄÚ
+		if(areaplans!=null){//åŒºåŸŸåœ¨è§„åˆ’å•å…ƒå†…
 			List<RAreaplans> arealist= agentAreaDao.findRAreaplansByAreaId(areaplans.getAreaid());
 			if(arealist!=null&&arealist.size()>0){
 				List<String> areasList=new ArrayList<String>();
@@ -724,13 +724,13 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		
 	}
 	/**
-	 * ´úÀíÇøÓòcodelist
+	 * ä»£ç†åŒºåŸŸcodelist
 	 * @param areaCode
 	 * @return
 	 */
 	private List<Integer> getAgentAreaCodelist(Integer areaCode){
 		RAreaplans areaplans= areaplansMapper.selectByPrimaryKey(areaCode);
-		if(areaplans!=null){//ÇøÓòÔÚ¹æ»®µ¥ÔªÄÚ
+		if(areaplans!=null){//åŒºåŸŸåœ¨è§„åˆ’å•å…ƒå†…
 			List<RAreaplans> arealist= agentAreaDao.findRAreaplansByAreaId(areaplans.getAreaid());
 			if(arealist!=null&&arealist.size()>0){
 				List<Integer> areasList=new ArrayList<Integer>();
@@ -747,7 +747,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		ReturnModel rqModel=new ReturnModel();
 		Map<String, Object> map=new HashMap<String, Object>();
 		RAreaplans areaplans= areaplansMapper.selectByPrimaryKey(areaCode);
-		if(areaplans!=null){//ÇøÓòÔÚ¹æ»®µ¥ÔªÄÚ
+		if(areaplans!=null){//åŒºåŸŸåœ¨è§„åˆ’å•å…ƒå†…
 			RAreaplansagentprice areaplansagentprice= areaplansagentpriceMapper.selectByPrimaryKey(areaplans.getAreaid());
 			List<RAreaplans> arealist= agentAreaDao.findRAreaplansByAreaId(areaplans.getAreaid());
 			if(arealist!=null&&arealist.size()>0){
@@ -762,23 +762,23 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 					map.put("areas", areasList);
 				}
 				if(areaplansagentprice!=null){
-					map.put("preAmount", areaplansagentprice.getPrepayamount());//Ô¤´æ·ÑÓÃ
-					map.put("agentAmount", areaplansagentprice.getAgentamount());//´úÀí·Ñ
+					map.put("preAmount", areaplansagentprice.getPrepayamount());//é¢„å­˜è´¹ç”¨
+					map.put("agentAmount", areaplansagentprice.getAgentamount());//ä»£ç†è´¹
 				}
 				rqModel.setStatu(ReturnStatus.Success);
 				rqModel.setBasemodle(map);
 			} 
 		}else {
-			//ÕÒµ½µØÀíÇøÓò£¨ÇøÏØĞÅÏ¢£©
+			//æ‰¾åˆ°åœ°ç†åŒºåŸŸï¼ˆåŒºå¿ä¿¡æ¯ï¼‰
 			RAreas areas= regionMapper.getAreaByCode(areaCode);
 			if(areas!=null){
-				//´úÀí·ÑÓÃ²åÈë
+				//ä»£ç†è´¹ç”¨æ’å…¥
 				RAreaplansagentprice agenPrice=new RAreaplansagentprice();
 				agenPrice.setPrepayamount(1000d);
 				agenPrice.setStep(4);
 				agenPrice.setAgentamount(0d);
 				areaplansagentpriceMapper.insertResultId(agenPrice);
-				//ĞÂÔö´úÀíÇøÓò£¨4Ïß³ÇÊĞ¼°ÒÔÏÂ£©
+				//æ–°å¢ä»£ç†åŒºåŸŸï¼ˆ4çº¿åŸå¸‚åŠä»¥ä¸‹ï¼‰
 				RAreaplans plansArea=new RAreaplans();
 				plansArea.setAreacode(areaCode);
 				plansArea.setAreaid(agenPrice.getAreaid());
@@ -789,20 +789,20 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 				List<String> areasList=new ArrayList<String>();
 				areasList.add(areas.getArea());
 				map.put("areas", areasList);
-				map.put("preAmount", agenPrice.getPrepayamount());//Ô¤´æ·ÑÓÃ
-				map.put("agentAmount", agenPrice.getAgentamount());//´úÀí·Ñ
+				map.put("preAmount", agenPrice.getPrepayamount());//é¢„å­˜è´¹ç”¨
+				map.put("agentAmount", agenPrice.getAgentamount());//ä»£ç†è´¹
 				
 				rqModel.setStatu(ReturnStatus.Success);
 				rqModel.setBasemodle(map);
 			}else {
 				rqModel.setStatu(ReturnStatus.ParamError);
-				rqModel.setStatusreson("²»´æÔÚµÄ´úÀíÇøÓò");
+				rqModel.setStatusreson("ä¸å­˜åœ¨çš„ä»£ç†åŒºåŸŸ");
 			}
 		}
 		return rqModel;
 	}
 	/**
-	 * ĞŞ¸Ä´úÀíÉÌÊÕ»õµØÖ·
+	 * ä¿®æ”¹ä»£ç†å•†æ”¶è´§åœ°å€
 	 * @param branchUserId
 	 * @return
 	 */
@@ -814,18 +814,18 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		branch.setPhone(phone);
 		branchesMapper.updateByPrimaryKeySelective(branch);
 		rqModel.setStatu(ReturnStatus.Success);
-		rqModel.setStatusreson("ĞŞ¸ÄÊÕ»õµØÖ·³É¹¦£¡");
+		rqModel.setStatusreson("ä¿®æ”¹æ”¶è´§åœ°å€æˆåŠŸï¼");
 		return rqModel;		
 	}
 	
 	
 	/**
-	 * »ñÈ¡´úÀíÉÌĞÅÏ¢
+	 * è·å–ä»£ç†å•†ä¿¡æ¯
 	 * @param branchUserId
 	 * @return
 	 */
 	public UBranchVo getBranchInfo(Long branchUserId){	
-		//¼ÓÈë»º´æ°ë¸öĞ¡Ê±
+		//åŠ å…¥ç¼“å­˜åŠä¸ªå°æ—¶
 		String keyString="ubranchvo_"+branchUserId;
 		UBranchVo branch=(UBranchVo) RedisUtil.getObject(keyString);
 		if(branch==null){
@@ -841,7 +841,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		return branch;		
 	}
 	/**
-	 * Ìí¼ÓÒâ¼û·´À¡
+	 * æ·»åŠ æ„è§åé¦ˆ
 	 * @param branchUserId
 	 * @param content
 	 * @return
@@ -855,12 +855,12 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		userresponseMapper.insertSelective(response);
 		rqModel.setBasemodle(response);
 		rqModel.setStatu(ReturnStatus.Success);
-		rqModel.setStatusreson("Ìí¼ÓÒâ¼û·´À¡³É¹¦£¡");
+		rqModel.setStatusreson("æ·»åŠ æ„è§åé¦ˆæˆåŠŸï¼");
 		return rqModel;		
 	}
 	
 	/**
-	 * »ñÈ¡ÏµÍ³ÏûÏ¢Í¨ÖªÁĞ±í
+	 * è·å–ç³»ç»Ÿæ¶ˆæ¯é€šçŸ¥åˆ—è¡¨
 	 * @param branchUserId
 	 * @param content
 	 * @return
@@ -872,7 +872,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		PageInfo<SysMessage> reuslt=new PageInfo<SysMessage>(messagelist); 
 		rqModel.setBasemodle(reuslt);
 		rqModel.setStatu(ReturnStatus.Success);
-		rqModel.setStatusreson("»ñÈ¡ÏµÍ³ÏûÏ¢Í¨ÖªÁĞ±í³É¹¦£¡");
+		rqModel.setStatusreson("è·å–ç³»ç»Ÿæ¶ˆæ¯é€šçŸ¥åˆ—è¡¨æˆåŠŸï¼");
 		return rqModel;		
 	}
 	

@@ -28,12 +28,12 @@ import com.bbyiya.web.base.SSOController;
 @RequestMapping(value = "/login")
 public class LoginMgtController extends SSOController {
 	/**
-	 * µÇÂ½¡¢×¢²á service
+	 * ç™»é™†ã€æ³¨å†Œ service
 	 */ 
 	@Resource(name = "userLoginService")
 	private IUserLoginService loginBaseService; 
 	/**
-	 * µÇÂ½¡¢×¢²á service
+	 * ç™»é™†ã€æ³¨å†Œ service
 	 */
 	@Resource(name = "pic_userMgtService")
 	private IPic_UserMgtService loginService;
@@ -41,7 +41,7 @@ public class LoginMgtController extends SSOController {
 	private ULoginlogsMapper loginLogMapper;
 	
 	/**
-	 * A05 »ñÈ¡ÓÃ»§µÇÂ¼ĞÅÏ¢
+	 * A05 è·å–ç”¨æˆ·ç™»å½•ä¿¡æ¯
 	 * 
 	 * @return
 	 * @throws Exception
@@ -56,13 +56,13 @@ public class LoginMgtController extends SSOController {
 			rq.setBasemodle(user);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ½¹ıÆÚ£¬ÇëÖØĞÂµÇÂ½£¡");
+			rq.setStatusreson("ç™»é™†è¿‡æœŸï¼Œè¯·é‡æ–°ç™»é™†ï¼");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * ÊÖ»úºÅµÇÂ½
+	 * æ‰‹æœºå·ç™»é™†
 	 * @param phone
 	 * @param pwd
 	 * @return
@@ -79,7 +79,7 @@ public class LoginMgtController extends SSOController {
 	}
 	
 	/**
-	 * A01 µÚÈı·½µÇÂ½¡¢×¢²á
+	 * A01 ç¬¬ä¸‰æ–¹ç™»é™†ã€æ³¨å†Œ
 	 * 
 	 * @param headImg
 	 * @param loginType
@@ -98,7 +98,7 @@ public class LoginMgtController extends SSOController {
 		if (!ObjectUtil.validSqlStr(headImg) || !ObjectUtil.validSqlStr(nickName) || !ObjectUtil.validSqlStr(openId)) {
 			ReturnModel rqModel = new ReturnModel();
 			rqModel.setStatu(ReturnStatus.ParamError_2);
-			rqModel.setStatusreson("²ÎÊıÓĞ·Ç·¨×Ö·û");
+			rqModel.setStatusreson("å‚æ•°æœ‰éæ³•å­—ç¬¦");
 			return JsonUtil.objectToJsonStr(rqModel);
 		}
 		OtherLoginParam param = new OtherLoginParam();

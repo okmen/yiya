@@ -33,7 +33,7 @@ public class ProductController extends SSOController {
 	private PScenesMapper sceneMapper;
 	
 	/**
-	 * P01 ³¡¾°ÁĞ±í
+	 * P01 åœºæ™¯åˆ—è¡¨
 	 * @param type
 	 * @param code
 	 * @return
@@ -51,13 +51,13 @@ public class ProductController extends SSOController {
 			rq.setBasemodle(scenelist);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * P02 Ïà²áÁĞ±í
+	 * P02 ç›¸å†Œåˆ—è¡¨
 	 * @return
 	 * @throws Exception
 	 */
@@ -79,13 +79,13 @@ public class ProductController extends SSOController {
 			rq.setBasemodle(list);    
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * P03 ²úÆ·ÏêÇé/Ïà²áÏêÇé
+	 * P03 äº§å“è¯¦æƒ…/ç›¸å†Œè¯¦æƒ…
 	 * @return
 	 * @throws Exception
 	 */
@@ -99,7 +99,7 @@ public class ProductController extends SSOController {
 			rq.setBasemodle(productService.getProductResult(pid));   
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
@@ -119,13 +119,13 @@ public class ProductController extends SSOController {
 			rq= productService.find_previewsImg(styleId); 
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * »ñÈ¡¿îÊ½ÏêÇé
+	 * è·å–æ¬¾å¼è¯¦æƒ…
 	 * @param styleId
 	 * @return
 	 * @throws Exception
@@ -139,13 +139,13 @@ public class ProductController extends SSOController {
 			rq=productService.getStyleInfo(styleId);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * »ñÈ¡ÖÆ×÷Î¨Ò»ºÅ
+	 * è·å–åˆ¶ä½œå”¯ä¸€å·
 	 * @param pid
 	 * @return
 	 * @throws Exception
@@ -160,13 +160,13 @@ public class ProductController extends SSOController {
 			rq.setBasemodle(getIndex(user.getUserId(),pid));   
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * »ñÈ¡ÖÆ×÷Î¨Ò»ºÅ
+	 * è·å–åˆ¶ä½œå”¯ä¸€å·
 	 * @param userId
 	 * @param productId
 	 * @return

@@ -32,7 +32,7 @@ public class MyProductController extends SSOController {
 	private PMyproductdetailsMapper detaiMapper;
 
 	/**
-	 * P08 ±£´æÎÒµÄ×÷Æ·(ĞÂÔö/ĞŞ¸Ä) Ã¿´ÎĞŞ¸Ä¶¼ÊÇÏÈÇå³ıÔ­ÓĞµÄ£¬ÔÙĞÂÔö
+	 * P08 ä¿å­˜æˆ‘çš„ä½œå“(æ–°å¢/ä¿®æ”¹) æ¯æ¬¡ä¿®æ”¹éƒ½æ˜¯å…ˆæ¸…é™¤åŸæœ‰çš„ï¼Œå†æ–°å¢
 	 * 
 	 * @param myproductJson 
 	 * @return
@@ -51,24 +51,24 @@ public class MyProductController extends SSOController {
 			if (param != null) {
 				if (param.getDetails() != null && param.getDetails().size() > 12) {
 					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("²»ÄÜ³¬¹ı12Ìõ¼ÇÂ¼");
+					rq.setStatusreson("ä¸èƒ½è¶…è¿‡12æ¡è®°å½•");
 					return JsonUtil.objectToJsonStr(rq);
 				}
 //				rq = proService.saveOrEdit_MyProducts(user.getUserId(), param);
 				rq=proService.Modify_MyProducts(user.getUserId(), param);
 			} else {
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("²ÎÊıÓĞÎó");
+				rq.setStatusreson("å‚æ•°æœ‰è¯¯");
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
 	/**
-	 * P08-1 ĞŞ¸ÄÎÒµÄ×÷Æ·£© Ö»×öĞŞ¸Ä²Ù×÷£¨¸ù¾İÖ÷¼üIdĞŞ¸Ä£©
+	 * P08-1 ä¿®æ”¹æˆ‘çš„ä½œå“ï¼‰ åªåšä¿®æ”¹æ“ä½œï¼ˆæ ¹æ®ä¸»é”®Idä¿®æ”¹ï¼‰
 	 * 
 	 * @param myproductJson
 	 * @return
@@ -87,25 +87,25 @@ public class MyProductController extends SSOController {
 			if (param != null) {
 				if (param.getDetails() != null && param.getDetails().size() > 12) {
 					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("²»ÄÜ³¬¹ı12Ìõ¼ÇÂ¼");
+					rq.setStatusreson("ä¸èƒ½è¶…è¿‡12æ¡è®°å½•");
 					return JsonUtil.objectToJsonStr(rq);
 				}
 //				rq = proService.Edit_MyProducts(user.getUserId(), param);
 				rq=proService.Modify_MyProducts(user.getUserId(), param);
 			} else {
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("²ÎÊıÓĞÎó");
+				rq.setStatusreson("å‚æ•°æœ‰è¯¯");
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
 	
 	/**
-	 * ÎÒµÄ×÷Æ·ÁĞ±í
+	 * æˆ‘çš„ä½œå“åˆ—è¡¨
 	 * 
 	 * @param myproductJson
 	 * @return
@@ -120,13 +120,13 @@ public class MyProductController extends SSOController {
 			rq = proService.findMyProlist(user.getUserId());
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
 	/**
-	 * P10 ×÷Æ·ÏêÇé£¨ÓÃ»§¹ÜÀí¡¢±à¼­Ò³£©
+	 * P10 ä½œå“è¯¦æƒ…ï¼ˆç”¨æˆ·ç®¡ç†ã€ç¼–è¾‘é¡µï¼‰
 	 * 
 	 * @param cartId
 	 * @return
@@ -140,15 +140,15 @@ public class MyProductController extends SSOController {
 		if (user != null) {
 //			rq = proService.getMyProductInfo(user.getUserId(), cartId);
 			rq=proService.getMyProductInfoNew(user.getUserId(),cartId); 
-		} else {// ·ÇµÇÂ¼·ÖÏíÒ³
+		} else {// éç™»å½•åˆ†äº«é¡µ
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("Î´µÇÂ¼");
+			rq.setStatusreson("æœªç™»å½•");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
 	/**
-	 * P14 ×÷Æ·ÏêÇé£¨Í¨¹ı²úÆ·Id»ñÈ¡£©
+	 * P14 ä½œå“è¯¦æƒ…ï¼ˆé€šè¿‡äº§å“Idè·å–ï¼‰
 	 * 
 	 * @param productId
 	 * @return
@@ -161,15 +161,15 @@ public class MyProductController extends SSOController {
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
 			rq = proService.getMyProductByProductId(user.getUserId(), productId);
-		} else {// ·ÇµÇÂ¼·ÖÏíÒ³
+		} else {// éç™»å½•åˆ†äº«é¡µ
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("Î´µÇÂ¼");
+			rq.setStatusreson("æœªç™»å½•");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
 	/**
-	 * ÎÒµÄ×÷Æ·£¬·ÖÏíÒ³
+	 * æˆ‘çš„ä½œå“ï¼Œåˆ†äº«é¡µ
 	 * 
 	 * @param cartId
 	 * @return
@@ -187,13 +187,13 @@ public class MyProductController extends SSOController {
 //				RedisUtil.setObject(key, rq, 900);
 //			}
 //		}
-		//ä¯ÀÀÁ¿
+		//æµè§ˆé‡
 //		myproductCount(cartId);
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
 	/**
-	 * P11 ÎÒµÄ×÷Æ·-É¾³ıµ¥¸ö³¡¾°ÕÕÆ¬
+	 * P11 æˆ‘çš„ä½œå“-åˆ é™¤å•ä¸ªåœºæ™¯ç…§ç‰‡
 	 * 
 	 * @param pdid
 	 * @return
@@ -208,13 +208,13 @@ public class MyProductController extends SSOController {
 			rq = proService.del_myProductDetail(user.getUserId(), pdid);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
 	/**
-	 * P09-01 É¾³ıÎÒµÄ×÷Æ·
+	 * P09-01 åˆ é™¤æˆ‘çš„ä½œå“
 	 * 
 	 * @param pdid
 	 * @return
@@ -229,7 +229,7 @@ public class MyProductController extends SSOController {
 			rq = proService.deleMyProduct(user.getUserId(), cartId);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
@@ -240,7 +240,7 @@ public class MyProductController extends SSOController {
 	 */
 	private static String cART_REDIS_BASE="yiya_myproduct21070217";
 	/**
-	 * ¼ÇÂ¼×÷Æ·µÄä¯ÀÀÁ¿
+	 * è®°å½•ä½œå“çš„æµè§ˆé‡
 	 * @param cartId
 	 */
 	public void myproductCount(Long cartId) {
@@ -267,7 +267,7 @@ public class MyProductController extends SSOController {
 	
 	
 	/**
-	 * ×÷Æ·ä¯ÀÀÁ¿
+	 * ä½œå“æµè§ˆé‡
 	 * @param cartId
 	 * @return
 	 * @throws Exception

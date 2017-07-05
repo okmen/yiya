@@ -11,13 +11,13 @@ import com.bbyiya.pic.vo.agent.UBranchVo;
 public interface IPic_AgentMgtDao {
 
 	/**
-	 *  »ñÈ¡´úÀíÉÌÉêÇëĞÅÏ¢
+	 *  è·å–ä»£ç†å•†ç”³è¯·ä¿¡æ¯
 	 * @param agentuserid
 	 * @return
 	 */
 	UAgentApplyVo getUAgentapplyVOByAgentUserId(Long agentuserid);
 	/**
-	 * »ñÈ¡Ó°Â¥ĞÅÏ¢
+	 * è·å–å½±æ¥¼ä¿¡æ¯
 	 * @param branchuserid
 	 * @return
 	 */
@@ -25,13 +25,13 @@ public interface IPic_AgentMgtDao {
 	
 	List<UAgentApplyVo> findUAgentapplyVOList(AgentSearchParam param); 
 	/**
-	 * »ñÈ¡Ó°Â¥ÁĞ±í
+	 * è·å–å½±æ¥¼åˆ—è¡¨
 	 * @param param
 	 * @return
 	 */
 	List<UBranchVo> findUBranchVoList(AgentSearchParam param);
 	/**
-	 * ¸ù¾İ´úÀíÉÌID»ñÈ¡Ó°Â¥ÁĞ±í
+	 * æ ¹æ®ä»£ç†å•†IDè·å–å½±æ¥¼åˆ—è¡¨
 	 * @param agentUserId
 	 * @return
 	 */

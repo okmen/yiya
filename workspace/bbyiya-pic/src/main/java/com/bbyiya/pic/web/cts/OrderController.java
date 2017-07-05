@@ -35,7 +35,7 @@ public class OrderController  extends SSOController {
 	private ICts_OrderManageService ctsOrderService;
 	
 	/**
-	 * O06¶©µ¥ÁĞ±í²éÑ¯
+	 * O06è®¢å•åˆ—è¡¨æŸ¥è¯¢
 	 * @param myproductJson
 	 * @return
 	 * @throws Exception
@@ -70,7 +70,7 @@ public class OrderController  extends SSOController {
 			if(ObjectUtil.parseInt(isDownload)>0){
 				if(ObjectUtil.isEmpty(fileDir)){
 					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("ÇëÊäÈëÒª±£´æµ½±¾µØµÄÎÄ¼şÂ·¾¶");
+					rq.setStatusreson("è¯·è¾“å…¥è¦ä¿å­˜åˆ°æœ¬åœ°çš„æ–‡ä»¶è·¯å¾„");
 					return JsonUtil.objectToJsonStr(rq);
 				}
 				if(rq.getStatu().equals(ReturnStatus.Success)){
@@ -79,16 +79,16 @@ public class OrderController  extends SSOController {
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * »ñÈ¡Ó°Â¥·¢Õ¹µÄÓÃ»§ÏÂµÄ¶©µ¥ÁĞ±í
-	 * @param branchuserId  Ó°Â¥ID
-	 * @param userorderid	¶©µ¥ID
-	 * @param status	//¶©µ¥×´Ì¬
+	 * è·å–å½±æ¥¼å‘å±•çš„ç”¨æˆ·ä¸‹çš„è®¢å•åˆ—è¡¨
+	 * @param branchuserId  å½±æ¥¼ID
+	 * @param userorderid	è®¢å•ID
+	 * @param status	//è®¢å•çŠ¶æ€
 	 * @param index		
 	 * @param size
 	 * @return
@@ -105,7 +105,7 @@ public class OrderController  extends SSOController {
 				branchuserIdL=ObjectUtil.parseLong(branchuserId);
 			} catch (Exception e) {
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("²ÎÊı´íÎó£¬branchuserId±ØĞëÊäÈëÊı×Ö£¡");
+				rq.setStatusreson("å‚æ•°é”™è¯¯ï¼ŒbranchuserIdå¿…é¡»è¾“å…¥æ•°å­—ï¼");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 		}
@@ -114,16 +114,16 @@ public class OrderController  extends SSOController {
 			rq=ctsOrderService.find_payorderExtByBranchUpUserid(branchuserIdL, startTimeStr, endTimeStr, status, index, size);			
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * »ñÈ¡Î¢ÉÌ·¢Õ¹µÄÓÃ»§ÏÂµÄ¶©µ¥ÁĞ±í
-	 * @param weiuserId  Î¢ÉÌID
-	 * @param userorderid	¶©µ¥ID
-	 * @param status	//¶©µ¥×´Ì¬
+	 * è·å–å¾®å•†å‘å±•çš„ç”¨æˆ·ä¸‹çš„è®¢å•åˆ—è¡¨
+	 * @param weiuserId  å¾®å•†ID
+	 * @param userorderid	è®¢å•ID
+	 * @param status	//è®¢å•çŠ¶æ€
 	 * @param index		
 	 * @param size
 	 * @return
@@ -140,7 +140,7 @@ public class OrderController  extends SSOController {
 				weiuserIdL=ObjectUtil.parseLong(userId);
 			} catch (Exception e) {
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("²ÎÊı´íÎó£¬weiuserId±ØĞëÊäÈëÊı×Ö£¡");
+				rq.setStatusreson("å‚æ•°é”™è¯¯ï¼ŒweiuserIdå¿…é¡»è¾“å…¥æ•°å­—ï¼");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 		} 
@@ -149,7 +149,7 @@ public class OrderController  extends SSOController {
 			rq=ctsOrderService.find_payorderExtByWeiUserUpUserid(weiuserIdL, startTimeStr, endTimeStr, status, index, size);			
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

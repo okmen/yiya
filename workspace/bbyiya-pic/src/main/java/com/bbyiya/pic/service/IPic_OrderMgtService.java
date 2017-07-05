@@ -10,7 +10,7 @@ import com.bbyiya.vo.ReturnModel;
 public interface IPic_OrderMgtService {
 
 	/**
-	 * ²éÑ¯¶©µ¥ÁĞ±í£¨CTSÓÃ£©
+	 * æŸ¥è¯¢è®¢å•åˆ—è¡¨ï¼ˆCTSç”¨ï¼‰
 	 * 
 	 * @param param
 	 * @return
@@ -18,21 +18,21 @@ public interface IPic_OrderMgtService {
 	ReturnModel find_orderList(SearchOrderParam param);
 
 	/**
-	 * »ñÈ¡´ı·ÖÅäµÄ¶©µ¥£¨IBSÓÃ£©
+	 * è·å–å¾…åˆ†é…çš„è®¢å•ï¼ˆIBSç”¨ï¼‰
 	 * @param branchUserId
 	 * @return
 	 */
 	ReturnModel findAgentOrders(Long branchUserId);
 	
 	/**
-	 * IBS ÎÒÒªÕâ¸ö¿Í»§£¨Õë¶ÔÓ°Â¥ºÏ×÷»ï°éµÄ¹¦ÄÜ£©
+	 * IBS æˆ‘è¦è¿™ä¸ªå®¢æˆ·ï¼ˆé’ˆå¯¹å½±æ¥¼åˆä½œä¼™ä¼´çš„åŠŸèƒ½ï¼‰
 	 * @param branchUserId
 	 * @param userOrderId
 	 * @return
 	 */
 	ReturnModel addCustomer(Long branchUserId, String userOrderId);
 	/**
-	 * ±¾µê¶©µ¥ÁĞ±í £¨IBSÓ°Â¥ÓÃ£©
+	 * æœ¬åº—è®¢å•åˆ—è¡¨ ï¼ˆIBSå½±æ¥¼ç”¨ï¼‰
 	 * @param branchUserId
 	 * @param status
 	 * @return
@@ -46,14 +46,14 @@ public interface IPic_OrderMgtService {
 
 	void downloadImg(List<UserOrderResultVO> orderlist, String basePath);
 	/**
-	 * È¡Ïû¶©µ¥
+	 * å–æ¶ˆè®¢å•
 	 * @param orderId
 	 * @return
 	 */
 	ReturnModel cancelOrder(String orderId);
 	
 	/**
-	 * µÃµ½¶©µ¥²úÆ·µÄ×÷Æ·ÏêÇé£¬ÓÃÓÚÖØ¸´ÏÂµ¥µÄĞ§¹ûä¯ÀÀ	
+	 * å¾—åˆ°è®¢å•äº§å“çš„ä½œå“è¯¦æƒ…ï¼Œç”¨äºé‡å¤ä¸‹å•çš„æ•ˆæœæµè§ˆ	
 	 * @param orderProductId
 	 * @return
 	 */
@@ -61,18 +61,18 @@ public interface IPic_OrderMgtService {
 	
 	ReturnModel getOrderProductdetailsByUserOrderId(String userOrderId);
 	/**
-	 * »ñÈ¡¶©µ¥×÷Æ·Ô­Í¼
+	 * è·å–è®¢å•ä½œå“åŸå›¾
 	 */
 	ReturnModel getOrderPhotos(String userOrderId);
 	
 	/**
-	 * »ñÈ¡¶©µ¥×÷Æ·Í¼Æ¬ÁĞ±í
+	 * è·å–è®¢å•ä½œå“å›¾ç‰‡åˆ—è¡¨
 	 * @param userOrderId
 	 * @return
 	 */
 	ReturnModel findOrderProductPhotosByUserOrderId(String userOrderId);
 	/**
-	 * pbsºÏ³ÉÊ±¶©µ¥Í¼Æ¬ĞÅÏ¢
+	 * pbsåˆæˆæ—¶è®¢å•å›¾ç‰‡ä¿¡æ¯
 	 * @param userOrderId
 	 * @return
 	 */

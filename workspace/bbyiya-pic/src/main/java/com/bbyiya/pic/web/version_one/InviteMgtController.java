@@ -39,7 +39,7 @@ public class InviteMgtController  extends SSOController {
 	@Resource(name = "regionServiceImpl")
 	private IRegionService regionService;
 	/**
-	 * ·¢ËÍ Ğ­Í¬±à¼­ ÑûÇë
+	 * å‘é€ ååŒç¼–è¾‘ é‚€è¯·
 	 * @param province
 	 * @param city
 	 * @param district
@@ -54,20 +54,20 @@ public class InviteMgtController  extends SSOController {
 		if(user!=null){
 			if(phone.equals(user.getMobilePhone())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("²»ÄÜÑûÇë×Ô¼ºĞ­Í¬±à¼­£¡");
+				rq.setStatusreson("ä¸èƒ½é‚€è¯·è‡ªå·±ååŒç¼–è¾‘ï¼");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			rq=myProductService.sendInvite(user.getUserId(), phone, cartId);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ£¬ÇëÖØĞÂµÇÂ¼");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸï¼Œè¯·é‡æ–°ç™»å½•");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
 	
 	/**
-	 * ´¦ÀíÎÒµÄÑûÇë(ÒÑÍê³É»î¶¯)
+	 * å¤„ç†æˆ‘çš„é‚€è¯·(å·²å®Œæˆæ´»åŠ¨)
 	 * @param phone
 	 * @param cartId
 	 * @return
@@ -81,12 +81,12 @@ public class InviteMgtController  extends SSOController {
 		if(user!=null){
 			
 			if(status!=null&&status==Integer.parseInt(InviteStatus.ok.toString())){
-				//¸üĞÂÓÃ»§»î¶¯ÊÕ»ñµØÖ·ĞÅÏ¢
+				//æ›´æ–°ç”¨æˆ·æ´»åŠ¨æ”¶è·åœ°å€ä¿¡æ¯
 				long userAddressId=ObjectUtil.parseLong(addressId);
 				if(userAddressId>0){
 					UUseraddress address=addressMapper.get_UUserAddressByKeyId(userAddressId);
 					if(address==null){
-						rq.setStatusreson("µØÖ·ĞÅÏ¢²»´æÔÚ£¡");
+						rq.setStatusreson("åœ°å€ä¿¡æ¯ä¸å­˜åœ¨ï¼");
 						return JsonUtil.objectToJsonStr(rq);
 					}
 					PMyproducttempapply apply= tempApplyMapper.getMyProducttempApplyByCartId(cartId);
@@ -106,27 +106,27 @@ public class InviteMgtController  extends SSOController {
 						apply.setAdress(regionService.getProvinceName(address.getProvince())+regionService.getCityName(address.getCity())+regionService.getAresName(address.getArea())+address.getStreetdetail());
 						tempApplyMapper.updateByPrimaryKeySelective(apply);
 					}
-				}//ÊÕ»ñµØÖ·ĞÅÏ¢£¨Íê£©------------------
+				}//æ”¶è·åœ°å€ä¿¡æ¯ï¼ˆå®Œï¼‰------------------
 				
 				rq=myProductService.processInvite(cartId,user.getUserId(), status);
 			}else {
-				//¾É°æµÄ×´Ì¬¸üĞÂ
+				//æ—§ç‰ˆçš„çŠ¶æ€æ›´æ–°
 				rq=myProductService.processInvite(user.getMobilePhone(),cartId, status);
 			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ£¬ÇëÖØĞÂµÇÂ¼");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸï¼Œè¯·é‡æ–°ç™»å½•");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * ´¦ÀíÉ¨ÂëÒ³ÃæµÄ½ÓÊÜÑûÇë
-	 * @param phone ±»ÑûÇëÈËÊÖ»úºÅ
-	 * @param cartId ×÷Æ·cartid
-	 * @param vcode  ÑéÖ¤Âë
-	 * @param needVerfiCode  ÊÇ·ñĞèÒªÑéÖ¤ÊÖ»úÑéÖ¤Âë
-	 * @param version  ¶şÎ¬Âë°æ±¾ºÅ ¿ÉÎª¿Õ
+	 * å¤„ç†æ‰«ç é¡µé¢çš„æ¥å—é‚€è¯·
+	 * @param phone è¢«é‚€è¯·äººæ‰‹æœºå·
+	 * @param cartId ä½œå“cartid
+	 * @param vcode  éªŒè¯ç 
+	 * @param needVerfiCode  æ˜¯å¦éœ€è¦éªŒè¯æ‰‹æœºéªŒè¯ç 
+	 * @param version  äºŒç»´ç ç‰ˆæœ¬å· å¯ä¸ºç©º
 	 * @return
 	 * @throws Exception
 	 */
@@ -139,10 +139,10 @@ public class InviteMgtController  extends SSOController {
 			PMyproducts myproduct=myProductService.getPMyproducts(cartId);
 			if(myproduct==null){
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("²»´æÔÚµÄ×÷Æ·");
+				rq.setStatusreson("ä¸å­˜åœ¨çš„ä½œå“");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			//Èç¹ûÊÇÄ£°å×÷Æ·
+			//å¦‚æœæ˜¯æ¨¡æ¿ä½œå“
 			if(myproduct.getIstemp()!=null&&myproduct.getIstemp().toString().equals("1")){
 				rq=myProductService.acceptTempScanQrCodeInvite(user.getUserId(), phone, cartId,vcode,needVerfiCode);
 			}else{
@@ -150,13 +150,13 @@ public class InviteMgtController  extends SSOController {
 			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ£¬ÇëÖØĞÂµÇÂ¼");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸï¼Œè¯·é‡æ–°ç™»å½•");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
 	/**
-	 * »ñÈ¡ÓÃ»§ÌáÊ¾ĞÅÏ¢
+	 * è·å–ç”¨æˆ·æç¤ºä¿¡æ¯
 	 * @return
 	 * @throws Exception
 	 */
@@ -169,7 +169,7 @@ public class InviteMgtController  extends SSOController {
 			rq=myProductService.myUserInfoExp(user.getUserId(), user.getMobilePhone()); 
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ£¬ÇëÖØĞÂµÇÂ¼");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸï¼Œè¯·é‡æ–°ç™»å½•");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

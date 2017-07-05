@@ -36,13 +36,13 @@ public class MyProductTempController extends SSOController {
 	
 	
 	/**
-	 * Ìí¼ÓÄ£°å
-	 * @param title Ä£°å±êÌâ
-	 * @param remark ±¸×¢
-	 * @param productid ²úÆ·¿îÊ¾
-	 * @param needverifer ÊÇ·ñĞèÒªÉóºË
-	 * @param discription »î¶¯ĞèÖª
-	 * @param codeurl  ¶şÎ¬ÂëÍ¼Æ¬
+	 * æ·»åŠ æ¨¡æ¿
+	 * @param title æ¨¡æ¿æ ‡é¢˜
+	 * @param remark å¤‡æ³¨
+	 * @param productid äº§å“æ¬¾ç¤º
+	 * @param needverifer æ˜¯å¦éœ€è¦å®¡æ ¸
+	 * @param discription æ´»åŠ¨éœ€çŸ¥
+	 * @param codeurl  äºŒç»´ç å›¾ç‰‡
 	 * @returnp
 	 * @throws Exception
 	 */
@@ -55,48 +55,48 @@ public class MyProductTempController extends SSOController {
 			MyProductTempAddParam param = (MyProductTempAddParam)JsonUtil.jsonStrToObject(myproductTempJson,MyProductTempAddParam.class);			
 			if (param == null) {
 				rq.setStatu(ReturnStatus.ParamError_1);
-				rq.setStatusreson("²ÎÊı²»È«");
+				rq.setStatusreson("å‚æ•°ä¸å…¨");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			if(ObjectUtil.isEmpty(param.getTitle())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("»î¶¯Ãû³Æ²»ÄÜÎª¿Õ!");
+				rq.setStatusreson("æ´»åŠ¨åç§°ä¸èƒ½ä¸ºç©º!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			if(ObjectUtil.isEmpty(param.getProductid())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("²úÆ·ID²»ÄÜÎª¿Õ!");
+				rq.setStatusreson("äº§å“IDä¸èƒ½ä¸ºç©º!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			if(ObjectUtil.isEmpty(param.getStyleId())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("»î¶¯½±Æ·²»ÄÜÎª¿Õ!");
+				rq.setStatusreson("æ´»åŠ¨å¥–å“ä¸èƒ½ä¸ºç©º!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			if(!ObjectUtil.isEmpty(param.getTitle())&&!ObjectUtil.validSqlStr(param.getTitle())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("»î¶¯Ãû³Æ´æÔÚÎ£ÏÕ×Ö·û!");
+				rq.setStatusreson("æ´»åŠ¨åç§°å­˜åœ¨å±é™©å­—ç¬¦!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			if(param.getNeedverifer()==1&&ObjectUtil.isEmpty(param.getDiscription())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("»î¶¯ĞèÖª²»ÄÜÎª¿Õ!");
+				rq.setStatusreson("æ´»åŠ¨éœ€çŸ¥ä¸èƒ½ä¸ºç©º!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			if(!ObjectUtil.isEmpty(param.getDiscription())&&!ObjectUtil.validSqlStr(param.getDiscription())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("»î¶¯ĞèÖª´æÔÚÎ£ÏÕ×Ö·û!");
+				rq.setStatusreson("æ´»åŠ¨éœ€çŸ¥å­˜åœ¨å±é™©å­—ç¬¦!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			if(!ObjectUtil.isEmpty(param.getCodesm())&&!ObjectUtil.validSqlStr(param.getCodesm())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("¶şÎ¬ÂëÎÄ×ÖËµÃ÷ÔÚÎ£ÏÕ×Ö·û!");
+				rq.setStatusreson("äºŒç»´ç æ–‡å­—è¯´æ˜åœ¨å±é™©å­—ç¬¦!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			rq=producttempService.addMyProductTemp(user.getUserId(), param);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
@@ -119,24 +119,24 @@ public class MyProductTempController extends SSOController {
 		if(user!=null){
 			if(ObjectUtil.isEmpty(tempid)){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("²ÎÊı´íÎó£¬tempidÎª¿Õ!");
+				rq.setStatusreson("å‚æ•°é”™è¯¯ï¼Œtempidä¸ºç©º!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			if(!ObjectUtil.isEmpty(codesm)&&!ObjectUtil.validSqlStr(codesm)){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("¶şÎ¬ÂëÎÄ×ÖËµÃ÷ÔÚÎ£ÏÕ×Ö·û!");
+				rq.setStatusreson("äºŒç»´ç æ–‡å­—è¯´æ˜åœ¨å±é™©å­—ç¬¦!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			rq=producttempService.editTempCodeUrl(tempid,codeurl,codesm,discription);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	/**
-	 * ĞŞ¸ÄÄ£°å
+	 * ä¿®æ”¹æ¨¡æ¿
 	 * @param index
 	 * @param size
 	 * @return
@@ -151,52 +151,52 @@ public class MyProductTempController extends SSOController {
 			MyProductTempAddParam param = (MyProductTempAddParam)JsonUtil.jsonStrToObject(myproductTempJson,MyProductTempAddParam.class);			
 			if (param == null) {
 				rq.setStatu(ReturnStatus.ParamError_1);
-				rq.setStatusreson("²ÎÊı²»È«");
+				rq.setStatusreson("å‚æ•°ä¸å…¨");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			if(ObjectUtil.isEmpty(param.getTempid())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("»î¶¯ID²»ÄÜÎª¿Õ!");
+				rq.setStatusreson("æ´»åŠ¨IDä¸èƒ½ä¸ºç©º!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			if(ObjectUtil.isEmpty(param.getTitle())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("»î¶¯Ãû³Æ²»ÄÜÎª¿Õ!");
+				rq.setStatusreson("æ´»åŠ¨åç§°ä¸èƒ½ä¸ºç©º!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			
 			if(!ObjectUtil.isEmpty(param.getTitle())&&!ObjectUtil.validSqlStr(param.getTitle())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("»î¶¯Ãû³Æ´æÔÚÎ£ÏÕ×Ö·û!");
+				rq.setStatusreson("æ´»åŠ¨åç§°å­˜åœ¨å±é™©å­—ç¬¦!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			if(param.getNeedverifer()==1&&ObjectUtil.isEmpty(param.getDiscription())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("»î¶¯ĞèÖª²»ÄÜÎª¿Õ!");
+				rq.setStatusreson("æ´»åŠ¨éœ€çŸ¥ä¸èƒ½ä¸ºç©º!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			if(!ObjectUtil.isEmpty(param.getDiscription())&&!ObjectUtil.validSqlStr(param.getDiscription())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("»î¶¯ĞèÖª´æÔÚÎ£ÏÕ×Ö·û!");
+				rq.setStatusreson("æ´»åŠ¨éœ€çŸ¥å­˜åœ¨å±é™©å­—ç¬¦!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			if(!ObjectUtil.isEmpty(param.getCodesm())&&!ObjectUtil.validSqlStr(param.getCodesm())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("¶şÎ¬ÂëÎÄ×ÖËµÃ÷´æÔÚÎ£ÏÕ×Ö·û!");
+				rq.setStatusreson("äºŒç»´ç æ–‡å­—è¯´æ˜å­˜åœ¨å±é™©å­—ç¬¦!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			
 			rq=producttempService.editMyProductTemp(param);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	/**
-	 * ÆôÓÃ»ò½ûÓÃÄ£°å
-	 * @param type 1:ÆôÓÃ   0½ûÓÃ  3 ½áÊø»î¶¯  
+	 * å¯ç”¨æˆ–ç¦ç”¨æ¨¡æ¿
+	 * @param type 1:å¯ç”¨   0ç¦ç”¨  3 ç»“æŸæ´»åŠ¨  
 	 * @param tempId
 	 * @return
 	 * @throws Exception
@@ -210,14 +210,14 @@ public class MyProductTempController extends SSOController {
 			rq=producttempService.editMyProductTempStatus(type, tempid);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * É¾³ıÄ£°å
+	 * åˆ é™¤æ¨¡æ¿
 	 * @param tempId
 	 * @return
 	 * @throws Exception
@@ -231,14 +231,14 @@ public class MyProductTempController extends SSOController {
 			rq=producttempService.deleteMyProductTemp(tempid);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * »ñÈ¡Ó°Â¥Ä£°åÁĞ±í
+	 * è·å–å½±æ¥¼æ¨¡æ¿åˆ—è¡¨
 	 * @param tempId
 	 * @return
 	 * @throws Exception
@@ -252,14 +252,14 @@ public class MyProductTempController extends SSOController {
 			rq=producttempService.findMyProductTempList(index, size, user.getUserId(),status,keywords,type);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * »ñÈ¡Ó°Â¥Ä£°å´ıÉóºËÓÃ»§
+	 * è·å–å½±æ¥¼æ¨¡æ¿å¾…å®¡æ ¸ç”¨æˆ·
 	 * @param tempId
 	 * @return
 	 * @throws Exception
@@ -275,14 +275,14 @@ public class MyProductTempController extends SSOController {
 			rq=producttempService.getMyProductTempApplyCheckList(index, size, user.getUserId(), tempid);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * ÉóºËÍ¨¹ı»ò¾Ü¾øÓ°Â¥Ä£°åÉêÇëÓÃ»§
+	 * å®¡æ ¸é€šè¿‡æˆ–æ‹’ç»å½±æ¥¼æ¨¡æ¿ç”³è¯·ç”¨æˆ·
 	 * @param tempApplyId
 	 * @return
 	 * @throws Exception
@@ -295,26 +295,26 @@ public class MyProductTempController extends SSOController {
 		if(user!=null){
 			if(status==null){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("status²ÎÊı²»ÄÜÎª¿Õ£¡");
+				rq.setStatusreson("statuså‚æ•°ä¸èƒ½ä¸ºç©ºï¼");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			//ÅĞ¶ÏÓÃ»§ÊÇ·ñÓĞÈ¨ÏŞ²Ù×÷
+			//åˆ¤æ–­ç”¨æˆ·æ˜¯å¦æœ‰æƒé™æ“ä½œ
 			if(!(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.salesman))){
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("Ã»ÓĞÈ¨ÏŞ×ö´Ë²Ù×÷£¡");
+				rq.setStatusreson("æ²¡æœ‰æƒé™åšæ­¤æ“ä½œï¼");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			rq=producttempService.audit_TempApplyUser(user.getUserId(), tempApplyId, status);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * Ó°Â¥Ô±¹¤¸ºÔğÄ£°åĞÅÏ¢ÁĞ±í
+	 * å½±æ¥¼å‘˜å·¥è´Ÿè´£æ¨¡æ¿ä¿¡æ¯åˆ—è¡¨
 	 * @param tempApplyId
 	 * @return
 	 * @throws Exception
@@ -328,7 +328,7 @@ public class MyProductTempController extends SSOController {
 			rq=producttempService.find_BranchUserOfTemp(index, size, user.getUserId(), tempid);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
@@ -336,7 +336,7 @@ public class MyProductTempController extends SSOController {
 	
 	
 	/**
-	 * ÉèÖÃÔ±¹¤Ä£°å¸ºÔğ¶şÎ¬ÂëÍÆ¹ãÈ¨ÏŞ
+	 * è®¾ç½®å‘˜å·¥æ¨¡æ¿è´Ÿè´£äºŒç»´ç æ¨å¹¿æƒé™
 	 * @param tempApplyId
 	 * @return
 	 * @throws Exception
@@ -349,19 +349,19 @@ public class MyProductTempController extends SSOController {
 		if(user!=null){
 			if(status==null){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("status²ÎÊı²»ÄÜÎª¿Õ£¡");
+				rq.setStatusreson("statuså‚æ•°ä¸èƒ½ä¸ºç©ºï¼");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			rq=producttempService.setUserTempPermission(userId, tempid, status);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	/**
-	 * ÉèÖÃÔ±Ä£°åÉóºË¸ºÔğÈ¨ÏŞ
+	 * è®¾ç½®å‘˜æ¨¡æ¿å®¡æ ¸è´Ÿè´£æƒé™
 	 * @param tempApplyId
 	 * @return
 	 * @throws Exception
@@ -374,13 +374,13 @@ public class MyProductTempController extends SSOController {
 		if(user!=null){
 			if(status==null){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("status²ÎÊı²»ÄÜÎª¿Õ£¡");
+				rq.setStatusreson("statuså‚æ•°ä¸èƒ½ä¸ºç©ºï¼");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			rq=producttempService.setUserTempVerfiyPermission(userId, tempid, status);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
@@ -388,7 +388,7 @@ public class MyProductTempController extends SSOController {
 	
 	
 	/**
-	 * ÉóºËÄ£°åÉêÇëÓÃ»§µÄ×÷Æ·²»Í¨¹ı
+	 * å®¡æ ¸æ¨¡æ¿ç”³è¯·ç”¨æˆ·çš„ä½œå“ä¸é€šè¿‡
 	 * @param tempApplyId
 	 * @return
 	 * @throws Exception
@@ -401,20 +401,20 @@ public class MyProductTempController extends SSOController {
 		if(user!=null){
 			if(status==null){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("status²ÎÊı²»ÄÜÎª¿Õ£¡");
+				rq.setStatusreson("statuså‚æ•°ä¸èƒ½ä¸ºç©ºï¼");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			rq=producttempService.audit_TempApplyProduct(user.getUserId(), cartid, status,reason);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * ÉèÖÃ»î¶¯±¨ÃûÈËÊıÏŞÖÆ
+	 * è®¾ç½®æ´»åŠ¨æŠ¥åäººæ•°é™åˆ¶
 	 * @param tempid
 	 * @return
 	 * @throws Exception
@@ -427,20 +427,20 @@ public class MyProductTempController extends SSOController {
 		if(user!=null){
 			if(tempid==null){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("tempid²ÎÊı²»ÄÜÎª¿Õ£¡");
+				rq.setStatusreson("tempidå‚æ•°ä¸èƒ½ä¸ºç©ºï¼");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			rq=producttempService.setTempMaxApplyCount(user.getUserId(),tempid,maxApplyCount);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * ÉèÖÃ»î¶¯Íê³ÉÌõ¼ş
+	 * è®¾ç½®æ´»åŠ¨å®Œæˆæ¡ä»¶
 	 * @param tempid
 	 * @return
 	 * @throws Exception
@@ -453,22 +453,22 @@ public class MyProductTempController extends SSOController {
 		if(user!=null){
 			if(tempid==null){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("tempid²ÎÊı²»ÄÜÎª¿Õ£¡");
+				rq.setStatusreson("tempidå‚æ•°ä¸èƒ½ä¸ºç©ºï¼");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			rq=producttempService.setTempCompletecondition(user.getUserId(),tempid,blessCount,maxCompleteCount);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * ±£´æÄ£°åµÄ¶şÎ¬ÂëÍ¼Æ¬
+	 * ä¿å­˜æ¨¡æ¿çš„äºŒç»´ç å›¾ç‰‡
 	 * @param cartId
-	 * @param companyUserid Ô±¹¤ID
+	 * @param companyUserid å‘˜å·¥ID
 	 * @return
 	 * @throws Exception
 	 */
@@ -486,14 +486,14 @@ public class MyProductTempController extends SSOController {
 			rq=producttempService.saveProductTempRQcode(urlstr);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * Éú³ÉÄ£°åµÄ¶şÎ¬ÂëÍ¼Æ¬
+	 * ç”Ÿæˆæ¨¡æ¿çš„äºŒç»´ç å›¾ç‰‡
 	 * @param tempId
 	 * @return
 	 * @throws Exception
@@ -510,10 +510,10 @@ public class MyProductTempController extends SSOController {
 			
 			rq.setBasemodle(url);
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("Éú³ÉÄ£°å¶şÎ¬Âë³É¹¦");
+			rq.setStatusreson("ç”Ÿæˆæ¨¡æ¿äºŒç»´ç æˆåŠŸ");
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);

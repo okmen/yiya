@@ -21,7 +21,7 @@ public class SysMessageController extends SSOController {
 
 	
 	/**
-	 * 发送系统通知
+	 * 鍙戦�佺郴缁熼�氱煡
 	 * @param agentJson
 	 * @return
 	 * @throws Exception
@@ -35,14 +35,14 @@ public class SysMessageController extends SSOController {
 			rq=messageAndResponseService.addSysMessage(title, content);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
+			rq.setStatusreson("鐧诲綍杩囨湡");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	} 
 	
 	/**
-	 * 获取意见反馈列表
+	 * 鑾峰彇鎰忚鍙嶉鍒楄〃
 	 * @param branchUserId
 	 * @param content
 	 * @return
@@ -56,7 +56,7 @@ public class SysMessageController extends SSOController {
 			rq=messageAndResponseService.getUserResponseList(index, size, startTimeStr, endTimeStr);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
+			rq.setStatusreson("鐧诲綍杩囨湡");
 			return JsonUtil.objectToJsonStr(rq);
 		}		
 		return JsonUtil.objectToJsonStr(rq);	

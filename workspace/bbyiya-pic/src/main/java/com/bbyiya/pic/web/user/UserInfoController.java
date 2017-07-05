@@ -64,7 +64,7 @@ public class UserInfoController  extends SSOController{
 			rq.setStatu(ReturnStatus.Success);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
@@ -73,7 +73,7 @@ public class UserInfoController  extends SSOController{
 	
 
 	/**
-	 * ÖØÖÃÃÜÂë  
+	 * é‡ç½®å¯†ç   
 	 * @param phone
 	 * @param vcode
 	 * @param pwd
@@ -87,7 +87,7 @@ public class UserInfoController  extends SSOController{
 	}
 	
 	/**
-	 * »ñÈ¡ÍÆ¹ãµØÖ·
+	 * è·å–æ¨å¹¿åœ°å€
 	 * @return
 	 * @throws Exception
 	 */
@@ -101,12 +101,12 @@ public class UserInfoController  extends SSOController{
 			rq.setBasemodle(ConfigUtil.getSingleValue("shareulr-base")+"uid="+user.getUserId()); 
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	/**
-	 * ÎÒÍÆ¼öµÄÓÃ»§ÁĞ±í
+	 * æˆ‘æ¨èçš„ç”¨æˆ·åˆ—è¡¨
 	 * @param index
 	 * @param size
 	 * @return
@@ -123,7 +123,7 @@ public class UserInfoController  extends SSOController{
 				startDay=DateUtil.getDateByString("yyyy-MM-dd", startTime);
 			}
 			if(!ObjectUtil.isEmpty(endTime)){
-				//»ñÈ¡ÈÕÆÚµÄ×îºó½áÊøÊ±¼ä
+				//è·å–æ—¥æœŸçš„æœ€åç»“æŸæ—¶é—´
 				endTime=DateUtil.getEndTime(endTime);
 				endDay=DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", endTime);
 			}
@@ -144,7 +144,7 @@ public class UserInfoController  extends SSOController{
 			rq.setBasemodle(resultPage);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

@@ -37,7 +37,7 @@ public class ProductMgtServiceImpl implements IProductMgtService {
 	private PProductstylesMapper productstyleMapper;
 	
 	/**
-	 * ¸ù¾İ²éÑ¯Ìõ¼ş»ñÈ¡²úÆ·ÁĞ±í
+	 * æ ¹æ®æŸ¥è¯¢æ¡ä»¶è·å–äº§å“åˆ—è¡¨
 	 * @param index
 	 * @param size
 	 * @param searchParam
@@ -54,11 +54,11 @@ public class ProductMgtServiceImpl implements IProductMgtService {
 		PageInfo<PProducts> result=new PageInfo<PProducts>(list);
 		rq.setBasemodle(result);
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("»ñÈ¡²úÆ·ÁĞ±í³É¹¦£¡");
+		rq.setStatusreson("è·å–äº§å“åˆ—è¡¨æˆåŠŸï¼");
 		return rq;
 	}
 	/**
-	 * ¸ù¾İ²úÆ·IDĞŞ¸Ä²úÆ·ĞÅÏ¢
+	 * æ ¹æ®äº§å“IDä¿®æ”¹äº§å“ä¿¡æ¯
 	 * @param productDto
 	 * @param productid
 	 * @return
@@ -67,12 +67,12 @@ public class ProductMgtServiceImpl implements IProductMgtService {
 		ReturnModel rq = new ReturnModel();		
 		if (pdto == null) {
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("±§Ç¸£¡²ÎÊı´íÎó");
+			rq.setStatusreson("æŠ±æ­‰ï¼å‚æ•°é”™è¯¯");
 			return rq;
 		}
 		if(ObjectUtil.isEmpty(pdto.getProductid())){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("²ÎÊıÓĞÎó");
+			rq.setStatusreson("å‚æ•°æœ‰è¯¯");
 			return rq;
 		}
 		
@@ -89,13 +89,13 @@ public class ProductMgtServiceImpl implements IProductMgtService {
 		product.setUpdatetime(new Date());
 		productsMapper.updateByPrimaryKeySelective(product);
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("ĞŞ¸Ä²úÆ·³É¹¦£¡");
+		rq.setStatusreson("ä¿®æ”¹äº§å“æˆåŠŸï¼");
 		return rq;
 	}
 	
 	
 	/**
-	 * ¸ù¾İ²éÑ¯Ìõ¼ş»ñÈ¡²úÆ·¿îÊ½ÁĞ±í
+	 * æ ¹æ®æŸ¥è¯¢æ¡ä»¶è·å–äº§å“æ¬¾å¼åˆ—è¡¨
 	 * @param index
 	 * @param size
 	 * @param searchParam
@@ -121,12 +121,12 @@ public class ProductMgtServiceImpl implements IProductMgtService {
 		}
 		rq.setBasemodle(result);
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("»ñÈ¡²úÆ·ÁĞ±í³É¹¦£¡");
+		rq.setStatusreson("è·å–äº§å“åˆ—è¡¨æˆåŠŸï¼");
 		return rq;
 	}
 	
 	/**
-	 * ¸ù¾İ²úÆ·IDĞŞ¸Ä²úÆ·ĞÅÏ¢
+	 * æ ¹æ®äº§å“IDä¿®æ”¹äº§å“ä¿¡æ¯
 	 * @param productDto
 	 * @param productid
 	 * @return
@@ -136,43 +136,43 @@ public class ProductMgtServiceImpl implements IProductMgtService {
 		
 		rq.setStatu(ReturnStatus.SystemError);
 		if(style==null){
-			rq.setStatusreson("²ÎÊıÓĞÎó,styleÎªnull");
+			rq.setStatusreson("å‚æ•°æœ‰è¯¯,styleä¸ºnull");
 			return rq;
 		}
 		if(ObjectUtil.isEmpty(style.getStyleid())){
-			rq.setStatusreson("²ÎÊıÓĞÎó,styleidÎª¿Õ");
+			rq.setStatusreson("å‚æ•°æœ‰è¯¯,styleidä¸ºç©º");
 			return rq;
 		}
 		if(ObjectUtil.isEmpty(style.getProductid())){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("²ÎÊıÓĞÎó,productidÎª¿Õ");
+			rq.setStatusreson("å‚æ•°æœ‰è¯¯,productidä¸ºç©º");
 			return rq;
 		}		
 		if(ObjectUtil.isEmpty(style.getPropertystr())){
-			rq.setStatusreson("²ÎÊıÓĞÎó,¿îÊ½ÊôĞÔ±ØÌî");
+			rq.setStatusreson("å‚æ•°æœ‰è¯¯,æ¬¾å¼å±æ€§å¿…å¡«");
 			return rq;
 		} 
 		if(ObjectUtil.isEmpty(style.getDefaultimg())){
-			rq.setStatusreson("²ÎÊıÓĞÎó,Ä¬ÈÏÍ¼Æ¬±ØĞëÌî");
+			rq.setStatusreson("å‚æ•°æœ‰è¯¯,é»˜è®¤å›¾ç‰‡å¿…é¡»å¡«");
 			return rq;
 		} 
 		if(ObjectUtil.isEmpty(style.getPrice())){
-			rq.setStatusreson("²ÎÊıÓĞÎó,¼Û¸ñ±ØĞëÌî");
+			rq.setStatusreson("å‚æ•°æœ‰è¯¯,ä»·æ ¼å¿…é¡»å¡«");
 			return rq;
 		} 
 		
 		if(!ObjectUtil.validSqlStr(style.getDefaultimg())
 				||!ObjectUtil.validSqlStr(style.getDescription())
 				||!ObjectUtil.validSqlStr(style.getPropertystr())){
-			rq.setStatusreson("´æÔÚ·Ç·¨×Ö·û");
+			rq.setStatusreson("å­˜åœ¨éæ³•å­—ç¬¦");
 			return rq;
 		}
 		PProducts product=productsMapper.selectByPrimaryKey(style.getProductid());
 		if(product==null){
-			rq.setStatusreson("productId²úÆ·IDÔÚÏµÍ³ÖĞ²»´æÔÚ£¡");
+			rq.setStatusreson("productIdäº§å“IDåœ¨ç³»ç»Ÿä¸­ä¸å­˜åœ¨ï¼");
 			return rq;
 		}
-		//Èç¹û×´Ì¬Îª¿ÕÔòÄ¬ÈÏÎªÏúÊÛÖĞ×´Ì¬
+		//å¦‚æœçŠ¶æ€ä¸ºç©ºåˆ™é»˜è®¤ä¸ºé”€å”®ä¸­çŠ¶æ€
 		if(ObjectUtil.isEmpty(style.getStatus())){
 			style.setStatus(Integer.parseInt(ProductStatusEnum.ok.toString()));
 		}
@@ -187,7 +187,7 @@ public class ProductMgtServiceImpl implements IProductMgtService {
 		newstyle.setPrice(style.getPrice());
 		newstyle.setPropertystr(style.getPropertystr());
 		newstyle.setStatus(style.getStatus());
-		//Èç¹û¹´Ñ¡ÎªÄ¬ÈÏ¿î£¬´¦Àí¡£¡£¡£
+		//å¦‚æœå‹¾é€‰ä¸ºé»˜è®¤æ¬¾ï¼Œå¤„ç†ã€‚ã€‚ã€‚
 		if(style.getIsdefault()==1){
 			productstyleMapper.updateIsDefaultByProductId(style.getProductid());
 		}
@@ -199,11 +199,11 @@ public class ProductMgtServiceImpl implements IProductMgtService {
 			newstyle.setProductid(style.getProductid());
 			productstyleMapper.insert(newstyle);
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("ĞÂÔö²úÆ·¿îÊ½³É¹¦£¡");
+			rq.setStatusreson("æ–°å¢äº§å“æ¬¾å¼æˆåŠŸï¼");
 		}else{
 			productstyleMapper.updateByPrimaryKeySelective(newstyle);
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("ĞŞ¸Ä²úÆ·¿îÊ½³É¹¦£¡");
+			rq.setStatusreson("ä¿®æ”¹äº§å“æ¬¾å¼æˆåŠŸï¼");
 		}
 		
 		

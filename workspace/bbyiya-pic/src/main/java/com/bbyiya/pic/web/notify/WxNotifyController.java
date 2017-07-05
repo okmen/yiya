@@ -34,7 +34,7 @@ public class WxNotifyController {
 	private EErrorsMapper errorMapper;
 	
 	/**
-	 * ¶©µ¥Ö÷¶¯²éÑ¯
+	 * è®¢å•ä¸»åŠ¨æŸ¥è¯¢
 	 * @param request
 	 * @return
 	 */
@@ -47,7 +47,7 @@ public class WxNotifyController {
 		if (mapResult != null) {
 			if (mapResult.get("return_code").equals("SUCCESS")) {
 				if(mapResult.get("result_code").equals("SUCCESS")){//
-					if(mapResult.get("trade_state ").equals("SUCCESS ")){//½»Ò×³É¹¦
+					if(mapResult.get("trade_state ").equals("SUCCESS ")){//äº¤æ˜“æˆåŠŸ
 						result+="ok!";
 					}
 				}
@@ -58,8 +58,8 @@ public class WxNotifyController {
 	}
 	
 	/**
-	 * Î¢ĞÅ¹«ÖÚºÅ
-	 * Î¢ĞÅÖ§¸¶»ØĞ´µØÖ·
+	 * å¾®ä¿¡å…¬ä¼—å·
+	 * å¾®ä¿¡æ”¯ä»˜å›å†™åœ°å€
 	 * 
 	 * @param request
 	 * @param response
@@ -95,7 +95,7 @@ public class WxNotifyController {
 					return "error";
 				}
 			}else {
-				msg+="5Ç©ÃûÓĞÎó,xml="+xmlStr;
+				msg+="5ç­¾åæœ‰è¯¯,xml="+xmlStr;
 				addlog(msg);
 			}
 		} catch (Exception e) {
@@ -106,7 +106,7 @@ public class WxNotifyController {
 	}
 
 	/**
-	 * ¶©µ¥Ç©ÃûÑéÖ¤£¬Ö§¸¶»ØĞ´´¦Àí
+	 * è®¢å•ç­¾åéªŒè¯ï¼Œæ”¯ä»˜å›å†™å¤„ç†
 	 * @param transaction_id
 	 * @param payId
 	 * @return
@@ -115,7 +115,7 @@ public class WxNotifyController {
 		SortedMap<String, String> map=WxPayUtils.queryWxOrder(transaction_id, payId);
 		if (WxUtil.isWXsign(map, WxPayConfig.AppSecret)) {
 			if (map != null && map.get("return_code").equals("SUCCESS") && map.get("result_code").equals("SUCCESS") && map.get("trade_state").equals("SUCCESS")) {
-				// »áĞ´¶©µ¥×´Ì¬ 
+				// ä¼šå†™è®¢å•çŠ¶æ€ 
 				boolean paySuccess = orderMgtService.paySuccessProcess(payId);
 				if (paySuccess) {
 					return "success";
@@ -129,7 +129,7 @@ public class WxNotifyController {
 
 	
 	/**
-	 * ½ÓÊÜxml²ÎÊı 
+	 * æ¥å—xmlå‚æ•° 
 	 * @param request
 	 * @return
 	 */

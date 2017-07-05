@@ -27,7 +27,7 @@ public class SendMsgController {
 	private UUsersMapper userDao;
 	
 	/**
-	 * ¶ÌĞÅ·¢ËÍ
+	 * çŸ­ä¿¡å‘é€
 	 * @param phone
 	 * @return
 	 * @throws MapperException
@@ -39,7 +39,7 @@ public class SendMsgController {
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.ParamError);
 		if(!ObjectUtil.isMobile(phone)){
-			rq.setStatusreson("ÇëÊäÈëÕıÈ·µÄÊÖ»úºÅ£¡");
+			rq.setStatusreson("è¯·è¾“å…¥æ­£ç¡®çš„æ‰‹æœºå·ï¼");
 			return JsonUtil.objectToJsonStr(rq); 
 		}
 		int codeType=ObjectUtil.parseInt(type);
@@ -48,24 +48,24 @@ public class SendMsgController {
 				UUsers user= userDao.getUUsersByPhone(phone);
 				if(user!=null&&user.getStatus()!=null&&user.getStatus().intValue()==Integer.parseInt(UserStatusEnum.ok.toString())){
 					rq.setStatu(ReturnStatus.VcodeError_3); 
-					rq.setStatusreson("ÊÖ»úºÅÒÑ¾­×¢²á£¡");
+					rq.setStatusreson("æ‰‹æœºå·å·²ç»æ³¨å†Œï¼");
 					return JsonUtil.objectToJsonStr(rq); 
 				}
 			}else if (codeType==(Integer.parseInt(SendMsgEnums.backPwd.toString()))) {
 				UUsers user= userDao.getUUsersByPhone(phone);
 				if(user==null){
 					rq.setStatu(ReturnStatus.VcodeError_4);
-					rq.setStatusreson("ÊÖ»úºÅÎ´×¢²á£¡");
+					rq.setStatusreson("æ‰‹æœºå·æœªæ³¨å†Œï¼");
 					return JsonUtil.objectToJsonStr(rq); 
 				}
 			}
 		}else {
-			rq.setStatusreson("²ÎÊıÓĞÎó");
+			rq.setStatusreson("å‚æ•°æœ‰è¯¯");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		String result= SendSMSByMobile.sendSmsReturnJson(codeType, phone);
 		if(ObjectUtil.isEmpty(result)){
-			rq.setStatusreson("²ÎÊıÓĞÎó");
+			rq.setStatusreson("å‚æ•°æœ‰è¯¯");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		JSONObject model = JSONObject.fromObject(result);
@@ -73,10 +73,10 @@ public class SendMsgController {
 			String code=String.valueOf(model.get("code"));
 			if(code.equals("0")){
 				rq.setStatu(ReturnStatus.Success);
-				rq.setStatusreson("·¢ËÍ³É¹¦");
+				rq.setStatusreson("å‘é€æˆåŠŸ");
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("¶ÌĞÅ·¢ËÍÊ§°Ü"); //String.valueOf(model.get("msg"))
+				rq.setStatusreson("çŸ­ä¿¡å‘é€å¤±è´¥"); //String.valueOf(model.get("msg"))
 			}
 		}else {
 			rq.setStatu(ReturnStatus.SystemError);
@@ -94,18 +94,18 @@ public class SendMsgController {
 		param.setAmount(ObjectUtil.parseDouble(amount));
 		int typeInt=ObjectUtil.parseInt(type);
 		if(typeInt==6){
-			param.setTransName("ÌìÌì¿ìµİ");
+			param.setTransName("å¤©å¤©å¿«é€’");
 			param.setTransNum("9543321");
 		} 
 		boolean result=SendSMSByMobile.sendSmS(ObjectUtil.parseInt(type), phone,param);
 		if(!result){
-			rq.setStatusreson("²ÎÊıÓĞÎó");
+			rq.setStatusreson("å‚æ•°æœ‰è¯¯");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		JSONObject model = JSONObject.fromObject(result);
 		if(model!=null){
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("·¢ËÍ³É¹¦");
+			rq.setStatusreson("å‘é€æˆåŠŸ");
 		}else {
 			rq.setStatu(ReturnStatus.SystemError);
 		}

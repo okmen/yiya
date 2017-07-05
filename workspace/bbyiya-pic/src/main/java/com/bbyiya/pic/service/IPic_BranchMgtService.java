@@ -9,7 +9,7 @@ import com.bbyiya.vo.ReturnModel;
 public interface IPic_BranchMgtService {
 
 	/**
-	 * ¸ù¾İÇøÓòÅĞ¶Ï´úÀí·ÑÓÃ
+	 * æ ¹æ®åŒºåŸŸåˆ¤æ–­ä»£ç†è´¹ç”¨
 	 * @param province
 	 * @param city
 	 * @param district
@@ -17,7 +17,7 @@ public interface IPic_BranchMgtService {
 	 */
 	ReturnModel getBranchAreaPrice(Integer province,Integer city,Integer district);
 	/**
-	 * ´úÀíÉÌÉêÇë
+	 * ä»£ç†å•†ç”³è¯·
 	 * @param userId
 	 * @param applyInfo
 	 * @return
@@ -28,14 +28,14 @@ public interface IPic_BranchMgtService {
 	
 	ReturnModel findBranchVoList(AgentSearchParam param,int index, int size);
 	/**
-	 * Ó°Â¥·ÖµêÉêÇë
+	 * å½±æ¥¼åˆ†åº—ç”³è¯·
 	 * @param userId
 	 * @param applyInfo
 	 * @return
 	 */
 	ReturnModel applyBranch(Long userId,UBranches applyInfo);
 	/**
-	 * ´úÀíÉÌÉóºË
+	 * ä»£ç†å•†å®¡æ ¸
 	 * @param adminId
 	 * @param agentUserId
 	 * @param status
@@ -45,7 +45,7 @@ public interface IPic_BranchMgtService {
 	ReturnModel audit_AgentApply(Long adminId,Long agentUserId,int status,String msg);
 	
 	/**
-	 * Ó°Â¥·ÖµêÉóºË
+	 * å½±æ¥¼åˆ†åº—å®¡æ ¸
 	 * @param adminId
 	 * @param branchUserId
 	 * @param status
@@ -55,7 +55,7 @@ public interface IPic_BranchMgtService {
 	ReturnModel audit_BranchApply(Long adminId,Long branchUserId,int status,String msg);
 	
 	/**
-	 * ´úÀíÇøÓò²éÑ¯
+	 * ä»£ç†åŒºåŸŸæŸ¥è¯¢
 	 * @param areaCode
 	 * @return
 	 */
@@ -65,27 +65,27 @@ public interface IPic_BranchMgtService {
 	
 	ReturnModel getBranchApplyStatusModel(Long agentUserId);
 	/**
-	 * »ñÈ¡´úÀíÉÌĞÅÏ¢
+	 * è·å–ä»£ç†å•†ä¿¡æ¯
 	 * @param branchUserId
 	 * @return
 	 */
 	UBranchVo getBranchInfo(Long branchUserId);
 	/**
-	 * ĞŞ¸Ä´úÀíÉÌÊÕ»õµØÖ·
+	 * ä¿®æ”¹ä»£ç†å•†æ”¶è´§åœ°å€
 	 * @param branchUserId
 	 * @param streetdetail
 	 * @return
 	 */
 	ReturnModel editBranchAddress(Long branchUserId, String streetdetail,String name,String phone);
 	/**
-	 * Ìí¼ÓÒâ¼û·´À¡
+	 * æ·»åŠ æ„è§åé¦ˆ
 	 * @param branchUserId
 	 * @param content
 	 * @return
 	 */
 	ReturnModel addUserResponses(Long branchUserId, String content);
 	/**
-	 * IBS»ñÈ¡ÏµÍ³ÏûÏ¢Í¨ÖªÁĞ±í
+	 * IBSè·å–ç³»ç»Ÿæ¶ˆæ¯é€šçŸ¥åˆ—è¡¨
 	 * @param index
 	 * @param size
 	 * @param startTimeStr
@@ -95,7 +95,7 @@ public interface IPic_BranchMgtService {
 	ReturnModel getSysMessageList(int index, int size, String startTimeStr,
 			String endTimeStr);
 	/**
-	 * ´úÀíÉÌÍË×¤
+	 * ä»£ç†å•†é€€é©»
 	 * @param adminId
 	 * @param agentUserId
 	 * @return

@@ -103,13 +103,13 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	private PProductstylesMapper styleMapper;
 
 	/**
-	 * ÓÅ»İĞÅÏ¢
+	 * ä¼˜æƒ ä¿¡æ¯
 	 */
 	@Resource(name = "baseDiscountServiceImpl")
 	private IBaseDiscountService discountService;
 	
 	/**
-	 * Ìí¼ÓÄ£°å
+	 * æ·»åŠ æ¨¡æ¿
 	 * */
 	public ReturnModel addMyProductTemp(Long userid,MyProductTempAddParam param){
 		ReturnModel rq=new ReturnModel();
@@ -142,12 +142,12 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		temp.setStyleid(param.getStyleId());
 		temp.setIsautoorder(param.getIsAutoOrder());
 		temp.setOrderhours(param.getOrderHours());
-		temp.setApplycount(0);//±¨ÃûÈËÊıÎª0Ê±²»ÏŞÖÆ
+		temp.setApplycount(0);//æŠ¥åäººæ•°ä¸º0æ—¶ä¸é™åˆ¶
 		if(ObjectUtil.isEmpty(param.getIsbranchaddress())){
 			param.setIsbranchaddress(0);
 		}
 		temp.setIsbranchaddress(param.getIsbranchaddress());
-		temp.setType(Integer.parseInt(MyProductTempType.normal.toString()));//Ä¬ÈÏÎªÆÕÍ¨ÀàĞÍ
+		temp.setType(Integer.parseInt(MyProductTempType.normal.toString()));//é»˜è®¤ä¸ºæ™®é€šç±»å‹
 		myproducttempMapper.insertReturnId(temp);
 		
 		myproduct.setTempid(temp.getTempid());
@@ -157,13 +157,13 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		map.put("myProductID", myproduct.getCartid());
 		rq.setBasemodle(map);
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("Ìí¼ÓÄ£°å³É¹¦£¡");
+		rq.setStatusreson("æ·»åŠ æ¨¡æ¿æˆåŠŸï¼");
 		return rq;
 	}
 	
 	
 	/**
-	 * ĞŞ¸ÄÄ£°å
+	 * ä¿®æ”¹æ¨¡æ¿
 	 * */
 	public ReturnModel editMyProductTemp(MyProductTempAddParam param){
 		ReturnModel rq=new ReturnModel();
@@ -185,16 +185,16 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			temp.setIsbranchaddress(param.getIsbranchaddress());
 			myproducttempMapper.updateByPrimaryKey(temp);
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("ĞŞ¸ÄÄ£°å³É¹¦£¡");
+			rq.setStatusreson("ä¿®æ”¹æ¨¡æ¿æˆåŠŸï¼");
 		}else{
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("Ä£°å²»´æÔÚ£¡");
+			rq.setStatusreson("æ¨¡æ¿ä¸å­˜åœ¨ï¼");
 		}
 		return rq;
 	}
 	
 	/**
-	 * ĞŞ¸Ä¶şÎ¬ÂëĞÅÏ¢
+	 * ä¿®æ”¹äºŒç»´ç ä¿¡æ¯
 	 * */
 	public ReturnModel editTempCodeUrl(Integer tempid,String codeurl,String codesm,String discription){
 		ReturnModel rq=new ReturnModel();
@@ -206,17 +206,17 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			temp.setDiscription(discription);
 			myproducttempMapper.updateByPrimaryKey(temp);
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("ĞŞ¸ÄÄ£°å¶şÎ¬Âë³É¹¦£¡");
+			rq.setStatusreson("ä¿®æ”¹æ¨¡æ¿äºŒç»´ç æˆåŠŸï¼");
 		}else{
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("Ä£°å²»´æÔÚ£¡");
+			rq.setStatusreson("æ¨¡æ¿ä¸å­˜åœ¨ï¼");
 		}
 		return rq;
 	}
 	
 	/**
-	 * ÆôÓÃ»ò½ûÓÃÄ£°å
-	 * @param type 1:ÆôÓÃ   0½ûÓÃ  3 ½áÊø»î¶¯  
+	 * å¯ç”¨æˆ–ç¦ç”¨æ¨¡æ¿
+	 * @param type 1:å¯ç”¨   0ç¦ç”¨  3 ç»“æŸæ´»åŠ¨  
 	 * @param tempid
 	 * @return
 	 */
@@ -228,49 +228,49 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		if(temp!=null){
 			PMyproducts myproduct =myMapper.selectByPrimaryKey(temp.getCartid());
 			if(myproduct!=null){
-				//ÆôÓÃ
+				//å¯ç”¨
 				if(type==1){
-					//Èç¹û»î¶¯ÊÇ½áÊø×´Ì¬²»ÄÜÔÙ¿ªÆô
+					//å¦‚æœæ´»åŠ¨æ˜¯ç»“æŸçŠ¶æ€ä¸èƒ½å†å¼€å¯
 					if(temp.getStatus()!=null&&temp.getStatus().intValue()==Integer.parseInt(MyProductTempStatusEnum.over.toString())){
 						rq.setStatu(ReturnStatus.ParamError);
-						rq.setStatusreson("ÒÑ½áÊøµÄ»î¶¯²»ÄÜÔÙ¿ªÆô");
+						rq.setStatusreson("å·²ç»“æŸçš„æ´»åŠ¨ä¸èƒ½å†å¼€å¯");
 						return rq;
 					}
 					temp.setStatus(Integer.parseInt(MyProductTempStatusEnum.enable.toString()));			
 					myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.ok.toString()));				
 				}else if(type==0||type==3){
-					if(type==0){//½ûÓÃ
-						//Èç¹û»î¶¯ÊÇ½áÊø×´Ì¬²»ÄÜÔÙ½ûÓÃ
+					if(type==0){//ç¦ç”¨
+						//å¦‚æœæ´»åŠ¨æ˜¯ç»“æŸçŠ¶æ€ä¸èƒ½å†ç¦ç”¨
 						if(temp.getStatus()!=null&&temp.getStatus().intValue()==Integer.parseInt(MyProductTempStatusEnum.over.toString())){
 							rq.setStatu(ReturnStatus.ParamError);
-							rq.setStatusreson("ÒÑ½áÊøµÄ»î¶¯²»ÄÜÔÙĞŞ¸Ä»î¶¯×´Ì¬£¡");
+							rq.setStatusreson("å·²ç»“æŸçš„æ´»åŠ¨ä¸èƒ½å†ä¿®æ”¹æ´»åŠ¨çŠ¶æ€ï¼");
 							return rq;
 						}
-						//Èç¹û»î¶¯½øĞĞ×´Ì¬£¬Ôò²»ÄÜÔÙ½ûÓÃ
+						//å¦‚æœæ´»åŠ¨è¿›è¡ŒçŠ¶æ€ï¼Œåˆ™ä¸èƒ½å†ç¦ç”¨
 						if(temp.getStatus()!=null&&temp.getStatus().intValue()==Integer.parseInt(MyProductTempStatusEnum.enable.toString())){
 							rq.setStatu(ReturnStatus.ParamError);
-							rq.setStatusreson("ÒÑ¿ªÆôµÄ»î¶¯²»ÄÜÔÙ½ûÓÃ£¡");
+							rq.setStatusreson("å·²å¼€å¯çš„æ´»åŠ¨ä¸èƒ½å†ç¦ç”¨ï¼");
 							return rq;
 						}
 						temp.setStatus(Integer.parseInt(MyProductTempStatusEnum.disabled.toString()));			
 						myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.disabled.toString()));
 					}
-					if(type==3){//½áÊø»î¶¯×´Ì¬
+					if(type==3){//ç»“æŸæ´»åŠ¨çŠ¶æ€
 						temp.setStatus(Integer.parseInt(MyProductTempStatusEnum.over.toString()));			
 						myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.deleted.toString()));
 						
-						//½«²ÎÓëÖĞµÄÓÃ»§ÖÃÎª»î¶¯Ê§°Ü£¬µÃµ½×´Ì¬Îª1 4×´Ì¬µÄÓÃ»§  
+						//å°†å‚ä¸ä¸­çš„ç”¨æˆ·ç½®ä¸ºæ´»åŠ¨å¤±è´¥ï¼Œå¾—åˆ°çŠ¶æ€ä¸º1 4çŠ¶æ€çš„ç”¨æˆ·  
 						List<Integer> statuslist=new ArrayList<Integer>();
-						statuslist.add(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString()));//ÒÑÉóºË
-						statuslist.add(Integer.parseInt(MyProducttempApplyStatusEnum.nopass.toString()));//×÷Æ·ÉóºË²»Í¨¹ı
-						//statuslist.add(Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString()));//×÷Æ·ÖÆ×÷Íê³É
+						statuslist.add(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString()));//å·²å®¡æ ¸
+						statuslist.add(Integer.parseInt(MyProducttempApplyStatusEnum.nopass.toString()));//ä½œå“å®¡æ ¸ä¸é€šè¿‡
+						//statuslist.add(Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString()));//ä½œå“åˆ¶ä½œå®Œæˆ
 						List<PMyproducttempapply>  applyInlist=myproducttempapplyMapper.findMyProducttempApplyInList(tempid, statuslist);
 						if(applyInlist!=null&&applyInlist.size()>0){
 							for (PMyproducttempapply applyin : applyInlist) {
 								applyin.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.fails.toString()));
 								myproducttempapplyMapper.updateByPrimaryKeySelective(applyin);
 								
-								//»î¶¯Ê§°ÜµÄ²ÎÓë×÷Æ· ·Ö·¢ÓÅ»İ
+								//æ´»åŠ¨å¤±è´¥çš„å‚ä¸ä½œå“ åˆ†å‘ä¼˜æƒ 
 								if(applyin.getCartid()!=null&&applyin.getCartid().longValue()>0){
 									discountService.addTempDiscount(applyin.getCartid());
 								}
@@ -278,7 +278,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 						}
 					}
 					
-					//½«Ä£°åµÄ´ıÉóºËÓÃ»§µÄ×´Ì¬È«ÖÃÎªÉóºËÊ§°Ü
+					//å°†æ¨¡æ¿çš„å¾…å®¡æ ¸ç”¨æˆ·çš„çŠ¶æ€å…¨ç½®ä¸ºå®¡æ ¸å¤±è´¥
 					List<PMyproducttempapply>  applylist=myproducttempapplyMapper.findMyProducttempApplyList(tempid, Integer.parseInt(MyProducttempApplyStatusEnum.apply.toString()));
 					if(applylist!=null&&applylist.size()>0){
 						for (PMyproducttempapply apply : applylist) {
@@ -287,7 +287,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 							
 						}
 					}
-					//½ûÓÃÔ±¹¤Ä£°åÈ¨ÏŞ
+					//ç¦ç”¨å‘˜å·¥æ¨¡æ¿æƒé™
 					List<PMyproducttempusers> tempuserList=myTempUserMapper.findTempUserListByTempId(tempid);
 					if(tempuserList!=null&&tempuserList.size()>0){
 						for (PMyproducttempusers tempuser : tempuserList) {
@@ -295,7 +295,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 							myTempUserMapper.updateByPrimaryKeySelective(tempuser);
 						}
 					}
-					//½ûÓÃÔ±¹¤Ô±¹¤Ä£°åÉóºËÈ¨ÏŞ
+					//ç¦ç”¨å‘˜å·¥å‘˜å·¥æ¨¡æ¿å®¡æ ¸æƒé™
 					List<PMyproducttempverusers> tempveruserList=myTempveruserMapper.findTempVerfiyUserListByTempId(tempid);
 					if(tempveruserList!=null&&tempveruserList.size()>0){
 						for (PMyproducttempverusers tempveruser : tempveruserList) {
@@ -305,23 +305,23 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 					}
 				}else{
 					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("type²ÎÊı´«Èë´íÎó");
+					rq.setStatusreson("typeå‚æ•°ä¼ å…¥é”™è¯¯");
 					return rq;
 				}
 			}
 			myMapper.updateByPrimaryKey(myproduct);
 			myproducttempMapper.updateByPrimaryKey(temp);
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("²Ù×÷³É¹¦");
+			rq.setStatusreson("æ“ä½œæˆåŠŸ");
 		}else{
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("Ä£°åID²»´æÔÚ");
+			rq.setStatusreson("æ¨¡æ¿IDä¸å­˜åœ¨");
 		}
 		return rq;
 	}
 	
 	/**
-	 * É¾³ıÄ£°å
+	 * åˆ é™¤æ¨¡æ¿
 	 * @param tempid
 	 * @return
 	 */
@@ -332,12 +332,12 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		if(temp!=null){
 			if(temp.getStatus()!=null&&temp.getStatus().intValue()==Integer.parseInt(MyProductTempStatusEnum.enable.toString())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("²»ºÃÒâË¼£¬ÒÑ¿ªÆôµÄ»î¶¯²»ÄÜÉ¾³ı£¡");
+				rq.setStatusreson("ä¸å¥½æ„æ€ï¼Œå·²å¼€å¯çš„æ´»åŠ¨ä¸èƒ½åˆ é™¤ï¼");
 				return rq;
 			}
 			if(temp.getStatus()!=null&&temp.getStatus().intValue()==Integer.parseInt(MyProductTempStatusEnum.over.toString())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("²»ºÃÒâË¼£¬ÒÑ½áÊøµÄ»î¶¯²»ÄÜÉ¾³ı£¡");
+				rq.setStatusreson("ä¸å¥½æ„æ€ï¼Œå·²ç»“æŸçš„æ´»åŠ¨ä¸èƒ½åˆ é™¤ï¼");
 				return rq;
 			}
 			PMyproducts myproduct =myMapper.selectByPrimaryKey(temp.getCartid());
@@ -345,7 +345,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.deleted.toString()));
 			myMapper.updateByPrimaryKey(myproduct);
 			myproducttempMapper.updateByPrimaryKey(temp);
-			//½«Ä£°åµÄ´ıÉóºËÓÃ»§µÄ×´Ì¬È«ÖÃÎªÉóºËÊ§°Ü
+			//å°†æ¨¡æ¿çš„å¾…å®¡æ ¸ç”¨æˆ·çš„çŠ¶æ€å…¨ç½®ä¸ºå®¡æ ¸å¤±è´¥
 			List<PMyproducttempapply>  applylist=myproducttempapplyMapper.findMyProducttempApplyList(tempid, Integer.parseInt(MyProducttempApplyStatusEnum.apply.toString()));
 			if(applylist!=null&&applylist.size()>0){
 				for (PMyproducttempapply apply : applylist) {
@@ -353,14 +353,14 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 					myproducttempapplyMapper.updateByPrimaryKeySelective(apply);
 				}
 			}
-			//É¾³ıÔ±¹¤Ä£°åÈ¨ÏŞ
+			//åˆ é™¤å‘˜å·¥æ¨¡æ¿æƒé™
 			List<PMyproducttempusers> tempuserList=myTempUserMapper.findTempUserListByTempId(tempid);
 			if(tempuserList!=null&&tempuserList.size()>0){
 				for (PMyproducttempusers tempuser : tempuserList) {
 					myTempUserMapper.deleteByPrimaryKey(tempuser.getId());
 				}
 			}
-			//Ô±¹¤Ô±¹¤Ä£°åÉóºËÈ¨ÏŞ
+			//å‘˜å·¥å‘˜å·¥æ¨¡æ¿å®¡æ ¸æƒé™
 			List<PMyproducttempverusers> tempveruserList=myTempveruserMapper.findTempVerfiyUserListByTempId(tempid);
 			if(tempveruserList!=null&&tempveruserList.size()>0){
 				for (PMyproducttempverusers tempveruser : tempveruserList) {
@@ -369,15 +369,15 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			}
 			
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("É¾³ı²Ù×÷³É¹¦");
+			rq.setStatusreson("åˆ é™¤æ“ä½œæˆåŠŸ");
 		}else{
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("Ä£°åID²»´æÔÚ");
+			rq.setStatusreson("æ¨¡æ¿IDä¸å­˜åœ¨");
 		}		
 		return rq;
 	}
 	/**
-	 * ²éÑ¯Ä£°åÁĞ±í
+	 * æŸ¥è¯¢æ¨¡æ¿åˆ—è¡¨
 	 * @return
 	 */
 	public ReturnModel findMyProductTempList(int index,int size,Long userid,Integer status,String keywords,Integer type){
@@ -402,7 +402,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 				}
 				temp.setCodeurl(url);
 				temp.setCreatetimestr(DateUtil.getTimeStr(temp.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
-				//µÃµ½´ıÉóºËÊıÁ¿
+				//å¾—åˆ°å¾…å®¡æ ¸æ•°é‡
 				Integer checkCount=myproducttempapplyMapper.getNeedCheckApllyCountByTemp(temp.getTempid(),Integer.parseInt(MyProducttempApplyStatusEnum.apply.toString()));
 				temp.setNeedCheckCount(checkCount==null?0:checkCount);
 				
@@ -414,9 +414,9 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 					temp.setProductid(products.getProductid());
 					String producttitle=products.getTitle();
 					if(styles.getStyleid()%2==0){
-						producttitle=producttitle+"-Êú°æ-"+styles.getPrice();
+						producttitle=producttitle+"-ç«–ç‰ˆ-"+styles.getPrice();
 					}else{
-						producttitle=producttitle+"-ºá°æ-"+styles.getPrice();
+						producttitle=producttitle+"-æ¨ªç‰ˆ-"+styles.getPrice();
 					}
 					temp.setProductName(producttitle);
 				}
@@ -425,13 +425,13 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		
 		rq.setBasemodle(reuslt);
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("»ñÈ¡ÁĞ±í³É¹¦£¡");
+		rq.setStatusreson("è·å–åˆ—è¡¨æˆåŠŸï¼");
 		return rq;
 	}
 	
 	
 	/**
-	 * »ñÈ¡Ó°Â¥Ä£°å´ıÉóºËÓÃ»§ÁĞ±í
+	 * è·å–å½±æ¥¼æ¨¡æ¿å¾…å®¡æ ¸ç”¨æˆ·åˆ—è¡¨
 	 * @return
 	 */
 	public ReturnModel getMyProductTempApplyCheckList(int index,int size,Long userid,int tempid){
@@ -460,15 +460,15 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		}		
 		rq.setBasemodle(reuslt);
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("»ñÈ¡ÁĞ±í³É¹¦£¡");
+		rq.setStatusreson("è·å–åˆ—è¡¨æˆåŠŸï¼");
 		return rq;
 	}
 	
 	/**
-	 * ÉóºËÓ°Â¥Ä£°åÉêÇëÓÃ»§
+	 * å®¡æ ¸å½±æ¥¼æ¨¡æ¿ç”³è¯·ç”¨æˆ·
 	 * @param userid
 	 * @param tempapplyid
-	 * @param status  0 ÉêÇëÖĞ£¬1Í¨¹ı£¬2¾Ü¾ø
+	 * @param status  0 ç”³è¯·ä¸­ï¼Œ1é€šè¿‡ï¼Œ2æ‹’ç»
 	 * @return
 	 */
 	public ReturnModel audit_TempApplyUser(Long adminUserId,Long tempapplyid,Integer status){
@@ -476,21 +476,21 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		PMyproducttempapply apply=myproducttempapplyMapper.selectByPrimaryKey(tempapplyid);
 		if(apply!=null){	
 			String content="";
-			//ÉóºËÍ¨¹ı²Ù×÷  ĞÂÔöÒ»·İ×÷Æ·ID£¬²åÈëÓ°Â¥¿Í»§ĞÅÏ¢
+			//å®¡æ ¸é€šè¿‡æ“ä½œ  æ–°å¢ä¸€ä»½ä½œå“IDï¼Œæ’å…¥å½±æ¥¼å®¢æˆ·ä¿¡æ¯
 			if(status==Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString())){
 				apply.setVerfiytime(new Date());	
-				apply.setIsread(0);//ÏûÏ¢×´Ì¬ÖÃÎªÎ´¶Á
-				content="ÉóºËÍ¨¹ı";
+				apply.setIsread(0);//æ¶ˆæ¯çŠ¶æ€ç½®ä¸ºæœªè¯»
+				content="å®¡æ ¸é€šè¿‡";
 				rq=doAcceptOrAutoTempApplyOpt(apply);	
 			}else if(status==Integer.parseInt(MyProducttempApplyStatusEnum.refuse.toString())){
 				rq.setStatu(ReturnStatus.Success);
-				content="ÉóºË²»Í¨¹ı";
-				rq.setStatusreson("¾Ü¾ø³É¹¦");
+				content="å®¡æ ¸ä¸é€šè¿‡";
+				rq.setStatusreson("æ‹’ç»æˆåŠŸ");
 			}
 			apply.setStatus(status);
 			myproducttempapplyMapper.updateByPrimaryKey(apply);	
 			
-			//²åÈëÉóºËÈÕÖ¾±í¼ÇÂ¼
+			//æ’å…¥å®¡æ ¸æ—¥å¿—è¡¨è®°å½•
 			PMyproducttempverlogs verlog=new PMyproducttempverlogs();
 			verlog.setCartid(apply.getCartid());
 			verlog.setContent(content);
@@ -503,38 +503,38 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			
 		}else{
 			rq.setStatu(ReturnStatus.SystemError);
-			rq.setStatusreson("ÕÒ²»µ½ÉêÇë¼ÇÂ¼");
+			rq.setStatusreson("æ‰¾ä¸åˆ°ç”³è¯·è®°å½•");
 		}
 
 		return rq;
 	}
 	
 	/**
-	 * ½ÓÊÜÑûÇë»òibsºóÌ¨ÉóºËÓÃ»§ÉêÇë²Ù×÷ (¹«ÓÃ·½·¨)
+	 * æ¥å—é‚€è¯·æˆ–ibsåå°å®¡æ ¸ç”¨æˆ·ç”³è¯·æ“ä½œ (å…¬ç”¨æ–¹æ³•)
 	 * @param apply
 	 * @return
 	 */
 	public ReturnModel doAcceptOrAutoTempApplyOpt(PMyproducttempapply apply){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);	
-		//µÃµ½Ä£°å
+		//å¾—åˆ°æ¨¡æ¿
 		PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(apply.getTempid());
 		if(temp==null){
 			rq.setStatu(ReturnStatus.SystemError);
-			rq.setStatusreson("Ä£°å²»´æÔÚ£¡");
+			rq.setStatusreson("æ¨¡æ¿ä¸å­˜åœ¨ï¼");
 			return rq;
 		}
-		//ÅĞ¶ÏÊÇ·ñÒÑÉóºËÍ¨¹ıÒÑÉú³É¹ı¿Í»§É¨ÂëµÄ×÷Æ·
+		//åˆ¤æ–­æ˜¯å¦å·²å®¡æ ¸é€šè¿‡å·²ç”Ÿæˆè¿‡å®¢æˆ·æ‰«ç çš„ä½œå“
 		if(apply.getStatus()!=null&&apply.getStatus()==Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString())){
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("ÉóºËÒÑÍ¨¹ı£¡");
+			rq.setStatusreson("å®¡æ ¸å·²é€šè¿‡ï¼");
 			return rq;
 		}
 		
-		//µÃµ½Ä£°å×÷Æ·
+		//å¾—åˆ°æ¨¡æ¿ä½œå“
 		PMyproducts myproducts= myMapper.selectByPrimaryKey(temp.getCartid());
 		if(myproducts!=null){	
-			//Èç¹ûÕâ¸öÓÃ»§ÒÔÇ°Ã»ÓĞÉêÇë£¬ÔòcopyÒ»·İ×÷Æ·
+			//å¦‚æœè¿™ä¸ªç”¨æˆ·ä»¥å‰æ²¡æœ‰ç”³è¯·ï¼Œåˆ™copyä¸€ä»½ä½œå“
 			PMyproducts newproducts=new PMyproducts();
 			newproducts.setAuthor(myproducts.getAuthor());
 			newproducts.setCreatetime(new Date());
@@ -590,8 +590,8 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			
 			PMyproductsinvites invoMo=new PMyproductsinvites();
 			invoMo.setCartid(newproducts.getCartid());
-			invoMo.setUserid(newproducts.getUserid());//ÑûÇëÈËID
-			invoMo.setInviteuserid(apply.getUserid());//±»ÑûÇëÈËID
+			invoMo.setUserid(newproducts.getUserid());//é‚€è¯·äººID
+			invoMo.setInviteuserid(apply.getUserid());//è¢«é‚€è¯·äººID
 			invoMo.setInvitetype(Integer.parseInt(InviteType.scanQRInvite.toString()));
 			invoMo.setStatus(Integer.parseInt(InviteStatus.agree.toString()));
 			invoMo.setCreatetime(new Date());
@@ -605,13 +605,13 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			}
 			inviteMapper.insert(invoMo);
 			
-			//Ä£°å¿Í»§»ñÈ¡Êı¼Ó1
+			//æ¨¡æ¿å®¢æˆ·è·å–æ•°åŠ 1
 			int count=(temp.getCount()==null?0:temp.getCount());
 			count++;
 			temp.setCount(count);				
 			myproducttempMapper.updateByPrimaryKeySelective(temp);
 			
-			//Ô±¹¤Ä£°åÍ¨¹ıÈËÊı¼Ó1
+			//å‘˜å·¥æ¨¡æ¿é€šè¿‡äººæ•°åŠ 1
 			PMyproducttempusers tempuser=myTempUserMapper.selectByUserIdAndTempId(apply.getCompanyuserid(), apply.getTempid());
 			if(tempuser!=null){
 				tempuser.setPasscount((tempuser.getPasscount()==null?0:tempuser.getPasscount())+1);
@@ -619,10 +619,10 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			}
 			
 			
-			//Ìí¼ÓÓ°Â¥ÒÑ»ñÈ¡µÄ¿Í»§ĞÅÏ¢
+			//æ·»åŠ å½±æ¥¼å·²è·å–çš„å®¢æˆ·ä¿¡æ¯
 			UBranchusers branchuser=branchuserMapper.selectByPrimaryKey(myproducts.getUserid());
 			if(branchuser!=null){
-				//Ìí¼Ó³ÉÎªÓ°Â¥µÄÒÑ»ñÈ¡¿Í»§
+				//æ·»åŠ æˆä¸ºå½±æ¥¼çš„å·²è·å–å®¢æˆ·
 				UAgentcustomers cus= customerMapper.getCustomersByAgentUserId(branchuser.getAgentuserid(),apply.getUserid());
 				if(cus==null){
 					cus=new UAgentcustomers();
@@ -666,24 +666,24 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 					map.put("property", style.getPropertystr());
 				}
 			}
-			//·´Ğ´ÉêÇë¼ÇÂ¼µÄcartid
+			//åå†™ç”³è¯·è®°å½•çš„cartid
 			apply.setCartid(newproducts.getCartid());	
-			//ÊÇÄ£°åµÚ¼¸¸öÄÜÍ¨¹ıµÄÈË£¬·´Ğ´ĞòºÅ
+			//æ˜¯æ¨¡æ¿ç¬¬å‡ ä¸ªèƒ½é€šè¿‡çš„äººï¼Œåå†™åºå·
 			Integer sort=applyMapper.getMaxSortByTempId(temp.getTempid());
 			sort=(sort==null)?1:sort.intValue()+1;
 			apply.setSort(sort);
 			
 			rq.setBasemodle(map);
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("ÉóºËÍ¨¹ı");
+			rq.setStatusreson("å®¡æ ¸é€šè¿‡");
 		}else{
 			rq.setStatu(ReturnStatus.SystemError);
-			rq.setStatusreson("Ä£°å×÷Æ·²»´æÔÚ£¡");
+			rq.setStatusreson("æ¨¡æ¿ä½œå“ä¸å­˜åœ¨ï¼");
 		}
 		return rq;
 	}
 	/**
-	 * Ó°Â¥Ô±¹¤¸ºÔğÄ£°åĞÅÏ¢ÁĞ±í
+	 * å½±æ¥¼å‘˜å·¥è´Ÿè´£æ¨¡æ¿ä¿¡æ¯åˆ—è¡¨
 	 * @return
 	 */
 	public ReturnModel find_BranchUserOfTemp(int index,int size,Long branchUserId,Integer tempid){
@@ -709,7 +709,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 					usertemp.setPasscount(tempuser.getPasscount()==null?0:tempuser.getPasscount());
 					usertemp.setApplycount(tempuser.getApplycount()==null?0:tempuser.getApplycount());					
 					usertemp.setStatus(tempuser.getStatus()==null?0:tempuser.getStatus());
-					//Èç¹ûÓĞ¸ºÔğÈ¨ÏŞ
+					//å¦‚æœæœ‰è´Ÿè´£æƒé™
 					if(tempuser.getStatus()!=null&&tempuser.getStatus().intValue()==1){
 						PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempid);
 						String redirct_url="apply/form?workId="+temp.getCartid()+"&sid="+buser.getUserid()+"&type="+temp.getType();			
@@ -735,34 +735,34 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			}
 			
 			
-			//¸ù¾İÒ»¸öPageInfo³õÊ¼»¯ÁíÒ»¸öpage
+			//æ ¹æ®ä¸€ä¸ªPageInfoåˆå§‹åŒ–å¦ä¸€ä¸ªpage
 			PageInfoUtil<UBranchUserTempVo> reusltPage=new PageInfoUtil<UBranchUserTempVo>(reuslt, usertemplist);
 			rq.setBasemodle(reusltPage);
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("»ñÈ¡ÁĞ±í³É¹¦£¡");
+			rq.setStatusreson("è·å–åˆ—è¡¨æˆåŠŸï¼");
 		}
 		return rq;
 	}
 	
 	/**
-	 * ÉèÖÃÔ±¹¤Ä£°å¸ºÔğÈ¨ÏŞ
+	 * è®¾ç½®å‘˜å·¥æ¨¡æ¿è´Ÿè´£æƒé™
 	 * @return
 	 */
 	public ReturnModel setUserTempPermission(Long userId,Integer tempid,Integer status){
 		ReturnModel rq=new ReturnModel();
 		if(tempid==null){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("²ÎÊı´íÎó£ºtempidÎª¿Õ£¡");
+			rq.setStatusreson("å‚æ•°é”™è¯¯ï¼štempidä¸ºç©ºï¼");
 			return rq;
 		}
 		if(userId==null){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("²ÎÊı´íÎó£ºuserIdÎª¿Õ£¡");
+			rq.setStatusreson("å‚æ•°é”™è¯¯ï¼šuserIdä¸ºç©ºï¼");
 			return rq;
 		}
 		if(status==null){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("²ÎÊı´íÎó£ºstatusÎª¿Õ£¡");
+			rq.setStatusreson("å‚æ•°é”™è¯¯ï¼šstatusä¸ºç©ºï¼");
 			return rq;
 		}
 		PMyproducttempusers tempuser=myTempUserMapper.selectByUserIdAndTempId(userId, tempid);
@@ -780,29 +780,29 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			myTempUserMapper.updateByPrimaryKeySelective(tempuser);
 		}
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("ÉèÖÃ³É¹¦£¡");
+		rq.setStatusreson("è®¾ç½®æˆåŠŸï¼");
 		return rq;
 	}
 	
 	/**
-	 * ÉèÖÃÔ±¹¤Ä£°åÉóºË¸ºÔğÈ¨ÏŞ
+	 * è®¾ç½®å‘˜å·¥æ¨¡æ¿å®¡æ ¸è´Ÿè´£æƒé™
 	 * @return
 	 */
 	public ReturnModel setUserTempVerfiyPermission(Long userId,Integer tempid,Integer status){
 		ReturnModel rq=new ReturnModel();
 		if(tempid==null){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("²ÎÊı´íÎó£ºtempidÎª¿Õ£¡");
+			rq.setStatusreson("å‚æ•°é”™è¯¯ï¼štempidä¸ºç©ºï¼");
 			return rq;
 		}
 		if(userId==null){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("²ÎÊı´íÎó£ºuserIdÎª¿Õ£¡");
+			rq.setStatusreson("å‚æ•°é”™è¯¯ï¼šuserIdä¸ºç©ºï¼");
 			return rq;
 		}
 		if(status==null){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("²ÎÊı´íÎó£ºstatusÎª¿Õ£¡");
+			rq.setStatusreson("å‚æ•°é”™è¯¯ï¼šstatusä¸ºç©ºï¼");
 			return rq;
 		}
 		PMyproducttempverusers verfiytempuser=myTempveruserMapper.selectByUserIdAndTempId(userId, tempid);
@@ -818,29 +818,29 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			myTempveruserMapper.updateByPrimaryKeySelective(verfiytempuser);
 		}
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("ÉèÖÃ³É¹¦£¡");
+		rq.setStatusreson("è®¾ç½®æˆåŠŸï¼");
 		return rq;
 	}
 	
 	/**
-	 * ÉóºËÄ£°åÉêÇëÓÃ»§×÷Æ·ÊÇ·ñÍ¨¹ı
+	 * å®¡æ ¸æ¨¡æ¿ç”³è¯·ç”¨æˆ·ä½œå“æ˜¯å¦é€šè¿‡
 	 * @return
 	 */
 	public ReturnModel audit_TempApplyProduct(Long userId,Long cartid,Integer status,String reason){
 		ReturnModel rq=new ReturnModel();
 		if(cartid==null){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("²ÎÊı´íÎó£ºcartidÎª¿Õ£¡");
+			rq.setStatusreson("å‚æ•°é”™è¯¯ï¼šcartidä¸ºç©ºï¼");
 			return rq;
 		}		
 		if(status==null){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("²ÎÊı´íÎó£ºstatusÎª¿Õ£¡");
+			rq.setStatusreson("å‚æ•°é”™è¯¯ï¼šstatusä¸ºç©ºï¼");
 			return rq;
 		}
 		if (!ObjectUtil.isEmpty(reason) && !ObjectUtil.validSqlStr(reason)) {
 			rq.setStatu(ReturnStatus.ParamError_2);
-			rq.setStatusreson("²»Í¨¹ıÔ­Òò´æÔÚÎ£ÏÕ");
+			rq.setStatusreson("ä¸é€šè¿‡åŸå› å­˜åœ¨å±é™©");
 			return rq;
 		}
 		
@@ -859,70 +859,70 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		}
 		
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("ÉèÖÃ³É¹¦£¡");
+		rq.setStatusreson("è®¾ç½®æˆåŠŸï¼");
 		return rq;
 	}
 	
 	
 	/**
-	 *ÉèÖÃ»î¶¯×î´ó±¨ÃûÈËÊı
+	 *è®¾ç½®æ´»åŠ¨æœ€å¤§æŠ¥åäººæ•°
 	 * @return
 	 */
 	public ReturnModel setTempMaxApplyCount(Long userId,Integer tempid,Integer maxApplyCount){
 		ReturnModel rq=new ReturnModel();
 		if(tempid==null){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("²ÎÊı´íÎó£ºtempidÎª¿Õ£¡");
+			rq.setStatusreson("å‚æ•°é”™è¯¯ï¼štempidä¸ºç©ºï¼");
 			return rq;
 		}		
 		if(maxApplyCount==null){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("²ÎÊı´íÎó£ºmaxApplyCountÎª¿Õ£¡");
+			rq.setStatusreson("å‚æ•°é”™è¯¯ï¼šmaxApplyCountä¸ºç©ºï¼");
 			return rq;
 		}
 		PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempid);
 		if(temp!=null){
-			//µÃµ½×Ü±¨ÃûÈËÊı
+			//å¾—åˆ°æ€»æŠ¥åäººæ•°
 			int applycount=(temp.getApplycount()==null?0:temp.getApplycount());
 			if(maxApplyCount.intValue()!=0&&maxApplyCount.intValue()<applycount){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("±¨ÃûÈËÊıÏŞÖÆ²»µÃĞ¡ÓÚ×Ü±¨ÃûÈËÊı£¡");
+				rq.setStatusreson("æŠ¥åäººæ•°é™åˆ¶ä¸å¾—å°äºæ€»æŠ¥åäººæ•°ï¼");
 				return rq;
 			}
 			temp.setMaxapplycount(maxApplyCount);	
 			myproducttempMapper.updateByPrimaryKeySelective(temp);
 		}
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("ÉèÖÃ³É¹¦£¡");
+		rq.setStatusreson("è®¾ç½®æˆåŠŸï¼");
 		return rq;
 	}
 	
 	/**
-	 *ÉèÖÃ»î¶¯Íê³ÉÄ¿±ê
+	 *è®¾ç½®æ´»åŠ¨å®Œæˆç›®æ ‡
 	 * @return
 	 */
 	public ReturnModel setTempCompletecondition(Long userId,Integer tempid,Integer blessCount,Integer maxCompleteCount){
 		ReturnModel rq=new ReturnModel();
 		if(tempid==null){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("²ÎÊı´íÎó£ºtempidÎª¿Õ£¡");
+			rq.setStatusreson("å‚æ•°é”™è¯¯ï¼štempidä¸ºç©ºï¼");
 			return rq;
 		}		
 		if(blessCount==null){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("²ÎÊı´íÎó£ºblessCountÎª¿Õ£¡");
+			rq.setStatusreson("å‚æ•°é”™è¯¯ï¼šblessCountä¸ºç©ºï¼");
 			return rq;
 		}
 		if(maxCompleteCount==null){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("²ÎÊı´íÎó£ºmaxCompleteCountÎª¿Õ£¡");
+			rq.setStatusreson("å‚æ•°é”™è¯¯ï¼šmaxCompleteCountä¸ºç©ºï¼");
 			return rq;
 		}
 		PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempid);
 		if(temp!=null){
 			if(temp.getStatus()!=null&&temp.getStatus().intValue()==Integer.parseInt(MyProductTempStatusEnum.enable.toString())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("²»ºÃÒâË¼£¬»î¶¯ÒÑ¿ªÆô²»ÄÜĞŞ¸ÄÕâĞ©ÉèÖÃ");
+				rq.setStatusreson("ä¸å¥½æ„æ€ï¼Œæ´»åŠ¨å·²å¼€å¯ä¸èƒ½ä¿®æ”¹è¿™äº›è®¾ç½®");
 				return rq;
 			}
 			temp.setBlesscount(blessCount);
@@ -930,30 +930,30 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			myproducttempMapper.updateByPrimaryKeySelective(temp);
 		}
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("ÉèÖÃ³É¹¦£¡");
+		rq.setStatusreson("è®¾ç½®æˆåŠŸï¼");
 		return rq;
 	}
 	
 	
 	/**
-	 * ±£´æÄ£°å¶şÎ¬ÂëÍ¼Æ¬
+	 * ä¿å­˜æ¨¡æ¿äºŒç»´ç å›¾ç‰‡
 	 * @return
 	 * @throws Exception 
 	 */
 	public ReturnModel saveProductTempRQcode(String url) throws Exception{
 		ReturnModel rq=new ReturnModel();
-		// »ñÈ¡ÓÃ»§µÄµ±Ç°¹¤×÷Ö÷Ä¿Â¼ 
+		// è·å–ç”¨æˆ·çš„å½“å‰å·¥ä½œä¸»ç›®å½• 
 		String sep=System.getProperty("file.separator");
 		String currentWorkDir = System.getProperty("user.home") +sep+ "imagedownloadtemp"+sep;
 		FileUtils.isDirExists(currentWorkDir);
 		String filename = "tempRqcode.jpg";
 		File file = new File(currentWorkDir + filename);
 		BufferedImage bufImg = QRCodeUtil.createImage(url, "", true);
-		// Éú³É¶şÎ¬ÂëQRCodeÍ¼Æ¬
+		// ç”ŸæˆäºŒç»´ç QRCodeå›¾ç‰‡
 		ImageIO.write(bufImg, "jpg", file);
 		rq.setBasemodle(file.getPath());
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("»ñÍ¼Æ¬³É¹¦£¡");
+		rq.setStatusreson("è·å›¾ç‰‡æˆåŠŸï¼");
 		return rq;
 	}
 		

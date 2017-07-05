@@ -25,7 +25,7 @@ public class Json2Objects {
 
 	/**
 	 * 001
-	 * 供应商报名页申请
+	 * 渚涘簲鍟嗘姤鍚嶉〉鐢宠
 	 * @param addrJson
 	 * @return
 	 */
@@ -69,7 +69,7 @@ public class Json2Objects {
 	
 	/**
 	 * 002
-	 * 保存参数对象转化
+	 * 淇濆瓨鍙傛暟瀵硅薄杞寲
 	 * @param result
 	 * @return
 	 */

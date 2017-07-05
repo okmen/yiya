@@ -57,10 +57,10 @@ import com.github.pagehelper.PageInfo;
 @Service("pbs_orderMgtService")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
 public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
-	//¿Í»§ĞÅÏ¢´¦Àí
+	//å®¢æˆ·ä¿¡æ¯å¤„ç†
 	@Resource(name = "pic_memberMgtService")
 	private IPic_MemberMgtService memberMgtService;
-	/*------------------¶©µ¥Ä£¿é--------------------------------------*/
+	/*------------------è®¢å•æ¨¡å—--------------------------------------*/
 	@Autowired
 	private OUserordersMapper userOrdersMapper;
 	@Autowired 
@@ -80,7 +80,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	@Autowired
 	private PMyproductdetailsMapper mydetailMapper;
 	
-	/*----------------------´úÀíÄ£¿é--------------------------*/
+	/*----------------------ä»£ç†æ¨¡å—--------------------------*/
 	@Autowired
 	private UBranchesMapper branchesMapper;
 	@Autowired
@@ -114,7 +114,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 				}
 				int orderType = order.getOrdertype() == null ? 0 : order.getOrdertype();
 				order.setOrdertype(orderType);
-				//Ó°Â¥Ö±½ÓÏÂµ¥
+				//å½±æ¥¼ç›´æ¥ä¸‹å•
 				if (orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
 					product.setBranchesprovince(address.getProvince());
 					product.setBranchesrcity(address.getCity());
@@ -123,7 +123,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					product.setBranchesPhone(address.getPhone());
 					product.setBranchesUserName(address.getReciver());
 				}else{
-					//ÆÕÍ¨ÓÃ»§ÏÂµ¥Èç¹ûÊÇÓ°Â¥ÇÀµ¥
+					//æ™®é€šç”¨æˆ·ä¸‹å•å¦‚æœæ˜¯å½±æ¥¼æŠ¢å•
 					if(order.getIsbranch()!=null&&order.getIsbranch()==1){
 						if(branch!=null){
 							product.setBranchesprovince(regionService.getProvinceName(branch.getProvince()));
@@ -147,17 +147,17 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	}
 	
 	/**
-	 * ĞŞ¸ÄÔËµ¥ºÅ
+	 * ä¿®æ”¹è¿å•å·
 	 */
 	public ReturnModel editLogistics(String orderId,String expressCom,String expressOrder,String expressCode) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		OUserorders userorders = userOrdersMapper.selectByPrimaryKey(orderId);
 		
-		//²éÕÒÔËµ¥ºÅÏàÍ¬µÄ¶©µ¥ºÅ
+		//æŸ¥æ‰¾è¿å•å·ç›¸åŒçš„è®¢å•å·
 		if(userorders!=null){
 			if(userorders.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
 				rq.setStatu(ReturnStatus.ParamError);		
-				rq.setStatusreson("Î´Ö§¸¶µÄ¶©µ¥²»ÄÜÌí¼ÓÎïÁ÷ĞÅÏ¢£¡");
+				rq.setStatusreson("æœªæ”¯ä»˜çš„è®¢å•ä¸èƒ½æ·»åŠ ç‰©æµä¿¡æ¯ï¼");
 				return rq;
 			}
 			List<OUserorders> orderList=orderDao.findUserOrderByExpressOrder(userorders.getExpressorder(), userorders.getExpresscom());
@@ -167,15 +167,15 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					order.setExpressorder(expressOrder);
 					order.setExpresscode(expressCode);
 					order.setDeliverytime(new Date()); 
-					//ĞŞ¸Ä¶©µ¥×´Ì¬ÎªÒÑ·¢»õ×´Ì¬
+					//ä¿®æ”¹è®¢å•çŠ¶æ€ä¸ºå·²å‘è´§çŠ¶æ€
 					order.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
 					userOrdersMapper.updateByPrimaryKeySelective(order);
 				}
 			}
-			//  ĞŞ¸Ä±¾ÕÅ¶©µ¥ 
+			//  ä¿®æ”¹æœ¬å¼ è®¢å• 
 			if(userorders.getOrdertype()==null) userorders.setOrdertype(0);
 			
-			//ĞŞ¸Ä¶©µ¥×´Ì¬ÎªÒÑ·¢»õ×´Ì¬
+			//ä¿®æ”¹è®¢å•çŠ¶æ€ä¸ºå·²å‘è´§çŠ¶æ€
 			userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
 					
 			userorders.setExpresscom(expressCom);
@@ -183,7 +183,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			userorders.setExpresscode(expressCode);
 			userOrdersMapper.updateByPrimaryKeySelective(userorders);
 			
-			//·¢ËÍ¶ÌĞÅ--ÒÑ·¢»õ
+			//å‘é€çŸ­ä¿¡--å·²å‘è´§
 			OOrderaddress addr=addressMapper.selectByPrimaryKey(userorders.getOrderaddressid());
 			if(addr!=null){
 				SmsParam sendparam=new SmsParam();
@@ -194,10 +194,10 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(userorders);
-			rq.setStatusreson("ĞŞ¸ÄÔËµ¥ºÅ³É¹¦!");
+			rq.setStatusreson("ä¿®æ”¹è¿å•å·æˆåŠŸ!");
 		}else{
 			rq.setStatu(ReturnStatus.ParamError);		
-			rq.setStatusreson("orderId²ÎÊı´«ÈëÓĞÎó£¡");
+			rq.setStatusreson("orderIdå‚æ•°ä¼ å…¥æœ‰è¯¯ï¼");
 			return rq;
 		}
 		
@@ -210,42 +210,42 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 		if(userorders!=null){
 			if(userorders.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
 				rq.setStatu(ReturnStatus.ParamError);		
-				rq.setStatusreson("Î´Ö§¸¶µÄ¶©µ¥²»ÄÜÌí¼ÓÔË·Ñ£¡");
+				rq.setStatusreson("æœªæ”¯ä»˜çš„è®¢å•ä¸èƒ½æ·»åŠ è¿è´¹ï¼");
 				return rq;
 			}
 			
 			if(postage==null)postage=0.0;
-			//Ê×´ÎÌîĞ´ÔËµ¥ºÅ£¬ÔòÖ´ĞĞ×Ô¶¯¿ÛÔË·Ñ¿î²Ù×÷
+			//é¦–æ¬¡å¡«å†™è¿å•å·ï¼Œåˆ™æ‰§è¡Œè‡ªåŠ¨æ‰£è¿è´¹æ¬¾æ“ä½œ
 			if(userorders.getPostage()==null||userorders.getPostage().doubleValue()<=0){
 				accountService.add_accountsLog(userorders.getBranchuserid(), Integer.parseInt(AccountLogType.use_freight.toString()), postage, userorders.getPayid(), userorders.getUserorderid());
 			}else if(userorders.getPostage()!=null&&userorders.getPostage().doubleValue()>0){
 				rq.setStatu(ReturnStatus.OrderError);
-				rq.setStatusreson("ÒÑÍê³ÉÔË·Ñ×Ô¶¯¿Û¿î²Ù×÷£¬²»ÄÜĞŞ¸Ä£¡");
+				rq.setStatusreson("å·²å®Œæˆè¿è´¹è‡ªåŠ¨æ‰£æ¬¾æ“ä½œï¼Œä¸èƒ½ä¿®æ”¹ï¼");
 				return rq;
 			}
 			
-			//ĞŞ¸Ä¶©µ¥×´Ì¬ÎªÒÑ·¢»õ×´Ì¬
+			//ä¿®æ”¹è®¢å•çŠ¶æ€ä¸ºå·²å‘è´§çŠ¶æ€
 			userorders.setPostage(postage);
 			userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
 			userOrdersMapper.updateByPrimaryKeySelective(userorders);
 			
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(userorders);
-			rq.setStatusreson("Ìí¼ÓÔË·Ñ³É¹¦!");
+			rq.setStatusreson("æ·»åŠ è¿è´¹æˆåŠŸ!");
 		}else{
 			rq.setStatu(ReturnStatus.ParamError);		
-			rq.setStatusreson("orderId²ÎÊı´«ÈëÓĞÎó£¡");
+			rq.setStatusreson("orderIdå‚æ•°ä¼ å…¥æœ‰è¯¯ï¼");
 			return rq;
 		}
 		
 		return rq;
 	}  
 	/**
-	 * ¶à¸ö¶©µ¥ÊÇ·ñ¿ÉÒÔÔËµ¥ºÏ²¢
-	 * Ìõ¼ş£º 1£ºÈç¹ûÓĞ¶à¸ö¶©µ¥ÓĞ²»Í¬ÔËµ¥ĞÅÏ¢£¬Ôò²»ÄÜºÏ²¢
-	 * 		 2£º±ØĞëÊÇÍ¬Ò»ÓÃ»§µÄ¶©µ¥²ÅÄÜ½øĞĞºÏµ¥²Ù×÷
-	 * 	     2£ºÈç¹ûËùÓĞ¶©µ¥¶¼Ã»ÓĞÔËµ¥ĞÅÏ¢£¬ÔòĞèÒªµ¯³öÂ¼ÈëÔËµ¥µÄµ¯³ö¿ò
-	 *       3£ºÈç¹ûÖ»ÓĞÒ»¸ö¶©µ¥ÓĞÔËµ¥ĞÅÏ¢£¬Ôò°´ÓĞÔËµ¥ºÅµÄ¶©µ¥²¹Â¼ÆäËü¶©µ¥ÔËµ¥ĞÅÏ¢
+	 * å¤šä¸ªè®¢å•æ˜¯å¦å¯ä»¥è¿å•åˆå¹¶
+	 * æ¡ä»¶ï¼š 1ï¼šå¦‚æœæœ‰å¤šä¸ªè®¢å•æœ‰ä¸åŒè¿å•ä¿¡æ¯ï¼Œåˆ™ä¸èƒ½åˆå¹¶
+	 * 		 2ï¼šå¿…é¡»æ˜¯åŒä¸€ç”¨æˆ·çš„è®¢å•æ‰èƒ½è¿›è¡Œåˆå•æ“ä½œ
+	 * 	     2ï¼šå¦‚æœæ‰€æœ‰è®¢å•éƒ½æ²¡æœ‰è¿å•ä¿¡æ¯ï¼Œåˆ™éœ€è¦å¼¹å‡ºå½•å…¥è¿å•çš„å¼¹å‡ºæ¡†
+	 *       3ï¼šå¦‚æœåªæœ‰ä¸€ä¸ªè®¢å•æœ‰è¿å•ä¿¡æ¯ï¼Œåˆ™æŒ‰æœ‰è¿å•å·çš„è®¢å•è¡¥å½•å…¶å®ƒè®¢å•è¿å•ä¿¡æ¯
 	 *       
 	 * @param orderIds
 	 * @param postage
@@ -256,7 +256,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 		ReturnModel rq = new ReturnModel();
 		if(orderIds==null||orderIds.equals("")){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("¶©µ¥ºÅ²»ÄÜÎª¿Õ£¡");
+			rq.setStatusreson("è®¢å•å·ä¸èƒ½ä¸ºç©ºï¼");
 			return rq;
 		}
 		String orderArr[]=orderIds.split(",");
@@ -271,7 +271,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 				OUserorders order=userOrdersMapper.selectByPrimaryKey(orderid);
 				if(order.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
 					rq.setStatu(ReturnStatus.ParamError);		
-					rq.setStatusreson("´æÔÚÎ´Ö§¸¶µÄ¶©µ¥£¬²»ÄÜ½øĞĞÔËµ¥ºÏµ¥²Ù×÷£¡");
+					rq.setStatusreson("å­˜åœ¨æœªæ”¯ä»˜çš„è®¢å•ï¼Œä¸èƒ½è¿›è¡Œè¿å•åˆå•æ“ä½œï¼");
 					return rq;
 				}
 				if(order!=null){
@@ -284,7 +284,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			}
 			if(typeHash.size()>1){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("²»Í¬ÓÃ»§¶©µ¥²»ÄÜ½øĞĞÔËµ¥ºÏµ¥²Ù×÷£¡");
+				rq.setStatusreson("ä¸åŒç”¨æˆ·è®¢å•ä¸èƒ½è¿›è¡Œè¿å•åˆå•æ“ä½œï¼");
 				return rq;
 			}
 		}
@@ -292,7 +292,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			for (String orderid : orderArr) {
 				OUserorders order=userOrdersMapper.selectByPrimaryKey(orderid);
 				if(order!=null){
-					//Èç¹ûÊÇ´úÀíÉÌ¶©µ¥ºÏµ¥
+					//å¦‚æœæ˜¯ä»£ç†å•†è®¢å•åˆå•
 					if(ordertypeLast==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){
 						if(!userIdHash.containsKey(order.getBranchuserid())){
 							userIdHash.put(order.getBranchuserid(), order.getUserorderid());
@@ -303,7 +303,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 							expressHash.put(order.getExpressorder(), order);
 						}
 					}else{
-						//·ñÔò¾ÍÊÇÆÕÍ¨ÓÃ»§µÄºÏµ¥
+						//å¦åˆ™å°±æ˜¯æ™®é€šç”¨æˆ·çš„åˆå•
 						if(!userIdHash.containsKey(order.getUserid())){
 							userIdHash.put(order.getUserid(), order.getUserorderid());
 						}
@@ -318,12 +318,12 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			}
 			if(userIdHash.size()>1){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("²»Í¬ÓÃ»§µÄ¶©µ¥²»ÄÜ½øĞĞÔËµ¥ºÏµ¥²Ù×÷£¡");
+				rq.setStatusreson("ä¸åŒç”¨æˆ·çš„è®¢å•ä¸èƒ½è¿›è¡Œè¿å•åˆå•æ“ä½œï¼");
 				return rq;
 			}
 			if(expressHash.size()>0){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("´æÔÚº¬ÓÃÔËµ¥ĞÅÏ¢µÄ¶©µ¥£¬²»ÄÜºÏµ¥£¡");
+				rq.setStatusreson("å­˜åœ¨å«ç”¨è¿å•ä¿¡æ¯çš„è®¢å•ï¼Œä¸èƒ½åˆå•ï¼");
 				return rq;
 			}
 			
@@ -339,8 +339,8 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	
 	/**
 	 * 
-	 * @param type 1:ËùÓĞ¶©µ¥Ã»ÓĞÔËµ¥ĞÅÏ¢£¬2£ºÓĞÆäÖĞÒ»ÕÅÓĞÔËµ¥ĞÅÏ¢
-	 * @param orderIds ĞèÒª²¹ÌîÔËµ¥ĞÅÏ¢µÄÔËµ¥ºÅ
+	 * @param type 1:æ‰€æœ‰è®¢å•æ²¡æœ‰è¿å•ä¿¡æ¯ï¼Œ2ï¼šæœ‰å…¶ä¸­ä¸€å¼ æœ‰è¿å•ä¿¡æ¯
+	 * @param orderIds éœ€è¦è¡¥å¡«è¿å•ä¿¡æ¯çš„è¿å•å·
 	 * @param expressCom
 	 * @param expressOrder
 	 * @param postage
@@ -351,10 +351,10 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 		ReturnModel rq = new ReturnModel();
 		if(orderIds==null||orderIds.equals("")){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("¶©µ¥ºÅ²»ÄÜÎª¿Õ£¡");
+			rq.setStatusreson("è®¢å•å·ä¸èƒ½ä¸ºç©ºï¼");
 			return rq;
 		}
-		//ÔÙ´ÎĞ£ÑéÒ»ÏÂ
+		//å†æ¬¡æ ¡éªŒä¸€ä¸‹
 		rq=isCanMergeOrderLogistic(orderIds);
 		if(rq.getStatu()!=ReturnStatus.Success){			
 			return rq;
@@ -368,7 +368,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					userorders.setExpresscom(expressCom);
 					userorders.setExpressorder(expressOrder);
 					userorders.setExpresscode(expressCode);
-					//Ö»ÄÜµÚÒ»ÕÅµ¥ÇÒordertype=1²Å»á×Ô¶¯¿Û¿î
+					//åªèƒ½ç¬¬ä¸€å¼ å•ä¸”ordertype=1æ‰ä¼šè‡ªåŠ¨æ‰£æ¬¾
 					if(i==0&&ordertype==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){
 						ReturnModel rqmodel=addPostage(orderArr[i], postage);
 						if(rqmodel.getStatu()!=ReturnStatus.Success){
@@ -378,14 +378,14 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 						userorders.setPostage(0.0);
 					}
 					
-					//ĞŞ¸Ä¶©µ¥×´Ì¬ÎªÒÑ·¢»õ×´Ì¬
+					//ä¿®æ”¹è®¢å•çŠ¶æ€ä¸ºå·²å‘è´§çŠ¶æ€
 					userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
 					userOrdersMapper.updateByPrimaryKeySelective(userorders);
 				}
 			}
 		}
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("ºÏ²¢ÔËµ¥ĞÅÏ¢³É¹¦£¡");
+		rq.setStatusreson("åˆå¹¶è¿å•ä¿¡æ¯æˆåŠŸï¼");
 		return rq;
 		
 	}
@@ -397,10 +397,10 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 		Date nowtime=new Date();
 		c1.setTime(nowtime); 
 		String file_temp=DateUtil.getTimeStr(c1.getTime(), "yyyyMMddHHmm");
-		//´´½¨ÎÄ¼ş¼Ğ
+		//åˆ›å»ºæ–‡ä»¶å¤¹
 		FileUtils.isDirExists(basePath+sep+file_temp);
 		for (PbsUserOrderResultVO order : orderlist) {
-			FileUtils.isDirExists(basePath+sep+file_temp+sep+order.getBuyeruserid()+"-"+order.getProducttitle()+"-"+order.getPropertystr().replaceAll("/", "-")+"¡Á"+order.getCount()+"("+order.getUserorderid()+")");
+			FileUtils.isDirExists(basePath+sep+file_temp+sep+order.getBuyeruserid()+"-"+order.getProducttitle()+"-"+order.getPropertystr().replaceAll("/", "-")+"Ã—"+order.getCount()+"("+order.getUserorderid()+")");
 			int i=1;			
 			List<OOrderproductdetails> detallist=orderDao.findOrderProductDetailsByProductOrderId(order.getOrderproductid());
 			for (OOrderproductdetails detail : detallist) {
@@ -409,7 +409,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 				if(detail.getBackimageurl()!=null)
 					detail.setBackimageurl("http://pic.bbyiya.com/"+detail.getBackimageurl()); 
 				
-				String file_dir=basePath+sep+file_temp+sep+order.getBuyeruserid()+"-"+order.getProducttitle()+"-"+order.getPropertystr().replaceAll("/", "-")+"¡Á"+order.getCount()+"("+order.getUserorderid()+")";
+				String file_dir=basePath+sep+file_temp+sep+order.getBuyeruserid()+"-"+order.getProducttitle()+"-"+order.getPropertystr().replaceAll("/", "-")+"Ã—"+order.getCount()+"("+order.getUserorderid()+")";
 				
 				String fileFull_name=file_dir+sep+i+".jpg";
 				i++;
@@ -438,7 +438,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			
 		}
 		
-		//Ñ¹Ëõ³ÉzipÎÄ¼ş		
+		//å‹ç¼©æˆzipæ–‡ä»¶		
 		FileToZip z = new FileToZip();  
 		z.zip(basePath+sep+file_temp, basePath+sep+file_temp+".zip"); 	
 		File file = new File(basePath+sep+file_temp+".zip");
@@ -447,7 +447,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	}
 	
 	/**
-	 * ÏÂÔØÔ­Ê¼Í¼Æ¬
+	 * ä¸‹è½½åŸå§‹å›¾ç‰‡
 	 */
 	public String pbsdownloadOriginalImage(List<PbsUserOrderResultVO> orderlist){
 		String sep=System.getProperty("file.separator");
@@ -457,10 +457,10 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 		Date nowtime=new Date();
 		c1.setTime(nowtime); 
 		String file_temp=DateUtil.getTimeStr(c1.getTime(), "yyyyMMddHHmm");
-		//´´½¨ÎÄ¼ş¼Ğ
+		//åˆ›å»ºæ–‡ä»¶å¤¹
 		FileUtils.isDirExists(basePath+sep+file_temp);
 		for (PbsUserOrderResultVO order : orderlist) {
-			//ÎªÁË¼æÈİÒÔÇ°µÄ°æ±¾£¬Èç¹ûÃ»ÓĞ¶©µ¥Ô­Í¼£¬ÔòÈ¡×÷Æ·µÄÔ­Í¼
+			//ä¸ºäº†å…¼å®¹ä»¥å‰çš„ç‰ˆæœ¬ï¼Œå¦‚æœæ²¡æœ‰è®¢å•åŸå›¾ï¼Œåˆ™å–ä½œå“çš„åŸå›¾
 			List<OOrderproductphotos> photoList=photoMapper.findOrderProductPhotosByProductOrderId(order.getOrderproductid());
 			if(photoList==null||photoList.size()<=0){
 				List<PMyproductdetails> detailsList=mydetailMapper.findMyProductdetails(order.getCartid());
@@ -480,12 +480,12 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 				}
 			}
 
-			FileUtils.isDirExists(basePath+sep+file_temp+sep+order.getBuyeruserid()+"-"+order.getProducttitle()+"-"+order.getPropertystr().replaceAll("/", "-")+"¡Á"+order.getCount()+"("+order.getUserorderid()+")");
+			FileUtils.isDirExists(basePath+sep+file_temp+sep+order.getBuyeruserid()+"-"+order.getProducttitle()+"-"+order.getPropertystr().replaceAll("/", "-")+"Ã—"+order.getCount()+"("+order.getUserorderid()+")");
 			int i=1;		
 			for (OOrderproductphotos photo : photoList) {
 				if(photo.getImgurl()!=null)
 					photo.setImgurl("http://pic.bbyiya.com/"+photo.getImgurl());
-				String file_dir=basePath+sep+file_temp+sep+order.getBuyeruserid()+"-"+order.getProducttitle()+"-"+order.getPropertystr().replaceAll("/", "-")+"¡Á"+order.getCount()+"("+order.getUserorderid()+")";
+				String file_dir=basePath+sep+file_temp+sep+order.getBuyeruserid()+"-"+order.getProducttitle()+"-"+order.getPropertystr().replaceAll("/", "-")+"Ã—"+order.getCount()+"("+order.getUserorderid()+")";
 				String fileFull_name=file_dir+sep+i+".jpg";
 				if(!FileUtils.isFileExists(fileFull_name)){
 					try {
@@ -501,7 +501,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 				
 			}
 		}
-		//Ñ¹Ëõ³ÉzipÎÄ¼ş		
+		//å‹ç¼©æˆzipæ–‡ä»¶		
 		FileToZip z = new FileToZip();  
 		z.zip(basePath+sep+file_temp, basePath+sep+file_temp+".zip"); 	
 		File file = new File(basePath+sep+file_temp+".zip");

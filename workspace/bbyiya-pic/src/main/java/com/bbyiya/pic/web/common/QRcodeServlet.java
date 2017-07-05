@@ -18,7 +18,7 @@ import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.QRCodeUtil;
 
 /**
- * Éú³É¶şÎ¬Âë
+ * ç”ŸæˆäºŒç»´ç 
  * 
  * @author Administrator
  *
@@ -28,24 +28,24 @@ public class QRcodeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Éú³É¶şÎ¬Âë
+	 * ç”ŸæˆäºŒç»´ç 
 	 */
 	public QRcodeServlet() {
 		super();
 	}
 
-	// Ïú»Ù·½·¨
+	// é”€æ¯æ–¹æ³•
 	public void destroy() {
 		super.destroy();
 	}
 
-	// ÏìÓ¦GetÇëÇó
+	// å“åº”Getè¯·æ±‚
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// ¹æÔò¶¨Òå¶şÎ¬Âë
+		// è§„åˆ™å®šä¹‰äºŒç»´ç 
 		String content = "";
 		int type = ObjectUtil.parseInt(request.getParameter("t"));
 		switch (type) {
-		case 1:// »ñÈ¡
+		case 1:// è·å–
 			content = ConfigUtil.getSingleValue("yiya_pic_url");
 			break;
 		default:
@@ -58,13 +58,13 @@ public class QRcodeServlet extends HttpServlet {
 		encoderQRCode(content, 0, response);
 	}
 
-	// ÏìÓ¦PostÇëÇó
+	// å“åº”Postè¯·æ±‚
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 	}
 
 	/**
-	 * Éú³É¶şÎ¬Âë
+	 * ç”ŸæˆäºŒç»´ç 
 	 * 
 	 * @param content
 	 * @param size
@@ -75,7 +75,7 @@ public class QRcodeServlet extends HttpServlet {
 			if (size <= 0)
 				size = 8;
 			BufferedImage bufImg = QRCodeUtil.createImage(content, "", true);
-			// Éú³É¶şÎ¬ÂëQRCodeÍ¼Æ¬
+			// ç”ŸæˆäºŒç»´ç QRCodeå›¾ç‰‡
 			ImageIO.write(bufImg, "jpg", response.getOutputStream());
 		} catch (Exception e) {
 
@@ -83,7 +83,7 @@ public class QRcodeServlet extends HttpServlet {
 	}
 
 	/**
-	 * »ñÈ¡ÍêÕûµÄurl
+	 * è·å–å®Œæ•´çš„url
 	 * 
 	 * @param request
 	 * @return

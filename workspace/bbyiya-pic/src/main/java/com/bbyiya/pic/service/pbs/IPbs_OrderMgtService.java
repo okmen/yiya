@@ -11,14 +11,14 @@ import com.github.pagehelper.PageInfo;
 public interface IPbs_OrderMgtService {
 
 	/**
-	 * ²éÑ¯¶©µ¥ÁĞ±í£¨pbsÓÃ£©
+	 * æŸ¥è¯¢è®¢å•åˆ—è¡¨ï¼ˆpbsç”¨ï¼‰
 	 * 
 	 * @param param
 	 * @return
 	 */
 	PageInfo<PbsUserOrderResultVO> find_pbsOrderList(SearchOrderParam param,int index,int size);
 	/** 
-	 * ĞŞ¸Ä¶©µ¥ÔËµ¥ºÅ¼°ÔË·Ñ×Ô¶¯¿Û¿î
+	 * ä¿®æ”¹è®¢å•è¿å•å·åŠè¿è´¹è‡ªåŠ¨æ‰£æ¬¾
 	 * @author Julie 
 	 * @param orderId
 	 * @param expressCom
@@ -31,7 +31,7 @@ public interface IPbs_OrderMgtService {
 	
 	String pbsdownloadImg(List<PbsUserOrderResultVO> orderlist);
 	/**
-	 * B¶Ë¶©µ¥Ìí¼ÓÔË·Ñ×Ô¶¯¿Û¿î
+	 * Bç«¯è®¢å•æ·»åŠ è¿è´¹è‡ªåŠ¨æ‰£æ¬¾
 	 * @param orderId
 	 * @param postage
 	 * @return
@@ -43,7 +43,7 @@ public interface IPbs_OrderMgtService {
 			String expressCom, String expressOrder, Double postage,String expressCode)
 			throws Exception;
 	/**
-	 * ÏÂÔØÔ­Ê¼Í¼Æ¬
+	 * ä¸‹è½½åŸå§‹å›¾ç‰‡
 	 * @param orderlist
 	 * @return
 	 */

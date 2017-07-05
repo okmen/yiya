@@ -36,7 +36,7 @@ import com.bbyiya.web.base.SSOController;
 @RequestMapping(value = "/order")
 public class OrderProductController extends SSOController {
 	/**
-	 * ÓÅ»İĞÅÏ¢
+	 * ä¼˜æƒ ä¿¡æ¯
 	 */
 	@Resource(name = "baseDiscountServiceImpl")
 	private IBaseDiscountService discountService;
@@ -53,7 +53,7 @@ public class OrderProductController extends SSOController {
 	private PMyproductdetailsMapper detailMapper;
 	
 	/**
-	 * Ïà²á¿îÊ½Ñ¡Ôñ
+	 * ç›¸å†Œæ¬¾å¼é€‰æ‹©
 	 * @param productId
 	 * @param cartId
 	 * @return
@@ -68,7 +68,7 @@ public class OrderProductController extends SSOController {
 			List<PProductStyleResult> stylelist = styleMapper.findStylesResultByProductId(productId);
 			if (stylelist != null && stylelist.size() > 0) {
 				List<DMyproductdiscountmodel> disList = null;
-				//ÆÕÍ¨ÓÃ»§²ÅÓĞÓÅ»İ¹ºÂò×Ê¸ñ
+				//æ™®é€šç”¨æˆ·æ‰æœ‰ä¼˜æƒ è´­ä¹°èµ„æ ¼
 				if(!(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.salesman))){
 					disList=discountService.findMycartDiscount(user.getUserId(), cartId);
 				}
@@ -89,17 +89,17 @@ public class OrderProductController extends SSOController {
 				rq.setBasemodle(stylelist); 
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("Ã²ËÆÕÒ²»µ½ÏàÓ¦µÄÏà²á¿îÊ½£¡"); 
+				rq.setStatusreson("è²Œä¼¼æ‰¾ä¸åˆ°ç›¸åº”çš„ç›¸å†Œæ¬¾å¼ï¼"); 
 			} 
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * ¶©µ¥²úÆ·ÏêÇé£¨ÏÂµ¥Ò³£©
+	 * è®¢å•äº§å“è¯¦æƒ…ï¼ˆä¸‹å•é¡µï¼‰
 	 * @param styleId
 	 * @param cartId
 	 * @return
@@ -115,7 +115,7 @@ public class OrderProductController extends SSOController {
 			PMyproducts mycart= mycartMapper.selectByPrimaryKey(cartId);
 			if (style != null) {
 				List<DMyproductdiscountmodel> disList =null;
-				//ÆÕÍ¨ÓÃ»§²ÅÓĞÓÅ»İ¹ºÂò×Ê¸ñ
+				//æ™®é€šç”¨æˆ·æ‰æœ‰ä¼˜æƒ è´­ä¹°èµ„æ ¼
 				if(!(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.salesman))){
 					disList=discountService.findMycartDiscount(user.getUserId(), cartId);
 				}
@@ -131,7 +131,7 @@ public class OrderProductController extends SSOController {
 					map.put("productId", style.getProductid());
 					map.put("propertystr", style.getPropertystr());
 					map.put("mycartTitle", mycart.getTitle());
-					long temp = styleId % 2; // »ñÈ¡ÊÇ·ñÊÇºá°æÊú°æ
+					long temp = styleId % 2; // è·å–æ˜¯å¦æ˜¯æ¨ªç‰ˆç«–ç‰ˆ
 					map.put("type", (int) temp);
 					if(disList!=null&&disList.size()>0){
 						for (DMyproductdiscountmodel dis : disList) {
@@ -146,7 +146,7 @@ public class OrderProductController extends SSOController {
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

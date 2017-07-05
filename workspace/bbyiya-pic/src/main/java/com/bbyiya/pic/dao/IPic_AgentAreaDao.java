@@ -9,14 +9,14 @@ import com.bbyiya.model.RAreaplans;
 public interface IPic_AgentAreaDao {
 
 	/**
-	 * 通过代理单元获取 代理区县
+	 * 閫氳繃浠ｇ悊鍗曞厓鑾峰彇 浠ｇ悊鍖哄幙
 	 * @param areaId
 	 * @return  
 	 */
 	List<RAreaplans> findRAreaplansByAreaId(@Param("areaId") Integer areaId);
 	
 	/**
-	 * 通过代理商ID获取代理区县
+	 * 閫氳繃浠ｇ悊鍟咺D鑾峰彇浠ｇ悊鍖哄幙
 	 * @param agentUserId
 	 * @return
 	 */

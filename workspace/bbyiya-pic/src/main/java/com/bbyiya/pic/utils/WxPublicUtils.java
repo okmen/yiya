@@ -25,24 +25,24 @@ import com.bbyiya.utils.pay.WxPayConfig;
 import com.bbyiya.utils.pay.WxPayUtils;
 import com.bbyiya.vo.ReturnModel;
 /**
- * Î¢ĞÅ¹«ÖÚºÅ È«¾ÖÎÄ¼ş
+ * å¾®ä¿¡å…¬ä¼—å· å…¨å±€æ–‡ä»¶
  * @author Administrator
  *
  */
 public class WxPublicUtils {
 
-	//Î¢ĞÅaccess_token
+	//å¾®ä¿¡access_token
 	public static String ACCESS_TOKEN= ConfigUtil.getSingleValue("currentRedisKey-Base")+"_wx_access_token";
-	//Î¢ĞÅconfig
+	//å¾®ä¿¡config
 	public static String JSAPI_TOKEN=ConfigUtil.getSingleValue("currentRedisKey-Base")+"_wx_jsapi_token";
-	//Î¢ĞÅaccess_token »º´æÓĞĞ§Ê±¼ä
+	//å¾®ä¿¡access_token ç¼“å­˜æœ‰æ•ˆæ—¶é—´
 	public static int ACCESS_TOKEN_TIMEVAL=7200;
-	//Î¢ĞÅ·ÖÏí jsapi_token ÓĞĞ§ÆÚ10·ÖÖÓ
+	//å¾®ä¿¡åˆ†äº« jsapi_token æœ‰æ•ˆæœŸ10åˆ†é’Ÿ
 	public static int JSAPI_TOKEN_TIME=7200;
 	
 
 	/**
-	 * »ñÈ¡Î¢ĞÅ   access_Token
+	 * è·å–å¾®ä¿¡   access_Token
 	 * @param userId
 	 * @return
 	 */
@@ -60,7 +60,7 @@ public class WxPublicUtils {
 	}
 	
 	/**
-	 * »ñÈ¡jsapi
+	 * è·å–jsapi
 	 * @return
 	 */
 	public static String getWxApiToken() {
@@ -136,13 +136,13 @@ public class WxPublicUtils {
 //		}
 //		RedisUtil.delete(ACCESS_TOKEN);
 //		rqModel.setStatu(ReturnStatus.Success);
-//		rqModel.setStatusreson("ticket»ñÈ¡Ê§°Ü");
+//		rqModel.setStatusreson("ticketè·å–å¤±è´¥");
 //		rqModel.setBasemodle(postResult);
 //		return rqModel;
 //	}
 	
 	/**
-	 * »ñÈ¡Î¢ĞÅ·ÖÏí config
+	 * è·å–å¾®ä¿¡åˆ†äº« config
 	 * @param jsapi_ticket
 	 * @param webUrl
 	 * @return
@@ -179,7 +179,7 @@ public class WxPublicUtils {
 		RedisUtil.delete(JSAPI_TOKEN);
 		RedisUtil.delete(ACCESS_TOKEN); 
 		rqModel.setStatu(ReturnStatus.Success);
-		rqModel.setStatusreson("ticket»ñÈ¡Ê§°Ü");
+		rqModel.setStatusreson("ticketè·å–å¤±è´¥");
 		return rqModel;
 	}
 }

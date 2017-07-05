@@ -89,15 +89,15 @@ public class YiyeMgtController  extends SSOController {
 	private PMyproductactivitycodeMapper codeMapper;
 	
 	/**
-	 * ÓÅ»İĞÅÏ¢
+	 * ä¼˜æƒ ä¿¡æ¯
 	 */
 	@Resource(name = "baseDiscountServiceImpl")
 	private IBaseDiscountService discountService;
 	
 	/**
-	 * M11-03 ÒìÒµºÏ×÷-Ä£°åÏêÇé 
-	 * c¶Ë
-	 * @param workId ×÷Æ·cartid
+	 * M11-03 å¼‚ä¸šåˆä½œ-æ¨¡æ¿è¯¦æƒ… 
+	 * cç«¯
+	 * @param workId ä½œå“cartid
 	 * @return
 	 * @throws Exception
 	 */
@@ -107,22 +107,22 @@ public class YiyeMgtController  extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			//·µ»Ø½á¹ûmodel
+			//è¿”å›ç»“æœmodel
 			MyProductTempVo result=new MyProductTempVo();
-			//×÷Æ·id
+			//ä½œå“id
 			long cartid=ObjectUtil.parseLong(workId);
 			if(cartid>0){
-				//ÎÒµÄ×÷Æ·ĞÅÏ¢
+				//æˆ‘çš„ä½œå“ä¿¡æ¯
 				PMyproducts mycart= myProductMapper.selectByPrimaryKey(cartid);
 				if(mycart!=null&&mycart.getTempid()!=null&&mycart.getTempid().intValue()>0) {
-					//ÒìÒµºÏ×÷ Ä£°åĞÅÏ¢ 
+					//å¼‚ä¸šåˆä½œ æ¨¡æ¿ä¿¡æ¯ 
 					PMyproducttemp temp= tempMapper.selectByPrimaryKey(mycart.getTempid());
 					if(temp!=null){
-						//ÒìÒµºÏ×÷Ä¬ÈÏ¿îÊ½id
+						//å¼‚ä¸šåˆä½œé»˜è®¤æ¬¾å¼id
 						if(temp.getStyleid()==null||temp.getStyleid()<=0){
 							temp.setStyleid(mycart.getProductid()); 
 						}
-						//ÎÒµÄÄ£°å ÉêÇëĞÅÏ¢
+						//æˆ‘çš„æ¨¡æ¿ ç”³è¯·ä¿¡æ¯
 						PMyproducttempapply apply=null;
 						List<MyProductListVo> myproductList= myproductDao.getMyProductByTempId(temp.getTempid(), user.getUserId());
 						if(myproductList!=null&&myproductList.size()>0){
@@ -146,7 +146,7 @@ public class YiyeMgtController  extends SSOController {
 								result.setApplyStatus(-1); 
 							}
 						} 
-						//»î¶¯½áÊø ÊÇ·ñÓĞÓÅ»İ¹ºÂò×Ê¸ñ
+						//æ´»åŠ¨ç»“æŸ æ˜¯å¦æœ‰ä¼˜æƒ è´­ä¹°èµ„æ ¼
 						if(temp.getStatus()!=null&&temp.getStatus().intValue()==Integer.parseInt(MyProductTempStatusEnum.over.toString())){
 							if(apply!=null&&apply.getStatus()!=null&&apply.getStatus()==Integer.parseInt(MyProducttempApplyStatusEnum.fails.toString())){
 							    if(apply.getCartid()!=null&&!(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.salesman))){
@@ -171,10 +171,10 @@ public class YiyeMgtController  extends SSOController {
 				}
 			}
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("²ÎÊıÓĞÎó"); 
+			rq.setStatusreson("å‚æ•°æœ‰è¯¯"); 
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		
 		return JsonUtil.objectToJsonStr(rq);
@@ -182,8 +182,8 @@ public class YiyeMgtController  extends SSOController {
 	
 	
 	/**
-	 * M11-01 ÓÃ»§Ìá½»ÉêÇë
-	 * M11-02 ÒìÒµºÏ×÷-½ÓÊÜÑûÇë£¨ÎŞĞèÉêÇë£©
+	 * M11-01 ç”¨æˆ·æäº¤ç”³è¯·
+	 * M11-02 å¼‚ä¸šåˆä½œ-æ¥å—é‚€è¯·ï¼ˆæ— éœ€ç”³è¯·ï¼‰
 	 * @param commentJson
 	 * @return
 	 * @throws Exception
@@ -196,17 +196,17 @@ public class YiyeMgtController  extends SSOController {
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
 			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.salesman)){
-				rq.setStatusreson("Ó°Â¥ÓÃ»§ÎŞ·¨²ÎÓë»î¶¯");
+				rq.setStatusreson("å½±æ¥¼ç”¨æˆ·æ— æ³•å‚ä¸æ´»åŠ¨");
 				return  JsonUtil.objectToJsonStr(rq);
 			}
 			YiyeSubmitParam param = getParam_YiyeSubmitParam(commentJson);
 			if (param != null) {
 				if(param.getCartId()<=0){
-					rq.setStatusreson("×÷Æ·ĞÅÏ¢Îª¿Õ£¡");
+					rq.setStatusreson("ä½œå“ä¿¡æ¯ä¸ºç©ºï¼");
 					return JsonUtil.objectToJsonStr(rq);
 				}
 				if(ObjectUtil.isEmpty(param.getDateTime())){
-					rq.setStatusreson("±¦±¦ÉúÈÕ/Ô¤²úÆÚ²»ÄÜÎª¿Õ£¡");
+					rq.setStatusreson("å®å®ç”Ÿæ—¥/é¢„äº§æœŸä¸èƒ½ä¸ºç©ºï¼");
 					return JsonUtil.objectToJsonStr(rq);
 				}
 				PMyproducts myproducts= myProductMapper.selectByPrimaryKey(param.getCartId());
@@ -214,42 +214,42 @@ public class YiyeMgtController  extends SSOController {
 					PMyproducttemp temp= tempMapper.selectByPrimaryKey(myproducts.getTempid());
 					if(temp!=null){
 						if(temp.getStatus()!=null&&temp.getStatus().intValue()!=Integer.parseInt(MyProductTempStatusEnum.enable.toString())){
-							rq.setStatusreson("²»ºÃÒâË¼£¬»î¶¯ÒÑ¹ıÆÚ£¨»òÒÑÊ§Ğ§£©");
+							rq.setStatusreson("ä¸å¥½æ„æ€ï¼Œæ´»åŠ¨å·²è¿‡æœŸï¼ˆæˆ–å·²å¤±æ•ˆï¼‰");
 							return JsonUtil.objectToJsonStr(rq);
 						}
 						if(temp.getMaxapplycount()!=null&&temp.getMaxapplycount().intValue()>0){
 							if(temp.getApplycount()!=null&&temp.getApplycount().intValue()>=temp.getMaxapplycount().intValue()){
-								rq.setStatusreson("²»ºÃÒâË¼£¬»î¶¯Ì«»ğ±¬ÁË£¬²ÎÓëµÄÈËÊıÒÑ¾­±¬ÁË£¡");  
+								rq.setStatusreson("ä¸å¥½æ„æ€ï¼Œæ´»åŠ¨å¤ªç«çˆ†äº†ï¼Œå‚ä¸çš„äººæ•°å·²ç»çˆ†äº†ï¼");  
 								return JsonUtil.objectToJsonStr(rq);
 							}
 						}
-						//--    »î¶¯Âë»î¶¯  ÑéÖ¤»î¶¯Âë¿ÉÓÃĞÔ   ---------------------------------------------
+						//--    æ´»åŠ¨ç æ´»åŠ¨  éªŒè¯æ´»åŠ¨ç å¯ç”¨æ€§   ---------------------------------------------
 						if(temp.getType()!=null&&temp.getType().intValue()==Integer.parseInt(MyProductTempType.code.toString())){
 							if(ObjectUtil.isEmpty(param.getCodenum())){
-								rq.setStatusreson("ÇëÊäÈë»î¶¯Âë£¡");
+								rq.setStatusreson("è¯·è¾“å…¥æ´»åŠ¨ç ï¼");
 								return JsonUtil.objectToJsonStr(rq);
 							}
 							PMyproductactivitycode codeMod = codeMapper.selectByPrimaryKey(param.getCodenum());
 							if (codeMod != null) {
 								if (codeMod.getStatus() != null && codeMod.getStatus().intValue() == Integer.parseInt(ActivityCodeStatusEnum.used.toString())) {
-									rq.setStatusreson("²»ºÃÒâË¼£¬ÄúµÄ»î¶¯ÂëÒÑ¾­Ê¹ÓÃ¹ı£¡");
+									rq.setStatusreson("ä¸å¥½æ„æ€ï¼Œæ‚¨çš„æ´»åŠ¨ç å·²ç»ä½¿ç”¨è¿‡ï¼");
 									return JsonUtil.objectToJsonStr(rq);
 								} else if (codeMod.getStatus() == null || codeMod.getStatus().intValue() == Integer.parseInt(ActivityCodeStatusEnum.notuse.toString())) {
 									if(temp.getTempid().intValue()!=codeMod.getTempid().intValue()){
-										rq.setStatusreson("²»ºÃÒâË¼£¬ÄúµÄ»î¶¯Âë²»Ö§³ÖÔÚ±¾»î¶¯Ê¹ÓÃ£¡£¨PS:»î¶¯ÂëÖ»ÄÜÔÚÖ¸¶¨»î¶¯ÖĞÊ¹ÓÃ£¡£©");
+										rq.setStatusreson("ä¸å¥½æ„æ€ï¼Œæ‚¨çš„æ´»åŠ¨ç ä¸æ”¯æŒåœ¨æœ¬æ´»åŠ¨ä½¿ç”¨ï¼ï¼ˆPS:æ´»åŠ¨ç åªèƒ½åœ¨æŒ‡å®šæ´»åŠ¨ä¸­ä½¿ç”¨ï¼ï¼‰");
 										return JsonUtil.objectToJsonStr(rq);
 									}
 								} else {
-									rq.setStatusreson("²»ºÃÒâË¼£¬ÄúµÄ»î¶¯ÂëÊ§Ğ§£¡");
+									rq.setStatusreson("ä¸å¥½æ„æ€ï¼Œæ‚¨çš„æ´»åŠ¨ç å¤±æ•ˆï¼");
 									return JsonUtil.objectToJsonStr(rq);
 								}
 							}else {
-								rq.setStatusreson("ºÜÒÅº¶£¬ÄãÊäÈëµÄ»î¶¯Âë²»ÕıÈ·£¬Î´ÄÜ»ñµÃ»î¶¯×Ê¸ñ£¡");
+								rq.setStatusreson("å¾ˆé—æ†¾ï¼Œä½ è¾“å…¥çš„æ´»åŠ¨ç ä¸æ­£ç¡®ï¼Œæœªèƒ½è·å¾—æ´»åŠ¨èµ„æ ¼ï¼");
 								return JsonUtil.objectToJsonStr(rq);
 							}
 						}
 						
-						/*--------------------ÒÑ¾­Ìá½»¹ıÉêÇë---------------------------------------*/
+						/*--------------------å·²ç»æäº¤è¿‡ç”³è¯·---------------------------------------*/
 						PMyproducttempapply applyOld= tempApplyMapper.getMyProducttempApplyByUserId(temp.getTempid(), user.getUserId());
 						if(applyOld!=null){
 							if(applyOld.getStatus()!=null&&applyOld.getStatus().intValue()==Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString())){
@@ -264,16 +264,16 @@ public class YiyeMgtController  extends SSOController {
 								} 
 							}
 							rq.setStatu(ReturnStatus.ParamError);
-							rq.setStatusreson("ÄúÒÑÌá½»¹ıÉêÇë£¡");
+							rq.setStatusreson("æ‚¨å·²æäº¤è¿‡ç”³è¯·ï¼");
 							return JsonUtil.objectToJsonStr(rq);
 						}/*-----------------------------------------------------------------------*/
 						
-						//Ìá½»ÉêÇë
+						//æäº¤ç”³è¯·
 						PMyproducttempapply apply=new PMyproducttempapply();
 						apply.setTempid(myproducts.getTempid());
 						apply.setUserid(user.getUserId());
 						apply.setMobilephone(user.getMobilePhone()); 
-						if(param.getDateTime().getTime()>(new Date()).getTime()){//ÊÇ·ñÊÇÔ¤²úÆÚ
+						if(param.getDateTime().getTime()>(new Date()).getTime()){//æ˜¯å¦æ˜¯é¢„äº§æœŸ
 							apply.setIsdue(1);
 						}
 						apply.setBirthday(param.getDateTime());
@@ -281,19 +281,19 @@ public class YiyeMgtController  extends SSOController {
 						apply.setCompanyuserid(param.getSubUserId());
 						apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.apply.toString()));
 						
-						//ÒìÒµÄ£°å ÉêÇëÈËÊı+1
+						//å¼‚ä¸šæ¨¡æ¿ ç”³è¯·äººæ•°+1
 						temp.setApplycount(temp.getApplycount()==null?1:temp.getApplycount()+1);
 						tempMapper.updateByPrimaryKeySelective(temp); 
 						
-						//ÊÇ·ñĞèÒªÉóºË
+						//æ˜¯å¦éœ€è¦å®¡æ ¸
 						boolean isNeedVer=false;
 						if(temp.getNeedverifer()!=null&&temp.getNeedverifer().intValue()>0){
-							//ĞèÒªÉóºË
+							//éœ€è¦å®¡æ ¸
 							isNeedVer=true;
 						}
 						
-						if(!isNeedVer){// ²»ĞèÒªÉóºË µ÷È¡ ĞÂÔö×÷Æ·¡¢¿Í»§ĞÅÏ¢
-							//ÑéÖ¤ÊÇ·ñÊÇÃâ·ÑÁìÈ¡µÄÓÃ»§
+						if(!isNeedVer){// ä¸éœ€è¦å®¡æ ¸ è°ƒå– æ–°å¢ä½œå“ã€å®¢æˆ·ä¿¡æ¯
+							//éªŒè¯æ˜¯å¦æ˜¯å…è´¹é¢†å–çš„ç”¨æˆ·
 							ResultMsg rMsg=verUser(temp.getTempid().intValue(),user);
 							if(rMsg.getStatus()!=1){
 								rq.setStatu(ReturnStatus.ParamError);
@@ -303,10 +303,10 @@ public class YiyeMgtController  extends SSOController {
 							
 							rq=ibs_tempService.doAcceptOrAutoTempApplyOpt(apply);
 							if(rq.getStatu().equals(ReturnStatus.Success)){
-								//²»ĞèÒªÉóºË£¬Ö±½ÓÍ¨¹ıÉóºË
+								//ä¸éœ€è¦å®¡æ ¸ï¼Œç›´æ¥é€šè¿‡å®¡æ ¸
 								apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString()));
 								apply.setVerfiytime(new Date());
-								//------------------------  »î¶¯Âë¶Ò»»-***********************************--------------------
+								//------------------------  æ´»åŠ¨ç å…‘æ¢-***********************************--------------------
 								if(temp.getType()!=null&&temp.getType().intValue()==Integer.parseInt(MyProductTempType.code.toString())){
 									PMyproductactivitycode codeMod = codeMapper.selectByPrimaryKey(param.getCodenum());
 									codeMod.setUsedtime(new Date());
@@ -333,22 +333,22 @@ public class YiyeMgtController  extends SSOController {
 							}
 						}
 					
-						//²åÈëÉêÇëÌá½»ĞÅÏ¢
+						//æ’å…¥ç”³è¯·æäº¤ä¿¡æ¯
 						tempApplyMapper.insert(apply);
 						
 						rq.setStatu(ReturnStatus.Success);
-						rq.setStatusreson("Ìá½»ÉêÇë³É¹¦£¡");
+						rq.setStatusreson("æäº¤ç”³è¯·æˆåŠŸï¼");
 					}
 				}else {
-					rq.setStatusreson("´Ë»î¶¯ÒÑÊ§Ğ§£¡");
+					rq.setStatusreson("æ­¤æ´»åŠ¨å·²å¤±æ•ˆï¼");
 					return JsonUtil.objectToJsonStr(rq); 
 				}
 			} else {
-				rq.setStatusreson("²ÎÊı²»È«");
+				rq.setStatusreson("å‚æ•°ä¸å…¨");
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
@@ -356,7 +356,7 @@ public class YiyeMgtController  extends SSOController {
 	
 	
 	/**
-	 * ÑéÖ¤×÷Æ·ÊÇ·ñÊÇ ÌØÊâ»î¶¯×÷Æ·£¨Á÷Á¿×¡Ãâµ¥×÷Æ·£©
+	 * éªŒè¯ä½œå“æ˜¯å¦æ˜¯ ç‰¹æ®Šæ´»åŠ¨ä½œå“ï¼ˆæµé‡ä½å…å•ä½œå“ï¼‰
 	 * @param tempId
 	 * @param user
 	 * @return
@@ -383,7 +383,7 @@ public class YiyeMgtController  extends SSOController {
 						}
 					}else {
 						result.setStatus(-1);
-						result.setMsg("ÄãËÆºõÍüÁË°ó¶¨ÊÖ»úºÅÄØ£¬ÇëÏÈ°ó¶¨ÊÖ»úºÅÔÙÀ´¡£");//´Ë»î¶¯Ö¸¶¨ÓÃ»§£¬Äú»¹Ã»ÓĞÔÚ¸öÈËÖĞĞÄ°ó¶¨ÊÖ»úºÅ£¬ÎŞ·¨È·¶¨Éí·İ£¬ÇëÇ°Íù¸öÈËÖĞĞÄ½øĞĞ°ó¶¨£¡
+						result.setMsg("ä½ ä¼¼ä¹å¿˜äº†ç»‘å®šæ‰‹æœºå·å‘¢ï¼Œè¯·å…ˆç»‘å®šæ‰‹æœºå·å†æ¥ã€‚");//æ­¤æ´»åŠ¨æŒ‡å®šç”¨æˆ·ï¼Œæ‚¨è¿˜æ²¡æœ‰åœ¨ä¸ªäººä¸­å¿ƒç»‘å®šæ‰‹æœºå·ï¼Œæ— æ³•ç¡®å®šèº«ä»½ï¼Œè¯·å‰å¾€ä¸ªäººä¸­å¿ƒè¿›è¡Œç»‘å®šï¼
 						return result;
 					}
 				}
@@ -393,13 +393,13 @@ public class YiyeMgtController  extends SSOController {
 			result.setStatus(1);
 		}else {
 			result.setStatus(-1);
-			result.setMsg("±§Ç¸£¬Äú»¹Ã»ÓĞ»ñµÃ»î¶¯²ÎÓë×Ê¸ñ!");
+			result.setMsg("æŠ±æ­‰ï¼Œæ‚¨è¿˜æ²¡æœ‰è·å¾—æ´»åŠ¨å‚ä¸èµ„æ ¼!");
 		} 
 		return result;
 	}
 	
 	/**
-	 * M12-01 ¹¤×÷ÈÎÎñ-ÓªÏú¶şÎ¬ÂëÁĞ±í
+	 * M12-01 å·¥ä½œä»»åŠ¡-è¥é”€äºŒç»´ç åˆ—è¡¨
 	 * 
 	 */
 	@ResponseBody
@@ -427,15 +427,15 @@ public class YiyeMgtController  extends SSOController {
 			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		rq.setStatu(ReturnStatus.Success);
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * M12-02 ¹¤×÷ÈÎÎñ-Ó°Â¥¹ÜÀíÔ±µÄÄ£°åÁĞ±í
-	 * M12-04 ¹¤×÷ÈÎÎñ-Ó°Â¥Ô±¹¤µÄÄ£°åÁĞ±í
+	 * M12-02 å·¥ä½œä»»åŠ¡-å½±æ¥¼ç®¡ç†å‘˜çš„æ¨¡æ¿åˆ—è¡¨
+	 * M12-04 å·¥ä½œä»»åŠ¡-å½±æ¥¼å‘˜å·¥çš„æ¨¡æ¿åˆ—è¡¨
 	 * @param index
 	 * @param size
 	 * @return
@@ -462,7 +462,7 @@ public class YiyeMgtController  extends SSOController {
 			
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		rq.setStatu(ReturnStatus.Success);
 		return JsonUtil.objectToJsonStr(rq);
@@ -470,7 +470,7 @@ public class YiyeMgtController  extends SSOController {
 
 	
 	/**
-	 * M12-03 ´ıÉóºË¡¢ÒÑÍ¨¹ı¡¢Î´Í¨¹ı ÁĞ±í
+	 * M12-03 å¾…å®¡æ ¸ã€å·²é€šè¿‡ã€æœªé€šè¿‡ åˆ—è¡¨
 	 * @param tempid
 	 * @param status
 	 * @param index
@@ -501,7 +501,7 @@ public class YiyeMgtController  extends SSOController {
 			}		
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		rq.setStatu(ReturnStatus.Success);
 		return JsonUtil.objectToJsonStr(rq);
@@ -510,7 +510,7 @@ public class YiyeMgtController  extends SSOController {
 	@Autowired
 	private PProductstylesMapper styleMapper;
 	/**
-	 * M13-01 ²ÎÓëµÄ»î¶¯-²ÎÓë»î¶¯µÄÁĞ±í
+	 * M13-01 å‚ä¸çš„æ´»åŠ¨-å‚ä¸æ´»åŠ¨çš„åˆ—è¡¨
 	 * @param tempid
 	 * @param status
 	 * @param index
@@ -556,14 +556,14 @@ public class YiyeMgtController  extends SSOController {
 			rq.setBasemodle(reuslt);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		rq.setStatu(ReturnStatus.Success);
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * M13-02 ²ÎÓëµÄ»î¶¯-ÒÑÔÄ¶Á
+	 * M13-02 å‚ä¸çš„æ´»åŠ¨-å·²é˜…è¯»
 	 * @return
 	 * @throws Exception
 	 */
@@ -584,7 +584,7 @@ public class YiyeMgtController  extends SSOController {
 			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		rq.setStatu(ReturnStatus.Success);
 		return JsonUtil.objectToJsonStr(rq);

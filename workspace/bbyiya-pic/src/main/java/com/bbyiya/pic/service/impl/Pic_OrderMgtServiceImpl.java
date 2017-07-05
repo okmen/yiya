@@ -65,10 +65,10 @@ import com.sdicons.json.validator.impl.predicates.Str;
 @Service("pic_orderMgtService")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
 public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
-	//¿Í»§ĞÅÏ¢´¦Àí
+	//å®¢æˆ·ä¿¡æ¯å¤„ç†
 	@Resource(name = "pic_memberMgtService")
 	private IPic_MemberMgtService memberMgtService;
-	/*----------------------¶©µ¥Ä£¿é--------------------------------------*/
+	/*----------------------è®¢å•æ¨¡å—--------------------------------------*/
 	@Autowired
 	private OUserordersMapper userOrdersMapper;
 	@Autowired
@@ -83,7 +83,7 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 	private OOrderaddressMapper addressMapper;
 	@Autowired
 	private PMyproductdetailsMapper mydetailMapper;
-	/*----------------------´úÀíÄ£¿é--------------------------*/
+	/*----------------------ä»£ç†æ¨¡å—--------------------------*/
 	@Autowired
 	private UBranchesMapper branchesMapper;
 	@Autowired
@@ -92,7 +92,7 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 	private PMyproducttempMapper tempdMapper;
 	
 	/**
-	 * »ñÈ¡¶©µ¥ÁĞ±í
+	 * è·å–è®¢å•åˆ—è¡¨
 	 * @param userId
 	 * @return
 	 */
@@ -132,7 +132,7 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 	}
 	
 	/**
-	 * »ñÈ¡´ı·ÖÅäµÄ¶©µ¥£¨IBSÓÃ£©
+	 * è·å–å¾…åˆ†é…çš„è®¢å•ï¼ˆIBSç”¨ï¼‰
 	 * @param branchUserId
 	 * @return
 	 */
@@ -167,7 +167,7 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 			rq.setStatu(ReturnStatus.Success);
 		} else {
 			rq.setStatu(ReturnStatus.SystemError);
-			rq.setStatusreson("Äú»¹²»ÊÇºÏ×÷ÉÌ£¬È¨ÏŞ²»×ã£¡");
+			rq.setStatusreson("æ‚¨è¿˜ä¸æ˜¯åˆä½œå•†ï¼Œæƒé™ä¸è¶³ï¼");
 		}
 		return rq;
 	}
@@ -177,7 +177,7 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.Success);
 		PageHelper.startPage(index, size);
-		//¶©µ¥ÁĞ±í
+		//è®¢å•åˆ—è¡¨
 		List<OUserorders> userorders= userOrdersMapper.findOrdersByBranchUserId(branchUserId,status,keywords);
 		PageInfo<OUserorders> resultPage=new PageInfo<OUserorders>(userorders); 
 		if(resultPage!=null&&resultPage.getList()!=null&&resultPage.getList().size()>0){
@@ -185,7 +185,7 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 			for (OUserorders oo : resultPage.getList()) {
 				ids.add(oo.getOrderaddressid());
 			}
-			//¶©µ¥µÄÊÕ»õµØÖ·
+			//è®¢å•çš„æ”¶è´§åœ°å€
 			List<OOrderaddress> addressList = addressMapper.findListByIds(ids);
 			List<OrderVo> resultlist = new ArrayList<OrderVo>();
 			for (OUserorders order : userorders) {
@@ -216,18 +216,18 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 							if(temp!=null){
 								vo.setTempid(cart.getTempid());
 								if(temp.getType()==null||temp.getType().intValue()==Integer.parseInt(MyProductTempType.normal.toString()))
-									vo.setSourcetype("0");//À´Ô´ÓÚÆÕÍ¨»î¶¯
+									vo.setSourcetype("0");//æ¥æºäºæ™®é€šæ´»åŠ¨
 								else if(temp.getType()!=null&&temp.getType().intValue()==Integer.parseInt(MyProductTempType.code.toString()))
-									vo.setSourcetype("2");//À´Ô´ÓÚ»î¶¯Âë»î¶¯
+									vo.setSourcetype("2");//æ¥æºäºæ´»åŠ¨ç æ´»åŠ¨
 								else
-									vo.setSourcetype("3");//ÆäËü×Ô¶¯ÏÂµ¥
+									vo.setSourcetype("3");//å…¶å®ƒè‡ªåŠ¨ä¸‹å•
 							}
 							
 						}else{
 							if(cart.getInvitestatus()==null||cart.getInvitestatus().intValue()==Integer.parseInt(InviteStatus.lgnore.toString()))
 								vo.setSourcetype("3");
 							else
-								vo.setSourcetype("1");// À´Ô´ÓÚ¿Í»§Ò»¶ÔÒ»
+								vo.setSourcetype("1");// æ¥æºäºå®¢æˆ·ä¸€å¯¹ä¸€
 						}
 						
 					}
@@ -243,7 +243,7 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 	}
 	
 	/**
-	 * ÎÒÒªÕâ¸ö¿Í»§
+	 * æˆ‘è¦è¿™ä¸ªå®¢æˆ·
 	 * @param branchUserId
 	 * @param userOrderId
 	 * @return
@@ -254,23 +254,23 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 		OUserorders order=userOrdersMapper.selectByPrimaryKey(userOrderId);
 		if(order!=null){
 			if(order.getAgentuserid()!=null&&order.getAgentuserid()>0){
-				if(order.getIsbranch()!=null&&order.getIsbranch()==1){//¿ÉÒÔÇÀ
-					rq.setStatusreson("²»ºÃÒâË¼£¬´Ë¿Í»§ÒÑ¾­±»·ÖÅäÁË£¡");
+				if(order.getIsbranch()!=null&&order.getIsbranch()==1){//å¯ä»¥æŠ¢
+					rq.setStatusreson("ä¸å¥½æ„æ€ï¼Œæ­¤å®¢æˆ·å·²ç»è¢«åˆ†é…äº†ï¼");
 					return rq; 
 				}
-				//ÎÒµÄÓ°Â¥ĞÅÏ¢£¬ÕÒµ½ÎÒµÄ´úÀíÉÌ
+				//æˆ‘çš„å½±æ¥¼ä¿¡æ¯ï¼Œæ‰¾åˆ°æˆ‘çš„ä»£ç†å•†
 				UBranches branches=branchesMapper.selectByPrimaryKey(branchUserId);
 				if(branches!=null&&branches.getStatus()!=null&&branches.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.ok.toString())){
-					 //ÎÒÊÇ´úÀíÓ°Â¥£¬¾ß±¸ÇÀ¿Í»§µÄÈ¨Àû
+					 //æˆ‘æ˜¯ä»£ç†å½±æ¥¼ï¼Œå…·å¤‡æŠ¢å®¢æˆ·çš„æƒåˆ©
 					if(order.getAgentuserid().longValue()==branches.getAgentuserid().longValue()){
-						 //ÉèÖÃ¶©µ¥ĞÅÏ¢ÒÑ¾­±»·ÖÅä
+						 //è®¾ç½®è®¢å•ä¿¡æ¯å·²ç»è¢«åˆ†é…
 						 order.setIsbranch(1);
 						 order.setBranchuserid(branchUserId);
 						 userOrdersMapper.updateByPrimaryKeySelective(order);
 						 
 						 OOrderaddress address=addressMapper.selectByPrimaryKey(order.getOrderaddressid());
 						 if(address!=null){
-							 //¿Í»§ĞÅÏ¢
+							 //å®¢æˆ·ä¿¡æ¯
 							 UAgentcustomers customer=new UAgentcustomers();
 							 customer.setAgentuserid(branches.getAgentuserid());
 							 customer.setBranchuserid(branchUserId);
@@ -284,33 +284,33 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 							 customer.setSourcetype(Integer.parseInt(CustomerSourceTypeEnum.other.toString()));
 							 memberMgtService.addCustomer(branchUserId, customer);
 							 rq.setStatu(ReturnStatus.Success);
-							 rq.setStatusreson("¹Ë¿Í³É¹¦Ëø¶¨£¡");
+							 rq.setStatusreson("é¡¾å®¢æˆåŠŸé”å®šï¼");
 							 return rq;
 						 }else {
-							rq.setStatusreson("ÕÒ²»µ½ÓÃ»§ÊÕ»õĞÅÏ¢£¡");
+							rq.setStatusreson("æ‰¾ä¸åˆ°ç”¨æˆ·æ”¶è´§ä¿¡æ¯ï¼");
 							return rq;
 						 }
 					}else {
-						rq.setStatusreson("´Ë¶©µ¥²»ÔÚÄúµÄ´úÀí·¶Î§£¡");
+						rq.setStatusreson("æ­¤è®¢å•ä¸åœ¨æ‚¨çš„ä»£ç†èŒƒå›´ï¼");
 						return rq;
 					}
 				}else {
-					rq.setStatusreson("Äú»¹²»ÊÇºÏ×÷ÉÌ£¬È¨ÏŞ²»×ã£¡");
+					rq.setStatusreson("æ‚¨è¿˜ä¸æ˜¯åˆä½œå•†ï¼Œæƒé™ä¸è¶³ï¼");
 					return rq;
 				}
 			}else {
-				rq.setStatusreson("·Ç´úÀíÇøÓò¶©µ¥£¬Ôİ²»ÄÜ·ÖÅä£¡");
+				rq.setStatusreson("éä»£ç†åŒºåŸŸè®¢å•ï¼Œæš‚ä¸èƒ½åˆ†é…ï¼");
 				return rq;
 			}
 			
 		}else {
-			rq.setStatusreson("¶©µ¥²»´æÔÚ");
+			rq.setStatusreson("è®¢å•ä¸å­˜åœ¨");
 		}
 		return rq;
 	}
 	
 	/**
-	 * »ñÈ¡¶©µ¥ÏêÇé
+	 * è·å–è®¢å•è¯¦æƒ…
 	 * @param userOrderId
 	 * @return
 	 */
@@ -350,13 +350,13 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 			rq.setStatusreson("ok");
 		}else {
 			rq.setStatu(ReturnStatus.SystemError);
-			rq.setStatusreson("²»´æµÄ¶©µ¥");
+			rq.setStatusreson("ä¸å­˜çš„è®¢å•");
 		}
 		return rq;
 	}
 	
 	/**
-	 * »ñÈ¡¶©µ¥×÷Æ·Í¼Æ¬
+	 * è·å–è®¢å•ä½œå“å›¾ç‰‡
 	 * @param userOrderId
 	 * @return
 	 */
@@ -399,22 +399,22 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 			rq.setStatusreson("ok");
 		}else {
 			rq.setStatu(ReturnStatus.SystemError);
-			rq.setStatusreson("²»´æµÄ¶©µ¥");
+			rq.setStatusreson("ä¸å­˜çš„è®¢å•");
 		}
 		return rq;
 	}
 	
 	/**
-	 * È¡Ïû¶©µ¥
+	 * å–æ¶ˆè®¢å•
 	 * @param userId
 	 * @return
 	 */
 	public ReturnModel cancelOrder(String orderId) {
 		ReturnModel rq = new ReturnModel();
 		OUserorders userorders = userOrdersMapper.selectByPrimaryKey(orderId);
-		//Èç¹û²»ÊÇÎ´Ö§¸¶µÄ¶©µ¥²»ÄÜÈ¡Ïû¶©µ¥
+		//å¦‚æœä¸æ˜¯æœªæ”¯ä»˜çš„è®¢å•ä¸èƒ½å–æ¶ˆè®¢å•
 		if(userorders!=null&&userorders.getStatus()!=Integer.parseInt(OrderStatusEnum.noPay.toString())){
-			rq.setStatusreson("ÒÑÖ§¸¶µÄ¶©µ¥²»ÄÜÈ¡Ïû¶©µ¥£¡");
+			rq.setStatusreson("å·²æ”¯ä»˜çš„è®¢å•ä¸èƒ½å–æ¶ˆè®¢å•ï¼");
 			rq.setStatu(ReturnStatus.OrderError);
 			return rq;
 		}
@@ -439,12 +439,12 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 			userOrdersMapper.deleteByPrimaryKey(userorders.getUserorderid());
 		}
 		rq.setBasemodle(null);
-		rq.setStatusreson("È¡Ïû¶©µ¥³É¹¦£¡");
+		rq.setStatusreson("å–æ¶ˆè®¢å•æˆåŠŸï¼");
 		rq.setStatu(ReturnStatus.Success);
 		return rq;
 	}
 	/**
-	 * µÃµ½¶©µ¥²úÆ·µÄ×÷Æ·ÏêÇé£¬ÓÃÓÚÖØ¸´ÏÂµ¥µÄĞ§¹ûä¯ÀÀ
+	 * å¾—åˆ°è®¢å•äº§å“çš„ä½œå“è¯¦æƒ…ï¼Œç”¨äºé‡å¤ä¸‹å•çš„æ•ˆæœæµè§ˆ
 	 * @param orderProductId
 	 * @return
 	 */
@@ -521,7 +521,7 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 			if(photosList!=null&&photosList.size()>0){
 				rq.setBasemodle(photosList);
 				rq.setStatu(ReturnStatus.Success);
-				rq.setStatusreson("³É¹¦");
+				rq.setStatusreson("æˆåŠŸ");
 			}else if(orderproducts.getCartid()!=null){
 				List<PMyproductdetails> details= mydetailMapper.findMyProductdetails(orderproducts.getCartid());
 				if(details!=null&&details.size()>0){
@@ -546,10 +546,10 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 					rq.setBasemodle(photosList);
 					rq.setStatu(ReturnStatus.Success);
 				}else {
-					rq.setStatusreson("ÕÒ²»µ½×÷Æ·ÏêÇéÍ¼Æ¬");
+					rq.setStatusreson("æ‰¾ä¸åˆ°ä½œå“è¯¦æƒ…å›¾ç‰‡");
 				} 
 			} else {
-				rq.setStatusreson("ÕÒ²»µ½×÷Æ·±àºÅcartid");
+				rq.setStatusreson("æ‰¾ä¸åˆ°ä½œå“ç¼–å·cartid");
 			}
 		}
 		return rq;
@@ -563,13 +563,13 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 		OOrderproducts orderproducts= orderProductMapper.getOProductsByOrderId(userOrderId);
 		if(userorders!=null&&orderproducts!=null){
 			Map<String, Object> map=new HashMap<String, Object>();
-			//¶©µ¥×÷Æ·±¦±¦ĞÅÏ¢
+			//è®¢å•ä½œå“å®å®ä¿¡æ¯
 			PMyproductchildinfo child= pmyChildMapper.selectByPrimaryKey(orderproducts.getCartid());
 			if(child!=null){
 				child.setBirthdayStr(DateUtil.getTimeStr(child.getBirthday(), "yyyy-MM-dd"));  
 				map.put("child", child);
 			}
-			//¶©µ¥Í¼Æ¬ĞÅÏ¢
+			//è®¢å•å›¾ç‰‡ä¿¡æ¯
 			List<OOrderproductphotos> photosList= ophotosMapper.findOrderProductPhotosByProductOrderId(orderproducts.getOrderproductid());
 			if(photosList!=null&&photosList.size()>0){
 				map.put("photos", photosList);
@@ -601,10 +601,10 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 					rq.setBasemodle(map);
 					rq.setStatu(ReturnStatus.Success);
 				}else {
-					rq.setStatusreson("ÕÒ²»µ½×÷Æ·ÏêÇéÍ¼Æ¬");
+					rq.setStatusreson("æ‰¾ä¸åˆ°ä½œå“è¯¦æƒ…å›¾ç‰‡");
 				} 
 			}else {
-				rq.setStatusreson("ÕÒ²»µ½×÷Æ·±àºÅcartid");
+				rq.setStatusreson("æ‰¾ä¸åˆ°ä½œå“ç¼–å·cartid");
 			}
 		}
 		return rq;
@@ -632,7 +632,7 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 			}
 			String file_temp=DateUtil.getTimeStr(c2.getTime(), "MMdd");
 			
-			//´´½¨ÎÄ¼ş¼Ğ
+			//åˆ›å»ºæ–‡ä»¶å¤¹
 			FileUtils.isDirExists(basePath+"\\"+file_temp);
 			FileUtils.isDirExists(basePath+"\\"+file_temp+"\\"+order.getUserorderid());;
 			int i=1;

@@ -41,7 +41,7 @@ public class YiyeCodeController extends SSOController {
 	@Autowired
 	private PProductstylesMapper styleMapper;
 	/**
-	 * »î¶¯ÂëÑéÖ¤
+	 * æ´»åŠ¨ç éªŒè¯
 	 * 
 	 * @param commentJson
 	 * @return
@@ -59,7 +59,7 @@ public class YiyeCodeController extends SSOController {
 				if (codeMod != null) {
 					if (codeMod.getStatus() != null && codeMod.getStatus().intValue() == Integer.parseInt(ActivityCodeStatusEnum.used.toString())) {
 						rq.setStatu(ReturnStatus.ParamError);
-						rq.setStatusreson("²»ºÃÒâË¼£¬ÄúµÄ»î¶¯ÂëÒÑ¾­Ê¹ÓÃ¹ı£¡");
+						rq.setStatusreson("ä¸å¥½æ„æ€ï¼Œæ‚¨çš„æ´»åŠ¨ç å·²ç»ä½¿ç”¨è¿‡ï¼");
 						return JsonUtil.objectToJsonStr(rq);
 					} else if (codeMod.getStatus() == null || codeMod.getStatus().intValue() == Integer.parseInt(ActivityCodeStatusEnum.notuse.toString())) {
 						PMyproducttemp temp= tempMapper.selectByPrimaryKey(codeMod.getTempid());
@@ -77,18 +77,18 @@ public class YiyeCodeController extends SSOController {
 							
 						}else {
 							rq.setStatu(ReturnStatus.ParamError);
-							rq.setStatusreson("²»ºÃÒâË¼£¬ÄúµÄ»î¶¯Âë²»Ö§³ÖÔÚ±¾»î¶¯Ê¹ÓÃ£¡£¨PS:»î¶¯ÂëÖ»ÄÜÔÚÖ¸¶¨»î¶¯ÖĞÊ¹ÓÃ£¡£©");
+							rq.setStatusreson("ä¸å¥½æ„æ€ï¼Œæ‚¨çš„æ´»åŠ¨ç ä¸æ”¯æŒåœ¨æœ¬æ´»åŠ¨ä½¿ç”¨ï¼ï¼ˆPS:æ´»åŠ¨ç åªèƒ½åœ¨æŒ‡å®šæ´»åŠ¨ä¸­ä½¿ç”¨ï¼ï¼‰");
 						}
 					} else {
-						rq.setStatusreson("²»ºÃÒâË¼£¬ÄúµÄ»î¶¯ÂëÊ§Ğ§£¡");
+						rq.setStatusreson("ä¸å¥½æ„æ€ï¼Œæ‚¨çš„æ´»åŠ¨ç å¤±æ•ˆï¼");
 						return JsonUtil.objectToJsonStr(rq);
 					}
 				}else {
-					rq.setStatusreson("ºÜÒÅº¶£¬ÄãÊäÈëµÄ»î¶¯Âë²»ÕıÈ·£¬Î´ÄÜ»ñµÃ»î¶¯×Ê¸ñ£¡");
+					rq.setStatusreson("å¾ˆé—æ†¾ï¼Œä½ è¾“å…¥çš„æ´»åŠ¨ç ä¸æ­£ç¡®ï¼Œæœªèƒ½è·å¾—æ´»åŠ¨èµ„æ ¼ï¼");
 				}
 			} else {
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("ÇëÊäÈë»î¶¯Âë£¡");
+				rq.setStatusreson("è¯·è¾“å…¥æ´»åŠ¨ç ï¼");
 			}
 		}
 		return JsonUtil.objectToJsonStr(rq);
@@ -100,7 +100,7 @@ public class YiyeCodeController extends SSOController {
 	private PMyproducttempapplyMapper tempApplyMapper;
 	
 	/**
-	 * »î¶¯Âë¶Ò»»
+	 * æ´»åŠ¨ç å…‘æ¢
 	 * @param codeNum
 	 * @return
 	 * @throws Exception
@@ -118,7 +118,7 @@ public class YiyeCodeController extends SSOController {
 				if(codeMod!=null){
 					PMyproducttemp temp= tempMapper.selectByPrimaryKey(codeMod.getTempid());
 					if(temp!=null){
-						//Ìá½»ÉêÇë
+						//æäº¤ç”³è¯·
 						PMyproducttempapply apply=new PMyproducttempapply();
 						apply.setTempid(codeMod.getTempid());
 						apply.setUserid(user.getUserId());
@@ -128,17 +128,17 @@ public class YiyeCodeController extends SSOController {
 						apply.setCreatetime(new Date());
 						apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.apply.toString()));
 						
-						//ÒìÒµÄ£°å ÉêÇëÈËÊı+1
+						//å¼‚ä¸šæ¨¡æ¿ ç”³è¯·äººæ•°+1
 						temp.setApplycount(temp.getApplycount()==null?1:temp.getApplycount()+1);
 						tempMapper.updateByPrimaryKeySelective(temp);
 						
-						//ÃâÉóºË£¬Ö±½ÓÍ¨¹ıÉóºË·ÖÅä×÷Æ·id
+						//å…å®¡æ ¸ï¼Œç›´æ¥é€šè¿‡å®¡æ ¸åˆ†é…ä½œå“id
 						rq=ibs_tempService.doAcceptOrAutoTempApplyOpt(apply);
 						if(rq.getStatu().equals(ReturnStatus.Success)){
-							//²»ĞèÒªÉóºË£¬Ö±½ÓÍ¨¹ıÉóºË
+							//ä¸éœ€è¦å®¡æ ¸ï¼Œç›´æ¥é€šè¿‡å®¡æ ¸
 							apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString()));
 							apply.setVerfiytime(new Date());
-							//------------------------  »î¶¯Âë¶Ò»»-***********************************--------------------
+							//------------------------  æ´»åŠ¨ç å…‘æ¢-***********************************--------------------
 							if(temp.getType()!=null&&temp.getType().intValue()==Integer.parseInt(MyProductTempType.code.toString())){
 								codeMod.setUsedtime(new Date());
 								codeMod.setUserid(user.getUserId());
@@ -152,11 +152,11 @@ public class YiyeCodeController extends SSOController {
 									
 								}
 								codeMapper.updateByPrimaryKey(codeMod);
-								//²åÈëÉêÇëÌá½»ĞÅÏ¢
+								//æ’å…¥ç”³è¯·æäº¤ä¿¡æ¯
 								tempApplyMapper.insert(apply);
 								
 								rq.setStatu(ReturnStatus.Success);
-								rq.setStatusreson("Ìá½»ÉêÇë³É¹¦£¡");
+								rq.setStatusreson("æäº¤ç”³è¯·æˆåŠŸï¼");
 							}
 						}
 					}
@@ -165,13 +165,13 @@ public class YiyeCodeController extends SSOController {
 			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
 	/**
-	 * »î¶¯ÂëÑéÖ¤
+	 * æ´»åŠ¨ç éªŒè¯
 	 * @param codenum
 	 * @return
 	 */
@@ -183,7 +183,7 @@ public class YiyeCodeController extends SSOController {
 			if (codeMod != null) {
 				if (codeMod.getStatus() != null && codeMod.getStatus().intValue() == Integer.parseInt(ActivityCodeStatusEnum.used.toString())) {
 					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("²»ºÃÒâË¼£¬ÄúµÄ»î¶¯ÂëÒÑ¾­Ê¹ÓÃ¹ı£¡");
+					rq.setStatusreson("ä¸å¥½æ„æ€ï¼Œæ‚¨çš„æ´»åŠ¨ç å·²ç»ä½¿ç”¨è¿‡ï¼");
 					return rq;
 				}else if (codeMod.getStatus() != null && codeMod.getStatus().intValue() == Integer.parseInt(ActivityCodeStatusEnum.notuse.toString())) {
 					rq.setBasemodle(codeMod);
@@ -191,16 +191,16 @@ public class YiyeCodeController extends SSOController {
 					return rq;
 				}
 				else {
-					rq.setStatusreson("²»ºÃÒâË¼£¬ÄúµÄ»î¶¯ÂëÊ§Ğ§£¡");
+					rq.setStatusreson("ä¸å¥½æ„æ€ï¼Œæ‚¨çš„æ´»åŠ¨ç å¤±æ•ˆï¼");
 					return rq;
 				}
 			}else {
-				rq.setStatusreson("ºÜÒÅº¶£¬ÄãÊäÈëµÄ»î¶¯Âë²»ÕıÈ·£¬Î´ÄÜ»ñµÃ»î¶¯×Ê¸ñ£¡");
+				rq.setStatusreson("å¾ˆé—æ†¾ï¼Œä½ è¾“å…¥çš„æ´»åŠ¨ç ä¸æ­£ç¡®ï¼Œæœªèƒ½è·å¾—æ´»åŠ¨èµ„æ ¼ï¼");
 				return rq;
 			}
 		} else {
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("ÇëÊäÈë»î¶¯Âë£¡");
+			rq.setStatusreson("è¯·è¾“å…¥æ´»åŠ¨ç ï¼");
 		}
 		return rq;
 	}

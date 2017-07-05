@@ -22,7 +22,7 @@ import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
 
 /**
- * ×÷Æ·ÆÀÂÛ
+ * ä½œå“è¯„è®º
  * @author Administrator
  *
  */
@@ -35,7 +35,7 @@ public class CommentsController extends SSOController{
 	
 	/**
 	 *
-	 * M07 ×÷Æ·ÆÀÂÛ-ÆÀÂÛÌáÊ¾
+	 * M07 ä½œå“è¯„è®º-è¯„è®ºæç¤º
 	 * 
 	 * @return
 	 * @throws Exception
@@ -51,7 +51,7 @@ public class CommentsController extends SSOController{
 	}
 	
 	/**
-	 * M09 ×÷Æ·ÆÀÂÛ-ĞÂÔöÆÀÂÛ
+	 * M09 ä½œå“è¯„è®º-æ–°å¢è¯„è®º
 	 * 
 	 * @param commentJson
 	 * @return
@@ -71,18 +71,18 @@ public class CommentsController extends SSOController{
 				rq = commentService.addPinglun(user.getUserId(), param); 
 			} else {
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("²ÎÊı²»È«");
+				rq.setStatusreson("å‚æ•°ä¸å…¨");
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	
 	/**
-	 * M08 ×÷Æ·ÆÀÂÛ-ÓÃ»§ÆÀÂÛÁĞ±í
+	 * M08 ä½œå“è¯„è®º-ç”¨æˆ·è¯„è®ºåˆ—è¡¨
 	 * @param cartId
 	 * @param index
 	 * @param size
@@ -104,7 +104,7 @@ public class CommentsController extends SSOController{
 	} 
 	
 	/**
-	 * M10 ×÷Æ·ÆÀÂÛ-ÆÀÂÛÕßÍ·ÏñÁĞ±í
+	 * M10 ä½œå“è¯„è®º-è¯„è®ºè€…å¤´åƒåˆ—è¡¨
 	 * @param cartId
 	 * @param index
 	 * @param size
@@ -122,7 +122,7 @@ public class CommentsController extends SSOController{
 	} 
 	
 	/**
-	 * ĞÂÔöÆÀÂÛÄ£°å
+	 * æ–°å¢è¯„è®ºæ¨¡æ¿
 	 * @param commentJson
 	 * @return
 	 * @throws Exception
@@ -137,7 +137,7 @@ public class CommentsController extends SSOController{
 			rq=commentService.modify_Comments(user.getUserId(), param);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
@@ -151,7 +151,7 @@ public class CommentsController extends SSOController{
 			rq=commentService.delTip(user.getUserId(), tipid);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
@@ -165,7 +165,7 @@ public class CommentsController extends SSOController{
 			rq=commentService.delCommentClass(user.getUserId(), classId);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

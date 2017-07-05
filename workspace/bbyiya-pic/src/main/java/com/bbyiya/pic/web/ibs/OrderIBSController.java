@@ -41,7 +41,7 @@ public class OrderIBSController extends SSOController {
 	private IIbs_OrderManageService ibs_OrderManageService;
 
 	/**
-	 * ´ú·ÖÅäµÄ¶©µ¥ÁĞ±í
+	 * ä»£åˆ†é…çš„è®¢å•åˆ—è¡¨
 	 * 
 	 * @return
 	 * @throws Exception
@@ -55,13 +55,13 @@ public class OrderIBSController extends SSOController {
 			rq = orderService.findAgentOrders(user.getUserId());
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
 	/**
-	 * ±¾µê¶©µ¥ÁĞ±í
+	 * æœ¬åº—è®¢å•åˆ—è¡¨
 	 * 
 	 * @return
 	 * @throws Exception
@@ -77,17 +77,17 @@ public class OrderIBSController extends SSOController {
 				rq = orderService.findMyOrderlist(user.getUserId(), status,keywords,index,size);
 			} else {
 				rq.setStatu(ReturnStatus.SystemError_1);
-				rq.setStatusreson("Äú»¹²»ÊÇ´úÀíÉÌ£¬Ã»ÓĞÈ¨ÏŞ");
+				rq.setStatusreson("æ‚¨è¿˜ä¸æ˜¯ä»£ç†å•†ï¼Œæ²¡æœ‰æƒé™");
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
 	/**
-	 * »ñÈ¡¶©µ¥ÏêÇé
+	 * è·å–è®¢å•è¯¦æƒ…
 	 * 
 	 * @param userOrderId
 	 * @return
@@ -102,13 +102,13 @@ public class OrderIBSController extends SSOController {
 			rq = orderService.getOrderDetail(userOrderId);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * »ñÈ¡¶©µ¥Ô­Í¼Ïà²á
+	 * è·å–è®¢å•åŸå›¾ç›¸å†Œ
 	 * 
 	 * @param userOrderId
 	 * @return
@@ -123,13 +123,13 @@ public class OrderIBSController extends SSOController {
 			rq = orderService.getOrderPhotos(userOrderId);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
 	/**
-	 * ÎÒÒªÕâ¸ö¿Í»§
+	 * æˆ‘è¦è¿™ä¸ªå®¢æˆ·
 	 * 
 	 * @param userOrderId
 	 * @return
@@ -145,17 +145,17 @@ public class OrderIBSController extends SSOController {
 				rq = orderService.addCustomer(user.getUserId(), userOrderId);
 			} else {
 				rq.setStatu(ReturnStatus.SystemError_1);
-				rq.setStatusreson("Äú»¹²»ÊÇ´úÀíÉÌ£¬Ã»ÓĞÈ¨ÏŞ");
+				rq.setStatusreson("æ‚¨è¿˜ä¸æ˜¯ä»£ç†å•†ï¼Œæ²¡æœ‰æƒé™");
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
 	/**
-	 * ¸ù¾İÍÆ¼öÈËuserid»ñÈ¡¶©µ¥ÁĞ±í
+	 * æ ¹æ®æ¨èäººuseridè·å–è®¢å•åˆ—è¡¨
 	 * @param status
 	 * @param index
 	 * @param size
@@ -171,12 +171,12 @@ public class OrderIBSController extends SSOController {
 			rq = ibs_OrderManageService.find_payorderExtByUpUserid(user.getUserId(), status,startTime,endTime, index, size);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	/**
-	 * Ó°Â¥ÄÚ²¿ÏÂµ¥Ç°µÃµ½×÷Æ·µÄÏà¹ØµØÖ· £¨Ó°Â¥µØÖ·ºÍÉêÇëÓÃ»§µÄµØÖ·£©
+	 * å½±æ¥¼å†…éƒ¨ä¸‹å•å‰å¾—åˆ°ä½œå“çš„ç›¸å…³åœ°å€ ï¼ˆå½±æ¥¼åœ°å€å’Œç”³è¯·ç”¨æˆ·çš„åœ°å€ï¼‰
 	 * @param index
 	 * @param size
 	 * @return
@@ -191,13 +191,13 @@ public class OrderIBSController extends SSOController {
 			rq=ibs_OrderManageService.getMyProductAddressList(user.getUserId(), cartid);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	/**
-	 * IBSÊı¾İÍ³¼Æµ¼³öExcel
+	 * IBSæ•°æ®ç»Ÿè®¡å¯¼å‡ºExcel
 	 * @param request
 	 * @return
 	 * @throws MapperException 
@@ -205,17 +205,17 @@ public class OrderIBSController extends SSOController {
 	@RequestMapping(value="/ibsCountExportExcel")
 	@ResponseBody
 	public String ibsCountExportExcel(HttpServletRequest request, HttpServletResponse response,Integer status, String startTime,String endTime) throws MapperException {
-		// ÁĞÍ·
+		// åˆ—å¤´
 		String[] headers =new String[9];
-		headers[0]="²éÑ¯¿ªÊ¼Ê±¼ä";
-		headers[1]="²éÑ¯½áÊøÊ±¼ä";
-		headers[2]="×¢²áÓÃ»§êÇ³Æ";
-		headers[3]="ÓÃ»§×¢²áÊ±¼ä";
-		headers[4]="¶©µ¥±àºÅ";
-		headers[5]="¶©µ¥Ö§¸¶Ê±¼ä";
-		headers[6]="²úÆ·ÖÖÀà";
-		headers[7]="¹ºÂòÊıÁ¿";
-		headers[8]="¶©µ¥½ğ¶î";		
+		headers[0]="æŸ¥è¯¢å¼€å§‹æ—¶é—´";
+		headers[1]="æŸ¥è¯¢ç»“æŸæ—¶é—´";
+		headers[2]="æ³¨å†Œç”¨æˆ·æ˜µç§°";
+		headers[3]="ç”¨æˆ·æ³¨å†Œæ—¶é—´";
+		headers[4]="è®¢å•ç¼–å·";
+		headers[5]="è®¢å•æ”¯ä»˜æ—¶é—´";
+		headers[6]="äº§å“ç§ç±»";
+		headers[7]="è´­ä¹°æ•°é‡";
+		headers[8]="è®¢å•é‡‘é¢";		
 		String[] fields = new String[9];
 		fields[0]="starttime";
 		fields[1]="endtime";
@@ -226,14 +226,14 @@ public class OrderIBSController extends SSOController {
 		fields[6]="Producttitle";
 		fields[7]="count";
 		fields[8]="totalprice";
-		//µ¼³ö¸ñÊ½
+		//å¯¼å‡ºæ ¼å¼
 		String format =".xlsx";
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
 			List<OrderCountResultVO> list=ibs_OrderManageService.find_ibsOrderExportExcelbyUpUserid(user.getUserId(), status, startTime, endTime, 0, 0);
-			Long seed = System.currentTimeMillis();// »ñµÃÏµÍ³Ê±¼ä£¬×÷ÎªÉú³ÉËæ»úÊıµÄÖÖ×Ó
-			// »ñÈ¡ÓÃ»§µÄµ±Ç°¹¤×÷Ö÷Ä¿Â¼ 
+			Long seed = System.currentTimeMillis();// è·å¾—ç³»ç»Ÿæ—¶é—´ï¼Œä½œä¸ºç”Ÿæˆéšæœºæ•°çš„ç§å­
+			// è·å–ç”¨æˆ·çš„å½“å‰å·¥ä½œä¸»ç›®å½• 
 			String sep=System.getProperty("file.separator");
 			String currentWorkDir = System.getProperty("user.home") +sep+ "imagedownloadtemp"+sep;
 			FileUtils.isDirExists(currentWorkDir);
@@ -242,7 +242,7 @@ public class OrderIBSController extends SSOController {
 			File file = new File(currentWorkDir + filename);	
 			try { 
 				OutputStream out = new FileOutputStream(file);				
-				ex.exportExcel("IBSÁ÷Á¿Ö÷Êı¾İÍ³¼Æ", headers, fields, list, out, "yyyy-MM-dd");				
+				ex.exportExcel("IBSæµé‡ä¸»æ•°æ®ç»Ÿè®¡", headers, fields, list, out, "yyyy-MM-dd");				
 				out.close();				
 				rq.setStatu(ReturnStatus.Success);
 				rq.setBasemodle(file.getPath());
@@ -256,7 +256,7 @@ public class OrderIBSController extends SSOController {
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

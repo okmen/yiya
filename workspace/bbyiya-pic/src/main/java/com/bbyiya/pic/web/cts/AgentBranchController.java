@@ -30,7 +30,7 @@ public class AgentBranchController extends SSOController {
 	private ICts_UWeiUserManageService weiUserService;
 
 	/**
-	 * B01 ´úÀíÉÌÉóºË
+	 * B01 ä»£ç†å•†å®¡æ ¸
 	 * 
 	 * @param agentUserId
 	 * @param status
@@ -49,17 +49,17 @@ public class AgentBranchController extends SSOController {
 				rq = branchService.audit_AgentApply(user.getUserId(), agentUserId, status, msg);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("ÎŞÈ¨ÏŞ");
+				rq.setStatusreson("æ— æƒé™");
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * B03 ²éÑ¯´úÀíÉÌÉêÇëÁĞ±í
+	 * B03 æŸ¥è¯¢ä»£ç†å•†ç”³è¯·åˆ—è¡¨
 	 * @param agentUserId
 	 * @param status
 	 * @param msg
@@ -87,16 +87,16 @@ public class AgentBranchController extends SSOController {
 				rq = branchService.findAgentApplyList(param,index,size);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("ÎŞÈ¨ÏŞ");
+				rq.setStatusreson("æ— æƒé™");
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	/**
-	 * B04 ²éÑ¯Ó°Â¥ÁĞ±í
+	 * B04 æŸ¥è¯¢å½±æ¥¼åˆ—è¡¨
 	 * @param userId
 	 * @param status
 	 * @return
@@ -125,19 +125,19 @@ public class AgentBranchController extends SSOController {
 				rq = branchService.findBranchVoList(param,index,size);
 			}else{
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("²»ÊÇctsÓÃ»§£¬ÎŞÈ¨ÏŞ");
+				rq.setStatusreson("ä¸æ˜¯ctsç”¨æˆ·ï¼Œæ— æƒé™");
 			}
 			
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	
 	/**
-	 *  ²éÑ¯Î¢ÉÌÁĞ±í
+	 *  æŸ¥è¯¢å¾®å•†åˆ—è¡¨
 	 * @param userId
 	 * @param status
 	 * @return
@@ -168,19 +168,19 @@ public class AgentBranchController extends SSOController {
 				rq = weiUserService.findWeiUserVoList(param, index, size);
 			}else{
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("²»ÊÇctsÓÃ»§£¬ÎŞÈ¨ÏŞ");
+				rq.setStatusreson("ä¸æ˜¯ctsç”¨æˆ·ï¼Œæ— æƒé™");
 			}
 			
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	
 	/**
-	 * B02 Ó°Â¥ÉóºË
+	 * B02 å½±æ¥¼å®¡æ ¸
 	 * 
 	 * @param agentUserId
 	 * @param status
@@ -198,17 +198,17 @@ public class AgentBranchController extends SSOController {
 				rq = branchService.audit_BranchApply(user.getUserId(), branchUserId, status, msg);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("ÎŞÈ¨ÏŞ");
+				rq.setStatusreson("æ— æƒé™");
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * ´úÀíÉÌÍË×¤²Ù×÷
+	 * ä»£ç†å•†é€€é©»æ“ä½œ
 	 * 
 	 * @param agentUserId
 	 * @param status
@@ -226,17 +226,17 @@ public class AgentBranchController extends SSOController {
 					rq = branchService.agentTuiZhu(user.getNickName(),user.getUserId(), agentUserId);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("ÎŞÈ¨ÏŞ");
+				rq.setStatusreson("æ— æƒé™");
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
  
 	/**
-	 * ÅĞ¶ÏÓÃ»§´úÀíÉÌÉêÇë×´Ì¬ 
+	 * åˆ¤æ–­ç”¨æˆ·ä»£ç†å•†ç”³è¯·çŠ¶æ€ 
 	 * @param type
 	 * @return String
 	 * @throws Exception
@@ -254,7 +254,7 @@ public class AgentBranchController extends SSOController {
 			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);

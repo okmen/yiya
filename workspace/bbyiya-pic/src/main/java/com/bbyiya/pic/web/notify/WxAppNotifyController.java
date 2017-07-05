@@ -36,7 +36,7 @@ public class WxAppNotifyController {
 	@Autowired
 	private EErrorsMapper errorMapper;
 	/**
-	 * Î¢ĞÅÖ§¸¶»ØĞ´µØÖ·
+	 * å¾®ä¿¡æ”¯ä»˜å›å†™åœ°å€
 	 * 
 	 * @param request
 	 * @param response
@@ -71,7 +71,7 @@ public class WxAppNotifyController {
 				addlog(msg);
 			}
 		}else {
-			msg+="5Ç©ÃûÓĞÎó,xml="+xmlStr;
+			msg+="5ç­¾åæœ‰è¯¯,xml="+xmlStr;
 			addlog(msg);
 		}
 		return "error";
@@ -81,7 +81,7 @@ public class WxAppNotifyController {
 		SortedMap<String, String> map =  WxAppPayUtils.queryWxOrder(transaction_id, payId);//WxUtil.xmlToMap(xmlResult);
 		if (WxUtil.isWXsign(map, WxPayAppConfig.AppSecret)) {
 			if (map != null && map.get("return_code").equals("SUCCESS") && map.get("result_code").equals("SUCCESS") && map.get("trade_state").equals("SUCCESS")) {
-				// »áĞ´¶©µ¥×´Ì¬ TODO »ØĞ´¶©µ¥×´Ì¬
+				// ä¼šå†™è®¢å•çŠ¶æ€ TODO å›å†™è®¢å•çŠ¶æ€
 				boolean paySuccess = orderMgtService.paySuccessProcess(payId);
 				if (paySuccess) {
 					return "success";

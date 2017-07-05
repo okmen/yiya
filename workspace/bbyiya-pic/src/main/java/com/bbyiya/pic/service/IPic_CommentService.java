@@ -9,21 +9,21 @@ import com.bbyiya.vo.ReturnModel;
 public interface IPic_CommentService {
 
 	/**
-	 * ÆÀÂÛÄ£°åÌáÊ¾ĞÅÏ¢
+	 * è¯„è®ºæ¨¡æ¿æç¤ºä¿¡æ¯
 	 * @param productId
 	 * @return
 	 */
 	List<PCommentstemp> findCommentResultList(Long productId);
 	
 	/**
-	 * ×÷Æ·ÆÀÂÛ
-	 * @param userId ÆÀÂÛÕßuserid
+	 * ä½œå“è¯„è®º
+	 * @param userId è¯„è®ºè€…userid
 	 * @param param
 	 * @return
 	 */
 	ReturnModel  addPinglun(Long userId, PMyproductcomments param);
 	/**
-	 * »ñÈ¡×÷Æ·ÆÀÂÛÁĞ±í
+	 * è·å–ä½œå“è¯„è®ºåˆ—è¡¨
 	 * @param userid
 	 * @param cartId
 	 * @param index
@@ -32,7 +32,7 @@ public interface IPic_CommentService {
 	 */
 	ReturnModel findCommentsList(Long userid, Long cartId,int index,int size);
 	/**
-	 * »ñÈ¡×÷Æ·ÆÀÂÛÕß Í·ÏñÁĞ±í
+	 * è·å–ä½œå“è¯„è®ºè€… å¤´åƒåˆ—è¡¨
 	 * @param cartId
 	 * @param index
 	 * @param size
@@ -40,7 +40,7 @@ public interface IPic_CommentService {
 	 */
 	ReturnModel findCommentsHeadImgList(Long cartId,int index,int size);
 	/**
-	 * ±à¼­ ÌáÊ¾ÆÀÂÛ·ÖÀà£¨ĞÂÔö¡¢ĞŞ¸Ä£©£»ÌáÊ¾ÆÀÂÛ£¨ĞŞ¸Ä¡¢ĞÂÔö£©
+	 * ç¼–è¾‘ æç¤ºè¯„è®ºåˆ†ç±»ï¼ˆæ–°å¢ã€ä¿®æ”¹ï¼‰ï¼›æç¤ºè¯„è®ºï¼ˆä¿®æ”¹ã€æ–°å¢ï¼‰
 	 * @param userId
 	 * @param param
 	 * @return
@@ -48,14 +48,14 @@ public interface IPic_CommentService {
 	ReturnModel modify_Comments(Long userId,PCommentstemp param);
 	
 	/**
-	 * É¾³ı ÆÀÂÛÌáÊ¾
+	 * åˆ é™¤ è¯„è®ºæç¤º
 	 * @param userId
 	 * @param tipId
 	 * @return
 	 */
 	ReturnModel delTip(Long userId,Integer tipId);
 	/**
-	 * É¾³ı ÆÀÂÛ·ÖÀà
+	 * åˆ é™¤ è¯„è®ºåˆ†ç±»
 	 * @param userId
 	 * @param commentClassId
 	 * @return

@@ -32,16 +32,16 @@ import com.bbyiya.model.PMyproductsinvites;
 /**
  * 
 * <p>Title:ExportExcel </p>
-* <p>ÃèÊö:µ¼³öExcel¹«¹²Àà </p>
-* <p>°æ±¾:ASOS¶şÆÚ </p>
+* <p>æè¿°:å¯¼å‡ºExcelå…¬å…±ç±» </p>
+* <p>ç‰ˆæœ¬:ASOSäºŒæœŸ </p>
 * @author PengHao
-* @date 2016-7-29 ÏÂÎç2:29:56
+* @date 2016-7-29 ä¸‹åˆ2:29:56
  */
 public class ExportExcel<T> {
 	
 
 	/** 
-	 * µ¼³öCSV
+	 * å¯¼å‡ºCSV
 	 * @param title
 	 * @param headers
 	 * @param fields
@@ -55,14 +55,14 @@ public class ExportExcel<T> {
 		try {
 			csvWriter = new BufferedWriter(new OutputStreamWriter(out, "GB2312"));
 			StringBuffer sb = new StringBuffer();
-			// Ğ´ÈëÎÄ¼şÍ·²¿
+			// å†™å…¥æ–‡ä»¶å¤´éƒ¨
 			for (short i =0; i < headers.length; i++) {
 				sb.append("\"").append(headers[i]).append("\",");
 	        }
 			csvWriter.write(sb.toString().substring(0, sb.toString().length() - 1));
 			csvWriter.newLine();
-			// Ğ´ÈëÎÄ¼şÄÚÈİ
-			 // ±éÀú¼¯ºÏÊı¾İ£¬²úÉúÊı¾İĞĞ
+			// å†™å…¥æ–‡ä»¶å†…å®¹
+			 // éå†é›†åˆæ•°æ®ï¼Œäº§ç”Ÿæ•°æ®è¡Œ
 	        Iterator<T> it = dataset.iterator();  
 	        @SuppressWarnings("unused")
 			int index = 0;
@@ -70,7 +70,7 @@ public class ExportExcel<T> {
 	        	index++;
 	        	T t = (T) it.next();
     			sb.setLength(0);
-	        	// ÀûÓÃ·´Éä£¬¸ù¾İjavabeanÊôĞÔµÄÏÈºóË³Ğò£¬¶¯Ì¬µ÷ÓÃgetXxxx()·½·¨µÃµ½ÊôĞÔÖµ
+	        	// åˆ©ç”¨åå°„ï¼Œæ ¹æ®javabeanå±æ€§çš„å…ˆåé¡ºåºï¼ŒåŠ¨æ€è°ƒç”¨getXxxx()æ–¹æ³•å¾—åˆ°å±æ€§å€¼
 	        	for (int i = 0; i < fields.length; i++) {
 	        		String fieldName = fields[i];
 	        		String getMethodName = GetterUtil.toGetter(fieldName);
@@ -84,12 +84,12 @@ public class ExportExcel<T> {
 						Object value = getMethod.invoke(t, new Object[]{});
 						String textValue = null;
 						if (value instanceof Date) {
-							// ÅĞ¶ÏÖµµÄÀàĞÍºó½øĞĞÇ¿ÖÆÀàĞÍ×ª»»
+							// åˆ¤æ–­å€¼çš„ç±»å‹åè¿›è¡Œå¼ºåˆ¶ç±»å‹è½¬æ¢
 							Date date = (Date) value;
 							SimpleDateFormat sdf = new SimpleDateFormat(pattern);
 							textValue = sdf.format(date);
 						} else if (value instanceof OUserorders) {
-							// ¹ØÁªAosCell´¦Àí
+							// å…³è”AosCellå¤„ç†
 							Class cCls = value.getClass();
 							Method getCMethod = cCls.getMethod(GetterUtil.toGetter(mnames[1]), new Class[] {});
 							Object value2 = getCMethod.invoke(value, new Object[]{});
@@ -97,18 +97,18 @@ public class ExportExcel<T> {
 								textValue = value2.toString();
 							}
 						} else {
-							// ÆäËüÊı¾İÀàĞÍ¶¼µ±×÷×Ö·û´®¼òµ¥´¦Àí
+							// å…¶å®ƒæ•°æ®ç±»å‹éƒ½å½“ä½œå­—ç¬¦ä¸²ç®€å•å¤„ç†
 							if (value != null) {
 								textValue = value.toString();
 							}
 						} 
 						if (textValue != null) {
-							// Èç¹û²»ÊÇÍ¼Æ¬Êı¾İ£¬¾ÍÀûÓÃÕıÔò±í´ïÊ½ÅĞ¶ÏtextValueÊÇ·ñÈ«²¿ÓÉÊı×Ö×é³É
+							// å¦‚æœä¸æ˜¯å›¾ç‰‡æ•°æ®ï¼Œå°±åˆ©ç”¨æ­£åˆ™è¡¨è¾¾å¼åˆ¤æ–­textValueæ˜¯å¦å…¨éƒ¨ç”±æ•°å­—ç»„æˆ
 //							Pattern p = Pattern.compile("-?[0-9]+.*[0-9]*");
 //							Pattern p = Pattern.compile("^//d+(//.//d+)?$");
 //							Matcher matcher = p.matcher(textValue);
 //							if (matcher.matches()) {
-//								// ÊÇÊı×Öµ±×÷double´¦Àí
+//								// æ˜¯æ•°å­—å½“ä½œdoubleå¤„ç†
 //								sb.append(Double.parseDouble(textValue)).append(",");
 //							} else {
 //								sb.append("\"").append(textValue).append("\",");
@@ -145,26 +145,26 @@ public class ExportExcel<T> {
 	}
 
 	/**
-	 * µ¼³öExcel
-	 * @param title sheet±êÌâ
-	 * @param headers ±íÍ·
-	 * @param fields ÁĞId's
-	 * @param dataset Êı¾İ½á¹û¼¯
+	 * å¯¼å‡ºExcel
+	 * @param title sheetæ ‡é¢˜
+	 * @param headers è¡¨å¤´
+	 * @param fields åˆ—Id's
+	 * @param dataset æ•°æ®ç»“æœé›†
 	 * @param out 
-	 * @param pattern ÈÕÆÚ¸ñÊ½»¯
+	 * @param pattern æ—¥æœŸæ ¼å¼åŒ–
 	 */
 	@SuppressWarnings({ "resource", "rawtypes", "unchecked" })
 	public void exportExcel(String title, String[] headers, String[] fields, Collection<T> dataset, OutputStream out, String pattern) {
 		
-		// ÉùÃ÷Ò»¸ö¹¤×÷±¡
+		// å£°æ˜ä¸€ä¸ªå·¥ä½œè–„
 		Workbook workbook = new SXSSFWorkbook();
-		// Éú³ÉÒ»¸ö±í¸ñ
+		// ç”Ÿæˆä¸€ä¸ªè¡¨æ ¼
 		Sheet sheet = workbook.createSheet(title);
-		// ÉèÖÃ±í¸ñÄ¬ÈÏÁĞ¿í¶ÈÎª15¸ö×Ö½Ú
+		// è®¾ç½®è¡¨æ ¼é»˜è®¤åˆ—å®½åº¦ä¸º15ä¸ªå­—èŠ‚
 		sheet.setDefaultColumnWidth(15);
-		// Éú³ÉÒ»¸öÑùÊ½
+		// ç”Ÿæˆä¸€ä¸ªæ ·å¼
 		CellStyle style = workbook.createCellStyle();
-		// ÉèÖÃÑùÊ½
+		// è®¾ç½®æ ·å¼
 		style.setFillForegroundColor(HSSFColor.WHITE.index);  
         style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);  
         style.setBorderBottom(HSSFCellStyle.BORDER_THIN);  
@@ -172,14 +172,14 @@ public class ExportExcel<T> {
         style.setBorderRight(HSSFCellStyle.BORDER_THIN);  
         style.setBorderTop(HSSFCellStyle.BORDER_THIN);  
         style.setAlignment(HSSFCellStyle.ALIGN_CENTER); 
-        // Éú³ÉÒ»¸ö×ÖÌå
+        // ç”Ÿæˆä¸€ä¸ªå­—ä½“
         Font font = workbook.createFont();  
         font.setColor(HSSFColor.BLACK.index);  
         font.setFontHeightInPoints((short) 12);  
         font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);  
-        // °Ñ×ÖÌåÓ¦ÓÃµ½µ±Ç°µÄÑùÊ½  
+        // æŠŠå­—ä½“åº”ç”¨åˆ°å½“å‰çš„æ ·å¼  
         style.setFont(font);  
-        // Éú³É²¢ÉèÖÃÁíÒ»¸öÑùÊ½  
+        // ç”Ÿæˆå¹¶è®¾ç½®å¦ä¸€ä¸ªæ ·å¼  
         CellStyle style2 = workbook.createCellStyle();  
         style2.setFillForegroundColor(HSSFColor.WHITE.index);  
         style2.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);  
@@ -189,13 +189,13 @@ public class ExportExcel<T> {
         style2.setBorderTop(HSSFCellStyle.BORDER_THIN);  
         style2.setAlignment(HSSFCellStyle.ALIGN_CENTER);  
         style2.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);  
-        // Éú³ÉÁíÒ»¸ö×ÖÌå  
+        // ç”Ÿæˆå¦ä¸€ä¸ªå­—ä½“  
         Font font2 = workbook.createFont();   
         font2.setBoldweight(HSSFFont.BOLDWEIGHT_NORMAL);  
-        // °Ñ×ÖÌåÓ¦ÓÃµ½µ±Ç°µÄÑùÊ½  
+        // æŠŠå­—ä½“åº”ç”¨åˆ°å½“å‰çš„æ ·å¼  
         style2.setFont(font2);  
         
-        // ²úÉú±í¸ñ±êÌâĞĞ
+        // äº§ç”Ÿè¡¨æ ¼æ ‡é¢˜è¡Œ
         Row row = sheet.createRow(0);
         for (short i =0; i < headers.length; i++) {
         	Cell cell = row.createCell(i);
@@ -204,14 +204,14 @@ public class ExportExcel<T> {
         	cell.setCellValue(text);
         }
         
-        // ±éÀú¼¯ºÏÊı¾İ£¬²úÉúÊı¾İĞĞ
+        // éå†é›†åˆæ•°æ®ï¼Œäº§ç”Ÿæ•°æ®è¡Œ
         Iterator<T> it = dataset.iterator();  
         int index = 0;
         while (it.hasNext()) {
         	index++;
         	row = sheet.createRow(index);
         	T t = (T) it.next();
-        	// ÀûÓÃ·´Éä£¬¸ù¾İjavabeanÊôĞÔµÄÏÈºóË³Ğò£¬¶¯Ì¬µ÷ÓÃgetXxxx()·½·¨µÃµ½ÊôĞÔÖµ
+        	// åˆ©ç”¨åå°„ï¼Œæ ¹æ®javabeanå±æ€§çš„å…ˆåé¡ºåºï¼ŒåŠ¨æ€è°ƒç”¨getXxxx()æ–¹æ³•å¾—åˆ°å±æ€§å€¼
         	for (int i = 0; i < fields.length; i++) {
         		Cell cell = row.createCell(i);
         		cell.setCellStyle(style2);
@@ -227,12 +227,12 @@ public class ExportExcel<T> {
 					Object value = getMethod.invoke(t, new Object[]{});
 					String textValue = null;
 					if (value instanceof Date) {
-						// ÅĞ¶ÏÖµµÄÀàĞÍºó½øĞĞÇ¿ÖÆÀàĞÍ×ª»»
+						// åˆ¤æ–­å€¼çš„ç±»å‹åè¿›è¡Œå¼ºåˆ¶ç±»å‹è½¬æ¢
 						Date date = (Date) value;
 						SimpleDateFormat sdf = new SimpleDateFormat(pattern);
 						textValue = sdf.format(date);
 					} else if (value instanceof OUserorders) {
-						// ¹ØÁªAosCell´¦Àí
+						// å…³è”AosCellå¤„ç†
 						Class cCls = value.getClass();
 						Method getCMethod = cCls.getMethod(GetterUtil.toGetter(mnames[1]), new Class[] {});
 						Object value2 = getCMethod.invoke(value, new Object[]{});
@@ -240,7 +240,7 @@ public class ExportExcel<T> {
 							textValue = value2.toString();
 						}
 					}else if (value instanceof PMyproductsinvites) {
-						// ¹ØÁªAosCell´¦Àí
+						// å…³è”AosCellå¤„ç†
 						Class cCls = value.getClass();
 						Method getCMethod = cCls.getMethod(GetterUtil.toGetter(mnames[1]), new Class[] {});
 						Object value2 = getCMethod.invoke(value, new Object[]{});
@@ -248,32 +248,32 @@ public class ExportExcel<T> {
 							textValue = value2.toString();
 						}
 					} else {
-						// ÆäËüÊı¾İÀàĞÍ¶¼µ±×÷×Ö·û´®¼òµ¥´¦Àí
+						// å…¶å®ƒæ•°æ®ç±»å‹éƒ½å½“ä½œå­—ç¬¦ä¸²ç®€å•å¤„ç†
 						if (value != null) {
 							textValue = value.toString();
 						}
-						//»î¶¯×´Ì¬, 1 ÖÆ×÷ÖĞ 3ÖÆ×÷ÒÑÍê³É 4×÷Æ·ÉóºË²»Í¨¹ı 5 ÏÂµ¥³É¹¦ 6Òò»î¶¯½áÊø¶øµ¼ÖÂ»î¶¯Ê§°Ü
+						//æ´»åŠ¨çŠ¶æ€, 1 åˆ¶ä½œä¸­ 3åˆ¶ä½œå·²å®Œæˆ 4ä½œå“å®¡æ ¸ä¸é€šè¿‡ 5 ä¸‹å•æˆåŠŸ 6å› æ´»åŠ¨ç»“æŸè€Œå¯¼è‡´æ´»åŠ¨å¤±è´¥
 						if(fieldName.equalsIgnoreCase("activeStatus")){
 							if(value.toString().equals("1")){
-								textValue="ÖÆ×÷ÖĞ";
+								textValue="åˆ¶ä½œä¸­";
 							}else if(value.toString().equals("3")){
-								textValue="ÖÆ×÷ÒÑÍê³É";
+								textValue="åˆ¶ä½œå·²å®Œæˆ";
 							}else if(value.toString().equals("4")){
-								textValue="×÷Æ·²»Í¨¹ı";
+								textValue="ä½œå“ä¸é€šè¿‡";
 							}else if(value.toString().equals("5")){
-								textValue="ÏÂµ¥³É¹¦";
+								textValue="ä¸‹å•æˆåŠŸ";
 							}else if(value.toString().equals("6")){
-								textValue="»î¶¯ÒÑ½áÊø";
+								textValue="æ´»åŠ¨å·²ç»“æŸ";
 							}
 						}
 					} 
 
 					if (textValue != null) {
-						// Èç¹û²»ÊÇÍ¼Æ¬Êı¾İ£¬¾ÍÀûÓÃÕıÔò±í´ïÊ½ÅĞ¶ÏtextValueÊÇ·ñÈ«²¿ÓÉÊı×Ö×é³É
+						// å¦‚æœä¸æ˜¯å›¾ç‰‡æ•°æ®ï¼Œå°±åˆ©ç”¨æ­£åˆ™è¡¨è¾¾å¼åˆ¤æ–­textValueæ˜¯å¦å…¨éƒ¨ç”±æ•°å­—ç»„æˆ
 						Pattern p = Pattern.compile("^//d+(//.//d+)?$");
 						Matcher matcher = p.matcher(textValue);
 						if (matcher.matches()) {
-							// ÊÇÊı×Öµ±×÷double´¦Àí
+							// æ˜¯æ•°å­—å½“ä½œdoubleå¤„ç†
 							cell.setCellValue(Double.parseDouble(textValue));
 						} else {
 							/*RichTextString richString = new XSSFRichTextString(textValue);

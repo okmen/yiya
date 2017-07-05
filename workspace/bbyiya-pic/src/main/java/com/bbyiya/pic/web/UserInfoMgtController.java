@@ -4,13 +4,6 @@ package com.bbyiya.pic.web;
 import javax.annotation.Resource;
 
 
-
-
-
-
-
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +31,7 @@ import com.bbyiya.web.base.SSOController;
 @RequestMapping(value = "/user")
 public class UserInfoMgtController extends SSOController {
 	/**
-	 * µÇÂ½¡¢   ×¢²á service
+	 * ç™»é™†ã€   æ³¨å†Œ service
 	 */
 	@Resource(name = "baseUserAddressServiceImpl")
 	private IBaseUserAddressService addressService;
@@ -50,14 +43,14 @@ public class UserInfoMgtController extends SSOController {
 	@Autowired
 	private EErrorsMapper logger;
 	/**
-	 * µÇÂ½¡¢×¢²á service
+	 * ç™»é™†ã€æ³¨å†Œ service
 	 */
 	@Resource(name = "pic_userMgtService")
 	private IPic_UserMgtService loginService;
 	
 	
 	/**
-	 * A02 ĞÂÔö/±à¼­ ÊÕ»õµØÖ·
+	 * A02 æ–°å¢/ç¼–è¾‘ æ”¶è´§åœ°å€
 	 * 
 	 * @param addrJson
 	 * @return
@@ -78,18 +71,18 @@ public class UserInfoMgtController extends SSOController {
 				}
 			} else {
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("²ÎÊıÓĞÎó");
-				logger.addError(this.getClass().getName(), "A02 ²ÎÊı´íÎó:Param:"+addrJson);
+				rq.setStatusreson("å‚æ•°æœ‰è¯¯");
+				logger.addError(this.getClass().getName(), "A02 å‚æ•°é”™è¯¯:Param:"+addrJson);
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * »ñÈ¡ÓÃ»§µØÖ·ĞÅÏ¢
+	 * è·å–ç”¨æˆ·åœ°å€ä¿¡æ¯
 	 * @param addrid
 	 * @return
 	 * @throws Exception
@@ -104,13 +97,13 @@ public class UserInfoMgtController extends SSOController {
 			rq.setBasemodle(addressService.getUserAddressResult(user.getUserId(),addrid)); 		
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * »ñÈ¡Ó°Â¥ÊÕ»õµØÖ·
+	 * è·å–å½±æ¥¼æ”¶è´§åœ°å€
 	 * @return
 	 * @throws Exception
 	 */
@@ -124,13 +117,13 @@ public class UserInfoMgtController extends SSOController {
 			rq.setBasemodle(addressService.getBranchAddressResult(user.getUserId())); 		
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * °ó¶¨ÊÖ»ú
+	 * ç»‘å®šæ‰‹æœº
 	 * @param vcode
 	 * @param phone
 	 * @return
@@ -150,19 +143,19 @@ public class UserInfoMgtController extends SSOController {
 				}
 				if(!ObjectUtil.isEmpty(ticket)){
 					 RedisUtil.setObject(ticket, rq.getBasemodle(), 86400); 
-					 rq.setStatusreson("ÉèÖÃ³É¹¦£¡");
+					 rq.setStatusreson("è®¾ç½®æˆåŠŸï¼");
 					 return JsonUtil.objectToJsonStr(rq); 
 				}
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * °ó¶¨ÊÖ»ú
+	 * ç»‘å®šæ‰‹æœº
 	 * @param vcode
 	 * @param phone
 	 * @return
@@ -182,19 +175,19 @@ public class UserInfoMgtController extends SSOController {
 				}
 				if(!ObjectUtil.isEmpty(ticket)){
 					 RedisUtil.setObject(ticket, rq.getBasemodle(), 86400); 
-					 rq.setStatusreson("ÉèÖÃ³É¹¦£¡");
+					 rq.setStatusreson("è®¾ç½®æˆåŠŸï¼");
 					 return JsonUtil.objectToJsonStr(rq); 
 				}
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * ĞÂÔö±¦±¦ĞÅÏ¢
+	 * æ–°å¢å®å®ä¿¡æ¯
 	 * @param childInfoJson
 	 * @return
 	 * @throws Exception
@@ -206,24 +199,24 @@ public class UserInfoMgtController extends SSOController {
 		LoginSuccessResult user = this.getLoginUser();
 		if (user == null) {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ½¹ıÆÚ£¬ÇëÖØĞÂµÇÂ½£¡");
+			rq.setStatusreson("ç™»é™†è¿‡æœŸï¼Œè¯·é‡æ–°ç™»é™†ï¼");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		if (ObjectUtil.isEmpty(childInfoJson)) {
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("²ÎÊı²»ÄÜÎª¿Õ");
+			rq.setStatusreson("å‚æ•°ä¸èƒ½ä¸ºç©º");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		if(!ObjectUtil.validSqlStr(childInfoJson)){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("²ÎÊıÓĞ·çÏÕ");
+			rq.setStatusreson("å‚æ•°æœ‰é£é™©");
 			return JsonUtil.objectToJsonStr(rq);
 		}
-		// ±¦±¦ĞÅÏ¢²ÎÊımodel
+		// å®å®ä¿¡æ¯å‚æ•°model
 		UChildInfoParam child = (UChildInfoParam) JsonUtil.jsonStrToObject(childInfoJson, UChildInfoParam.class);
 		rq = userMgtService.addOrEdit_UChildreninfo(user.getUserId(), child);
 		if(rq.getStatu().equals(ReturnStatus.Success)){
-			rq.setStatusreson("³É¹¦£¡"); 
+			rq.setStatusreson("æˆåŠŸï¼"); 
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

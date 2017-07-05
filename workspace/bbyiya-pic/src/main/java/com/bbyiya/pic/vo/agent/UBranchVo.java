@@ -9,9 +9,9 @@ public class UBranchVo extends UBranches{
 	private String cityName;
 	private String areaName;
 	private List<String> agentArealist;
-	private Integer userCount;//发展的用户数
-	private Double goodsAmount; //货款金额
-	private Double transAmount; //邮费金额
+	private Integer userCount;//鍙戝睍鐨勭敤鎴锋暟
+	private Double goodsAmount; //璐ф閲戦
+	private Double transAmount; //閭垂閲戦
 	public String getProviceName() {
 		return proviceName;
 	}

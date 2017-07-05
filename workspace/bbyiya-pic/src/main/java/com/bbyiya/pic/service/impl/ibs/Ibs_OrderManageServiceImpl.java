@@ -52,14 +52,14 @@ public class Ibs_OrderManageServiceImpl implements IIbs_OrderManageService{
 	
 	@Resource(name = "regionServiceImpl")
 	private IRegionService regionService;
-	/*------------------------´úÀíÄ£¿é-------------------------------------*/
+	/*------------------------ä»£ç†æ¨¡å—-------------------------------------*/
 	@Autowired
 	private UBranchesMapper branchesMapper;
 	@Autowired
 	private UBranchusersMapper branchusersMapper;
 	
 	/**
-	 * ¸ù¾İÍÆ¼öuserId»ñÈ¡ÍÆ¼öµÄ¶©µ¥ÁĞ±í
+	 * æ ¹æ®æ¨èuserIdè·å–æ¨èçš„è®¢å•åˆ—è¡¨
 	 */
 	public ReturnModel find_payorderExtByUpUserid(Long userId,Integer status, String startTime,String endTime,int index,int size){
 		ReturnModel rq=new ReturnModel();
@@ -68,7 +68,7 @@ public class Ibs_OrderManageServiceImpl implements IIbs_OrderManageService{
 			startDay=DateUtil.getDateByString("yyyy-MM-dd", startTime);
 		}
 		if(!ObjectUtil.isEmpty(endTime)){
-			//»ñÈ¡ÈÕÆÚµÄ×îºó½áÊøÊ±¼ä
+			//è·å–æ—¥æœŸçš„æœ€åç»“æŸæ—¶é—´
 			endTime=DateUtil.getEndTime(endTime);
 			endDay=DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", endTime);
 		}
@@ -82,7 +82,7 @@ public class Ibs_OrderManageServiceImpl implements IIbs_OrderManageService{
 	}
 	
 	/**
-	 * Ó°Â¥ÄÚ²¿ÒìÒµ×÷Æ·ÏÂµ¥Ç°µÃµ½×÷Æ·µÄÏà¹ØµØÖ·
+	 * å½±æ¥¼å†…éƒ¨å¼‚ä¸šä½œå“ä¸‹å•å‰å¾—åˆ°ä½œå“çš„ç›¸å…³åœ°å€
 	 */
 	public ReturnModel getMyProductAddressList(Long userId,Long cartid){
 		ReturnModel rq=new ReturnModel();
@@ -92,7 +92,7 @@ public class Ibs_OrderManageServiceImpl implements IIbs_OrderManageService{
 			UBranchusers branchusers= branchusersMapper.selectByPrimaryKey(userId);
 			if(branchusers!=null&&branchusers.getBranchuserid()!=null){
 				UBranches branches=branchesMapper.selectByPrimaryKey(branchusers.getBranchuserid());
-				//µÃµ½Ó°Â¥µØÖ·
+				//å¾—åˆ°å½±æ¥¼åœ°å€
 				if (branches != null) {
 					OrderaddressVo orderAddress = new OrderaddressVo();
 					orderAddress.setUserid(branches.getBranchuserid());
@@ -109,7 +109,7 @@ public class Ibs_OrderManageServiceImpl implements IIbs_OrderManageService{
 					addressList.add(orderAddress);
 				}
 			}
-			//µÃµ½×÷Æ·ÓÃ»§ÉêÇëµØÖ·
+			//å¾—åˆ°ä½œå“ç”¨æˆ·ç”³è¯·åœ°å€
 			PMyproducttempapply tempApply=myproductapplyMapper.getMyProducttempApplyByCartId(cartid);
 			if(tempApply!=null){
 				OrderaddressVo orderAddress2 = new OrderaddressVo();
@@ -135,7 +135,7 @@ public class Ibs_OrderManageServiceImpl implements IIbs_OrderManageService{
 	}
 	
 	/**
-	 * IBSÍ³¼Æexcelµ¼³öÁĞ±í
+	 * IBSç»Ÿè®¡excelå¯¼å‡ºåˆ—è¡¨
 	 * @param userId
 	 * @param status
 	 * @param startTime
@@ -151,7 +151,7 @@ public class Ibs_OrderManageServiceImpl implements IIbs_OrderManageService{
 			startDay=DateUtil.getDateByString("yyyy-MM-dd", startTime);
 		}
 		if(!ObjectUtil.isEmpty(endTime)){
-			//»ñÈ¡ÈÕÆÚµÄ×îºó½áÊøÊ±¼ä
+			//è·å–æ—¥æœŸçš„æœ€åç»“æŸæ—¶é—´
 			String endTimefmt=DateUtil.getEndTime(endTime);
 			endDay=DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", endTimefmt);
 		}

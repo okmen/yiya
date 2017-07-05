@@ -32,7 +32,7 @@ public class PProductController extends SSOController {
 	
 	
 	/**
-	 * C03 根据查询条件获取产品列表
+	 * C03 鏍规嵁鏌ヨ鏉′欢鑾峰彇浜у搧鍒楄〃
 	 * @param searchParam
 	 * @param index
 	 * @param size
@@ -48,13 +48,13 @@ public class PProductController extends SSOController {
 			rq=productService.findProductListBySearchParam(index, size, searchParam);		
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
+			rq.setStatusreson("鐧诲綍杩囨湡");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	/**
-	 * C04 修改产品信息
+	 * C04 淇敼浜у搧淇℃伅
 	 * @param searchParam
 	 * @return
 	 * @throws Exception
@@ -69,13 +69,13 @@ public class PProductController extends SSOController {
 			rq=productService.updateProductByProductId(productDto);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
+			rq.setStatusreson("鐧诲綍杩囨湡");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	/**
-	 * C05 根据查询条件获取产品款式列表
+	 * C05 鏍规嵁鏌ヨ鏉′欢鑾峰彇浜у搧娆惧紡鍒楄〃
 	 * @param searchParam
 	 * @param index
 	 * @param size
@@ -91,13 +91,13 @@ public class PProductController extends SSOController {
 			rq=productService.findProductStylesBySearchParam(index, size, searchParam);		
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
+			rq.setStatusreson("鐧诲綍杩囨湡");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	/**
-	 * C06 修改产品款式信息
+	 * C06 淇敼浜у搧娆惧紡淇℃伅
 	 * @param searchParam
 	 * @return
 	 * @throws Exception
@@ -112,14 +112,14 @@ public class PProductController extends SSOController {
 			rq=productService.addAndupdateProductStyles(user.getUserId(),style);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
+			rq.setStatusreson("鐧诲綍杩囨湡");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * C06 新增产品款式信息
+	 * C06 鏂板浜у搧娆惧紡淇℃伅
 	 * @param searchParam
 	 * @return
 	 * @throws Exception
@@ -134,7 +134,7 @@ public class PProductController extends SSOController {
 			rq=productService.addAndupdateProductStyles(user.getUserId(),style);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
+			rq.setStatusreson("鐧诲綍杩囨湡");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);

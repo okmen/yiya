@@ -86,12 +86,12 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private PProductdetailsMapper detailMapper;
 	@Autowired
 	private PProductstylesMapper styleMapper;
-	/*---------------------×ø±êÄ£°å---------------------------------*/
+	/*---------------------åæ ‡æ¨¡æ¿---------------------------------*/
 	@Autowired
 	private PStylecoordinateMapper styleCoordMapper;
 	@Autowired
 	private PStylecoordinateitemMapper styleCoordItemMapper;
-	/*--------------------ÎÒµÄ×÷Æ·----------------------------------*/
+	/*--------------------æˆ‘çš„ä½œå“----------------------------------*/
 	@Autowired
 	private PMyproductsMapper myMapper;
 	@Autowired
@@ -112,11 +112,11 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	private PMyproductextMapper myextMapper;
 	
 	
-	/*-------------------ÓÃ»§ĞÅÏ¢------------------------------------------------*/
+	/*-------------------ç”¨æˆ·ä¿¡æ¯------------------------------------------------*/
 	@Autowired
 	private UUsersMapper usersMapper;
 	@Autowired
-	private UBranchusersMapper branchusersMapper;// Ó°Â¥ĞÅÏ¢
+	private UBranchusersMapper branchusersMapper;// å½±æ¥¼ä¿¡æ¯
 	@Autowired
 	private OUserordersMapper orderMapper;
 	@Autowired
@@ -136,7 +136,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	
 	@Resource(name = "baseUserAddressServiceImpl")
 	private IBaseUserAddressService baseAddressService;
-	//ÓÅ»İĞÅÏ¢
+	//ä¼˜æƒ ä¿¡æ¯
 	@Resource(name = "baseDiscountServiceImpl")
 	private IBaseDiscountService discountService;
 	
@@ -178,10 +178,10 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		ReturnModel rq = new ReturnModel();
 		Long cartIdTemp = 0l;
 		if (param != null) {
-			if (param.getCartid() != null && param.getCartid() > 0) {// ¸üĞÂ
+			if (param.getCartid() != null && param.getCartid() > 0) {// æ›´æ–°
 				cartIdTemp = param.getCartid();
 				PMyproducts myproducts = myMapper.selectByPrimaryKey(param.getCartid());
-				if (myproducts != null && myproducts.getUserid() != null && myproducts.getUserid().longValue() == userId) {// ĞŞ¸Ä
+				if (myproducts != null && myproducts.getUserid() != null && myproducts.getUserid().longValue() == userId) {// ä¿®æ”¹
 					if (!ObjectUtil.isEmpty(param.getTitle())) {
 						myproducts.setTitle(param.getTitle());
 					}
@@ -192,7 +192,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 						myproducts.setDescription(param.getDescription());
 					}
 					myproducts.setUpdatetime(new Date());
-					// ¸üĞÂÓÃ»§×÷Æ·»ù±¾ĞÅÏ¢
+					// æ›´æ–°ç”¨æˆ·ä½œå“åŸºæœ¬ä¿¡æ¯
 					myMapper.updateByPrimaryKeySelective(myproducts);
 					if (param.getDetails() != null && param.getDetails().size() > 0) {
 						myDetaiMapper.deleteByCartId(param.getCartid());
@@ -201,7 +201,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 							de.setCartid(param.getCartid());
 							de.setCreatetime(new Date());
 							if (de.getSort() == null) {
-								de.setSort(maxSort);// ÉèÖÃÅÅĞò
+								de.setSort(maxSort);// è®¾ç½®æ’åº
 							}
 							myDetaiMapper.insert(de);
 							maxSort++;
@@ -209,10 +209,10 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					}
 				} else {
 					rq.setStatu(ReturnStatus.SystemError_1);
-					rq.setStatusreson("Ã»ÓĞÈ¨ÏŞ±à¼­±ğÈËµÄ×÷Æ·");
+					rq.setStatusreson("æ²¡æœ‰æƒé™ç¼–è¾‘åˆ«äººçš„ä½œå“");
 					return rq;
 				}
-			} else {// ĞÂÔö
+			} else {// æ–°å¢
 				if (param.getProductid() == null || param.getProductid() <= 0) {
 					rq.setStatu(ReturnStatus.Success);
 					rq.setStatusreson("");
@@ -241,14 +241,14 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					for (PMyproductdetails de : param.getDetails()) {
 						de.setCreatetime(new Date());
 						if (de.getSort() == null) {
-							de.setSort(sort);// ÉèÖÃÅÅĞò
+							de.setSort(sort);// è®¾ç½®æ’åº
 						}
 						de.setCartid(myproduct.getCartid());
 						myDetaiMapper.insert(de);
 						sort++;
 					}
 				}
-				// ²åÈë±¦±¦ÉúÈÕĞÅÏ¢
+				// æ’å…¥å®å®ç”Ÿæ—¥ä¿¡æ¯
 				if (param.getChildInfo() != null) {
 					boolean isnew = false;
 					PMyproductchildinfo mychild = mychildMapper.selectByPrimaryKey(myproduct.getCartid());
@@ -265,7 +265,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 						mychild.setBirthday(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday()));
 						Date now=new Date();
 						int compare=now.compareTo(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday()));
-						//Èç¹ûÔÚ½ñÌìÖ®ºó£¬ËµÃ÷ÊÇÔ¤²úÆÚ
+						//å¦‚æœåœ¨ä»Šå¤©ä¹‹åï¼Œè¯´æ˜æ˜¯é¢„äº§æœŸ
 						if(compare<0){
 							mychild.setIsdue(1);
 						}else{
@@ -291,20 +291,20 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	public ReturnModel Modify_MyProducts(Long userId, MyProductParam param) {
 		ReturnModel rq = new ReturnModel();
 		if (param != null) {
-			if (param.getCartid() != null && param.getCartid() > 0) {// ĞŞ¸Ä
+			if (param.getCartid() != null && param.getCartid() > 0) {// ä¿®æ”¹
 				return edit_MyProducts(userId, param);
-			} else {// ĞÂÔö
+			} else {// æ–°å¢
 				return add_MyProducts(userId, param);
 			}
 		} else {
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("²ÎÊıÓĞÎó");
+			rq.setStatusreson("å‚æ•°æœ‰è¯¯");
 		}
 		return rq;
 	}
 
 	/**
-	 * ÎÒµÄ×÷Æ·ĞÂÔö
+	 * æˆ‘çš„ä½œå“æ–°å¢
 	 * 
 	 * @param userId
 	 * @param param
@@ -316,7 +316,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		if (param != null) {
 			if (param.getCartid() != null && param.getCartid() > 0) {
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("Çëµ÷È¥ĞŞ¸Ä½Ó¿Ú");
+				rq.setStatusreson("è¯·è°ƒå»ä¿®æ”¹æ¥å£");
 				return rq;
 			}
 			if (param.getProductid() == null || param.getProductid() <= 0) {
@@ -345,7 +345,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					if (!ObjectUtil.isEmpty(de.getImgurl())) {
 						de.setCreatetime(new Date());
 						if (de.getSort() == null) {
-							de.setSort(sort);// ÉèÖÃÅÅĞò
+							de.setSort(sort);// è®¾ç½®æ’åº
 						}
 						de.setUserid(userId);
 						de.setCartid(myproduct.getCartid());
@@ -354,7 +354,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					}
 				}
 			}
-			// ²åÈë±¦±¦ÉúÈÕĞÅÏ¢
+			// æ’å…¥å®å®ç”Ÿæ—¥ä¿¡æ¯
 			if (param.getChildInfo() != null) {
 				boolean isnew = false;
 				PMyproductchildinfo mychild = mychildMapper.selectByPrimaryKey(myproduct.getCartid());
@@ -371,7 +371,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					mychild.setBirthday(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday()));
 					Date now=new Date();
 					int compare=now.compareTo(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday()));
-					//Èç¹ûÔÚ½ñÌìÖ®ºó£¬ËµÃ÷ÊÇÔ¤²úÆÚ
+					//å¦‚æœåœ¨ä»Šå¤©ä¹‹åï¼Œè¯´æ˜æ˜¯é¢„äº§æœŸ
 					if(compare<0){
 						mychild.setIsdue(1);
 					}else{
@@ -395,7 +395,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	}
 
 	/**
-	 * ×÷Æ·µÄĞŞ¸Ä£¨°üÀ¨Í¼Æ¬µÄĞŞ¸Ä¡¢ĞÂÔö£©
+	 * ä½œå“çš„ä¿®æ”¹ï¼ˆåŒ…æ‹¬å›¾ç‰‡çš„ä¿®æ”¹ã€æ–°å¢ï¼‰
 	 * 
 	 * @param userId
 	 * @param param
@@ -406,11 +406,11 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		if (param != null) {
 			if ((param.getCartid() == null || param.getCartid() <= 0)) {
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("×÷Æ·id²»ÄÜÎª¿Õ");
+				rq.setStatusreson("ä½œå“idä¸èƒ½ä¸ºç©º");
 				return rq;
 			}
 			PMyproducts myproducts = myMapper.selectByPrimaryKey(param.getCartid());
-			// AĞŞ¸Ä×÷Æ·µÄ±¦±¦ĞÅÏ¢
+			// Aä¿®æ”¹ä½œå“çš„å®å®ä¿¡æ¯
 			if (myproducts != null) {
 				if (param.getChildInfo() != null) {
 					boolean isnew = false;
@@ -430,7 +430,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 						mychild.setBirthday(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday()));
 						Date now=new Date();
 						int compare=now.compareTo(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday()));
-						//Èç¹ûÔÚ½ñÌìÖ®ºó£¬ËµÃ÷ÊÇÔ¤²úÆÚ
+						//å¦‚æœåœ¨ä»Šå¤©ä¹‹åï¼Œè¯´æ˜æ˜¯é¢„äº§æœŸ
 						if(compare<0){
 							mychild.setIsdue(1);
 						}else{
@@ -445,7 +445,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 							mychildMapper.updateByPrimaryKeySelective(mychild);
 						}
 					}
-					/*----------------------------¸üĞÂ¸öÈË±¦±¦ĞÅÏ¢---------------------------------------------------*/
+					/*----------------------------æ›´æ–°ä¸ªäººå®å®ä¿¡æ¯---------------------------------------------------*/
 					boolean isHavechild = true;
 					UChildreninfo childreninfo = childMapper.selectByPrimaryKey(userId);
 					if (childreninfo == null) {
@@ -468,14 +468,14 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				}
 			} else {
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("ÕÒ²»µ½ÏàÓ¦µÄ×÷Æ·£¡");
+				rq.setStatusreson("æ‰¾ä¸åˆ°ç›¸åº”çš„ä½œå“ï¼");
 				return rq;
 			}
 
-			// ****---------------- ×÷Æ·Í¼Æ¬ĞŞ¸Ä ¡¢ĞÂÔö ----------------------------
+			// ****---------------- ä½œå“å›¾ç‰‡ä¿®æ”¹ ã€æ–°å¢ ----------------------------
 			// *****
 			if (param.getDetails() != null && param.getDetails().size() > 0) {
-				// c1 ¼ìÑé ³¡¾°ÊÇ·ñ±»Ñ¡¹ı
+				// c1 æ£€éªŒ åœºæ™¯æ˜¯å¦è¢«é€‰è¿‡
 				List<PMyproductdetails> details = myDetaiMapper.findMyProductdetails(param.getCartid());
 				int count = details.size();
 				int sort = 0;
@@ -488,7 +488,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 						if (!ObjectUtil.isEmpty(de.getImgurl())) {
 							de.setUserid(userId);
 							myDetaiMapper.updateByPrimaryKeySelective(de);
-						} else if (de.getSort() != null && de.getSort() > 0) {// ÅÅĞò
+						} else if (de.getSort() != null && de.getSort() > 0) {// æ’åº
 							myDetaiMapper.updateByPrimaryKeySelective(de);
 						}
 					} else if (count < 12) {
@@ -502,7 +502,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					}
 				}
 			}
-			/*--------------------×÷Æ·±íĞŞ¸Ä -----------------------------------*/
+			/*--------------------ä½œå“è¡¨ä¿®æ”¹ -----------------------------------*/
 			if (!ObjectUtil.isEmpty(param.getTitle())) {
 				myproducts.setTitle(param.getTitle());
 			}
@@ -513,7 +513,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				myproducts.setDescription(param.getDescription());
 			}
 			myproducts.setUpdatetime(new Date());
-			// ¸üĞÂÓÃ»§×÷Æ·»ù±¾ĞÅÏ¢
+			// æ›´æ–°ç”¨æˆ·ä½œå“åŸºæœ¬ä¿¡æ¯
 			myMapper.updateByPrimaryKeySelective(myproducts);
 			/*-------------------------------------------------*/
 
@@ -523,7 +523,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			rq.setBasemodle(map);
 		} else {
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("²ÎÊıÓĞÎó");
+			rq.setStatusreson("å‚æ•°æœ‰è¯¯");
 		}
 		return rq;
 	}
@@ -531,7 +531,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	/*------------------------------------------------------------------------------------*/
 
 	/**
-	 * ÎÒµÄ×÷Æ·ĞŞ¸Ä
+	 * æˆ‘çš„ä½œå“ä¿®æ”¹
 	 */
 	public ReturnModel Edit_MyProducts(Long userId, MyProductParam param) {
 		ReturnModel rq = new ReturnModel();
@@ -539,14 +539,14 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		if (param != null) {
 			if ((param.getCartid() == null || param.getCartid() <= 0) && (param.getProductid() == null || param.getProductid() <= 0)) {
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("Ã»ÓĞÑ¡Ôñ¿îÊ½");
+				rq.setStatusreson("æ²¡æœ‰é€‰æ‹©æ¬¾å¼");
 				return rq;
 			}
 			UUsers user = usersMapper.selectByPrimaryKey(userId);
-			if (param.getCartid() != null && param.getCartid() > 0) {// ¸üĞÂ
+			if (param.getCartid() != null && param.getCartid() > 0) {// æ›´æ–°
 				cartIdTemp = param.getCartid();
 				PMyproducts myproducts = myMapper.selectByPrimaryKey(param.getCartid());
-				// AĞŞ¸Ä×÷Æ·µÄ±¦±¦ĞÅÏ¢
+				// Aä¿®æ”¹ä½œå“çš„å®å®ä¿¡æ¯
 				if (myproducts != null && param.getChildInfo() != null) {
 					boolean isnew = false;
 					PMyproductchildinfo mychild = mychildMapper.selectByPrimaryKey(param.getCartid());
@@ -563,7 +563,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 						mychild.setBirthday(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday()));
 						Date now=new Date();
 						int compare=now.compareTo(DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", param.getChildInfo().getBirthday()));
-						//Èç¹ûÔÚ½ñÌìÖ®ºó£¬ËµÃ÷ÊÇÔ¤²úÆÚ
+						//å¦‚æœåœ¨ä»Šå¤©ä¹‹åï¼Œè¯´æ˜æ˜¯é¢„äº§æœŸ
 						if(compare<0){
 							mychild.setIsdue(1);
 						}else{
@@ -575,7 +575,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					} else {
 						mychildMapper.updateByPrimaryKeySelective(mychild);
 					}
-					/*----------------------------¸üĞÂ¸öÈË±¦±¦ĞÅÏ¢---------------------------------------------------*/
+					/*----------------------------æ›´æ–°ä¸ªäººå®å®ä¿¡æ¯---------------------------------------------------*/
 					boolean isHavechild = true;
 					UChildreninfo childreninfo = childMapper.selectByPrimaryKey(userId);
 					if (childreninfo == null) {
@@ -597,10 +597,10 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					}
 				}// ----------------------------------------------------
 				boolean canModify = false;
-				// ×Ô¼ºµÄ×÷Æ·
+				// è‡ªå·±çš„ä½œå“
 				if (myproducts != null && myproducts.getUserid() != null && myproducts.getUserid().longValue() == userId) {
 					canModify = true;
-				} else {// ÊÜÑûÇë Ğ­Í¬±à¼­µÄ×÷Æ·
+				} else {// å—é‚€è¯· ååŒç¼–è¾‘çš„ä½œå“
 					List<PMyproductsinvites> invlist = inviteMapper.findListByCartId(param.getCartid());
 					if (invlist != null && invlist.size() > 0) {
 						for (PMyproductsinvites in : invlist) {
@@ -612,7 +612,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					}
 				}
 
-				if (canModify) {// ĞŞ¸Ä
+				if (canModify) {// ä¿®æ”¹
 					if (!ObjectUtil.isEmpty(param.getTitle())) {
 						myproducts.setTitle(param.getTitle());
 					}
@@ -624,15 +624,15 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					}
 
 					if (param.getDetails() != null && param.getDetails().size() > 0) {
-						// ¼ìÑé ³¡¾°ÊÇ·ñ±»Ñ¡¹ı
+						// æ£€éªŒ åœºæ™¯æ˜¯å¦è¢«é€‰è¿‡
 						List<PMyproductdetails> details = myDetaiMapper.findMyProductdetails(cartIdTemp);
-						if (details != null && details.size() > 0) {// ÎÒµÄ×÷Æ·ÁĞ±í
+						if (details != null && details.size() > 0) {// æˆ‘çš„ä½œå“åˆ—è¡¨
 							for (PMyproductdetails de : param.getDetails()) {
 								if (de.getPdid() != null && de.getPdid() > 0) {
 									for (PMyproductdetails myde : details) {
 										if (de.getPdid().longValue() != myde.getPdid().longValue() && myde.getSceneid() != null && de.getSceneid() != null && myde.getSceneid().intValue() == de.getSceneid().intValue() && de.getSceneid() > 0) {
 											rq.setStatu(ReturnStatus.InvitError_1);
-											rq.setStatusreson("´ËÖ÷Ìâ±»Ğ­Í¬ÈËÊ¹ÓÃÀ²£¬Çë¸ü»»ÆäËûÖ÷Ìâ");
+											rq.setStatusreson("æ­¤ä¸»é¢˜è¢«ååŒäººä½¿ç”¨å•¦ï¼Œè¯·æ›´æ¢å…¶ä»–ä¸»é¢˜");
 											return rq;
 										}
 									}
@@ -651,16 +651,16 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 						}
 					}
 					myproducts.setUpdatetime(new Date());
-					// ¸üĞÂÓÃ»§×÷Æ·»ù±¾ĞÅÏ¢
+					// æ›´æ–°ç”¨æˆ·ä½œå“åŸºæœ¬ä¿¡æ¯
 					myMapper.updateByPrimaryKeySelective(myproducts);
 				} else {
 					rq.setStatu(ReturnStatus.SystemError_1);
-					rq.setStatusreson("Ã»ÓĞÈ¨ÏŞ±à¼­±ğÈËµÄ×÷Æ·");
+					rq.setStatusreson("æ²¡æœ‰æƒé™ç¼–è¾‘åˆ«äººçš„ä½œå“");
 					return rq;
 				}
-			} else {// ĞÂÔö
+			} else {// æ–°å¢
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("ÇëÊäÈë×÷Æ·Id");
+				rq.setStatusreson("è¯·è¾“å…¥ä½œå“Id");
 				return rq;
 			}
 		}
@@ -672,7 +672,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	}
 
 	/**
-	 * ÎÒµÄ×÷Æ·ÁĞ±í
+	 * æˆ‘çš„ä½œå“åˆ—è¡¨
 	 * 
 	 * @return
 	 */
@@ -682,16 +682,16 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		UUsers user = usersMapper.getUUsersByUserID(userId);
 		if (user != null) {
 			List<MyProductResultVo> list = new ArrayList<MyProductResultVo>();
-			// ÎÒµÄĞ­Í¬±à¼­×÷Æ·
+			// æˆ‘çš„ååŒç¼–è¾‘ä½œå“
 			List<MyProductResultVo> mylista = findInvites(user.getMobilephone());
 			if (mylista != null && mylista.size() > 0) {
 				list.addAll(mylista);
 			}
 
-			// ÎÒµÄ×÷Æ·-ÖÆ×÷ÖĞµÄ
+			// æˆ‘çš„ä½œå“-åˆ¶ä½œä¸­çš„
 			List<MyProductResultVo> mylist = myMapper.findMyProductslist(userId, Integer.parseInt(MyProductStatusEnum.ok.toString()));
 			list.addAll(getMyProductResultVo(mylist));
-			// ÎÒµÄ×÷Æ·-ÒÑ¾­ÏÂµ¥µÄÁĞ±í
+			// æˆ‘çš„ä½œå“-å·²ç»ä¸‹å•çš„åˆ—è¡¨
 			List<MyProductResultVo> myOrderlist = myMapper.findMyProductslist(userId, Integer.parseInt(MyProductStatusEnum.ordered.toString()));
 			list.addAll(getMyProductResultVo(myOrderlist));
 			rq.setBasemodle(list);
@@ -704,7 +704,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		ReturnModel rq = new ReturnModel();
 		List<Long> idsList = new ArrayList<Long>();
 		idsList.add(branchUserId);
-		// »ñÈ¡Ó°Â¥µÄ¹¤×÷ÈËÔ±ÁĞ±í
+		// è·å–å½±æ¥¼çš„å·¥ä½œäººå‘˜åˆ—è¡¨
 		List<UBranchusers> userList = branchusersMapper.findMemberslistByBranchUserId(branchUserId);
 		if (userList != null && userList.size() > 0) {
 			for (UBranchusers uu : userList) {
@@ -729,7 +729,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		return rq;
 	}
 	/**
-	 * ¸ù¾İÄ£°åIDµÃµ½×÷Æ·ÁĞ±í
+	 * æ ¹æ®æ¨¡æ¿IDå¾—åˆ°ä½œå“åˆ—è¡¨
 	 * @param branchUserId
 	 * @param tempid
 	 * @param index
@@ -740,7 +740,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		ReturnModel rq = new ReturnModel();
 		List<Long> idsList = new ArrayList<Long>();
 		idsList.add(branchUserId);
-		// »ñÈ¡Ó°Â¥µÄ¹¤×÷ÈËÔ±ÁĞ±í
+		// è·å–å½±æ¥¼çš„å·¥ä½œäººå‘˜åˆ—è¡¨
 		List<UBranchusers> userList = branchusersMapper.findMemberslistByBranchUserId(branchUserId);
 		if (userList != null && userList.size() > 0) {
 			for (UBranchusers uu : userList) {
@@ -754,7 +754,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			for (MyProductResultVo vv : resultPage.getList()) {
 				for (UBranchusers uu : userList) {
 					if (uu.getUserid().longValue() == vv.getUserid().longValue()) {
-						vv.setUserName(uu.getName());//Ô±¹¤êÇ³Æ
+						vv.setUserName(uu.getName());//å‘˜å·¥æ˜µç§°
 					}
 				}
 			}
@@ -792,7 +792,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	}
 
 	/**
-	 * ÎÒµÄ×÷Æ·model×ª»»
+	 * æˆ‘çš„ä½œå“modelè½¬æ¢
 	 * 
 	 * @param mylist
 	 * @return
@@ -805,7 +805,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				} else {
 					item.setCreatetimestr(DateUtil.getTimeStr(item.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
 				}
-				if (item.getInvitestatus() != null && item.getInvitestatus() > 0) {// ÑûÇëĞ­Í¬±à¼­
+				if (item.getInvitestatus() != null && item.getInvitestatus() > 0) {// é‚€è¯·ååŒç¼–è¾‘
 					List<PMyproductsinvites> invites = inviteMapper.findListByCartId(item.getCartid());
 					if (invites != null && invites.size() > 0) {
 						item.setInviteModel(invites.get(0));
@@ -827,7 +827,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 
 						}
 						
-						// µÃµ½À´Ô´£¬¼´Ä£°åÃû³Æ
+						// å¾—åˆ°æ¥æºï¼Œå³æ¨¡æ¿åç§°
 						if (item.getTempid() != null) {
 							PMyproducttemp temp = tempMapper.selectByPrimaryKey(item.getTempid());
 							if (temp != null && temp.getTitle() != null) {
@@ -835,7 +835,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 							}
 						}else{
 							if(inviteusers!=null){
-								//À´Ô´ÓÚ¿Í»§Ò»¶ÔÒ»
+								//æ¥æºäºå®¢æˆ·ä¸€å¯¹ä¸€
 								UUserAddressResult address=baseAddressService.getUserAddressResult(inviteusers.getUserid(), null);
 								if(address!=null){
 									item.setAddress(address.getProvinceName()+address.getCityName()+address.getCityName()+address.getStreetdetail());
@@ -846,12 +846,12 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					}
 				}
 				
-				// µÃµ½ÖÆ×÷ÀàĞÍ
+				// å¾—åˆ°åˆ¶ä½œç±»å‹
 				PProducts product = productsMapper.selectByPrimaryKey(item.getProductid());
 				if (product != null && product.getTitle() != null) {
 					item.setProductTitle(product.getTitle());
 				}
-				// ×÷Æ·ÏêÇé£¨Í¼Æ¬¼¯ºÏ£©
+				// ä½œå“è¯¦æƒ…ï¼ˆå›¾ç‰‡é›†åˆï¼‰
 				List<PMyproductdetails> detailslist = myDetaiMapper.findMyProductdetails(item.getCartid());
 				int i = 0;
 				if (detailslist != null && detailslist.size() > 0) {
@@ -872,8 +872,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					item.setIsOrder(1);
 					item.setCount(12);
 				}
-				item.setIsDue(0);//Ä¬ÈÏ²»ÊÇÔ¤²úÆÚ
-				// µÃµ½±¦±¦ÉúÈÕ
+				item.setIsDue(0);//é»˜è®¤ä¸æ˜¯é¢„äº§æœŸ
+				// å¾—åˆ°å®å®ç”Ÿæ—¥
 				PMyproductchildinfo childinfo = mychildMapper.selectByPrimaryKey(item.getCartid());
 				if (childinfo != null && childinfo.getBirthday() != null) {
 					item.setBirthdayStr(DateUtil.getTimeStr(childinfo.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
@@ -889,14 +889,14 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				if (orderNoList.size() > 0) {
 					item.setOrderNoList(orderNoList);
 				}
-				//µÃµ½ÆÀÂÛÊı
+				//å¾—åˆ°è¯„è®ºæ•°
 				item.setCommentsCount(0);
 				PMyproductext myext=myextMapper.selectByPrimaryKey(item.getCartid());
 				if(myext!=null){
 					item.setCommentsCount(myext.getCommentscount()==null?0:myext.getCommentscount());
 				}
 				
-				//µÃµ½»î¶¯×´Ì¬
+				//å¾—åˆ°æ´»åŠ¨çŠ¶æ€
 				PMyproducttempapply apply= tempapplyMapper.getMyProducttempApplyByCartId(item.getCartid());
 				if(apply==null){
 					apply=tempapplyMapper.getMyProducttempApplyByUserId(item.getTempid(), item.getInviteModel().getInviteuserid());
@@ -907,10 +907,10 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					item.setSort(apply.getSort());
 				}else{
 					if(item.getCount()<12){
-						//ÖÆ×÷ÖĞ
+						//åˆ¶ä½œä¸­
 						item.setActiveStatus(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString()));
 					}else{
-						//ÖÆ×÷Íê³É
+						//åˆ¶ä½œå®Œæˆ
 						item.setActiveStatus(Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString()));
 						
 					}
@@ -931,7 +931,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			// orderMapper.selectByPrimaryKey(myproducts.getOrderno());
 			// if(order!=null&&order.getStatus()!=null&&order.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
 			// rq.setStatu(ReturnStatus.SystemError);
-			// rq.setStatusreson("×÷Æ·¹ØÁªµÄ¶©µ¥Î´ÉÏ´«³É¹¦£¬ÇëÏÈ²é¿´¶©µ¥²¢ÖØĞÂÉÏ´«£¡");
+			// rq.setStatusreson("ä½œå“å…³è”çš„è®¢å•æœªä¸Šä¼ æˆåŠŸï¼Œè¯·å…ˆæŸ¥çœ‹è®¢å•å¹¶é‡æ–°ä¸Šä¼ ï¼");
 			// return rq;
 			// }
 			// }
@@ -945,17 +945,17 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			// myMapper.deleteByPrimaryKey(cartId);
 
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("É¾³ı³É¹¦");
+			rq.setStatusreson("åˆ é™¤æˆåŠŸ");
 		} else {
 			rq.setStatu(ReturnStatus.SystemError);
-			rq.setStatusreson("×÷Æ·²»´æÔÚ£¨»òÕßÎŞ·¨É¾³ı£©");
+			rq.setStatusreson("ä½œå“ä¸å­˜åœ¨ï¼ˆæˆ–è€…æ— æ³•åˆ é™¤ï¼‰");
 		}
 		return rq;
 	}
 
 
 	/**
-	 * ÎÒµÄ×÷Æ·ÏêÇé £¨ÓÃ»§²Ù×÷Ò³ £© ĞèÒªµÇÂ¼
+	 * æˆ‘çš„ä½œå“è¯¦æƒ… ï¼ˆç”¨æˆ·æ“ä½œé¡µ ï¼‰ éœ€è¦ç™»å½•
 	 * 
 	 * @return
 	 */
@@ -966,13 +966,13 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			MyProductsResult myproduct = myProductsDao.getMyProductResultVo(cartId);
 			if (myproduct == null) {
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("×÷Æ·²»´æÔÚ");
+				rq.setStatusreson("ä½œå“ä¸å­˜åœ¨");
 				return rq;
 			}
 			if (myproduct != null && myproduct.getStatus() != null && myproduct.getStatus().intValue() == Integer.parseInt(MyProductStatusEnum.ordered.toString())) {
 				myproduct.setIsOrder(1);
 			}
-			//»ñÈ¡Ğ­Í¬±à¼­ÕßµÄuserId------------------------------------
+			//è·å–ååŒç¼–è¾‘è€…çš„userId------------------------------------
 			if (myproduct.getInvitestatus() != null && myproduct.getInvitestatus() > 0) {
 				List<PMyproductsinvites> invites = inviteMapper.findListByCartId(cartId);
 				if (invites != null && invites.size() > 0) {
@@ -987,12 +987,12 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				}
 			}/*---------------------------------*/
 			
-			// Èç¹ûÊÇ·ñÊÇÄ£°å×÷Æ·------------------------
+			// å¦‚æœæ˜¯å¦æ˜¯æ¨¡æ¿ä½œå“------------------------
 			if (myproduct.getIstemp() != null && myproduct.getIstemp() > 0 && myproduct.getTempid() != null && myproduct.getTempid() > 0) {
 				PMyproducttemp mtemp = tempMapper.selectByPrimaryKey(myproduct.getTempid());
 				if (mtemp != null) {
 					myproduct.setTempStatus(mtemp.getStatus() == null ? 0 : mtemp.getStatus());
-					// ÅĞ¶ÏÓÃ»§ÊÇ·ñ½ÓÊÜÄ£°åÑûÇë---------------
+					// åˆ¤æ–­ç”¨æˆ·æ˜¯å¦æ¥å—æ¨¡æ¿é‚€è¯·---------------
 					if (userId != myproduct.getUserid().longValue()) {
 						List<MyProductListVo> myprolist = myProductsDao.getMyProductResultByTempId(myproduct.getTempid());
 						if (myprolist != null && myprolist.size() > 0) {
@@ -1007,10 +1007,10 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 								}
 							}
 						}
-					}// ÅĞ¶ÏÓÃ»§ÊÇ·ñ½ÓÊÜÄ£°åÑûÇë(over)---------------
+					}// åˆ¤æ–­ç”¨æˆ·æ˜¯å¦æ¥å—æ¨¡æ¿é‚€è¯·(over)---------------
 				}
 			}else if (myproduct.getTempid()!=null&&myproduct.getTempid().intValue()>0&&myproduct.getInviteUserId()!=null&&(myproduct.getInviteUserId().longValue()==userId||myproduct.getUserid().longValue()==userId)) {
-				//----------ÓÃ»§´Ë×÷Æ·²ÎÓëÁË ÒìÒµºÏ×÷ »î¶¯----------------------------------------------------------------
+				//----------ç”¨æˆ·æ­¤ä½œå“å‚ä¸äº† å¼‚ä¸šåˆä½œ æ´»åŠ¨----------------------------------------------------------------
 				myproduct.setTempVo(getMyProductsTempVo(userId,myproduct));  
 			}
 
@@ -1025,10 +1025,10 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					myproduct.setDescription(product.getDescription());
 				}
 			}
-			// --×÷Æ·Í¼Æ¬ĞÅÏ¢-------
+			// --ä½œå“å›¾ç‰‡ä¿¡æ¯-------
 			myproduct.setDetailslist(getMyProductsDetailsResultList(userId, cartId));
 
-			// ×÷Æ·±¦±¦ĞÅÏ¢----------------------------------------------------------------------------
+			// ä½œå“å®å®ä¿¡æ¯----------------------------------------------------------------------------
 			PMyproductchildinfo childInfo = mychildMapper.selectByPrimaryKey(cartId);
 			if (childInfo != null) {
 				UChildInfoParam childInfoParam = new UChildInfoParam();
@@ -1055,7 +1055,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			rq.setBasemodle(myproductRedis);
 		}else {
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("×÷Æ·²»´æÔÚ");
+			rq.setStatusreson("ä½œå“ä¸å­˜åœ¨");
 		}
 		return rq;
 	}
@@ -1064,7 +1064,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		String keycart=ConfigUtil.getSingleValue("currentRedisKey-Base")+"_cartIdMy_"+cartId;
 		MyProductsResult myproductRedis=(MyProductsResult)RedisUtil.getObject(keycart);
 		if(myproductRedis!=null){
-			//·Ç±¾ÈË×÷Æ·  Ö±½Óµ÷È¡»º´æ
+			//éæœ¬äººä½œå“  ç›´æ¥è°ƒå–ç¼“å­˜
 			if(!((myproductRedis.getUserid()!=null&&myproductRedis.getUserid().longValue()==userId)||(myproductRedis.getInviteUserId()!=null&&myproductRedis.getInviteUserId().longValue()==userId))){
 				return myproductRedis;
 			}
@@ -1085,7 +1085,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		return result;
 	}
 	/**
-	 * »ñÈ¡×÷Æ·ĞÅÏ¢
+	 * è·å–ä½œå“ä¿¡æ¯
 	 * @param userId
 	 * @param cartId
 	 * @return
@@ -1099,7 +1099,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		if (myproduct != null && myproduct.getStatus() != null && myproduct.getStatus().intValue() == Integer.parseInt(MyProductStatusEnum.ordered.toString())) {
 			myproduct.setIsOrder(1);
 		}
-		//»ñÈ¡Ğ­Í¬±à¼­ÕßµÄuserId------------------------------------
+		//è·å–ååŒç¼–è¾‘è€…çš„userId------------------------------------
 		if (myproduct.getInvitestatus() != null && myproduct.getInvitestatus() > 0) {
 			List<PMyproductsinvites> invites = inviteMapper.findListByCartId(cartId);
 			if (invites != null && invites.size() > 0) {
@@ -1114,12 +1114,12 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			}
 		}/*---------------------------------*/
 		
-		// Èç¹ûÊÇ·ñÊÇÄ£°å×÷Æ·------------------------
+		// å¦‚æœæ˜¯å¦æ˜¯æ¨¡æ¿ä½œå“------------------------
 		if (myproduct.getIstemp() != null && myproduct.getIstemp() > 0 && myproduct.getTempid() != null && myproduct.getTempid() > 0) {
 			PMyproducttemp mtemp = tempMapper.selectByPrimaryKey(myproduct.getTempid());
 			if (mtemp != null) {
 				myproduct.setTempStatus(mtemp.getStatus() == null ? 0 : mtemp.getStatus());
-				// ÅĞ¶ÏÓÃ»§ÊÇ·ñ½ÓÊÜÄ£°åÑûÇë---------------
+				// åˆ¤æ–­ç”¨æˆ·æ˜¯å¦æ¥å—æ¨¡æ¿é‚€è¯·---------------
 				if (userId != myproduct.getUserid().longValue()) {
 					List<MyProductListVo> myprolist = myProductsDao.getMyProductResultByTempId(myproduct.getTempid());
 					if (myprolist != null && myprolist.size() > 0) {
@@ -1134,10 +1134,10 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 							}
 						}
 					}
-				}// ÅĞ¶ÏÓÃ»§ÊÇ·ñ½ÓÊÜÄ£°åÑûÇë(over)---------------
+				}// åˆ¤æ–­ç”¨æˆ·æ˜¯å¦æ¥å—æ¨¡æ¿é‚€è¯·(over)---------------
 			}
 		}else if (myproduct.getTempid()!=null&&myproduct.getTempid().intValue()>0&&myproduct.getInviteUserId()!=null&&(myproduct.getInviteUserId().longValue()==userId||myproduct.getUserid().longValue()==userId)) {
-			//----------ÓÃ»§´Ë×÷Æ·²ÎÓëÁË ÒìÒµºÏ×÷ »î¶¯----------------------------------------------------------------
+			//----------ç”¨æˆ·æ­¤ä½œå“å‚ä¸äº† å¼‚ä¸šåˆä½œ æ´»åŠ¨----------------------------------------------------------------
 			myproduct.setTempVo(getMyProductsTempVo(userId,myproduct));  
 		}
 
@@ -1152,10 +1152,10 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				myproduct.setDescription(product.getDescription());
 			}
 		}
-		// --×÷Æ·Í¼Æ¬ÁĞ±í ĞÅÏ¢-------
+		// --ä½œå“å›¾ç‰‡åˆ—è¡¨ ä¿¡æ¯-------
 		myproduct.setDetailslist(getMyProductsDetailsResultList(userId, cartId));
 
-		// ×÷Æ·±¦±¦ĞÅÏ¢----------------------------------------------------------------------------
+		// ä½œå“å®å®ä¿¡æ¯----------------------------------------------------------------------------
 		PMyproductchildinfo childInfo = mychildMapper.selectByPrimaryKey(cartId);
 		if (childInfo != null) {
 			UChildInfoParam childInfoParam = new UChildInfoParam();
@@ -1172,7 +1172,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	}
 	
 	/**
-	 * ÒìÒµ»î¶¯ ×÷Æ·²ÎÓë»î¶¯
+	 * å¼‚ä¸šæ´»åŠ¨ ä½œå“å‚ä¸æ´»åŠ¨
 	 * @param userId
 	 * @param myproduct
 	 * @return
@@ -1181,16 +1181,16 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		PMyproducttemp mtemp = tempMapper.selectByPrimaryKey(myproduct.getTempid());
 		if(mtemp!=null){
 			MyProductsTempVo vo=new MyProductsTempVo();
-			//ÊÇ·ñÏŞ¶¨Íê³ÉÈËÊı
+			//æ˜¯å¦é™å®šå®Œæˆäººæ•°
 			if(mtemp.getMaxcompletecount()!=null&&mtemp.getMaxcompletecount()>0){
 				vo.setIsLimitQuotas(1); 
 				vo.setRemainingCount(mtemp.getMaxcompletecount()-(mtemp.getCompletecount()==null?0:mtemp.getCompletecount()));
 			}
 			if(mtemp.getBlesscount()!=null&&mtemp.getBlesscount().intValue()>0){
 				vo.setIsLimitCommentsCount(1);
-				//¹æ¶¨ÆÀÂÛÊıÁ¿
+				//è§„å®šè¯„è®ºæ•°é‡
 				vo.setMaxcommentCount(mtemp.getBlesscount()); 
-				//×÷Æ·ÆÀÂÛÊıÁ¿
+				//ä½œå“è¯„è®ºæ•°é‡
 				PMyproductext myproductext= myextMapper.selectByPrimaryKey(myproduct.getCartid());
 				if(myproductext!=null){
 					vo.setCommentCount(myproductext.getCommentscount()==null?0:myproductext.getCommentscount());
@@ -1211,7 +1211,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	}
 	
 	/**
-	 * µÃµ½ ×÷Æ·ÏêÇéÍ¼Æ¬ÁĞ±í
+	 * å¾—åˆ° ä½œå“è¯¦æƒ…å›¾ç‰‡åˆ—è¡¨
 	 * @param userId
 	 * @param cartId
 	 * @return
@@ -1224,7 +1224,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			for (MyProductsDetailsResult dd : arrayList) {
 				dd.setPrintcode(base_code + "-" + String.format("%02d", i));
 				if (dd.getSceneid() != null && dd.getSceneid() >= 0) {
-					// ´òÓ¡±àºÅ
+					// æ‰“å°ç¼–å·
 					if (ObjectUtil.isEmpty(dd.getDescription())) {
 						PScenes scene = sceneMapper.selectByPrimaryKey(dd.getSceneid().longValue());
 						if (scene != null) {
@@ -1266,7 +1266,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		ReturnModel rq = new ReturnModel();
 		UUsers user = usersMapper.getUUsersByUserID(userId);
 		if (user != null) {
-			// ÎÒµÄ×÷Æ·
+			// æˆ‘çš„ä½œå“
 			MyProductsResult myproduct = myProductsDao.getMyProductResultByProductId(userId, productId, Integer.parseInt(MyProductStatusEnum.ok.toString()));
 			if (myproduct != null && myproduct.getUserid().longValue() == userId) {
 				PProducts product = productsMapper.selectByPrimaryKey(myproduct.getProductid());
@@ -1279,7 +1279,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					int i = 1;
 					for (MyProductsDetailsResult dd : arrayList) {
 						if (dd.getSceneid() != null && dd.getSceneid() > 0) {
-							dd.setPrintcode(base_code + "-" + String.format("%02d", dd.getSceneid()) + "-" + String.format("%02d", i)); // ´òÓ¡±àºÅ
+							dd.setPrintcode(base_code + "-" + String.format("%02d", dd.getSceneid()) + "-" + String.format("%02d", i)); // æ‰“å°ç¼–å·
 						}
 						i++;
 					}
@@ -1298,7 +1298,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	}
 
 	/**
-	 * Ç°¶Ë ×÷Æ·ÏêÇé £¨·ÖÏíÒ³ £©
+	 * å‰ç«¯ ä½œå“è¯¦æƒ… ï¼ˆåˆ†äº«é¡µ ï¼‰
 	 * 
 	 */
 	public ReturnModel getMyProductInfo(Long cartId) {
@@ -1312,7 +1312,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	}
 
 	/**
-	 * Í¨¹ı×÷Æ·Id»ñÈ¡×÷Æ·ÏêÏ¸
+	 * é€šè¿‡ä½œå“Idè·å–ä½œå“è¯¦ç»†
 	 * 
 	 * @param cartId
 	 * @return
@@ -1323,7 +1323,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			if (myproduct.getStatus() != null && myproduct.getStatus().intValue() == Integer.parseInt(MyProductStatusEnum.ordered.toString())) {
 				myproduct.setIsOrder(1);
 			}
-			//»ñÈ¡Ğ­Í¬±à¼­ÕßµÄuserId------------------------------------
+			//è·å–ååŒç¼–è¾‘è€…çš„userId------------------------------------
 			if (myproduct.getInvitestatus() != null && myproduct.getInvitestatus() > 0) {
 				List<PMyproductsinvites> invites = inviteMapper.findListByCartId(cartId);
 				if (invites != null && invites.size() > 0) {
@@ -1364,7 +1364,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	}
 
 	/**
-	 * É¾³ı×÷Æ·µ¥¸öÍ¼Æ¬ĞÅÏ¢
+	 * åˆ é™¤ä½œå“å•ä¸ªå›¾ç‰‡ä¿¡æ¯
 	 */
 	public ReturnModel del_myProductDetail(Long userId, Long dpId) {
 		ReturnModel rq = new ReturnModel();
@@ -1374,17 +1374,17 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			if (detail != null) {
 				myDetaiMapper.deleteByPrimaryKey(dpId);
 				rq.setStatu(ReturnStatus.Success);
-				rq.setStatusreson("É¾³ı³É¹¦£¡");
+				rq.setStatusreson("åˆ é™¤æˆåŠŸï¼");
 				return rq;
 			}
 		}
 		rq.setStatu(ReturnStatus.ParamError);
-		rq.setStatusreson("É¾³ıÊ§°Ü");
+		rq.setStatusreson("åˆ é™¤å¤±è´¥");
 		return rq;
 	}
 
 	/**
-	 * »ñÈ¡¿îÊ½×ø±ê
+	 * è·å–æ¬¾å¼åæ ‡
 	 */
 	public ReturnModel getStyleCoordResult(Long styleId) {
 		ReturnModel rq = new ReturnModel();
@@ -1413,7 +1413,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				}
 				Map<String, Object> mapWord = new HashMap<String, Object>();
 				
-				//Ïà²áÕıÃæÎÄ×Ö´óĞ¡¡¢ĞĞ¸ß¡¢¼ä¾à£¬×ÖÌåÑÕÉ«
+				//ç›¸å†Œæ­£é¢æ–‡å­—å¤§å°ã€è¡Œé«˜ã€é—´è·ï¼Œå­—ä½“é¢œè‰²
 				List<Map<String, String>> mapcoordlist=ConfigUtil.getMaplist("frontcoordinate");
 				for (Map<String, String> frontMap : mapcoordlist) {
 					if (type == ObjectUtil.parseLong(frontMap.get("type"))) {
@@ -1423,12 +1423,12 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 						mapWord.put("letterSpacing", frontMap.get("letterSpacing"));
 					}
 				}
-//				if (type == 1) { // ºá°æ
+//				if (type == 1) { // æ¨ªç‰ˆ
 //					mapWord.put("size", 33);
 //					mapWord.put("color", "#595857");
 //					mapWord.put("lineHeight", 55);
 //					mapWord.put("letterSpacing", 5);
-//				} else {// Êú°æ
+//				} else {// ç«–ç‰ˆ
 //					mapWord.put("size", 30);
 //					mapWord.put("color", "#595857");
 //					mapWord.put("lineHeight", 48);

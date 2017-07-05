@@ -45,7 +45,7 @@ public class AccountController  extends SSOController{
 	@Autowired
 	private UAdminMapper adminMapper;
 //	/**
-//	 * cts ÓÃ»§³äÖµ
+//	 * cts ç”¨æˆ·å……å€¼
 //	 * @param branchuserid
 //	 * @param amount
 //	 * @return
@@ -65,7 +65,7 @@ public class AccountController  extends SSOController{
 //					if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount()>1000){
 //						if(amountPrice>10){
 //							rq.setStatu(ReturnStatus.SystemError);
-//							rq.setStatusreson("¸ÃÓÃ»§ÕË»§ÒÑÓĞ½ğ¶î"+accounts.getAvailableamount());
+//							rq.setStatusreson("è¯¥ç”¨æˆ·è´¦æˆ·å·²æœ‰é‡‘é¢"+accounts.getAvailableamount());
 //							return JsonUtil.objectToJsonStr(rq);
 //						}
 //					}
@@ -74,17 +74,17 @@ public class AccountController  extends SSOController{
 //					log.setAmount(amountPrice);
 //					log.setUserid(branchuserid);
 //					log.setPayid(payId);
-//					log.setUsetype(Integer.parseInt(AmountType.get.toString()));//³äÖµ
+//					log.setUsetype(Integer.parseInt(AmountType.get.toString()));//å……å€¼
 //					log.setCreatetime(new Date());
 //					cashlogMapper.insert(log);
 //					UCashlogs freeLog=new UCashlogs();
 //					freeLog.setAmount(amountPrice*2);
 //					freeLog.setUserid(branchuserid);
 //					freeLog.setPayid(payId);
-//					freeLog.setUsetype(Integer.parseInt(AmountType.free.toString()));//³äÖµ
+//					freeLog.setUsetype(Integer.parseInt(AmountType.free.toString()));//å……å€¼
 //					freeLog.setCreatetime(new Date());
 //					cashlogMapper.insert(freeLog);
-//					//³äÖµ ½ğ¶î = Êµ¼Ê½ğ¶î*3 
+//					//å……å€¼ é‡‘é¢ = å®é™…é‡‘é¢*3 
 //					Double totalPriceTemp=amountPrice*3;
 //					if(accounts!=null){
 //						accounts.setAvailableamount(accounts.getAvailableamount()+totalPriceTemp);
@@ -95,20 +95,20 @@ public class AccountController  extends SSOController{
 //						accounts.setAvailableamount(totalPriceTemp);
 //						accountMapper.insert(accounts);
 //					}
-//					addActionLog(user.getUserId(),"[ÕË»§³äÖµ]²Ù×÷³É¹¦£¡³äÖµ½ğ¶î£º"+totalPriceTemp+"Ôª£¡³äÖµÓÃ»§ userId:"+branchuserid);
-//					rq.setStatusreson("³äÖµ³É¹¦£¡ÕË»§¿ÉÓÃ½ğ¶î£º"+accounts.getAvailableamount()+"Ôª!"); 
+//					addActionLog(user.getUserId(),"[è´¦æˆ·å……å€¼]æ“ä½œæˆåŠŸï¼å……å€¼é‡‘é¢ï¼š"+totalPriceTemp+"å…ƒï¼å……å€¼ç”¨æˆ· userId:"+branchuserid);
+//					rq.setStatusreson("å……å€¼æˆåŠŸï¼è´¦æˆ·å¯ç”¨é‡‘é¢ï¼š"+accounts.getAvailableamount()+"å…ƒ!"); 
 //					rq.setStatu(ReturnStatus.Success);
 //				}else {
 //					rq.setStatu(ReturnStatus.SystemError);
-//					rq.setStatusreson("¸ÃÓÃ»§²»ÊÇÓ°Â¥Éí·İ£¡"); 
+//					rq.setStatusreson("è¯¥ç”¨æˆ·ä¸æ˜¯å½±æ¥¼èº«ä»½ï¼"); 
 //				}
 //			}else {
 //				rq.setStatu(ReturnStatus.SystemError);
-//				rq.setStatusreson("È¨ÏŞ²»×ã£¡");
+//				rq.setStatusreson("æƒé™ä¸è¶³ï¼");
 //			}
 //		}else {
 //			rq.setStatu(ReturnStatus.LoginError);
-//			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+//			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 //		}
 //		return JsonUtil.objectToJsonStr(rq);
 //	}

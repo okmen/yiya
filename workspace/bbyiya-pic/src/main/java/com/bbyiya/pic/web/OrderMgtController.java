@@ -63,7 +63,7 @@ public class OrderMgtController extends SSOController {
 //		return true;
 //	}
 	/**
-	 * O01 Ìá½»¶©µ¥ £¨¹º Âò£©
+	 * O01 æäº¤è®¢å• ï¼ˆè´­ ä¹°ï¼‰
 	 * 
 	 * @param addrId
 	 * @param productJsonStr
@@ -104,13 +104,13 @@ public class OrderMgtController extends SSOController {
 			rq.setStatu(ReturnStatus.Success);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
 	/**
-	 * O02 ±£´æ¶©µ¥ÏàÆ¬
+	 * O02 ä¿å­˜è®¢å•ç›¸ç‰‡
 	 * @param orderImagesJson
 	 * @return
 	 * @throws Exception
@@ -125,21 +125,21 @@ public class OrderMgtController extends SSOController {
 				SaveOrderPhotoParam param = (SaveOrderPhotoParam) JsonUtil.jsonStrToObject(orderImagesJson, SaveOrderPhotoParam.class);// (productImagelistJson);
 				if (param == null || ObjectUtil.isEmpty(param.getOrderId())) {
 					rq.setStatu(ReturnStatus.ParamError_1);
-					rq.setStatusreson("²ÎÊı²»È«");
+					rq.setStatusreson("å‚æ•°ä¸å…¨");
 					return JsonUtil.objectToJsonStr(rq);
 				}
 				if (param.getImageList() != null && param.getImageList().size() > 0) {
 					if (param.getImageList().size() < 12) {
 						rq.setStatu(ReturnStatus.ParamError_1);
-						rq.setStatusreson("Í¼Æ¬ÉÙÓÚ12ÕÅ£¡");
+						rq.setStatusreson("å›¾ç‰‡å°‘äº12å¼ ï¼");
 						return JsonUtil.objectToJsonStr(rq);
 					}
 					List<OOrderproductdetails> images = new ArrayList<OOrderproductdetails>();
 					for (OrderPhotoParam pp : param.getImageList()) {
 						if (ObjectUtil.isEmpty(pp.getImageUrl()) || ObjectUtil.isEmpty(pp.getPrintNo())||ObjectUtil.isEmpty(pp.getBackImageUrl())) {
 							rq.setStatu(ReturnStatus.ParamError_1);
-							rq.setStatusreson("Í¼Æ¬ĞÅÏ¢ÓĞÎó£¬´òÓ¡ºÅ£º" + pp.getPrintNo());
-							addlog("Í¼Æ¬ÕıÃæ|·´ÃæÈ±Ê§£¡+"+param.getOrderId()); 
+							rq.setStatusreson("å›¾ç‰‡ä¿¡æ¯æœ‰è¯¯ï¼Œæ‰“å°å·ï¼š" + pp.getPrintNo());
+							addlog("å›¾ç‰‡æ­£é¢|åé¢ç¼ºå¤±ï¼+"+param.getOrderId()); 
 							return JsonUtil.objectToJsonStr(rq); 
 						}
 						OOrderproductdetails item = new OOrderproductdetails();
@@ -155,17 +155,17 @@ public class OrderMgtController extends SSOController {
 				}
 			} else {
 				rq.setStatu(ReturnStatus.ParamError_1);
-				rq.setStatusreson("²ÎÊı²»È«");
+				rq.setStatusreson("å‚æ•°ä¸å…¨");
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
 	/**
-	 * O04 È¥Ö§¸¶£¨´Ó¶©µ¥ÏêÇé/ÁĞ±í³ö·¢£©
+	 * O04 å»æ”¯ä»˜ï¼ˆä»è®¢å•è¯¦æƒ…/åˆ—è¡¨å‡ºå‘ï¼‰
 	 * 
 	 * @param orderId
 	 * @param productImagelistJson
@@ -181,13 +181,13 @@ public class OrderMgtController extends SSOController {
 			rq = orderMgtService.getPayOrderByOrderId(userOrderId);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
 	/**
-	 * O03 ÎÒµÄ¹ºÂò¶©µ¥
+	 * O03 æˆ‘çš„è´­ä¹°è®¢å•
 	 * 
 	 * @return
 	 * @throws Exception
@@ -201,14 +201,14 @@ public class OrderMgtController extends SSOController {
 			rq = orderMgtService.findOrderlist(user.getUserId());
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	
 	/**
-	 * O03 ÎÒµÄ¹ºÂò¶©µ¥ ´ø·ÖÒ³
+	 * O03 æˆ‘çš„è´­ä¹°è®¢å• å¸¦åˆ†é¡µ
 	 * 
 	 * @return
 	 * @throws Exception
@@ -222,13 +222,13 @@ public class OrderMgtController extends SSOController {
 			rq = orderMgtService.findUserOrderlist(user.getUserId(),index,size);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * O02È¡Ïû¶©µ¥
+	 * O02å–æ¶ˆè®¢å•
 	 * 
 	 * @return
 	 * @throws Exception
@@ -242,7 +242,7 @@ public class OrderMgtController extends SSOController {
 			rq = orderService.cancelOrder(orderId);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
@@ -250,7 +250,7 @@ public class OrderMgtController extends SSOController {
 	
 
 	/**
-	 * O05 Ö§¸¶ÏêÇé
+	 * O05 æ”¯ä»˜è¯¦æƒ…
 	 * 
 	 * @param orderId
 	 * @return
@@ -265,13 +265,13 @@ public class OrderMgtController extends SSOController {
 			rq = orderMgtService.getOrderInfo(user.getUserId(), orderId);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
 	/**
-	 * O09 ÔÙ´Î¶©¹º²úÆ·ÏêÇéä¯ÀÀĞ§¹û
+	 * O09 å†æ¬¡è®¢è´­äº§å“è¯¦æƒ…æµè§ˆæ•ˆæœ
 	 * @return
 	 * @throws Exception
 	 */
@@ -284,13 +284,13 @@ public class OrderMgtController extends SSOController {
 			rq=orderService.getOrderProductdetailsByUserOrderId(userOrderId);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 *  O09-1 ÔÙ´Î¶©¹º²úÆ·ÏêÇéä¯ÀÀĞ§¹û
+	 *  O09-1 å†æ¬¡è®¢è´­äº§å“è¯¦æƒ…æµè§ˆæ•ˆæœ
 	 * @param userOrderId
 	 * @return
 	 * @throws Exception
@@ -304,15 +304,15 @@ public class OrderMgtController extends SSOController {
 			rq=orderService.getOrderProductInfoByUserOrderId(userOrderId);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	
 	/**
-	 * ¸ù¾İOrderProductIdµÃµ½OrderProductdetails
-	 * ÓÃÓÚ¿Í»§¶ËÏÂÔØÍ¼Æ¬ÓÃ
+	 * æ ¹æ®OrderProductIdå¾—åˆ°OrderProductdetails
+	 * ç”¨äºå®¢æˆ·ç«¯ä¸‹è½½å›¾ç‰‡ç”¨
 	 * @param orderProductId
 	 * @return
 	 * @throws Exception
@@ -330,7 +330,7 @@ public class OrderMgtController extends SSOController {
 			rq.setStatu(ReturnStatus.Success);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

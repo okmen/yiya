@@ -22,7 +22,7 @@ public class CustomerController extends SSOController{
 	private IPic_MemberMgtService memberMgtService;
 	
 	/**
-	 * ÎÒµÄ´ıÓªÏú¿Í»§ÁĞ±í
+	 * æˆ‘çš„å¾…è¥é”€å®¢æˆ·åˆ—è¡¨
 	 * @return
 	 * @throws Exception
 	 */
@@ -35,13 +35,13 @@ public class CustomerController extends SSOController{
 			rq=memberMgtService.findCustomerslistByAgentUserId(user.getUserId(),keywords,index,size);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * ÎÒµÄÒÑ»ñÈ¡¿Í»§ÁĞ±í
+	 * æˆ‘çš„å·²è·å–å®¢æˆ·åˆ—è¡¨
 	 * @return
 	 * @throws Exception
 	 */
@@ -54,13 +54,13 @@ public class CustomerController extends SSOController{
 			rq=memberMgtService.findMarketCustomerslistByBranchUserId(user.getUserId(),keywords,index,size);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * IBS¸ù¾İ¿Í»§UserIdµÃµ½¿Í»§µÄ¹ºÂò¼ÇÂ¼
+	 * IBSæ ¹æ®å®¢æˆ·UserIdå¾—åˆ°å®¢æˆ·çš„è´­ä¹°è®°å½•
 	 * @return
 	 * @throws Exception
 	 */
@@ -73,14 +73,14 @@ public class CustomerController extends SSOController{
 			rq=memberMgtService.findCustomersBuylistByUserId(userId);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	
 	/**
-	 * ĞÂÔö¡¢ĞŞ¸Ä¿Í»§ĞÅÏ¢
+	 * æ–°å¢ã€ä¿®æ”¹å®¢æˆ·ä¿¡æ¯
 	 * @param customerJson
 	 * @return
 	 * @throws Exception
@@ -99,13 +99,13 @@ public class CustomerController extends SSOController{
 			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * É¾³ıÎÒµÄ¿Í»§
+	 * åˆ é™¤æˆ‘çš„å®¢æˆ·
 	 * @param customerId
 	 * @return
 	 * @throws Exception
@@ -119,7 +119,7 @@ public class CustomerController extends SSOController{
 			rq=memberMgtService.deleteCustomer(user.getUserId(), customerId); 
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

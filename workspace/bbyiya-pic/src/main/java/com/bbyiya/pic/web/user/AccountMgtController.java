@@ -24,7 +24,7 @@ public class AccountMgtController extends SSOController{
 	private IBaseUserAccountService accountService;
 	
 	/**
-	 * A11 ÕË»§ĞÅÏ¢(Óà¶îĞÅÏ¢)
+	 * A11 è´¦æˆ·ä¿¡æ¯(ä½™é¢ä¿¡æ¯)
 	 * @return
 	 * @throws Exception
 	 */
@@ -40,12 +40,12 @@ public class AccountMgtController extends SSOController{
 			
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	/**
-	 * A12 ÕË»§ĞÅÏ¢-Ô¤´æ¿î½»Ò×Á÷Ë®
+	 * A12 è´¦æˆ·ä¿¡æ¯-é¢„å­˜æ¬¾äº¤æ˜“æµæ°´
 	 * @return
 	 * @throws Exception
 	 */
@@ -59,17 +59,17 @@ public class AccountMgtController extends SSOController{
 				rq= accountService.findCashLogs(user.getUserId(),type, index,size);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError_1);
-				rq.setStatusreson("È¨ÏŞ²»×ã");
+				rq.setStatusreson("æƒé™ä¸è¶³");
 			} 
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * PBS A1´úÀíÉÌÔË·ÑÕË»§ĞÅÏ¢(Óà¶îĞÅÏ¢)
+	 * PBS A1ä»£ç†å•†è¿è´¹è´¦æˆ·ä¿¡æ¯(ä½™é¢ä¿¡æ¯)
 	 * @return
 	 * @throws Exception
 	 */
@@ -84,12 +84,12 @@ public class AccountMgtController extends SSOController{
 			rq.setBasemodle(accounts);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	/**
-	 * PBS A2´úÀíÉÌÔË·ÑÕË»§½»Ò×Á÷Ë®
+	 * PBS A2ä»£ç†å•†è¿è´¹è´¦æˆ·äº¤æ˜“æµæ°´
 	 * @return
 	 * @throws Exception
 	 */
@@ -103,11 +103,11 @@ public class AccountMgtController extends SSOController{
 				rq= accountService.findUBranchTansAmountlog(user.getUserId(),type, index,size);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError_1);
-				rq.setStatusreson("È¨ÏŞ²»×ã");
+				rq.setStatusreson("æƒé™ä¸è¶³");
 			} 
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

@@ -8,31 +8,31 @@ import com.bbyiya.vo.user.UChildInfoParam;
 public class MyProductsResult extends PMyproducts{
 
 	private static final long serialVersionUID = 1L;
-	//×÷Æ·Í¼Æ¬ÊıÁ¿
+	//ä½œå“å›¾ç‰‡æ•°é‡
 	private int count;
-	//ÊÇ·ñÏÂµ¥
+	//æ˜¯å¦ä¸‹å•
 	private int isOrder;
-	//±»ÑûÇëÈËuserId
+	//è¢«é‚€è¯·äººuserId
 	private Long inviteUserId;
-	//ÑûÇëÈËêÇ³Æ
+	//é‚€è¯·äººæ˜µç§°
 	private String myNickName;
-	//ÑûÇëÈËÉí·İ
+	//é‚€è¯·äººèº«ä»½
 	private Long userIdentity;
 	private int tempStatus;
 	private Long tempCartId;
 	
-	//²ÎÓë»î¶¯µÄÇé¿ö
+	//å‚ä¸æ´»åŠ¨çš„æƒ…å†µ
 	private MyProductsTempVo tempVo;
 	/**
-	 * ·ÖÏíÒ³²»Í¬Ïà²áµÄĞ¡Í¼±ê
+	 * åˆ†äº«é¡µä¸åŒç›¸å†Œçš„å°å›¾æ ‡
 	 */
 	private String sharepageLcon;
 	/**
-	 * ×÷Æ·ÏêÏ¸Í¼Æ¬
+	 * ä½œå“è¯¦ç»†å›¾ç‰‡
 	 */
 	private List<MyProductsDetailsResult> detailslist;
 	/**
-	 * ±¦±¦ÉúÈÕĞÅÏ¢
+	 * å®å®ç”Ÿæ—¥ä¿¡æ¯
 	 */
 	private UChildInfoParam childInfo;
 	

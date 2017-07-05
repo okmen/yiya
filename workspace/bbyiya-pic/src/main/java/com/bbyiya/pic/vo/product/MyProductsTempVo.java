@@ -9,16 +9,16 @@ public class MyProductsTempVo implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	
-	//ÆÀÂÛÈÎÎñ
+	//è¯„è®ºä»»åŠ¡
 	private Integer maxcommentCount;
-	//Ê£Óà
+	//å‰©ä½™
 	private Integer remainingCount;
 	
 	private int isLimitQuotas;
-	//ÊÇ·ñÏŞÖÆÆÀÂÛÊı
+	//æ˜¯å¦é™åˆ¶è¯„è®ºæ•°
 	private int isLimitCommentsCount;
 	
-	//ÒÑÍê³ÉÆÀÂÛÊı
+	//å·²å®Œæˆè¯„è®ºæ•°
 	private Integer commentCount;
 	
 	private int mytempStatus;

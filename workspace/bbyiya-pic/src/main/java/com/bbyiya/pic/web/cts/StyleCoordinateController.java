@@ -22,14 +22,14 @@ import com.bbyiya.web.base.SSOController;
 @Controller
 @RequestMapping(value = "/cts/style")
 public class StyleCoordinateController extends SSOController {
-	/*---------------------×ø±êÄ£°å---------------------------------*/
+	/*---------------------åæ ‡æ¨¡æ¿---------------------------------*/
 	@Autowired
 	private PStylecoordinateMapper styleCoordMapper;
 	@Autowired
 	private PStylecoordinateitemMapper styleCoordItemMapper;
 
 	/**
-	 * P06 ¿îÊ½×ø±êĞŞ¸Ä
+	 * P06 æ¬¾å¼åæ ‡ä¿®æ”¹
 	 * @param paramJson
 	 * @return
 	 * @throws Exception
@@ -51,7 +51,7 @@ public class StyleCoordinateController extends SSOController {
 								styleCoordItemMapper.updateByPrimaryKeySelective(param.getNumberMod());
 							} else {
 								rq.setStatu(ReturnStatus.ParamError);
-								rq.setStatusreson("ÕÒ²»µ½ÏàÓ¦µÄ´òÓ¡ºÅ×ø±ê coordJson:" + JsonUtil.objectToJsonStr(param.getNumberMod()));
+								rq.setStatusreson("æ‰¾ä¸åˆ°ç›¸åº”çš„æ‰“å°å·åæ ‡ coordJson:" + JsonUtil.objectToJsonStr(param.getNumberMod()));
 								return JsonUtil.objectToJsonStr(rq);
 							}
 						} else {
@@ -66,7 +66,7 @@ public class StyleCoordinateController extends SSOController {
 								styleCoordItemMapper.updateByPrimaryKeySelective(param.getContentMod());
 							} else {
 								rq.setStatu(ReturnStatus.ParamError);
-								rq.setStatusreson("ÕÒ²»µ½ÏàÓ¦µÄ´òÓ¡ºÅ×ø±ê coordJson:" + JsonUtil.objectToJsonStr(param.getNumberMod()));
+								rq.setStatusreson("æ‰¾ä¸åˆ°ç›¸åº”çš„æ‰“å°å·åæ ‡ coordJson:" + JsonUtil.objectToJsonStr(param.getNumberMod()));
 								return JsonUtil.objectToJsonStr(rq);
 							}
 						} else {
@@ -81,7 +81,7 @@ public class StyleCoordinateController extends SSOController {
 								styleCoordItemMapper.updateByPrimaryKeySelective(param.getPicMod());
 							} else {
 								rq.setStatu(ReturnStatus.ParamError);
-								rq.setStatusreson("ÕÒ²»µ½ÏàÓ¦µÄ´òÓ¡ºÅ×ø±ê coordJson:" + JsonUtil.objectToJsonStr(param.getNumberMod()));
+								rq.setStatusreson("æ‰¾ä¸åˆ°ç›¸åº”çš„æ‰“å°å·åæ ‡ coordJson:" + JsonUtil.objectToJsonStr(param.getNumberMod()));
 								return JsonUtil.objectToJsonStr(rq);
 							}
 						} else {
@@ -90,25 +90,25 @@ public class StyleCoordinateController extends SSOController {
 						}
 					}
 					rq.setStatu(ReturnStatus.Success);
-					rq.setStatusreson("ÉèÖÃ³É¹¦");
+					rq.setStatusreson("è®¾ç½®æˆåŠŸ");
 				} else {
 					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("ÕÒ²»µ½×ø±êĞÅÏ¢");
+					rq.setStatusreson("æ‰¾ä¸åˆ°åæ ‡ä¿¡æ¯");
 				}
 			} else {
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("²ÎÊıÓĞÎó");
+				rq.setStatusreson("å‚æ•°æœ‰è¯¯");
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * »ñÈ¡¿îÊ½×ø±ê
+	 * è·å–æ¬¾å¼åæ ‡
 	 * @param styleId
 	 * @return
 	 * @throws Exception
@@ -127,7 +127,7 @@ public class StyleCoordinateController extends SSOController {
 					vo.setCoId(co.getId());
 					vo.setStyleId(styleId);
 					vo.setType(co.getType());
-					vo.setTypeName(co.getType().intValue()==1?"ºá¹¹Í¼×ø±ê":"Êú¹¹Í¼×ø±ê"); 
+					vo.setTypeName(co.getType().intValue()==1?"æ¨ªæ„å›¾åæ ‡":"ç«–æ„å›¾åæ ‡"); 
 					vo.setContentMod(styleCoordItemMapper.selectByPrimaryKey(co.getWordcoordid().longValue()));
 					vo.setNumberMod(styleCoordItemMapper.selectByPrimaryKey(co.getNocoordid().longValue()));
 					vo.setPicMod(styleCoordItemMapper.selectByPrimaryKey(co.getPiccoordid().longValue()));
@@ -138,7 +138,7 @@ public class StyleCoordinateController extends SSOController {
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);

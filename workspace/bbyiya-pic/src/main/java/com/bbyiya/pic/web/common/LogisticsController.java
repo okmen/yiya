@@ -24,7 +24,7 @@ public class LogisticsController extends SSOController {
 	private IBasePostMgtService postservice;
 	/**
 	 * 
-	 * ¸ù¾İÔËµ¥ºÅ£¬ÎïÁ÷¹«Ë¾±àÂë¼ò³ÆµÃµ½ÎïÁ÷ĞÅÏ¢
+	 * æ ¹æ®è¿å•å·ï¼Œç‰©æµå…¬å¸ç¼–ç ç®€ç§°å¾—åˆ°ç‰©æµä¿¡æ¯
 	 * @return
 	 * @throws Exception
 	 */
@@ -36,7 +36,7 @@ public class LogisticsController extends SSOController {
 		if(user!=null){
 			if(ObjectUtil.isEmpty(expressCode)||ObjectUtil.isEmpty(expressCom)){
 				rqModel.setStatu(ReturnStatus.ParamError);		
-				rqModel.setStatusreson("ÔËµ¥ºÅ»òÎïÁ÷±àÂë²»ÄÜÎª¿Õ£¡");
+				rqModel.setStatusreson("è¿å•å·æˆ–ç‰©æµç¼–ç ä¸èƒ½ä¸ºç©ºï¼");
 				return JsonUtil.objectToJsonStr(rqModel);
 			}
 			String resultStr=LogisticsQuery.getLogisticsQueryByNum(expressCode, expressCom);
@@ -45,7 +45,7 @@ public class LogisticsController extends SSOController {
 				String message = String.valueOf(model.get("message"));
 				if(!ObjectUtil.isEmpty(message)&&message.equalsIgnoreCase("ok")){
 					rqModel.setStatu(ReturnStatus.Success);		
-					rqModel.setStatusreson("»ñÈ¡ÎïÁ÷ĞÅÏ¢³É¹¦£¡");
+					rqModel.setStatusreson("è·å–ç‰©æµä¿¡æ¯æˆåŠŸï¼");
 					rqModel.setBasemodle(model);
 				}else {
 					String returnCode = String.valueOf(model.get("returnCode"));
@@ -55,19 +55,19 @@ public class LogisticsController extends SSOController {
 				}
 			}else{
 				rqModel.setStatu(ReturnStatus.ParamError);		
-				rqModel.setStatusreson("²éÑ¯Ê§°Ü");
+				rqModel.setStatusreson("æŸ¥è¯¢å¤±è´¥");
 				return JsonUtil.objectToJsonStr(rqModel);
 			}
 		}else{
 			rqModel.setStatu(ReturnStatus.LoginError);
-			rqModel.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rqModel.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rqModel);
 		}	
 		return JsonUtil.objectToJsonStr(rqModel);
 	}
 	
 	/**
-	 * ÅäÖÃÎÄ¼şÖĞ¶ÁÈ¡ÎïÁ÷¹«Ë¾ĞÅÏ¢
+	 * é…ç½®æ–‡ä»¶ä¸­è¯»å–ç‰©æµå…¬å¸ä¿¡æ¯
 	 * @return
 	 */
 	@ResponseBody
@@ -79,7 +79,7 @@ public class LogisticsController extends SSOController {
 			rqModel=postservice.getPostInfo();
 		}else{
 			rqModel.setStatu(ReturnStatus.LoginError);
-			rqModel.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rqModel.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rqModel);
 		}	
 		return JsonUtil.objectToJsonStr(rqModel);

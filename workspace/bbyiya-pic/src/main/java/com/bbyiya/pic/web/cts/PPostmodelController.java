@@ -30,7 +30,7 @@ public class PPostmodelController extends SSOController {
 	@Autowired
 	private EErrorsMapper logger;
 	/**
-	 * C-P01 ÓÊ·ÑÄ£°æÁĞ±í
+	 * C-P01 é‚®è´¹æ¨¡ç‰ˆåˆ—è¡¨
 	 * @return
 	 * @throws Exception
 	 */
@@ -43,19 +43,19 @@ public class PPostmodelController extends SSOController {
 			List<PPostmodel> postlist=postService.find_postlist(0);
 			rq.setBasemodle(postlist);
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("»ñÈ¡ÁĞ±í³É¹¦");
+			rq.setStatusreson("è·å–åˆ—è¡¨æˆåŠŸ");
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * C-P02 ĞÂÔö ÓÊ·ÑÄ£°æ
-	 * @param name ¿ìµİ·½Ê½Ãû³Æ
-	 * @param Amount Ä¬ÈÏ¼Û¸ñ
+	 * C-P02 æ–°å¢ é‚®è´¹æ¨¡ç‰ˆ
+	 * @param name å¿«é€’æ–¹å¼åç§°
+	 * @param Amount é»˜è®¤ä»·æ ¼
 	 * @return
 	 * @throws Exception
 	 */
@@ -68,16 +68,16 @@ public class PPostmodelController extends SSOController {
 			rq=postService.addPostmodel(user.getUserId(), name, amount);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * C-P03 ĞŞ¸ÄÓÊ·ÑÄ£°æ
-	 * @param name ¿ìµİ·½Ê½Ãû³Æ
-	 * @param Amount Ä¬ÈÏ¼Û¸ñ
+	 * C-P03 ä¿®æ”¹é‚®è´¹æ¨¡ç‰ˆ
+	 * @param name å¿«é€’æ–¹å¼åç§°
+	 * @param Amount é»˜è®¤ä»·æ ¼
 	 * @return
 	 * @throws Exception
 	 */
@@ -90,14 +90,14 @@ public class PPostmodelController extends SSOController {
 			rq=postService.editPostmodel(postModelId, name, amount);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * C-P04 ÓÊ·ÑÄ£°åÌØÊâÇøÓòÁĞ±í
+	 * C-P04 é‚®è´¹æ¨¡æ¿ç‰¹æ®ŠåŒºåŸŸåˆ—è¡¨
 	 * @param index
 	 * @param size
 	 * @return
@@ -114,14 +114,14 @@ public class PPostmodelController extends SSOController {
 			rq=postService.find_PostModelAreaslist(index, size, areacode, areaname);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * C-P05 ĞÂÔöÓÊ·ÑÄ£°åÌØÊâÇøÓò
+	 * C-P05 æ–°å¢é‚®è´¹æ¨¡æ¿ç‰¹æ®ŠåŒºåŸŸ
 	 * @param postModelJson 
 	 * @return
 	 * @throws Exception
@@ -135,14 +135,14 @@ public class PPostmodelController extends SSOController {
 			rq=postService.addPostModelAreas(postModelJson);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * C-P06 ĞŞ¸ÄÓÊ·ÑÄ£°åÌØÊâÇøÓò
+	 * C-P06 ä¿®æ”¹é‚®è´¹æ¨¡æ¿ç‰¹æ®ŠåŒºåŸŸ
 	 * @param postModelJson 
 	 * @return
 	 * @throws Exception
@@ -156,14 +156,14 @@ public class PPostmodelController extends SSOController {
 			rq=postService.editPostModelAreas(postModelJson);			
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * C-P07 É¾³ıÓÊ·ÑÄ£°åÌØÊâÇøÓò
+	 * C-P07 åˆ é™¤é‚®è´¹æ¨¡æ¿ç‰¹æ®ŠåŒºåŸŸ
 	 * @param postModelJson 
 	 * @return
 	 * @throws Exception
@@ -177,7 +177,7 @@ public class PPostmodelController extends SSOController {
 			rq=postService.delPostModelAreas(postId);	
 		}else { 
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);

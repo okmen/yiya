@@ -10,7 +10,7 @@ import com.bbyiya.pic.vo.product.MyProductsResult;
 public interface IMyProductsDao {
 
 	/**
-	 * 我的作品详情
+	 * 鎴戠殑浣滃搧璇︽儏
 	 * @param cartid
 	 * @return
 	 */
@@ -18,8 +18,8 @@ public interface IMyProductsDao {
 	
 	MyProductsResult getMyProductResultByProductId(@Param("userId") Long userId,@Param("productId")Long productId, @Param("status") Integer status);
 	/**
-	 * 我的作品列表
-	 * (我的作品)
+	 * 鎴戠殑浣滃搧鍒楄〃
+	 * (鎴戠殑浣滃搧)
 	 * v1.0
 	 * @param userId
 	 * @param phone
@@ -27,22 +27,22 @@ public interface IMyProductsDao {
 	 */
 	List<MyProductListVo> findMyProductList(@Param("userId")Long userId,@Param("phone") String phone);
 	/**
-	 * 获取作品单个model 
-	 * （我的作品）
+	 * 鑾峰彇浣滃搧鍗曚釜model 
+	 * 锛堟垜鐨勪綔鍝侊級
 	 *  v1.0
 	 * @param cartId
 	 * @return
 	 */
 	MyProductListVo getMyProductVO(@Param("cartid")Long cartId);
 	/**
-	 * 通过模板id获取作品列表
+	 * 閫氳繃妯℃澘id鑾峰彇浣滃搧鍒楄〃
 	 * @param tempid
 	 * @return
 	 */
 	List<MyProductListVo>  getMyProductResultByTempId(@Param("tempid") Integer tempid);
 	
 	/**
-	 * 根据作品模板，被邀请用户的userId获取被邀请的作品
+	 * 鏍规嵁浣滃搧妯℃澘锛岃閭�璇风敤鎴风殑userId鑾峰彇琚個璇风殑浣滃搧
 	 * @param tempid
 	 * @param userid
 	 * @return

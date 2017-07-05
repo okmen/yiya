@@ -33,7 +33,7 @@ public class ScenseServiceImpl implements IScenseService{
 	
 	
 	/**
-	 * Ìí¼Ó»òĞŞ¸Ä³¡Ó°
+	 * æ·»åŠ æˆ–ä¿®æ”¹åœºå½±
 	 * */
 	public ReturnModel addorUpdateScense(Long userid,String myScenseJson){
 		ReturnModel rq=new ReturnModel();
@@ -41,37 +41,37 @@ public class ScenseServiceImpl implements IScenseService{
 		JSONObject obj = JSONObject.fromObject(myScenseJson);
 		if(obj==null){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("±§Ç¸£¡²ÎÊı´íÎó");
+			rq.setStatusreson("æŠ±æ­‰ï¼å‚æ•°é”™è¯¯");
 			return rq;
 		}
 		if(ObjectUtil.isEmpty(obj.getString("title"))){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("±êÌâ²»ÄÜÎª¿Õ!");
+			rq.setStatusreson("æ ‡é¢˜ä¸èƒ½ä¸ºç©º!");
 			return rq;
 		}
 		if(ObjectUtil.isEmpty(obj.getString("mintitle"))){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("Ğ¡±êÌâ²»ÄÜÎª¿Õ!");
+			rq.setStatusreson("å°æ ‡é¢˜ä¸èƒ½ä¸ºç©º!");
 			return rq;
 		}
 		if(ObjectUtil.isEmpty(obj.getString("content"))){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("³¡Ó°ÄÚÈİ²»ÄÜÎª¿Õ!");
+			rq.setStatusreson("åœºå½±å†…å®¹ä¸èƒ½ä¸ºç©º!");
 			return rq;
 		}
 		if(ObjectUtil.isEmpty(obj.getString("recreason"))){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("ÍÆ¼öÀíÓÉ²»ÄÜÎª¿Õ!");
+			rq.setStatusreson("æ¨èç†ç”±ä¸èƒ½ä¸ºç©º!");
 			return rq;
 		}
 		if(ObjectUtil.isEmpty(obj.getString("tips"))){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("ÌáÊ¾ÊäÈë²»ÄÜÎª¿Õ!");
+			rq.setStatusreson("æç¤ºè¾“å…¥ä¸èƒ½ä¸ºç©º!");
 			return rq;
 		}
 		if(ObjectUtil.isEmpty(obj.getString("productid"))){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("²úÆ·ID²»ÄÜÎª¿Õ!");
+			rq.setStatusreson("äº§å“IDä¸èƒ½ä¸ºç©º!");
 			return rq;
 		}
 		PScenes scense=null;
@@ -91,17 +91,17 @@ public class ScenseServiceImpl implements IScenseService{
 		scense.setTips(obj.getString("tips"));
 		if(isadd){
 			scenseMapper.insert(scense);
-			rq.setStatusreson("Ìí¼Ó³¡¾°³É¹¦£¡");
+			rq.setStatusreson("æ·»åŠ åœºæ™¯æˆåŠŸï¼");
 		}else{
 			scenseMapper.updateByPrimaryKey(scense);
-			rq.setStatusreson("ĞŞ¸Ä³¡¾°³É¹¦£¡");
+			rq.setStatusreson("ä¿®æ”¹åœºæ™¯æˆåŠŸï¼");
 		}
 		rq.setStatu(ReturnStatus.Success);
 		return rq;
 	}
 	
 	/**
-	 * »ñÈ¡³¡¾°ÁĞ±í
+	 * è·å–åœºæ™¯åˆ—è¡¨
 	 * @param index
 	 * @param size
 	 * @param keywords
@@ -115,7 +115,7 @@ public class ScenseServiceImpl implements IScenseService{
 		PageInfo<PScenes> page=new PageInfo<PScenes>(sceneslist);
 		rq.setBasemodle(page);
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("»ñÈ¡ÁĞ±í³É¹¦");
+		rq.setStatusreson("è·å–åˆ—è¡¨æˆåŠŸ");
 		return rq;
 	}
 	

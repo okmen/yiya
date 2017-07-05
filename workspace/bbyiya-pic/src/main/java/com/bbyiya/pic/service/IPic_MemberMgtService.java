@@ -6,65 +6,65 @@ import com.bbyiya.vo.ReturnModel;
 
 public interface IPic_MemberMgtService {
 	
-	/*----------------------------Ó°Â¥ÄÚ²¿Ô±¹¤¹ÜÀí Ä£¿é-----------------------------------------------*/
+	/*----------------------------å½±æ¥¼å†…éƒ¨å‘˜å·¥ç®¡ç† æ¨¡å—-----------------------------------------------*/
 	/**
-	 * »ñÈ¡Ó°Â¥µÄÄÚ²¿Ô±¹¤ÁĞ±í
+	 * è·å–å½±æ¥¼çš„å†…éƒ¨å‘˜å·¥åˆ—è¡¨
 	 * @param branchUserId
 	 * @return
 	 */
 	ReturnModel findBranchUserslistByBranchUserId(Long branchUserId);
 	/**
-	 * Ìí¼ÓÓ°Â¥µÄ ÏúÊÛÈËÔ±
+	 * æ·»åŠ å½±æ¥¼çš„ é”€å”®äººå‘˜
 	 * @param branchUserId
 	 * @param param
 	 * @return
 	 */
 	ReturnModel addBranchUser(Long branchUserId,UBranchusers param);
 	/**
-	 * É¾³ıÓ°Â¥ÄÚ²¿Ô±¹¤ĞÅÏ¢
+	 * åˆ é™¤å½±æ¥¼å†…éƒ¨å‘˜å·¥ä¿¡æ¯
 	 * @param branchUserId
 	 * @param userId
 	 * @return
 	 */
 	ReturnModel delBranchUser(Long branchUserId,Long userId);
 	
-	/*--------------------------Ó°Â¥¿Í»§¹ÜÀíÄ£¿é--------------------------------------------------------------------*/
+	/*--------------------------å½±æ¥¼å®¢æˆ·ç®¡ç†æ¨¡å—--------------------------------------------------------------------*/
 	
 	/**
-	 * ĞŞ¸Ä¿Í»§×ÊÁÏ
+	 * ä¿®æ”¹å®¢æˆ·èµ„æ–™
 	 * @param branchUserId
 	 * @param param
 	 * @return
 	 */
 	ReturnModel editCustomer(Long branchUserId,UAgentcustomers param);
 	/**
-	 * ĞÂÔö¿Í»§
+	 * æ–°å¢å®¢æˆ·
 	 * @param branchUserId
 	 * @param param
 	 * @return
 	 */
 	ReturnModel addCustomer(Long branchUserId,UAgentcustomers param);
 	/**
-	 * É¾³ıÒÑÓĞ¿Í»§
+	 * åˆ é™¤å·²æœ‰å®¢æˆ·
 	 * @param branchUserId
 	 * @param customerId
 	 * @return
 	 */
 	ReturnModel deleteCustomer(Long branchUserId,Long customerId);
 	/**
-	 * ¸ù¾İAgentUserIdµÃµ½UagentcustomersÁĞ±í  
+	 * æ ¹æ®AgentUserIdå¾—åˆ°Uagentcustomersåˆ—è¡¨  
 	 * @param branchUserId
 	 * @return
 	 */
 	ReturnModel findCustomerslistByAgentUserId(Long branchUserId,String keywords,int index,int size);
 	/**
-	 * ¸ù¾İUserIdµÃµ½¿Í»§µÄ¹ºÂòÁĞ±í
+	 * æ ¹æ®UserIdå¾—åˆ°å®¢æˆ·çš„è´­ä¹°åˆ—è¡¨
 	 * @param userId
 	 * @return
 	 */
 	ReturnModel findCustomersBuylistByUserId(Long userId);
 	/**
-	 * ¸ù¾İBranchUserIdµÃµ½ÒÑ»ñÈ¡¿Í»§ÁĞ±í 
+	 * æ ¹æ®BranchUserIdå¾—åˆ°å·²è·å–å®¢æˆ·åˆ—è¡¨ 
 	 * @param branchUserId
 	 * @return
 	 */

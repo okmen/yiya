@@ -5,32 +5,32 @@ import java.util.Date;
 import com.bbyiya.model.PMyproducts;
 
 /**
- * ÎÒµÄ×÷Æ·ÁĞ±í£¨Model£©
+ * æˆ‘çš„ä½œå“åˆ—è¡¨ï¼ˆModelï¼‰
  * @author Administrator
  *
  */
 public class MyProductListVo  extends PMyproducts{
 
 	private static final long serialVersionUID = 1L;
-	//ÎÒµÄÊÖ»úºÅ
+	//æˆ‘çš„æ‰‹æœºå·
 	private String myPhone;
-	//±»ÑûÇëµÄÊ±¼ä
+	//è¢«é‚€è¯·çš„æ—¶é—´
 	private Date inviteTime;
-	//±»ÑûÇëµÄ×´Ì¬
+	//è¢«é‚€è¯·çš„çŠ¶æ€
 	private Integer inStatus;
 	
 	private String myHeadImg;
 	private String myNickName;
 	private int isMine;
 	/**
-	 * ÑûÇëÈË/±»ÑûÇëÈË£¨·Ç×Ô¼º£©µÄÍ·Ïñ
+	 * é‚€è¯·äºº/è¢«é‚€è¯·äººï¼ˆéè‡ªå·±ï¼‰çš„å¤´åƒ
 	 */
 	private String otherHeadImg;
 	private String otherNickName;
 	
-	//×÷Æ·±à¼­µÄÊıÁ¿
+	//ä½œå“ç¼–è¾‘çš„æ•°é‡
 	private int count; 
-	//×÷Æ·Ä¬ÈÏÍ¼Æ¬
+	//ä½œå“é»˜è®¤å›¾ç‰‡
 	private String defaultImg;
 	
 	public String getMyPhone() {

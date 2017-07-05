@@ -6,13 +6,13 @@ import com.bbyiya.vo.user.OtherLoginParam;
 public interface IPic_UserMgtService {
 	
 	/**
-	 * µÚÈı·½µÇÂ¼¡¢×¢²á
+	 * ç¬¬ä¸‰æ–¹ç™»å½•ã€æ³¨å†Œ
 	 * @param param
 	 * @return
 	 */
 	ReturnModel otherLogin(OtherLoginParam param);
 	/**
-	 * °ó¶¨ÊÖ»úºÅ
+	 * ç»‘å®šæ‰‹æœºå·
 	 * @param userId
 	 * @param pwd
 	 * @param phone
@@ -21,7 +21,7 @@ public interface IPic_UserMgtService {
 	 */
 	ReturnModel setPwd(Long userId,String pwd,String phone,String vcode);
 	/**
-	 * °ó¶¨ÊÖ»ú
+	 * ç»‘å®šæ‰‹æœº
 	 * @param userId
 	 * @param phone
 	 * @param vcode

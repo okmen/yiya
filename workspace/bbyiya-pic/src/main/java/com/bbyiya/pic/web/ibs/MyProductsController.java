@@ -39,7 +39,7 @@ public class MyProductsController extends SSOController {
 	
 	
 	/**
-	 * IBS¿Í»§Ò»¶ÔÒ»×÷Æ·ÁĞ±í
+	 * IBSå®¢æˆ·ä¸€å¯¹ä¸€ä½œå“åˆ—è¡¨
 	 * @param index
 	 * @param size
 	 * @return
@@ -55,13 +55,13 @@ public class MyProductsController extends SSOController {
 			rq=proService.findMyProductsForBranch(user.getUserId(),null,inviteStatus,keywords,index,size);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	/**
-	 * µÃµ½Ä£°åÏÂµÄ×÷Æ·ÁĞ±í
+	 * å¾—åˆ°æ¨¡æ¿ä¸‹çš„ä½œå“åˆ—è¡¨
 	 * @param index
 	 * @param size
 	 * @return
@@ -78,14 +78,14 @@ public class MyProductsController extends SSOController {
 			rq=proService.findMyProductslistForTempId(user.getUserId(), tempid,activeStatus,keywords, index, size);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * IBSÊı¾İÍ³¼Æµ¼³öExcel
+	 * IBSæ•°æ®ç»Ÿè®¡å¯¼å‡ºExcel
 	 * @param request
 	 * @return
 	 * @throws MapperException 
@@ -94,20 +94,20 @@ public class MyProductsController extends SSOController {
 	@ResponseBody
 	public String tempProductExportExcel(Integer tempid,Integer activeStatus,
 			@RequestParam(required = false, defaultValue = "")String keywords) throws Exception {
-		// ÁĞÍ·
+		// åˆ—å¤´
 		String[] headers =new String[12];
-		headers[0]="ĞòºÅ";
-		headers[1]="×÷Æ·ID";
-		headers[2]="×÷Æ·Ãû³Æ";
-		headers[3]="±¾µêÔ±¹¤";
-		headers[4]="¿Í»§êÇ³Æ";
-		headers[5]="±¦±¦ÉúÈÕ";
-		headers[6]="»î¶¯×´Ì¬";
-		headers[7]="ÖÆ×÷ÀàĞÍ";
-		headers[8]="×÷Æ·½ø¶È";
-		headers[9]="ÆÀÂÛÊı";	
-		headers[10]="¿Í»§ÊÖ»ú";	
-		headers[11]="ÊÕ»õµØÖ·";	
+		headers[0]="åºå·";
+		headers[1]="ä½œå“ID";
+		headers[2]="ä½œå“åç§°";
+		headers[3]="æœ¬åº—å‘˜å·¥";
+		headers[4]="å®¢æˆ·æ˜µç§°";
+		headers[5]="å®å®ç”Ÿæ—¥";
+		headers[6]="æ´»åŠ¨çŠ¶æ€";
+		headers[7]="åˆ¶ä½œç±»å‹";
+		headers[8]="ä½œå“è¿›åº¦";
+		headers[9]="è¯„è®ºæ•°";	
+		headers[10]="å®¢æˆ·æ‰‹æœº";	
+		headers[11]="æ”¶è´§åœ°å€";	
 		String[] fields = new String[12];
 		fields[0]="sort";
 		fields[1]="cartid";
@@ -122,7 +122,7 @@ public class MyProductsController extends SSOController {
 		fields[10]="inviteModel.invitephone";
 		fields[11]="address";
 		
-		//µ¼³ö¸ñÊ½
+		//å¯¼å‡ºæ ¼å¼
 		String format =".xlsx";
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
@@ -135,8 +135,8 @@ public class MyProductsController extends SSOController {
 			PageInfo<MyProductResultVo> resultPage =(PageInfo<MyProductResultVo>) rq.getBasemodle();
 			
 			List<MyProductResultVo> list=resultPage.getList();
-			Long seed = System.currentTimeMillis();// »ñµÃÏµÍ³Ê±¼ä£¬×÷ÎªÉú³ÉËæ»úÊıµÄÖÖ×Ó
-			// »ñÈ¡ÓÃ»§µÄµ±Ç°¹¤×÷Ö÷Ä¿Â¼ 
+			Long seed = System.currentTimeMillis();// è·å¾—ç³»ç»Ÿæ—¶é—´ï¼Œä½œä¸ºç”Ÿæˆéšæœºæ•°çš„ç§å­
+			// è·å–ç”¨æˆ·çš„å½“å‰å·¥ä½œä¸»ç›®å½• 
 			String sep=System.getProperty("file.separator");
 			String currentWorkDir = System.getProperty("user.home") +sep+ "imagedownloadtemp"+sep;
 			FileUtils.isDirExists(currentWorkDir);
@@ -145,7 +145,7 @@ public class MyProductsController extends SSOController {
 			File file = new File(currentWorkDir + filename);	
 			try { 
 				OutputStream out = new FileOutputStream(file);				
-				ex.exportExcel("¿Í»§×÷Æ·", headers, fields, list, out, "yyyy-MM-dd");				
+				ex.exportExcel("å®¢æˆ·ä½œå“", headers, fields, list, out, "yyyy-MM-dd");				
 				out.close();				
 				rq.setStatu(ReturnStatus.Success);
 				rq.setBasemodle(file.getPath());
@@ -159,7 +159,7 @@ public class MyProductsController extends SSOController {
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

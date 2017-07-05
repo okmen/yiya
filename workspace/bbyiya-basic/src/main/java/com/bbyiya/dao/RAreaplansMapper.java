@@ -1,5 +1,7 @@
 package com.bbyiya.dao;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.RAreaplans;
 
 public interface RAreaplansMapper {
@@ -14,4 +16,6 @@ public interface RAreaplansMapper {
     int updateByPrimaryKeySelective(RAreaplans record);
 
     int updateByPrimaryKey(RAreaplans record);
+    
+    RAreaplans getApplyedAreacodeBycode(@Param("areacode") Integer areacode);
 }

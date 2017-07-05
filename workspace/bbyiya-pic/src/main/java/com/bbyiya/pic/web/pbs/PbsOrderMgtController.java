@@ -50,7 +50,7 @@ public class PbsOrderMgtController extends SSOController {
 	@Resource(name = "pic_orderMgtService")
 	private IPic_OrderMgtService orderService;
 	/**
-	 * O01 PBS²éÑ¯¶©µ¥ÁĞ±í
+	 * O01 PBSæŸ¥è¯¢è®¢å•åˆ—è¡¨
 	 *  
 	 * @return
 	 * @throws Exception
@@ -68,7 +68,7 @@ public class PbsOrderMgtController extends SSOController {
 			Object object=JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
 			if(object==null){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("²ÎÊı´«Èë´íÎó£¡");
+				rq.setStatusreson("å‚æ•°ä¼ å…¥é”™è¯¯ï¼");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 
@@ -77,16 +77,16 @@ public class PbsOrderMgtController extends SSOController {
 			PageInfo<PbsUserOrderResultVO> result= orderMgtService.find_pbsOrderList(param,index,size);
 			rq.setBasemodle(result);
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("»ñÈ¡ÁĞ±í³É¹¦£¡");
+			rq.setStatusreson("è·å–åˆ—è¡¨æˆåŠŸï¼");
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * pbs ¶©µ¥Í¼Æ¬ÁĞ±í£¬×÷Æ·±¦±¦ĞÅÏ¢
+	 * pbs è®¢å•å›¾ç‰‡åˆ—è¡¨ï¼Œä½œå“å®å®ä¿¡æ¯
 	 * @param userOrderId
 	 * @return
 	 * @throws Exception
@@ -100,14 +100,14 @@ public class PbsOrderMgtController extends SSOController {
 			rq=orderService.getOrderProductInfoByUserOrderId(userOrderId);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	
 	/**
-	 * µ¼³öExcel
+	 * å¯¼å‡ºExcel
 	 * @param request
 	 * @return
 	 * @throws MapperException 
@@ -115,33 +115,33 @@ public class PbsOrderMgtController extends SSOController {
 	@RequestMapping(value="/orderExportExcel")
 	@ResponseBody
 	public String orderExportExcel(HttpServletRequest request, HttpServletResponse response,String myproductJson) throws MapperException {
-		// ÁĞÍ·
+		// åˆ—å¤´
 		String[] headers =new String[25];
-		headers[0]="¶©µ¥ºÅ";
-		headers[1]="ÓÃ»§IDºÅ";
-		headers[2]="×÷Æ·IDºÅ";
-		headers[3]="²úÆ·±àºÅ";
-		headers[4]="²úÆ·±êÌâ";
-		headers[5]="²úÆ·ĞÍºÅ";
-		headers[6]="´úÀíÉÌ¹«Ë¾Ãû³Æ";
-		headers[7]="´úÀíÉÌÁªÏµÈË";
-		headers[8]="´úÀíÉÌµç»°";		
-		headers[9]="´úÀíÉÌÊ¡·İ";
-		headers[10]="´úÀíÉÌ³ÇÊĞ";
-		headers[11]="´úÀíÉÌÇøÏØ";
-		headers[12]="´úÀíÉÌ½ÖµÀµØÖ·";
-		headers[13]="ÊÕ»õÈËĞÕÃû";
-		headers[14]="ÊÕ»õÈËµç»°";
-		headers[15]="ÊÕ»õÊ¡·İ";
-		headers[16]="ÊÕ»õÊĞ";
-		headers[17]="ÊÕ»õÇøÓò";
-		headers[18]="ÊÕ»õµØÖ·";		
-		headers[19]="¶©¹º·İÊı";
-		headers[20]="¶©µ¥Êµ¸¶";
-		headers[21]="¶©µ¥×´Ì¬";
-		headers[22]="ÎïÁ÷¹«Ë¾";
-		headers[23]="ÔËµ¥ºÅ";
-		headers[24]="±¸×¢";
+		headers[0]="è®¢å•å·";
+		headers[1]="ç”¨æˆ·IDå·";
+		headers[2]="ä½œå“IDå·";
+		headers[3]="äº§å“ç¼–å·";
+		headers[4]="äº§å“æ ‡é¢˜";
+		headers[5]="äº§å“å‹å·";
+		headers[6]="ä»£ç†å•†å…¬å¸åç§°";
+		headers[7]="ä»£ç†å•†è”ç³»äºº";
+		headers[8]="ä»£ç†å•†ç”µè¯";		
+		headers[9]="ä»£ç†å•†çœä»½";
+		headers[10]="ä»£ç†å•†åŸå¸‚";
+		headers[11]="ä»£ç†å•†åŒºå¿";
+		headers[12]="ä»£ç†å•†è¡—é“åœ°å€";
+		headers[13]="æ”¶è´§äººå§“å";
+		headers[14]="æ”¶è´§äººç”µè¯";
+		headers[15]="æ”¶è´§çœä»½";
+		headers[16]="æ”¶è´§å¸‚";
+		headers[17]="æ”¶è´§åŒºåŸŸ";
+		headers[18]="æ”¶è´§åœ°å€";		
+		headers[19]="è®¢è´­ä»½æ•°";
+		headers[20]="è®¢å•å®ä»˜";
+		headers[21]="è®¢å•çŠ¶æ€";
+		headers[22]="ç‰©æµå…¬å¸";
+		headers[23]="è¿å•å·";
+		headers[24]="å¤‡æ³¨";
 		String[] fields = new String[25];
 		fields[0]="userorderid";
 		fields[1]="order.userid";
@@ -168,7 +168,7 @@ public class PbsOrderMgtController extends SSOController {
 		fields[22]="order.expresscom";
 		fields[23]="order.expressorder";
 		fields[24]="order.remark";
-		//µ¼³ö¸ñÊ½
+		//å¯¼å‡ºæ ¼å¼
 		String format =".xlsx";
 		myproductJson=myproductJson.replaceAll("\"status\":\"\"", "\"status\":null");
 		SearchOrderParam param= (SearchOrderParam)JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
@@ -177,8 +177,8 @@ public class PbsOrderMgtController extends SSOController {
 		List<PbsUserOrderResultVO> list=page.getList();
 		ExportExcel<PbsUserOrderResultVO> ex = new ExportExcel<PbsUserOrderResultVO>();
 		
-		Long seed = System.currentTimeMillis();// »ñµÃÏµÍ³Ê±¼ä£¬×÷ÎªÉú³ÉËæ»úÊıµÄÖÖ×Ó
-		// »ñÈ¡ÓÃ»§µÄµ±Ç°¹¤×÷Ö÷Ä¿Â¼ 
+		Long seed = System.currentTimeMillis();// è·å¾—ç³»ç»Ÿæ—¶é—´ï¼Œä½œä¸ºç”Ÿæˆéšæœºæ•°çš„ç§å­
+		// è·å–ç”¨æˆ·çš„å½“å‰å·¥ä½œä¸»ç›®å½• 
 		String sep=System.getProperty("file.separator");
 		String currentWorkDir = System.getProperty("user.home") +sep+ "imagedownloadtemp"+sep;
 		FileUtils.isDirExists(currentWorkDir);
@@ -187,9 +187,9 @@ public class PbsOrderMgtController extends SSOController {
 		try { 
 			OutputStream out = new FileOutputStream(file);
 			if (format != null && !"".equals(format) && format.indexOf("csv") > -1) {
-				ex.exportCSV("¶©µ¥ÁĞ±í", headers, fields, list, out, "yyyy-MM-dd");
+				ex.exportCSV("è®¢å•åˆ—è¡¨", headers, fields, list, out, "yyyy-MM-dd");
 			} else {
-				ex.exportExcel("¶©µ¥ÁĞ±í", headers, fields, list, out, "yyyy-MM-dd");
+				ex.exportExcel("è®¢å•åˆ—è¡¨", headers, fields, list, out, "yyyy-MM-dd");
 			}
 			out.close();
 			ReturnModel rq = new ReturnModel();
@@ -209,21 +209,21 @@ public class PbsOrderMgtController extends SSOController {
 	public String download(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try {
 			String path = request.getParameter("path");
-			// pathÊÇÖ¸ÓûÏÂÔØµÄÎÄ¼şµÄÂ·¾¶¡£
+			// pathæ˜¯æŒ‡æ¬²ä¸‹è½½çš„æ–‡ä»¶çš„è·¯å¾„ã€‚
 			File file = new File(path);
-		    // Â·¾¶ÎªÎÄ¼şÇÒ²»Îª¿ÕÔò½øĞĞÉ¾³ı  
+		    // è·¯å¾„ä¸ºæ–‡ä»¶ä¸”ä¸ä¸ºç©ºåˆ™è¿›è¡Œåˆ é™¤  
 		    if (file.isFile() && file.exists()) {
-				// È¡µÃÎÄ¼şÃû¡£
+				// å–å¾—æ–‡ä»¶åã€‚
 				String filename = file.getName();
 				//FileDownloadUtils.download(path, filename);
-				// ÒÔÁ÷µÄĞÎÊ½ÏÂÔØÎÄ¼ş¡£
+				// ä»¥æµçš„å½¢å¼ä¸‹è½½æ–‡ä»¶ã€‚
 				InputStream fis = new BufferedInputStream(new FileInputStream(path));
 				byte[] buffer = new byte[fis.available()];
 				fis.read(buffer);
 				fis.close();
-				// Çå¿Õresponse
+				// æ¸…ç©ºresponse
 				response.reset();
-				// ÉèÖÃresponseµÄHeader
+				// è®¾ç½®responseçš„Header
 				response.setCharacterEncoding("utf-8");  
 				response.setContentType("application/vnd.ms-excel;charset=utf-8");
 				response.addHeader("Content-Disposition", "attachment;filename=" + new String(filename.getBytes()));
@@ -232,7 +232,7 @@ public class PbsOrderMgtController extends SSOController {
 				toClient.write(buffer);
 				toClient.flush();
 				toClient.close();  
-				// É¾³ıÎÄ¼ş
+				// åˆ é™¤æ–‡ä»¶
 		        file.delete();  
 		    }
 		} catch (IOException ex) {
@@ -243,10 +243,10 @@ public class PbsOrderMgtController extends SSOController {
 	
 	
 	/**
-	 *²éÑ¯¶©µ¥ÔËµ¥ºÅĞÅÏ¢
-	 * @param expressCom   ÎïÁ÷¹«Ë¾Ãû³Æ
-	 * @param expressOrder ÔËµ¥ºÅ
-	 * @param expressCode  ÎïÁ÷±àÂë
+	 *æŸ¥è¯¢è®¢å•è¿å•å·ä¿¡æ¯
+	 * @param expressCom   ç‰©æµå…¬å¸åç§°
+	 * @param expressOrder è¿å•å·
+	 * @param expressCode  ç‰©æµç¼–ç 
 	 * @return
 	 * @throws Exception
 	 */
@@ -258,27 +258,27 @@ public class PbsOrderMgtController extends SSOController {
 		if (user != null) {
 			if(ObjectUtil.isEmpty(expressOrder)){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("ÔËµ¥ºÅ²»ÓĞÎª¿Õ£¬ÇëÊäÈëÔËµ¥ºÅ");
+				rq.setStatusreson("è¿å•å·ä¸æœ‰ä¸ºç©ºï¼Œè¯·è¾“å…¥è¿å•å·");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			//Ğ£ÑéÔËµ¥ºÅ²»ÄÜÎª·ÇÊı×Ö
+			//æ ¡éªŒè¿å•å·ä¸èƒ½ä¸ºéæ•°å­—
 			if(!ObjectUtil.isEmpty(expressOrder)&&!ObjectUtil.IsNumber(expressOrder)){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("ÔËµ¥ºÅ±ØĞëÊäÈëÎªÊı×Ö");
+				rq.setStatusreson("è¿å•å·å¿…é¡»è¾“å…¥ä¸ºæ•°å­—");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			
 			rq=orderMgtService.editLogistics(orderId, expressCom, expressOrder,expressCode);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 *B¶Ë¶©µ¥ÌîÔË·Ñ×Ô¶¯¿Û¿î
+	 *Bç«¯è®¢å•å¡«è¿è´¹è‡ªåŠ¨æ‰£æ¬¾
 	 * 
 	 * @return
 	 * @throws Exception
@@ -289,23 +289,23 @@ public class PbsOrderMgtController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			//ÑéÖ¤ÓÊ·Ñ²»ÄÜÊäÈë¸ºÊı
+			//éªŒè¯é‚®è´¹ä¸èƒ½è¾“å…¥è´Ÿæ•°
 			if(!ObjectUtil.isEmpty(postage)&&postage.longValue()<0){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("ÓÊ·Ñ²»ÄÜÎª¸ºÊı£¡");
+				rq.setStatusreson("é‚®è´¹ä¸èƒ½ä¸ºè´Ÿæ•°ï¼");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			rq=orderMgtService.addPostage(orderId,postage);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 *ÅĞ¶ÏÊÇ·ñ¿ÉÒÔºÏµ¥ÔËµ¥ĞÅÏ¢
+	 *åˆ¤æ–­æ˜¯å¦å¯ä»¥åˆå•è¿å•ä¿¡æ¯
 	 * 
 	 * @return
 	 * @throws Exception
@@ -319,13 +319,13 @@ public class PbsOrderMgtController extends SSOController {
 			rq=orderMgtService.isCanMergeOrderLogistic(orderIds);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 *ºÏµ¥ÔËµ¥ĞÅÏ¢
+	 *åˆå•è¿å•ä¿¡æ¯
 	 * 
 	 * @return
 	 * @throws Exception
@@ -338,33 +338,33 @@ public class PbsOrderMgtController extends SSOController {
 		if (user != null) {
 			if(ObjectUtil.isEmpty(expressOrder)){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("ÔËµ¥ºÅ²»ÓĞÎª¿Õ£¬ÇëÊäÈëÔËµ¥ºÅ£¡");
+				rq.setStatusreson("è¿å•å·ä¸æœ‰ä¸ºç©ºï¼Œè¯·è¾“å…¥è¿å•å·ï¼");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			//Ğ£ÑéÔËµ¥ºÅ²»ÄÜÎª·ÇÊı×Ö
+			//æ ¡éªŒè¿å•å·ä¸èƒ½ä¸ºéæ•°å­—
 			if(!ObjectUtil.isEmpty(expressOrder)&&!ObjectUtil.IsNumber(expressOrder)){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("ÔËµ¥ºÅ±ØĞëÊäÈëÎªÊı×Ö");
+				rq.setStatusreson("è¿å•å·å¿…é¡»è¾“å…¥ä¸ºæ•°å­—");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			//ÑéÖ¤ÓÊ·Ñ²»ÄÜÊäÈë¸ºÊı
+			//éªŒè¯é‚®è´¹ä¸èƒ½è¾“å…¥è´Ÿæ•°
 			if(!ObjectUtil.isEmpty(postage)&&postage.longValue()<0){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("ÓÊ·Ñ²»ÄÜÎª¸ºÊı£¡");
+				rq.setStatusreson("é‚®è´¹ä¸èƒ½ä¸ºè´Ÿæ•°ï¼");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			
 			rq=orderMgtService.MergeOrderLogistic(ordertype, orderIds, expressCom, expressOrder, postage,expressCode);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	
 	/**
-	 * ÅúÁ¿ÏÂÔØ¶©µ¥Í¼Æ¬
+	 * æ‰¹é‡ä¸‹è½½è®¢å•å›¾ç‰‡
 	 * @param myproductJson
 	 * @return
 	 * @throws Exception
@@ -389,26 +389,26 @@ public class PbsOrderMgtController extends SSOController {
 			if(ObjectUtil.parseInt(isDownload)>0){
 //				if(ObjectUtil.isEmpty(fileDir)){
 //					rq.setStatu(ReturnStatus.ParamError);
-//					rq.setStatusreson("ÇëÊäÈëÒª±£´æµ½±¾µØµÄÎÄ¼şÂ·¾¶");
+//					rq.setStatusreson("è¯·è¾“å…¥è¦ä¿å­˜åˆ°æœ¬åœ°çš„æ–‡ä»¶è·¯å¾„");
 //					return JsonUtil.objectToJsonStr(rq);
 //				}
 				if(page!=null&&page.getList()!=null&&page.getList().size()>0){
 					String path=orderMgtService.pbsdownloadImg(page.getList());
 					rq.setBasemodle(path);
 					rq.setStatu(ReturnStatus.Success);
-					rq.setStatusreson("ÏÂÔØÍ¼Æ¬³É¹¦"); 
+					rq.setStatusreson("ä¸‹è½½å›¾ç‰‡æˆåŠŸ"); 
 				}
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	
 	/**
-	 * µ¥¸ö¶©µ¥ÏÂÔØºÏ³ÉÍ¼Æ¬
+	 * å•ä¸ªè®¢å•ä¸‹è½½åˆæˆå›¾ç‰‡
 	 * @param myproductJson
 	 * @return
 	 * @throws Exception
@@ -428,18 +428,18 @@ public class PbsOrderMgtController extends SSOController {
 					String path=orderMgtService.pbsdownloadImg(page.getList());
 					rq.setBasemodle(path);
 					rq.setStatu(ReturnStatus.Success);
-					rq.setStatusreson("ÏÂÔØÍ¼Æ¬³É¹¦");
+					rq.setStatusreson("ä¸‹è½½å›¾ç‰‡æˆåŠŸ");
 				}
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("ÄãµÄµÇÂ¼ÒÑ¹ıÆÚ");
+			rq.setStatusreson("ä½ çš„ç™»å½•å·²è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * µ¥¸ö¶©µ¥ÏÂÔØÔ­Í¼Æ¬
+	 * å•ä¸ªè®¢å•ä¸‹è½½åŸå›¾ç‰‡
 	 * @param myproductJson
 	 * @return
 	 * @throws Exception
@@ -458,12 +458,12 @@ public class PbsOrderMgtController extends SSOController {
 					String path=orderMgtService.pbsdownloadOriginalImage(page.getList());
 					rq.setBasemodle(path);
 					rq.setStatu(ReturnStatus.Success);
-					rq.setStatusreson("ÏÂÔØÍ¼Æ¬³É¹¦");
+					rq.setStatusreson("ä¸‹è½½å›¾ç‰‡æˆåŠŸ");
 				}
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("ÄãµÄµÇÂ¼ÒÑ¹ıÆÚ");
+			rq.setStatusreson("ä½ çš„ç™»å½•å·²è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

@@ -11,6 +11,7 @@ import com.bbyiya.model.PCommentstemp;
 import com.bbyiya.model.PCommentstips;
 import com.bbyiya.model.PMyproductcomments;
 import com.bbyiya.model.PMyproductdetails;
+import com.bbyiya.model.UAgentapplyareas;
 import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UBranchinfotemp;
 import com.bbyiya.model.UBranchusers;
@@ -25,7 +26,7 @@ public class Json2Objects {
 
 	/**
 	 * 001
-	 * 供应商报名页申请
+	 * 渚涘簲鍟嗘姤鍚嶉〉鐢宠
 	 * @param addrJson
 	 * @return
 	 */
@@ -69,7 +70,7 @@ public class Json2Objects {
 	
 	/**
 	 * 002
-	 * 保存参数对象转化
+	 * 淇濆瓨鍙傛暟瀵硅薄杞寲
 	 * @param result
 	 * @return
 	 */
@@ -373,4 +374,47 @@ public class Json2Objects {
 		}
 		return null;
 	}
+	
+	public static List<UAgentapplyareas> getParam_AgentApplyareas(String areacodeJson) {
+		JSONObject model = JSONObject.fromObject(areacodeJson);
+		List<UAgentapplyareas> arealist=null;
+		if (model != null) {
+			String detailString=String.valueOf(model.get("areacodelist"));
+			if(ObjectUtil.isEmpty(detailString)||detailString.equals("null")){
+				return null;
+			}	
+			JSONArray codearr=null;
+			try {
+				codearr = new JSONArray().fromObject(detailString);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			
+			if(codearr!=null&&codearr.size()>0){
+				arealist=new ArrayList<UAgentapplyareas>();
+				for (int i = 0; i < codearr.size(); i++) {
+					JSONObject dd = codearr.getJSONObject(i);
+					UAgentapplyareas applyarea=new UAgentapplyareas();
+					int areacode=ObjectUtil.parseInt(String.valueOf(dd.get("areacode")));
+					if(areacode>0){
+						applyarea.setAreacode(areacode);
+					}
+					int provincecode=ObjectUtil.parseInt(String.valueOf(dd.get("provincecode")));
+					if(provincecode>0){
+						applyarea.setProvincecode(provincecode);
+					}
+					int citycode=ObjectUtil.parseInt(String.valueOf(dd.get("citycode")));
+					if(citycode>0){
+						applyarea.setCitycode(citycode);
+					}
+					
+					arealist.add(applyarea);
+				}
+			}
+			
+		}
+		
+		return arealist;
+	}
+	
 }

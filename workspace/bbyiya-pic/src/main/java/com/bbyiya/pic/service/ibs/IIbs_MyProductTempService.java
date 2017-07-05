@@ -5,7 +5,7 @@ import com.bbyiya.vo.ReturnModel;
 
 public interface IIbs_MyProductTempService {
 	/**
-	 * Ìí¼ÓÄ£°å
+	 * æ·»åŠ æ¨¡æ¿
 	 * @param userid
 	 * @param title
 	 * @param remark
@@ -13,20 +13,20 @@ public interface IIbs_MyProductTempService {
 	 */
 	ReturnModel addMyProductTemp(Long userid,MyProductTempAddParam param);
 	/**
-	 * ÆôÓÃ»ò½ûÓÃÄ£°å
+	 * å¯ç”¨æˆ–ç¦ç”¨æ¨¡æ¿
 	 * @param type
 	 * @param tempid
 	 * @return
 	 */
 	ReturnModel editMyProductTempStatus(int type, int tempid);
 	/**
-	 * É¾³ıÄ£°å
+	 * åˆ é™¤æ¨¡æ¿
 	 * @param tempid
 	 * @return
 	 */
 	ReturnModel deleteMyProductTemp(int tempid);
 	/**
-	 * ²éÑ¯Ä£°åÁĞ±í
+	 * æŸ¥è¯¢æ¨¡æ¿åˆ—è¡¨
 	 * @param index
 	 * @param size
 	 * @param userid
@@ -34,14 +34,14 @@ public interface IIbs_MyProductTempService {
 	 */
 	ReturnModel findMyProductTempList(int index, int size, Long userid,Integer status,String keywords,Integer type);
 	/**
-	 * ±£´æÄ£°å¶şÎ¬ÂëÍ¼Æ¬
+	 * ä¿å­˜æ¨¡æ¿äºŒç»´ç å›¾ç‰‡
 	 * @param url
 	 * @return
 	 * @throws Exception
 	 */
 	ReturnModel saveProductTempRQcode(String url) throws Exception;
 	/**
-	 * ĞŞ¸ÄÄ£°å
+	 * ä¿®æ”¹æ¨¡æ¿
 	 * @param userid
 	 * @param title
 	 * @param remark
@@ -50,7 +50,7 @@ public interface IIbs_MyProductTempService {
 	 */
 	ReturnModel editMyProductTemp(MyProductTempAddParam param);
 	/**
-	 * »ñÈ¡Ó°Â¥Ä£°å´ıÉóºËÓÃ»§ÁĞ±í
+	 * è·å–å½±æ¥¼æ¨¡æ¿å¾…å®¡æ ¸ç”¨æˆ·åˆ—è¡¨
 	 * @param index
 	 * @param size
 	 * @param userid
@@ -60,16 +60,16 @@ public interface IIbs_MyProductTempService {
 	ReturnModel getMyProductTempApplyCheckList(int index, int size,
 			Long userid, int tempid);
 	/**
-	 * ÉóºËÓ°Â¥Ä£°åÉêÇëÓÃ»§
+	 * å®¡æ ¸å½±æ¥¼æ¨¡æ¿ç”³è¯·ç”¨æˆ·
 	 * @param userid
 	 * @param tempapplyid
-	 * @param status  0 ÉêÇëÖĞ£¬1Í¨¹ı£¬2¾Ü¾ø
+	 * @param status  0 ç”³è¯·ä¸­ï¼Œ1é€šè¿‡ï¼Œ2æ‹’ç»
 	 * @return
 	 */
 	ReturnModel audit_TempApplyUser(Long userid, Long tempapplyid,
 			Integer status);
 	/**
-	 * Ó°Â¥Ô±¹¤¸ºÔğÄ£°åĞÅÏ¢ÁĞ±í
+	 * å½±æ¥¼å‘˜å·¥è´Ÿè´£æ¨¡æ¿ä¿¡æ¯åˆ—è¡¨
 	 * @param index
 	 * @param size
 	 * @param branchUserId
@@ -79,7 +79,7 @@ public interface IIbs_MyProductTempService {
 	ReturnModel find_BranchUserOfTemp(int index, int size, Long branchUserId,
 			Integer tempid);
 	/**
-	 * ÉèÖÃÔ±¹¤Ä£°å¸ºÔğÈ¨ÏŞ
+	 * è®¾ç½®å‘˜å·¥æ¨¡æ¿è´Ÿè´£æƒé™
 	 * @param userId
 	 * @param tempid
 	 * @param status
@@ -88,13 +88,13 @@ public interface IIbs_MyProductTempService {
 	ReturnModel setUserTempPermission(Long userId, Integer tempid,
 			Integer status);
 	/**
-	 * ½ÓÊÜÑûÇë»òibsºóÌ¨ÉóºËÓÃ»§ÉêÇë²Ù×÷ (¹«ÓÃ·½·¨)
+	 * æ¥å—é‚€è¯·æˆ–ibsåå°å®¡æ ¸ç”¨æˆ·ç”³è¯·æ“ä½œ (å…¬ç”¨æ–¹æ³•)
 	 * @param apply
 	 * @return
 	 */
 	ReturnModel doAcceptOrAutoTempApplyOpt(PMyproducttempapply apply);
 	/**
-	 * ÉóºËÄ£°åÉêÇëÓÃ»§×÷Æ·ÊÇ·ñÍ¨¹ı
+	 * å®¡æ ¸æ¨¡æ¿ç”³è¯·ç”¨æˆ·ä½œå“æ˜¯å¦é€šè¿‡
 	 * @param userId
 	 * @param cartid
 	 * @param status
@@ -102,7 +102,7 @@ public interface IIbs_MyProductTempService {
 	 */
 	ReturnModel audit_TempApplyProduct(Long userId, Long cartid, Integer status,String reason);
 	/**
-	 * ĞŞ¸ÄÄ£°å¶şÎ¬ÂëĞÅÏ¢
+	 * ä¿®æ”¹æ¨¡æ¿äºŒç»´ç ä¿¡æ¯
 	 * @param tempid
 	 * @param codeurl
 	 * @param codesm
@@ -110,7 +110,7 @@ public interface IIbs_MyProductTempService {
 	 */
 	ReturnModel editTempCodeUrl(Integer tempid, String codeurl, String codesm,String discription);
 	/**
-	 * ÉèÖÃÔ±¹¤Ä£°åÉóºË¸ºÔğÈ¨ÏŞ
+	 * è®¾ç½®å‘˜å·¥æ¨¡æ¿å®¡æ ¸è´Ÿè´£æƒé™
 	 * @param userId
 	 * @param tempid
 	 * @param status
@@ -119,7 +119,7 @@ public interface IIbs_MyProductTempService {
 	ReturnModel setUserTempVerfiyPermission(Long userId, Integer tempid,
 			Integer status);
 	/**
-	 * ÉèÖÃ»î¶¯×î´ó±¨ÃûÈËÊı
+	 * è®¾ç½®æ´»åŠ¨æœ€å¤§æŠ¥åäººæ•°
 	 * @param userId
 	 * @param tempid
 	 * @param maxApplyCount
@@ -128,7 +128,7 @@ public interface IIbs_MyProductTempService {
 	ReturnModel setTempMaxApplyCount(Long userId, Integer tempid,
 			Integer maxApplyCount);
 	/**
-	 * ÉèÖÃ»î¶¯Íê³ÉÄ¿±ê
+	 * è®¾ç½®æ´»åŠ¨å®Œæˆç›®æ ‡
 	 * @param userId
 	 * @param tempid
 	 * @param blessCount

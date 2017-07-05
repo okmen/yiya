@@ -22,7 +22,7 @@ public class MemberController extends SSOController{
 	private IPic_MemberMgtService memberMgtService;
 	
 	/**
-	 * 内部账户管理
+	 * 鍐呴儴璐︽埛绠＄悊
 	 * @param agentUserId
 	 * @param status
 	 * @param msg
@@ -38,13 +38,13 @@ public class MemberController extends SSOController{
 			rq=memberMgtService.findBranchUserslistByBranchUserId(user.getUserId());
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
+			rq.setStatusreson("鐧诲綍杩囨湡");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * 新增员工信息
+	 * 鏂板鍛樺伐淇℃伅
 	 * @param memberJson
 	 * @return
 	 * @throws Exception
@@ -59,13 +59,13 @@ public class MemberController extends SSOController{
 			rq=memberMgtService.addBranchUser(user.getUserId(), branchUser);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
+			rq.setStatusreson("鐧诲綍杩囨湡");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * 移除员工
+	 * 绉婚櫎鍛樺伐
 	 * @param userId
 	 * @return
 	 * @throws Exception
@@ -79,7 +79,7 @@ public class MemberController extends SSOController{
 			rq=memberMgtService.delBranchUser(user.getUserId(), userId);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
+			rq.setStatusreson("鐧诲綍杩囨湡");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

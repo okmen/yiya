@@ -37,14 +37,14 @@ public class SubmitOrderMgtController extends SSOController {
 	@Resource(name = "baseOrderMgtServiceImpl")
 	private IBaseOrderMgtService orderMgtService;
 	/**
-	 * ÔË  ·Ñ
+	 * è¿  è´¹
 	 */
 	@Resource(name = "basePostMgtServiceImpl")
 	private IBasePostMgtService postMgtService;
 
 	
 	/**
-	 * ÏÂµ¥Ò³-»ñÈ¡ÔË·Ñ·½Ê½ÁĞ±í
+	 * ä¸‹å•é¡µ-è·å–è¿è´¹æ–¹å¼åˆ—è¡¨
 	 * @param area
 	 * @param addressId
 	 * @return
@@ -68,13 +68,13 @@ public class SubmitOrderMgtController extends SSOController {
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * ÏµÍ³ÉÏÏß×¼±¸ÆÚ¼ä
+	 * ç³»ç»Ÿä¸Šçº¿å‡†å¤‡æœŸé—´
 	 * @return
 	 */
 //	public boolean istime(){
@@ -89,7 +89,7 @@ public class SubmitOrderMgtController extends SSOController {
 //		return true;
 //	}
 	/**
-	 * Ìá½»¶©µ¥
+	 * æäº¤è®¢å•
 	 * 
 	 * @param addrId
 	 * @param orderType
@@ -111,7 +111,7 @@ public class SubmitOrderMgtController extends SSOController {
 				product.setStyleid(productParam.getStyleId());
 				product.setCount(productParam.getCount());
 				
-				// ÏÂµ¥²ÎÊı
+				// ä¸‹å•å‚æ•°
 				UserOrderSubmitParam param = new UserOrderSubmitParam();
 				param.setUserId(user.getUserId());
 				param.setRemark(remark);
@@ -126,7 +126,7 @@ public class SubmitOrderMgtController extends SSOController {
 					param.setOrderType(type);
 //					if(!istime()){
 //						rq.setStatu(ReturnStatus.ParamError);
-//						rq.setStatusreson("ÏµÍ³Éı¼¶ÖĞ£¬ÔİÊ±¹Ø±ÕÓ°Â¥ÏÂµ¥¹¦ÄÜ£¬2017-07-03 21:00:00 ¿ª·ÅÊ¹ÓÃ£¡");
+//						rq.setStatusreson("ç³»ç»Ÿå‡çº§ä¸­ï¼Œæš‚æ—¶å…³é—­å½±æ¥¼ä¸‹å•åŠŸèƒ½ï¼Œ2017-07-03 21:00:00 å¼€æ”¾ä½¿ç”¨ï¼");
 //						return JsonUtil.objectToJsonStr(rq);
 //					}
 				}
@@ -137,19 +137,19 @@ public class SubmitOrderMgtController extends SSOController {
 				rq = orderMgtService.submitOrder_new(param);
 			} else {
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("²ÎÊıÓĞÎó");
+				rq.setStatusreson("å‚æ•°æœ‰è¯¯");
 			}
 
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	
 	/**
-	 * IBSÓ°Â¥ÄÚ²¿Ñ¡µØÖ·ÏÂµ¥
+	 * IBSå½±æ¥¼å†…éƒ¨é€‰åœ°å€ä¸‹å•
 	 * @param addressJsonStr
 	 * @param orderType
 	 * @param remark
@@ -165,7 +165,7 @@ public class SubmitOrderMgtController extends SSOController {
 		if (user != null) {
 //			if(!istime()){
 //				rq.setStatu(ReturnStatus.ParamError);
-//				rq.setStatusreson("ÏµÍ³Éı¼¶ÖĞ£¬ÔİÊ±¹Ø±ÕÓ°Â¥ÏÂµ¥¹¦ÄÜ£¬2017-07-03 21:00:00 ¿ª·ÅÊ¹ÓÃ£¡");
+//				rq.setStatusreson("ç³»ç»Ÿå‡çº§ä¸­ï¼Œæš‚æ—¶å…³é—­å½±æ¥¼ä¸‹å•åŠŸèƒ½ï¼Œ2017-07-03 21:00:00 å¼€æ”¾ä½¿ç”¨ï¼");
 //				return JsonUtil.objectToJsonStr(rq);
 //			}
 			SubmitOrderProductParam productParam = (SubmitOrderProductParam) JsonUtil.jsonStrToObject(productJsonStr, SubmitOrderProductParam.class);
@@ -176,7 +176,7 @@ public class SubmitOrderMgtController extends SSOController {
 				product.setStyleid(productParam.getStyleId());
 				product.setCount(productParam.getCount());
 				
-				// ÏÂµ¥²ÎÊı
+				// ä¸‹å•å‚æ•°
 				UserOrderSubmitParam param = new UserOrderSubmitParam();
 				param.setUserId(user.getUserId());
 				param.setRemark(remark);
@@ -194,54 +194,54 @@ public class SubmitOrderMgtController extends SSOController {
 				param.setOrderproducts(product);
 				if(addressParam.getCity()==null){
 					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("µØÖ·²ÎÊıÓĞÎó£ºcityÎª¿Õ");
+					rq.setStatusreson("åœ°å€å‚æ•°æœ‰è¯¯ï¼šcityä¸ºç©º");
 					return JsonUtil.objectToJsonStr(rq);
 				}
 				if(addressParam.getProvince()==null){
 					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("µØÖ·²ÎÊıÓĞÎó£ºprovinceÎª¿Õ");
+					rq.setStatusreson("åœ°å€å‚æ•°æœ‰è¯¯ï¼šprovinceä¸ºç©º");
 					return JsonUtil.objectToJsonStr(rq);
 				}
 				if(addressParam.getDistrict()==null){
 					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("µØÖ·²ÎÊıÓĞÎó£ºdistrictÎª¿Õ");
+					rq.setStatusreson("åœ°å€å‚æ•°æœ‰è¯¯ï¼šdistrictä¸ºç©º");
 					return JsonUtil.objectToJsonStr(rq);
 				}
 				if(addressParam.getStreetdetail()==null){
 					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("µØÖ·²ÎÊıÓĞÎó£ºstreetdetailÎª¿Õ");
+					rq.setStatusreson("åœ°å€å‚æ•°æœ‰è¯¯ï¼šstreetdetailä¸ºç©º");
 					return JsonUtil.objectToJsonStr(rq);
 				}
 				if(addressParam.getPhone()==null){
 					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("²ÎÊıÓĞÎó,ÊÖ»úºÅÎª¿Õ");
+					rq.setStatusreson("å‚æ•°æœ‰è¯¯,æ‰‹æœºå·ä¸ºç©º");
 					return JsonUtil.objectToJsonStr(rq);
 				}
 				if(!ObjectUtil.isEmpty(addressParam.getPhone())&&!ObjectUtil.isMobile(addressParam.getPhone())){
 					rq.setStatu(ReturnStatus.ParamError_2);
-					rq.setStatusreson("ÊÖ»úºÅ¸ñÊ½²»¶Ô£¡");
+					rq.setStatusreson("æ‰‹æœºå·æ ¼å¼ä¸å¯¹ï¼");
 					return JsonUtil.objectToJsonStr(rq);
 				}
 				if(addressParam.getReciver()==null){
 					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("²ÎÊıÓĞÎó,ÁªÏµÈËÎª¿Õ");
+					rq.setStatusreson("å‚æ•°æœ‰è¯¯,è”ç³»äººä¸ºç©º");
 					return JsonUtil.objectToJsonStr(rq);
 				}
 				param.setAddressparam(addressParam);
 				rq = orderMgtService.submitOrder_IBS(param);
 			} else {
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("²ÎÊıÓĞÎó");
+				rq.setStatusreson("å‚æ•°æœ‰è¯¯");
 			}
 
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	/**
-	 * ÔÙ´ÎÏÂµ¥
+	 * å†æ¬¡ä¸‹å•
 	 * @param addrId
 	 * @param remark
 	 * @param productJsonStr
@@ -260,14 +260,14 @@ public class SubmitOrderMgtController extends SSOController {
 					param.setOrderType(Integer.parseInt(OrderTypeEnum.brachOrder.toString()));
 //					if(!istime()){
 //						rq.setStatu(ReturnStatus.ParamError);
-//						rq.setStatusreson("ÏµÍ³Éı¼¶ÖĞ£¬ÔİÊ±¹Ø±ÕÓ°Â¥ÏÂµ¥¹¦ÄÜ£¬2017-07-03 21:00:00 ¿ª·ÅÊ¹ÓÃ£¡");
+//						rq.setStatusreson("ç³»ç»Ÿå‡çº§ä¸­ï¼Œæš‚æ—¶å…³é—­å½±æ¥¼ä¸‹å•åŠŸèƒ½ï¼Œ2017-07-03 21:00:00 å¼€æ”¾ä½¿ç”¨ï¼");
 //						return JsonUtil.objectToJsonStr(rq);
 //					}
 				}else {
 					param.setOrderType(0);
 					if(param.getPostModelId()==null||param.getPostModelId()<=0){
 						rq.setStatu(ReturnStatus.ParamError);
-						rq.setStatusreson("ÇëÑ¡Ôñ¿ìµİ·½Ê½£¡");
+						rq.setStatusreson("è¯·é€‰æ‹©å¿«é€’æ–¹å¼ï¼");
 						return JsonUtil.objectToJsonStr(rq);
 					}
 				}
@@ -275,7 +275,7 @@ public class SubmitOrderMgtController extends SSOController {
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
@@ -283,9 +283,9 @@ public class SubmitOrderMgtController extends SSOController {
 	
 	
 	/**
-	 * »ñÈ¡³äÖµ¶©µ¥ºÅ
+	 * è·å–å……å€¼è®¢å•å·
 	 * @param amount
-	 * @param type£¨2£º»õ¿î³äÖµ£©
+	 * @param typeï¼ˆ2ï¼šè´§æ¬¾å……å€¼ï¼‰
 	 * @return
 	 * @throws Exception
 	 */
@@ -307,11 +307,11 @@ public class SubmitOrderMgtController extends SSOController {
 				rq.setBasemodle(orderId); 
 			}else {
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("²ÎÊıÓĞÎó");
+				rq.setStatusreson("å‚æ•°æœ‰è¯¯");
 			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

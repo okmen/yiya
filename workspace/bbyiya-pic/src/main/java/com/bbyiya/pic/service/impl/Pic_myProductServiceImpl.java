@@ -60,7 +60,7 @@ import com.github.pagehelper.PageInfo;
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
 public class Pic_myProductServiceImpl implements IPic_myProductService{
 
-	 /*-----------------------ÎÒµÄ×÷Æ·----------------------------------*/
+	 /*-----------------------æˆ‘çš„ä½œå“----------------------------------*/
 	@Autowired
 	private PMyproductsinvitesMapper inviteMapper;
 	@Autowired
@@ -76,7 +76,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 	
 	@Autowired
 	private UBranchusersMapper branchuserMapper;
-	/*------------------------²úÆ·Ä£¿é-------------------------------------*/
+	/*------------------------äº§å“æ¨¡å—-------------------------------------*/
 	@Autowired
 	private PScenesMapper sceneMapper;
 	@Autowired
@@ -88,20 +88,20 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 	@Autowired
 	private PMyproductextMapper myproductextMapper;
 	/**
-	 * Ğ­Í¬±à¼­ ÑûÇë 
+	 * ååŒç¼–è¾‘ é‚€è¯· 
 	 */
 	public ReturnModel sendInvite(Long userId, String phone,Long cartId){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError); 
 		if(!ObjectUtil.isMobile(phone)){
-			rq.setStatusreson("ÇëÊäÈëÕıÈ·µÄÊÖ»úºÅ");
+			rq.setStatusreson("è¯·è¾“å…¥æ­£ç¡®çš„æ‰‹æœºå·");
 			return rq; 
 		}
 		PMyproducts myproducts= myproductsMapper.selectByPrimaryKey(cartId);
 		if(myproducts!=null){
 //			if(myproducts.getStatus()!=null&&myproducts.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
 //				rq.setStatu(ReturnStatus.SystemError);
-//				rq.setStatusreson("ÒÑ¾­ÏÂµ¥µÄ×÷Æ·ÎŞ·¨½øĞĞ´Ë²Ù×÷£¡");
+//				rq.setStatusreson("å·²ç»ä¸‹å•çš„ä½œå“æ— æ³•è¿›è¡Œæ­¤æ“ä½œï¼");
 //				return rq;
 //			}
 			if(myproducts.getUserid()!=null&&myproducts.getUserid().longValue()==userId){
@@ -112,11 +112,11 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 						if(invo.getStatus()==Integer.parseInt(InviteStatus.agree.toString())){
 							flag=false;
 							rq.setStatu(ReturnStatus.ParamError);
-							rq.setStatusreson("ÒÑÓĞÈË½ÓÊÜÑûÇëĞ­Í¬±à¼­£¬²»ÄÜÔÙÑûÇëÁË£¡"); 
+							rq.setStatusreson("å·²æœ‰äººæ¥å—é‚€è¯·ååŒç¼–è¾‘ï¼Œä¸èƒ½å†é‚€è¯·äº†ï¼"); 
 							return rq;
 						}						
 					}
-					//Èç¹ûÃ»ÓĞÔÚ½ÓÊÜÑûÇëµÄÇé¿öÏÂ£¬Çå¿ÕÒÔÇ°µÄÎ´½ÓÊÜ»òÒÑ¾Ü¾øµÄÑûÇë
+					//å¦‚æœæ²¡æœ‰åœ¨æ¥å—é‚€è¯·çš„æƒ…å†µä¸‹ï¼Œæ¸…ç©ºä»¥å‰çš„æœªæ¥å—æˆ–å·²æ‹’ç»çš„é‚€è¯·
 					if(flag){
 						for (PMyproductsinvites invo : list) {
 							inviteMapper.deleteByPrimaryKey(invo.getInviteid());
@@ -136,28 +136,28 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				}
 				inviteMapper.insert(invoMo);
 				myproducts.setInvitestatus(Integer.parseInt(InviteStatus.inviting.toString()));
-				//ĞèÒªÖØĞÂ¸üĞÂ°æ±¾ºÅ
+				//éœ€è¦é‡æ–°æ›´æ–°ç‰ˆæœ¬å·
 				String versionString=DateUtil.getTimeStr(new Date(), "yyyyMMddHHMMss"); 
 				myproducts.setVersion(versionString);
 				myproductsMapper.updateByPrimaryKey(myproducts); 
 				rq.setStatu(ReturnStatus.Success);
-				rq.setStatusreson("³É¹¦·¢ËÍÑûÇë");
+				rq.setStatusreson("æˆåŠŸå‘é€é‚€è¯·");
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("²»ÊÇÄú±¾ÈËµÄ×÷Æ·£¬²»ÄÜ½øĞĞ´Ë²Ù×÷"); 
+				rq.setStatusreson("ä¸æ˜¯æ‚¨æœ¬äººçš„ä½œå“ï¼Œä¸èƒ½è¿›è¡Œæ­¤æ“ä½œ"); 
 			}
 		}else {
 			rq.setStatu(ReturnStatus.SystemError);
-			rq.setStatusreson("²»´æÔÚµÄ×÷Æ·");
+			rq.setStatusreson("ä¸å­˜åœ¨çš„ä½œå“");
 		}
 		return rq;
 	}
 	
 	/**
-	 * ´¦ÀíÒ½ÔºÉ¨ÂëÒ³ÃæµÄ½ÓÊÜÑûÇë
-	 * @param phone ±»ÑûÇëÈËÊÖ»úºÅ
-	 * @param cartId ×÷Æ·cartid
-	 * @param userId ±»ÑûÇëÈËÓÃ»§Id
+	 * å¤„ç†åŒ»é™¢æ‰«ç é¡µé¢çš„æ¥å—é‚€è¯·
+	 * @param phone è¢«é‚€è¯·äººæ‰‹æœºå·
+	 * @param cartId ä½œå“cartid
+	 * @param userId è¢«é‚€è¯·äººç”¨æˆ·Id
 	 * @author julie at 2017-04-26
 	 * @throws Exception
 	 */
@@ -165,17 +165,17 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError); 
 		if(!ObjectUtil.isMobile(phone)){
-			rq.setStatusreson("ÇëÊäÈëÕıÈ·µÄÊÖ»úºÅ");
+			rq.setStatusreson("è¯·è¾“å…¥æ­£ç¡®çš„æ‰‹æœºå·");
 			return rq; 
 		}
-		//Èç¹ûĞèÒªÑéÖ¤ÊÖ»ú¶ÌĞÅÑéÖ¤Âë
+		//å¦‚æœéœ€è¦éªŒè¯æ‰‹æœºçŸ­ä¿¡éªŒè¯ç 
 		if(needVerfiCode!=null&&needVerfiCode==1){
 			ResultMsg msgResult= SendSMSByMobile.validateCode(phone, vcode, SendMsgEnums.register);
 			if(msgResult.getStatus()==Integer.parseInt(MsgStatusEnums.ok.toString())) {
 				UUsers userPhone=usersMapper.getUUsersByPhone(phone);
 				if(userPhone!=null&&userPhone.getUserid().longValue()!=userId.longValue()){
 					rq.setStatu(ReturnStatus.SystemError);
-					rq.setStatusreson("¸ÃÊÖ»úºÅÒÑ¾­°ó¶¨ÆäËûÓÃ»§£¡");
+					rq.setStatusreson("è¯¥æ‰‹æœºå·å·²ç»ç»‘å®šå…¶ä»–ç”¨æˆ·ï¼");
 					return rq;
 				}
 				UUsers user= usersMapper.getUUsersByUserID(userId);
@@ -183,12 +183,12 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 					user.setMobilephone(phone);
 					user.setMobilebind(1);
 					user.setStatus(Integer.parseInt(UserStatusEnum.ok.toString())); 
-					user.setPassword(""); //Ä¬ÈÏÃÜÂëÎª¿Õ
+					user.setPassword(""); //é»˜è®¤å¯†ç ä¸ºç©º
 					usersMapper.updateByPrimaryKey(user);
 					//LoginSuccessResult result = baseLoginService.getLoginSuccessResult_Common(user);					
 				}else {
 					rq.setStatu(ReturnStatus.SystemError);
-					rq.setStatusreson("ÏµÍ³´íÎó");
+					rq.setStatusreson("ç³»ç»Ÿé”™è¯¯");
 					return rq; 
 				}
 			}else{
@@ -197,21 +197,21 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				return rq; 
 			}
 		}
-		//Ä£°å×÷Æ·ID
+		//æ¨¡æ¿ä½œå“ID
 		PMyproducts myproducts= myproductsMapper.selectByPrimaryKey(cartId);
 		if(myproducts!=null){	
-			//²éÑ¯ÏàÓ¦µÄÄ£°åÏÂµÄ×÷Æ·ÁĞ±í
+			//æŸ¥è¯¢ç›¸åº”çš„æ¨¡æ¿ä¸‹çš„ä½œå“åˆ—è¡¨
 			List<MyProductListVo> myprolist=myProductsDao.getMyProductResultByTempId(myproducts.getTempid());
 			if(myprolist!=null&&myprolist.size()>0){
 				for (MyProductListVo mypro : myprolist) {
-					//×ÔÒÑ²»ÄÜÉ¨×ÔÒÑµÄÄ£°å×÷Æ·¶şÎ¬Âë
+					//è‡ªå·²ä¸èƒ½æ‰«è‡ªå·²çš„æ¨¡æ¿ä½œå“äºŒç»´ç 
 					if(mypro.getUserid().longValue()==userId.longValue()){
 						rq.setStatu(ReturnStatus.ParamError);					
-						rq.setStatusreson("²»ÄÜ½ÓÊÜ×ÔÒÑ×÷Æ·µÄÑûÇë£¡"); 
+						rq.setStatusreson("ä¸èƒ½æ¥å—è‡ªå·²ä½œå“çš„é‚€è¯·ï¼"); 
 						return rq;
 					}
 					if(mypro.getCartid()!=cartId){
-						//Õâ¸öÁĞ±í°üÀ¨Ä£°å×÷Æ·
+						//è¿™ä¸ªåˆ—è¡¨åŒ…æ‹¬æ¨¡æ¿ä½œå“
 						List<PMyproductsinvites> list= inviteMapper.findListByCartId(mypro.getCartid());	
 						if(list!=null&&list.size()>0){
 							for (PMyproductsinvites invo : list) {
@@ -221,14 +221,14 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 									map.put("mycartid", invo.getCartid());
 									rq.setBasemodle(map);						
 									rq.setStatu(ReturnStatus.Success);
-									rq.setStatusreson("ÒÑ¾­½ÓÊÜÑûÇëĞ­Í¬±à¼­£¬ÇëÖ±½ÓÌø×ªµ½×÷Æ·Ò³£¡"); 
+									rq.setStatusreson("å·²ç»æ¥å—é‚€è¯·ååŒç¼–è¾‘ï¼Œè¯·ç›´æ¥è·³è½¬åˆ°ä½œå“é¡µï¼"); 
 									return rq;
 								}
 							}
 						}
 					}					
 				}
-				//Èç¹ûÕâ¸öÓÃ»§ÒÔÇ°Ã»ÓĞ½ÓÊÜÑûÇë£¬ÔòcopyÒ»·İ×÷Æ·
+				//å¦‚æœè¿™ä¸ªç”¨æˆ·ä»¥å‰æ²¡æœ‰æ¥å—é‚€è¯·ï¼Œåˆ™copyä¸€ä»½ä½œå“
 				PMyproducts newproducts=new PMyproducts();
 				newproducts.setAuthor(myproducts.getAuthor());
 				newproducts.setCreatetime(new Date());
@@ -284,8 +284,8 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				PMyproductsinvites invoMo=new PMyproductsinvites();
 				invoMo.setCartid(newproducts.getCartid());
 				
-				invoMo.setUserid(newproducts.getUserid());//ÑûÇëÈËID
-				invoMo.setInviteuserid(userId);//±»ÑûÇëÈËID
+				invoMo.setUserid(newproducts.getUserid());//é‚€è¯·äººID
+				invoMo.setInviteuserid(userId);//è¢«é‚€è¯·äººID
 				invoMo.setInvitetype(Integer.parseInt(InviteType.scanQRInvite.toString()));
 				invoMo.setStatus(Integer.parseInt(InviteStatus.agree.toString()));
 				invoMo.setCreatetime(new Date());
@@ -300,7 +300,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				inviteMapper.insert(invoMo);
 				newproducts.setInvitestatus(Integer.parseInt(InviteStatus.agree.toString()));
 				myproductsMapper.updateByPrimaryKeySelective(newproducts);
-				//Ä£°å¿Í»§»ñÈ¡Êı¼Ó1
+				//æ¨¡æ¿å®¢æˆ·è·å–æ•°åŠ 1
 				PMyproducttemp temp=tempMapper.selectByPrimaryKey(myproducts.getTempid());
 				if(temp!=null){
 					int count=temp.getCount()==null?0:temp.getCount();
@@ -309,10 +309,10 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 					tempMapper.updateByPrimaryKeySelective(temp);
 				}
 				
-				//Ìí¼ÓÓ°Â¥ÒÑ»ñÈ¡µÄ¿Í»§ĞÅÏ¢
+				//æ·»åŠ å½±æ¥¼å·²è·å–çš„å®¢æˆ·ä¿¡æ¯
 				UBranchusers branchuser=branchuserMapper.selectByPrimaryKey(myproducts.getUserid());
 				if(branchuser!=null){
-					//Ìí¼Ó³ÉÎªÓ°Â¥µÄÒÑ»ñÈ¡¿Í»§
+					//æ·»åŠ æˆä¸ºå½±æ¥¼çš„å·²è·å–å®¢æˆ·
 					UAgentcustomers cus= customerMapper.getCustomersByAgentUserId(branchuser.getAgentuserid(),userId);
 					if(cus==null){
 						cus=new UAgentcustomers();
@@ -349,13 +349,13 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				map.put("mycartid", newproducts.getCartid());
 				rq.setBasemodle(map);
 				rq.setStatu(ReturnStatus.Success);
-				rq.setStatusreson("³É¹¦½ÓÊÜÑûÇë");
+				rq.setStatusreson("æˆåŠŸæ¥å—é‚€è¯·");
 
 			}	
 			
 		}else {
 			rq.setStatu(ReturnStatus.SystemError);
-			rq.setStatusreson("²»´æÔÚµÄ×÷Æ·");
+			rq.setStatusreson("ä¸å­˜åœ¨çš„ä½œå“");
 		}
 		
 		return rq;
@@ -369,13 +369,13 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 	
 
 	/**
-	 * ´¦ÀíÉ¨ÂëÒ³ÃæµÄ½ÓÊÜÑûÇë
-	 * @param phone ±»ÑûÇëÈËÊÖ»úºÅ
-	 * @param cartId ×÷Æ·cartid
-	 * @param userId ±»ÑûÇëÈËÓÃ»§ID
-	 * @param vcode  ÑéÖ¤Âë
-	 * @param needVerfiCode  ÊÇ·ñĞèÒªÑéÖ¤ÊÖ»úÑéÖ¤Âë 0 ²»ĞèÒª£¬1ĞèÒª
-	 * @param version  ¶şÎ¬Âë°æ±¾ºÅ
+	 * å¤„ç†æ‰«ç é¡µé¢çš„æ¥å—é‚€è¯·
+	 * @param phone è¢«é‚€è¯·äººæ‰‹æœºå·
+	 * @param cartId ä½œå“cartid
+	 * @param userId è¢«é‚€è¯·äººç”¨æˆ·ID
+	 * @param vcode  éªŒè¯ç 
+	 * @param needVerfiCode  æ˜¯å¦éœ€è¦éªŒè¯æ‰‹æœºéªŒè¯ç  0 ä¸éœ€è¦ï¼Œ1éœ€è¦
+	 * @param version  äºŒç»´ç ç‰ˆæœ¬å·
 	 * @author julie at 2017-04-26
 	 * @throws Exception
 	 */
@@ -383,22 +383,22 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError); 
 		if(!ObjectUtil.isEmpty(phone)&&!ObjectUtil.isMobile(phone)){
-			rq.setStatusreson("ÇëÊäÈëÕıÈ·µÄÊÖ»úºÅ");
+			rq.setStatusreson("è¯·è¾“å…¥æ­£ç¡®çš„æ‰‹æœºå·");
 			return rq; 
 		}
 		PMyproducts myproducts= myproductsMapper.selectByPrimaryKey(cartId);
 		if(myproducts!=null&&myproducts.getVersion()!=null&&(!myproducts.getVersion().equalsIgnoreCase(version))){
-			rq.setStatusreson("´Ë¶şÎ¬ÂëÒÑÊ§Ğ§£¬É¨Âëºó²»ÄÜ½ÓÊÜÑûÇë");
+			rq.setStatusreson("æ­¤äºŒç»´ç å·²å¤±æ•ˆï¼Œæ‰«ç åä¸èƒ½æ¥å—é‚€è¯·");
 			return rq;
 		}
-		//Èç¹ûĞèÒªÑéÖ¤ÊÖ»ú¶ÌĞÅÑéÖ¤Âë
+		//å¦‚æœéœ€è¦éªŒè¯æ‰‹æœºçŸ­ä¿¡éªŒè¯ç 
 		if(needVerfiCode!=null&&needVerfiCode==1){
 			ResultMsg msgResult= SendSMSByMobile.validateCode(phone, vcode, SendMsgEnums.register);
 			if(msgResult.getStatus()==Integer.parseInt(MsgStatusEnums.ok.toString())) {
 				UUsers userPhone=usersMapper.getUUsersByPhone(phone);
 				if(userPhone!=null&&userPhone.getUserid().longValue()!=userId.longValue()){
 					rq.setStatu(ReturnStatus.SystemError);
-					rq.setStatusreson("¸ÃÊÖ»úºÅÒÑ¾­°ó¶¨ÆäËûÓÃ»§£¡");
+					rq.setStatusreson("è¯¥æ‰‹æœºå·å·²ç»ç»‘å®šå…¶ä»–ç”¨æˆ·ï¼");
 					return rq;
 				}
 				UUsers user= usersMapper.getUUsersByUserID(userId);
@@ -406,12 +406,12 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 					user.setMobilephone(phone);
 					user.setMobilebind(1);
 					user.setStatus(Integer.parseInt(UserStatusEnum.ok.toString())); 
-					user.setPassword(""); //Ä¬ÈÏÃÜÂëÎª¿Õ
+					user.setPassword(""); //é»˜è®¤å¯†ç ä¸ºç©º
 					usersMapper.updateByPrimaryKey(user);
 					//LoginSuccessResult result = baseLoginService.getLoginSuccessResult_Common(user);					
 				}else {
 					rq.setStatu(ReturnStatus.SystemError);
-					rq.setStatusreson("ÏµÍ³´íÎó");
+					rq.setStatusreson("ç³»ç»Ÿé”™è¯¯");
 					return rq; 
 				}
 			}else{
@@ -421,7 +421,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 			}
 		}
 		if(myproducts!=null){
-			//ÑûÇëÈËIDÒª²»µÈÓÚÊÜÑûÈËID£¬×ÔÒÑ²»ÄÜ½ÓÊÜ×ÔÒÑµÄ×÷ÓÃÑûÇë
+			//é‚€è¯·äººIDè¦ä¸ç­‰äºå—é‚€äººIDï¼Œè‡ªå·²ä¸èƒ½æ¥å—è‡ªå·²çš„ä½œç”¨é‚€è¯·
 			if(myproducts.getUserid()!=null&&myproducts.getUserid().longValue()!=userId){
 				List<PMyproductsinvites> list= inviteMapper.findListByCartId(cartId);
 				boolean flag=true;
@@ -431,17 +431,17 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 							flag=false;
 							rq.setBasemodle(invo);
 							rq.setStatu(ReturnStatus.Success);
-							rq.setStatusreson("ÒÑ¾­½ÓÊÜÑûÇëĞ­Í¬±à¼­£¬ÇëÖ±½ÓÌø×ªµ½×÷Æ·Ò³£¡"); 
+							rq.setStatusreson("å·²ç»æ¥å—é‚€è¯·ååŒç¼–è¾‘ï¼Œè¯·ç›´æ¥è·³è½¬åˆ°ä½œå“é¡µï¼"); 
 							return rq;
 						}
 						if(invo.getStatus()==Integer.parseInt(InviteStatus.agree.toString())){
 							flag=false;
 							rq.setStatu(ReturnStatus.ParamError);
-							rq.setStatusreson("ÒÑÓĞÈË½ÓÊÜÑûÇëĞ­Í¬±à¼­£¬²»ÄÜÔÙÑûÇëÁË£¡"); 
+							rq.setStatusreson("å·²æœ‰äººæ¥å—é‚€è¯·ååŒç¼–è¾‘ï¼Œä¸èƒ½å†é‚€è¯·äº†ï¼"); 
 							return rq;
 						}
 					}
-					//Èç¹ûÃ»ÓĞÔÚ½ÓÊÜÑûÇëµÄÇé¿öÏÂ£¬Çå¿ÕÒÔÇ°µÄÎ´½ÓÊÜ»òÒÑ¾Ü¾øµÄÑûÇë
+					//å¦‚æœæ²¡æœ‰åœ¨æ¥å—é‚€è¯·çš„æƒ…å†µä¸‹ï¼Œæ¸…ç©ºä»¥å‰çš„æœªæ¥å—æˆ–å·²æ‹’ç»çš„é‚€è¯·
 					if(flag){
 						for (PMyproductsinvites invo : list) {
 							inviteMapper.deleteByPrimaryKey(invo.getInviteid());
@@ -450,8 +450,8 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				}
 				PMyproductsinvites invoMo=new PMyproductsinvites();
 				invoMo.setCartid(cartId);
-				invoMo.setUserid(myproducts.getUserid());//ÑûÇëÈËID
-				invoMo.setInviteuserid(userId);//±»ÑûÇëÈËID
+				invoMo.setUserid(myproducts.getUserid());//é‚€è¯·äººID
+				invoMo.setInviteuserid(userId);//è¢«é‚€è¯·äººID
 				invoMo.setInvitetype(Integer.parseInt(InviteType.scanQRInvite.toString()));
 				invoMo.setStatus(Integer.parseInt(InviteStatus.agree.toString()));
 				invoMo.setCreatetime(new Date());	
@@ -469,10 +469,10 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				
 				
 				
-				//Ìí¼ÓÓ°Â¥ÒÑ»ñÈ¡µÄ¿Í»§ĞÅÏ¢
+				//æ·»åŠ å½±æ¥¼å·²è·å–çš„å®¢æˆ·ä¿¡æ¯
 				UBranchusers branchuser=branchuserMapper.selectByPrimaryKey(myproducts.getUserid());
 				if(branchuser!=null){
-					//Ìí¼Ó³ÉÎªÓ°Â¥µÄÒÑ»ñÈ¡¿Í»§
+					//æ·»åŠ æˆä¸ºå½±æ¥¼çš„å·²è·å–å®¢æˆ·
 					UAgentcustomers cus= customerMapper.getCustomersByAgentUserId(branchuser.getAgentuserid(),userId);
 					if(cus==null){
 						cus=new UAgentcustomers();
@@ -503,14 +503,14 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				}
 				
 				rq.setStatu(ReturnStatus.Success);
-				rq.setStatusreson("³É¹¦½ÓÊÜÑûÇë");			
+				rq.setStatusreson("æˆåŠŸæ¥å—é‚€è¯·");			
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("²»ÄÜ½ÓÊÜ×ÔÒÑ×÷Æ·µÄÑûÇë£¡"); 				
+				rq.setStatusreson("ä¸èƒ½æ¥å—è‡ªå·²ä½œå“çš„é‚€è¯·ï¼"); 				
 			}
 		}else {
 			rq.setStatu(ReturnStatus.SystemError);
-			rq.setStatusreson("²»´æÔÚµÄ×÷Æ·");
+			rq.setStatusreson("ä¸å­˜åœ¨çš„ä½œå“");
 		}
 		return rq;
 	}
@@ -529,12 +529,12 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				invite.setStatus(status);
 				inviteMapper.updateByPrimaryKeySelective(invite);
 				rq.setStatu(ReturnStatus.Success);
-				rq.setStatusreson("³É¹¦£¡");
+				rq.setStatusreson("æˆåŠŸï¼");
 				return rq;
 			}
 		}
 		rq.setStatu(ReturnStatus.ParamError);
-		rq.setStatusreson("ÒÑ¾­¹ıÆÚµÄÑûÇë£¡");
+		rq.setStatusreson("å·²ç»è¿‡æœŸçš„é‚€è¯·ï¼");
 		return rq;
 	}
 	
@@ -542,7 +542,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 	private IIbs_MyProductTempService tempServiceImpl;
 	
 	/**
-	 * Íê³É»î¶¯
+	 * å®Œæˆæ´»åŠ¨
 	 * 
 	 */
 	public ReturnModel processInvite(Long cartId,Long userId, int status) {
@@ -554,13 +554,13 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 		}
 		List<PMyproductsinvites> invitelist = inviteMapper.findListByCartId(cartId);
 		for (PMyproductsinvites pp : invitelist) {
-			if(pp.getInviteuserid()!=null&&pp.getInviteuserid().longValue()==userId){//½ÓÊÜ¡¢¾Ü¾øÑûÇë
+			if(pp.getInviteuserid()!=null&&pp.getInviteuserid().longValue()==userId){//æ¥å—ã€æ‹’ç»é‚€è¯·
 				pp.setStatus(status);
 				inviteMapper.updateByPrimaryKeySelective(pp);
-			}else if (pp.getUserid()!=null&&pp.getUserid().longValue()==userId) {//×÷Æ·ÓµÓĞÕßµ÷È¡
+			}else if (pp.getUserid()!=null&&pp.getUserid().longValue()==userId) {//ä½œå“æ‹¥æœ‰è€…è°ƒå–
 				pp.setStatus(status);
 				inviteMapper.updateByPrimaryKeySelective(pp);
-			}else if(pp.getInviteuserid()==null){//ÊÖ»úºÅÒªÇó£¨½ÓÊÜ¾Ü¾øÑûÇë£©
+			}else if(pp.getInviteuserid()==null){//æ‰‹æœºå·è¦æ±‚ï¼ˆæ¥å—æ‹’ç»é‚€è¯·ï¼‰
 				UUsers users=usersMapper.getUUsersByUserID(userId);
 				if(users!=null&&myproducts.getUserid().longValue()!=users.getUserid().longValue()){
 					pp.setStatus(status);
@@ -577,31 +577,31 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 			if(apply!=null&&apply.getStatus()!=null&&apply.getStatus().intValue()!=Integer.parseInt(MyProducttempApplyStatusEnum.pass.toString())
 					&&apply.getStatus().intValue()!=Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString())
 					&&apply.getStatus().intValue()!=Integer.parseInt(MyProducttempApplyStatusEnum.fails.toString())) {
-				//Íê³É»î¶¯ÒªÇó ÉèÖÃ
+				//å®Œæˆæ´»åŠ¨è¦æ±‚ è®¾ç½®
 				PMyproducttemp temp=tempMapper.selectByPrimaryKey(apply.getTempid());
 				if(temp!=null){
-					//ÊÇ·ñ´ïµ½»ıÔÜÒªÇó
+					//æ˜¯å¦è¾¾åˆ°ç§¯æ”’è¦æ±‚
 					boolean ishaveComplete=false;
-					//´ïµ½»ıÔÜÒªÇó
+					//è¾¾åˆ°ç§¯æ”’è¦æ±‚
 					if(temp.getBlesscount()!=null&&temp.getBlesscount().intValue()>0){
 						PMyproductext exp=myproductextMapper.selectByPrimaryKey(cartId);
 						if(exp.getCommentscount()!=null&&exp.getCommentscount().intValue()>=temp.getBlesscount().intValue()){
 							ishaveComplete=true;
 						}
-					}else {//²»ĞèÒª»ıÔÜ
+					}else {//ä¸éœ€è¦ç§¯æ”’
 						ishaveComplete=true;
 					}
 					if(ishaveComplete){
 						apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString())); 
-						apply.setCompletetime(new Date()); //ÉèÖÃÍê³ÉÊ±¼ä
+						apply.setCompletetime(new Date()); //è®¾ç½®å®Œæˆæ—¶é—´
 						tempApplyMapper.updateByPrimaryKeySelective(apply);
-						//»î¶¯Íê³ÉÈËÊı
+						//æ´»åŠ¨å®Œæˆäººæ•°
 						int compeleteCount=temp.getCompletecount()==null?0:temp.getCompletecount();
 						temp.setCompletecount(compeleteCount+1);
 						tempMapper.updateByPrimaryKeySelective(temp);
 						if(temp.getMaxcompletecount()!=null&&temp.getMaxcompletecount().intValue()>0){
 							if(temp.getCompletecount().intValue()>=temp.getMaxcompletecount().intValue()){
-								//»î¶¯½áÊø TODO
+								//æ´»åŠ¨ç»“æŸ TODO
 								tempServiceImpl.editMyProductTempStatus(Integer.parseInt(MyProductTempStatusEnum.over.toString()), temp.getTempid());
 							}
 						}
@@ -610,26 +610,26 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 			}
 		}
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("´¦Àí³É¹¦£¡");
+		rq.setStatusreson("å¤„ç†æˆåŠŸï¼");
 		return rq;
 	}
 	
 	/**
-	 * ÎÒµÄ ¸öÈËĞÅÏ¢ÌáÊ¾
+	 * æˆ‘çš„ ä¸ªäººä¿¡æ¯æç¤º
 	 */
 	public ReturnModel  myUserInfoExp(Long userId,String mobilePhone){
 		ReturnModel rq=new ReturnModel();
 		int count= inviteMapper.countInvitingsByPhone(mobilePhone,Integer.parseInt(InviteStatus.inviting.toString())); 
 		rq.setStatu(ReturnStatus.Success);
 		Map<String, Object> map=new HashMap<String, Object>();
-		map.put("myInvitingCount", count);//ÎÒµÄ´ı´¦Àí ÑûÇë±à¼­ÊıÁ¿
+		map.put("myInvitingCount", count);//æˆ‘çš„å¾…å¤„ç† é‚€è¯·ç¼–è¾‘æ•°é‡
 		map.put("tempCount", tempApplyMapper.countMyProducttempApplyByUserIdNews(userId));
 		rq.setBasemodle(map);
 		return rq;
 	}
 	
 	/**
-	 * ÎÒµÄ×÷Æ·ÁĞ±í
+	 * æˆ‘çš„ä½œå“åˆ—è¡¨
 	 * @param userId
 	 * @param index
 	 * @param size
@@ -675,10 +675,10 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 
 	private List<MyProductListVo> exchangeMod(Long myUserId, List<MyProductListVo> list){
 		if(list!=null&&list.size()>0){
-			//ÎÒ×Ô¼º
+			//æˆ‘è‡ªå·±
 			UUsers myUsers=usersMapper.selectByPrimaryKey(myUserId);
 			for (MyProductListVo vo : list) {
-				// ×÷Æ·ÏêÇé£¨Í¼Æ¬¼¯ºÏ£©
+				// ä½œå“è¯¦æƒ…ï¼ˆå›¾ç‰‡é›†åˆï¼‰
 				List<PMyproductdetails> detailslist = myDetaiMapper.findMyProductdetails(vo.getCartid());
 				int i = 0;
 				if (detailslist != null && detailslist.size() > 0) {
@@ -705,7 +705,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 					vo.setDefaultImg("http://pic.bbyiya.com/484983733454448354.png"); 
 				}
 				vo.setCount(i);
-				 /*---------------------×÷Æ·±¾ÈËµÄÍ·Ïñ¸öêÇ³Æ--------------------------------*/
+				 /*---------------------ä½œå“æœ¬äººçš„å¤´åƒä¸ªæ˜µç§°--------------------------------*/
 				 if (ObjectUtil.isEmpty(myUsers.getUserimg())) {
 					vo.setMyHeadImg(ConfigUtil.getSingleValue("default-headimg"));//"http://pic.bbyiya.com/userdefaultimg-2017-0303-01.png"
 				 } else { 
@@ -716,8 +716,8 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				 } else {
 					vo.setMyNickName(myUsers.getMobilephone());
 				 }
-				 /*--------------------------·Ç×÷Æ·±¾ÈËµÄÍ·ÏñêÇ³Æ----------------------------------------------*/
-				 if(vo.getUserid().longValue()==myUserId){//ÎÒµÄ×÷Æ·
+				 /*--------------------------éä½œå“æœ¬äººçš„å¤´åƒæ˜µç§°----------------------------------------------*/
+				 if(vo.getUserid().longValue()==myUserId){//æˆ‘çš„ä½œå“
 					vo.setIsMine(1);
 					if(vo.getInvitestatus()!=null&&vo.getInvitestatus()>0){
 						List<PMyproductsinvites> invlist= inviteMapper.findListByCartId(vo.getCartid());
@@ -748,7 +748,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 							}
 						}
 					}
-				 }else{//±ğÈË
+				 }else{//åˆ«äºº
 					UUsers otherUsers = usersMapper.selectByPrimaryKey(vo.getUserid());
 					if (ObjectUtil.isEmpty(otherUsers.getUserimg())) {
 						vo.setOtherHeadImg("http://pic.bbyiya.com/userdefaultimg-2017-0303-01.png");
@@ -811,13 +811,13 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				}else {
 					item.setCreatetimestr(DateUtil.getTimeStr(item.getCreatetime(), "yyyy-MM-dd HH:mm:ss")); 
 				}
-				if(item.getInvitestatus()!=null&&item.getInvitestatus()>0){//ÑûÇëĞ­Í¬±à¼­
+				if(item.getInvitestatus()!=null&&item.getInvitestatus()>0){//é‚€è¯·ååŒç¼–è¾‘
 					List<PMyproductsinvites> invites= inviteMapper.findListByCartId(item.getCartid());
 					if(invites!=null&&invites.size()>0){
 						item.setInviteModel(invites.get(0)); 
 					} 
 				}
-				// ×÷Æ·ÏêÇé£¨Í¼Æ¬¼¯ºÏ£©
+				// ä½œå“è¯¦æƒ…ï¼ˆå›¾ç‰‡é›†åˆï¼‰
 				List<PMyproductdetails> detailslist = myDetaiMapper.findMyProductdetails(item.getCartid());
 				int i = 0;
 				if (detailslist != null && detailslist.size() > 0) {

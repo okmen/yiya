@@ -4,7 +4,7 @@ import com.bbyiya.vo.ReturnModel;
 
 public interface IIbs_ActivityCodeService {
 	/**
-	 * Ìí¼Ó»î¶¯Âë
+	 * æ·»åŠ æ´»åŠ¨ç 
 	 * @param userid
 	 * @param title
 	 * @param remark
@@ -12,7 +12,7 @@ public interface IIbs_ActivityCodeService {
 	 */
 	ReturnModel addActivityCode(Long userid,MyProductTempAddParam param);
 	/**
-	 * µÃµ½tempIdÏÂµÄ»î¶¯ÂëÁĞ±í
+	 * å¾—åˆ°tempIdä¸‹çš„æ´»åŠ¨ç åˆ—è¡¨
 	 * @param branchUserId
 	 * @param tempid
 	 * @param activeStatus
@@ -25,18 +25,18 @@ public interface IIbs_ActivityCodeService {
 			Integer tempid, Integer activeStatus, String keywords, int index,
 			int size);
 	/**
-	 * É¾³ı»î¶¯Âë
+	 * åˆ é™¤æ´»åŠ¨ç 
 	 * @param codeno
 	 * @return
 	 */
 	ReturnModel deleteActivityCode(String codeno);
 	/**
-	 * ÖØÖÃ»î¶¯ÏÂµÄÒÑ±¨ÃûµÄĞòºÅ
+	 * é‡ç½®æ´»åŠ¨ä¸‹çš„å·²æŠ¥åçš„åºå·
 	 * @return
 	 */
 	ReturnModel resetAllTempApplySort(Integer tempid);
 	/**
-	 * »î¶¯ÂëÏêÇé
+	 * æ´»åŠ¨ç è¯¦æƒ…
 	 * @param tempid
 	 * @return
 	 */

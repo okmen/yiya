@@ -25,7 +25,7 @@ public class Cts_OrderManageServiceImpl implements ICts_OrderManageService{
 	private OPayorderextMapper payextendMapper;
 	
 	/**
-	 * 获取影楼推荐人发展的用户订单列表
+	 * 鑾峰彇褰辨ゼ鎺ㄨ崘浜哄彂灞曠殑鐢ㄦ埛璁㈠崟鍒楄〃
 	 */
 	public ReturnModel find_payorderExtByBranchUpUserid(Long branchuserId,String startTimeStr,String endTimeStr,Integer status, int index,int size){
 		ReturnModel rq=new ReturnModel();
@@ -42,7 +42,7 @@ public class Cts_OrderManageServiceImpl implements ICts_OrderManageService{
 	}
 	
 	/**
-	 * 获取微商推荐人发展的用户订单列表
+	 * 鑾峰彇寰晢鎺ㄨ崘浜哄彂灞曠殑鐢ㄦ埛璁㈠崟鍒楄〃
 	 */
 	public ReturnModel find_payorderExtByWeiUserUpUserid(Long weiuserId,String startTimeStr,String endTimeStr,Integer status, int index,int size){
 		ReturnModel rq=new ReturnModel();

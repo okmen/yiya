@@ -8,9 +8,9 @@ import com.bbyiya.model.OOrderaddress;
 public class OrderVo implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	//¶©µ¥ºÅ
+	//è®¢å•å·
 	private String userorderid;
-	//ÏÂµ¥ÈË
+	//ä¸‹å•äºº
 	private Long userid;
 
 	private Integer status;
@@ -19,21 +19,21 @@ public class OrderVo implements Serializable {
 	//
 	private String paytime;
 	
-	private String expresscom;//¿ìµİ¹«Ë¾
+	private String expresscom;//å¿«é€’å…¬å¸
 
-	private String expressorder;//¿ìµİµ¥ºÅ
+	private String expressorder;//å¿«é€’å•å·
 	
-	private String expresscode;//ÎïÁ÷±àÂë
+	private String expresscode;//ç‰©æµç¼–ç 
 
-	private Double postage;//ÔË·Ñ
+	private Double postage;//è¿è´¹
 	
 	private OOrderaddress address;
 
 	private OrderProductVo orderProduct;
 
-	private String sourcetype;//¶©µ¥À´Ô´ 0»î¶¯×÷Æ·  1¿Í»§Ò»¶ÔÒ»  2 »î¶¯Âë×÷Æ·  3 ÆäËü
+	private String sourcetype;//è®¢å•æ¥æº 0æ´»åŠ¨ä½œå“  1å®¢æˆ·ä¸€å¯¹ä¸€  2 æ´»åŠ¨ç ä½œå“  3 å…¶å®ƒ
 	
-	private Integer tempid;//»î¶¯ID
+	private Integer tempid;//æ´»åŠ¨ID
 	
 	public String getUserorderid() {
 		return userorderid;

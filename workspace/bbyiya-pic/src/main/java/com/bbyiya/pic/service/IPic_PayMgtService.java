@@ -5,7 +5,7 @@ import com.bbyiya.vo.ReturnModel;
 public interface IPic_PayMgtService {
 
 	/**
-	 * »ñÈ¡Ö§¸¶²ÎÊı£¨Î¢ĞÅ¹«ÖÚºÅ£©
+	 * è·å–æ”¯ä»˜å‚æ•°ï¼ˆå¾®ä¿¡å…¬ä¼—å·ï¼‰
 	 * 
 	 * @param orderNo
 	 * @param openid
@@ -15,7 +15,7 @@ public interface IPic_PayMgtService {
 	ReturnModel getWxPayParam(String orderNo, String openid, String ip);
 
 	/**
-	 * Ö§¸¶²ÎÊı£¨Î¢ĞÅAPP£©
+	 * æ”¯ä»˜å‚æ•°ï¼ˆå¾®ä¿¡APPï¼‰
 	 * 
 	 * @param orderNo
 	 * @param ip

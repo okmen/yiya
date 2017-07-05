@@ -2,15 +2,6 @@ package com.bbyiya.pic.dao;
 
 import java.util.List;
 
-
-
-
-
-
-
-
-
-
 import org.apache.ibatis.annotations.Param;
 
 import com.bbyiya.model.OOrderproductdetails;
@@ -23,40 +14,40 @@ public interface IPic_OrderMgtDao {
 
 	List<UserOrderResultVO> findUserOrders(SearchOrderParam param);
 	/**
-	 *  »ñÈ¡¶©µ¥×÷Æ·ÁĞ±í
+	 *  è·å–è®¢å•ä½œå“åˆ—è¡¨
 	 * @param orderproductId
 	 * @return 
 	 */ 
 	List<OOrderproductdetails> findOrderProductDetailsByProductOrderId(@Param("orderProductId")String orderproductId);
 	
 	/**
-	 * »ñÈ¡Pbs¶©µ¥ÁĞ ±í  
+	 * è·å–Pbsè®¢å•åˆ— è¡¨  
 	 * @param param
 	 * @return
 	 */
 	List<PbsUserOrderResultVO> findPbsUserOrders(SearchOrderParam param);
 	
 	/**
-	 * ¸ù¾İÔËµ¥ºÅ²éÕÒ¶©µ¥ĞÅÏ¢  
+	 * æ ¹æ®è¿å•å·æŸ¥æ‰¾è®¢å•ä¿¡æ¯  
 	 * @param expressOrder
 	 * @author julie
 	 * @return
 	 */
 	List<OUserorders> findUserOrderByExpressOrder(@Param("expressOrder") String expressOrder,@Param("expressCom")String expressCom);
 	/**
-	 * ¸ù¾İ×÷Æ·IDµÃµ½¶©µ¥
+	 * æ ¹æ®ä½œå“IDå¾—åˆ°è®¢å•
 	 * @param cartid
 	 * @return
 	 */
 	List<OUserorders> findOrderListByCartId(@Param("cartid") Long cartid);
 	/**
-	 * ¸ù¾İ×÷Æ·IDµÃµ½¶©µ¥
+	 * æ ¹æ®ä½œå“IDå¾—åˆ°è®¢å•
 	 * @param cartid
 	 * @return
 	 */
 	List<OUserorders> findNoPayOrderListByCartId(@Param("cartid") Long cartid);
 	/**
-	 * ¸ù¾İ×÷Æ·ID¼°Ó°Â¥IDµÃµ½¶©µ¥
+	 * æ ¹æ®ä½œå“IDåŠå½±æ¥¼IDå¾—åˆ°è®¢å•
 	 * @param cartid
 	 * @return
 	 */

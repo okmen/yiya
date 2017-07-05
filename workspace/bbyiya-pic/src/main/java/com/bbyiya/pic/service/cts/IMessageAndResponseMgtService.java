@@ -4,14 +4,14 @@ import com.bbyiya.vo.ReturnModel;
 public interface IMessageAndResponseMgtService {
 	
 	/**
-	 * 添加系统通知
+	 * 娣诲姞绯荤粺閫氱煡
 	 * @param title
 	 * @param content
 	 * @return
 	 */
 	ReturnModel addSysMessage(String title, String content);
 	/**
-	 * 获取意见反馈列表
+	 * 鑾峰彇鎰忚鍙嶉鍒楄〃
 	 * @param index
 	 * @param size
 	 * @param startTimeStr

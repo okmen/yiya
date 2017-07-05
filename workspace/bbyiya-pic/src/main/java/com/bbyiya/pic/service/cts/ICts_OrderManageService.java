@@ -5,18 +5,18 @@ import com.bbyiya.vo.ReturnModel;
 public interface ICts_OrderManageService {
 
 	/**
-	 * »ñÈ¡Ó°Â¥ÍÆ¼öÈË·¢Õ¹µÄÓÃ»§¶©µ¥ÁĞ±í
-	 * @param branchuserId Ó°Â¥ID
-	 * @param startTimeStr ¿ªÊ¼Ê±¼ä
-	 * @param endTimeStr	½áÊøÊ±¼ä
-	 * @param status	×´Ì¬
+	 * è·å–å½±æ¥¼æ¨èäººå‘å±•çš„ç”¨æˆ·è®¢å•åˆ—è¡¨
+	 * @param branchuserId å½±æ¥¼ID
+	 * @param startTimeStr å¼€å§‹æ—¶é—´
+	 * @param endTimeStr	ç»“æŸæ—¶é—´
+	 * @param status	çŠ¶æ€
 	 * @param index
 	 * @param size
 	 * @return
 	 */
 	ReturnModel find_payorderExtByBranchUpUserid(Long branchuserId,String startTimeStr,String endTimeStr,Integer status, int index,int size);
 	/**
-	 * »ñÈ¡Î¢ÉÌÍÆ¼öÈË·¢Õ¹µÄÓÃ»§¶©µ¥ÁĞ±í
+	 * è·å–å¾®å•†æ¨èäººå‘å±•çš„ç”¨æˆ·è®¢å•åˆ—è¡¨
 	 * @param weiuserId
 	 * @param startTimeStr
 	 * @param endTimeStr

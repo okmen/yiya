@@ -56,7 +56,7 @@ public class OrderExtController  extends SSOController {
 	
 	
 	/**
-	 * »ñÈ¡×î½üÖ§¸¶µÄ¶©µ¥£¨Ñ¡ÔñÏà²á¿îÊ½ Ò³ ÓÃ£¬Ëæ»úÏÔÊ¾ÏÂµ¥ÓÃ»§£©
+	 * è·å–æœ€è¿‘æ”¯ä»˜çš„è®¢å•ï¼ˆé€‰æ‹©ç›¸å†Œæ¬¾å¼ é¡µ ç”¨ï¼Œéšæœºæ˜¾ç¤ºä¸‹å•ç”¨æˆ·ï¼‰
 	 * @param count
 	 * @return
 	 * @throws Exception
@@ -72,16 +72,16 @@ public class OrderExtController  extends SSOController {
 			rq.setStatu(ReturnStatus.Success);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * O04-1 Ö§¸¶-»ñÈ¡Ö§¸¶ĞÅÏ¢(Ö§¸¶Ò³)
-	 * »ñÈ¡Ö§¸¶ĞÅÏ¢
-	 * @param payId£¨userOrderId£©
+	 * O04-1 æ”¯ä»˜-è·å–æ”¯ä»˜ä¿¡æ¯(æ”¯ä»˜é¡µ)
+	 * è·å–æ”¯ä»˜ä¿¡æ¯
+	 * @param payIdï¼ˆuserOrderIdï¼‰
 	 * @return
 	 * @throws Exception
 	 */
@@ -94,7 +94,7 @@ public class OrderExtController  extends SSOController {
 			rq = orderservice.getPayOrderInfo(user.getUserId(), payId);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

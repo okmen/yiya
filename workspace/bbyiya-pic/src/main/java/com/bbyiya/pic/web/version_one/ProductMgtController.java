@@ -30,7 +30,7 @@ public class ProductMgtController extends SSOController{
 
 
 	/**
-	 * P07 ×÷Æ·£¨Ñù±¾£©ä¯ÀÀ
+	 * P07 ä½œå“ï¼ˆæ ·æœ¬ï¼‰æµè§ˆ
 	 * @param productId
 	 * @return
 	 * @throws Exception
@@ -44,13 +44,13 @@ public class ProductMgtController extends SSOController{
 			rq=proService.getProductSamples(productId);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * P07-01 ×÷Æ·£¨Ñù±¾ÁĞ±í£©ä¯ÀÀ£¨ĞÂ°æ2017-02-17£©
+	 * P07-01 ä½œå“ï¼ˆæ ·æœ¬åˆ—è¡¨ï¼‰æµè§ˆï¼ˆæ–°ç‰ˆ2017-02-17ï¼‰
 	 * @param productId
 	 * @return
 	 * @throws Exception
@@ -63,7 +63,7 @@ public class ProductMgtController extends SSOController{
 	}
 	
 	/**
-	 * P12 ¿îÊ½×ø±ê
+	 * P12 æ¬¾å¼åæ ‡
 	 * @param styleId
 	 * @return
 	 * @throws Exception
@@ -77,13 +77,13 @@ public class ProductMgtController extends SSOController{
 			rq=proService.getStyleCoordResult(styleId);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * c¶ËÊ×Ò³ÂÖ²¥Í¼
+	 * cç«¯é¦–é¡µè½®æ’­å›¾
 	 * @return
 	 * @throws Exception
 	 */

@@ -6,7 +6,7 @@ import com.bbyiya.vo.ReturnModel;
 public interface IPic_myProductService {
 
 	/**
-	 * Ğ­Í¬±à¼­ ÑûÇë·¢ËÍ
+	 * ååŒç¼–è¾‘ é‚€è¯·å‘é€
 	 * @param userId
 	 * @param phone
 	 * @param cartId
@@ -14,7 +14,7 @@ public interface IPic_myProductService {
 	 */
 	ReturnModel sendInvite(Long userId, String phone,Long cartId);
 	/**
-	 * Ğ­Í¬ÑûÇë ´¦Àí
+	 * ååŒé‚€è¯· å¤„ç†
 	 * @param phone
 	 * @param cartId
 	 * @param status
@@ -22,7 +22,7 @@ public interface IPic_myProductService {
 	 */
 	ReturnModel processInvite(String phone, Long cartId, int status);
 	/**
-	 * Ğ­Í¬ÑûÇë ´¦Àí
+	 * ååŒé‚€è¯· å¤„ç†
 	 * @param cartId
 	 * @param userId
 	 * @param status
@@ -31,7 +31,7 @@ public interface IPic_myProductService {
 	ReturnModel processInvite(Long cartId,Long userId, int status);
 	
 	/**
-	 * ÎÒµÄ¸öÈËÌáÊ¾ĞÅÏ¢
+	 * æˆ‘çš„ä¸ªäººæç¤ºä¿¡æ¯
 	 * @param userId
 	 * @param mobilePhone
 	 * @return
@@ -39,7 +39,7 @@ public interface IPic_myProductService {
 	ReturnModel  myUserInfoExp(Long userId,String mobilePhone);
 	
 	/**
-	 * ÎÒµÄ×÷Æ·ÁĞ±í--ÎÒ×Ô¼ºµÄ×÷Æ·
+	 * æˆ‘çš„ä½œå“åˆ—è¡¨--æˆ‘è‡ªå·±çš„ä½œå“
 	 * @param userId
 	 * @param index
 	 * @param size
@@ -47,32 +47,32 @@ public interface IPic_myProductService {
 	 */
 	ReturnModel find_mycarts(Long userId,String phone,int index,int size);
 	/**
-	 * ¸ù¾İ×÷Æ·cartid»ñÈ¡×÷Æ·
+	 * æ ¹æ®ä½œå“cartidè·å–ä½œå“
 	 * @param userId
 	 * @param cartId
 	 * @return
 	 */
 	ReturnModel get_mycart(Long userId, Long cartId);
 	/**
-	 * ÎÒµÄ×÷Æ·ÁĞ±í--±»ÑûÇëµÄ×÷Æ·
+	 * æˆ‘çš„ä½œå“åˆ—è¡¨--è¢«é‚€è¯·çš„ä½œå“
 	 * @param userId
 	 * @return
 	 */
 //	ReturnModel find_mycartsInvited(Long userId);
 	/**
-	 * ´¦ÀíÉ¨ÂëÒ³ÃæµÄ½ÓÊÜÑûÇë
-	 * @param phone ±»ÑûÇëÈËÊÖ»úºÅ
-	 * @param cartId ×÷Æ·cartid
-	 * @param userId ±»ÑûÇëÈËÓÃ»§ID
-	 * @param vcode  ÑéÖ¤Âë
-	 * @param needVerfiCode  ÊÇ·ñĞèÒªÑéÖ¤ÊÖ»úÑéÖ¤Âë 0 ²»ĞèÒª£¬1ĞèÒª
-	 * @param version  ¶şÎ¬Âë°æ±¾ºÅ
+	 * å¤„ç†æ‰«ç é¡µé¢çš„æ¥å—é‚€è¯·
+	 * @param phone è¢«é‚€è¯·äººæ‰‹æœºå·
+	 * @param cartId ä½œå“cartid
+	 * @param userId è¢«é‚€è¯·äººç”¨æˆ·ID
+	 * @param vcode  éªŒè¯ç 
+	 * @param needVerfiCode  æ˜¯å¦éœ€è¦éªŒè¯æ‰‹æœºéªŒè¯ç  0 ä¸éœ€è¦ï¼Œ1éœ€è¦
+	 * @param version  äºŒç»´ç ç‰ˆæœ¬å·
 	 * @author julie at 2017-04-26
 	 * @throws Exception
 	 */
 	ReturnModel acceptScanQrCodeInvite(Long userId,String phone, Long cartId, String vcode, Integer needVerfiCode,String version);
 	/**
-	 * ´¦ÀíÒ½ÔºÉ¨ÂëÒ³ÃæµÄ½ÓÊÜÑûÇë
+	 * å¤„ç†åŒ»é™¢æ‰«ç é¡µé¢çš„æ¥å—é‚€è¯·
 	 * @param userId
 	 * @param phone
 	 * @param cartId
@@ -81,7 +81,7 @@ public interface IPic_myProductService {
 	ReturnModel acceptTempScanQrCodeInvite(Long userId, String phone,
 			Long cartId,String vcode,Integer needVerfiCode);
 	/**
-	 * ¸ù¾İcartIdµÃµ½×÷Æ·
+	 * æ ¹æ®cartIdå¾—åˆ°ä½œå“
 	 * @param cartId
 	 * @return
 	 */

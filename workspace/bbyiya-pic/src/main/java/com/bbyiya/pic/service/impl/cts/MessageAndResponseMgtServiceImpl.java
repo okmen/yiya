@@ -26,14 +26,14 @@ public class MessageAndResponseMgtServiceImpl implements IMessageAndResponseMgtS
 	private UBranchesMapper branchesMapper;
 	
 	@Autowired
-	private UUserresponsesMapper userresponseMapper;//ÓÃ»§·´À¡
+	private UUserresponsesMapper userresponseMapper;//ç”¨æˆ·åé¦ˆ
 	
 	@Autowired
-	private SysMessageMapper sysMessageMapper;//ÏµÍ³ÏûÏ¢
+	private SysMessageMapper sysMessageMapper;//ç³»ç»Ÿæ¶ˆæ¯
 	
 	
 	/**
-	 * Ìí¼ÓÏµÍ³Í¨Öª
+	 * æ·»åŠ ç³»ç»Ÿé€šçŸ¥
 	 * @param branchUserId
 	 * @param content
 	 * @return
@@ -47,12 +47,12 @@ public class MessageAndResponseMgtServiceImpl implements IMessageAndResponseMgtS
 		message.setType(Integer.parseInt(SysMessageTypeEnum.all.toString()));
 		sysMessageMapper.insertSelective(message);
 		rqModel.setStatu(ReturnStatus.Success);
-		rqModel.setStatusreson("Ìí¼ÓÏµÍ³Í¨Öª³É¹¦£¡");
+		rqModel.setStatusreson("æ·»åŠ ç³»ç»Ÿé€šçŸ¥æˆåŠŸï¼");
 		return rqModel;		
 	}
 	
 	/**
-	 * »ñÈ¡Òâ¼û·´À¡ÁĞ±í
+	 * è·å–æ„è§åé¦ˆåˆ—è¡¨
 	 * @param branchUserId
 	 * @param content
 	 * @return
@@ -64,7 +64,7 @@ public class MessageAndResponseMgtServiceImpl implements IMessageAndResponseMgtS
 		PageInfo<UUserresponses> reuslt=new PageInfo<UUserresponses>(list); 
 		rqModel.setBasemodle(reuslt);
 		rqModel.setStatu(ReturnStatus.Success);
-		rqModel.setStatusreson("»ñÈ¡Òâ¼û·´À¡ÁĞ±í³É¹¦£¡");
+		rqModel.setStatusreson("è·å–æ„è§åé¦ˆåˆ—è¡¨æˆåŠŸï¼");
 		return rqModel;		
 	}
 	

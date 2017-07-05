@@ -45,7 +45,7 @@ public class MyProductMgtController extends SSOController {
 			rq = myproductService.find_mycarts(user.getUserId(),user.getMobilePhone(), index, size);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
+			rq.setStatusreson("鐧诲綍杩囨湡");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
@@ -59,14 +59,14 @@ public class MyProductMgtController extends SSOController {
 			rq = myproductService.get_mycart(user.getUserId(),cartId);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
+			rq.setStatusreson("鐧诲綍杩囨湡");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 
 	/**
-	 * 获取作品二维码分享版本号
+	 * 鑾峰彇浣滃搧浜岀淮鐮佸垎浜増鏈彿
 	 * @param cartId
 	 * @return
 	 * @throws Exception
@@ -86,7 +86,7 @@ public class MyProductMgtController extends SSOController {
 							inviteMapper.deleteByPrimaryKey(inv.getInviteid());
 						}else {
 							rq.setStatu(ReturnStatus.SystemError);
-							rq.setStatusreson("邀请已经被接受，无法重新邀请！");
+							rq.setStatusreson("閭�璇峰凡缁忚鎺ュ彈锛屾棤娉曢噸鏂伴個璇凤紒");
 							return JsonUtil.objectToJsonStr(rq);
 						}
 					}
@@ -101,11 +101,11 @@ public class MyProductMgtController extends SSOController {
 				rq.setBasemodle(versionString);
 			}else {
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("非本人作品！"); 
+				rq.setStatusreson("闈炴湰浜轰綔鍝侊紒"); 
 			} 
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
+			rq.setStatusreson("鐧诲綍杩囨湡");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

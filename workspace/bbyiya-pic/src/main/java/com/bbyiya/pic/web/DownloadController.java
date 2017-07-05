@@ -32,21 +32,21 @@ public class DownloadController extends ActionSupport {
 	private static final long serialVersionUID = -8694640030455344419L;
 
 	public String execute() {
-		// Éú³ÉµÄZIPÎÄ¼şÃûÎªDemo.zip
+		// ç”Ÿæˆçš„ZIPæ–‡ä»¶åä¸ºDemo.zip
 		String tmpFileName = "Demo.zip";
 		byte[] buffer = new byte[1024];
 		String strZipPath = FilePath + tmpFileName;
 		try {
 			ZipOutputStream out = new ZipOutputStream(new FileOutputStream(strZipPath));
-			// ĞèÒªÍ¬Ê±ÏÂÔØµÄÁ½¸öÎÄ¼şresult.txt £¬source.txt
-			File[] file1 = { new File(FilePath + "test1.txt"), new File(FilePath + "²âÊÔ2.docx") };
+			// éœ€è¦åŒæ—¶ä¸‹è½½çš„ä¸¤ä¸ªæ–‡ä»¶result.txt ï¼Œsource.txt
+			File[] file1 = { new File(FilePath + "test1.txt"), new File(FilePath + "æµ‹è¯•2.docx") };
 			for (int i = 0; i < file1.length; i++) {
 				FileInputStream fis = new FileInputStream(file1[i]);
 				out.putNextEntry(new ZipEntry(file1[i].getName()));
-				// ÉèÖÃÑ¹ËõÎÄ¼şÄÚµÄ×Ö·û±àÂë£¬²»È»»á±ä³ÉÂÒÂë
+				// è®¾ç½®å‹ç¼©æ–‡ä»¶å†…çš„å­—ç¬¦ç¼–ç ï¼Œä¸ç„¶ä¼šå˜æˆä¹±ç 
 				out.setEncoding("GBK");
 				int len;
-				// ¶ÁÈëĞèÒªÏÂÔØµÄÎÄ¼şµÄÄÚÈİ£¬´ò°üµ½zipÎÄ¼ş
+				// è¯»å…¥éœ€è¦ä¸‹è½½çš„æ–‡ä»¶çš„å†…å®¹ï¼Œæ‰“åŒ…åˆ°zipæ–‡ä»¶
 				while ((len = fis.read(buffer)) > 0) {
 					out.write(buffer, 0, len);
 				}
@@ -56,13 +56,13 @@ public class DownloadController extends ActionSupport {
 			out.close();
 			this.downFile(getResponse(), tmpFileName);
 		} catch (Exception e) {
-			Log.error("ÎÄ¼şÏÂÔØ³ö´í", e);
+			Log.error("æ–‡ä»¶ä¸‹è½½å‡ºé”™", e);
 		}
 		return null;
 	}
 
 	/**
-	 * »ñÈ¡Response
+	 * è·å–Response
 	 * 
 	 * @return
 	 */
@@ -71,7 +71,7 @@ public class DownloadController extends ActionSupport {
 	}
 
 	/**
-	 * ÎÄ¼şÏÂÔØ
+	 * æ–‡ä»¶ä¸‹è½½
 	 * 
 	 * @param response
 	 * @param str
@@ -82,18 +82,18 @@ public class DownloadController extends ActionSupport {
 			File file = new File(path);
 			if (file.exists()) {
 				InputStream ins = new FileInputStream(path);
-				BufferedInputStream bins = new BufferedInputStream(ins);// ·Åµ½»º³åÁ÷ÀïÃæ
-				OutputStream outs = response.getOutputStream();// »ñÈ¡ÎÄ¼şÊä³öIOÁ÷
+				BufferedInputStream bins = new BufferedInputStream(ins);// æ”¾åˆ°ç¼“å†²æµé‡Œé¢
+				OutputStream outs = response.getOutputStream();// è·å–æ–‡ä»¶è¾“å‡ºIOæµ
 				BufferedOutputStream bouts = new BufferedOutputStream(outs);
-				response.setContentType("application/x-download");// ÉèÖÃresponseÄÚÈİµÄÀàĞÍ
-				response.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode(str, "UTF-8"));// ÉèÖÃÍ·²¿ĞÅÏ¢
+				response.setContentType("application/x-download");// è®¾ç½®responseå†…å®¹çš„ç±»å‹
+				response.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode(str, "UTF-8"));// è®¾ç½®å¤´éƒ¨ä¿¡æ¯
 				int bytesRead = 0;
 				byte[] buffer = new byte[8192];
-				// ¿ªÊ¼ÏòÍøÂç´«ÊäÎÄ¼şÁ÷
+				// å¼€å§‹å‘ç½‘ç»œä¼ è¾“æ–‡ä»¶æµ
 				while ((bytesRead = bins.read(buffer, 0, 8192)) != -1) {
 					bouts.write(buffer, 0, bytesRead);
 				}
-				bouts.flush();// ÕâÀïÒ»¶¨Òªµ÷ÓÃflush()·½·¨
+				bouts.flush();// è¿™é‡Œä¸€å®šè¦è°ƒç”¨flush()æ–¹æ³•
 				ins.close();
 				bins.close();
 				outs.close();
@@ -102,7 +102,7 @@ public class DownloadController extends ActionSupport {
 				response.sendRedirect("../error.jsp");
 			}
 		} catch (IOException e) {
-			Log.error("ÎÄ¼şÏÂÔØ³ö´í", e);
+			Log.error("æ–‡ä»¶ä¸‹è½½å‡ºé”™", e);
 		}
 	}
 }

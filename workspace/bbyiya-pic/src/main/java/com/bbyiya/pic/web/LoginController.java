@@ -42,12 +42,12 @@ import com.bbyiya.web.base.SSOController;
 @RequestMapping(value = "/login")
 public class LoginController extends SSOController {
 	/**
-	 * µÇÂ½¡¢×¢²á service
+	 * ç™»é™†ã€æ³¨å†Œ service
 	 */  
 	@Resource(name = "userLoginService")
 	private IUserLoginService loginBaseService; 
 	/**
-	 * µÇÂ½¡¢×¢²á service
+	 * ç™»é™†ã€æ³¨å†Œ service
 	 */
 	@Resource(name = "pic_userMgtService")
 	private IPic_UserMgtService loginService;
@@ -60,7 +60,7 @@ public class LoginController extends SSOController {
 
 	
 	/**
-	 * µÇÂ¼ ÖĞ×ªÒ³
+	 * ç™»å½• ä¸­è½¬é¡µ
 	 * @return
 	 * @throws Exception
 	 */
@@ -94,7 +94,7 @@ public class LoginController extends SSOController {
 	}
 	
 	/**
-	 * c¶Ë²âÊÔ°æ±¾µÇÂ½Èë¿Ú
+	 * cç«¯æµ‹è¯•ç‰ˆæœ¬ç™»é™†å…¥å£
 	 * @param headImg
 	 * @param loginType
 	 * @param nickName
@@ -111,7 +111,7 @@ public class LoginController extends SSOController {
 		if (!ObjectUtil.validSqlStr(headImg) || !ObjectUtil.validSqlStr(nickName) || !ObjectUtil.validSqlStr(openId)) {
 			ReturnModel rqModel = new ReturnModel();
 			rqModel.setStatu(ReturnStatus.ParamError_2);
-			rqModel.setStatusreson("²ÎÊıÓĞ·Ç·¨×Ö·û");
+			rqModel.setStatusreson("å‚æ•°æœ‰éæ³•å­—ç¬¦");
 			return JsonUtil.objectToJsonStr(rqModel);
 		}
 		OtherLoginParam param = new OtherLoginParam();
@@ -146,7 +146,7 @@ public class LoginController extends SSOController {
 	
 
 	/**
-	 * Î¢ĞÅµÇÂ¼
+	 * å¾®ä¿¡ç™»å½•
 	 * 
 	 * @param code
 	 * @return
@@ -163,7 +163,7 @@ public class LoginController extends SSOController {
 
 		JSONObject model = JSONObject.fromObject(result);
 		ReturnModel rqModel = new ReturnModel();
-		//ÖĞ×ªĞÅÏ¢
+		//ä¸­è½¬ä¿¡æ¯
 		LoginTempVo logintemp= (LoginTempVo)RedisUtil.getObject(request.getSession().getId());
 		if (model != null) {
 			String openid = String.valueOf(model.get("openid"));
@@ -173,7 +173,7 @@ public class LoginController extends SSOController {
 //				String userInfoUrl = "https://api.weixin.qq.com/sns/userinfo";
 //				String data2 = "access_token=" + access_token + "&openid=" + openid;//+"&lang=zh_CN";
 //				String userInfoJson = HttpRequestHelper.sendPost(userInfoUrl, data2);
-				/*------------»ñÈ¡ÓÃ»§ĞÅÏ¢----------------------------------------------------*/
+				/*------------è·å–ç”¨æˆ·ä¿¡æ¯----------------------------------------------------*/
 				String userInfoUrl = "https://api.weixin.qq.com/cgi-bin/user/info";
 				String data2 = "access_token=" + WxPublicUtils.getAccessToken() + "&openid=" + openid;
 				String userInfoJson = HttpRequestHelper.sendPost(userInfoUrl, data2);
@@ -184,7 +184,7 @@ public class LoginController extends SSOController {
 					param.setLoginType(Integer.parseInt(LoginTypeEnum.weixin.toString()));
 					String nickName=String.valueOf(userJson.get("nickname"));
 					String headimg=String.valueOf(userJson.get("headimgurl"));
-//					//Ã»ÓĞÓÃ»§ĞÅÏ¢
+//					//æ²¡æœ‰ç”¨æˆ·ä¿¡æ¯
 					if((ObjectUtil.isEmpty(nickName)||"null".equals(nickName))&&(ObjectUtil.isEmpty(headimg)||"null".equals(headimg))){
 						return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLoginInfo&response_type=code&scope=snsapi_userinfo#wechat_redirect" ;		
 					}
@@ -200,12 +200,12 @@ public class LoginController extends SSOController {
 							param.setUpUserId(logintemp.getUpUserId()); 
 						}
 						int m=logintemp.getLoginTo()==null?0:logintemp.getLoginTo();
-						if(m==1){ //photo²âÊÔµØÖ·
+						if(m==1){ //photoæµ‹è¯•åœ°å€
 							String paramtest="?headImg="+param.getHeadImg()+"&loginType="+param.getLoginType()+"&nickName="+ URLEncoder.encode(param.getNickName(),"utf-8")+"&openId="+param.getOpenId()+"&upUid="+param.getUpUserId();
 							if(!ObjectUtil.isEmpty(logintemp.getRedirect_url())&&!"null".equals(logintemp.getRedirect_url())){
 								paramtest+="&redirect_url="+URLEncoder.encode(logintemp.getRedirect_url(), "gb2312"); 
 							}
-							//Ìø×ªmpic²âÊÔ½Ó¿ÚµØÖ·ÖĞ×ª
+							//è·³è½¬mpicæµ‹è¯•æ¥å£åœ°å€ä¸­è½¬
 							return "redirect:" + ConfigUtil.getSingleValue("mpic-net-url")+paramtest;
 						}
 					}
@@ -216,7 +216,7 @@ public class LoginController extends SSOController {
 					
 				} else {
 					rqModel.setStatu(ReturnStatus.SystemError);
-					rqModel.setStatusreson("»ñÈ¡ÓÃ»§ĞÅÏ¢Ê§°Ü");
+					rqModel.setStatusreson("è·å–ç”¨æˆ·ä¿¡æ¯å¤±è´¥");
 					addlog(result); 	
 				}
 			} else {
@@ -226,11 +226,11 @@ public class LoginController extends SSOController {
 			}
 		} else {
 			rqModel.setStatu(ReturnStatus.SystemError);
-			rqModel.setStatusreson("»ñÈ¡Î¢ĞÅµÇÂ¼È¨ÏŞÊ§°Ü");
+			rqModel.setStatusreson("è·å–å¾®ä¿¡ç™»å½•æƒé™å¤±è´¥");
 			addlog(result); 
 		}
 		if (rqModel.getStatu().equals(ReturnStatus.Success)) {
-			//ÓÃ»§Ìø×ª
+			//ç”¨æˆ·è·³è½¬
 			if(logintemp!=null&&!ObjectUtil.isEmpty(logintemp.getRedirect_url())){
 				
 				return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+logintemp.getRedirect_url(); 
@@ -243,7 +243,7 @@ public class LoginController extends SSOController {
 	
 	
 	/**
-	 * ĞèÒªÊÚÈ¨µÇÂ¼
+	 * éœ€è¦æˆæƒç™»å½•
 	 * @param code
 	 * @param state
 	 * @return
@@ -260,7 +260,7 @@ public class LoginController extends SSOController {
 
 		JSONObject model = JSONObject.fromObject(result);
 		ReturnModel rqModel = new ReturnModel();
-		//ÖĞ×ªĞÅÏ¢
+		//ä¸­è½¬ä¿¡æ¯
 		LoginTempVo logintemp= (LoginTempVo)RedisUtil.getObject(request.getSession().getId());
 		if (model != null) {
 			String openid = String.valueOf(model.get("openid"));
@@ -269,7 +269,7 @@ public class LoginController extends SSOController {
 				String userInfoUrl = "https://api.weixin.qq.com/sns/userinfo";
 				String data2 = "access_token=" + access_token + "&openid=" + openid;//+"&lang=zh_CN";
 				String userInfoJson = HttpRequestHelper.sendPost(userInfoUrl, data2);
-				/*------------»ñÈ¡ÓÃ»§ĞÅÏ¢----------------------------------------------------*/
+				/*------------è·å–ç”¨æˆ·ä¿¡æ¯----------------------------------------------------*/
 				JSONObject userJson = JSONObject.fromObject(userInfoJson);
 				if (userInfoJson != null) {
 					OtherLoginParam param = new OtherLoginParam();
@@ -289,12 +289,12 @@ public class LoginController extends SSOController {
 							param.setUpUserId(logintemp.getUpUserId()); 
 						}
 						int m=logintemp.getLoginTo()==null?0:logintemp.getLoginTo();
-						if(m==1){ //photo²âÊÔµØÖ·
+						if(m==1){ //photoæµ‹è¯•åœ°å€
 							String paramtest="?headImg="+param.getHeadImg()+"&loginType="+param.getLoginType()+"&nickName="+ URLEncoder.encode(param.getNickName(),"utf-8")+"&openId="+param.getOpenId()+"&upUid="+param.getUpUserId();
 							if(!ObjectUtil.isEmpty(logintemp.getRedirect_url())&&!"null".equals(logintemp.getRedirect_url())){
 								paramtest+="&redirect_url="+URLEncoder.encode(logintemp.getRedirect_url(), "gb2312"); 
 							}
-							//Ìø×ªmpic²âÊÔ½Ó¿ÚµØÖ·ÖĞ×ª
+							//è·³è½¬mpicæµ‹è¯•æ¥å£åœ°å€ä¸­è½¬
 							return "redirect:" + ConfigUtil.getSingleValue("mpic-net-url")+paramtest;
 						}
 					}
@@ -304,7 +304,7 @@ public class LoginController extends SSOController {
 					}
 				} else {
 					rqModel.setStatu(ReturnStatus.SystemError);
-					rqModel.setStatusreson("»ñÈ¡ÓÃ»§ĞÅÏ¢Ê§°Ü");
+					rqModel.setStatusreson("è·å–ç”¨æˆ·ä¿¡æ¯å¤±è´¥");
 				}
 			} else {
 				rqModel.setStatu(ReturnStatus.ParamError);
@@ -312,10 +312,10 @@ public class LoginController extends SSOController {
 			}
 		} else {
 			rqModel.setStatu(ReturnStatus.SystemError);
-			rqModel.setStatusreson("»ñÈ¡Î¢ĞÅµÇÂ¼È¨ÏŞÊ§°Ü");
+			rqModel.setStatusreson("è·å–å¾®ä¿¡ç™»å½•æƒé™å¤±è´¥");
 		}
 		if (rqModel.getStatu().equals(ReturnStatus.Success)) {
-			//ÓÃ»§Ìø×ª
+			//ç”¨æˆ·è·³è½¬
 			if(logintemp!=null&&!ObjectUtil.isEmpty(logintemp.getRedirect_url())){
 				if(logintemp.getRedirect_url().contains("http")){
 					return "redirect:" + logintemp.getRedirect_url();
@@ -360,7 +360,7 @@ public class LoginController extends SSOController {
 	}
 	
 	/**
-	 * ²åÈë´íÎóLog
+	 * æ’å…¥é”™è¯¯Log
 	 * @param msg
 	 */
 	public void addlog(String msg) {

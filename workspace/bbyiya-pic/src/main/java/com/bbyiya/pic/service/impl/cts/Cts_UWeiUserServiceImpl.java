@@ -37,7 +37,7 @@ import com.github.pagehelper.PageInfo;
 @Service("cts_UWeiuserService")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
 public class Cts_UWeiUserServiceImpl implements ICts_UWeiUserManageService{
-	//ÓÃ»§¹«¹²Ä£¿é
+	//ç”¨æˆ·å…¬å…±æ¨¡å—
 	@Resource(name = "baseUserCommon")
 	private IBaseUserCommonService userBasic;
 	@Autowired
@@ -50,7 +50,7 @@ public class Cts_UWeiUserServiceImpl implements ICts_UWeiUserManageService{
 	private UWeiuserapplysMapper weiuserApplyMapper;
 	
 	/**
-	 * »ñÈ¡Ó°Â¥ÍÆ¼öÈË·¢Õ¹µÄÓÃ»§¶©µ¥ÁĞ±í
+	 * è·å–å½±æ¥¼æ¨èäººå‘å±•çš„ç”¨æˆ·è®¢å•åˆ—è¡¨
 	 */
 	public ReturnModel find_payorderExtByBranchUpUserid(Long branchuserId,String startTimeStr,String endTimeStr,Integer status, int index,int size){
 		ReturnModel rq=new ReturnModel();
@@ -72,7 +72,7 @@ public class Cts_UWeiUserServiceImpl implements ICts_UWeiUserManageService{
 		return rq;
 	}
 	/**
-	 * cts²éÑ¯Á÷Á¿Ö÷ÉêÇëÁĞ±í
+	 * ctsæŸ¥è¯¢æµé‡ä¸»ç”³è¯·åˆ—è¡¨
 	 */
 	public ReturnModel findWeiUserApplylist(UWeiUserSearchParam param,int index, int size){
 		ReturnModel rq=new ReturnModel();
@@ -85,12 +85,12 @@ public class Cts_UWeiUserServiceImpl implements ICts_UWeiUserManageService{
 	}
 	
 	/**
-	 * Á÷Á¿Ö÷ÉêÇë
+	 * æµé‡ä¸»ç”³è¯·
 	 */
 	public ReturnModel applyWeiUser(UWeiuserapplys applyInfo){
 		ReturnModel rq=new ReturnModel();
 		if(applyInfo==null){
-			rq.setStatusreson("²ÎÊıÓĞÎó");
+			rq.setStatusreson("å‚æ•°æœ‰è¯¯");
 			return rq;
 		}
 		
@@ -98,7 +98,7 @@ public class Cts_UWeiUserServiceImpl implements ICts_UWeiUserManageService{
 		if(apply!=null){
 			if(apply.getStatus()!=null&&apply.getStatus().intValue()==Integer.parseInt(weiUserStatusEnum.ok.toString())){
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("ÄúÒÑ¾­ÊÇ´úÀíÉÌÁË£¬²»ÄÜÌá½»ÉêÇë£¡");
+				rq.setStatusreson("æ‚¨å·²ç»æ˜¯ä»£ç†å•†äº†ï¼Œä¸èƒ½æäº¤ç”³è¯·ï¼");
 				return rq;
 			}
 			applyInfo.setUserid(apply.getUserid());
@@ -106,12 +106,12 @@ public class Cts_UWeiUserServiceImpl implements ICts_UWeiUserManageService{
 		rq.setStatu(ReturnStatus.SystemError);
 		
 		if(ObjectUtil.isEmpty(applyInfo.getName())){
-			rq.setStatusreson("Ãû³Æ²»ÄÜÎª¿Õ");
+			rq.setStatusreson("åç§°ä¸èƒ½ä¸ºç©º");
 			return rq;
 		}
 		
 		if(!ObjectUtil.validSqlStr(applyInfo.getName())||!ObjectUtil.validSqlStr(applyInfo.getRemark())){
-			rq.setStatusreson("´æÔÚ·Ç·¨×Ö·û");
+			rq.setStatusreson("å­˜åœ¨éæ³•å­—ç¬¦");
 			return rq;
 		}
 		applyInfo.setUserid(applyInfo.getUserid());
@@ -124,14 +124,14 @@ public class Cts_UWeiUserServiceImpl implements ICts_UWeiUserManageService{
 			weiuserApplyMapper.insert(applyInfo);
 		}
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("Ìá½»³É¹¦£¬µÈ´ıÉóºË£¡"); 
+		rq.setStatusreson("æäº¤æˆåŠŸï¼Œç­‰å¾…å®¡æ ¸ï¼"); 
 		return rq;
 	}
 	/**
-	 * Á÷Á¿Ö÷ÉóºË
+	 * æµé‡ä¸»å®¡æ ¸
 	 * @param adminId
 	 * @param weiUserId
-	 * @param status 1ÉóºËÍ¨¹ı£¬2²»Í¨¹ı
+	 * @param status 1å®¡æ ¸é€šè¿‡ï¼Œ2ä¸é€šè¿‡
 	 * @return
 	 */
 	public ReturnModel audit_weiUserApply(Long adminId,Long weiUserId,int status){
@@ -140,31 +140,31 @@ public class Cts_UWeiUserServiceImpl implements ICts_UWeiUserManageService{
 		if(apply!=null){
 			apply.setStatus(status); 
 			weiuserApplyMapper.updateByPrimaryKeySelective(apply);
-			if(status==Integer.parseInt(weiUserStatusEnum.ok.toString())){//³ÉÎª´úÀí
-				//´úÀíÉÌ ÉêÇëĞÅÏ¢¸´ÖÆµ½ÕıÊ½´úÀí±í
+			if(status==Integer.parseInt(weiUserStatusEnum.ok.toString())){//æˆä¸ºä»£ç†
+				//ä»£ç†å•† ç”³è¯·ä¿¡æ¯å¤åˆ¶åˆ°æ­£å¼ä»£ç†è¡¨
 				this.addUweiUserInfo(apply);	
 				
 				rq.setStatu(ReturnStatus.Success);
-				rq.setStatusreson("ÉóºË³É¹¦");
+				rq.setStatusreson("å®¡æ ¸æˆåŠŸ");
 			}else{
 				rq.setStatu(ReturnStatus.Success);
-				rq.setStatusreson("ÉóºË²»Í¨¹ı");
+				rq.setStatusreson("å®¡æ ¸ä¸é€šè¿‡");
 			}
 			
 		}else {
 			rq.setStatu(ReturnStatus.SystemError);
-			rq.setStatusreson("ÕÒ²»µ½ÉêÇë×ÊÁÏ");
+			rq.setStatusreson("æ‰¾ä¸åˆ°ç”³è¯·èµ„æ–™");
 		} 
 		return rq;
 	}
 	
 	/**
-	 * Á÷Á¿Ö÷Í¨¹ıÉóºË£¬Â¼ÈëÁ÷Á¿Ö÷ĞÅÏ¢¡¢Á÷Á¿Ö÷Éí·İ±êÊ¶
+	 * æµé‡ä¸»é€šè¿‡å®¡æ ¸ï¼Œå½•å…¥æµé‡ä¸»ä¿¡æ¯ã€æµé‡ä¸»èº«ä»½æ ‡è¯†
 	 * @param apply
 	 */
 	public void addUweiUserInfo(UWeiuserapplys apply){
 		if(apply!=null){
-			//Á÷Á¿Ö÷Â¼Èë
+			//æµé‡ä¸»å½•å…¥
 			UWeiusers weiuserModel=weiuserMapper.selectByPrimaryKey(apply.getUserid());
 			boolean isEdit=true;
 			if(weiuserModel==null){
@@ -182,13 +182,13 @@ public class Cts_UWeiUserServiceImpl implements ICts_UWeiUserManageService{
 			}else{
 				weiuserMapper.insertSelective(weiuserModel);
 			}		
-			//¸üĞÂ´úÀíÉí·İ±êÊ¶
+			//æ›´æ–°ä»£ç†èº«ä»½æ ‡è¯†
 			userBasic.addUserIdentity(apply.getUserid(),UserIdentityEnums.wei); 
 		}
 	}
 	
 	/**
-	 * ctsÉ¾³ıÁ÷Á¿Ö÷¼ÇÂ¼
+	 * ctsåˆ é™¤æµé‡ä¸»è®°å½•
 	 */
 	public ReturnModel delete_weiUserApply(Long adminId,Long weiUserId){
 		ReturnModel rq=new ReturnModel();
@@ -203,15 +203,15 @@ public class Cts_UWeiUserServiceImpl implements ICts_UWeiUserManageService{
 			weiuser.setStatus(Integer.parseInt(weiUserStatusEnum.del.toString()));
 			weiuserMapper.updateByPrimaryKey(weiuser);
 		}
-		//¸üĞÂ´úÀíÉí·İ±êÊ¶
+		//æ›´æ–°ä»£ç†èº«ä»½æ ‡è¯†
 		userBasic.removeUserIdentity(weiUserId,UserIdentityEnums.wei); 	
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("É¾³ı³É¹¦");
+		rq.setStatusreson("åˆ é™¤æˆåŠŸ");
 		return rq;
 	}
 	
 	/**
-	 * ctsÁ÷Á¿Ö÷ÉêÇë×´Ì¬
+	 * ctsæµé‡ä¸»ç”³è¯·çŠ¶æ€
 	 */
 	public ReturnModel getWeiUserApplyStatus(Long weiUserId){
 		ReturnModel rq=new ReturnModel();
@@ -224,14 +224,14 @@ public class Cts_UWeiUserServiceImpl implements ICts_UWeiUserManageService{
 			map.put("applyInfo", apply);
 			if(apply.getStatus()!=null){
 				if(apply.getStatus().intValue()==Integer.parseInt(weiUserStatusEnum.ok.toString())){
-					map.put("msg", "ÒÑ¾­³ÉÎªÁ÷Á¿Ö÷");
+					map.put("msg", "å·²ç»æˆä¸ºæµé‡ä¸»");
 				}else if (apply.getStatus().intValue()==Integer.parseInt(weiUserStatusEnum.applying.toString())) {
-					map.put("msg", "ÉêÇëÖĞ");
+					map.put("msg", "ç”³è¯·ä¸­");
 				}else if (apply.getStatus().intValue()==Integer.parseInt(weiUserStatusEnum.no.toString())) {
-					map.put("msg", "ÉêÇë²»Í¨¹ı¡£");
+					map.put("msg", "ç”³è¯·ä¸é€šè¿‡ã€‚");
 				}
 			}else {
-				map.put("msg", "ÉêÇëÖĞ");
+				map.put("msg", "ç”³è¯·ä¸­");
 			}
 		}else {
 			map.put("isApplyed", 0);
@@ -242,7 +242,7 @@ public class Cts_UWeiUserServiceImpl implements ICts_UWeiUserManageService{
 	}
 	
 	/**
-	 * µÃµ½ÍÆ¼öÓÃ»§ÁĞ±í
+	 * å¾—åˆ°æ¨èç”¨æˆ·åˆ—è¡¨
 	 * @param userId
 	 * @param startTime
 	 * @param endTime
@@ -257,7 +257,7 @@ public class Cts_UWeiUserServiceImpl implements ICts_UWeiUserManageService{
 			startDay=DateUtil.getDateByString("yyyy-MM-dd", startTime);
 		}
 		if(!ObjectUtil.isEmpty(endTime)){
-			//»ñÈ¡ÈÕÆÚµÄ×îºó½áÊøÊ±¼ä
+			//è·å–æ—¥æœŸçš„æœ€åç»“æŸæ—¶é—´
 			endTime=DateUtil.getEndTime(endTime);
 			endDay=DateUtil.getDateByString("yyyy-MM-dd HH:mm:ss", endTime);
 		}

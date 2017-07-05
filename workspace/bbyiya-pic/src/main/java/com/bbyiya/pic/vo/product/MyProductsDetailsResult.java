@@ -5,7 +5,7 @@ import com.bbyiya.model.PMyproductdetails;
 public class MyProductsDetailsResult extends PMyproductdetails {
 	private static final long serialVersionUID = 1L;
 	private String printcode;
-	private String sceneDescription;//³¡¾°Òýµ¼
+	private String sceneDescription;//åœºæ™¯å¼•å¯¼
 	private String sceneTitle;
 	
 	public String getPrintcode() {

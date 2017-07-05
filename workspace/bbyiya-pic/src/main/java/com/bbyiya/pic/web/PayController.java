@@ -29,7 +29,7 @@ public class PayController extends SSOController {
 	private UOtherloginMapper otherMapper;
 
 	/**
-	 * P01 »ñÈ¡Î¢ĞÅÖ§¸¶²ÎÊı
+	 * P01 è·å–å¾®ä¿¡æ”¯ä»˜å‚æ•°
 	 * 
 	 * @return
 	 * @throws MapperException
@@ -46,7 +46,7 @@ public class PayController extends SSOController {
 				rq = payService.getWxPayParam(payId, otherlogin.getOpenid(), ipAddres);
 			} else {
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("Î¢ĞÅÎ´µÇÂ¼");
+				rq.setStatusreson("å¾®ä¿¡æœªç™»å½•");
 			}
 
 		}
@@ -54,7 +54,7 @@ public class PayController extends SSOController {
 	}
 
 	/**
-	 * APP »ñÈ¡Î¢ĞÅÖ§¸¶²ÎÊı
+	 * APP è·å–å¾®ä¿¡æ”¯ä»˜å‚æ•°
 	 * 
 	 * @param payId
 	 * @return
@@ -74,7 +74,7 @@ public class PayController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	/**
-	 * »ñÈ¡Î¢ĞÅÉ¨ÂëÖ§¸¶ ¶şÎ¬Âë
+	 * è·å–å¾®ä¿¡æ‰«ç æ”¯ä»˜ äºŒç»´ç 
 	 * @param payId
 	 * @return
 	 * @throws MapperException

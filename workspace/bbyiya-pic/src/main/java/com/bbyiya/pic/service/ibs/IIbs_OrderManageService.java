@@ -8,7 +8,7 @@ import com.bbyiya.vo.ReturnModel;
 public interface IIbs_OrderManageService {
 
 	/**
-	 * 根据推荐userId获取订单列表
+	 * 鏍规嵁鎺ㄨ崘userId鑾峰彇璁㈠崟鍒楄〃
 	 * @param userId
 	 * @param status
 	 * @param index
@@ -17,7 +17,7 @@ public interface IIbs_OrderManageService {
 	 */
 	ReturnModel find_payorderExtByUpUserid(Long userId,Integer status, String startTime,String endTime,int index,int size);
 	/**
-	 * IBS统计excel导出列表
+	 * IBS缁熻excel瀵煎嚭鍒楄〃
 	 * @param userId
 	 * @param status
 	 * @param startTime
@@ -30,7 +30,7 @@ public interface IIbs_OrderManageService {
 			Integer status, String startTime, String endTime, int index,
 			int size);
 	/**
-	 * 影楼内部异业作品下单前得到作品的相关地址
+	 * 褰辨ゼ鍐呴儴寮備笟浣滃搧涓嬪崟鍓嶅緱鍒颁綔鍝佺殑鐩稿叧鍦板潃
 	 * @param userId
 	 * @param cartid
 	 * @return

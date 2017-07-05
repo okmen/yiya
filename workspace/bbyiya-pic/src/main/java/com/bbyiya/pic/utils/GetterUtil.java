@@ -6,10 +6,10 @@ import java.util.regex.Pattern;
 /**
  * 
 * <p>Title:GetterUtil </p>
-* <p>ÃèÊö: ¹¤¾ßÀà(field nameµ½getter nameµÄ×ª»»·½·¨)</p>
-* <p>°æ±¾:ASOS¶şÆÚ </p>
+* <p>æè¿°: å·¥å…·ç±»(field nameåˆ°getter nameçš„è½¬æ¢æ–¹æ³•)</p>
+* <p>ç‰ˆæœ¬:ASOSäºŒæœŸ </p>
 * @author PengHao
-* @date 2016-7-29 ÏÂÎç5:59:28
+* @date 2016-7-29 ä¸‹åˆ5:59:28
  */
 public class GetterUtil {
 	
@@ -53,7 +53,7 @@ public class GetterUtil {
 		return fieldname;
 	}
 	
-	// ÅĞ¶ÏÒ»¸ö×Ö·û´®ÊÇ·ñº¬ÓĞÊı×Ö
+	// åˆ¤æ–­ä¸€ä¸ªå­—ç¬¦ä¸²æ˜¯å¦å«æœ‰æ•°å­—
 	private static boolean HasDigit(String content) {
 		boolean flag = false;
 		Pattern p = Pattern.compile(".*\\d+.*");

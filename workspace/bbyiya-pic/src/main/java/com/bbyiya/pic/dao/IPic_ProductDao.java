@@ -9,7 +9,7 @@ import com.bbyiya.pic.vo.product.ProductSampleResultVO;
 public interface IPic_ProductDao {
 
 	/**
-	 *  获取相册样本列表
+	 *  鑾峰彇鐩稿唽鏍锋湰鍒楄〃
 	 * @param productId
 	 * @return
 	 */

@@ -7,29 +7,29 @@ import com.bbyiya.vo.ReturnModel;
 public interface IPic_ProductService {
 	
 	
-	/*---------------------get »ñÈ¡µ¥¸ömodel--------------------------------------------*/
+	/*---------------------get è·å–å•ä¸ªmodel--------------------------------------------*/
 	/**
-	 * »ñÈ¡²úÆ·Ñù±¾ÏêÇé£¨¾É°æ£©
+	 * è·å–äº§å“æ ·æœ¬è¯¦æƒ…ï¼ˆæ—§ç‰ˆï¼‰
 	 * @param productId
 	 * @return
 	 */
 	ReturnModel getProductSamples(Long productId) ;
 	/**
-	 * »ñÈ¡×÷Æ·Ñù±¾ÁĞ±í
+	 * è·å–ä½œå“æ ·æœ¬åˆ—è¡¨
 	 * 2017-02-17 
 	 * @param productId
 	 * @return
 	 */
 	ReturnModel getProductSamplelist(Long productId) ;
 	/**
-	 * ×÷Æ·ÏêÇé - Í¨¹ıuserId£¬cartId »ñÈ¡
+	 * ä½œå“è¯¦æƒ… - é€šè¿‡userIdï¼ŒcartId è·å–
 	 * @param userId
 	 * @param cartId
 	 * @return
 	 */
 	ReturnModel getMyProductInfo(Long userId, Long cartId);
 	/**
-	 * ×÷Æ·ÏêÇé ĞÂ°æ 
+	 * ä½œå“è¯¦æƒ… æ–°ç‰ˆ 
 	 * 2017-6-27
 	 * @param userId
 	 * @param cartId
@@ -37,42 +37,42 @@ public interface IPic_ProductService {
 	 */
 	ReturnModel getMyProductInfoNew(long userId,long cartId);
 	/**
-	 * ×÷Æ·ÏêÇé - Í¨¹ıuserId£¬productId »ñÈ¡±à¼­×÷Æ·ÏêÇé
+	 * ä½œå“è¯¦æƒ… - é€šè¿‡userIdï¼ŒproductId è·å–ç¼–è¾‘ä½œå“è¯¦æƒ…
 	 * @param userId
 	 * @param productId
 	 * @return
 	 */
 	ReturnModel getMyProductByProductId(Long userId, Long productId);
 	/**
-	 * ×÷Æ·ÏêÇé -·ÖÏíÒ³ÓÃ
+	 * ä½œå“è¯¦æƒ… -åˆ†äº«é¡µç”¨
 	 * @param cartId
 	 * @return
 	 */
 	ReturnModel getMyProductInfo(Long cartId);
 
 	/**
-	 * »ñÈ¡¿îÊ½Í¼Æ¬×÷Æ·
+	 * è·å–æ¬¾å¼å›¾ç‰‡ä½œå“
 	 * @param styleId
 	 * @return
 	 */
 	ReturnModel getStyleCoordResult(Long styleId);
 	
-	/*--------------------------±£´æ¡¢ĞŞ¸Ä²Ù×÷-------------------------------------------*/
+	/*--------------------------ä¿å­˜ã€ä¿®æ”¹æ“ä½œ-------------------------------------------*/
 	/**
-	 * ±£´æÓÃ»§µÄ×÷Æ· save user's product 
+	 * ä¿å­˜ç”¨æˆ·çš„ä½œå“ save user's product 
 	 * @param param
 	 * @return
 	 */
 	ReturnModel saveOrEdit_MyProducts(Long userId, MyProductParam param);
 	/**
-	 * ĞŞ¸ÄÎÒµÄ×÷Æ·(Ö»ĞŞ¸Ä £¬²»×öĞÂÔö)
+	 * ä¿®æ”¹æˆ‘çš„ä½œå“(åªä¿®æ”¹ ï¼Œä¸åšæ–°å¢)
 	 * @param userId
 	 * @param param
 	 * @return
 	 */
 	ReturnModel Edit_MyProducts(Long userId, MyProductParam param);
 	/**
-	 * ±à¼­ÎÒµÄ×÷Æ·£¨ĞÂÔö£¬ĞŞ¸Ä£©
+	 * ç¼–è¾‘æˆ‘çš„ä½œå“ï¼ˆæ–°å¢ï¼Œä¿®æ”¹ï¼‰
 	 * 
 	 * 2017-5-10
 	 * zy
@@ -82,15 +82,15 @@ public interface IPic_ProductService {
 	 */
 	ReturnModel Modify_MyProducts(Long userId, MyProductParam param);
 	
-	/*---------------------------------find ÁĞ±í ²éÑ¯²Ù×÷----------------------------------------------------*/
+	/*---------------------------------find åˆ—è¡¨ æŸ¥è¯¢æ“ä½œ----------------------------------------------------*/
 	/**
-	 * ÎÒµÄ×÷Æ·ÁĞ±í
+	 * æˆ‘çš„ä½œå“åˆ—è¡¨
 	 * @param userId
 	 * @return
 	 */
 	ReturnModel findMyProlist(Long userId);
 	/**
-	 * Ó°Â¥µÄ×÷Æ·ÁĞ±í
+	 * å½±æ¥¼çš„ä½œå“åˆ—è¡¨
 	 * @param branchUserId
 	 * @param status
 	 * @param inviteStatus
@@ -100,23 +100,23 @@ public interface IPic_ProductService {
 	 */
 	ReturnModel findMyProductsForBranch(Long branchUserId,Integer status,Integer inviteStatus,String keywords, int index,int size);
 	
-	/*-------------------------------delete É¾³ı²Ù×÷------------------------------------------------------*/
+	/*-------------------------------delete åˆ é™¤æ“ä½œ------------------------------------------------------*/
 	/**
-	 * É¾³ıÎÒµÄ×÷Æ·Í¼Æ¬
+	 * åˆ é™¤æˆ‘çš„ä½œå“å›¾ç‰‡
 	 * @param userId
 	 * @param dpId
 	 * @return
 	 */
 	ReturnModel del_myProductDetail(Long userId, Long dpId);
 	/**
-	 * ¸ù¾İcartId É¾³ıÎÒµÄ×÷Æ·
+	 * æ ¹æ®cartId åˆ é™¤æˆ‘çš„ä½œå“
 	 * @param userId
 	 * @param cartId
 	 * @return
 	 */
 	ReturnModel deleMyProduct(Long userId, Long cartId);
 	/**
-	 * µÃµ½Ä£°åÏÂµÄ×÷Æ·ÁĞ±í
+	 * å¾—åˆ°æ¨¡æ¿ä¸‹çš„ä½œå“åˆ—è¡¨
 	 * @param branchUserId
 	 * @param tempid
 	 * @param index

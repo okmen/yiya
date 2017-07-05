@@ -10,7 +10,7 @@ import com.bbyiya.vo.product.ProductSearchParam;
 public interface IProductMgtService {
 	
 	/**
-	 * 根据查询条件获取产品列表
+	 * 鏍规嵁鏌ヨ鏉′欢鑾峰彇浜у搧鍒楄〃
 	 * @param index
 	 * @param size
 	 * @param searchParam
@@ -19,13 +19,13 @@ public interface IProductMgtService {
 	ReturnModel findProductListBySearchParam(int index, int size,
 			ProductSearchParam searchParam);
 	/**
-	 * 根据产品ID修改产品信息
+	 * 鏍规嵁浜у搧ID淇敼浜у搧淇℃伅
 	 * @param pdto
 	 * @return
 	 */
 	ReturnModel updateProductByProductId(PProductsDTO pdto);
 	/**
-	 * 根据查询条件获取产品款式列表
+	 * 鏍规嵁鏌ヨ鏉′欢鑾峰彇浜у搧娆惧紡鍒楄〃
 	 * @param index
 	 * @param size
 	 * @param searchParam
@@ -34,7 +34,7 @@ public interface IProductMgtService {
 	ReturnModel findProductStylesBySearchParam(int index, int size,
 			ProductSearchParam searchParam);
 	/**
-	 * 新增修改产品款式
+	 * 鏂板淇敼浜у搧娆惧紡
 	 * @param styles
 	 * @return
 	 */

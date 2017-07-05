@@ -53,7 +53,7 @@ public class Pic_CommentServiceImpl implements IPic_CommentService{
 		ReturnModel rqModel=new ReturnModel();
 		if(param==null||ObjectUtil.isEmpty(param.getCartid())||ObjectUtil.isEmpty(param.getContent())){
 			rqModel.setStatu(ReturnStatus.ParamError);
-			rqModel.setStatusreson("²ÎÊı²»È«");
+			rqModel.setStatusreson("å‚æ•°ä¸å…¨");
 			return rqModel;
 		}
 		UUsers user=usersMapper.selectByPrimaryKey(userId);
@@ -66,12 +66,12 @@ public class Pic_CommentServiceImpl implements IPic_CommentService{
 			param.setNickname(user.getNickname());
 		}else {
 			rqModel.setStatu(ReturnStatus.SystemError);
-			rqModel.setStatusreson("ÓÃ»§²»´æÔÚ");
+			rqModel.setStatusreson("ç”¨æˆ·ä¸å­˜åœ¨");
 			return rqModel;
 		}
 		param.setUserid(userId);
 		param.setCreatetime(new Date());
-		//ĞÂÔöÆÀÂÛ
+		//æ–°å¢è¯„è®º
 		PMyproductext ext=myproductextMapper.selectByPrimaryKey(param.getCartid());
 		if(ext==null){
 			 ext=new PMyproductext();
@@ -88,7 +88,7 @@ public class Pic_CommentServiceImpl implements IPic_CommentService{
 		myproductcommentsMapper.insertSelective(param);
 	
 		rqModel.setStatu(ReturnStatus.Success);
-		rqModel.setStatusreson("³É¹¦£¡"); 
+		rqModel.setStatusreson("æˆåŠŸï¼"); 
 		return rqModel;
 	}
 	
@@ -112,14 +112,14 @@ public class Pic_CommentServiceImpl implements IPic_CommentService{
 	private PMyproductcomments defaulModel(){
 		PMyproductcomments cmo=new PMyproductcomments();
 		cmo.setCreatetime(new Date());
-		cmo.setNickname("ßŞÑ½Ê®¶ş");
+		cmo.setNickname("å’¿å‘€åäºŒ");
 		cmo.setHeadimg("http://pic.bbyiya.com/Fv1TDhI0CVm-XDOk71o2LbrKcQwa"); 
 		cmo.setContent(ConfigUtil.getSingleValue("default-comments"));  
 		return cmo;
 	}
 	
 	/**
-	 * »ñÈ¡µãÔŞÁĞ±í£¨ÆÀÂÛÕßÍ·ÏñÁĞ±í£©
+	 * è·å–ç‚¹èµåˆ—è¡¨ï¼ˆè¯„è®ºè€…å¤´åƒåˆ—è¡¨ï¼‰
 	 * @param cartId
 	 * @param index
 	 * @param size
@@ -143,25 +143,25 @@ public class Pic_CommentServiceImpl implements IPic_CommentService{
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.ParamError);
 		if(param==null){
-			rq.setStatusreson("²ÎÊı²»ÄÜÎª¿Õ");
+			rq.setStatusreson("å‚æ•°ä¸èƒ½ä¸ºç©º");
 			return rq;
 		}
 		if(param.getTipclassid()!=null&&param.getTipclassid()>0){
 			PCommentstemp tem=commentstempMapper.selectByPrimaryKey(param.getTipclassid());
-			//ÒÑÓĞµÄÆÀÂÛÌáÊ¾·ÖÀà
+			//å·²æœ‰çš„è¯„è®ºæç¤ºåˆ†ç±»
 			if(tem!=null){ 
-				//ĞŞ¸ÄÌáÊ¾·ÖÀàÃû³Æ
+				//ä¿®æ”¹æç¤ºåˆ†ç±»åç§°
 				if(!ObjectUtil.isEmpty(param.getTipclassname())){
 					commentstempMapper.updateByPrimaryKeySelective(param);
 				}
-				//ÆÀÂÛÌáÊ¾£¨ĞŞ¸Ä¡¢ĞÂÔö£©
+				//è¯„è®ºæç¤ºï¼ˆä¿®æ”¹ã€æ–°å¢ï¼‰
 				if(param.getTips()!=null&&param.getTips().size()>0){
 					for (PCommentstips tip : param.getTips()) {
-						//ĞŞ¸ÄÆÀÂÛÌáÊ¾
+						//ä¿®æ”¹è¯„è®ºæç¤º
 						if(tip.getTipid()!=null&&tip.getTipid()>0&&!ObjectUtil.isEmpty(tip.getContent())){
 							 tipsMapper.updateByPrimaryKeySelective(tip);
 						}else {
-							//ĞÂÔöÌáÊ¾ÆÀÂÛ
+							//æ–°å¢æç¤ºè¯„è®º
 							if(!ObjectUtil.isEmpty(tip.getContent())){
 								tip.setTipclassid(param.getTipclassid()); 
 								tip.setCreatetime(new Date());
@@ -171,20 +171,20 @@ public class Pic_CommentServiceImpl implements IPic_CommentService{
 					}
 				}
 			}
-		}else {//ĞÂÔöÆÀÂÛ·ÖÀà
+		}else {//æ–°å¢è¯„è®ºåˆ†ç±»
 			if(param.getProductid()==null||param.getProductid()<=0){
-				rq.setStatusreson("²úÆ·id²»ÄÜÎª¿Õ");
+				rq.setStatusreson("äº§å“idä¸èƒ½ä¸ºç©º");
 				return rq;
 			}
 			if(ObjectUtil.isEmpty(param.getTipclassname())){
-				rq.setStatusreson("ÌáÊ¾·ÖÀàÃû³Æ²»ÄÜÎª¿Õ");
+				rq.setStatusreson("æç¤ºåˆ†ç±»åç§°ä¸èƒ½ä¸ºç©º");
 				return rq;
 			}
 			param.setCreatetime(new Date());
 			commentstempMapper.insertSelective(param);
 		}
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("²Ù×÷³É¹¦£¡");
+		rq.setStatusreson("æ“ä½œæˆåŠŸï¼");
 		return rq;
 	}
 	
@@ -193,10 +193,10 @@ public class Pic_CommentServiceImpl implements IPic_CommentService{
 		int count= tipsMapper.deleteByPrimaryKey(tipId);
 		if(count>0){
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("ÌáÊ¾ÆÀÂÛÉ¾³ı³É¹¦");
+			rq.setStatusreson("æç¤ºè¯„è®ºåˆ é™¤æˆåŠŸ");
 		}else {
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("É¾³ıÊ§°Ü"); 
+			rq.setStatusreson("åˆ é™¤å¤±è´¥"); 
 		}
 		return rq;
 	}
@@ -207,10 +207,10 @@ public class Pic_CommentServiceImpl implements IPic_CommentService{
 		int count= commentstempMapper.deleteByPrimaryKey(commentClassId);
 		if(count>0){
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("ÆÀÂÛ·ÖÀàÉ¾³ı³É¹¦");
+			rq.setStatusreson("è¯„è®ºåˆ†ç±»åˆ é™¤æˆåŠŸ");
 		}else {
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("É¾³ıÊ§°Ü"); 
+			rq.setStatusreson("åˆ é™¤å¤±è´¥"); 
 		}
 		return rq;
 	}

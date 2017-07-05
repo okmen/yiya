@@ -79,11 +79,11 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 	private PMyproductextMapper myextMapper;
 	@Autowired
 	private PMyproductsinvitesMapper inviteMapper;
-	/*-------------------ÓÃ»§ĞÅÏ¢------------------------------------------------*/
+	/*-------------------ç”¨æˆ·ä¿¡æ¯------------------------------------------------*/
 	@Autowired
 	private UUsersMapper usersMapper;
 	@Autowired
-	private UBranchusersMapper branchusersMapper;// Ó°Â¥ĞÅÏ¢
+	private UBranchusersMapper branchusersMapper;// å½±æ¥¼ä¿¡æ¯
 	@Autowired
 	private OUserordersMapper orderMapper;
 	@Autowired
@@ -92,7 +92,7 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 	private UUseraddressMapper uaddressMapper;
 
 	/**
-	 * Ìí¼Ó»î¶¯Âë
+	 * æ·»åŠ æ´»åŠ¨ç 
 	 * */
 	public ReturnModel addActivityCode(Long userid,MyProductTempAddParam param){
 		ReturnModel rq=new ReturnModel();
@@ -109,32 +109,32 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 			
 		PMyproducttemp temp=new PMyproducttemp();
 		temp.setBranchuserid(userid);
-		temp.setCount(0);//ÒÑÍ¨¹ıÈËÊı
+		temp.setCount(0);//å·²é€šè¿‡äººæ•°
 		temp.setCreatetime(new Date());
 		temp.setRemark(param.getRemark());
 		temp.setStatus(Integer.parseInt(MyProductTempStatusEnum.enable.toString()));
 		temp.setTitle(param.getTitle());
 		temp.setCartid(myproduct.getCartid());	
-		temp.setNeedverifer(0); //²»ĞèÒªÉóºË   0²»ĞèÒª£¬1 ĞèÒª
-		temp.setDiscription(param.getDiscription()); //»î¶¯ĞèÖª
+		temp.setNeedverifer(0); //ä¸éœ€è¦å®¡æ ¸   0ä¸éœ€è¦ï¼Œ1 éœ€è¦
+		temp.setDiscription(param.getDiscription()); //æ´»åŠ¨éœ€çŸ¥
 		if(!ObjectUtil.isEmpty(param.getCodeurl())){
 			temp.setTempcodeurl(param.getCodeurl());
 		}if(!ObjectUtil.isEmpty(param.getCodesm())){
 			temp.setTempcodesm(param.getCodesm());
 		}
 		temp.setStyleid(param.getStyleId());
-		temp.setIsautoorder(1);//Ä¬ÈÏ¶¼ÊÇ×Ô¶¯ÏÂµ¥0 ÊÖ¹¤ÏÂµ¥£¬1×Ô¶¯ÏÂµ¥
+		temp.setIsautoorder(1);//é»˜è®¤éƒ½æ˜¯è‡ªåŠ¨ä¸‹å•0 æ‰‹å·¥ä¸‹å•ï¼Œ1è‡ªåŠ¨ä¸‹å•
 		temp.setOrderhours(0); 
-		temp.setMaxapplycount(param.getApplycount()==null?0:param.getApplycount());//±¨ÃûÈËÊıÎª0Ê±²»ÏŞÖÆ
-		temp.setBlesscount(param.getBlesscount()==null?0:param.getBlesscount());//ÊÕ¼¯×£¸£Êı
+		temp.setMaxapplycount(param.getApplycount()==null?0:param.getApplycount());//æŠ¥åäººæ•°ä¸º0æ—¶ä¸é™åˆ¶
+		temp.setBlesscount(param.getBlesscount()==null?0:param.getBlesscount());//æ”¶é›†ç¥ç¦æ•°
 		if(ObjectUtil.isEmpty(param.getIsbranchaddress())){
 			param.setIsbranchaddress(0);
 		}
 		temp.setIsbranchaddress(param.getIsbranchaddress());
-		temp.setType(Integer.parseInt(MyProductTempType.code.toString()));//Ä¬ÈÏÎªÆÕÍ¨ÀàĞÍ
+		temp.setType(Integer.parseInt(MyProductTempType.code.toString()));//é»˜è®¤ä¸ºæ™®é€šç±»å‹
 		myproducttempMapper.insertReturnId(temp);
 		
-		//Éú³É»î¶¯Âë
+		//ç”Ÿæˆæ´»åŠ¨ç 
 		for(int i=0;i<param.getApplycount();i++){
 			String idString= GenUtils.generateUuid_Char8();
 			PMyproductactivitycode code=new PMyproductactivitycode();
@@ -153,18 +153,18 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 		map.put("myProductID", myproduct.getCartid());
 		rq.setBasemodle(map);
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("Ìí¼Ó»î¶¯Âë³É¹¦£¡");
+		rq.setStatusreson("æ·»åŠ æ´»åŠ¨ç æˆåŠŸï¼");
 		return rq;
 	}
 	
 	/**
-	 * »î¶¯ÂëÏêÇé
+	 * æ´»åŠ¨ç è¯¦æƒ…
 	 * */
 	public ReturnModel getActivityCodeDetail(Integer tempid){
 		ReturnModel rq=new ReturnModel();
 		if(ObjectUtil.isEmpty(tempid)){
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("tempid²ÎÊıÎª¿Õ");
+			rq.setStatusreson("tempidå‚æ•°ä¸ºç©º");
 			return rq;
 		}
 		PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempid);
@@ -176,12 +176,12 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 		map.put("temp", temp);
 		rq.setBasemodle(map);
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("³É¹¦£¡");
+		rq.setStatusreson("æˆåŠŸï¼");
 		return rq;
 	}
 	
 	/**
-	 * ¸ù¾İÄ£°åIDµÃµ½×÷Æ·ÁĞ±í
+	 * æ ¹æ®æ¨¡æ¿IDå¾—åˆ°ä½œå“åˆ—è¡¨
 	 * @param branchUserId
 	 * @param tempid
 	 * @param index
@@ -206,24 +206,24 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 				PMyproducts tempproduct=myMapper.selectByPrimaryKey(temp.getCartid());
 				codevo.setProductid(tempproduct.getProductid());
 				
-				// »ñÈ¡²úÆ·ĞÅÏ¢
+				// è·å–äº§å“ä¿¡æ¯
 				PProducts products = productsMapper.selectByPrimaryKey(tempproduct.getProductid());
 				PProductstyles styles = styleMapper.selectByPrimaryKey(temp.getStyleid());
 				String producttitle=products.getTitle();
 				if (products != null && styles != null) {
 					if(styles.getStyleid()%2==0){
-						producttitle=producttitle+"-Êú°æ-"+styles.getPrice();
+						producttitle=producttitle+"-ç«–ç‰ˆ-"+styles.getPrice();
 					}else{
-						producttitle=producttitle+"-ºá°æ-"+styles.getPrice();
+						producttitle=producttitle+"-æ¨ªç‰ˆ-"+styles.getPrice();
 					}
 					codevo.setProductTitle(producttitle);
 				}
-				//µÃµ½¿Í»§êÇ³Æ
+				//å¾—åˆ°å®¢æˆ·æ˜µç§°
 				if(!ObjectUtil.isEmpty(code.getUserid())){
 					UUsers user=usersMapper.selectByPrimaryKey(code.getUserid());
 					codevo.setInvitedName(user.getNickname());
 				}
-				//0Î´Ê¹ÓÃ£¬1ÒÑÊ¹ÓÃ 
+				//0æœªä½¿ç”¨ï¼Œ1å·²ä½¿ç”¨ 
 				codevo.setActiveStatus(code.getStatus());
 				if(!ObjectUtil.isEmpty(code.getCartid())){
 					PMyproducts myproduct=myMapper.selectByPrimaryKey(code.getCartid());
@@ -236,7 +236,7 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 							codevo.setUpdatetimestr(DateUtil.getTimeStr(myproduct.getUpdatetime(), "yyyy-MM-dd HH:mm:ss"));
 						}
 						
-						// ×÷Æ·ÏêÇé£¨Í¼Æ¬¼¯ºÏ£©
+						// ä½œå“è¯¦æƒ…ï¼ˆå›¾ç‰‡é›†åˆï¼‰
 						List<PMyproductdetails> detailslist = myDetaiMapper.findMyProductdetails(code.getCartid());
 						int i = 0;
 						if (detailslist != null && detailslist.size() > 0) {
@@ -253,8 +253,8 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 							codevo.setHeadImg("http://pic.bbyiya.com/484983733454448354.png");
 						}
 						codevo.setCount(i);
-						codevo.setIsDue(0);//Ä¬ÈÏ²»ÊÇÔ¤²úÆÚ
-						// µÃµ½±¦±¦ÉúÈÕ
+						codevo.setIsDue(0);//é»˜è®¤ä¸æ˜¯é¢„äº§æœŸ
+						// å¾—åˆ°å®å®ç”Ÿæ—¥
 						PMyproductchildinfo childinfo = mychildMapper.selectByPrimaryKey(myproduct.getCartid());
 						if (childinfo != null && childinfo.getBirthday() != null) {
 							codevo.setBirthdayStr(DateUtil.getTimeStr(childinfo.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
@@ -264,10 +264,10 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 						if(tempapply!=null){
 							codevo.setPhone(tempapply.getMobilephone());
 							codevo.setAddress(tempapply.getAdress());
-							//1ÒÑÊ¹ÓÃ 3ÖÆ×÷ÒÑÍê³É 4×÷Æ·ÉóºË²»Í¨¹ı5ÏÂµ¥ÉóºËÍ¨¹ı
+							//1å·²ä½¿ç”¨ 3åˆ¶ä½œå·²å®Œæˆ 4ä½œå“å®¡æ ¸ä¸é€šè¿‡5ä¸‹å•å®¡æ ¸é€šè¿‡
 							codevo.setActiveStatus(tempapply.getStatus());
 						}
-						// µÃµ½×÷Æ·¶©µ¥¼¯ºÏ
+						// å¾—åˆ°ä½œå“è®¢å•é›†åˆ
 						List<OUserorders> orderList = orderMapper.findOrderListByCartId(myproduct.getCartid());
 						List<String> orderNoList = new ArrayList<String>();
 						for (OUserorders order : orderList) {
@@ -276,7 +276,7 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 						if (orderNoList.size() > 0) {
 							codevo.setOrderNoList(orderNoList);
 						}
-						//µÃµ½ÆÀÂÛÊı
+						//å¾—åˆ°è¯„è®ºæ•°
 						codevo.setCommentsCount(0);
 						PMyproductext myext=myextMapper.selectByPrimaryKey(myproduct.getCartid());
 						if(myext!=null){
@@ -294,7 +294,7 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 	}
 	
 	/**
-	 * É¾³ıÄ£°å
+	 * åˆ é™¤æ¨¡æ¿
 	 * @param tempid
 	 * @return
 	 */
@@ -305,35 +305,35 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 		if(code!=null){
 			if(code.getStatus()!=null&&code.getStatus().intValue()!=Integer.parseInt(ActivityCodeStatusEnum.notuse.toString())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("²»ºÃÒâË¼£¬ÒÑÊ¹ÓÃµÄ»î¶¯Âë²»ÄÜÉ¾³ı£¡");
+				rq.setStatusreson("ä¸å¥½æ„æ€ï¼Œå·²ä½¿ç”¨çš„æ´»åŠ¨ç ä¸èƒ½åˆ é™¤ï¼");
 				return rq;
 			}
 			code.setStatus(Integer.parseInt(ActivityCodeStatusEnum.deleted.toString()));
 			activitycodeMapper.updateByPrimaryKey(code);
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("É¾³ı²Ù×÷³É¹¦");
+			rq.setStatusreson("åˆ é™¤æ“ä½œæˆåŠŸ");
 		}else{
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("»î¶¯Âë²»´æÔÚ");
+			rq.setStatusreson("æ´»åŠ¨ç ä¸å­˜åœ¨");
 		}
 		return rq;
 	}
 	
 	
 	/**
-	 *ÖØÖÃ»î¶¯ÏÂµÄÒÑ±¨ÃûµÄĞòºÅ
+	 *é‡ç½®æ´»åŠ¨ä¸‹çš„å·²æŠ¥åçš„åºå·
 	 * @return
 	 */
 	public ReturnModel resetAllTempApplySort(Integer tempid){
 		ReturnModel rq=new ReturnModel();
-		//»ñÈ¡»î¶¯ÁĞ±í
+		//è·å–æ´»åŠ¨åˆ—è¡¨
 		List<PMyproducttemp> templist=myproducttempMapper.findAllTemp(tempid);
 		if(templist!=null&&templist.size()>0){
 			for (PMyproducttemp temp : templist) {
 				
 				List<Long> idsList = new ArrayList<Long>();
 				idsList.add(temp.getBranchuserid());
-				// »ñÈ¡Ó°Â¥µÄ¹¤×÷ÈËÔ±ÁĞ±í
+				// è·å–å½±æ¥¼çš„å·¥ä½œäººå‘˜åˆ—è¡¨
 				List<UBranchusers> userList = branchusersMapper.findMemberslistByBranchUserId(temp.getBranchuserid());
 				if (userList != null && userList.size() > 0) {
 					for (UBranchusers uu : userList) {
@@ -356,7 +356,7 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 			}
 		}
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("ÉèÖÃ³É¹¦£¡");
+		rq.setStatusreson("è®¾ç½®æˆåŠŸï¼");
 		return rq;
 	}
 	

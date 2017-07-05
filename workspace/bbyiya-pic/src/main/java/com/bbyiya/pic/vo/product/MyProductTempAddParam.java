@@ -12,10 +12,10 @@ public class MyProductTempAddParam {
 	private Integer isAutoOrder;
 	private Integer orderHours;
 	private Integer tempid;
-	private Integer isbranchaddress; //ÏÂµ¥ÊÇ·ñÓ°Â¥µØÖ·
-	private Integer type; //»î¶¯ÀàĞÍ
-	private Integer blesscount; //¼¯×£¸£ÊıÁ¿
-	private Integer applycount;//»î¶¯ÂëÊıÁ¿£¨±¨Ãû×ÜÊı£©
+	private Integer isbranchaddress; //ä¸‹å•æ˜¯å¦å½±æ¥¼åœ°å€
+	private Integer type; //æ´»åŠ¨ç±»å‹
+	private Integer blesscount; //é›†ç¥ç¦æ•°é‡
+	private Integer applycount;//æ´»åŠ¨ç æ•°é‡ï¼ˆæŠ¥åæ€»æ•°ï¼‰
 	public String getTitle() {
 		return title;
 	}

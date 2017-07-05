@@ -1,5 +1,9 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.UAgentapplyareas;
 
 public interface UAgentapplyareasMapper {
@@ -14,4 +18,6 @@ public interface UAgentapplyareasMapper {
     int updateByPrimaryKeySelective(UAgentapplyareas record);
 
     int updateByPrimaryKey(UAgentapplyareas record);
+    
+    List<UAgentapplyareas> findAgentapplyareasByUserId(@Param("userid") Long userid);
 }

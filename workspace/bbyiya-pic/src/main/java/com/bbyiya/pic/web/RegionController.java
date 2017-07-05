@@ -33,7 +33,7 @@ public class RegionController extends SSOController {
 
 	/**
 	 * 
-	 * »ñÈ¡µØÇøÁĞ±í
+	 * è·å–åœ°åŒºåˆ—è¡¨
 	 * @param province
 	 * @param city
 	 * @param area
@@ -46,7 +46,7 @@ public class RegionController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		switch (type) {
 		case 0:
-			if (!ObjectUtil.isEmpty(code)) {// »ñÈ¡Ê¡
+			if (!ObjectUtil.isEmpty(code)) {// è·å–çœ
 				rq.setBasemodle(regionMapper.getProvinceByCode(ObjectUtil.parseInt(code)));
 			} else {
 				String keyCity="cityArea_province_list1";
@@ -63,13 +63,13 @@ public class RegionController extends SSOController {
 			}
 			break;
 		case 1:
-			if (!ObjectUtil.isEmpty(code)) {//ÊĞ ÁĞ±í
+			if (!ObjectUtil.isEmpty(code)) {//å¸‚ åˆ—è¡¨
 //				rq.setBasemodle(regionMapper.findCitylistBy_ProvinceCode(ObjectUtil.parseInt(code)));
 				
 				String keyCity="cityArea_province1";
 				Map<String, List<RCity>> mapCity= (Map<String, List<RCity>>)RedisUtil.getObject(keyCity); //new HashMap<Integer, List<RCity>>();
-				if(mapCity!=null){//ÒÑ¾­ÓĞ»º´æĞÅÏ¢ÁË
-					if(mapCity.containsKey(code)){//ÓĞ¸ÃÊ¡µÄËùÓĞÊĞ¼¶»º´æ
+				if(mapCity!=null){//å·²ç»æœ‰ç¼“å­˜ä¿¡æ¯äº†
+					if(mapCity.containsKey(code)){//æœ‰è¯¥çœçš„æ‰€æœ‰å¸‚çº§ç¼“å­˜
 						rq.setBasemodle(mapCity.get(code));  
 					}else {
 						List<RCity> list=regionMapper.findCitylistBy_ProvinceCode(ObjectUtil.parseInt(code));
@@ -91,13 +91,13 @@ public class RegionController extends SSOController {
 			}
 			break;
 		case 2:
-			if (!ObjectUtil.isEmpty(code)) {// Çø ÁĞ±í
+			if (!ObjectUtil.isEmpty(code)) {// åŒº åˆ—è¡¨
 //				rq.setBasemodle(regionMapper.findArealistBy_CityCode(ObjectUtil.parseInt(code)));
 				
 				String keyCity="cityArea_city1";
 				Map<String, List<RAreas>> mapCity= (Map<String, List<RAreas>>)RedisUtil.getObject(keyCity);
-				if(mapCity!=null){//ÒÑ¾­ÓĞ»º´æĞÅÏ¢ÁË
-					if(mapCity.containsKey(code)){//ÓĞ¸ÃÊ¡µÄËùÓĞÊĞ¼¶»º´æ
+				if(mapCity!=null){//å·²ç»æœ‰ç¼“å­˜ä¿¡æ¯äº†
+					if(mapCity.containsKey(code)){//æœ‰è¯¥çœçš„æ‰€æœ‰å¸‚çº§ç¼“å­˜
 						rq.setBasemodle(mapCity.get(code));  
 					}else {
 						List<RAreas> list=regionMapper.findArealistBy_CityCode(ObjectUtil.parseInt(code));

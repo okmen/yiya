@@ -7,18 +7,18 @@ import com.bbyiya.vo.user.UWeiUserSearchParam;
 public interface ICts_UWeiUserManageService {
 
 	/**
-	 * »ñÈ¡Ó°Â¥ÍÆ¼öÈË·¢Õ¹µÄÓÃ»§¶©µ¥ÁĞ±í
-	 * @param branchuserId Ó°Â¥ID
-	 * @param startTimeStr ¿ªÊ¼Ê±¼ä
-	 * @param endTimeStr	½áÊøÊ±¼ä
-	 * @param status	×´Ì¬
+	 * è·å–å½±æ¥¼æ¨èäººå‘å±•çš„ç”¨æˆ·è®¢å•åˆ—è¡¨
+	 * @param branchuserId å½±æ¥¼ID
+	 * @param startTimeStr å¼€å§‹æ—¶é—´
+	 * @param endTimeStr	ç»“æŸæ—¶é—´
+	 * @param status	çŠ¶æ€
 	 * @param index
 	 * @param size
 	 * @return
 	 */
 	ReturnModel find_payorderExtByBranchUpUserid(Long branchuserId,String startTimeStr,String endTimeStr,Integer status, int index,int size);
 	/**
-	 * »ñÈ¡Î¢ÉÌÁĞ±í
+	 * è·å–å¾®å•†åˆ—è¡¨
 	 * @param param
 	 * @param index
 	 * @param size
@@ -26,14 +26,14 @@ public interface ICts_UWeiUserManageService {
 	 */
 	ReturnModel findWeiUserVoList(UWeiUserSearchParam param, int index, int size);
 	/**
-	 * Á÷Á¿Ö÷ÉêÇë
+	 * æµé‡ä¸»ç”³è¯·
 	 * @param userId
 	 * @param applyInfo
 	 * @return
 	 */
 	ReturnModel applyWeiUser(UWeiuserapplys applyInfo);
 	/**
-	 * Á÷Á¿Ö÷ÉóºË
+	 * æµé‡ä¸»å®¡æ ¸
 	 * @param adminId
 	 * @param weiUserId
 	 * @param status
@@ -41,7 +41,7 @@ public interface ICts_UWeiUserManageService {
 	 */
 	ReturnModel audit_weiUserApply(Long adminId, Long weiUserId, int status);
 	/**
-	 * ²éÑ¯Á÷Á¿Ö÷ÉêÇëÁĞ±í
+	 * æŸ¥è¯¢æµé‡ä¸»ç”³è¯·åˆ—è¡¨
 	 * @param param
 	 * @param index
 	 * @param size
@@ -50,20 +50,20 @@ public interface ICts_UWeiUserManageService {
 	ReturnModel findWeiUserApplylist(UWeiUserSearchParam param, int index,
 			int size);
 	/**
-	 * É¾³ıÁ÷Á¿Ö÷¼ÇÂ¼
+	 * åˆ é™¤æµé‡ä¸»è®°å½•
 	 * @param adminId
 	 * @param weiUserId
 	 * @return
 	 */
 	ReturnModel delete_weiUserApply(Long adminId, Long weiUserId);
 	/**
-	 * Á÷Á¿Ö÷ÉêÇë×´Ì¬
+	 * æµé‡ä¸»ç”³è¯·çŠ¶æ€
 	 * @param weiUserId
 	 * @return
 	 */
 	ReturnModel getWeiUserApplyStatus(Long weiUserId);
 	/**
-	 * µÃµ½ÍÆ¼öÓÃ»§ÁĞ±í
+	 * å¾—åˆ°æ¨èç”¨æˆ·åˆ—è¡¨
 	 * @param userId
 	 * @param startTime
 	 * @param endTime

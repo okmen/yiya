@@ -22,7 +22,7 @@ public class YiyaTalkController extends CtsSSOController {
 	private IYiyaTalkService talkService;
 
 	/**
-	 * ßŞÑ½Ëµ banner ĞÂÔöĞŞ¸Ä
+	 * å’¿å‘€è¯´ banner æ–°å¢ä¿®æ”¹
 	 * @param model
 	 * @param talkbannerJson
 	 * @return
@@ -42,10 +42,10 @@ public class YiyaTalkController extends CtsSSOController {
 				}
 			}
 			rqModel.setStatu(ReturnStatus.ParamError_1);
-			rqModel.setStatusreson("²ÎÊıÓĞÎó");
+			rqModel.setStatusreson("å‚æ•°æœ‰è¯¯");
 		} else {
 			rqModel.setStatu(ReturnStatus.LoginError);
-			rqModel.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rqModel.setStatusreson("ç™»å½•è¿‡æœŸ");
 		} 
 		return JsonUtil.objectToJsonStr(rqModel);
 	}

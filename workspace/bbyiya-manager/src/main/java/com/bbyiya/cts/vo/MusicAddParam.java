@@ -8,7 +8,7 @@ public class MusicAddParam implements Serializable{
 
     private String name;
     private String downloadurl;
-    //ÒôÀÖ·Ö×é
+    //éŸ³ä¹åˆ†ç»„
     private Integer musictype;
     
     

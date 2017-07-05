@@ -7,16 +7,16 @@ import com.github.pagehelper.Page;
 
 public interface ICtsMusicService {
 	/**
-	 * Ìí¼ÓÒôÀÖµ½ÀÖ¿â
+	 * æ·»åŠ éŸ³ä¹åˆ°ä¹åº“
 	 * @param model
 	 * @return
 	 */
 	ReturnModel addOrEdit_SMusics(SMusics model);
 	/**
-	 * »ñÈ¡ÀÖ¿âÒôÀÖÁĞ±í£¨´ø·ÖÒ³£©
-	 * @param param ²éÑ¯²ÎÊı
-	 * @param pageIndex µ±Ç°Ò³
-	 * @param pageSize Ã¿Ò³ÌõÊı
+	 * è·å–ä¹åº“éŸ³ä¹åˆ—è¡¨ï¼ˆå¸¦åˆ†é¡µï¼‰
+	 * @param param æŸ¥è¯¢å‚æ•°
+	 * @param pageIndex å½“å‰é¡µ
+	 * @param pageSize æ¯é¡µæ¡æ•°
 	 * @return 
 	 */
 	Page<SMusics> find_SMusicsResult(MusicAddParam param,int pageIndex,int pageSize);

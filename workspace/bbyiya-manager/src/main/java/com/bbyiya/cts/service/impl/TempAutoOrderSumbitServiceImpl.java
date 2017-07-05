@@ -64,37 +64,37 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 	public ReturnModel dotempAutoOrderSumbit(){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.Success);
-		//µÃµ½ËùÓĞÒÑ¿ªÆôµÄ»î¶¯ÁĞ±í
+		//å¾—åˆ°æ‰€æœ‰å·²å¼€å¯çš„æ´»åŠ¨åˆ—è¡¨
 		List<PMyproducttemp> templist=tempMapper.findAllAutoOrderTempByStatus(Integer.parseInt(MyProductTempStatusEnum.enable.toString()));
 		if(templist!=null&&templist.size()>0){
 			for (PMyproducttemp temp : templist) {
-				//Èç¹ûorderhoursÎª¿ÕÔòÄ¬ÈÏÎª48Ğ¡Ê±
+				//å¦‚æœorderhoursä¸ºç©ºåˆ™é»˜è®¤ä¸º48å°æ—¶
 				if(temp.getOrderhours()==null) temp.setOrderhours(48);
-				//µÃµ½»î¶¯ÏÂËùÓĞ¿ÉÏÂµ¥µÄ×÷Æ·ÁĞ±í
+				//å¾—åˆ°æ´»åŠ¨ä¸‹æ‰€æœ‰å¯ä¸‹å•çš„ä½œå“åˆ—è¡¨
 				List<PMyproducts> productlist=myproductMapper.findCanOrderMyProducts(temp.getTempid(), temp.getOrderhours());
 				for (PMyproducts myproduct : productlist) {
-					//±ÜÃâÖØ¸´ÏÂµ¥²Ù×÷
+					//é¿å…é‡å¤ä¸‹å•æ“ä½œ
 					String key="cartid_"+myproduct.getCartid();
 					String cartid=(String)RedisUtil.getObject(key);
 					if(cartid!=null){
-						//ÒÑÏÂ¹ıµ¥
+						//å·²ä¸‹è¿‡å•
 						continue;
 					}else{
 						RedisUtil.setObject(key, cartid, 3600);
 					}
 					
-					//µ÷ÓÃÏÂµ¥½Ó¿Ú
+					//è°ƒç”¨ä¸‹å•æ¥å£
 					SubmitOrderProductParam productParam=new SubmitOrderProductParam();
 					productParam.setProductId(myproduct.getProductid());
 					Long styleId=temp.getStyleid();
-					//Èç¹ûÎª¿Õ£¬Ä¬ÈÏÎªÊú°å
+					//å¦‚æœä¸ºç©ºï¼Œé»˜è®¤ä¸ºç«–æ¿
 					if(ObjectUtil.isEmpty(styleId)) styleId=myproduct.getProductid();
 					productParam.setStyleId(styleId);
 					productParam.setCount(1);
 					productParam.setCartId(myproduct.getCartid());
 					
 					OrderaddressParam addressParam=new OrderaddressParam();
-					//Ê¹ÓÃÓ°Â¥µØÖ·
+					//ä½¿ç”¨å½±æ¥¼åœ°å€
 					if(temp.getIsbranchaddress()!=null&&temp.getIsbranchaddress().intValue()==1){
 						UBranches branches=branchesMapper.selectByPrimaryKey(temp.getBranchuserid());
 						if (branches != null) {
@@ -108,7 +108,7 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 						}
 					}else{
 						PMyproducttempapply tempapply=applyMapper.getMyProducttempApplyByCartId(myproduct.getCartid());					
-						//ÓÃ»§±¨ÃûµØÖ·
+						//ç”¨æˆ·æŠ¥ååœ°å€
 						addressParam.setUserid(tempapply.getUserid());
 						addressParam.setCity(tempapply.getCity());
 						addressParam.setDistrict(tempapply.getArea());
@@ -125,16 +125,16 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 						product.setStyleid(productParam.getStyleId());
 						product.setCount(productParam.getCount());
 						
-						// ÏÂµ¥²ÎÊı
+						// ä¸‹å•å‚æ•°
 						UserOrderSubmitParam param = new UserOrderSubmitParam();
 						
 						param.setUserId(myproduct.getUserid());
-						param.setRemark("ÏµÍ³×Ô¶¯ÏÂµ¥");
+						param.setRemark("ç³»ç»Ÿè‡ªåŠ¨ä¸‹å•");
 						
 						if (productParam.getCartId() != null && productParam.getCartId() > 0) {
 							param.setCartId(productParam.getCartId());
 						}
-						//ÎªÓ°Â¥¶©µ¥
+						//ä¸ºå½±æ¥¼è®¢å•
 						param.setOrderType(1);
 						if(productParam.getPostModelId()!=null){
 							param.setPostModelId(productParam.getPostModelId()); 
@@ -142,56 +142,56 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 						param.setOrderproducts(product);
 						if(addressParam.getCity()==null){
 							rq.setStatu(ReturnStatus.ParamError);
-							rq.setStatusreson("µØÖ·²ÎÊıÓĞÎó£ºcityÎª¿Õ");
+							rq.setStatusreson("åœ°å€å‚æ•°æœ‰è¯¯ï¼šcityä¸ºç©º");
 							
 						}
 						if(addressParam.getProvince()==null){
 							rq.setStatu(ReturnStatus.ParamError);
-							rq.setStatusreson("µØÖ·²ÎÊıÓĞÎó£ºprovinceÎª¿Õ");
+							rq.setStatusreson("åœ°å€å‚æ•°æœ‰è¯¯ï¼šprovinceä¸ºç©º");
 							
 						}
 						if(addressParam.getDistrict()==null){
 							rq.setStatu(ReturnStatus.ParamError);
-							rq.setStatusreson("µØÖ·²ÎÊıÓĞÎó£ºdistrictÎª¿Õ");
+							rq.setStatusreson("åœ°å€å‚æ•°æœ‰è¯¯ï¼šdistrictä¸ºç©º");
 							
 						}
 						if(addressParam.getStreetdetail()==null){
 							rq.setStatu(ReturnStatus.ParamError);
-							rq.setStatusreson("µØÖ·²ÎÊıÓĞÎó£ºstreetdetailÎª¿Õ");
+							rq.setStatusreson("åœ°å€å‚æ•°æœ‰è¯¯ï¼šstreetdetailä¸ºç©º");
 							
 						}
 						if(addressParam.getPhone()==null){
 							rq.setStatu(ReturnStatus.ParamError);
-							rq.setStatusreson("²ÎÊıÓĞÎó,ÊÖ»úºÅÎª¿Õ");
+							rq.setStatusreson("å‚æ•°æœ‰è¯¯,æ‰‹æœºå·ä¸ºç©º");
 							
 						}
 						if(!ObjectUtil.isEmpty(addressParam.getPhone())&&!ObjectUtil.isMobile(addressParam.getPhone())){
 							rq.setStatu(ReturnStatus.ParamError_2);
-							rq.setStatusreson("ÊÖ»úºÅ¸ñÊ½²»¶Ô£¡");
+							rq.setStatusreson("æ‰‹æœºå·æ ¼å¼ä¸å¯¹ï¼");
 							
 						}
 						if(addressParam.getReciver()==null){
 							rq.setStatu(ReturnStatus.ParamError);
-							rq.setStatusreson("²ÎÊıÓĞÎó,ÁªÏµÈËÎª¿Õ");
+							rq.setStatusreson("å‚æ•°æœ‰è¯¯,è”ç³»äººä¸ºç©º");
 							
 						}
 						param.setAddressparam(addressParam);
 						rq = orderMgtService.submitOrder_IBS(param);
 					} else {
 						rq.setStatu(ReturnStatus.ParamError);
-						rq.setStatusreson("²ÎÊıÓĞÎó");
+						rq.setStatusreson("å‚æ•°æœ‰è¯¯");
 						
 					}
 					
 					
-					if(!rq.getStatu().equals(ReturnStatus.Success))//Î´Í¨¹ı²ÎÊıÑéÖ¤
+					if(!rq.getStatu().equals(ReturnStatus.Success))//æœªé€šè¿‡å‚æ•°éªŒè¯
 					{	
 						RedisUtil.delete(key);
-						addSysLog("×÷Æ·"+productParam.getCartId()+"×Ô¶¯ÏÂµ¥Ê§°Ü£¡Ô­Òò£º"+rq.getStatusreson(),"dotempAutoOrderSumbit","ÏÂµ¥Ê§°Ü");
-						Log.error("×÷Æ·"+productParam.getCartId()+"×Ô¶¯ÏÂµ¥Ê§°Ü£¡Ô­Òò£º"+rq.getStatusreson());
+						addSysLog("ä½œå“"+productParam.getCartId()+"è‡ªåŠ¨ä¸‹å•å¤±è´¥ï¼åŸå› ï¼š"+rq.getStatusreson(),"dotempAutoOrderSumbit","ä¸‹å•å¤±è´¥");
+						Log.error("ä½œå“"+productParam.getCartId()+"è‡ªåŠ¨ä¸‹å•å¤±è´¥ï¼åŸå› ï¼š"+rq.getStatusreson());
 					}else{
-						Log.info("×÷Æ·"+productParam.getCartId()+"×Ô¶¯ÏÂµ¥³É¹¦£¡");
-						addSysLog("×÷Æ·"+productParam.getCartId()+"×Ô¶¯ÏÂµ¥³É¹¦£¡","dotempAutoOrderSumbit","ÏÂµ¥³É¹¦");
+						Log.info("ä½œå“"+productParam.getCartId()+"è‡ªåŠ¨ä¸‹å•æˆåŠŸï¼");
+						addSysLog("ä½œå“"+productParam.getCartId()+"è‡ªåŠ¨ä¸‹å•æˆåŠŸï¼","dotempAutoOrderSumbit","ä¸‹å•æˆåŠŸ");
 					}
 					
 				}//end For 1

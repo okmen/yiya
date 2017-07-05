@@ -5,7 +5,7 @@ import com.bbyiya.vo.ReturnModel;
 
 public interface ITempAutoOrderSumbitService {
 	/**
-	 * Îª²ÎÓë»î¶¯µÄ´ïµ½Ìõ¼şµÄ×÷Æ·×Ô¶¯ÏÂµ¥
+	 * ä¸ºå‚ä¸æ´»åŠ¨çš„è¾¾åˆ°æ¡ä»¶çš„ä½œå“è‡ªåŠ¨ä¸‹å•
 	 * @param model
 	 * @return
 	 */

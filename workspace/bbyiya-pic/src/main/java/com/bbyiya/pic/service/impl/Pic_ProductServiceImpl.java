@@ -913,8 +913,6 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					}else{
 						//制作完成
 						item.setActiveStatus(Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString()));
-						item.setInvitestatus(Integer.parseInt(InviteStatus.ok.toString()));
-						
 					}
 				}
 

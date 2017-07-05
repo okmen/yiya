@@ -231,7 +231,6 @@ public class Ibs_MyProductServiceImpl implements IIbs_MyproductService{
 					}else{
 						//制作完成
 						item.setActiveStatus(Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString()));
-						item.setInvitestatus(Integer.parseInt(InviteStatus.ok.toString()));
 					}
 				}
 

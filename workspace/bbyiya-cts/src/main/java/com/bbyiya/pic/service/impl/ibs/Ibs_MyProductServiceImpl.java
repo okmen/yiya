@@ -92,16 +92,19 @@ public class Ibs_MyProductServiceImpl implements IIbs_MyproductService{
 	public ReturnModel findMyProductsSourceCustomerOfBranch(Long branchUserId, Integer status, Integer inviteStatus,String keywords, int index, int size) {
 		ReturnModel rq = new ReturnModel();
 		List<Long> idsList = new ArrayList<Long>();
+		List<String> phoneList =null;
 		idsList.add(branchUserId);
 		// 获取影楼的工作人员列表
 		List<UBranchusers> userList = branchusersMapper.findMemberslistByBranchUserId(branchUserId);
 		if (userList != null && userList.size() > 0) {
+			phoneList=new ArrayList<String>();
 			for (UBranchusers uu : userList) {
 				idsList.add(uu.getUserid());
+				phoneList.add(uu.getPhone());
 			}
 		}
 		PageHelper.startPage(index, size);
-		List<MyProductResultVo> mylist = myMapper.findMyProductsSourceCustomerOfBranch(idsList, status, inviteStatus,keywords);
+		List<MyProductResultVo> mylist = myMapper.findMyProductsSourceCustomerOfBranch(idsList,phoneList, status, inviteStatus,keywords);
 		PageInfo<MyProductResultVo> resultPage = new PageInfo<MyProductResultVo>(mylist);
 		if (resultPage.getList() != null && resultPage.getList().size() > 0) {
 			for (MyProductResultVo vv : resultPage.getList()) {

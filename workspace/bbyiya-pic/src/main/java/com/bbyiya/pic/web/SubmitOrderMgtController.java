@@ -163,11 +163,11 @@ public class SubmitOrderMgtController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			if(!istime()){
-				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("系统升级中，暂时关闭影楼下单功能，2017-07-03 21:00:00 开放使用！");
-				return JsonUtil.objectToJsonStr(rq);
-			}
+//			if(!istime()){
+//				rq.setStatu(ReturnStatus.ParamError);
+//				rq.setStatusreson("系统升级中，暂时关闭影楼下单功能，2017-07-03 21:00:00 开放使用！");
+//				return JsonUtil.objectToJsonStr(rq);
+//			}
 			SubmitOrderProductParam productParam = (SubmitOrderProductParam) JsonUtil.jsonStrToObject(productJsonStr, SubmitOrderProductParam.class);
 			OrderaddressParam addressParam=(OrderaddressParam)JsonUtil.jsonStrToObject(addressJsonStr, OrderaddressParam.class);
 			if (productParam != null&&addressParam!=null) {

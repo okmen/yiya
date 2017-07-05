@@ -116,7 +116,7 @@ public class PbsOrderMgtController extends SSOController {
 	@ResponseBody
 	public String orderExportExcel(HttpServletRequest request, HttpServletResponse response,String myproductJson) throws MapperException {
 		// 列头
-		String[] headers =new String[24];
+		String[] headers =new String[25];
 		headers[0]="订单号";
 		headers[1]="用户ID号";
 		headers[2]="作品ID号";
@@ -141,7 +141,8 @@ public class PbsOrderMgtController extends SSOController {
 		headers[21]="订单状态";
 		headers[22]="物流公司";
 		headers[23]="运单号";
-		String[] fields = new String[24];
+		headers[24]="备注";
+		String[] fields = new String[25];
 		fields[0]="userorderid";
 		fields[1]="order.userid";
 		fields[2]="cartid";
@@ -166,7 +167,7 @@ public class PbsOrderMgtController extends SSOController {
 		fields[21]="order.status";
 		fields[22]="order.expresscom";
 		fields[23]="order.expressorder";
-		
+		fields[24]="order.remark";
 		//导出格式
 		String format =".xlsx";
 		myproductJson=myproductJson.replaceAll("\"status\":\"\"", "\"status\":null");

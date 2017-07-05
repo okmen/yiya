@@ -149,12 +149,15 @@ public class Ibs_MyProductServiceImpl implements IIbs_MyproductService{
 					if (invites != null && invites.size() > 0) {
 						item.setInviteModel(invites.get(0));
 						item.setInvitestatus(invites.get(0).getStatus());
+						if(invites.get(0).getInviteuserid()==null){
+							UUsers branchuser=usersMapper.getUUsersByPhone(invites.get(0).getInvitephone());
+							invites.get(0).setInviteuserid(branchuser.getUserid());
+						}
 						UBranchusers branchuser=branchusersMapper.selectByPrimaryKey(invites.get(0).getInviteuserid());
 						if(branchuser!=null){
 							item.setInvitedName(branchuser.getName());
 							item.getInviteModel().setInvitephone(branchuser.getPhone());
 						}
-						
 						// 得到来源，即模板名称
 						if (item.getTempid() != null) {
 							PMyproducttemp temp = tempMapper.selectByPrimaryKey(item.getTempid());

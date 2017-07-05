@@ -24,6 +24,7 @@ import com.bbyiya.dao.UChildreninfoMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.pic.InviteStatus;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
 import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
 import com.bbyiya.model.OUserorders;
@@ -230,7 +231,7 @@ public class Ibs_MyProductServiceImpl implements IIbs_MyproductService{
 					}else{
 						//制作完成
 						item.setActiveStatus(Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString()));
-						
+						item.setInvitestatus(Integer.parseInt(InviteStatus.ok.toString()));
 					}
 				}
 

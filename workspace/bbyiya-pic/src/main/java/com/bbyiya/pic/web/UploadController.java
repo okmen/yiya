@@ -18,6 +18,11 @@ import com.bbyiya.web.base.SSOController;
 @RequestMapping(value = "/upload")
 public class UploadController extends SSOController {
 	
+	/**
+	 * 获取图片上传uploadToken
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/getUploadToken")
 	public String loginAjax() throws Exception {
@@ -36,7 +41,29 @@ public class UploadController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-
+	/**
+	 * 获取图片上传uploadToken （优化版）
+	 * 2017-07-06
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getUploadTokenNew")
+	public String getUploadTokenNew() throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			Map<String, String> tokenMap=FileUploadUtils_qiniu.getUpTokenNew();
+			if(tokenMap!=null){
+				rq.setStatu(ReturnStatus.Success);
+				rq.setBasemodle(tokenMap);
+			}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	
 	
 }

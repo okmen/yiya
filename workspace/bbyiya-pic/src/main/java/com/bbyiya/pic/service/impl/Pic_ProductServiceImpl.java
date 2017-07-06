@@ -65,6 +65,7 @@ import com.bbyiya.service.pic.IBaseDiscountService;
 import com.bbyiya.service.pic.IBaseUserAddressService;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
+import com.bbyiya.utils.ImgDomainUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -858,7 +859,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					for (PMyproductdetails dd : detailslist) {
 						if (!ObjectUtil.isEmpty(dd.getImgurl())) {
 							if (dd.getSort() != null && dd.getSort().intValue() == 0) {
-								item.setHeadImg("http://pic.bbyiya.com/" + dd.getImgurl() + "?imageView2/2/w/200");
+								item.setHeadImg(ImgDomainUtil.getImageUrl_Full(dd.getImgurl()));
+//								item.setHeadImg("http://pic.bbyiya.com/" + dd.getImgurl() + "?imageView2/2/w/200");
 							}
 							i++;
 						}
@@ -1222,7 +1224,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			String base_code = userId + "-" + cartId;
 			int i = 1;
 			for (MyProductsDetailsResult dd : arrayList) {
-				dd.setPrintcode(base_code + "-" + String.format("%02d", i));
+				dd.setImgurl(ImgDomainUtil.getImageUrl_Full(dd.getImgurl())); 
+				dd.setPrintcode(base_code + "-" + String.format("%02d", i)); 
 				if (dd.getSceneid() != null && dd.getSceneid() >= 0) {
 					// 打印编号
 					if (ObjectUtil.isEmpty(dd.getDescription())) {

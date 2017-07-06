@@ -18,6 +18,7 @@ import com.bbyiya.model.UUseraddress;
 import com.bbyiya.model.UWeiuserapplys;
 import com.bbyiya.pic.vo.LoginTempVo;
 import com.bbyiya.pic.vo.product.MyProductParam;
+import com.bbyiya.utils.ImgDomainUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.user.UChildInfoParam;
 
@@ -148,7 +149,7 @@ public class Json2Objects {
 					if(dd.get("imgurl")!=null){
 						String url=String.valueOf(dd.get("imgurl"));
 						if(!ObjectUtil.isEmpty(url)&&!url.equals("null")){
-							mo.setImgurl(url); 
+							mo.setImgurl(ImgDomainUtil.getImageUrl_Full(url));  
 							mo.setCreatetime(new Date()); 
 							if(mo.getSceneid()==null){
 								mo.setSceneid(0); 

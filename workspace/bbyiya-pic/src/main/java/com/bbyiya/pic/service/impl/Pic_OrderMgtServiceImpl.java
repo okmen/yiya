@@ -225,9 +225,17 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 							
 						}else{
 							if(cart.getInvitestatus()==null||cart.getInvitestatus().intValue()==Integer.parseInt(InviteStatus.lgnore.toString()))
-								vo.setSourcetype("3");
-							else
-								vo.setSourcetype("1");// 来源于客户一对一
+								vo.setSourcetype("3");//其它自动下单
+							else{
+								//判断作品必所属用户是否是影楼身份
+								UBranches cartbranch=branchesMapper.selectByPrimaryKey(cart.getUserid());
+								if(cartbranch!=null){
+									vo.setSourcetype("1");// 来源于客户一对一
+								}else{
+									vo.setSourcetype("4");// 来源于客户邀请影楼
+								}
+							}
+								
 						}
 						
 					}

@@ -1,7 +1,6 @@
 package com.bbyiya.pic.web.user;
 
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -19,9 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.common.vo.ResultMsg;
-import com.bbyiya.dao.DMyproductdiscountYiyeMapper;
-import com.bbyiya.dao.DMyproductdiscountmodelMapper;
-import com.bbyiya.dao.DMyproductdiscountsMapper;
 import com.bbyiya.dao.PMyproductactivitycodeMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
@@ -35,9 +31,7 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.ActivityCodeStatusEnum;
 import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
 import com.bbyiya.enums.user.UserIdentityEnums;
-import com.bbyiya.model.DMyproductdiscountYiye;
 import com.bbyiya.model.DMyproductdiscountmodel;
-import com.bbyiya.model.DMyproductdiscounts;
 import com.bbyiya.model.PMyproductactivitycode;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
@@ -88,7 +82,9 @@ public class YiyeMgtController  extends SSOController {
 
 	@Autowired
 	private PMyproductactivitycodeMapper codeMapper;
-	
+
+	@Autowired
+	private PProductstylesMapper styleMapper;
 	/**
 	 * 优惠信息
 	 */
@@ -125,28 +121,19 @@ public class YiyeMgtController  extends SSOController {
 						}
 						//我的模板 申请信息
 						PMyproducttempapply apply=null;
-						List<MyProductListVo> myproductList= myproductDao.getMyProductByTempId(temp.getTempid(), user.getUserId());
-						if(myproductList!=null&&myproductList.size()>0){
-							apply= tempApplyMapper.getMyProducttempApplyByCartId(myproductList.get(0).getCartid());
-							if(apply==null){
-								apply=tempApplyMapper.getMyProducttempApplyByUserId(temp.getTempid(), user.getUserId());
-							}
-							if(apply!=null){
-								result.setApplyStatus(apply.getStatus());  
-								result.setReason(apply.getReason());
-							}else {
-								result.setApplyStatus(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString())); 
-							} 
-							result.setIsInvited(1);
-							result.setCartId(myproductList.get(0).getCartid());
+						if(mycart.getIstemp()!=null&&mycart.getIstemp().intValue()>0){//模板
+							apply = tempApplyMapper.getMyProducttempApplyByUserId(temp.getTempid(), user.getUserId());
 						}else {
-							apply= tempApplyMapper.getMyProducttempApplyByUserId(temp.getTempid(), user.getUserId());
-							if(apply!=null){
-								result.setApplyStatus(apply.getStatus());
-							}else {
-								result.setApplyStatus(-1); 
-							}
-						} 
+							apply=tempApplyMapper.getMyProducttempApplyByCartId(cartid);
+						}
+						if (apply != null) {
+							result.setApplyStatus(apply.getStatus());
+							result.setReason(apply.getReason());
+							result.setIsInvited(1);
+							result.setCartId(apply.getCartid());
+						} else {
+							result.setApplyStatus(-1); 
+						}
 						//活动结束 是否有优惠购买资格
 						if(temp.getStatus()!=null&&temp.getStatus().intValue()==Integer.parseInt(MyProductTempStatusEnum.over.toString())){
 							if(apply!=null&&apply.getStatus()!=null&&apply.getStatus()==Integer.parseInt(MyProducttempApplyStatusEnum.fails.toString())){
@@ -508,8 +495,6 @@ public class YiyeMgtController  extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-	@Autowired
-	private PProductstylesMapper styleMapper;
 	/**
 	 * M13-01 参与的活动-参与活动的列表
 	 * @param tempid

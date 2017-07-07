@@ -18,6 +18,7 @@ import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UCashlogs;
 import com.bbyiya.model.UUsers;
+import com.bbyiya.utils.ImgDomainUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
@@ -69,6 +70,16 @@ public class TesterController  extends SSOController{
 	
 	}
 	
+	@ResponseBody 
+	@RequestMapping(value = "/imgurl")
+	public String imgurl(String imgurl) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		rq.setBasemodle(ImgDomainUtil.getImageUrl_Full(imgurl));
+		rq.setStatu(ReturnStatus.Success);
+		return JsonUtil.objectToJsonStr(rq);
+	
+	}
+	
 	@Autowired
 	private UUsersMapper userMapper;
 	@Autowired
@@ -90,7 +101,7 @@ public class TesterController  extends SSOController{
 				if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount()>1000){
 					if(amountPrice>10){
 						rq.setStatu(ReturnStatus.SystemError);
-						rq.setStatusreson("¸ÃÓÃ»§ÕË»§ÒÑÓÐ½ð¶î"+accounts.getAvailableamount());
+						rq.setStatusreson("ï¿½ï¿½ï¿½Ã»ï¿½ï¿½Ë»ï¿½ï¿½ï¿½ï¿½Ð½ï¿½ï¿½"+accounts.getAvailableamount());
 						return JsonUtil.objectToJsonStr(rq);
 					}
 				}
@@ -99,17 +110,17 @@ public class TesterController  extends SSOController{
 				log.setAmount(amountPrice);
 				log.setUserid(branchuserid);
 				log.setPayid(payId);
-				log.setUsetype(Integer.parseInt(AmountType.get.toString()));//³äÖµ
+				log.setUsetype(Integer.parseInt(AmountType.get.toString()));//ï¿½ï¿½Öµ
 				log.setCreatetime(new Date());
 				cashlogMapper.insert(log);
 				UCashlogs freeLog=new UCashlogs();
 				freeLog.setAmount(amountPrice*2);
 				freeLog.setUserid(branchuserid);
 				freeLog.setPayid(payId);
-				freeLog.setUsetype(Integer.parseInt(AmountType.free.toString()));//³äÖµ
+				freeLog.setUsetype(Integer.parseInt(AmountType.free.toString()));//ï¿½ï¿½Öµ
 				freeLog.setCreatetime(new Date());
 				cashlogMapper.insert(freeLog);
-				//³äÖµ ½ð¶î = Êµ¼Ê½ð¶î*3 
+				//ï¿½ï¿½Öµ ï¿½ï¿½ï¿½ = Êµï¿½Ê½ï¿½ï¿½*3 
 				Double totalPriceTemp=amountPrice*3;
 				
 				if(accounts!=null){

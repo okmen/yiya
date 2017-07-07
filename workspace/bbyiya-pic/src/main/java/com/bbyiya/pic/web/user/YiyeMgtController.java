@@ -53,6 +53,7 @@ import com.bbyiya.service.IRegionService;
 import com.bbyiya.service.pic.IBaseDiscountService;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
+import com.bbyiya.utils.ImgDomainUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -537,14 +538,14 @@ public class YiyeMgtController  extends SSOController {
 						if(temp.getStyleid()!=null&&temp.getStyleid().longValue()>0){
 							PProductstyles style= styleMapper.selectByPrimaryKey(temp.getStyleid());
 							if(style!=null){
-								pp.setStyleImg(style.getDefaultimg());
+								pp.setStyleImg(ImgDomainUtil.getImageUrl_Full(style.getDefaultimg()));
 							}
 						}else if(temp.getCartid()!=null){
 							PMyproducts myproducts=myProductMapper.selectByPrimaryKey(temp.getCartid());
 							if(myproducts!=null){
 								PProductstyles style= styleMapper.selectByPrimaryKey(myproducts.getProductid());
 								if(style!=null){
-									pp.setStyleImg(style.getDefaultimg());
+									pp.setStyleImg(ImgDomainUtil.getImageUrl_Full(style.getDefaultimg()));
 								}
 							}
 						}

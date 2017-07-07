@@ -2,6 +2,10 @@ package com.bbyiya.utils.upload;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 import net.sf.json.JSONObject;
@@ -19,11 +23,9 @@ public class FileUploadUtils_qiniu {
 	// 设置好账号的ACCESS_KEY和SECRET_KEY
 	private static String ACCESS_KEY = ConfigUtil.getSingleValue("qiniu_ACCESS_KEY");
 	private static String SECRET_KEY = ConfigUtil.getSingleValue("qiniu_SECRET_KEY");
-	// 要上传的空间
+	
+	// 默认的七牛存储空间
 	private static String bucketname = "yiya"; // 填写新建的那个存储空间对象的名称
-	// 下载图片域名
-	// private String IMAGE_DOMAIN="obbepyhga.bkt.clouddn.com";
-
 	// 密钥配置
 	static Auth auth = Auth.create(ACCESS_KEY, SECRET_KEY);
 	// 创建上传对象
@@ -32,6 +34,39 @@ public class FileUploadUtils_qiniu {
 	// 简单上传，使用默认策略，只需要设置上传的空间名就可以了
 	public static String getUpToken() {
 		return auth.uploadToken(bucketname);
+	}
+	
+	public static Map<String, String> getUpTokenNew(){
+		Map<String, String> result=new HashMap<String, String>();
+		List<Map<String, String>> mapList=ConfigUtil.getMaplist("uploadcdns");
+		if(mapList!=null&&mapList.size()>0){
+			int index = new Random().nextInt(mapList.size());
+			String bucketName=mapList.get(index).get("bucketname");
+			String token=auth.uploadToken(bucketName);
+			result.put("upToken", token);
+			result.put("domain", mapList.get(index).get("domain"));
+			return result;
+		}
+		return null;
+	}
+	
+	/**
+	 * 获取上传图片接口，替换
+	 * @param key
+	 * @return
+	 */
+	public static Map<String, String> getUpTokenNew(String key){
+		Map<String, String> result=new HashMap<String, String>();
+		List<Map<String, String>> mapList=ConfigUtil.getMaplist("uploadcdns");
+		if(mapList!=null&&mapList.size()>0){
+			int index = new Random().nextInt(mapList.size());
+			String bucketName=mapList.get(index).get("bucketname");
+			String token=auth.uploadToken(bucketName,key);
+			result.put("upToken", token);
+			result.put("domain", mapList.get(index).get("domain"));
+			return result;
+		}
+		return null;
 	}
 
 	/**

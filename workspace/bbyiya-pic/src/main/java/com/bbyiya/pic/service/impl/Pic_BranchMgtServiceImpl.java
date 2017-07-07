@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.support.DaoSupport;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -225,11 +226,6 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		ReturnModel rq=new ReturnModel();
 		UAgentapply apply= agentapplyMapper.selectByPrimaryKey(userId); 
 		if(apply!=null){
-			if(apply.getStatus()!=null&&apply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.ok.toString())){
-				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("您已经是代理商了，不能提交申请！");
-				return rq;
-			}
 			applyInfo.setAgentuserid(apply.getAgentuserid());
 		}
 		rq.setStatu(ReturnStatus.SystemError);
@@ -238,33 +234,39 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			return rq;
 		}
 		if(ObjectUtil.isEmpty(applyInfo.getAgentcompanyname())){
-			rq.setStatusreson("公司名称不能为空");
+			rq.setStatusreson("企业名称不能为空");
 			return rq;
 		}
-		if(ObjectUtil.isEmpty(applyInfo.getIdcard())){
-			rq.setStatusreson("身份证信息不能为空");
+		if(ObjectUtil.isEmpty(applyInfo.getUsername())){
+			rq.setStatusreson("法人名称不能为空");
 			return rq;
-		} 
+		}
 		if(ObjectUtil.isEmpty(applyInfo.getContactname())){
-			rq.setStatusreson("联系人必须填");
+			rq.setStatusreson("运营者姓名必须填");
 			return rq;
 		} 
-		if(ObjectUtil.isEmpty(applyInfo.getBusinesslicense())){
-			rq.setStatusreson("营业执照必须填");
+		if(ObjectUtil.isEmpty(applyInfo.getPhone())){
+			rq.setStatusreson("运营者电话必须填");
 			return rq;
 		} 
-		if(areaList==null||areaList.size()<=0){
-			rq.setStatusreson("请选择要代理的区域");
+		if(ObjectUtil.isEmpty(applyInfo.getStreetdetail())){
+			rq.setStatusreson("店里收货地址必须填");
 			return rq;
-		}
-		//检查代理区域是否被代理
-		for (UAgentapplyareas area : areaList) {
-			boolean isApply=checkAreaCodeIsApply(userId,area.getAreacode());
-			if(isApply){
-				rq.setStatusreson("区域["+area.getAreacode()+"]已被代理，不能重复代理！");
-				return rq;
-			}
-		}
+		} 
+		
+//		if(ObjectUtil.isEmpty(applyInfo.getIdcard())){
+//		rq.setStatusreson("身份证信息不能为空");
+//		return rq;
+//		} 
+//		if(ObjectUtil.isEmpty(applyInfo.getBusinesslicense())){
+//			rq.setStatusreson("营业执照必须填");
+//			return rq;
+//		} 
+//		if(areaList==null||areaList.size()<=0){
+//			rq.setStatusreson("请选择要代理的区域");
+//			return rq;
+//		}
+		
 		if(!ObjectUtil.validSqlStr(applyInfo.getAgentcompanyname())
 				||!ObjectUtil.validSqlStr(applyInfo.getContactname())
 				||!ObjectUtil.validSqlStr(applyInfo.getStreetdetail())
@@ -280,19 +282,49 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		}
 		applyInfo.setAgentuserid(userId);
 		applyInfo.setCreatetime(new Date());
-		applyInfo.setStatus(Integer.parseInt(AgentStatusEnum.applying.toString()));  
+		
 		if(apply!=null&&applyInfo.getAgentuserid()!=null&&applyInfo.getAgentuserid()>0){
+			//先删除后插入新的
+			List<UAgentapplyareas> oldareaplans=uagentapplyareaMapper.findAgentapplyareasByUserId(applyInfo.getAgentuserid());
+			for (UAgentapplyareas oldarea : oldareaplans) {
+				uagentapplyareaMapper.deleteByPrimaryKey(oldarea.getAcodeid());
+			}
+			//暂时审核后不能修改区域
+//			//如果是已通过审核的代理商
+//			if(applyInfo.getStatus()==Integer.parseInt(AgentStatusEnum.ok.toString())){
+//				List<RAreaplans> areaplans=agentAreaDao.findRAreaplansByAgentUserId(applyInfo.getAgentuserid());
+//				for (RAreaplans ap : areaplans) {
+//					areaplansMapper.deleteByPrimaryKey(ap.getAreacode());
+//				}
+//				if(areaList!=null&&areaList.size()>0){
+//					//插入代理区域
+//					for (UAgentapplyareas area : areaList) {
+//						RAreaplans areaplan=new RAreaplans();
+//						areaplan.setAgentuserid(apply.getAgentuserid());
+//						areaplan.setAreacode(area.getAreacode());
+//						areaplan.setAreaname(regionService.getAresName(area.getAreacode()));
+//						areaplan.setIsagent(1);
+//						areaplansMapper.insert(areaplan);
+//					}
+//				}
+//			}
 			agentapplyMapper.updateByPrimaryKeySelective(applyInfo);
 		}else {
+			applyInfo.setStatus(Integer.parseInt(AgentStatusEnum.applying.toString()));  
 			agentapplyMapper.insert(applyInfo);
+			
 		}
-		//插入代理区域
-		for (UAgentapplyareas area : areaList) {
-			area.setUserid(userId);
-			uagentapplyareaMapper.insert(area);
+		
+		if(areaList!=null&&areaList.size()>0){
+			//插入代理区域
+			for (UAgentapplyareas area : areaList) {
+				area.setUserid(userId);
+				uagentapplyareaMapper.insert(area);
+			}
 		}
+		
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("提交成功，等待审核！"); 
+		rq.setStatusreson("提交成功！"); 
 		return rq;
 	}
 	
@@ -360,7 +392,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		return rq;
 	}
 	
-	public ReturnModel applyBranchNew(Long userId,UBranches applyInfo,List<UAgentapplyareas> areaList){
+	public ReturnModel applyBranchNew(Long userId,UBranches applyInfo){
 		ReturnModel rq=new ReturnModel();
 		UBranches apply= branchesMapper.selectByPrimaryKey(userId); 
 		if(apply!=null){
@@ -400,14 +432,15 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			rq.setStatusreson("您已经提交过代理申请，不能再申请分店！");
 			return rq;
 		}
-		List<Integer> agentArealist=getAgentAreaCodelist(agentapply.getArea());
+		List<RAreaplans> agentArealist=agentAreaDao.findRAreaplansByAgentUserId(agentapply.getAgentuserid());		
 		boolean isInArea=false;
 		if(agentArealist!=null&&agentArealist.size()>0){
-			for (Integer ss : agentArealist) {
-				if(ss.intValue()==applyInfo.getArea()){
-					isInArea=true;
+				for (RAreaplans ss : agentArealist) {
+					if(agentapply.getArea()==ss.getAreacode()){
+						isInArea=true;
+						break;
+					}
 				}
-			}
 		}
 		if(!isInArea){
 			rq.setStatusreson("对不起，门店不在代理区域！");
@@ -445,6 +478,8 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		rq.setStatusreson("提交成功，等待审核！"); 
 		return rq;
 	}
+	
+	
 	public ReturnModel applyBranch(Long userId,UBranches applyInfo){
 		ReturnModel rq=new ReturnModel();
 		UBranches apply= branchesMapper.selectByPrimaryKey(userId); 
@@ -551,7 +586,6 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			apply.setReason(msg);
 			agentapplyMapper.updateByPrimaryKeySelective(apply);
 			if(status==Integer.parseInt(AgentStatusEnum.ok.toString())){//成为代理
-				
 				List<UAgentapplyareas> agentapplyareas=uagentapplyareaMapper.findAgentapplyareasByUserId(agentUserId);
 				for (UAgentapplyareas area : agentapplyareas) {
 					boolean isApply=checkAreaCodeIsApply(agentUserId,area.getAreacode());
@@ -802,6 +836,12 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			//插入代理区域
 			List<UAgentapplyareas> agentapplyareas=uagentapplyareaMapper.findAgentapplyareasByUserId(apply.getAgentuserid());
 			if(agentapplyareas!=null&&agentapplyareas.size()>0){
+				//先删除原来的代理区域
+				List<RAreaplans> oldarea=agentAreaDao.findRAreaplansByAgentUserId(apply.getAgentuserid());
+				for (RAreaplans area : oldarea) {
+					areaplansMapper.deleteByPrimaryKey(area.getAreacode());
+				}
+				//再插入新的防止垃圾数据
 				for (UAgentapplyareas area : agentapplyareas) {
 					RAreaplans areaplan=new RAreaplans();
 					areaplan.setAgentuserid(apply.getAgentuserid());

@@ -151,7 +151,10 @@ public class Ibs_MyProductServiceImpl implements IIbs_MyproductService{
 						item.setInvitestatus(invites.get(0).getStatus());
 						if(invites.get(0).getInviteuserid()==null){
 							UUsers branchuser=usersMapper.getUUsersByPhone(invites.get(0).getInvitephone());
-							invites.get(0).setInviteuserid(branchuser.getUserid());
+							if(branchuser!=null){
+								invites.get(0).setInviteuserid(branchuser.getUserid());
+							}
+							
 						}
 						UBranchusers branchuser=branchusersMapper.selectByPrimaryKey(invites.get(0).getInviteuserid());
 						if(branchuser!=null){
@@ -202,8 +205,8 @@ public class Ibs_MyProductServiceImpl implements IIbs_MyproductService{
 					item.setIsDue(childinfo.getIsdue()==null?0:childinfo.getIsdue());
 				}
 				
-				
-				List<OUserorders> orderList = orderMapper.findOrderListByCartId(item.getCartid());
+				//只得到影楼帮忙下单的订单
+				List<OUserorders> orderList = orderMapper.findOrderListByCartIdAndBranchUserID(item.getCartid(), item.getInviteModel().getInviteuserid());  
 				List<String> orderNoList = new ArrayList<String>();
 				for (OUserorders order : orderList) {
 					orderNoList.add(order.getUserorderid());

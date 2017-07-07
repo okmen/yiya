@@ -28,7 +28,6 @@ public class AgentBranchController extends SSOController {
 	private IPic_BranchMgtService branchService;
 	@Resource(name = "cts_UWeiuserService")
 	private ICts_UWeiUserManageService weiUserService;
-
 	/**
 	 * B01 代理商审核
 	 * 
@@ -40,13 +39,13 @@ public class AgentBranchController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/audit_AgentApply")
-	public String audit_AgentApply(Long agentUserId, int status, String msg) throws Exception {
+	public String audit_AgentApplyNew(Long agentUserId, int status, String msg) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
 			
 			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){
-				rq = branchService.audit_AgentApply(user.getUserId(), agentUserId, status, msg);
+				rq = branchService.audit_AgentApplyNew(user.getUserId(), agentUserId, status, msg);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
 				rq.setStatusreson("无权限");
@@ -57,7 +56,7 @@ public class AgentBranchController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	
+
 	/**
 	 * B03 查询代理商申请列表
 	 * @param agentUserId

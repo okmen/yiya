@@ -111,12 +111,30 @@ public interface IPic_BranchMgtService {
 	 * @return
 	 */
 	boolean checkAreaCodeIsApply(Long userId, Integer areacode);
-	
-	ReturnModel applyBranchNew(Long userId, UBranches applyInfo,
-			List<UAgentapplyareas> areaList);
+	/**
+	 * 影楼分店申请
+	 * @param userId
+	 * @param applyInfo
+	 * @return
+	 */
+	ReturnModel applyBranchNew(Long userId, UBranches applyInfo);
+	/**
+	 * 代理商审核
+	 * @param adminId
+	 * @param agentUserId
+	 * @param status
+	 * @param msg
+	 * @return
+	 */
 	ReturnModel audit_AgentApplyNew(Long adminId, Long agentUserId, int status,
 			String msg);
-	
+	/**
+	 * 代理商申请
+	 * @param userId
+	 * @param applyInfo
+	 * @param areaList
+	 * @return
+	 */
 	ReturnModel applyAgentNew(Long userId, UAgentapply applyInfo,
 			List<UAgentapplyareas> areaList);
 }

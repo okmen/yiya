@@ -122,7 +122,7 @@ public class BranchMgtController extends SSOController {
 	 * @throws Exception
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/agentApplynew")
+	@RequestMapping(value = "/agentApply")
 	public String agentApplynew(String agentJson,String areacodeJson) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
@@ -150,41 +150,40 @@ public class BranchMgtController extends SSOController {
 		
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	/**
-	 *  代理商申请
-	 * @param agentJson
-	 * @return
-	 * @throws Exception
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/agentApply")
-	public String agentApply(String agentJson) throws Exception {
-		ReturnModel rq=new ReturnModel();
-		LoginSuccessResult user= super.getLoginUser();
-		if(user!=null){
-			if(user.getStatus()!=null&&user.getStatus().intValue()==Integer.parseInt(UserStatusEnum.ok.toString())){
-				try {
-					UAgentapply applyInfo=(UAgentapply)JsonUtil.jsonStrToObject(agentJson, UAgentapply.class);
-					rq =branchService.applyAgent(user.getUserId(), applyInfo);
-				} catch (Exception e) {
-					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("参数有误101");
-					return JsonUtil.objectToJsonStr(rq);
-				}
-			}else {
-				rq.setStatu(ReturnStatus.LoginError_2);
-				rq.setStatusreson("未完成注册");
-				return JsonUtil.objectToJsonStr(rq);
-			}
-		}else {
-			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
-			return JsonUtil.objectToJsonStr(rq);
-		}
-		
-		return JsonUtil.objectToJsonStr(rq);
-	}
-	
+//	/**
+//	 *  代理商申请
+//	 * @param agentJson
+//	 * @return
+//	 * @throws Exception
+//	 */
+//	@ResponseBody
+//	@RequestMapping(value = "/agentApply")
+//	public String agentApply(String agentJson) throws Exception {
+//		ReturnModel rq=new ReturnModel();
+//		LoginSuccessResult user= super.getLoginUser();
+//		if(user!=null){
+//			if(user.getStatus()!=null&&user.getStatus().intValue()==Integer.parseInt(UserStatusEnum.ok.toString())){
+//				try {
+//					UAgentapply applyInfo=(UAgentapply)JsonUtil.jsonStrToObject(agentJson, UAgentapply.class);
+//					rq =branchService.applyAgent(user.getUserId(), applyInfo);
+//				} catch (Exception e) {
+//					rq.setStatu(ReturnStatus.ParamError);
+//					rq.setStatusreson("参数有误101");
+//					return JsonUtil.objectToJsonStr(rq);
+//				}
+//			}else {
+//				rq.setStatu(ReturnStatus.LoginError_2);
+//				rq.setStatusreson("未完成注册");
+//				return JsonUtil.objectToJsonStr(rq);
+//			}
+//		}else {
+//			rq.setStatu(ReturnStatus.LoginError);
+//			rq.setStatusreson("登录过期");
+//			return JsonUtil.objectToJsonStr(rq);
+//		}
+//		
+//		return JsonUtil.objectToJsonStr(rq);
+//	}
 	/**
 	 * cts协助代理商 提交申请
 	 * @param agentJson
@@ -194,7 +193,7 @@ public class BranchMgtController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/cts_agentApply")
-	public String cts_agentApply(String agentJson,long branchUserId) throws Exception {
+	public String cts_agentApplyNew(String agentJson,String areacodeJson,long branchUserId) throws Exception {
 		ReturnModel rq=new ReturnModel(); 
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
@@ -204,7 +203,9 @@ public class BranchMgtController extends SSOController {
 					if(branchUsers!=null){
 						if(!ObjectUtil.isEmpty(branchUsers.getMobilephone())){
 							UAgentapply applyInfo=(UAgentapply)JsonUtil.jsonStrToObject(agentJson, UAgentapply.class);
-							rq =branchService.applyAgent(branchUserId, applyInfo);
+							List<UAgentapplyareas> arealist=Json2Objects.getParam_AgentApplyareas(areacodeJson);
+							
+							rq =branchService.applyAgentNew(branchUserId, applyInfo,arealist);
 						}else {
 							rq.setStatu(ReturnStatus.ParamError);
 							rq.setStatusreson("用户未绑定手机号！");
@@ -231,45 +232,52 @@ public class BranchMgtController extends SSOController {
 		
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	/**
-	 *  分店申请
-	 * @param agentJson
-	 * @return
-	 * @throws Exception
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/branchApplyNew")
-	public String branchApplyNew(String branchJson,String areacodeJson) throws Exception {
-		ReturnModel rq=new ReturnModel();
-		LoginSuccessResult user= super.getLoginUser();
-		if(user!=null){
-			if(user.getStatus()!=null&&user.getStatus().intValue()==Integer.parseInt(UserStatusEnum.ok.toString())){
-				try {
-					UBranches applyInfo=(UBranches)JsonUtil.jsonStrToObject(branchJson, UBranches.class);
-					if(applyInfo!=null){
-						applyInfo.setBranchuserid(user.getUserId()); 
-					}
-					List<UAgentapplyareas> arealist=Json2Objects.getParam_AgentApplyareas(areacodeJson);
-					
-					rq =branchService.applyBranch(user.getUserId(), applyInfo);
-				} catch (Exception e) {
-					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("参数有误101");
-					System.out.println(e); 
-					return JsonUtil.objectToJsonStr(rq);
-				}
-			}else {
-				rq.setStatu(ReturnStatus.LoginError_2);
-				rq.setStatusreson("未完成注册");
-				return JsonUtil.objectToJsonStr(rq);
-			}
-		}else {
-			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
-			return JsonUtil.objectToJsonStr(rq);
-		}
-		return JsonUtil.objectToJsonStr(rq);
-	}
+//	/**
+//	 * cts协助代理商 提交申请
+//	 * @param agentJson
+//	 * @param branchUserId
+//	 * @return
+//	 * @throws Exception
+//	 */
+//	@ResponseBody
+//	@RequestMapping(value = "/cts_agentApply")
+//	public String cts_agentApply(String agentJson,long branchUserId) throws Exception {
+//		ReturnModel rq=new ReturnModel(); 
+//		LoginSuccessResult user= super.getLoginUser();
+//		if(user!=null){
+//			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
+//				try {
+//					UUsers branchUsers= userMapper.getUUsersByUserID(branchUserId);
+//					if(branchUsers!=null){
+//						if(!ObjectUtil.isEmpty(branchUsers.getMobilephone())){
+//							UAgentapply applyInfo=(UAgentapply)JsonUtil.jsonStrToObject(agentJson, UAgentapply.class);
+//							rq =branchService.applyAgent(branchUserId, applyInfo);
+//						}else {
+//							rq.setStatu(ReturnStatus.ParamError);
+//							rq.setStatusreson("用户未绑定手机号！");
+//						}
+//					}else {
+//						rq.setStatu(ReturnStatus.ParamError);
+//						rq.setStatusreson("找不到用户！（"+branchUserId+"可能是无效用户）");
+//					}
+//				} catch (Exception e) {
+//					rq.setStatu(ReturnStatus.ParamError);
+//					rq.setStatusreson("参数有误101");
+//					return JsonUtil.objectToJsonStr(rq);
+//				}
+//			}else {
+//				rq.setStatu(ReturnStatus.ParamError);
+//				rq.setStatusreson("无此权限");
+//				return JsonUtil.objectToJsonStr(rq);
+//			}
+//		}else {
+//			rq.setStatu(ReturnStatus.LoginError);
+//			rq.setStatusreson("登录过期");
+//			return JsonUtil.objectToJsonStr(rq);
+//		}
+//		
+//		return JsonUtil.objectToJsonStr(rq);
+//	}
 	/**
 	 *  分店申请
 	 * @param agentJson
@@ -278,7 +286,7 @@ public class BranchMgtController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/branchApply")
-	public String branchApply(String branchJson) throws Exception {
+	public String branchApplyNew(String branchJson) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
@@ -288,7 +296,7 @@ public class BranchMgtController extends SSOController {
 					if(applyInfo!=null){
 						applyInfo.setBranchuserid(user.getUserId()); 
 					}
-					rq =branchService.applyBranch(user.getUserId(), applyInfo);
+					rq =branchService.applyBranchNew(user.getUserId(), applyInfo);
 				} catch (Exception e) {
 					rq.setStatu(ReturnStatus.ParamError);
 					rq.setStatusreson("参数有误101");
@@ -307,6 +315,43 @@ public class BranchMgtController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+//	/**
+//	 *  分店申请
+//	 * @param agentJson
+//	 * @return
+//	 * @throws Exception
+//	 */
+//	@ResponseBody
+//	@RequestMapping(value = "/branchApply")
+//	public String branchApply(String branchJson) throws Exception {
+//		ReturnModel rq=new ReturnModel();
+//		LoginSuccessResult user= super.getLoginUser();
+//		if(user!=null){
+//			if(user.getStatus()!=null&&user.getStatus().intValue()==Integer.parseInt(UserStatusEnum.ok.toString())){
+//				try {
+//					UBranches applyInfo=(UBranches)JsonUtil.jsonStrToObject(branchJson, UBranches.class);
+//					if(applyInfo!=null){
+//						applyInfo.setBranchuserid(user.getUserId()); 
+//					}
+//					rq =branchService.applyBranch(user.getUserId(), applyInfo);
+//				} catch (Exception e) {
+//					rq.setStatu(ReturnStatus.ParamError);
+//					rq.setStatusreson("参数有误101");
+//					System.out.println(e); 
+//					return JsonUtil.objectToJsonStr(rq);
+//				}
+//			}else {
+//				rq.setStatu(ReturnStatus.LoginError_2);
+//				rq.setStatusreson("未完成注册");
+//				return JsonUtil.objectToJsonStr(rq);
+//			}
+//		}else {
+//			rq.setStatu(ReturnStatus.LoginError);
+//			rq.setStatusreson("登录过期");
+//			return JsonUtil.objectToJsonStr(rq);
+//		}
+//		return JsonUtil.objectToJsonStr(rq);
+//	}
 	
 	/**
 	 * 获取代理单元（根据县区判断代理单元）

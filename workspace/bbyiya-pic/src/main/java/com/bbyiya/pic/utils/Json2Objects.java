@@ -377,6 +377,9 @@ public class Json2Objects {
 	}
 	
 	public static List<UAgentapplyareas> getParam_AgentApplyareas(String areacodeJson) {
+		if(ObjectUtil.isEmpty(areacodeJson)){
+			return null;
+		}
 		JSONObject model = JSONObject.fromObject(areacodeJson);
 		List<UAgentapplyareas> arealist=null;
 		if (model != null) {

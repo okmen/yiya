@@ -328,69 +328,70 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		return rq;
 	}
 	
-//	/**
-//	 * 代理商申请
-//	 */
-//	public ReturnModel applyAgent(Long userId,UAgentapply applyInfo){
-//		ReturnModel rq=new ReturnModel();
-//		UAgentapply apply= agentapplyMapper.selectByPrimaryKey(userId); 
-//		if(apply!=null){
-//			if(apply.getStatus()!=null&&apply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.ok.toString())){
-//				rq.setStatu(ReturnStatus.SystemError);
-//				rq.setStatusreson("您已经是代理商了，不能提交申请！");
-//				return rq;
-//			}
-////			rq.setStatu(ReturnStatus.SystemError);
-////			rq.setStatusreson("您已提交过申请，不能重复提交");
-////			return rq;
-//			applyInfo.setAgentuserid(apply.getAgentuserid());
-//		}
-//		rq.setStatu(ReturnStatus.SystemError);
-//		if(applyInfo==null){
-//			rq.setStatusreson("参数有误");
+	/**
+	 * 代理商申请
+	 */
+	public ReturnModel applyAgent(Long userId,UAgentapply applyInfo){
+		ReturnModel rq=new ReturnModel();
+		UAgentapply apply= agentapplyMapper.selectByPrimaryKey(userId); 
+		if(apply!=null){
+			if(apply.getStatus()!=null&&apply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.ok.toString())){
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson("您已经是代理商了，不能提交申请！");
+				return rq;
+			}
+//			rq.setStatu(ReturnStatus.SystemError);
+//			rq.setStatusreson("您已提交过申请，不能重复提交");
 //			return rq;
-//		}
-//		if(ObjectUtil.isEmpty(applyInfo.getAgentcompanyname())){
-//			rq.setStatusreson("公司名称不能为空");
-//			return rq;
-//		}
-//		if(ObjectUtil.isEmpty(applyInfo.getIdcard())){
-//			rq.setStatusreson("身份证信息不能为空");
-//			return rq;
-//		} 
-//		if(ObjectUtil.isEmpty(applyInfo.getContactname())){
-//			rq.setStatusreson("联系人必须填");
-//			return rq;
-//		} 
-//		if(ObjectUtil.isEmpty(applyInfo.getBusinesslicense())){
-//			rq.setStatusreson("营业执照必须填");
-//			return rq;
-//		} 
-//		if(!ObjectUtil.validSqlStr(applyInfo.getAgentcompanyname())
-//				||!ObjectUtil.validSqlStr(applyInfo.getContactname())
-//				||!ObjectUtil.validSqlStr(applyInfo.getStreetdetail())
-//				||!ObjectUtil.validSqlStr(applyInfo.getIdcard())
-//				||!ObjectUtil.validSqlStr(applyInfo.getBusinesslicense())
-//				||!ObjectUtil.validSqlStr(applyInfo.getBusinessscope())
-//				||!ObjectUtil.validSqlStr(applyInfo.getShopimg())
-//				||!ObjectUtil.validSqlStr(applyInfo.getTeamimg())
-//				||!ObjectUtil.validSqlStr(applyInfo.getRemark())
-//				){
-//			rq.setStatusreson("存在非法字符");
-//			return rq;
-//		}
-//		applyInfo.setAgentuserid(userId);
-//		applyInfo.setCreatetime(new Date());
-//		applyInfo.setStatus(Integer.parseInt(AgentStatusEnum.applying.toString()));  
-//		if(apply!=null&&applyInfo.getAgentuserid()!=null&&applyInfo.getAgentuserid()>0){
-//			agentapplyMapper.updateByPrimaryKeySelective(applyInfo);
-//		}else {
-//			agentapplyMapper.insert(applyInfo);
-//		}
-//		rq.setStatu(ReturnStatus.Success);
-//		rq.setStatusreson("提交成功，等待审核！"); 
-//		return rq;
-//	}
+			applyInfo.setAgentuserid(apply.getAgentuserid());
+		}
+		rq.setStatu(ReturnStatus.SystemError);
+		if(applyInfo==null){
+			rq.setStatusreson("参数有误");
+			return rq;
+		}
+		if(ObjectUtil.isEmpty(applyInfo.getAgentcompanyname())){
+			rq.setStatusreson("企业名称不能为空");
+			return rq;
+		}
+		if(ObjectUtil.isEmpty(applyInfo.getUsername())){
+			rq.setStatusreson("法人名称不能为空");
+			return rq;
+		}
+		if(ObjectUtil.isEmpty(applyInfo.getContactname())){
+			rq.setStatusreson("运营者姓名必须填");
+			return rq;
+		} 
+		if(ObjectUtil.isEmpty(applyInfo.getPhone())){
+			rq.setStatusreson("运营者电话必须填");
+			return rq;
+		} 
+		
+		if(!ObjectUtil.validSqlStr(applyInfo.getAgentcompanyname())
+				||!ObjectUtil.validSqlStr(applyInfo.getContactname())
+				||!ObjectUtil.validSqlStr(applyInfo.getStreetdetail())
+				||!ObjectUtil.validSqlStr(applyInfo.getIdcard())
+				||!ObjectUtil.validSqlStr(applyInfo.getBusinesslicense())
+				||!ObjectUtil.validSqlStr(applyInfo.getBusinessscope())
+				||!ObjectUtil.validSqlStr(applyInfo.getShopimg())
+				||!ObjectUtil.validSqlStr(applyInfo.getTeamimg())
+				||!ObjectUtil.validSqlStr(applyInfo.getRemark())
+				){
+			rq.setStatusreson("存在非法字符");
+			return rq;
+		}
+		applyInfo.setAgentuserid(userId);
+		applyInfo.setCreatetime(new Date());
+		applyInfo.setStatus(Integer.parseInt(AgentStatusEnum.applying.toString()));  
+		if(apply!=null&&applyInfo.getAgentuserid()!=null&&applyInfo.getAgentuserid()>0){
+			agentapplyMapper.updateByPrimaryKeySelective(applyInfo);
+		}else {
+			agentapplyMapper.insert(applyInfo);
+		}
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("提交成功，等待审核！"); 
+		return rq;
+	}
 	
 	public ReturnModel applyBranchNew(Long userId,UBranches applyInfo){
 		ReturnModel rq=new ReturnModel();
@@ -480,95 +481,95 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 	}
 	
 	
-//	public ReturnModel applyBranch(Long userId,UBranches applyInfo){
-//		ReturnModel rq=new ReturnModel();
-//		UBranches apply= branchesMapper.selectByPrimaryKey(userId); 
-//		if(apply!=null){
-//			if(apply.getStatus()!=null&&apply.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.ok.toString())){
-//				rq.setStatu(ReturnStatus.SystemError);
-//				rq.setStatusreson("您已经是合作商了，不能再次提交！");
-//				return rq;
-//			}
-//			applyInfo.setBranchuserid(apply.getBranchuserid());
-////			rq.setStatu(ReturnStatus.SystemError);
-////			rq.setStatusreson("您已提交过申请，不能重复提交");
-////			return rq;
-//		}
-//		rq.setStatu(ReturnStatus.SystemError);
-//		if(applyInfo==null){
-//			rq.setStatusreson("参数有误");
+	public ReturnModel applyBranch(Long userId,UBranches applyInfo){
+		ReturnModel rq=new ReturnModel();
+		UBranches apply= branchesMapper.selectByPrimaryKey(userId); 
+		if(apply!=null){
+			if(apply.getStatus()!=null&&apply.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.ok.toString())){
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson("您已经是合作商了，不能再次提交！");
+				return rq;
+			}
+			applyInfo.setBranchuserid(apply.getBranchuserid());
+//			rq.setStatu(ReturnStatus.SystemError);
+//			rq.setStatusreson("您已提交过申请，不能重复提交");
 //			return rq;
-//		}
-//		if(ObjectUtil.isEmpty(applyInfo.getBranchcompanyname())){
-//			rq.setStatusreson("公司名称不能为空");
-//			return rq;
-//		}
-//		if(applyInfo.getAgentuserid()==null||applyInfo.getAgentuserid()<=0){
-//			rq.setStatusreson("代理商咿呀号必须填");
-//			return rq;
-//		}
-//
-//		UAgentapply agentapply= agentapplyMapper.selectByPrimaryKey(applyInfo.getAgentuserid());
-//		if(agentapply==null){
-//			rq.setStatusreson("找不到相应的代理商信息！");
-//			return rq;
-//		}
-//		if(agentapply.getAgentuserid().longValue()==applyInfo.getBranchuserid()){
-//			rq.setStatusreson("您已经提交过代理申请，不能再申请分店！");
-//			return rq;
-//		}
-//		//当前用户已经提交过代理申请
-//		UAgentapply agentBranchApply= agentapplyMapper.selectByPrimaryKey(applyInfo.getBranchuserid());
-//		if(agentBranchApply!=null){
-//			rq.setStatusreson("您已经提交过代理申请，不能再申请分店！");
-//			return rq;
-//		}
-//		List<Integer> agentArealist=getAgentAreaCodelist(agentapply.getArea());
-//		boolean isInArea=false;
-//		if(agentArealist!=null&&agentArealist.size()>0){
-//			for (Integer ss : agentArealist) {
-//				if(ss.intValue()==applyInfo.getArea()){
-//					isInArea=true;
-//				}
-//			}
-//		}
-//		if(!isInArea){
-//			rq.setStatusreson("对不起，门店不在代理区域！");
-//			return rq; 
-//		}
-//		if(ObjectUtil.isEmpty(applyInfo.getUsername())){
-//			rq.setStatusreson("联系人必须填");
-//			return rq;
-//		} 
-//		if(ObjectUtil.isEmpty(applyInfo.getBusinesslicense())){
-//			rq.setStatusreson("营业执照必须填");
-//			return rq;
-//		} 
-//		if(!ObjectUtil.validSqlStr(applyInfo.getBranchcompanyname())
-//				||!ObjectUtil.validSqlStr(applyInfo.getUsername())
-//				||!ObjectUtil.validSqlStr(applyInfo.getStreetdetail())
-//				||!ObjectUtil.validSqlStr(applyInfo.getBusinesslicense())
-//				||!ObjectUtil.validSqlStr(applyInfo.getBusinessscope())
-//				||!ObjectUtil.validSqlStr(applyInfo.getShopimg())
-//				||!ObjectUtil.validSqlStr(applyInfo.getTeamimg())
-//				||!ObjectUtil.validSqlStr(applyInfo.getRemark())
-//				){
-//			rq.setStatusreson("存在非法字符");
-//			return rq;
-//		}
-//		applyInfo.setBranchuserid(userId);
-//		applyInfo.setCreatetime(new Date());
-//		applyInfo.setStatus(Integer.parseInt(BranchStatusEnum.applying.toString()));  
-//		if(apply!=null&&applyInfo.getBranchuserid()!=null&&applyInfo.getBranchuserid()>0){
-//			branchesMapper.updateByPrimaryKeySelective(applyInfo);
-//		}else {
-//			branchesMapper.insert(applyInfo);
-//		}
-//		rq.setStatu(ReturnStatus.Success);
-//		rq.setStatusreson("提交成功，等待审核！"); 
-//		return rq;
-//	}
-//	
+		}
+		rq.setStatu(ReturnStatus.SystemError);
+		if(applyInfo==null){
+			rq.setStatusreson("参数有误");
+			return rq;
+		}
+		if(ObjectUtil.isEmpty(applyInfo.getBranchcompanyname())){
+			rq.setStatusreson("公司名称不能为空");
+			return rq;
+		}
+		if(applyInfo.getAgentuserid()==null||applyInfo.getAgentuserid()<=0){
+			rq.setStatusreson("代理商咿呀号必须填");
+			return rq;
+		}
+
+		UAgentapply agentapply= agentapplyMapper.selectByPrimaryKey(applyInfo.getAgentuserid());
+		if(agentapply==null){
+			rq.setStatusreson("找不到相应的代理商信息！");
+			return rq;
+		}
+		if(agentapply.getAgentuserid().longValue()==applyInfo.getBranchuserid()){
+			rq.setStatusreson("您已经提交过代理申请，不能再申请分店！");
+			return rq;
+		}
+		//当前用户已经提交过代理申请
+		UAgentapply agentBranchApply= agentapplyMapper.selectByPrimaryKey(applyInfo.getBranchuserid());
+		if(agentBranchApply!=null){
+			rq.setStatusreson("您已经提交过代理申请，不能再申请分店！");
+			return rq;
+		}
+		List<Integer> agentArealist=getAgentAreaCodelist(agentapply.getArea());
+		boolean isInArea=false;
+		if(agentArealist!=null&&agentArealist.size()>0){
+			for (Integer ss : agentArealist) {
+				if(ss.intValue()==applyInfo.getArea()){
+					isInArea=true;
+				}
+			}
+		}
+		if(!isInArea){
+			rq.setStatusreson("对不起，门店不在代理区域！");
+			return rq; 
+		}
+		if(ObjectUtil.isEmpty(applyInfo.getUsername())){
+			rq.setStatusreson("联系人必须填");
+			return rq;
+		} 
+		if(ObjectUtil.isEmpty(applyInfo.getBusinesslicense())){
+			rq.setStatusreson("营业执照必须填");
+			return rq;
+		} 
+		if(!ObjectUtil.validSqlStr(applyInfo.getBranchcompanyname())
+				||!ObjectUtil.validSqlStr(applyInfo.getUsername())
+				||!ObjectUtil.validSqlStr(applyInfo.getStreetdetail())
+				||!ObjectUtil.validSqlStr(applyInfo.getBusinesslicense())
+				||!ObjectUtil.validSqlStr(applyInfo.getBusinessscope())
+				||!ObjectUtil.validSqlStr(applyInfo.getShopimg())
+				||!ObjectUtil.validSqlStr(applyInfo.getTeamimg())
+				||!ObjectUtil.validSqlStr(applyInfo.getRemark())
+				){
+			rq.setStatusreson("存在非法字符");
+			return rq;
+		}
+		applyInfo.setBranchuserid(userId);
+		applyInfo.setCreatetime(new Date());
+		applyInfo.setStatus(Integer.parseInt(BranchStatusEnum.applying.toString()));  
+		if(apply!=null&&applyInfo.getBranchuserid()!=null&&applyInfo.getBranchuserid()>0){
+			branchesMapper.updateByPrimaryKeySelective(applyInfo);
+		}else {
+			branchesMapper.insert(applyInfo);
+		}
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("提交成功，等待审核！"); 
+		return rq;
+	}
+	
 	/**
 	 * 代理商审核
 	 * @param adminId
@@ -611,79 +612,79 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		return rq;
 	}
 	
-//	/**
-//	 * 代理商审核
-//	 * @param adminId
-//	 * @param agentUserId
-//	 * @param status 1通过并已经交费，2不通过，3通过待交费
-//	 * @param msg
-//	 * @return
-//	 */
-//	public ReturnModel audit_AgentApply(Long adminId,Long agentUserId,int status,String msg){
-//		ReturnModel rq=new ReturnModel();
-//		UAgentapply apply= agentapplyMapper.selectByPrimaryKey(agentUserId); 
-//		if(apply!=null){
-//			apply.setStatus(status); 
-//			apply.setProcesstime(new Date());//处理时间
-//			apply.setReason(msg);
-//			agentapplyMapper.updateByPrimaryKeySelective(apply);
-//			if(status==Integer.parseInt(AgentStatusEnum.ok.toString())){//成为代理
-//				RAreaplans areaplans= areaplansMapper.selectByPrimaryKey(apply.getArea());
-//				if(areaplans!=null&&areaplans.getAreaid()!=null){//代理区域表有数据
-//					if(areaplans.getIsagent()!=null&&areaplans.getIsagent()>0){
-//						rq.setStatu(ReturnStatus.SystemError);
-//						rq.setStatusreson("该区域已经有代理("+areaplans.getAgentuserid()+")");
-//						return rq;
-//					}
-//					List<RAreaplans> arealist= agentAreaDao.findRAreaplansByAreaId(areaplans.getAreaid());
-//					if(arealist!=null&&arealist.size()>0){
-//						for (RAreaplans aa : arealist) {
-//							aa.setAgentuserid(agentUserId); 
-//							aa.setIsagent(1);
-//							areaplansMapper.updateByPrimaryKeySelective(aa);
-//						}
-//					}else {
-//						rq.setStatu(ReturnStatus.SystemError);
-//						rq.setStatusreson("系统错误（101）");
-//					}
-//				}else {//不在规划内的区域（最低代理）
-//					RAreas area= regionMapper.getAreaByCode(apply.getArea());
-//					if(area!=null){
-//						//代理单元补充
-//						RAreaplansagentprice areaPlanModel=new RAreaplansagentprice();
-//						areaPlanModel.setAgentamount(0D);
-//						areaPlanModel.setStep(4);
-//						areaPlanModel.setPrepayamount(1000D);
-//						areaplansagentpriceMapper.insertResultId(areaPlanModel);
-//						//代理区域更新
-//						RAreaplans areaMod=new RAreaplans();
-//						areaMod.setAreacode(apply.getArea());
-//						areaMod.setAreaid(areaPlanModel.getAreaid());
-//						areaMod.setAreaname(area.getArea());
-//						areaMod.setIsagent(1);
-//						areaMod.setAgentuserid(agentUserId);
-//						areaplansMapper.insert(areaMod);
-//					}
-//				}
-//				
-//				//代理商 申请信息复制到正式代理表
-//				this.addAgentInfo(apply);
-//				rq.setStatu(ReturnStatus.Success);
-//				rq.setStatusreson("审核成功");
-//			}else{
-//				rq.setStatu(ReturnStatus.Success);
-//				rq.setStatusreson("拒绝成功");
-//			}
-//			
-//			
-//		}else {
-//			rq.setStatu(ReturnStatus.SystemError);
-//			rq.setStatusreson("找不到申请资料");
-//		} 
-//		return rq;
-//	}
-//	
-//	
+	/**
+	 * 代理商审核
+	 * @param adminId
+	 * @param agentUserId
+	 * @param status 1通过并已经交费，2不通过，3通过待交费
+	 * @param msg
+	 * @return
+	 */
+	public ReturnModel audit_AgentApply(Long adminId,Long agentUserId,int status,String msg){
+		ReturnModel rq=new ReturnModel();
+		UAgentapply apply= agentapplyMapper.selectByPrimaryKey(agentUserId); 
+		if(apply!=null){
+			apply.setStatus(status); 
+			apply.setProcesstime(new Date());//处理时间
+			apply.setReason(msg);
+			agentapplyMapper.updateByPrimaryKeySelective(apply);
+			if(status==Integer.parseInt(AgentStatusEnum.ok.toString())){//成为代理
+				RAreaplans areaplans= areaplansMapper.selectByPrimaryKey(apply.getArea());
+				if(areaplans!=null&&areaplans.getAreaid()!=null){//代理区域表有数据
+					if(areaplans.getIsagent()!=null&&areaplans.getIsagent()>0){
+						rq.setStatu(ReturnStatus.SystemError);
+						rq.setStatusreson("该区域已经有代理("+areaplans.getAgentuserid()+")");
+						return rq;
+					}
+					List<RAreaplans> arealist= agentAreaDao.findRAreaplansByAreaId(areaplans.getAreaid());
+					if(arealist!=null&&arealist.size()>0){
+						for (RAreaplans aa : arealist) {
+							aa.setAgentuserid(agentUserId); 
+							aa.setIsagent(1);
+							areaplansMapper.updateByPrimaryKeySelective(aa);
+						}
+					}else {
+						rq.setStatu(ReturnStatus.SystemError);
+						rq.setStatusreson("系统错误（101）");
+					}
+				}else {//不在规划内的区域（最低代理）
+					RAreas area= regionMapper.getAreaByCode(apply.getArea());
+					if(area!=null){
+						//代理单元补充
+						RAreaplansagentprice areaPlanModel=new RAreaplansagentprice();
+						areaPlanModel.setAgentamount(0D);
+						areaPlanModel.setStep(4);
+						areaPlanModel.setPrepayamount(1000D);
+						areaplansagentpriceMapper.insertResultId(areaPlanModel);
+						//代理区域更新
+						RAreaplans areaMod=new RAreaplans();
+						areaMod.setAreacode(apply.getArea());
+						areaMod.setAreaid(areaPlanModel.getAreaid());
+						areaMod.setAreaname(area.getArea());
+						areaMod.setIsagent(1);
+						areaMod.setAgentuserid(agentUserId);
+						areaplansMapper.insert(areaMod);
+					}
+				}
+				
+				//代理商 申请信息复制到正式代理表
+				this.addAgentInfo(apply);
+				rq.setStatu(ReturnStatus.Success);
+				rq.setStatusreson("审核成功");
+			}else{
+				rq.setStatu(ReturnStatus.Success);
+				rq.setStatusreson("拒绝成功");
+			}
+			
+			
+		}else {
+			rq.setStatu(ReturnStatus.SystemError);
+			rq.setStatusreson("找不到申请资料");
+		} 
+		return rq;
+	}
+	
+	
 	
 	/**
 	 * 影楼审核

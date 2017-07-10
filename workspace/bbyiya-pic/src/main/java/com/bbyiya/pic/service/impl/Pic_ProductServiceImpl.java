@@ -163,9 +163,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			PProducts products = productsMapper.selectByPrimaryKey(productId);
 			if (products != null) {
 				listResult = productDao.findProductSamplesByProductId(productId);
-				if (listResult != null && listResult.size() > 0) {
+				if(listResult != null && listResult.size() > 0) {
 					for (ProductSampleResultVO sam : listResult) {
-						sam.setMyWorks(getMyProductsResult(sam.getCartid()));
+						sam.setMyWorks(getMyProductsResultSamp(sam.getCartid()));
 					}
 					RedisUtil.setObject(keyName, listResult, 7200);
 				}
@@ -927,25 +927,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		ReturnModel rq = new ReturnModel();
 		PMyproducts myproducts = myMapper.selectByPrimaryKey(cartId);
 		if (myproducts != null && myproducts.getUserid() != null && myproducts.getUserid().longValue() == userId) {
-			// if(myproducts.getStatus()!=null&&myproducts.getStatus().intValue()==Integer.parseInt(MyProductStatusEnum.ordered.toString())){
-			// if(!ObjectUtil.isEmpty(myproducts.getOrderno())){
-			// OUserorders order=
-			// orderMapper.selectByPrimaryKey(myproducts.getOrderno());
-			// if(order!=null&&order.getStatus()!=null&&order.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
-			// rq.setStatu(ReturnStatus.SystemError);
-			// rq.setStatusreson("作品关联的订单未上传成功，请先查看订单并重新上传！");
-			// return rq;
-			// }
-			// }
-			// }
-			// if(myproducts.getInvitestatus()!=null&&myproducts.getInvitestatus()>0){
 			myproducts.setStatus(Integer.parseInt(MyProductStatusEnum.deleted.toString()));
 			myMapper.updateByPrimaryKeySelective(myproducts);
-			// inviteMapper.deleteByCartId(cartId);
-			// }
-			// mydetailDao.deleMyProductDetailsByCartId(cartId);
-			// myMapper.deleteByPrimaryKey(cartId);
-
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("删除成功");
 		} else {
@@ -1305,22 +1288,24 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	 * 
 	 */
 	public ReturnModel getMyProductInfo(Long cartId) {
-		ReturnModel rq = new ReturnModel();
-		MyProductsResult myproduct = getMyProductsResult(cartId);
-		if (myproduct != null) {
-			rq.setBasemodle(myproduct);
-		}
-		rq.setStatu(ReturnStatus.Success);
-		return rq;
+//		ReturnModel rq = new ReturnModel();
+//		MyProductsResult myproduct = getMyProductsResult(cartId);
+//		if (myproduct != null) {
+//			rq.setBasemodle(myproduct);
+//		}
+//		rq.setStatu(ReturnStatus.Success);
+//		return rq;
+		return getMyProductInfoNew(0, cartId);
 	}
 
 	/**
-	 * 通过作品Id获取作品详细
+	 * 通过作品Id获取作品详细（非登录）
+	 * 分享
 	 * 
 	 * @param cartId
 	 * @return
 	 */
-	public MyProductsResult getMyProductsResult(Long cartId) {
+	public MyProductsResult getMyProductsResultSamp(Long cartId) {
 		MyProductsResult myproduct = myProductsDao.getMyProductResultVo(cartId);
 		if (myproduct != null) {
 			if (myproduct.getStatus() != null && myproduct.getStatus().intValue() == Integer.parseInt(MyProductStatusEnum.ordered.toString())) {
@@ -1346,21 +1331,6 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					myproduct.setDescription(product.getDescription());
 				}
 			}
-//			List<MyProductsDetailsResult> list = mydetailDao.findMyProductDetailsResult(cartId);
-//			if (list != null && list.size() > 0) {
-//				for (MyProductsDetailsResult detail : list) {
-//					if (ObjectUtil.isEmpty(detail.getDescription()) || ObjectUtil.isEmpty(detail.getTitle())) {
-//						PScenes scene = sceneMapper.selectByPrimaryKey(detail.getSceneid().longValue());
-//						if (scene != null) {
-//							detail.setSceneDescription(scene.getContent());
-//							detail.setSceneTitle(scene.getTitle());
-//						}
-//					} else {
-//						detail.setSceneDescription(detail.getDescription());
-//						detail.setSceneTitle(detail.getTitle());
-//					}
-//				}
-//			}
 			myproduct.setDetailslist(getMyProductsDetailsResultList(myproduct.getUserid(), cartId));
 		}
 		return myproduct;

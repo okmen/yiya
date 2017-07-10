@@ -342,9 +342,6 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 				rq.setStatusreson("您已经是代理商了，不能提交申请！");
 				return rq;
 			}
-//			rq.setStatu(ReturnStatus.SystemError);
-//			rq.setStatusreson("您已提交过申请，不能重复提交");
-//			return rq;
 			applyInfo.setAgentuserid(apply.getAgentuserid());
 		}
 		rq.setStatu(ReturnStatus.SystemError);
@@ -372,7 +369,6 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		if(!ObjectUtil.validSqlStr(applyInfo.getAgentcompanyname())
 				||!ObjectUtil.validSqlStr(applyInfo.getContactname())
 				||!ObjectUtil.validSqlStr(applyInfo.getStreetdetail())
-				||!ObjectUtil.validSqlStr(applyInfo.getIdcard())
 				||!ObjectUtil.validSqlStr(applyInfo.getBusinesslicense())
 				||!ObjectUtil.validSqlStr(applyInfo.getBusinessscope())
 				||!ObjectUtil.validSqlStr(applyInfo.getShopimg())

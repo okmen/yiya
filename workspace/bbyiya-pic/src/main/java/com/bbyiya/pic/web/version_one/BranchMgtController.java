@@ -193,19 +193,19 @@ public class BranchMgtController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/cts_agentApplyNew")
-	public String cts_agentApplyNew(String agentJson,String areacodeJson,long branchUserId) throws Exception {
+	public String cts_agentApplyNew(String agentJson,String areacodeJson,String branchUserId) throws Exception {
 		ReturnModel rq=new ReturnModel(); 
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
 				try {
-					UUsers branchUsers= userMapper.getUUsersByUserID(branchUserId);
+					UUsers branchUsers= userMapper.getUUsersByUserID(ObjectUtil.parseLong(branchUserId));
 					if(branchUsers!=null){
 						if(!ObjectUtil.isEmpty(branchUsers.getMobilephone())){
 							UAgentapply applyInfo=(UAgentapply)JsonUtil.jsonStrToObject(agentJson, UAgentapply.class);
 							List<UAgentapplyareas> arealist=Json2Objects.getParam_AgentApplyareas(areacodeJson);
 							
-							rq =branchService.applyAgentNew(branchUserId, applyInfo,arealist);
+							rq =branchService.applyAgentNew(ObjectUtil.parseLong(branchUserId), applyInfo,arealist);
 						}else {
 							rq.setStatu(ReturnStatus.ParamError);
 							rq.setStatusreson("用户未绑定手机号！");

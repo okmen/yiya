@@ -2,6 +2,7 @@ package com.bbyiya.pic.vo.agent;
 
 import java.util.List;
 
+import com.bbyiya.model.RAreaplans;
 import com.bbyiya.model.UAgentapply;
 import com.bbyiya.model.UAgentapplyareas;
 
@@ -48,7 +49,6 @@ public class UAgentApplyVo extends UAgentapply{
 	public void setTransAmount(Double transAmount) {
 		this.transAmount = transAmount;
 	}
-	
 	
 
 }

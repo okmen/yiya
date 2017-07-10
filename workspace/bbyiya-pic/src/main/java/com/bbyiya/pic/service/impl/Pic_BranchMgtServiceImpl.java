@@ -171,7 +171,6 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 				agentvo.setTransAmount(0.0);
 			}
 			agentvo.setAgentArealist(getAgentApplyArealistByAgentUserID(agentvo.getAgentuserid()));
-			
 		}
 		rq.setBasemodle(result);
 		return rq;
@@ -919,8 +918,9 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			agentapply.setProviceName(regionService.getProvinceName(agentapply.getProvince())) ;
 			agentapply.setCityName(regionService.getCityName(agentapply.getCity())) ;
 			agentapply.setAreaName(regionService.getAresName(agentapply.getArea())) ;
-			//agentapply.setAgentArealist(getAgentArealist(agentapply.getArea())); 
-			agentapply.setAgentArealist(getAgentApplyArealistByAgentUserID(agentapply.getAgentuserid()));
+			//agentapply.setAgentArealist(getAgentArealist(agentapply.getArea()));
+			List<UAgentapplyareas> arealist=getAgentApplyArealistByAgentUserID(agentapply.getAgentuserid());
+			agentapply.setAgentArealist(arealist);
 			map.put("applyInfo", agentapply);
 			if(agentapply.getStatus()!=null){
 				if(agentapply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.ok.toString())){

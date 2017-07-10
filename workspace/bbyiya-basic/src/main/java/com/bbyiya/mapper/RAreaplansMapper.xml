@@ -12,7 +12,7 @@
     AreaCode, AreaName, AreaId, IsAgent, AgentUserId
   </sql>
   <!--根据areacode得到被代理的区域 -->
-   <select id="getApplyedAreacodeBycode" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+   <select id="getApplyedAreacodeBycode" resultMap="BaseResultMap"  >
     select 
     <include refid="Base_Column_List" />
     from r_areaplans

@@ -189,7 +189,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			branchvo.setProviceName(regionService.getProvinceName(branchvo.getProvince())) ;
 			branchvo.setCityName(regionService.getCityName(branchvo.getCity())) ;
 			branchvo.setAreaName(regionService.getAresName(branchvo.getArea())) ;
-			branchvo.setAgentArealist(getAgentArealist(branchvo.getArea()));  
+			branchvo.setAgentArealist(getAgentArealistByAgentUserID(branchvo.getAgentuserid()));  
 			UAccounts account=accountsMapper.selectByPrimaryKey(branchvo.getBranchuserid());
 			if(account!=null){
 				branchvo.setGoodsAmount(account.getAvailableamount());
@@ -202,7 +202,6 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			}else{
 				branchvo.setGoodsAmount(0.0);
 			}
-			
 		}
 		
 		rq.setBasemodle(result);
@@ -1006,17 +1005,16 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		
 	}
 	
-	private List<String> getAgentApplyArealistByAgentUserID(Long agentUserId){		
-		List<UAgentapplyareas> arealist= uagentapplyareaMapper.findAgentapplyareasByUserId(agentUserId);
-		if(arealist!=null&&arealist.size()>0){
-			List<String> areasList=new ArrayList<String>();
-			for (UAgentapplyareas rr : arealist) {
-				areasList.add(rr.getAreacode().toString());
-			}
-			return areasList;
-		}
-		return null;
+	private List<RAreaplans> getAgentAreaPlansByAgentUserID(Long agentUserId){		
+		List<RAreaplans> arealist= agentAreaDao.findRAreaplansByAgentUserId(agentUserId);
+		return arealist;
 		
+	}
+	
+	
+	private List<UAgentapplyareas> getAgentApplyArealistByAgentUserID(Long agentUserId){		
+		List<UAgentapplyareas> arealist= uagentapplyareaMapper.findAgentapplyareasByUserId(agentUserId);
+		return arealist;
 	}
 	/**
 	 * 代理区域codelist

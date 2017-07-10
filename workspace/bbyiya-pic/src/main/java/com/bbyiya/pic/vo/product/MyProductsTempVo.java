@@ -21,6 +21,8 @@ public class MyProductsTempVo implements Serializable{
 	//已完成评论数
 	private Integer commentCount;
 	
+	private Long styleId;
+	
 	private int mytempStatus;
 	
 	private List<DMyproductdiscountmodel> discountList;
@@ -66,6 +68,12 @@ public class MyProductsTempVo implements Serializable{
 	}
 	public void setDiscountList(List<DMyproductdiscountmodel> discountList) {
 		this.discountList = discountList;
+	}
+	public Long getStyleId() {
+		return styleId;
+	}
+	public void setStyleId(Long styleId) {
+		this.styleId = styleId;
 	}
 	
 	

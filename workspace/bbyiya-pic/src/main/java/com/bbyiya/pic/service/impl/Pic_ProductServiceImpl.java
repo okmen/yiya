@@ -1190,6 +1190,11 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			if(apply!=null){
 				vo.setMytempStatus(apply.getStatus());
 			}
+			if(mtemp.getStyleid()!=null){
+				vo.setStyleId(mtemp.getStyleid());
+			}else {
+				vo.setStyleId(myproduct.getProductid()); 
+			}
 			return vo;
 		}
 		return null;

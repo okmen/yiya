@@ -183,18 +183,12 @@ public class BranchMgtController extends SSOController {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			if(user.getStatus()!=null&&user.getStatus().intValue()==Integer.parseInt(UserStatusEnum.ok.toString())){
-				try {
-					UAgentapply applyInfo=(UAgentapply)JsonUtil.jsonStrToObject(agentJson, UAgentapply.class);
-					rq =branchService.applyAgent(user.getUserId(), applyInfo);
-				} catch (Exception e) {
-					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("参数有误101");
-					return JsonUtil.objectToJsonStr(rq);
-				}
-			}else {
-				rq.setStatu(ReturnStatus.LoginError_2);
-				rq.setStatusreson("未完成注册");
+			try {
+				UAgentapply applyInfo=(UAgentapply)JsonUtil.jsonStrToObject(agentJson, UAgentapply.class);
+				rq =branchService.applyAgent(user.getUserId(), applyInfo);
+			} catch (Exception e) {
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("参数有误101");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 		}else {

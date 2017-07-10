@@ -211,9 +211,9 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 	/**
 	 * 检查区域是否被代理
 	 */
-	public boolean checkAreaCodeIsApply(Integer areacode){
+	public boolean checkAreaCodeIsApply(Long userId,Integer areacode){
 		boolean isApply=false;
-		RAreaplans areaplan= areaplansMapper.getApplyedAreacodeBycode(areacode);
+		RAreaplans areaplan= areaplansMapper.getApplyedAreacodeBycode(userId,areacode);
 		if(areaplan!=null){
 			isApply=true;
 		}
@@ -290,7 +290,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 				}
 				if(areaList!=null&&areaList.size()>0){
 					for (UAgentapplyareas app : areaList) {
-						if(this.checkAreaCodeIsApply(app.getAreacode())){
+						if(this.checkAreaCodeIsApply(applyInfo.getAgentuserid(),app.getAreacode())){
 							rq.setStatusreson("该区域["+app.getAreacode()+"]已被代理，不能重复代理！");
 							return rq;
 						}
@@ -311,7 +311,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		}else {
 			if(areaList!=null&&areaList.size()>0){
 				for (UAgentapplyareas app : areaList) {
-					if(this.checkAreaCodeIsApply(app.getAreacode())){
+					if(this.checkAreaCodeIsApply(applyInfo.getAgentuserid(),app.getAreacode())){
 						rq.setStatusreson("该区域["+app.getAreacode()+"]已被代理，不能重复代理！");
 						return rq;
 					}
@@ -596,7 +596,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			if(status==Integer.parseInt(AgentStatusEnum.ok.toString())){//成为代理
 				List<UAgentapplyareas> agentapplyareas=uagentapplyareaMapper.findAgentapplyareasByUserId(agentUserId);
 				for (UAgentapplyareas area : agentapplyareas) {
-					boolean isApply=checkAreaCodeIsApply(area.getAreacode());
+					boolean isApply=checkAreaCodeIsApply(apply.getAgentuserid(),area.getAreacode());
 					if(isApply){
 						rq.setStatusreson("该区域["+area.getAreacode()+"]已被代理，不能重复代理！");
 						return rq;

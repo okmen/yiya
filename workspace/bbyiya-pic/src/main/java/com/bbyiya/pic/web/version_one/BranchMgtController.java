@@ -123,9 +123,9 @@ public class BranchMgtController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/checkAreaCodeIsApply")
-	public String checkAreaCodeIsApply(String areacode) throws Exception {
+	public String checkAreaCodeIsApply(String agentUserId,String areacode) throws Exception {
 		ReturnModel rq=new ReturnModel();
-		boolean isApply=branchService.checkAreaCodeIsApply(ObjectUtil.parseInt(areacode));
+		boolean isApply=branchService.checkAreaCodeIsApply(ObjectUtil.parseLong(agentUserId),ObjectUtil.parseInt(areacode));
 		if(isApply){
 			rq.setStatu(ReturnStatus.ParamError);
 			rq.setStatusreson("该区域已被代理");

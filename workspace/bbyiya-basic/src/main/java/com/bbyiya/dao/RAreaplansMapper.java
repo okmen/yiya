@@ -17,5 +17,5 @@ public interface RAreaplansMapper {
 
     int updateByPrimaryKey(RAreaplans record);
     
-    RAreaplans getApplyedAreacodeBycode(@Param("areacode") Integer areacode);
+    RAreaplans getApplyedAreacodeBycode(@Param("userid") Long userid,@Param("areacode") Integer areacode);
 }

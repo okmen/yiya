@@ -25,7 +25,7 @@ public class BranchAccountController  extends SSOController{
 	
 	
 	/**
-	 * 账户明细记录
+	 * 璐︽埛鏄庣粏璁板綍
 	 * @param branchuserid
 	 * @param amount
 	 * @return
@@ -42,11 +42,11 @@ public class BranchAccountController  extends SSOController{
 				rq= accountService.findAcountsLogsPageResult(user.getUserId(), type, index, size);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError_1);
-				rq.setStatusreson("权限不足");
+				rq.setStatusreson("鏉冮檺涓嶈冻");
 			} 
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
+			rq.setStatusreson("鐧诲綍杩囨湡");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

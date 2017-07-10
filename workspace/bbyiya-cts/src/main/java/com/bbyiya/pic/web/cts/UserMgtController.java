@@ -28,7 +28,7 @@ public class UserMgtController  extends SSOController{
 	private IUserService userService;
 	
 	/**
-	 * cts Ìí¼ÓÄÚ²¿Ô±¹¤ÕËºÅ
+	 * cts æ·»åŠ å†…éƒ¨å‘˜å·¥è´¦å·
 	 * @param branchuserid
 	 * @param amount
 	 * @return
@@ -44,11 +44,11 @@ public class UserMgtController  extends SSOController{
 				rq=userService.addCtsUser(user.getUserId(), phone);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("²»ÊÇcts¹ÜÀíÔ±£¬È¨ÏŞ²»×ã£¡");
+				rq.setStatusreson("ä¸æ˜¯ctsç®¡ç†å‘˜ï¼Œæƒé™ä¸è¶³ï¼");
 			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
@@ -63,11 +63,11 @@ public class UserMgtController  extends SSOController{
 				rq=userService.deleteCtsUser(ObjectUtil.parseLong(userid));
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("²»ÊÇcts¹ÜÀíÔ±£¬È¨ÏŞ²»×ã£¡");
+				rq.setStatusreson("ä¸æ˜¯ctsç®¡ç†å‘˜ï¼Œæƒé™ä¸è¶³ï¼");
 			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
@@ -82,11 +82,11 @@ public class UserMgtController  extends SSOController{
 				rq=userService.findCtsMemberlist(keywords, index, size);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("²»ÊÇcts¹ÜÀíÔ±£¬È¨ÏŞ²»×ã£¡");
+				rq.setStatusreson("ä¸æ˜¯ctsç®¡ç†å‘˜ï¼Œæƒé™ä¸è¶³ï¼");
 			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

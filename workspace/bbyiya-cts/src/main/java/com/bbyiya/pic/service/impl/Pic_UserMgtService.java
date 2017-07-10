@@ -42,7 +42,7 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 	private UUsertesterwxMapper testerMapper;
 	
 	/**
-	 * µÚÈı·½µÇÂ½
+	 * ç¬¬ä¸‰æ–¹ç™»é™†
 	 * 
 	 * @param param
 	 */
@@ -83,18 +83,18 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 				}
 			} else {
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("²ÎÊı²»ÄÜÎª¿Õ");
+				rq.setStatusreson("å‚æ•°ä¸èƒ½ä¸ºç©º");
 			}
 		} catch (Exception e) {
 			rq.setStatu(ReturnStatus.SystemError);
-			rq.setStatusreson("×¢²áÊ§°Ü£¡");
+			rq.setStatusreson("æ³¨å†Œå¤±è´¥ï¼");
 			rq.setBasemodle(e); 
 		}
 		return rq;
 	}
 
 	/**
-	 * ÓÃ»§µÚÈı·½×¢²á
+	 * ç”¨æˆ·ç¬¬ä¸‰æ–¹æ³¨å†Œ
 	 * @param other
 	 * @param param
 	 * @return
@@ -104,11 +104,11 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 		rq.setStatu(ReturnStatus.ParamError);
 		if (param != null) {
 			if (ObjectUtil.isEmpty(param.getOpenId())) {
-				rq.setStatusreson("openid²»ÄÜÎª¿Õ");
+				rq.setStatusreson("openidä¸èƒ½ä¸ºç©º");
 				return rq;
 			}
 			if (param.getLoginType() == null) {
-				rq.setStatusreson("ÀàĞÍ²»ÄÜÎª¿Õ");
+				rq.setStatusreson("ç±»å‹ä¸èƒ½ä¸ºç©º");
 				return rq;
 			}
 			if (other == null) {
@@ -125,17 +125,17 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 					UUsers upUsers= userDao.getUUsersByUserID(param.getUpUserId());
 					if(upUsers!=null){
 						userModel.setUpuserid(param.getUpUserId()); 
-						//Èç¹ûÍÆ¼öÈËÊÇÁ÷Á¿Ö÷
+						//å¦‚æœæ¨èäººæ˜¯æµé‡ä¸»
 						if(ValidateUtils.isIdentity(upUsers.getUserid(), UserIdentityEnums.branch)||
 								ValidateUtils.isIdentity(upUsers.getUserid(), UserIdentityEnums.wei)){
 							userModel.setSourseuserid(upUsers.getUserid());
 						}
-						//Èç¹ûÍÆ¼öÈËµÄÉÏ¼¶ÊÇb¶Ë»òÁ÷Á¿Ö÷
+						//å¦‚æœæ¨èäººçš„ä¸Šçº§æ˜¯bç«¯æˆ–æµé‡ä¸»
 						else if (ValidateUtils.isIdentity(upUsers.getUpuserid(), UserIdentityEnums.branch)||
 								ValidateUtils.isIdentity(upUsers.getUpuserid(), UserIdentityEnums.wei)){
 							userModel.setSourseuserid(upUsers.getUpuserid());
 						}
-						//Èç¹ûÍÆ¼öÈËÓĞ¶¥¼¶ÍÆ¼öÈË
+						//å¦‚æœæ¨èäººæœ‰é¡¶çº§æ¨èäºº
 						else if (upUsers.getSourseuserid()!=null&&upUsers.getSourseuserid()>0) {
 							userModel.setSourseuserid(upUsers.getSourseuserid()); 
 						}
@@ -156,7 +156,7 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 				LoginSuccessResult result = baseLoginService.loginSuccess(userModel);
 				
 				rq.setStatu(ReturnStatus.Success);
-				rq.setStatusreson("×¢²á³É¹¦");
+				rq.setStatusreson("æ³¨å†ŒæˆåŠŸ");
 				rq.setBasemodle(result);
 			} 
 			else if (other.getUserid() != null && other.getUserid() > 0) {
@@ -164,11 +164,11 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 				if (userModel != null) {
 					LoginSuccessResult result = baseLoginService.loginSuccess(userModel);
 					rq.setStatu(ReturnStatus.Success);
-					rq.setStatusreson("µÇÂ¼³É¹¦");
+					rq.setStatusreson("ç™»å½•æˆåŠŸ");
 					rq.setBasemodle(result);
 				}
 			} else {
-				//×¢²áÓÃ»§
+				//æ³¨å†Œç”¨æˆ·
 				UUsers userModel = new UUsers();
 				userModel.setCreatetime(new Date());
 				userModel.setStatus(Integer.parseInt(UserStatusEnum.noPwd.toString()));
@@ -179,12 +179,12 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 
 				LoginSuccessResult result = baseLoginService.loginSuccess(userModel);
 				rq.setStatu(ReturnStatus.Success);
-				rq.setStatusreson("µÇÂ¼³É¹¦");
+				rq.setStatusreson("ç™»å½•æˆåŠŸ");
 				rq.setBasemodle(result);
 			}
 
 		} else {
-			rq.setStatusreson("²ÎÊıÓĞÎó");
+			rq.setStatusreson("å‚æ•°æœ‰è¯¯");
 		}
 		return rq;
 	}
@@ -197,7 +197,7 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 			UUsers userPhone=userDao.getUUsersByPhone(phone);
 			if(userPhone!=null&&userPhone.getUserid().longValue()!=userId){
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("¸ÃÊÖ»úºÅÒÑ¾­°ó¶¨ÆäËûÓÃ»§£¡");
+				rq.setStatusreson("è¯¥æ‰‹æœºå·å·²ç»ç»‘å®šå…¶ä»–ç”¨æˆ·ï¼");
 				return rq;
 			}
 			UUsers user= userDao.getUUsersByUserID(userId);
@@ -210,7 +210,7 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 				rq.setBasemodle(result); 
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("ÏµÍ³´íÎó");
+				rq.setStatusreson("ç³»ç»Ÿé”™è¯¯");
 			}
 		}else {
 			rq.setStatu(ReturnStatus.ParamError);
@@ -224,11 +224,11 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.ParamError);
 		if(ObjectUtil.isEmpty(pwd)){
-			rq.setStatusreson("ÃÜÂë²»ÄÜÎª¿Õ");
+			rq.setStatusreson("å¯†ç ä¸èƒ½ä¸ºç©º");
 			return rq;
 		}
 		if(!ObjectUtil.validSqlStr(pwd)){
-			rq.setStatusreson("ÃÜÂëÓĞ·çÏÕ£¬ÖØĞÂÉèÖÃ£¡");
+			rq.setStatusreson("å¯†ç æœ‰é£é™©ï¼Œé‡æ–°è®¾ç½®ï¼");
 			return rq;
 		}
 		ResultMsg msgResult= SendSMSByMobile.validateCode(phone, vcode, SendMsgEnums.register);
@@ -236,7 +236,7 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 			UUsers userPhone=userDao.getUUsersByPhone(phone);
 			if(userPhone!=null&&userPhone.getUserid().longValue()!=userId){
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("¸ÃÊÖ»úºÅÒÑ¾­°ó¶¨ÆäËûÓÃ»§£¡");
+				rq.setStatusreson("è¯¥æ‰‹æœºå·å·²ç»ç»‘å®šå…¶ä»–ç”¨æˆ·ï¼");
 				return rq;
 			}
 			UUsers user= userDao.getUUsersByUserID(userId);
@@ -250,7 +250,7 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 				rq.setBasemodle(result); 
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("ÏµÍ³´íÎó");
+				rq.setStatusreson("ç³»ç»Ÿé”™è¯¯");
 			}
 		}else {
 			rq.setStatu(ReturnStatus.ParamError);

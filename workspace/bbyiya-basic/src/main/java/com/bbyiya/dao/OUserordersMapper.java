@@ -63,4 +63,12 @@ public interface OUserordersMapper {
 	 * @return
 	 */
 	List<OUserorders> findOrderListByCartId(@Param("cartid") Long cartid);
+	
+	/**
+	 * 根据作品ID及影楼ID得到订单
+	 * @param cartid
+	 * @return
+	 */
+	List<OUserorders> findOrderListByCartIdAndBranchUserID(@Param("cartid") Long cartid,@Param("branchuserid") Long branchuserid);
+	
 }

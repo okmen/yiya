@@ -5,14 +5,14 @@ import com.bbyiya.vo.ReturnModel;
 
 public interface IScenseService {
 	/**
-	 * Ìí¼Ó»òĞŞ¸Ä³¡Ó°
+	 * æ·»åŠ æˆ–ä¿®æ”¹åœºå½±
 	 * @param userid
 	 * @param myScenseJson
 	 * @return
 	 */
 	ReturnModel addorUpdateScense(Long userid, String myScenseJson);
 	/**
-	 * »ñÈ¡³¡¾°ÁĞ±í
+	 * è·å–åœºæ™¯åˆ—è¡¨
 	 * @param index
 	 * @param size
 	 * @param keywords

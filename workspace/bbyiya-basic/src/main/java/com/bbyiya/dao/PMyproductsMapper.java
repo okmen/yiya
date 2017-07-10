@@ -79,7 +79,7 @@ public interface PMyproductsMapper {
 	 * @param invitestatus
 	 * @return
 	 */
-	List<MyProductResultVo> findMyProductsSourceCustomerOfBranch(@Param("list")List<Long> list,@Param("status") Integer status,@Param("invitestatus")Integer invitestatus,@Param("keywords")String keywords);
+	List<MyProductResultVo> findMyProductsSourceCustomerOfBranch(@Param("list")List<Long> list,@Param("phonelist")List<String> phonelist,@Param("status") Integer status,@Param("invitestatus")Integer invitestatus,@Param("keywords")String keywords);
 	/**
 	 * 获取模板下的已获取客户作品
 	 * @param userIds

@@ -24,6 +24,7 @@ import com.bbyiya.dao.UChildreninfoMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.pic.InviteStatus;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
 import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
 import com.bbyiya.model.OUserorders;
@@ -72,11 +73,11 @@ public class Ibs_MyProductServiceImpl implements IIbs_MyproductService{
 	private PMyproductextMapper myextMapper;
 	@Autowired
 	private PMyproductsinvitesMapper inviteMapper;
-	/*-------------------ÓÃ»§ĞÅÏ¢------------------------------------------------*/
+	/*-------------------ç”¨æˆ·ä¿¡æ¯------------------------------------------------*/
 	@Autowired
 	private UUsersMapper usersMapper;
 	@Autowired
-	private UBranchusersMapper branchusersMapper;// Ó°Â¥ĞÅÏ¢
+	private UBranchusersMapper branchusersMapper;// å½±æ¥¼ä¿¡æ¯
 	@Autowired
 	private OUserordersMapper orderMapper;
 	@Autowired
@@ -92,28 +93,31 @@ public class Ibs_MyProductServiceImpl implements IIbs_MyproductService{
 	public ReturnModel findMyProductsSourceCustomerOfBranch(Long branchUserId, Integer status, Integer inviteStatus,String keywords, int index, int size) {
 		ReturnModel rq = new ReturnModel();
 		List<Long> idsList = new ArrayList<Long>();
+		List<String> phoneList =null;
 		idsList.add(branchUserId);
-		// »ñÈ¡Ó°Â¥µÄ¹¤×÷ÈËÔ±ÁĞ±í
+		// è·å–å½±æ¥¼çš„å·¥ä½œäººå‘˜åˆ—è¡¨
 		List<UBranchusers> userList = branchusersMapper.findMemberslistByBranchUserId(branchUserId);
 		if (userList != null && userList.size() > 0) {
+			phoneList=new ArrayList<String>();
 			for (UBranchusers uu : userList) {
 				idsList.add(uu.getUserid());
+				phoneList.add(uu.getPhone());
 			}
 		}
 		PageHelper.startPage(index, size);
-		List<MyProductResultVo> mylist = myMapper.findMyProductsSourceCustomerOfBranch(idsList, status, inviteStatus,keywords);
+		List<MyProductResultVo> mylist = myMapper.findMyProductsSourceCustomerOfBranch(idsList,phoneList, status, inviteStatus,keywords);
 		PageInfo<MyProductResultVo> resultPage = new PageInfo<MyProductResultVo>(mylist);
 		if (resultPage.getList() != null && resultPage.getList().size() > 0) {
 			for (MyProductResultVo vv : resultPage.getList()) {
 				
 				UUsers user=usersMapper.selectByPrimaryKey(vv.getUserid());
 				if(user!=null){
-					vv.setUserName(user.getNickname());//ÑûÔ¼ÈËÃû³Æ
-					vv.setPhone(user.getMobilephone());//ÑûÔ¼ÈËÊÖ»úºÅ
+					vv.setUserName(user.getNickname());//é‚€çº¦äººåç§°
+					vv.setPhone(user.getMobilephone());//é‚€çº¦äººæ‰‹æœºå·
 					vv.setUserImg(user.getUserimg());
 				}
 				
-				//¿Í»§µØÖ·
+				//å®¢æˆ·åœ°å€
 				UUserAddressResult address=baseAddressService.getUserAddressResult(vv.getUserid(), null);
 				if(address!=null){
 					vv.setAddress(address.getProvinceName()+address.getCityName()+address.getCityName()+address.getStreetdetail());
@@ -127,7 +131,7 @@ public class Ibs_MyProductServiceImpl implements IIbs_MyproductService{
 	}
 	
 	/**
-	 * ÎÒµÄ×÷Æ·model×ª»»
+	 * æˆ‘çš„ä½œå“modelè½¬æ¢
 	 * 
 	 * @param mylist
 	 * @return
@@ -140,29 +144,24 @@ public class Ibs_MyProductServiceImpl implements IIbs_MyproductService{
 				} else {
 					item.setCreatetimestr(DateUtil.getTimeStr(item.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
 				}
-				if (item.getInvitestatus() != null && item.getInvitestatus() > 0) {// ÑûÇëĞ­Í¬±à¼­
+				if (item.getInvitestatus() != null && item.getInvitestatus() > 0) {// é‚€è¯·ååŒç¼–è¾‘
 					List<PMyproductsinvites> invites = inviteMapper.findListByCartId(item.getCartid());
 					if (invites != null && invites.size() > 0) {
 						item.setInviteModel(invites.get(0));
 						item.setInvitestatus(invites.get(0).getStatus());
-						UUsers inviteusers = null;
-						if (!ObjectUtil.isEmpty(invites.get(0).getInvitephone())) {
-							inviteusers = usersMapper.getUUsersByPhone(invites.get(0).getInvitephone());
-						}
-						if (inviteusers == null && !ObjectUtil.isEmpty(invites.get(0).getInviteuserid())) {
-							inviteusers = usersMapper.selectByPrimaryKey(invites.get(0).getInviteuserid());
-						}
-						if (inviteusers != null) {
-							item.setInvitedName(inviteusers.getNickname());
-							if (item.getInviteModel() != null) {
-								if (ObjectUtil.isEmpty(item.getInviteModel().getInvitephone())) {
-									item.getInviteModel().setInvitephone(inviteusers.getMobilephone());
-								}
+						if(invites.get(0).getInviteuserid()==null){
+							UUsers branchuser=usersMapper.getUUsersByPhone(invites.get(0).getInvitephone());
+							if(branchuser!=null){
+								invites.get(0).setInviteuserid(branchuser.getUserid());
 							}
-
+							
 						}
-						
-						// µÃµ½À´Ô´£¬¼´Ä£°åÃû³Æ
+						UBranchusers branchuser=branchusersMapper.selectByPrimaryKey(invites.get(0).getInviteuserid());
+						if(branchuser!=null){
+							item.setInvitedName(branchuser.getName());
+							item.getInviteModel().setInvitephone(branchuser.getPhone());
+						}
+						// å¾—åˆ°æ¥æºï¼Œå³æ¨¡æ¿åç§°
 						if (item.getTempid() != null) {
 							PMyproducttemp temp = tempMapper.selectByPrimaryKey(item.getTempid());
 							if (temp != null && temp.getTitle() != null) {
@@ -172,12 +171,12 @@ public class Ibs_MyProductServiceImpl implements IIbs_MyproductService{
 					}
 				}
 				
-				// µÃµ½ÖÆ×÷ÀàĞÍ
+				// å¾—åˆ°åˆ¶ä½œç±»å‹
 				PProducts product = productsMapper.selectByPrimaryKey(item.getProductid());
 				if (product != null && product.getTitle() != null) {
 					item.setProductTitle(product.getTitle());
 				}
-				// ×÷Æ·ÏêÇé£¨Í¼Æ¬¼¯ºÏ£©
+				// ä½œå“è¯¦æƒ…ï¼ˆå›¾ç‰‡é›†åˆï¼‰
 				List<PMyproductdetails> detailslist = myDetaiMapper.findMyProductdetails(item.getCartid());
 				int i = 0;
 				if (detailslist != null && detailslist.size() > 0) {
@@ -198,16 +197,16 @@ public class Ibs_MyProductServiceImpl implements IIbs_MyproductService{
 					item.setIsOrder(1);
 					item.setCount(12);
 				}
-				item.setIsDue(0);//Ä¬ÈÏ²»ÊÇÔ¤²úÆÚ
-				// µÃµ½±¦±¦ÉúÈÕ
+				item.setIsDue(0);//é»˜è®¤ä¸æ˜¯é¢„äº§æœŸ
+				// å¾—åˆ°å®å®ç”Ÿæ—¥
 				PMyproductchildinfo childinfo = mychildMapper.selectByPrimaryKey(item.getCartid());
 				if (childinfo != null && childinfo.getBirthday() != null) {
 					item.setBirthdayStr(DateUtil.getTimeStr(childinfo.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
 					item.setIsDue(childinfo.getIsdue()==null?0:childinfo.getIsdue());
 				}
 				
-				
-				List<OUserorders> orderList = orderMapper.findOrderListByCartId(item.getCartid());
+				//åªå¾—åˆ°å½±æ¥¼å¸®å¿™ä¸‹å•çš„è®¢å•
+				List<OUserorders> orderList = orderMapper.findOrderListByCartIdAndBranchUserID(item.getCartid(), item.getInviteModel().getInviteuserid());  
 				List<String> orderNoList = new ArrayList<String>();
 				for (OUserorders order : orderList) {
 					orderNoList.add(order.getUserorderid());
@@ -215,14 +214,14 @@ public class Ibs_MyProductServiceImpl implements IIbs_MyproductService{
 				if (orderNoList.size() > 0) {
 					item.setOrderNoList(orderNoList);
 				}
-				//µÃµ½ÆÀÂÛÊı
+				//å¾—åˆ°è¯„è®ºæ•°
 				item.setCommentsCount(0);
 				PMyproductext myext=myextMapper.selectByPrimaryKey(item.getCartid());
 				if(myext!=null){
 					item.setCommentsCount(myext.getCommentscount()==null?0:myext.getCommentscount());
 				}
 				
-				//µÃµ½»î¶¯×´Ì¬
+				//å¾—åˆ°æ´»åŠ¨çŠ¶æ€
 				PMyproducttempapply apply= tempapplyMapper.getMyProducttempApplyByCartId(item.getCartid());
 				if(apply==null){
 					apply=tempapplyMapper.getMyProducttempApplyByUserId(item.getTempid(), item.getInviteModel().getInviteuserid());
@@ -233,12 +232,11 @@ public class Ibs_MyProductServiceImpl implements IIbs_MyproductService{
 					item.setSort(apply.getSort());
 				}else{
 					if(item.getCount()<12){
-						//ÖÆ×÷ÖĞ
+						//åˆ¶ä½œä¸­
 						item.setActiveStatus(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString()));
 					}else{
-						//ÖÆ×÷Íê³É
+						//åˆ¶ä½œå®Œæˆ
 						item.setActiveStatus(Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString()));
-						
 					}
 				}
 

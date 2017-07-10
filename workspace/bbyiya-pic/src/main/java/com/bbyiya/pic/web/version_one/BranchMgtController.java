@@ -1,6 +1,7 @@
 package com.bbyiya.pic.web.version_one;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -17,6 +18,7 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.enums.user.UserStatusEnum;
 import com.bbyiya.model.UAgentapply;
+import com.bbyiya.model.UAgentapplyareas;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UBranchinfotemp;
 import com.bbyiya.model.UUsers;
@@ -113,7 +115,6 @@ public class BranchMgtController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-	
 	/**
 	 *  代理商申请
 	 * @param agentJson
@@ -121,15 +122,37 @@ public class BranchMgtController extends SSOController {
 	 * @throws Exception
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/agentApply")
-	public String agentApply(String agentJson) throws Exception {
+	@RequestMapping(value = "/checkAreaCodeIsApply")
+	public String checkAreaCodeIsApply(String areacode) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		boolean isApply=branchService.checkAreaCodeIsApply(ObjectUtil.parseInt(areacode));
+		if(isApply){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("该区域已被代理");
+		}else{
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("该区域可以代理");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+		
+	/**
+	 *  代理商申请
+	 * @param agentJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/agentApplyNew")
+	public String agentApplynew(String agentJson,String areacodeJson) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			if(user.getStatus()!=null&&user.getStatus().intValue()==Integer.parseInt(UserStatusEnum.ok.toString())){
 				try {
 					UAgentapply applyInfo=(UAgentapply)JsonUtil.jsonStrToObject(agentJson, UAgentapply.class);
-					rq =branchService.applyAgent(user.getUserId(), applyInfo);
+					List<UAgentapplyareas> arealist=Json2Objects.getParam_AgentApplyareas(areacodeJson);
+					rq =branchService.applyAgentNew(user.getUserId(), applyInfo,arealist);
 				} catch (Exception e) {
 					rq.setStatu(ReturnStatus.ParamError);
 					rq.setStatusreson("参数有误101");
@@ -148,7 +171,82 @@ public class BranchMgtController extends SSOController {
 		
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	
+	/**
+	 *  代理商申请
+	 * @param agentJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/agentApply")
+	public String agentApply(String agentJson) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			try {
+				UAgentapply applyInfo=(UAgentapply)JsonUtil.jsonStrToObject(agentJson, UAgentapply.class);
+				rq =branchService.applyAgent(user.getUserId(), applyInfo);
+			} catch (Exception e) {
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("参数有误101");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	/**
+	 * cts协助代理商 提交申请
+	 * @param agentJson
+	 * @param branchUserId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/cts_agentApplyNew")
+	public String cts_agentApplyNew(String agentJson,String areacodeJson,String branchUserId) throws Exception {
+		ReturnModel rq=new ReturnModel(); 
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
+				try {
+					UUsers branchUsers= userMapper.getUUsersByUserID(ObjectUtil.parseLong(branchUserId));
+					if(branchUsers!=null){
+						if(!ObjectUtil.isEmpty(branchUsers.getMobilephone())){
+							UAgentapply applyInfo=(UAgentapply)JsonUtil.jsonStrToObject(agentJson, UAgentapply.class);
+							List<UAgentapplyareas> arealist=Json2Objects.getParam_AgentApplyareas(areacodeJson);
+							
+							rq =branchService.applyAgentNew(ObjectUtil.parseLong(branchUserId), applyInfo,arealist);
+						}else {
+							rq.setStatu(ReturnStatus.ParamError);
+							rq.setStatusreson("用户未绑定手机号！");
+						}
+					}else {
+						rq.setStatu(ReturnStatus.ParamError);
+						rq.setStatusreson("找不到用户！（"+branchUserId+"可能是无效用户）");
+					}
+				} catch (Exception e) {
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("参数有误101");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+			}else {
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("无此权限");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	/**
 	 * cts协助代理商 提交申请
 	 * @param agentJson
@@ -195,7 +293,43 @@ public class BranchMgtController extends SSOController {
 		
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	
+	/**
+	 *  分店申请
+	 * @param agentJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/branchApplyNew")
+	public String branchApplyNew(String branchJson) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(user.getStatus()!=null&&user.getStatus().intValue()==Integer.parseInt(UserStatusEnum.ok.toString())){
+				try {
+					UBranches applyInfo=(UBranches)JsonUtil.jsonStrToObject(branchJson, UBranches.class);
+					if(applyInfo!=null){
+						applyInfo.setBranchuserid(user.getUserId()); 
+					}
+					rq =branchService.applyBranchNew(user.getUserId(), applyInfo);
+				} catch (Exception e) {
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("参数有误101");
+					System.out.println(e); 
+					return JsonUtil.objectToJsonStr(rq);
+				}
+			}else {
+				rq.setStatu(ReturnStatus.LoginError_2);
+				rq.setStatusreson("未完成注册");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	/**
 	 *  分店申请
 	 * @param agentJson

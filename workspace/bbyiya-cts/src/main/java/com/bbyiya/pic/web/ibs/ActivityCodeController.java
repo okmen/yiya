@@ -44,13 +44,13 @@ public class ActivityCodeController extends SSOController {
 	
 	
 	/**
-	 * Ìí¼ÓÄ£°å
-	 * @param title Ä£°å±êÌâ
-	 * @param remark ±¸×¢
-	 * @param productid ²úÆ·¿îÊ¾
-	 * @param needverifer ÊÇ·ñĞèÒªÉóºË
-	 * @param discription »î¶¯ĞèÖª
-	 * @param codeurl  ¶şÎ¬ÂëÍ¼Æ¬
+	 * æ·»åŠ æ¨¡æ¿
+	 * @param title æ¨¡æ¿æ ‡é¢˜
+	 * @param remark å¤‡æ³¨
+	 * @param productid äº§å“æ¬¾ç¤º
+	 * @param needverifer æ˜¯å¦éœ€è¦å®¡æ ¸
+	 * @param discription æ´»åŠ¨éœ€çŸ¥
+	 * @param codeurl  äºŒç»´ç å›¾ç‰‡
 	 * @returnp
 	 * @throws Exception
 	 */
@@ -63,55 +63,55 @@ public class ActivityCodeController extends SSOController {
 			MyProductTempAddParam param = (MyProductTempAddParam)JsonUtil.jsonStrToObject(myproductTempJson,MyProductTempAddParam.class);			
 			if (param == null) {
 				rq.setStatu(ReturnStatus.ParamError_1);
-				rq.setStatusreson("²ÎÊı²»È«");
+				rq.setStatusreson("å‚æ•°ä¸å…¨");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			if(ObjectUtil.isEmpty(param.getTitle())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("»î¶¯Ãû³Æ²»ÄÜÎª¿Õ!");
+				rq.setStatusreson("æ´»åŠ¨åç§°ä¸èƒ½ä¸ºç©º!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			if(ObjectUtil.isEmpty(param.getProductid())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("¶ÔÓ¦²úÆ·²»ÄÜÎª¿Õ!");
+				rq.setStatusreson("å¯¹åº”äº§å“ä¸èƒ½ä¸ºç©º!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			if(ObjectUtil.isEmpty(param.getStyleId())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("»î¶¯½±Æ·²»ÄÜÎª¿Õ!");
+				rq.setStatusreson("æ´»åŠ¨å¥–å“ä¸èƒ½ä¸ºç©º!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			if(ObjectUtil.isEmpty(param.getApplycount())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("Éú³ÉÊıÁ¿²»ÄÜÎª¿Õ!");
+				rq.setStatusreson("ç”Ÿæˆæ•°é‡ä¸èƒ½ä¸ºç©º!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			if(param.getApplycount()!=null&&param.getApplycount()<=0){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("Éú³ÉÊıÁ¿±ØĞë´óÓÚÁã!");
+				rq.setStatusreson("ç”Ÿæˆæ•°é‡å¿…é¡»å¤§äºé›¶!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			if(!ObjectUtil.isEmpty(param.getTitle())&&!ObjectUtil.validSqlStr(param.getTitle())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("»î¶¯Ãû³Æ´æÔÚÎ£ÏÕ×Ö·û!");
+				rq.setStatusreson("æ´»åŠ¨åç§°å­˜åœ¨å±é™©å­—ç¬¦!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			if(!ObjectUtil.isEmpty(param.getCodesm())&&!ObjectUtil.validSqlStr(param.getCodesm())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("¶şÎ¬ÂëÎÄ×ÖËµÃ÷ÔÚÎ£ÏÕ×Ö·û!");
+				rq.setStatusreson("äºŒç»´ç æ–‡å­—è¯´æ˜åœ¨å±é™©å­—ç¬¦!");
 				return JsonUtil.objectToJsonStr(rq);
 			}			
 			rq=activitycodeService.addActivityCode(user.getUserId(), param);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
 	/**
-	 * µÃµ½Ïà¹ØÅú´ÎµÄµÄ»î¶¯Âë×÷Æ·ÁĞ±í
+	 * å¾—åˆ°ç›¸å…³æ‰¹æ¬¡çš„çš„æ´»åŠ¨ç ä½œå“åˆ—è¡¨
 	 * @param index
 	 * @param size
 	 * @return
@@ -128,7 +128,7 @@ public class ActivityCodeController extends SSOController {
 			rq=activitycodeService.findMyProductslistForActivityCode(user.getUserId(), tempid,activeStatus,keywords, index, size);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
@@ -137,7 +137,7 @@ public class ActivityCodeController extends SSOController {
 	
 	
 	/**
-	 * É¾³ı»î¶¯Âë
+	 * åˆ é™¤æ´»åŠ¨ç 
 	 * @param tempId
 	 * @return
 	 * @throws Exception
@@ -151,7 +151,7 @@ public class ActivityCodeController extends SSOController {
 			rq=activitycodeService.deleteActivityCode(codeno);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
@@ -168,13 +168,13 @@ public class ActivityCodeController extends SSOController {
 			rq=activitycodeService.getActivityCodeDetail(tempid);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	/**
-	 * ÖØÖÃ»î¶¯ÏÂµÄÒÑ±¨ÃûµÄĞòºÅ
+	 * é‡ç½®æ´»åŠ¨ä¸‹çš„å·²æŠ¥åçš„åºå·
 	 * @param cartId
 	 * @param type
 	 * @return
@@ -190,7 +190,7 @@ public class ActivityCodeController extends SSOController {
 	}
 	
 	/**
-	 * ÌõĞÎÂëexcelµ¼³ö
+	 * æ¡å½¢ç excelå¯¼å‡º
 	 * @param request
 	 * @return
 	 * @throws MapperException 
@@ -199,19 +199,19 @@ public class ActivityCodeController extends SSOController {
 	@ResponseBody
 	public String activityCodeProductExportExcel(Integer tempid,Integer activeStatus,
 			@RequestParam(required = false, defaultValue = "")String keywords) throws Exception {
-		// ÁĞÍ·
+		// åˆ—å¤´
 		String[] headers =new String[11];
-		headers[0]="»î¶¯Âë";
-		headers[1]="¶ÔÓ¦²úÆ·";
-		headers[2]="»î¶¯×´Ì¬";
-		headers[3]="¿Í»§êÇ³Æ";
-		headers[4]="±¦±¦ÉúÈÕ";
-		headers[5]="×÷Æ·½ø¶È";
-		headers[6]="ÆÀÂÛÊı";
-		headers[7]="¿Í»§ÊÖ»ú";
-		headers[8]="ÊÕ»õµØÖ·";
-		headers[9]="¿ªÊ¼ÖÆ×÷Ê±¼ä";
-		headers[10]="×î½ü¸üĞÂÊ±¼ä";	
+		headers[0]="æ´»åŠ¨ç ";
+		headers[1]="å¯¹åº”äº§å“";
+		headers[2]="æ´»åŠ¨çŠ¶æ€";
+		headers[3]="å®¢æˆ·æ˜µç§°";
+		headers[4]="å®å®ç”Ÿæ—¥";
+		headers[5]="ä½œå“è¿›åº¦";
+		headers[6]="è¯„è®ºæ•°";
+		headers[7]="å®¢æˆ·æ‰‹æœº";
+		headers[8]="æ”¶è´§åœ°å€";
+		headers[9]="å¼€å§‹åˆ¶ä½œæ—¶é—´";
+		headers[10]="æœ€è¿‘æ›´æ–°æ—¶é—´";	
 		String[] fields = new String[11];
 		fields[0]="code.codeno";
 		fields[1]="productTitle";
@@ -226,7 +226,7 @@ public class ActivityCodeController extends SSOController {
 		fields[10]="updatetimestr";
 		
 		
-		//µ¼³ö¸ñÊ½
+		//å¯¼å‡ºæ ¼å¼
 		String format =".xlsx";
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
@@ -240,8 +240,8 @@ public class ActivityCodeController extends SSOController {
 			PageInfo<ActivityCodeProductVO> resultPage =(PageInfo<ActivityCodeProductVO>) rq.getBasemodle();
 			
 			List<ActivityCodeProductVO> list=resultPage.getList();
-			Long seed = System.currentTimeMillis();// »ñµÃÏµÍ³Ê±¼ä£¬×÷ÎªÉú³ÉËæ»úÊıµÄÖÖ×Ó
-			// »ñÈ¡ÓÃ»§µÄµ±Ç°¹¤×÷Ö÷Ä¿Â¼ 
+			Long seed = System.currentTimeMillis();// è·å¾—ç³»ç»Ÿæ—¶é—´ï¼Œä½œä¸ºç”Ÿæˆéšæœºæ•°çš„ç§å­
+			// è·å–ç”¨æˆ·çš„å½“å‰å·¥ä½œä¸»ç›®å½• 
 			String sep=System.getProperty("file.separator");
 			String currentWorkDir = System.getProperty("user.home") +sep+ "imagedownloadtemp"+sep;
 			FileUtils.isDirExists(currentWorkDir);
@@ -250,7 +250,7 @@ public class ActivityCodeController extends SSOController {
 			File file = new File(currentWorkDir + filename);	
 			try { 
 				OutputStream out = new FileOutputStream(file);				
-				ex.exportExcel("»î¶¯Âë", headers, fields, list, out, "yyyy-MM-dd");				
+				ex.exportExcel("æ´»åŠ¨ç ", headers, fields, list, out, "yyyy-MM-dd");				
 				out.close();				
 				rq.setStatu(ReturnStatus.Success);
 				rq.setBasemodle(file.getPath());
@@ -264,7 +264,7 @@ public class ActivityCodeController extends SSOController {
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

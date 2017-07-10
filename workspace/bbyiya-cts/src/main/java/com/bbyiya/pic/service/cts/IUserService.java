@@ -5,18 +5,18 @@ import com.bbyiya.vo.ReturnModel;
 
 public interface IUserService {
 	/**
-	 * 添加cts内部账号
+	 * 娣诲姞cts鍐呴儴璐﹀彿
 	 * @param userid
 	 * @param phone
 	 * @return
 	 */
 	ReturnModel addCtsUser(Long userid, String phone);
 	/**
-	 * 删除cts内部账号
+	 * 鍒犻櫎cts鍐呴儴璐﹀彿
 	 * */
 	ReturnModel deleteCtsUser(Long userid);
 	/**
-	 * 内部员工账号列表
+	 * 鍐呴儴鍛樺伐璐﹀彿鍒楄〃
 	 * @param keywords
 	 * @param index
 	 * @param size

@@ -24,7 +24,7 @@ public class MyProductsController extends SSOController {
 	
 	
 	/**
-	 * IBS客户一对一作品列表
+	 * IBS瀹㈡埛涓�瀵逛竴浣滃搧鍒楄〃
 	 * @param index
 	 * @param size
 	 * @return
@@ -40,7 +40,7 @@ public class MyProductsController extends SSOController {
 			rq=proService.findMyProductsSourceCustomerOfBranch(user.getUserId(),null,inviteStatus,keywords,index,size);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
+			rq.setStatusreson("鐧诲綍杩囨湡");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);

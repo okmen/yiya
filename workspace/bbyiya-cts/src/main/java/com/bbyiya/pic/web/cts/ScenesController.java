@@ -23,7 +23,7 @@ public class ScenesController extends SSOController {
 	@Resource(name = "scenseService")
 	private IScenseService scenseService;
 	/**
-	 * Ìí¼Ó³¡¾°
+	 * æ·»åŠ åœºæ™¯
 	 * @param myproductTempJson
 	 * @return
 	 * @throws Exception
@@ -38,11 +38,11 @@ public class ScenesController extends SSOController {
 				rq=scenseService.addorUpdateScense(user.getUserId(), myScenseJson);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("È¨ÏŞ²»×ã£¡");
+				rq.setStatusreson("æƒé™ä¸è¶³ï¼");
 			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
@@ -61,11 +61,11 @@ public class ScenesController extends SSOController {
 				rq=scenseService.getScenseList(index, size, keywords, productid);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("È¨ÏŞ²»×ã£¡");
+				rq.setStatusreson("æƒé™ä¸è¶³ï¼");
 			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);

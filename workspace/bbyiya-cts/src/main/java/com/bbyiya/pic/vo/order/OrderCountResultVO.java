@@ -3,15 +3,15 @@ package com.bbyiya.pic.vo.order;
 public class OrderCountResultVO {
 	private static final long serialVersionUID = 1L;
 	
-	private String starttime;//²éÑ¯¿ªÊ¼Ê±¼ä
-	private String endtime;//²éÑ¯½áÊøÊ±¼ä
-	private String username;//ÓÃ»§êÇ³Æ
-	private String usercreatetime;//ÓÃ»§×¢²áÊ±¼ä
-	private String userorderid;//¶©µ¥±àºÅ
-	private String orderpaytime;//¶©µ¥Ö§¸¶Ê±¼ä
-	private String Producttitle;//²úÆ·±êÌâ+PropertyStr
-	private int count;//²úÆ·ÊıÁ¿ 
-	private Double totalprice;//¶©µ¥×Ü½ğ¶î
+	private String starttime;//æŸ¥è¯¢å¼€å§‹æ—¶é—´
+	private String endtime;//æŸ¥è¯¢ç»“æŸæ—¶é—´
+	private String username;//ç”¨æˆ·æ˜µç§°
+	private String usercreatetime;//ç”¨æˆ·æ³¨å†Œæ—¶é—´
+	private String userorderid;//è®¢å•ç¼–å·
+	private String orderpaytime;//è®¢å•æ”¯ä»˜æ—¶é—´
+	private String Producttitle;//äº§å“æ ‡é¢˜+PropertyStr
+	private int count;//äº§å“æ•°é‡ 
+	private Double totalprice;//è®¢å•æ€»é‡‘é¢
 	public String getStarttime() {
 		return starttime;
 	}

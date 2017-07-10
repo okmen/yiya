@@ -11,6 +11,14 @@
   <sql id="Base_Column_List" >
     AreaCode, AreaName, AreaId, IsAgent, AgentUserId
   </sql>
+  <!--根据areacode得到被代理的区域 -->
+   <select id="getApplyedAreacodeBycode" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from r_areaplans
+    where AreaCode = #{areacode,jdbcType=INTEGER} and IsAgent=1
+  </select>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />

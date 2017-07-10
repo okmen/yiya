@@ -17,8 +17,11 @@ public enum CustomerSourceTypeEnum {
     /**
      * 其它
      */
-    other(4) 
-    ;
+    other(4),
+    /**
+     * 客户邀请影楼员工
+     */
+    khinvite(5);
 
     private final int Type;
 

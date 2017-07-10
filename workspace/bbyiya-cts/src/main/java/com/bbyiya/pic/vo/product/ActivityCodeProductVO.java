@@ -5,39 +5,39 @@ import com.bbyiya.model.PMyproductactivitycode;
 public class ActivityCodeProductVO{
 	
 	private PMyproductactivitycode code;
-	private String invitedName;//¿Í»§êÇ³Æ	
-    //±¦±¦ÉúÈÕ
+	private String invitedName;//å®¢æˆ·æ˜µç§°	
+    //å®å®ç”Ÿæ—¥
   	private String birthdayStr;
   	
-  	private String title;//×÷Æ·Ãû³Æ
+  	private String title;//ä½œå“åç§°
 
-    private String author; //×÷Æ·×÷Õß
+    private String author; //ä½œå“ä½œè€…
 
-    private Long productid; //²úÆ·ID
+    private Long productid; //äº§å“ID
 
-    private Long styleid; //²úÆ·¿îÊ½
+    private Long styleid; //äº§å“æ¬¾å¼
     
-    private String productTitle;//²úÆ·Ãû³Æ
+    private String productTitle;//äº§å“åç§°
     
-  	private int count;  //²úÆ·½ø¶ÈÊıÁ¿
-  	//ÎÒµÄ×÷Æ·Ä¬ÈÏÍ¼
+  	private int count;  //äº§å“è¿›åº¦æ•°é‡
+  	//æˆ‘çš„ä½œå“é»˜è®¤å›¾
   	private String headImg;
-    //ÆÀÂÛÊı
+    //è¯„è®ºæ•°
   	private Integer commentsCount;
-  	//ÊÇ·ñÔ¤²úÆÚ
+  	//æ˜¯å¦é¢„äº§æœŸ
   	private Integer isDue;
-    //¶©µ¥ºÅ¼¯ºÏ
+    //è®¢å•å·é›†åˆ
   	private List<String> orderNoList;
   	
-  	//»î¶¯×´Ì¬
+  	//æ´»åŠ¨çŠ¶æ€
   	private Integer activeStatus;
   	
   	private String address;
   	
   	private String phone;
-   //×÷Æ·¿ªÊ¼±à¼­Ê±¼ä
+   //ä½œå“å¼€å§‹ç¼–è¾‘æ—¶é—´
   	private String createtimestr;
-    //×÷Æ·×îºó±à¼­Ê±¼ä
+    //ä½œå“æœ€åç¼–è¾‘æ—¶é—´
   	private String updatetimestr;
 
 

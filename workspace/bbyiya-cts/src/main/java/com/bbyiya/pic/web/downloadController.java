@@ -22,21 +22,21 @@ public class downloadController extends SSOController {
 	public String download(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try {
 			String path = request.getParameter("path");
-			// pathÊÇÖ¸ÓûÏÂÔØµÄÎÄ¼şµÄÂ·¾¶¡£
+			// pathæ˜¯æŒ‡æ¬²ä¸‹è½½çš„æ–‡ä»¶çš„è·¯å¾„ã€‚
 			File file = new File(path);
-		    // Â·¾¶ÎªÎÄ¼şÇÒ²»Îª¿ÕÔò½øĞĞÉ¾³ı  
+		    // è·¯å¾„ä¸ºæ–‡ä»¶ä¸”ä¸ä¸ºç©ºåˆ™è¿›è¡Œåˆ é™¤  
 		    if (file.isFile() && file.exists()) {
-				// È¡µÃÎÄ¼şÃû¡£
+				// å–å¾—æ–‡ä»¶åã€‚
 				String filename = file.getName();
 				//FileDownloadUtils.download(path, filename);
-				// ÒÔÁ÷µÄĞÎÊ½ÏÂÔØÎÄ¼ş¡£
+				// ä»¥æµçš„å½¢å¼ä¸‹è½½æ–‡ä»¶ã€‚
 				InputStream fis = new BufferedInputStream(new FileInputStream(path));
 				byte[] buffer = new byte[fis.available()];
 				fis.read(buffer);
 				fis.close();
-				// Çå¿Õresponse
+				// æ¸…ç©ºresponse
 				response.reset();
-				// ÉèÖÃresponseµÄHeader
+				// è®¾ç½®responseçš„Header
 				response.setCharacterEncoding("utf-8");  
 				response.setContentType("application/vnd.ms-excel;charset=utf-8");
 				response.addHeader("Content-Disposition", "attachment;filename=" + new String(filename.getBytes()));
@@ -45,7 +45,7 @@ public class downloadController extends SSOController {
 				toClient.write(buffer);
 				toClient.flush();
 				toClient.close();  
-				// É¾³ıÎÄ¼ş
+				// åˆ é™¤æ–‡ä»¶
 		        file.delete();  
 		    }
 		} catch (IOException ex) {

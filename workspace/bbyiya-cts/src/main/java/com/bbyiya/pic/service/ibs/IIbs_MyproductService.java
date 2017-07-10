@@ -4,7 +4,7 @@ import com.bbyiya.vo.ReturnModel;
 
 public interface IIbs_MyproductService {
 	/**
-	 * Ó°Â¥Ô±¹¤Ğ­Öú¿Í»§µÄ×÷Æ·ÁĞ±í
+	 * å½±æ¥¼å‘˜å·¥ååŠ©å®¢æˆ·çš„ä½œå“åˆ—è¡¨
 	 * @param branchUserId
 	 * @param status
 	 * @param inviteStatus

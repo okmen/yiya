@@ -18,6 +18,15 @@
     from u_agentapplyareas
     where AcodeId = #{acodeid,jdbcType=BIGINT}
   </select>
+  
+  <select id="findAgentapplyareasByUserId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from u_agentapplyareas
+    where UserId = #{userid,jdbcType=BIGINT}
+  </select>
+  
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from u_agentapplyareas
     where AcodeId = #{acodeid,jdbcType=BIGINT}

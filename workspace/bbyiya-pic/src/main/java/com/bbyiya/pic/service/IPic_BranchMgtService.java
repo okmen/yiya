@@ -1,6 +1,9 @@
 package com.bbyiya.pic.service;
 
+import java.util.List;
+
 import com.bbyiya.model.UAgentapply;
+import com.bbyiya.model.UAgentapplyareas;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.pic.vo.agent.AgentSearchParam;
 import com.bbyiya.pic.vo.agent.UBranchVo;
@@ -101,4 +104,37 @@ public interface IPic_BranchMgtService {
 	 * @return
 	 */
 	ReturnModel agentTuiZhu(String adminname,Long adminId, Long agentUserId);
+	/**
+	 * 检查区域是否被代理
+	 * @param userId
+	 * @param areacode
+	 * @return
+	 */
+	boolean checkAreaCodeIsApply( Integer areacode);
+	/**
+	 * 影楼分店申请
+	 * @param userId
+	 * @param applyInfo
+	 * @return
+	 */
+	ReturnModel applyBranchNew(Long userId, UBranches applyInfo);
+	/**
+	 * 代理商审核
+	 * @param adminId
+	 * @param agentUserId
+	 * @param status
+	 * @param msg
+	 * @return
+	 */
+	ReturnModel audit_AgentApplyNew(Long adminId, Long agentUserId, int status,
+			String msg);
+	/**
+	 * 代理商申请
+	 * @param userId
+	 * @param applyInfo
+	 * @param areaList
+	 * @return
+	 */
+	ReturnModel applyAgentNew(Long userId, UAgentapply applyInfo,
+			List<UAgentapplyareas> areaList);
 }

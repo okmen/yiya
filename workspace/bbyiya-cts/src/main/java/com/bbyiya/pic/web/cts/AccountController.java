@@ -64,7 +64,7 @@ public class AccountController  extends SSOController{
 	private IBaseUserAccountService accountService;
 	
 	/**
-	 * cts ÓÃ»§³äÖµ
+	 * cts ç”¨æˆ·å……å€¼
 	 * @param branchuserid
 	 * @param amount
 	 * @return
@@ -84,25 +84,25 @@ public class AccountController  extends SSOController{
 					boolean result=accountService.add_accountsLog(branchuserid, Integer.parseInt(AccountLogType.get_recharge.toString()), amountPrice, payId, "");
 					if(result){
 						UAccounts accounts=accountMapper.selectByPrimaryKey(branchuserid);
-						addActionLog(user.getUserId(),"[ÕË»§³äÖµ]²Ù×÷³É¹¦£¡³äÖµ½ğ¶î£º"+amountPrice+"Ôª£¡³äÖµÓÃ»§ userId:"+branchuserid);
-						rq.setStatusreson("³äÖµ³É¹¦£¡ÕË»§¿ÉÓÃ½ğ¶î£º"+accounts.getAvailableamount()+"Ôª!"); 
+						addActionLog(user.getUserId(),"[è´¦æˆ·å……å€¼]æ“ä½œæˆåŠŸï¼å……å€¼é‡‘é¢ï¼š"+amountPrice+"å…ƒï¼å……å€¼ç”¨æˆ· userId:"+branchuserid);
+						rq.setStatusreson("å……å€¼æˆåŠŸï¼è´¦æˆ·å¯ç”¨é‡‘é¢ï¼š"+accounts.getAvailableamount()+"å…ƒ!"); 
 						rq.setStatu(ReturnStatus.Success);
 					}else{
-						rq.setStatusreson("³äÖµÊ§°Ü£¡"); 
+						rq.setStatusreson("å……å€¼å¤±è´¥ï¼"); 
 						rq.setStatu(ReturnStatus.SystemError);
 					}
 					
 				}else {
 					rq.setStatu(ReturnStatus.SystemError);
-					rq.setStatusreson("¸ÃÓÃ»§²»ÊÇÓ°Â¥Éí·İ£¡"); 
+					rq.setStatusreson("è¯¥ç”¨æˆ·ä¸æ˜¯å½±æ¥¼èº«ä»½ï¼"); 
 				}
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("È¨ÏŞ²»×ã£¡");
+				rq.setStatusreson("æƒé™ä¸è¶³ï¼");
 			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
@@ -121,7 +121,7 @@ public class AccountController  extends SSOController{
 	}
 	
 	/**
-	 * cts ´úÀíÉÌÓÊ·Ñ³äÖµ
+	 * cts ä»£ç†å•†é‚®è´¹å……å€¼
 	 * @param branchuserid
 	 * @param amount
 	 * @return
@@ -149,7 +149,7 @@ public class AccountController  extends SSOController{
 						transaccountMapper.insert(transaccount);	
 					}
 					
-					//²åÈëÈÕÖ¾
+					//æ’å…¥æ—¥å¿—
 					String payId=GenUtils.getOrderNo(9999l); 
 					UBranchtransamountlog translog=new UBranchtransamountlog();
 					translog.setAmount(amountPrice);
@@ -159,20 +159,20 @@ public class AccountController  extends SSOController{
 					translog.setType(Integer.parseInt(AmountType.get.toString()));
 					transaccountlogMapper.insert(translog);
 
-					addActionLog(user.getUserId(),"[ÓÊ·ÑÕË»§³äÖµ]²Ù×÷³É¹¦£¡³äÖµ½ğ¶î£º"+amountPrice+"Ôª£¡³äÖµÓÃ»§ userId:"+branchuserid);
-					rq.setStatusreson("³äÖµ³É¹¦£¡ÓÊ·ÑÕË»§¿ÉÓÃ½ğ¶î£º"+transaccount.getAvailableamount()+"Ôª!"); 
+					addActionLog(user.getUserId(),"[é‚®è´¹è´¦æˆ·å……å€¼]æ“ä½œæˆåŠŸï¼å……å€¼é‡‘é¢ï¼š"+amountPrice+"å…ƒï¼å……å€¼ç”¨æˆ· userId:"+branchuserid);
+					rq.setStatusreson("å……å€¼æˆåŠŸï¼é‚®è´¹è´¦æˆ·å¯ç”¨é‡‘é¢ï¼š"+transaccount.getAvailableamount()+"å…ƒ!"); 
 					rq.setStatu(ReturnStatus.Success);
 				}else {
 					rq.setStatu(ReturnStatus.SystemError);
-					rq.setStatusreson("¸ÃÓÃ»§²»ÊÇÓ°Â¥Éí·İ£¡"); 
+					rq.setStatusreson("è¯¥ç”¨æˆ·ä¸æ˜¯å½±æ¥¼èº«ä»½ï¼"); 
 				}
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("È¨ÏŞ²»×ã£¡");
+				rq.setStatusreson("æƒé™ä¸è¶³ï¼");
 			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("µÇÂ¼¹ıÆÚ");
+			rq.setStatusreson("ç™»å½•è¿‡æœŸ");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

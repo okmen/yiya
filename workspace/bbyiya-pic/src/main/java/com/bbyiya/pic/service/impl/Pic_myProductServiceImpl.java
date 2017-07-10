@@ -130,6 +130,10 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				invoMo.setInvitetype(Integer.parseInt(InviteType.sendPhoneInvite.toString()));
 				invoMo.setStatus(Integer.parseInt(InviteStatus.inviting.toString()));
 				invoMo.setCreatetime(new Date());
+				UUsers user=usersMapper.getUUsersByPhone(phone);
+				if(user!=null){
+					invoMo.setInviteuserid(user.getUserid());
+				}
 				inviteMapper.insert(invoMo);
 				myproducts.setInvitestatus(Integer.parseInt(InviteStatus.inviting.toString()));
 				//需要重新更新版本号

@@ -31,6 +31,7 @@ import com.bbyiya.dao.UChildreninfoMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.pic.InviteStatus;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
 import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
 import com.bbyiya.model.DMyproductdiscountmodel;
@@ -914,7 +915,6 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					}else{
 						//制作完成
 						item.setActiveStatus(Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString()));
-						
 					}
 				}
 

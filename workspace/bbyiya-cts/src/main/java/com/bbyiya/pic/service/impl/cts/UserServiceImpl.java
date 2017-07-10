@@ -41,12 +41,12 @@ public class UserServiceImpl implements IUserService{
 	@Autowired
 	private UAdminMapper adminMapper;
 	/**
-	 * Ìí¼ÓctsÄÚ²¿ÕËºÅ
+	 * æ·»åŠ ctså†…éƒ¨è´¦å·
 	 * */
 	public ReturnModel addCtsUser(Long userid,String phone){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);	
-		//¼ì²â±»Ìí¼ÓµÄÓÃ»§Éí·İ£¨±ØĞë°ó¶¨ÊÖ»ú£©
+		//æ£€æµ‹è¢«æ·»åŠ çš„ç”¨æˆ·èº«ä»½ï¼ˆå¿…é¡»ç»‘å®šæ‰‹æœºï¼‰
 		UUsers member= usersMapper.getUUsersByPhone(phone);
 		if(member==null){
 			member=usersMapper.getUUsersByUserID(ObjectUtil.parseLong(phone));
@@ -55,23 +55,23 @@ public class UserServiceImpl implements IUserService{
 			UAdmin admin=adminMapper.selectByPrimaryKey(member.getUserid());
 			if(admin!=null){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("¸ÃÓÃ»§ÒÑÊÇctsÄÚ²¿ÕËºÅ£¬²»ÄÜÖØ¸´Ìí¼Ó£¡");
+				rq.setStatusreson("è¯¥ç”¨æˆ·å·²æ˜¯ctså†…éƒ¨è´¦å·ï¼Œä¸èƒ½é‡å¤æ·»åŠ ï¼");
 				return rq;
 			}
 			UAdmin adminnew=new UAdmin();
 			adminnew.setCreatetime(new Date());
-			adminnew.setType(2);//ÆÕÍ¨ÕËºÅ
+			adminnew.setType(2);//æ™®é€šè´¦å·
 			adminnew.setUserid(member.getUserid());
 			adminnew.setUsername(member.getNickname());
 			adminMapper.insert(adminnew);
 			
-			//±»Ìí¼ÓµÄÓÃ»§µÄÉí·İ±êÊ¾
+			//è¢«æ·»åŠ çš„ç”¨æˆ·çš„èº«ä»½æ ‡ç¤º
 			userBasic.addUserIdentity(member.getUserid(),UserIdentityEnums.cts_member); 
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("Ìí¼Ó³É¹¦£¡");
+			rq.setStatusreson("æ·»åŠ æˆåŠŸï¼");
 		}else{
 			rq.setStatu(ReturnStatus.SystemError);
-			rq.setStatusreson("ÓÃ»§²»´æÔÚ£¨»òÕß¸ÃÊÖ»úÎ´°ó¶¨£©£¡");
+			rq.setStatusreson("ç”¨æˆ·ä¸å­˜åœ¨ï¼ˆæˆ–è€…è¯¥æ‰‹æœºæœªç»‘å®šï¼‰ï¼");
 		}
 		rq.setStatu(ReturnStatus.Success);
 		return rq;
@@ -86,10 +86,10 @@ public class UserServiceImpl implements IUserService{
 			adminMapper.deleteByPrimaryKey(userid);
 			userBasic.removeUserIdentity(userid,UserIdentityEnums.cts_member);
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("É¾³ı³É¹¦£¡"); 
+			rq.setStatusreson("åˆ é™¤æˆåŠŸï¼"); 
 		}else{
 			rq.setStatu(ReturnStatus.SystemError);
-			rq.setStatusreson("¹ÜÀíÔ±ÕËºÅ²»ÄÜÉ¾³ı£¡");
+			rq.setStatusreson("ç®¡ç†å‘˜è´¦å·ä¸èƒ½åˆ é™¤ï¼");
 		}
 		rq.setStatu(ReturnStatus.Success);
 		return rq;

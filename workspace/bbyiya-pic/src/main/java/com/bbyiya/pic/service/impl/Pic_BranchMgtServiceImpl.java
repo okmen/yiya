@@ -170,6 +170,8 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			}else{
 				agentvo.setTransAmount(0.0);
 			}
+			agentvo.setAgentArealist(getAgentApplyArealistByAgentUserID(agentvo.getAgentuserid()));
+			
 		}
 		rq.setBasemodle(result);
 		return rq;
@@ -919,7 +921,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			agentapply.setCityName(regionService.getCityName(agentapply.getCity())) ;
 			agentapply.setAreaName(regionService.getAresName(agentapply.getArea())) ;
 			//agentapply.setAgentArealist(getAgentArealist(agentapply.getArea())); 
-			agentapply.setAgentArealist(getAgentArealistByAgentUserID(agentapply.getAgentuserid()));
+			agentapply.setAgentArealist(getAgentApplyArealistByAgentUserID(agentapply.getAgentuserid()));
 			map.put("applyInfo", agentapply);
 			if(agentapply.getStatus()!=null){
 				if(agentapply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.ok.toString())){
@@ -997,6 +999,19 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			List<String> areasList=new ArrayList<String>();
 			for (RAreaplans rr : arealist) {
 				areasList.add(rr.getAreaname());
+			}
+			return areasList;
+		}
+		return null;
+		
+	}
+	
+	private List<String> getAgentApplyArealistByAgentUserID(Long agentUserId){		
+		List<UAgentapplyareas> arealist= uagentapplyareaMapper.findAgentapplyareasByUserId(agentUserId);
+		if(arealist!=null&&arealist.size()>0){
+			List<String> areasList=new ArrayList<String>();
+			for (UAgentapplyareas rr : arealist) {
+				areasList.add(rr.getAreacode().toString());
 			}
 			return areasList;
 		}

@@ -122,6 +122,27 @@ public class BranchMgtController extends SSOController {
 	 * @throws Exception
 	 */
 	@ResponseBody
+	@RequestMapping(value = "/checkAreaCodeIsApply")
+	public String checkAreaCodeIsApply(String areacode) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		boolean isApply=branchService.checkAreaCodeIsApply(ObjectUtil.parseInt(areacode));
+		if(isApply){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("该区域已被代理");
+		}else{
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("该区域可以代理");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+		
+	/**
+	 *  代理商申请
+	 * @param agentJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
 	@RequestMapping(value = "/agentApplyNew")
 	public String agentApplynew(String agentJson,String areacodeJson) throws Exception {
 		ReturnModel rq=new ReturnModel();

@@ -110,7 +110,7 @@ public interface IPic_BranchMgtService {
 	 * @param areacode
 	 * @return
 	 */
-	boolean checkAreaCodeIsApply(Long userId, Integer areacode);
+	boolean checkAreaCodeIsApply( Integer areacode);
 	/**
 	 * 影楼分店申请
 	 * @param userId

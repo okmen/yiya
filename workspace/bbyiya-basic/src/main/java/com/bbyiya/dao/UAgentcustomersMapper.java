@@ -40,4 +40,6 @@ public interface UAgentcustomersMapper {
      * @return
      */
     UAgentcustomers getCustomersByAgentUserId(@Param("agentUserId") Long agentUserId ,@Param("userId") Long userId);
+    
+    UAgentcustomers getCustomersByBranchUserId(@Param("branchUserId")Long branchUserId,@Param("userId") Long userId);
 }

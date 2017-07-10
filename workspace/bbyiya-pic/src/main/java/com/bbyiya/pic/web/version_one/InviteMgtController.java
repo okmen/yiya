@@ -8,12 +8,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.dao.PMyproductsMapper;
+import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
+import com.bbyiya.dao.UAgentcustomersMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.InviteStatus;
 import com.bbyiya.model.PMyproducts;
+import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
+import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UUseraddress;
 import com.bbyiya.pic.service.IPic_myProductService;
 import com.bbyiya.service.IRegionService;
@@ -35,6 +39,10 @@ public class InviteMgtController  extends SSOController {
 	private PMyproducttempapplyMapper tempApplyMapper;
 	@Autowired
 	private PMyproductsMapper myproductsMapper;
+	@Autowired
+	private PMyproducttempMapper tempMapper;
+	@Autowired
+	private UAgentcustomersMapper customerMapper;
 	
 	@Resource(name = "regionServiceImpl")
 	private IRegionService regionService;
@@ -105,6 +113,22 @@ public class InviteMgtController  extends SSOController {
 						apply.setArea(address.getArea());
 						apply.setAdress(regionService.getProvinceName(address.getProvince())+regionService.getCityName(address.getCity())+regionService.getAresName(address.getArea())+address.getStreetdetail());
 						tempApplyMapper.updateByPrimaryKeySelective(apply);
+						
+						//异业合作模板
+						PMyproducttemp temp=tempMapper.selectByPrimaryKey(apply.getTempid());
+						if(temp!=null){
+							UAgentcustomers customer= customerMapper.getCustomersByBranchUserId(temp.getBranchuserid(), user.getUserId());
+							if(customer!=null){
+								if(ObjectUtil.isEmpty(customer.getPhone())){
+									customer.setPhone(address.getPhone());
+								}
+								if(ObjectUtil.isEmpty(customer.getAddress())){
+									customer.setAddress(apply.getAdress()); 
+									customerMapper.updateByPrimaryKeySelective(customer);
+								}
+							}
+						}
+						
 					}
 				}//收获地址信息（完）------------------
 				

@@ -28,7 +28,7 @@ public class UserInfoController  extends SSOController{
 	
 	
 	/**
-	 * 我推荐的用户列表
+	 * 我的自传播用户列表
 	 * @param index
 	 * @param size
 	 * @return

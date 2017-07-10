@@ -249,6 +249,10 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			rq.setStatusreson("运营者电话必须填");
 			return rq;
 		} 
+		if(!ObjectUtil.isMobile(applyInfo.getPhone())){
+			rq.setStatusreson("请输入正确的手机号");
+			return rq;
+		}
 		if(ObjectUtil.isEmpty(applyInfo.getStreetdetail())){
 			rq.setStatusreson("店里收货地址必须填");
 			return rq;
@@ -278,7 +282,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			}
 
 			//如果是已通过审核的代理商
-			if(applyInfo.getStatus()==Integer.parseInt(AgentStatusEnum.ok.toString())){
+			if(applyInfo.getStatus()!=null&&applyInfo.getStatus()==Integer.parseInt(AgentStatusEnum.ok.toString())){
 				List<RAreaplans> areaplans=agentAreaDao.findRAreaplansByAgentUserId(applyInfo.getAgentuserid());
 				for (RAreaplans ap : areaplans) {
 					areaplansMapper.deleteByPrimaryKey(ap.getAreacode());
@@ -364,7 +368,11 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		if(ObjectUtil.isEmpty(applyInfo.getPhone())){
 			rq.setStatusreson("运营者电话必须填");
 			return rq;
-		} 
+		}
+		if(!ObjectUtil.isMobile(applyInfo.getPhone())){
+			rq.setStatusreson("请输入正确的手机号");
+			return rq;
+		}
 		
 		if(!ObjectUtil.validSqlStr(applyInfo.getAgentcompanyname())
 				||!ObjectUtil.validSqlStr(applyInfo.getContactname())

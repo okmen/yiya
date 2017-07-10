@@ -29,8 +29,6 @@
     where CustomerId = #{customerid,jdbcType=BIGINT}
   </select>
   
- 
-  
   <resultMap id="UAgentcustomersVoResult" type="com.bbyiya.vo.agent.UAgentcustomersVo" extends="BaseResultMap">  
   </resultMap>  
    <!-- 根据BranchUserId获取影楼的已获取用户列表结果类Result -->
@@ -61,7 +59,12 @@
     from u_agentcustomers
     where AgentUserId = #{agentUserId,jdbcType=BIGINT} and UserId= #{userId,jdbcType=BIGINT} LIMIT 1
   </select>
-
+  <select id="getCustomersByBranchUserId" resultMap="BaseResultMap"  ><!-- 04 根据branchuserid,buyerUserId 查询是否是客户 -->
+    select 
+    <include refid="Base_Column_List" />
+    from u_agentcustomers
+    where BranchUserId = #{branchUserId,jdbcType=BIGINT} and UserId= #{userId,jdbcType=BIGINT} LIMIT 1
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from u_agentcustomers
     where CustomerId = #{customerid,jdbcType=BIGINT}

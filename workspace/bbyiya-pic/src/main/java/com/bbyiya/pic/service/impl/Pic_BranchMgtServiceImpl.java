@@ -254,19 +254,6 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			return rq;
 		} 
 		
-//		if(ObjectUtil.isEmpty(applyInfo.getIdcard())){
-//		rq.setStatusreson("身份证信息不能为空");
-//		return rq;
-//		} 
-//		if(ObjectUtil.isEmpty(applyInfo.getBusinesslicense())){
-//			rq.setStatusreson("营业执照必须填");
-//			return rq;
-//		} 
-//		if(areaList==null||areaList.size()<=0){
-//			rq.setStatusreson("请选择要代理的区域");
-//			return rq;
-//		}
-		
 		if(!ObjectUtil.validSqlStr(applyInfo.getAgentcompanyname())
 				||!ObjectUtil.validSqlStr(applyInfo.getContactname())
 				||!ObjectUtil.validSqlStr(applyInfo.getStreetdetail())
@@ -289,27 +276,42 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			for (UAgentapplyareas oldarea : oldareaplans) {
 				uagentapplyareaMapper.deleteByPrimaryKey(oldarea.getAcodeid());
 			}
-			//暂时审核后不能修改区域
-//			//如果是已通过审核的代理商
-//			if(applyInfo.getStatus()==Integer.parseInt(AgentStatusEnum.ok.toString())){
-//				List<RAreaplans> areaplans=agentAreaDao.findRAreaplansByAgentUserId(applyInfo.getAgentuserid());
-//				for (RAreaplans ap : areaplans) {
-//					areaplansMapper.deleteByPrimaryKey(ap.getAreacode());
-//				}
-//				if(areaList!=null&&areaList.size()>0){
-//					//插入代理区域
-//					for (UAgentapplyareas area : areaList) {
-//						RAreaplans areaplan=new RAreaplans();
-//						areaplan.setAgentuserid(apply.getAgentuserid());
-//						areaplan.setAreacode(area.getAreacode());
-//						areaplan.setAreaname(regionService.getAresName(area.getAreacode()));
-//						areaplan.setIsagent(1);
-//						areaplansMapper.insert(areaplan);
-//					}
-//				}
-//			}
+
+			//如果是已通过审核的代理商
+			if(applyInfo.getStatus()==Integer.parseInt(AgentStatusEnum.ok.toString())){
+				List<RAreaplans> areaplans=agentAreaDao.findRAreaplansByAgentUserId(applyInfo.getAgentuserid());
+				for (RAreaplans ap : areaplans) {
+					areaplansMapper.deleteByPrimaryKey(ap.getAreacode());
+				}
+				if(areaList!=null&&areaList.size()>0){
+					for (UAgentapplyareas app : areaList) {
+						if(this.checkAreaCodeIsApply(userId, app.getAreacode())){
+							rq.setStatusreson("该区域["+app.getAreacode()+"]已被代理，不能重复代理！");
+							return rq;
+						}
+					}
+					
+					//插入代理区域
+					for (UAgentapplyareas area : areaList) {
+						RAreaplans areaplan=new RAreaplans();
+						areaplan.setAgentuserid(apply.getAgentuserid());
+						areaplan.setAreacode(area.getAreacode());
+						areaplan.setAreaname(regionService.getAresName(area.getAreacode()));
+						areaplan.setIsagent(1);
+						areaplansMapper.insert(areaplan);
+					}
+				}
+			}
 			agentapplyMapper.updateByPrimaryKeySelective(applyInfo);
 		}else {
+			if(areaList!=null&&areaList.size()>0){
+				for (UAgentapplyareas app : areaList) {
+					if(this.checkAreaCodeIsApply(userId, app.getAreacode())){
+						rq.setStatusreson("该区域["+app.getAreacode()+"]已被代理，不能重复代理！");
+						return rq;
+					}
+				}	
+			}
 			applyInfo.setStatus(Integer.parseInt(AgentStatusEnum.applying.toString()));  
 			agentapplyMapper.insert(applyInfo);
 			

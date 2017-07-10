@@ -58,6 +58,19 @@
     </if>
   </select>
   
+   <select id="findUUsersBySourceUserId" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from u_users
+    where SourseUserId = #{sourceuserid,jdbcType=BIGINT}
+    <if test="startTime != null " >
+      and date(CreateTime) &gt;= date(#{startTime,jdbcType=TIMESTAMP})  
+    </if>
+    <if test="endTime != null" >
+      and date(CreateTime) &lt;= date(#{endTime,jdbcType=TIMESTAMP})    
+    </if>
+  </select>
+  
   <!-- 获取我发展的用户数 -->
   <select id="getUserCountByUpUserid" resultType="java.lang.Integer" parameterType="java.lang.Long" >
     select count(UserID) from u_users where UpUserId = #{upid,jdbcType=BIGINT}   

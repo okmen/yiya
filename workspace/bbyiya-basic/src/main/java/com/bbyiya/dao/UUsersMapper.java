@@ -71,6 +71,14 @@ public interface UUsersMapper {
 	List<UUsers> findUUsersByUpUserid(@Param("upid") Long upUserid,@Param("startTime")Date starttime,@Param("endTime")Date endtime);
 	
 	/**
+	 * 查询最终我发展的用户
+	 * @param upUserid
+	 * @param starttime
+	 * @param endtime
+	 * @return
+	 */
+	List<UUsers> findUUsersBySourceUserId(@Param("sourceuserid") Long sourceuserid,@Param("startTime")Date starttime,@Param("endTime")Date endtime);
+	/**
 	 * 获取我发展的用户数
 	 * @param branchuserid
 	 * @return

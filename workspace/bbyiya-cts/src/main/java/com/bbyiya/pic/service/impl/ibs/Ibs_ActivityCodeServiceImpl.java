@@ -21,6 +21,7 @@ import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproductsinvitesMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
+import com.bbyiya.dao.PMyproducttempextMapper;
 import com.bbyiya.dao.PProductsMapper;
 import com.bbyiya.dao.PProductstylesMapper;
 import com.bbyiya.dao.UBranchusersMapper;
@@ -40,6 +41,7 @@ import com.bbyiya.model.PMyproductext;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
+import com.bbyiya.model.PMyproducttempext;
 import com.bbyiya.model.PProducts;
 import com.bbyiya.model.PProductstyles;
 import com.bbyiya.model.UBranchusers;
@@ -60,6 +62,10 @@ import com.github.pagehelper.PageInfo;
 public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 	@Autowired
 	private PMyproducttempMapper myproducttempMapper;
+	
+	@Autowired
+	private PMyproducttempextMapper myproducttempextMapper;
+	
 	@Autowired
 	private PMyproductsMapper myMapper;
 	@Autowired
@@ -94,13 +100,13 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 	/**
 	 * 添加活动码
 	 * */
-	public ReturnModel addActivityCode(Long userid,MyProductTempAddParam param){
+	public ReturnModel addActivityCode(Long userid,MyProductTempAddParam param,List<PMyproducttempext> arealist){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);	
 
 		PMyproducts myproduct = new PMyproducts();	
 		myproduct.setUserid(userid);
-		myproduct.setProductid(param.getProductid());
+		//myproduct.setProductid(param.getProductid());
 		myproduct.setCreatetime(new Date());
 		myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.ok.toString()));
 		myproduct.setUpdatetime(new Date());	
@@ -122,7 +128,7 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 		}if(!ObjectUtil.isEmpty(param.getCodesm())){
 			temp.setTempcodesm(param.getCodesm());
 		}
-		temp.setStyleid(param.getStyleId());
+		//temp.setStyleid(param.getStyleId());
 		temp.setIsautoorder(1);//默认都是自动下单0 手工下单，1自动下单
 		temp.setOrderhours(0); 
 		temp.setMaxapplycount(param.getApplycount()==null?0:param.getApplycount());//报名人数为0时不限制
@@ -131,8 +137,14 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 			param.setIsbranchaddress(0);
 		}
 		temp.setIsbranchaddress(param.getIsbranchaddress());
-		temp.setType(Integer.parseInt(MyProductTempType.code.toString()));//默认为普通类型
+		temp.setType(Integer.parseInt(MyProductTempType.code.toString()));//活动码 邀请
 		myproducttempMapper.insertReturnId(temp);
+		if(arealist!=null&&arealist.size()>0){
+			for (PMyproducttempext tempext : arealist) {
+				tempext.setTempid(temp.getTempid());
+				myproducttempextMapper.insert(tempext);
+			}			
+		}
 		
 		//生成活动码
 		for(int i=0;i<param.getApplycount();i++){
@@ -201,23 +213,7 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 				ActivityCodeProductVO codevo=new ActivityCodeProductVO();
 				codevo.setCode(code);
 				
-				PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(code.getTempid());
-				codevo.setStyleid(temp.getStyleid());
-				PMyproducts tempproduct=myMapper.selectByPrimaryKey(temp.getCartid());
-				codevo.setProductid(tempproduct.getProductid());
 				
-				// 获取产品信息
-				PProducts products = productsMapper.selectByPrimaryKey(tempproduct.getProductid());
-				PProductstyles styles = styleMapper.selectByPrimaryKey(temp.getStyleid());
-				String producttitle=products.getTitle();
-				if (products != null && styles != null) {
-					if(styles.getStyleid()%2==0){
-						producttitle=producttitle+"-竖版-"+styles.getPrice();
-					}else{
-						producttitle=producttitle+"-横版-"+styles.getPrice();
-					}
-					codevo.setProductTitle(producttitle);
-				}
 				//得到客户昵称
 				if(!ObjectUtil.isEmpty(code.getUserid())){
 					UUsers user=usersMapper.selectByPrimaryKey(code.getUserid());
@@ -266,6 +262,33 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 							codevo.setAddress(tempapply.getAdress());
 							//1已使用 3制作已完成 4作品审核不通过5下单审核通过
 							codevo.setActiveStatus(tempapply.getStatus());
+							PProducts products=null;
+							PProductstyles styles =null;
+							//得到款式
+							if(tempapply.getStyleid()!=null){
+								// 获取产品信息
+								 products = productsMapper.selectByPrimaryKey(tempapply.getProductid());
+								 styles = styleMapper.selectByPrimaryKey(tempapply.getStyleid());
+							}else{
+								PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(code.getTempid());
+								PMyproducts tempproduct=myMapper.selectByPrimaryKey(temp.getCartid());
+								// 获取产品信息
+								products = productsMapper.selectByPrimaryKey(tempproduct.getProductid());
+								styles = styleMapper.selectByPrimaryKey(temp.getStyleid());
+							}
+							if(products!=null&&styles!=null){
+								codevo.setStyleid(styles.getStyleid());
+								codevo.setProductid(products.getProductid());
+								String producttitle=products.getTitle();
+								if (products != null && styles != null) {
+									if(styles.getStyleid()%2==0){
+										producttitle=producttitle+"-竖版-"+styles.getPrice();
+									}else{
+										producttitle=producttitle+"-横版-"+styles.getPrice();
+									}
+									codevo.setProductTitle(producttitle);
+								}
+							}
 						}
 						// 得到作品订单集合
 						List<OUserorders> orderList = orderMapper.findOrderListByCartId(myproduct.getCartid());

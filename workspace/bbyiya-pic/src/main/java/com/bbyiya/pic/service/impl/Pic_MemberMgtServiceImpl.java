@@ -150,6 +150,7 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 		UBranchusers usBranchusers= branchusersMapper.selectByPrimaryKey(userId); 
 		if(usBranchusers!=null){
 			if(usBranchusers.getBranchuserid()!=null&&usBranchusers.getBranchuserid().longValue()==branchUserId){
+				//是否转移员工下的协助邀请的客户作品
 				branchusersMapper.deleteByPrimaryKey(userId);
 				//移除用户标识
 				userBasic.removeUserIdentity(userId,UserIdentityEnums.salesman); 

@@ -20,8 +20,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import utils.Json2Objects;
+
 import com.bbyiya.baseUtils.ExportExcel;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.model.PMyproducttempext;
+import com.bbyiya.model.UAgentapplyareas;
 import com.bbyiya.pic.service.ibs.IIbs_ActivityCodeService;
 import com.bbyiya.pic.vo.product.ActivityCodeProductVO;
 import com.bbyiya.pic.vo.product.MyProductTempAddParam;
@@ -44,23 +48,25 @@ public class ActivityCodeController extends SSOController {
 	
 	
 	/**
-	 * 添加模板
-	 * @param title 模板标题
-	 * @param remark 备注
-	 * @param productid 产品款示
-	 * @param needverifer 是否需要审核
-	 * @param discription 活动需知
-	 * @param codeurl  二维码图片
-	 * @returnp
+	 * 添兑换码模板
+	 * @param myproductTempJson
+	 * @param productstyleJson
+	 * @return
 	 * @throws Exception
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/addActivityCode")
-	public String addActivityCode(String myproductTempJson) throws Exception {
+	public String addActivityCode(String myproductTempJson,String productstyleJson) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			MyProductTempAddParam param = (MyProductTempAddParam)JsonUtil.jsonStrToObject(myproductTempJson,MyProductTempAddParam.class);			
+			MyProductTempAddParam param = (MyProductTempAddParam)JsonUtil.jsonStrToObject(myproductTempJson,MyProductTempAddParam.class);
+			List<PMyproducttempext> arealist=Json2Objects.getParam_Myproducttempext(productstyleJson);
+			if(arealist==null||arealist.size()<=0){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("对应产品不能为空!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
 			if (param == null) {
 				rq.setStatu(ReturnStatus.ParamError_1);
 				rq.setStatusreson("参数不全");
@@ -69,16 +75,6 @@ public class ActivityCodeController extends SSOController {
 			if(ObjectUtil.isEmpty(param.getTitle())){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("活动名称不能为空!");
-				return JsonUtil.objectToJsonStr(rq);
-			}
-			if(ObjectUtil.isEmpty(param.getProductid())){
-				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("对应产品不能为空!");
-				return JsonUtil.objectToJsonStr(rq);
-			}
-			if(ObjectUtil.isEmpty(param.getStyleId())){
-				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("活动奖品不能为空!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			if(ObjectUtil.isEmpty(param.getApplycount())){
@@ -101,7 +97,7 @@ public class ActivityCodeController extends SSOController {
 				rq.setStatusreson("二维码文字说明在危险字符!");
 				return JsonUtil.objectToJsonStr(rq);
 			}			
-			rq=activitycodeService.addActivityCode(user.getUserId(), param);
+			rq=activitycodeService.addActivityCode(user.getUserId(), param,arealist);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

@@ -1,11 +1,21 @@
 package com.bbyiya.model;
 
 public class PMyproducttempext {
+    private Long id;
+
     private Integer tempid;
 
     private Long styleid;
 
     private Long productid;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Integer getTempid() {
         return tempid;

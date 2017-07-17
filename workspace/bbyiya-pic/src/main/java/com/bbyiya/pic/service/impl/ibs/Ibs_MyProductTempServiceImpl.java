@@ -425,6 +425,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 						}
 					}
 					temp.setProductName(producttitle);
+					temp.setTempextlist(tempextlist);
 					
 				}else{
 					if(!ObjectUtil.isEmpty(temp.getStyleid())){

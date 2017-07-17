@@ -107,7 +107,7 @@ public class YiyeCodeController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/jdAct")
-	public String jdAct(String codeNum) throws Exception {
+	public String jdAct(String codeNum,String styleId,String productId) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		rq.setStatu(ReturnStatus.ParamError);
 		LoginSuccessResult user = super.getLoginUser();
@@ -127,7 +127,12 @@ public class YiyeCodeController extends SSOController {
 						}
 						apply.setCreatetime(new Date());
 						apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.apply.toString()));
-						
+						if(!ObjectUtil.isEmpty(styleId)){
+							apply.setStyleid(ObjectUtil.parseLong(styleId));
+						}
+						if(!ObjectUtil.isEmpty(productId)){
+							apply.setProductid(ObjectUtil.parseLong(productId));
+						}
 						//异业模板 申请人数+1
 						temp.setApplycount(temp.getApplycount()==null?1:temp.getApplycount()+1);
 						tempMapper.updateByPrimaryKeySelective(temp);

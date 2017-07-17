@@ -13,6 +13,8 @@ public class YiyeSubmitParam implements Serializable{
 	private String dateTimeStr;
 	private long dateTimeVal;
 	private String codenum;
+	private Long productId;
+	private Long styleId;
 	public long getDateTimeVal() {
 		return dateTimeVal;
 	}
@@ -61,6 +63,18 @@ public class YiyeSubmitParam implements Serializable{
 	}
 	public void setCodenum(String codenum) {
 		this.codenum = codenum;
+	}
+	public Long getProductId() {
+		return productId;
+	}
+	public Long getStyleId() {
+		return styleId;
+	}
+	public void setProductId(Long productId) {
+		this.productId = productId;
+	}
+	public void setStyleId(Long styleId) {
+		this.styleId = styleId;
 	}
 	
 

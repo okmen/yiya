@@ -201,7 +201,6 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			}else{
 				branchvo.setGoodsAmount(0.0);
 			}
-			
 		}
 		
 		rq.setBasemodle(result);
@@ -851,12 +850,22 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 				}
 				//再插入新的防止垃圾数据
 				for (UAgentapplyareas area : agentapplyareas) {
-					RAreaplans areaplan=new RAreaplans();
-					areaplan.setAgentuserid(apply.getAgentuserid());
-					areaplan.setAreacode(area.getAreacode());
-					areaplan.setAreaname(regionService.getAresName(area.getAreacode()));
-					areaplan.setIsagent(1);
-					areaplansMapper.insert(areaplan);
+					RAreaplans areaplan=areaplansMapper.selectByPrimaryKey(area.getAreacode());
+					if(areaplan!=null){
+						areaplan.setAgentuserid(apply.getAgentuserid());
+						areaplan.setAreacode(area.getAreacode());
+						areaplan.setAreaname(regionService.getAresName(area.getAreacode()));
+						areaplan.setIsagent(1);
+						areaplansMapper.updateByPrimaryKey(areaplan);
+					}else{
+						areaplan=new RAreaplans();
+						areaplan.setAgentuserid(apply.getAgentuserid());
+						areaplan.setAreacode(area.getAreacode());
+						areaplan.setAreaname(regionService.getAresName(area.getAreacode()));
+						areaplan.setIsagent(1);
+						areaplansMapper.insert(areaplan);
+					}
+					
 				}
 			}
 			

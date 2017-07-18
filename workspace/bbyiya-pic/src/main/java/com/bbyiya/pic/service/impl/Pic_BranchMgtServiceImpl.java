@@ -228,6 +228,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		UAgentapply apply= agentapplyMapper.selectByPrimaryKey(userId); 
 		if(apply!=null){
 			applyInfo.setAgentuserid(apply.getAgentuserid());
+			applyInfo.setStatus(apply.getStatus());
 		}
 		rq.setStatu(ReturnStatus.SystemError);
 		if(applyInfo==null){
@@ -275,7 +276,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		applyInfo.setAgentuserid(userId);
 		applyInfo.setCreatetime(new Date());
 		
-		if(apply!=null&&applyInfo.getAgentuserid()!=null&&applyInfo.getAgentuserid()>0){
+		if(applyInfo!=null&&applyInfo.getAgentuserid()!=null&&applyInfo.getAgentuserid()>0){
 			//先删除后插入新的
 			List<UAgentapplyareas> oldareaplans=uagentapplyareaMapper.findAgentapplyareasByUserId(applyInfo.getAgentuserid());
 			for (UAgentapplyareas oldarea : oldareaplans) {
@@ -298,12 +299,21 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 					
 					//插入代理区域
 					for (UAgentapplyareas area : areaList) {
-						RAreaplans areaplan=new RAreaplans();
-						areaplan.setAgentuserid(apply.getAgentuserid());
-						areaplan.setAreacode(area.getAreacode());
-						areaplan.setAreaname(regionService.getAresName(area.getAreacode()));
-						areaplan.setIsagent(1);
-						areaplansMapper.insert(areaplan);
+						RAreaplans areaplan=areaplansMapper.selectByPrimaryKey(area.getAreacode());
+						if(areaplan!=null){
+							areaplan.setAgentuserid(apply.getAgentuserid());
+							areaplan.setAreacode(area.getAreacode());
+							areaplan.setAreaname(regionService.getAresName(area.getAreacode()));
+							areaplan.setIsagent(1);
+							areaplansMapper.updateByPrimaryKey(areaplan);
+						}else{
+							areaplan=new RAreaplans();
+							areaplan.setAgentuserid(apply.getAgentuserid());
+							areaplan.setAreacode(area.getAreacode());
+							areaplan.setAreaname(regionService.getAresName(area.getAreacode()));
+							areaplan.setIsagent(1);
+							areaplansMapper.insert(areaplan);
+						}
 					}
 				}
 			}

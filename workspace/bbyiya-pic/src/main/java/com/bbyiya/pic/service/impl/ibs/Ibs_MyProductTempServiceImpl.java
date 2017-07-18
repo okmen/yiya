@@ -571,7 +571,12 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			newproducts.setHeadimg(myproducts.getHeadimg());
 			newproducts.setIstemp(0);
 			newproducts.setPhone(myproducts.getPhone());
-			newproducts.setProductid(myproducts.getProductid());
+			if(!ObjectUtil.isEmpty(apply.getProductid())){
+				newproducts.setProductid(apply.getProductid());
+			}else{
+				newproducts.setProductid(myproducts.getProductid());
+			}
+			
 			newproducts.setStatus(Integer.parseInt(MyProductStatusEnum.ok.toString()));
 			newproducts.setUserid(myproducts.getUserid());
 			newproducts.setStyleid(myproducts.getStyleid());

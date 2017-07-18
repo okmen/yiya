@@ -643,7 +643,7 @@ public class YiyeMgtController  extends SSOController {
 			
 			long styleId=ObjectUtil.parseLong(String.valueOf(model.get("styleId")));
 			if(styleId>0){
-				param.setProductId(styleId);
+				param.setStyleId(styleId);
 			}
 			
 			return param;

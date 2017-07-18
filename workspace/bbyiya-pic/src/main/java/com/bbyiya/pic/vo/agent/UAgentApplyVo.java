@@ -2,7 +2,9 @@ package com.bbyiya.pic.vo.agent;
 
 import java.util.List;
 
+import com.bbyiya.model.RAreaplans;
 import com.bbyiya.model.UAgentapply;
+import com.bbyiya.model.UAgentapplyareas;
 
 public class UAgentApplyVo extends UAgentapply{
 	private String proviceName;
@@ -10,7 +12,7 @@ public class UAgentApplyVo extends UAgentapply{
 	private String areaName;
 	private Double goodsAmount; //货款金额
 	private Double transAmount; //邮费金额
-	private List<String> agentArealist;
+	private List<UAgentapplyareas> agentArealist;
 	public String getProviceName() {
 		return proviceName;
 	}
@@ -29,10 +31,10 @@ public class UAgentApplyVo extends UAgentapply{
 	public void setAreaName(String areaName) {
 		this.areaName = areaName;
 	}
-	public List<String> getAgentArealist() {
+	public List<UAgentapplyareas> getAgentArealist() {
 		return agentArealist;
 	}
-	public void setAgentArealist(List<String> agentArealist) {
+	public void setAgentArealist(List<UAgentapplyareas> agentArealist) {
 		this.agentArealist = agentArealist;
 	}
 	public Double getGoodsAmount() {
@@ -47,7 +49,6 @@ public class UAgentApplyVo extends UAgentapply{
 	public void setTransAmount(Double transAmount) {
 		this.transAmount = transAmount;
 	}
-	
 	
 
 }

@@ -1,4 +1,7 @@
 package com.bbyiya.pic.service.ibs;
+import java.util.List;
+
+import com.bbyiya.model.PMyproducttempext;
 import com.bbyiya.pic.vo.product.MyProductTempAddParam;
 import com.bbyiya.vo.ReturnModel;
 
@@ -10,7 +13,7 @@ public interface IIbs_ActivityCodeService {
 	 * @param remark
 	 * @return
 	 */
-	ReturnModel addActivityCode(Long userid,MyProductTempAddParam param);
+	ReturnModel addActivityCode(Long userid,MyProductTempAddParam param,List<PMyproducttempext> arealist);
 	/**
 	 * 得到tempId下的活动码列表
 	 * @param branchUserId

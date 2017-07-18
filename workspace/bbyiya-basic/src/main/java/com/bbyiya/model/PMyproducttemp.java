@@ -1,6 +1,7 @@
 package com.bbyiya.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class PMyproducttemp {
     private Integer tempid;
@@ -66,7 +67,8 @@ public class PMyproducttemp {
   	private Integer needCheckCount; 
   	private String createtimestr;
   	private String productName;//产品名称
-  	 private Long productid;
+  	private Long productid;
+  	private List<PMyproducttempext> tempextlist;
 
     public Integer getNeedverifer() {
 		return needverifer;
@@ -297,6 +299,15 @@ public class PMyproducttemp {
 	public void setProductid(Long productid) {
 		this.productid = productid;
 	}
-    
+
+	public List<PMyproducttempext> getTempextlist() {
+		return tempextlist;
+	}
+
+	public void setTempextlist(List<PMyproducttempext> tempextlist) {
+		this.tempextlist = tempextlist;
+	}
+
+	
     
 }

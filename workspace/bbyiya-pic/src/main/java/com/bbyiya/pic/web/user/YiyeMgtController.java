@@ -36,6 +36,7 @@ import com.bbyiya.model.PMyproductactivitycode;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
+import com.bbyiya.model.PMyproducttempext;
 import com.bbyiya.model.PMyproducttempusers;
 import com.bbyiya.model.PProductstyles;
 import com.bbyiya.pic.dao.IMyProductsDao;
@@ -168,7 +169,25 @@ public class YiyeMgtController  extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-	
+	/**
+	 * M11-04 异业合作兑换码活动款式列表
+	 * 得到活动兑换码的可选产品款示列表
+	 * @param cartid
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getTempStyleList")
+	public String getTempStyleList(String cartid) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		PMyproducts myproducts= myProductMapper.selectByPrimaryKey(ObjectUtil.parseLong(cartid));
+		if(myproducts!=null&&myproducts.getTempid()!=null){
+			List<PMyproducttempext> tempextlist=ibs_tempService.getcodeTempStyleList(myproducts.getTempid());
+			rq.setBasemodle(tempextlist);
+			rq.setStatu(ReturnStatus.Success);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	/**
 	 * M11-01 用户提交申请
 	 * M11-02 异业合作-接受邀请（无需申请）
@@ -268,7 +287,8 @@ public class YiyeMgtController  extends SSOController {
 						apply.setCreatetime(new Date());
 						apply.setCompanyuserid(param.getSubUserId());
 						apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.apply.toString()));
-						
+						apply.setStyleid(param.getStyleId());
+						apply.setProductid(param.getProductId());
 						//异业模板 申请人数+1
 						temp.setApplycount(temp.getApplycount()==null?1:temp.getApplycount()+1);
 						tempMapper.updateByPrimaryKeySelective(temp); 

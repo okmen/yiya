@@ -39,6 +39,9 @@ public class PMyproducttempapply {
 	private Long cartid;
 	private String reason;
 	private Integer sort;
+	private Long styleid;
+
+    private Long productid;
 
 	/***************** 添加的VO字段 *************************/
 
@@ -273,5 +276,20 @@ public class PMyproducttempapply {
 	public void setStyleImg(String styleImg) {
 		this.styleImg = styleImg;
 	}
+	public Long getStyleid() {
+        return styleid;
+    }
+
+    public void setStyleid(Long styleid) {
+        this.styleid = styleid;
+    }
+
+    public Long getProductid() {
+        return productid;
+    }
+
+    public void setProductid(Long productid) {
+        this.productid = productid;
+    }
 
 }

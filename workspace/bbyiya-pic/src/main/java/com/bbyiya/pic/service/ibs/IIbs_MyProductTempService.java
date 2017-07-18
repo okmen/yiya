@@ -1,5 +1,8 @@
 package com.bbyiya.pic.service.ibs;
+import java.util.List;
+
 import com.bbyiya.model.PMyproducttempapply;
+import com.bbyiya.model.PMyproducttempext;
 import com.bbyiya.pic.vo.product.MyProductTempAddParam;
 import com.bbyiya.vo.ReturnModel;
 
@@ -137,6 +140,12 @@ public interface IIbs_MyProductTempService {
 	 */
 	ReturnModel setTempCompletecondition(Long userId, Integer tempid,
 			Integer blessCount, Integer maxCompleteCount);
+	/**
+	 * 得到活动码活动的款式列表
+	 * @param tempid
+	 * @return
+	 */
+	List<PMyproducttempext> getcodeTempStyleList(Integer tempid);
 	
 
 	

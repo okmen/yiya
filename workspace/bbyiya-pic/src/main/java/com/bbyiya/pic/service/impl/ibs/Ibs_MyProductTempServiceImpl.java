@@ -23,6 +23,7 @@ import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproductsinvitesMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
+import com.bbyiya.dao.PMyproducttempextMapper;
 import com.bbyiya.dao.PMyproducttempusersMapper;
 import com.bbyiya.dao.PMyproducttempverlogsMapper;
 import com.bbyiya.dao.PMyproducttempverusersMapper;
@@ -45,6 +46,7 @@ import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproductsinvites;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
+import com.bbyiya.model.PMyproducttempext;
 import com.bbyiya.model.PMyproducttempusers;
 import com.bbyiya.model.PMyproducttempverlogs;
 import com.bbyiya.model.PMyproducttempverusers;
@@ -73,6 +75,8 @@ import com.github.pagehelper.PageInfo;
 public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	@Autowired
 	private PMyproducttempMapper myproducttempMapper;
+	@Autowired
+	private PMyproducttempextMapper myproducttempextMapper;
 	@Autowired
 	private PMyproductsMapper myMapper;
 	@Autowired
@@ -406,20 +410,45 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 				Integer checkCount=myproducttempapplyMapper.getNeedCheckApllyCountByTemp(temp.getTempid(),Integer.parseInt(MyProducttempApplyStatusEnum.apply.toString()));
 				temp.setNeedCheckCount(checkCount==null?0:checkCount);
 				
-				PProductstyles styles = styleMapper.selectByPrimaryKey(temp.getStyleid());
-				PMyproducts tempproduct=myMapper.selectByPrimaryKey(temp.getCartid());
-				PProducts products = productsMapper.selectByPrimaryKey(tempproduct.getProductid());
-				
-				if (products != null && styles != null) {
-					temp.setProductid(products.getProductid());
-					String producttitle=products.getTitle();
-					if(styles.getStyleid()%2==0){
-						producttitle=producttitle+"-竖版-"+styles.getPrice();
-					}else{
-						producttitle=producttitle+"-横版-"+styles.getPrice();
+				List<PMyproducttempext> tempextlist=myproducttempextMapper.findProductStyleListBytempId(temp.getTempid());
+				if(tempextlist!=null&&tempextlist.size()>0){
+					String producttitle="";
+					for (PMyproducttempext tempext : tempextlist) {
+						PProductstyles styles = styleMapper.selectByPrimaryKey(tempext.getStyleid());
+						PProducts products = productsMapper.selectByPrimaryKey(tempext.getProductid());
+						if (products != null && styles != null) {
+							if(styles.getStyleid()%2==0){
+								producttitle+=products.getTitle()+"-竖版-"+styles.getPrice()+",";
+							}else{
+								producttitle+=products.getTitle()+"-横版-"+styles.getPrice()+",";
+							}
+						}
 					}
 					temp.setProductName(producttitle);
+					temp.setTempextlist(tempextlist);
+					
+				}else{
+					if(!ObjectUtil.isEmpty(temp.getStyleid())){
+						PProductstyles styles = styleMapper.selectByPrimaryKey(temp.getStyleid());
+						PMyproducts tempproduct=myMapper.selectByPrimaryKey(temp.getCartid());
+						PProducts products = productsMapper.selectByPrimaryKey(tempproduct.getProductid());
+						
+						if (products != null && styles != null) {
+							temp.setProductid(products.getProductid());
+							String producttitle=products.getTitle();
+							if(styles.getStyleid()%2==0){
+								producttitle=producttitle+"-竖版-"+styles.getPrice();
+							}else{
+								producttitle=producttitle+"-横版-"+styles.getPrice();
+							}
+							temp.setProductName(producttitle);
+						}
+					}
 				}
+				
+				
+				
+				
 			}
 		}
 		
@@ -934,6 +963,31 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		return rq;
 	}
 	
+	
+	/**
+	 *得到活动码活动的款式列表
+	 * @return
+	 */
+	public List<PMyproducttempext> getcodeTempStyleList(Integer tempid){
+		List<PMyproducttempext> tempextlist=myproducttempextMapper.findProductStyleListBytempId(tempid);
+		if(tempextlist!=null&&tempextlist.size()>0){
+			for (PMyproducttempext tempext : tempextlist) {
+				PProductstyles styles = styleMapper.selectByPrimaryKey(tempext.getStyleid());
+				PProducts products = productsMapper.selectByPrimaryKey(tempext.getProductid());
+				String producttitle=products.getTitle()+"纪念册";
+				if (products != null && styles != null) {
+					if(styles.getStyleid()%2==0){
+						producttitle+="-竖版";
+					}else{
+						producttitle+="-横版";
+					}
+				}
+				tempext.setProductimg(styles.getDefaultimg());
+				tempext.setProductname(producttitle);
+			}
+		}
+		return tempextlist;
+	}
 	
 	/**
 	 * 保存模板二维码图片

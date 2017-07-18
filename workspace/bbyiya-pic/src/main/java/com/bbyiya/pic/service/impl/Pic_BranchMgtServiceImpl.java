@@ -201,6 +201,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			}else{
 				branchvo.setGoodsAmount(0.0);
 			}
+			
 		}
 		
 		rq.setBasemodle(result);

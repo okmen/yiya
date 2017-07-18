@@ -8,6 +8,10 @@ public class PMyproducttempext {
     private Long styleid;
 
     private Long productid;
+    
+    /***********************vo********************/
+    private String productimg;
+    private String productname;
 
     public Long getId() {
         return id;
@@ -40,4 +44,21 @@ public class PMyproducttempext {
     public void setProductid(Long productid) {
         this.productid = productid;
     }
+
+	public String getProductimg() {
+		return productimg;
+	}
+
+	public String getProductname() {
+		return productname;
+	}
+
+	public void setProductimg(String productimg) {
+		this.productimg = productimg;
+	}
+
+	public void setProductname(String productname) {
+		this.productname = productname;
+	}
+    
 }

@@ -300,7 +300,7 @@ public class BranchMgtController extends SSOController {
 	 * @throws Exception
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/branchApplyNew")
+	@RequestMapping(value = "/branchApply")
 	public String branchApplyNew(String branchJson) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
@@ -330,44 +330,44 @@ public class BranchMgtController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	/**
-	 *  分店申请
-	 * @param agentJson
-	 * @return
-	 * @throws Exception
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/branchApply")
-	public String branchApply(String branchJson) throws Exception {
-		ReturnModel rq=new ReturnModel();
-		LoginSuccessResult user= super.getLoginUser();
-		if(user!=null){
-			if(user.getStatus()!=null&&user.getStatus().intValue()==Integer.parseInt(UserStatusEnum.ok.toString())){
-				try {
-					UBranches applyInfo=(UBranches)JsonUtil.jsonStrToObject(branchJson, UBranches.class);
-					if(applyInfo!=null){
-						applyInfo.setBranchuserid(user.getUserId()); 
-					}
-					rq =branchService.applyBranch(user.getUserId(), applyInfo);
-				} catch (Exception e) {
-					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("参数有误101");
-					System.out.println(e); 
-					return JsonUtil.objectToJsonStr(rq);
-				}
-			}else {
-				rq.setStatu(ReturnStatus.LoginError_2);
-				rq.setStatusreson("未完成注册");
-				return JsonUtil.objectToJsonStr(rq);
-			}
-		}else {
-			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
-			return JsonUtil.objectToJsonStr(rq);
-		}
-		return JsonUtil.objectToJsonStr(rq);
-	}
-	
+//	/**
+//	 *  分店申请
+//	 * @param agentJson
+//	 * @return
+//	 * @throws Exception
+//	 */
+//	@ResponseBody
+//	@RequestMapping(value = "/branchApply")
+//	public String branchApply(String branchJson) throws Exception {
+//		ReturnModel rq=new ReturnModel();
+//		LoginSuccessResult user= super.getLoginUser();
+//		if(user!=null){
+//			if(user.getStatus()!=null&&user.getStatus().intValue()==Integer.parseInt(UserStatusEnum.ok.toString())){
+//				try {
+//					UBranches applyInfo=(UBranches)JsonUtil.jsonStrToObject(branchJson, UBranches.class);
+//					if(applyInfo!=null){
+//						applyInfo.setBranchuserid(user.getUserId()); 
+//					}
+//					rq =branchService.applyBranch(user.getUserId(), applyInfo);
+//				} catch (Exception e) {
+//					rq.setStatu(ReturnStatus.ParamError);
+//					rq.setStatusreson("参数有误101");
+//					System.out.println(e); 
+//					return JsonUtil.objectToJsonStr(rq);
+//				}
+//			}else {
+//				rq.setStatu(ReturnStatus.LoginError_2);
+//				rq.setStatusreson("未完成注册");
+//				return JsonUtil.objectToJsonStr(rq);
+//			}
+//		}else {
+//			rq.setStatu(ReturnStatus.LoginError);
+//			rq.setStatusreson("登录过期");
+//			return JsonUtil.objectToJsonStr(rq);
+//		}
+//		return JsonUtil.objectToJsonStr(rq);
+//	}
+//	
 	/**
 	 * 获取代理单元（根据县区判断代理单元）
 	 * @param areaCode

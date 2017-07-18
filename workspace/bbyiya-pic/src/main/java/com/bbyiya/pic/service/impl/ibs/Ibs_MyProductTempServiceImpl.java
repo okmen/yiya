@@ -970,6 +970,22 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	 */
 	public List<PMyproducttempext> getcodeTempStyleList(Integer tempid){
 		List<PMyproducttempext> tempextlist=myproducttempextMapper.findProductStyleListBytempId(tempid);
+		if(tempextlist!=null&&tempextlist.size()>0){
+			for (PMyproducttempext tempext : tempextlist) {
+				PProductstyles styles = styleMapper.selectByPrimaryKey(tempext.getStyleid());
+				PProducts products = productsMapper.selectByPrimaryKey(tempext.getProductid());
+				String producttitle=products.getTitle()+"纪念册";
+				if (products != null && styles != null) {
+					if(styles.getStyleid()%2==0){
+						producttitle+="-竖版";
+					}else{
+						producttitle+="-横版";
+					}
+				}
+				tempext.setProductimg(styles.getDefaultimg());
+				tempext.setProductname(producttitle);
+			}
+		}
 		return tempextlist;
 	}
 	

@@ -635,6 +635,17 @@ public class YiyeMgtController  extends SSOController {
 				param.setDateTime(DateUtil.getDate(dateVal, "yyyy-MM-dd HH:mm:ss")); 
 				param.setDateTimeVal(dateVal); 
 			}
+			
+			long productId=ObjectUtil.parseLong(String.valueOf(model.get("productId")));
+			if(productId>0){
+				param.setProductId(productId);
+			}
+			
+			long styleId=ObjectUtil.parseLong(String.valueOf(model.get("styleId")));
+			if(styleId>0){
+				param.setProductId(styleId);
+			}
+			
 			return param;
 		}
 		return null; 

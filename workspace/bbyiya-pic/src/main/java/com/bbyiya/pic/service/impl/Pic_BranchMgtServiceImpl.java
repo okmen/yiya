@@ -170,7 +170,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			}else{
 				agentvo.setTransAmount(0.0);
 			}
-			agentvo.setAgentArealist(getAgentApplyArealistByAgentUserID(agentvo.getAgentuserid()));
+			agentvo.setAgentapplyArealist(getAgentApplyArealistByAgentUserID(agentvo.getAgentuserid()));
 		}
 		rq.setBasemodle(result);
 		return rq;
@@ -188,7 +188,8 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			branchvo.setProviceName(regionService.getProvinceName(branchvo.getProvince())) ;
 			branchvo.setCityName(regionService.getCityName(branchvo.getCity())) ;
 			branchvo.setAreaName(regionService.getAresName(branchvo.getArea())) ;
-			branchvo.setAgentArealist(getAgentArealistByAgentUserID(branchvo.getAgentuserid()));  
+			branchvo.setAgentArealist(getAgentArealistByAgentUserID(branchvo.getAgentuserid()));
+			branchvo.setAgentapplyArealist(getAgentApplyArealistByAgentUserID(branchvo.getAgentuserid()));
 			UAccounts account=accountsMapper.selectByPrimaryKey(branchvo.getBranchuserid());
 			if(account!=null){
 				branchvo.setGoodsAmount(account.getAvailableamount());
@@ -928,9 +929,9 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			agentapply.setProviceName(regionService.getProvinceName(agentapply.getProvince())) ;
 			agentapply.setCityName(regionService.getCityName(agentapply.getCity())) ;
 			agentapply.setAreaName(regionService.getAresName(agentapply.getArea())) ;
-			//agentapply.setAgentArealist(getAgentArealist(agentapply.getArea()));
+			agentapply.setAgentArealist(getAgentArealistByAgentUserID(agentapply.getAgentuserid()));
 			List<UAgentapplyareas> arealist=getAgentApplyArealistByAgentUserID(agentapply.getAgentuserid());
-			agentapply.setAgentArealist(arealist);
+			agentapply.setAgentapplyArealist(arealist);
 			map.put("applyInfo", agentapply);
 			if(agentapply.getStatus()!=null){
 				if(agentapply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.ok.toString())){

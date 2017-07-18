@@ -12,7 +12,8 @@ public class UAgentApplyVo extends UAgentapply{
 	private String areaName;
 	private Double goodsAmount; //货款金额
 	private Double transAmount; //邮费金额
-	private List<UAgentapplyareas> agentArealist;
+	private List<UAgentapplyareas> agentapplyArealist;
+	private List<String> agentArealist;
 	public String getProviceName() {
 		return proviceName;
 	}
@@ -31,12 +32,7 @@ public class UAgentApplyVo extends UAgentapply{
 	public void setAreaName(String areaName) {
 		this.areaName = areaName;
 	}
-	public List<UAgentapplyareas> getAgentArealist() {
-		return agentArealist;
-	}
-	public void setAgentArealist(List<UAgentapplyareas> agentArealist) {
-		this.agentArealist = agentArealist;
-	}
+	
 	public Double getGoodsAmount() {
 		return goodsAmount;
 	}
@@ -49,6 +45,18 @@ public class UAgentApplyVo extends UAgentapply{
 	public void setTransAmount(Double transAmount) {
 		this.transAmount = transAmount;
 	}
+	public List<UAgentapplyareas> getAgentapplyArealist() {
+		return agentapplyArealist;
+	}
+	public List<String> getAgentArealist() {
+		return agentArealist;
+	}
+	public void setAgentapplyArealist(List<UAgentapplyareas> agentapplyArealist) {
+		this.agentapplyArealist = agentapplyArealist;
+	}
+	public void setAgentArealist(List<String> agentArealist) {
+		this.agentArealist = agentArealist;
+	}
 	
-
+	
 }

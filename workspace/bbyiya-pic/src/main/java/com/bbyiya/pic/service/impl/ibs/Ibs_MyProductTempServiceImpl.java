@@ -689,7 +689,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			map.put("tempId", myproducts.getTempid());
 			map.put("mycartid", newproducts.getCartid());
 			if(!ObjectUtil.isEmpty(apply.getStyleid())){
-				PProductstyles style= styleMapper.selectByPrimaryKey(temp.getStyleid());
+				PProductstyles style= styleMapper.selectByPrimaryKey(apply.getStyleid());
 				if(style!=null){
 					map.put("price", style.getPrice());
 					map.put("property", style.getPropertystr());

@@ -22,7 +22,6 @@ import com.bbyiya.dao.PStylebackgroundsMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.PProducts;
 import com.bbyiya.model.PProductstyledes;
-import com.bbyiya.model.PProductstyleexp;
 import com.bbyiya.model.PProductstyles;
 import com.bbyiya.model.PScenebacks;
 import com.bbyiya.model.PStylebackgrounds;
@@ -71,10 +70,10 @@ public class BaseProductServiceImpl implements IBaseProductService {
 		List<PProductStyleResult> styleList = styleMapper.findStylesResultByProductId(productId);
 		if (result!=null&& styleList != null) {
 			for (PProductStyleResult style : styleList) {
-				PProductstyleexp exp= styleExpMapper.selectByPrimaryKey(style.getStyleId());
-				if(exp!=null){
-					style.setSellCount(exp.getSalecount()); 
-				}
+//				PProductstyleexp exp= styleExpMapper.selectByPrimaryKey(style.getStyleId());
+//				if(exp!=null){
+//					style.setSellCount(exp.getSalecount()); 
+//				}
 				//款式介绍图集
 				List<PProductstyledes> desImgs = styleDesMapper.findImgsByStyleId(style.getStyleId());
 				if (desImgs != null && desImgs.size() > 0) {
@@ -89,6 +88,7 @@ public class BaseProductServiceImpl implements IBaseProductService {
 		}
 		return result;
 	}
+	
 
 	public ReturnModel getStyleInfo(Long styleId) {
 		ReturnModel rq = new ReturnModel();

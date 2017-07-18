@@ -63,6 +63,7 @@ public class ActivityCodeController extends SSOController {
 		if(user!=null){
 			MyProductTempAddParam param = (MyProductTempAddParam)JsonUtil.jsonStrToObject(myproductTempJson,MyProductTempAddParam.class);
 			List<PMyproducttempext> arealist=Json2Objects.getParam_Myproducttempext(productstyleJson);
+			
 			if(arealist==null||arealist.size()<=0){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("对应产品不能为空!");

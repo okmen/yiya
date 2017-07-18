@@ -2,6 +2,7 @@ package com.bbyiya.pic.utils;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import com.bbyiya.model.PMyproducttempext;
@@ -32,6 +33,7 @@ public class Json2Objects {
 			
 			if(codearr!=null&&codearr.size()>0){
 				stylelist=new ArrayList<PMyproducttempext>();
+				HashMap<Long, Long> map=new HashMap<Long, Long>();
 				for (int i = 0; i < codearr.size(); i++) {
 					JSONObject dd = codearr.getJSONObject(i);
 					PMyproducttempext tempext=new PMyproducttempext();
@@ -43,7 +45,12 @@ public class Json2Objects {
 					if(styleId>0){
 						tempext.setStyleid(styleId);
 					}
-					stylelist.add(tempext);
+					//去重
+					if(!map.containsKey(styleId)){
+						stylelist.add(tempext);
+						map.put(styleId, productId);
+					}
+					
 				}
 			}
 			

@@ -419,8 +419,10 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 						if (products != null && styles != null) {
 							if(styles.getStyleid()%2==0){
 								producttitle+=products.getTitle()+"-竖版-"+styles.getPrice()+",";
+								tempext.setProductname(products.getTitle()+"-竖版-"+styles.getPrice());
 							}else{
 								producttitle+=products.getTitle()+"-横版-"+styles.getPrice()+",";
+								tempext.setProductname(products.getTitle()+"-横版-"+styles.getPrice());
 							}
 						}
 					}
@@ -981,25 +983,33 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	 *得到活动码活动的款式列表
 	 * @return
 	 */
-	public List<PMyproducttempext> getcodeTempStyleList(Integer tempid){
+	public ReturnModel getcodeTempStyleList(Integer tempid){
+		ReturnModel rq=new ReturnModel();
+		HashMap<String, Object> map=new HashMap<String, Object>();
+		List<PMyproducttempext> hlist=new ArrayList<PMyproducttempext>();
+		List<PMyproducttempext> vlist=new ArrayList<PMyproducttempext>();
 		List<PMyproducttempext> tempextlist=myproducttempextMapper.findProductStyleListBytempId(tempid);
 		if(tempextlist!=null&&tempextlist.size()>0){
 			for (PMyproducttempext tempext : tempextlist) {
 				PProductstyles styles = styleMapper.selectByPrimaryKey(tempext.getStyleid());
 				PProducts products = productsMapper.selectByPrimaryKey(tempext.getProductid());
-				String producttitle=products.getTitle()+"纪念册";
 				if (products != null && styles != null) {
+					String producttitle=products.getTitle()+"纪念册";
+					tempext.setProductname(producttitle);
+					tempext.setProductimg(styles.getDefaultimg());
 					if(styles.getStyleid()%2==0){
-						producttitle+="-竖版";
+						vlist.add(tempext);
 					}else{
-						producttitle+="-横版";
+						hlist.add(tempext);
 					}
 				}
-				tempext.setProductimg(styles.getDefaultimg());
-				tempext.setProductname(producttitle);
 			}
 		}
-		return tempextlist;
+		map.put("vlist", vlist);
+		map.put("hlist", hlist);
+		rq.setBasemodle(map);
+		rq.setStatu(ReturnStatus.Success);
+		return rq;
 	}
 	
 	/**

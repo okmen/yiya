@@ -182,9 +182,7 @@ public class YiyeMgtController  extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		PMyproducts myproducts= myProductMapper.selectByPrimaryKey(ObjectUtil.parseLong(cartid));
 		if(myproducts!=null&&myproducts.getTempid()!=null){
-			List<PMyproducttempext> tempextlist=ibs_tempService.getcodeTempStyleList(myproducts.getTempid());
-			rq.setBasemodle(tempextlist);
-			rq.setStatu(ReturnStatus.Success);
+			rq=ibs_tempService.getcodeTempStyleList(myproducts.getTempid());
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

@@ -132,6 +132,9 @@ public class YiyeMgtController  extends SSOController {
 							result.setReason(apply.getReason());
 							result.setIsInvited(1);
 							result.setCartId(apply.getCartid());
+							if(apply.getStyleid()!=null&&apply.getStyleid()>0){
+								temp.setStyleid(apply.getStyleid());
+							}
 						} else {
 							result.setApplyStatus(-1); 
 						}

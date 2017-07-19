@@ -282,9 +282,12 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 				uagentapplyareaMapper.deleteByPrimaryKey(oldarea.getAcodeid());
 			}
 		}
+		if(areaList!=null&&areaList.size()>0){
+			applyInfo.setProvince(areaList.get(0).getProvincecode());
+			applyInfo.setCity(areaList.get(0).getCitycode());
+			applyInfo.setArea(areaList.get(0).getAreacode());
+		}
 		if(apply!=null&&applyInfo.getAgentuserid()!=null&&applyInfo.getAgentuserid()>0){
-			
-
 			//如果是已通过审核的代理商
 			if(applyInfo.getStatus()!=null&&applyInfo.getStatus()==Integer.parseInt(AgentStatusEnum.ok.toString())){
 				List<RAreaplans> areaplans=agentAreaDao.findRAreaplansByAgentUserId(applyInfo.getAgentuserid());
@@ -298,7 +301,6 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 							return rq;
 						}
 					}
-					
 					//插入代理区域
 					for (UAgentapplyareas area : areaList) {
 						RAreaplans areaplan=areaplansMapper.selectByPrimaryKey(area.getAreacode());
@@ -327,7 +329,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 						rq.setStatusreson("该区域["+app.getAreacode()+"]已被代理，不能重复代理！");
 						return rq;
 					}
-				}	
+				}
 			}
 			applyInfo.setStatus(Integer.parseInt(AgentStatusEnum.applying.toString()));  
 			agentapplyMapper.insert(applyInfo);
@@ -941,7 +943,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			agentapply.setProviceName(regionService.getProvinceName(agentapply.getProvince())) ;
 			agentapply.setCityName(regionService.getCityName(agentapply.getCity())) ;
 			agentapply.setAreaName(regionService.getAresName(agentapply.getArea())) ;
-			agentapply.setAgentArealist(getAgentArealistByAgentUserID(agentapply.getAgentuserid()));
+			agentapply.setAgentArealist(getAgentApplyareasByAgentUserID(agentapply.getAgentuserid()));
 			List<UAgentapplyareas> arealist=getAgentApplyArealistByAgentUserID(agentapply.getAgentuserid());
 			agentapply.setAgentapplyArealist(arealist);
 			map.put("applyInfo", agentapply);
@@ -1014,7 +1016,18 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		}
 		return null;
 	}
-	
+	private List<String> getAgentApplyareasByAgentUserID(Long agentUserId){		
+		List<UAgentapplyareas> arealist= uagentapplyareaMapper.findAgentapplyareasByUserId(agentUserId);
+		if(arealist!=null&&arealist.size()>0){
+			List<String> areasList=new ArrayList<String>();
+			for (UAgentapplyareas rr : arealist) {
+				areasList.add(regionService.getAresName(rr.getAreacode()));
+			}
+			return areasList;
+		}
+		return null;
+		
+	}
 	private List<String> getAgentArealistByAgentUserID(Long agentUserId){		
 		List<RAreaplans> arealist= agentAreaDao.findRAreaplansByAgentUserId(agentUserId);
 		if(arealist!=null&&arealist.size()>0){

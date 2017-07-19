@@ -538,7 +538,12 @@ public class YiyeMgtController  extends SSOController {
 						if(pp.getCartid()==null||pp.getCartid().longValue()<=0){
 							pp.setCartid(temp.getCartid());
 						}
-						if(temp.getStyleid()!=null&&temp.getStyleid().longValue()>0){
+						if(!ObjectUtil.isEmpty(pp.getStyleid())){
+							PProductstyles style= styleMapper.selectByPrimaryKey(pp.getStyleid());
+							if(style!=null){
+								pp.setStyleImg(ImgDomainUtil.getImageUrl_Full(style.getDefaultimg()));
+							}
+						}else if(temp.getStyleid()!=null&&temp.getStyleid().longValue()>0){
 							PProductstyles style= styleMapper.selectByPrimaryKey(temp.getStyleid());
 							if(style!=null){
 								pp.setStyleImg(ImgDomainUtil.getImageUrl_Full(style.getDefaultimg()));

@@ -275,13 +275,15 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		}
 		applyInfo.setAgentuserid(userId);
 		applyInfo.setCreatetime(new Date());
-		
-		if(applyInfo!=null&&applyInfo.getAgentuserid()!=null&&applyInfo.getAgentuserid()>0){
+		if(applyInfo.getAgentuserid()!=null&&applyInfo.getAgentuserid()>0){
 			//先删除后插入新的
 			List<UAgentapplyareas> oldareaplans=uagentapplyareaMapper.findAgentapplyareasByUserId(applyInfo.getAgentuserid());
 			for (UAgentapplyareas oldarea : oldareaplans) {
 				uagentapplyareaMapper.deleteByPrimaryKey(oldarea.getAcodeid());
 			}
+		}
+		if(apply!=null&&applyInfo.getAgentuserid()!=null&&applyInfo.getAgentuserid()>0){
+			
 
 			//如果是已通过审核的代理商
 			if(applyInfo.getStatus()!=null&&applyInfo.getStatus()==Integer.parseInt(AgentStatusEnum.ok.toString())){

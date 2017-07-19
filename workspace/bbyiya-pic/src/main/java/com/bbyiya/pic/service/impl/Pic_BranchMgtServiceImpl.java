@@ -609,6 +609,11 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			agentapplyMapper.updateByPrimaryKeySelective(apply);
 			if(status==Integer.parseInt(AgentStatusEnum.ok.toString())){//成为代理
 				List<UAgentapplyareas> agentapplyareas=uagentapplyareaMapper.findAgentapplyareasByUserId(agentUserId);
+				if(agentapplyareas==null||agentapplyareas.size()<=0){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("请先选择要代理的区域再审核！");
+					return rq;
+				}
 				for (UAgentapplyareas area : agentapplyareas) {
 					boolean isApply=checkAreaCodeIsApply(apply.getAgentuserid(),area.getAreacode());
 					if(isApply){

@@ -754,6 +754,11 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		ReturnModel rq=new ReturnModel();
 		UAgents agent=agentsMapper.selectByPrimaryKey(agentUserId);
 		if(agent!=null){
+			if(agent.getStatus().intValue()!=Integer.parseInt(BranchStatusEnum.ok.toString())){
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson("还不是正式的代理商，不能进行退驻操作！");
+				return rq;
+			}
 			//1.代理商的影楼内部员工身份清除 ,清除身份后删除
 			List<UBranchusers>  branchusersList=branchuserMapper.findMemberslistByAgentUserId(agentUserId);
 			for (UBranchusers branchuser : branchusersList) {
@@ -833,6 +838,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 				agentModel=new UAgents();
 				agentModel.setAgentuserid(apply.getAgentuserid());
 				agentModel.setAgentcompanyname(apply.getAgentcompanyname());
+				agentModel.setUsername(apply.getUsername());
 				agentModel.setContactname(apply.getContactname());
 				agentModel.setPhone(apply.getPhone());
 				agentModel.setProvince(apply.getProvince());
@@ -846,6 +852,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			}else{
 				agentModel.setAgentcompanyname(apply.getAgentcompanyname());
 				agentModel.setContactname(apply.getContactname());
+				agentModel.setUsername(apply.getUsername());
 				agentModel.setPhone(apply.getPhone());
 				agentModel.setProvince(apply.getProvince());
 				agentModel.setCity(apply.getCity());
@@ -895,7 +902,8 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			branch.setAgentuserid(apply.getAgentuserid());
 			branch.setBranchuserid(apply.getAgentuserid());
 			branch.setBranchcompanyname(apply.getAgentcompanyname());
-			branch.setUsername(apply.getContactname());
+			branch.setUsername(apply.getUsername());
+			branch.setContactname(apply.getContactname());
 			branch.setPhone(apply.getPhone());
 			branch.setProvince(apply.getProvince());
 			branch.setCity(apply.getCity());

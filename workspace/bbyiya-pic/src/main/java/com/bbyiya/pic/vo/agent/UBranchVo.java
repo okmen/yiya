@@ -3,6 +3,7 @@ package com.bbyiya.pic.vo.agent;
 import java.util.List;
 
 import com.bbyiya.model.RAreaplans;
+import com.bbyiya.model.UAgentapplyareas;
 import com.bbyiya.model.UBranches;
 
 public class UBranchVo extends UBranches{
@@ -10,6 +11,7 @@ public class UBranchVo extends UBranches{
 	private String cityName;
 	private String areaName;
 	private List<String> agentArealist;
+	private List<UAgentapplyareas> agentapplyArealist;
 	private Integer userCount;//发展的用户数
 	private Double goodsAmount; //货款金额
 	private Double transAmount; //邮费金额
@@ -54,6 +56,12 @@ public class UBranchVo extends UBranches{
 	}
 	public void setTransAmount(Double transAmount) {
 		this.transAmount = transAmount;
+	}
+	public List<UAgentapplyareas> getAgentapplyArealist() {
+		return agentapplyArealist;
+	}
+	public void setAgentapplyArealist(List<UAgentapplyareas> agentapplyArealist) {
+		this.agentapplyArealist = agentapplyArealist;
 	}
 	
 	

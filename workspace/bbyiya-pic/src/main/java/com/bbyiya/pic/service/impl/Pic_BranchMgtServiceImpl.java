@@ -170,7 +170,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			}else{
 				agentvo.setTransAmount(0.0);
 			}
-			agentvo.setAgentArealist(getAgentApplyArealistByAgentUserID(agentvo.getAgentuserid()));
+			agentvo.setAgentapplyArealist(getAgentApplyArealistByAgentUserID(agentvo.getAgentuserid()));
 		}
 		rq.setBasemodle(result);
 		return rq;
@@ -188,7 +188,8 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			branchvo.setProviceName(regionService.getProvinceName(branchvo.getProvince())) ;
 			branchvo.setCityName(regionService.getCityName(branchvo.getCity())) ;
 			branchvo.setAreaName(regionService.getAresName(branchvo.getArea())) ;
-			branchvo.setAgentArealist(getAgentArealistByAgentUserID(branchvo.getAgentuserid()));  
+			branchvo.setAgentArealist(getAgentArealistByAgentUserID(branchvo.getAgentuserid()));
+			branchvo.setAgentapplyArealist(getAgentApplyArealistByAgentUserID(branchvo.getAgentuserid()));
 			UAccounts account=accountsMapper.selectByPrimaryKey(branchvo.getBranchuserid());
 			if(account!=null){
 				branchvo.setGoodsAmount(account.getAvailableamount());
@@ -227,6 +228,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		UAgentapply apply= agentapplyMapper.selectByPrimaryKey(userId); 
 		if(apply!=null){
 			applyInfo.setAgentuserid(apply.getAgentuserid());
+			applyInfo.setStatus(apply.getStatus());
 		}
 		rq.setStatu(ReturnStatus.SystemError);
 		if(applyInfo==null){
@@ -273,14 +275,19 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		}
 		applyInfo.setAgentuserid(userId);
 		applyInfo.setCreatetime(new Date());
-		
-		if(apply!=null&&applyInfo.getAgentuserid()!=null&&applyInfo.getAgentuserid()>0){
+		if(applyInfo.getAgentuserid()!=null&&applyInfo.getAgentuserid()>0){
 			//先删除后插入新的
 			List<UAgentapplyareas> oldareaplans=uagentapplyareaMapper.findAgentapplyareasByUserId(applyInfo.getAgentuserid());
 			for (UAgentapplyareas oldarea : oldareaplans) {
 				uagentapplyareaMapper.deleteByPrimaryKey(oldarea.getAcodeid());
 			}
-
+		}
+		if(areaList!=null&&areaList.size()>0){
+			applyInfo.setProvince(areaList.get(0).getProvincecode());
+			applyInfo.setCity(areaList.get(0).getCitycode());
+			applyInfo.setArea(areaList.get(0).getAreacode());
+		}
+		if(apply!=null&&applyInfo.getAgentuserid()!=null&&applyInfo.getAgentuserid()>0){
 			//如果是已通过审核的代理商
 			if(applyInfo.getStatus()!=null&&applyInfo.getStatus()==Integer.parseInt(AgentStatusEnum.ok.toString())){
 				List<RAreaplans> areaplans=agentAreaDao.findRAreaplansByAgentUserId(applyInfo.getAgentuserid());
@@ -294,15 +301,23 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 							return rq;
 						}
 					}
-					
 					//插入代理区域
 					for (UAgentapplyareas area : areaList) {
-						RAreaplans areaplan=new RAreaplans();
-						areaplan.setAgentuserid(apply.getAgentuserid());
-						areaplan.setAreacode(area.getAreacode());
-						areaplan.setAreaname(regionService.getAresName(area.getAreacode()));
-						areaplan.setIsagent(1);
-						areaplansMapper.insert(areaplan);
+						RAreaplans areaplan=areaplansMapper.selectByPrimaryKey(area.getAreacode());
+						if(areaplan!=null){
+							areaplan.setAgentuserid(apply.getAgentuserid());
+							areaplan.setAreacode(area.getAreacode());
+							areaplan.setAreaname(regionService.getAresName(area.getAreacode()));
+							areaplan.setIsagent(1);
+							areaplansMapper.updateByPrimaryKey(areaplan);
+						}else{
+							areaplan=new RAreaplans();
+							areaplan.setAgentuserid(apply.getAgentuserid());
+							areaplan.setAreacode(area.getAreacode());
+							areaplan.setAreaname(regionService.getAresName(area.getAreacode()));
+							areaplan.setIsagent(1);
+							areaplansMapper.insert(areaplan);
+						}
 					}
 				}
 			}
@@ -314,7 +329,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 						rq.setStatusreson("该区域["+app.getAreacode()+"]已被代理，不能重复代理！");
 						return rq;
 					}
-				}	
+				}
 			}
 			applyInfo.setStatus(Integer.parseInt(AgentStatusEnum.applying.toString()));  
 			agentapplyMapper.insert(applyInfo);
@@ -594,6 +609,11 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			agentapplyMapper.updateByPrimaryKeySelective(apply);
 			if(status==Integer.parseInt(AgentStatusEnum.ok.toString())){//成为代理
 				List<UAgentapplyareas> agentapplyareas=uagentapplyareaMapper.findAgentapplyareasByUserId(agentUserId);
+				if(agentapplyareas==null||agentapplyareas.size()<=0){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("请先选择要代理的区域再审核！");
+					return rq;
+				}
 				for (UAgentapplyareas area : agentapplyareas) {
 					boolean isApply=checkAreaCodeIsApply(apply.getAgentuserid(),area.getAreacode());
 					if(isApply){
@@ -739,6 +759,11 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		ReturnModel rq=new ReturnModel();
 		UAgents agent=agentsMapper.selectByPrimaryKey(agentUserId);
 		if(agent!=null){
+			if(agent.getStatus().intValue()!=Integer.parseInt(BranchStatusEnum.ok.toString())){
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson("还不是正式的代理商，不能进行退驻操作！");
+				return rq;
+			}
 			//1.代理商的影楼内部员工身份清除 ,清除身份后删除
 			List<UBranchusers>  branchusersList=branchuserMapper.findMemberslistByAgentUserId(agentUserId);
 			for (UBranchusers branchuser : branchusersList) {
@@ -818,6 +843,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 				agentModel=new UAgents();
 				agentModel.setAgentuserid(apply.getAgentuserid());
 				agentModel.setAgentcompanyname(apply.getAgentcompanyname());
+				agentModel.setUsername(apply.getUsername());
 				agentModel.setContactname(apply.getContactname());
 				agentModel.setPhone(apply.getPhone());
 				agentModel.setProvince(apply.getProvince());
@@ -831,6 +857,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			}else{
 				agentModel.setAgentcompanyname(apply.getAgentcompanyname());
 				agentModel.setContactname(apply.getContactname());
+				agentModel.setUsername(apply.getUsername());
 				agentModel.setPhone(apply.getPhone());
 				agentModel.setProvince(apply.getProvince());
 				agentModel.setCity(apply.getCity());
@@ -880,7 +907,8 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			branch.setAgentuserid(apply.getAgentuserid());
 			branch.setBranchuserid(apply.getAgentuserid());
 			branch.setBranchcompanyname(apply.getAgentcompanyname());
-			branch.setUsername(apply.getContactname());
+			branch.setUsername(apply.getUsername());
+			branch.setContactname(apply.getContactname());
 			branch.setPhone(apply.getPhone());
 			branch.setProvince(apply.getProvince());
 			branch.setCity(apply.getCity());
@@ -928,9 +956,9 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			agentapply.setProviceName(regionService.getProvinceName(agentapply.getProvince())) ;
 			agentapply.setCityName(regionService.getCityName(agentapply.getCity())) ;
 			agentapply.setAreaName(regionService.getAresName(agentapply.getArea())) ;
-			//agentapply.setAgentArealist(getAgentArealist(agentapply.getArea()));
+			agentapply.setAgentArealist(getAgentApplyareasByAgentUserID(agentapply.getAgentuserid()));
 			List<UAgentapplyareas> arealist=getAgentApplyArealistByAgentUserID(agentapply.getAgentuserid());
-			agentapply.setAgentArealist(arealist);
+			agentapply.setAgentapplyArealist(arealist);
 			map.put("applyInfo", agentapply);
 			if(agentapply.getStatus()!=null){
 				if(agentapply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.ok.toString())){
@@ -1001,7 +1029,18 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		}
 		return null;
 	}
-	
+	private List<String> getAgentApplyareasByAgentUserID(Long agentUserId){		
+		List<UAgentapplyareas> arealist= uagentapplyareaMapper.findAgentapplyareasByUserId(agentUserId);
+		if(arealist!=null&&arealist.size()>0){
+			List<String> areasList=new ArrayList<String>();
+			for (UAgentapplyareas rr : arealist) {
+				areasList.add(regionService.getAresName(rr.getAreacode()));
+			}
+			return areasList;
+		}
+		return null;
+		
+	}
 	private List<String> getAgentArealistByAgentUserID(Long agentUserId){		
 		List<RAreaplans> arealist= agentAreaDao.findRAreaplansByAgentUserId(agentUserId);
 		if(arealist!=null&&arealist.size()>0){

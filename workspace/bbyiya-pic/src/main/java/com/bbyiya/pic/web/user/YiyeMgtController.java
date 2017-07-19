@@ -132,6 +132,9 @@ public class YiyeMgtController  extends SSOController {
 							result.setReason(apply.getReason());
 							result.setIsInvited(1);
 							result.setCartId(apply.getCartid());
+							if(apply.getStyleid()!=null&&apply.getStyleid()>0){
+								temp.setStyleid(apply.getStyleid());
+							}
 						} else {
 							result.setApplyStatus(-1); 
 						}
@@ -182,9 +185,7 @@ public class YiyeMgtController  extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		PMyproducts myproducts= myProductMapper.selectByPrimaryKey(ObjectUtil.parseLong(cartid));
 		if(myproducts!=null&&myproducts.getTempid()!=null){
-			List<PMyproducttempext> tempextlist=ibs_tempService.getcodeTempStyleList(myproducts.getTempid());
-			rq.setBasemodle(tempextlist);
-			rq.setStatu(ReturnStatus.Success);
+			rq=ibs_tempService.getcodeTempStyleList(myproducts.getTempid());
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
@@ -540,7 +541,12 @@ public class YiyeMgtController  extends SSOController {
 						if(pp.getCartid()==null||pp.getCartid().longValue()<=0){
 							pp.setCartid(temp.getCartid());
 						}
-						if(temp.getStyleid()!=null&&temp.getStyleid().longValue()>0){
+						if(!ObjectUtil.isEmpty(pp.getStyleid())){
+							PProductstyles style= styleMapper.selectByPrimaryKey(pp.getStyleid());
+							if(style!=null){
+								pp.setStyleImg(ImgDomainUtil.getImageUrl_Full(style.getDefaultimg()));
+							}
+						}else if(temp.getStyleid()!=null&&temp.getStyleid().longValue()>0){
 							PProductstyles style= styleMapper.selectByPrimaryKey(temp.getStyleid());
 							if(style!=null){
 								pp.setStyleImg(ImgDomainUtil.getImageUrl_Full(style.getDefaultimg()));
@@ -635,6 +641,17 @@ public class YiyeMgtController  extends SSOController {
 				param.setDateTime(DateUtil.getDate(dateVal, "yyyy-MM-dd HH:mm:ss")); 
 				param.setDateTimeVal(dateVal); 
 			}
+			
+			long productId=ObjectUtil.parseLong(String.valueOf(model.get("productId")));
+			if(productId>0){
+				param.setProductId(productId);
+			}
+			
+			long styleId=ObjectUtil.parseLong(String.valueOf(model.get("styleId")));
+			if(styleId>0){
+				param.setStyleId(styleId);
+			}
+			
 			return param;
 		}
 		return null; 

@@ -145,7 +145,7 @@ public interface IIbs_MyProductTempService {
 	 * @param tempid
 	 * @return
 	 */
-	List<PMyproducttempext> getcodeTempStyleList(Integer tempid);
+	ReturnModel getcodeTempStyleList(Integer tempid);
 	
 
 	

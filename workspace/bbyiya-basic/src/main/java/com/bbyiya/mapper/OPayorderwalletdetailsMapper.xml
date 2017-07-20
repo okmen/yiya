@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.OPayorderwalletdetailsMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.OPayorderwalletdetails" >
+    <id column="PayId" property="payid" jdbcType="VARCHAR" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="HeadImg" property="headimg" jdbcType="VARCHAR" />
+    <result column="ForUserId" property="foruserid" jdbcType="BIGINT" />
+    <result column="Amount" property="amount" jdbcType="DOUBLE" />
+    <result column="PayTime" property="paytime" jdbcType="TIMESTAMP" />
+    <result column="CartId" property="cartid" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    PayId, UserId, HeadImg, ForUserId, Amount, PayTime, CartId
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from o_payorderwalletdetails
+    where PayId = #{payid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from o_payorderwalletdetails
+    where PayId = #{payid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.OPayorderwalletdetails" >
+    insert into o_payorderwalletdetails (PayId, UserId, HeadImg, 
+      ForUserId, Amount, PayTime, 
+      CartId)
+    values (#{payid,jdbcType=VARCHAR}, #{userid,jdbcType=BIGINT}, #{headimg,jdbcType=VARCHAR}, 
+      #{foruserid,jdbcType=BIGINT}, #{amount,jdbcType=DOUBLE}, #{paytime,jdbcType=TIMESTAMP}, 
+      #{cartid,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.OPayorderwalletdetails" >
+    insert into o_payorderwalletdetails
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="payid != null" >
+        PayId,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="headimg != null" >
+        HeadImg,
+      </if>
+      <if test="foruserid != null" >
+        ForUserId,
+      </if>
+      <if test="amount != null" >
+        Amount,
+      </if>
+      <if test="paytime != null" >
+        PayTime,
+      </if>
+      <if test="cartid != null" >
+        CartId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="payid != null" >
+        #{payid,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="headimg != null" >
+        #{headimg,jdbcType=VARCHAR},
+      </if>
+      <if test="foruserid != null" >
+        #{foruserid,jdbcType=BIGINT},
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=DOUBLE},
+      </if>
+      <if test="paytime != null" >
+        #{paytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cartid != null" >
+        #{cartid,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.OPayorderwalletdetails" >
+    update o_payorderwalletdetails
+    <set >
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="headimg != null" >
+        HeadImg = #{headimg,jdbcType=VARCHAR},
+      </if>
+      <if test="foruserid != null" >
+        ForUserId = #{foruserid,jdbcType=BIGINT},
+      </if>
+      <if test="amount != null" >
+        Amount = #{amount,jdbcType=DOUBLE},
+      </if>
+      <if test="paytime != null" >
+        PayTime = #{paytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cartid != null" >
+        CartId = #{cartid,jdbcType=BIGINT},
+      </if>
+    </set>
+    where PayId = #{payid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.OPayorderwalletdetails" >
+    update o_payorderwalletdetails
+    set UserId = #{userid,jdbcType=BIGINT},
+      HeadImg = #{headimg,jdbcType=VARCHAR},
+      ForUserId = #{foruserid,jdbcType=BIGINT},
+      Amount = #{amount,jdbcType=DOUBLE},
+      PayTime = #{paytime,jdbcType=TIMESTAMP},
+      CartId = #{cartid,jdbcType=BIGINT}
+    where PayId = #{payid,jdbcType=VARCHAR}
+  </update>
+</mapper>

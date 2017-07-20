@@ -1,18 +1,17 @@
 package com.bbyiya.model;
 
-
 public class UAccounts {
-    private Long userid;
+	private Long userid;
+	private Double availableamount;
+	private Double freezecashamount;
 
-    private Double availableamount;
+	public Long getUserid() {
+		return userid;
+	}
 
-    public Long getUserid() {
-        return userid;
-    }
-
-    public void setUserid(Long userid) {
-        this.userid = userid;
-    }
+	public void setUserid(Long userid) {
+		this.userid = userid;
+	}
 
 	public Double getAvailableamount() {
 		return availableamount;
@@ -22,5 +21,12 @@ public class UAccounts {
 		this.availableamount = availableamount;
 	}
 
-    
+	public Double getFreezecashamount() {
+		return freezecashamount;
+	}
+
+	public void setFreezecashamount(Double freezecashamount) {
+		this.freezecashamount = freezecashamount;
+	}
+
 }

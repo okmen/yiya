@@ -13,6 +13,8 @@
     <result column="PrepayTime" property="prepaytime" jdbcType="TIMESTAMP" />
     <result column="PayType" property="paytype" jdbcType="INTEGER" />
     <result column="OrderType" property="ordertype" jdbcType="INTEGER" />
+    <result column="WalletAmount" property="walletamount" jdbcType="DOUBLE" />
+    <result column="CashAmount" property="cashamount" jdbcType="DOUBLE" />
   </resultMap>
   <sql id="Base_Column_List" >
    PayId, UserOrderId, UserId, PrepayId, Status, TotalPrice, CreateTime, PrepayTime, PayTime, PayType,OrderType
@@ -27,15 +29,17 @@
     delete from o_payorder
     where PayId = #{payid,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.bbyiya.model.OPayorder" >
+   <insert id="insert" parameterType="com.bbyiya.model.OPayorder" >
     insert into o_payorder (PayId, UserOrderId, UserId, 
       PrepayId, Status, TotalPrice, 
       CreateTime, PrepayTime, PayTime, 
-      PayType, OrderType)
+      PayType, OrderType, WalletAmount, 
+      CashAmount)
     values (#{payid,jdbcType=VARCHAR}, #{userorderid,jdbcType=VARCHAR}, #{userid,jdbcType=BIGINT}, 
-      #{prepayid,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{totalprice,jdbcType=DECIMAL}, 
+      #{prepayid,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{totalprice,jdbcType=DOUBLE}, 
       #{createtime,jdbcType=TIMESTAMP}, #{prepaytime,jdbcType=TIMESTAMP}, #{paytime,jdbcType=TIMESTAMP}, 
-      #{paytype,jdbcType=INTEGER}, #{ordertype,jdbcType=INTEGER})
+      #{paytype,jdbcType=INTEGER}, #{ordertype,jdbcType=INTEGER}, #{walletamount,jdbcType=DOUBLE}, 
+      #{cashamount,jdbcType=DOUBLE})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.OPayorder" >
     insert into o_payorder
@@ -73,6 +77,12 @@
       <if test="ordertype != null" >
         OrderType,
       </if>
+      <if test="walletamount != null" >
+        WalletAmount,
+      </if>
+      <if test="cashamount != null" >
+        CashAmount,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="payid != null" >
@@ -91,7 +101,7 @@
         #{status,jdbcType=INTEGER},
       </if>
       <if test="totalprice != null" >
-        #{totalprice,jdbcType=DECIMAL},
+        #{totalprice,jdbcType=DOUBLE},
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
@@ -107,6 +117,12 @@
       </if>
       <if test="ordertype != null" >
         #{ordertype,jdbcType=INTEGER},
+      </if>
+      <if test="walletamount != null" >
+        #{walletamount,jdbcType=DOUBLE},
+      </if>
+      <if test="cashamount != null" >
+        #{cashamount,jdbcType=DOUBLE},
       </if>
     </trim>
   </insert>
@@ -126,7 +142,7 @@
         Status = #{status,jdbcType=INTEGER},
       </if>
       <if test="totalprice != null" >
-        TotalPrice = #{totalprice,jdbcType=DECIMAL},
+        TotalPrice = #{totalprice,jdbcType=DOUBLE},
       </if>
       <if test="createtime != null" >
         CreateTime = #{createtime,jdbcType=TIMESTAMP},
@@ -143,6 +159,12 @@
       <if test="ordertype != null" >
         OrderType = #{ordertype,jdbcType=INTEGER},
       </if>
+      <if test="walletamount != null" >
+        WalletAmount = #{walletamount,jdbcType=DOUBLE},
+      </if>
+      <if test="cashamount != null" >
+        CashAmount = #{cashamount,jdbcType=DOUBLE},
+      </if>
     </set>
     where PayId = #{payid,jdbcType=VARCHAR}
   </update>
@@ -152,12 +174,14 @@
       UserId = #{userid,jdbcType=BIGINT},
       PrepayId = #{prepayid,jdbcType=VARCHAR},
       Status = #{status,jdbcType=INTEGER},
-      TotalPrice = #{totalprice,jdbcType=DECIMAL},
+      TotalPrice = #{totalprice,jdbcType=DOUBLE},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
       PrepayTime = #{prepaytime,jdbcType=TIMESTAMP},
       PayTime = #{paytime,jdbcType=TIMESTAMP},
       PayType = #{paytype,jdbcType=INTEGER},
-      OrderType = #{ordertype,jdbcType=INTEGER}
+      OrderType = #{ordertype,jdbcType=INTEGER},
+      WalletAmount = #{walletamount,jdbcType=DOUBLE},
+      CashAmount = #{cashamount,jdbcType=DOUBLE}
     where PayId = #{payid,jdbcType=VARCHAR}
   </update>
 </mapper>

@@ -410,7 +410,12 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			if(apply.getStatus()!=null&&apply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.ok.toString())){
 				UAgents agent=agentsMapper.selectByPrimaryKey(apply.getAgentuserid());
 				if(agent!=null){
-					
+					agent.setAgentcompanyname(applyInfo.getAgentcompanyname());
+					agent.setContactname(applyInfo.getContactname());
+					agent.setUsername(applyInfo.getUsername());
+					agent.setPhone(applyInfo.getPhone());
+					agent.setStreetdetail(applyInfo.getStreetdetail());
+					agentsMapper.updateByPrimaryKey(agent);
 				}
 			}
 		}else {

@@ -403,9 +403,8 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		}
 		applyInfo.setAgentuserid(userId);
 		applyInfo.setCreatetime(new Date());
-		applyInfo.setStatus(Integer.parseInt(AgentStatusEnum.applying.toString()));  
+		  
 		if(apply!=null&&applyInfo.getAgentuserid()!=null&&applyInfo.getAgentuserid()>0){
-			agentapplyMapper.updateByPrimaryKeySelective(applyInfo);
 			//如果已经是正式的代理商
 			if(apply.getStatus()!=null&&apply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.ok.toString())){
 				UAgents agent=agentsMapper.selectByPrimaryKey(apply.getAgentuserid());
@@ -417,8 +416,12 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 					agent.setStreetdetail(applyInfo.getStreetdetail());
 					agentsMapper.updateByPrimaryKey(agent);
 				}
+			}else{
+				applyInfo.setStatus(Integer.parseInt(AgentStatusEnum.applying.toString()));
 			}
+			agentapplyMapper.updateByPrimaryKeySelective(applyInfo);
 		}else {
+			
 			agentapplyMapper.insert(applyInfo);
 		}
 		rq.setStatu(ReturnStatus.Success);

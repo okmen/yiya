@@ -356,11 +356,11 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		ReturnModel rq=new ReturnModel();
 		UAgentapply apply= agentapplyMapper.selectByPrimaryKey(userId); 
 		if(apply!=null){
-			if(apply.getStatus()!=null&&apply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.ok.toString())){
-				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("您已经是代理商了，不能提交申请！");
-				return rq;
-			}
+//			if(apply.getStatus()!=null&&apply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.ok.toString())){
+//				rq.setStatu(ReturnStatus.SystemError);
+//				rq.setStatusreson("您已经是代理商了，不能提交申请！");
+//				return rq;
+//			}
 			applyInfo.setAgentuserid(apply.getAgentuserid());
 		}
 		rq.setStatu(ReturnStatus.SystemError);
@@ -406,6 +406,13 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		applyInfo.setStatus(Integer.parseInt(AgentStatusEnum.applying.toString()));  
 		if(apply!=null&&applyInfo.getAgentuserid()!=null&&applyInfo.getAgentuserid()>0){
 			agentapplyMapper.updateByPrimaryKeySelective(applyInfo);
+			//如果已经是正式的代理商
+			if(apply.getStatus()!=null&&apply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.ok.toString())){
+				UAgents agent=agentsMapper.selectByPrimaryKey(apply.getAgentuserid());
+				if(agent!=null){
+					
+				}
+			}
 		}else {
 			agentapplyMapper.insert(applyInfo);
 		}
@@ -899,10 +906,12 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			//更新代理身份标识
 			userBasic.addUserIdentity(apply.getAgentuserid(),UserIdentityEnums.agent); 
 			
+			boolean isadd=false;
 			//影楼录入
 			UBranches branch= branchesMapper.selectByPrimaryKey(apply.getAgentuserid());
 			if(branch==null){
 				branch=new UBranches();
+				isadd=true;
 			}
 			branch.setAgentuserid(apply.getAgentuserid());
 			branch.setBranchuserid(apply.getAgentuserid());
@@ -922,8 +931,13 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			branch.setRemark(apply.getRemark());
 			branch.setCreatetime(new Date());
 			branch.setProcesstime(new Date());
-			branchesMapper.insertSelective(branch);
-			
+			if(isadd){
+				branchesMapper.insertSelective(branch);
+			}else{
+				branchesMapper.updateByPrimaryKey(branch);
+			}
+				
+
 			//影楼内部账号录入
 			UBranchusers branchuser=branchuserMapper.selectByPrimaryKey(apply.getAgentuserid());
 			if(branchuser==null){
@@ -937,9 +951,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 				branchuser.setUserid(apply.getAgentuserid());	
 				branchuserMapper.insert(branchuser);
 			}
-					
-			
-			
+
 			//更新代理身份标识
 			userBasic.addUserIdentity(apply.getAgentuserid(),UserIdentityEnums.branch);  
 		}

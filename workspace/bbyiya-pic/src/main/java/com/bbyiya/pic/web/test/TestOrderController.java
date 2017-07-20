@@ -18,12 +18,10 @@ import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.web.base.SSOController;
-import com.sdicons.json.validator.impl.predicates.Str;
 
 @Controller
 @RequestMapping(value = "/test")
 public class TestOrderController  extends SSOController{
-	private Logger logger = Logger.getLogger(TesterController.class);
 	@Resource(name = "basePayServiceImpl")
 	private IBasePayService orderMgtService;
 	
@@ -72,7 +70,7 @@ public class TestOrderController  extends SSOController{
 		ReturnModel rq = new ReturnModel();
 		if(accountService.add_accountsLog(userId, type, amount, payId, transNo)){
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("³É¹¦");
+			rq.setStatusreson("ï¿½É¹ï¿½");
 		}
 		rq.setStatu(ReturnStatus.Success);
 		return JsonUtil.objectToJsonStr(rq);
@@ -90,7 +88,7 @@ public class TestOrderController  extends SSOController{
 				rq.setStatusreson("pay success!"); 
 			}
 		}else {
-			rq.setStatusreson("²»´æÔÚ");
+			rq.setStatusreson("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	

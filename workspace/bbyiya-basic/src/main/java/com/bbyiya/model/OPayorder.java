@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class OPayorder implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
 	private String payid;
 
@@ -24,7 +25,12 @@ public class OPayorder implements Serializable {
 	private Date prepaytime;
 	
 	private Integer paytype;
+	
 	private Integer ordertype;
+	
+	private Double walletamount;
+	
+    private Double cashamount;
 	
 	public String getPayid() {
 		return payid;
@@ -112,6 +118,22 @@ public class OPayorder implements Serializable {
 
 	public void setOrdertype(Integer ordertype) {
 		this.ordertype = ordertype;
+	}
+
+	public Double getWalletamount() {
+		return walletamount;
+	}
+
+	public void setWalletamount(Double walletamount) {
+		this.walletamount = walletamount;
+	}
+
+	public Double getCashamount() {
+		return cashamount;
+	}
+
+	public void setCashamount(Double cashamount) {
+		this.cashamount = cashamount;
 	}
 	
 }

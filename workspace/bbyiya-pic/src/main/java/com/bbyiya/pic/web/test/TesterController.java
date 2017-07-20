@@ -101,7 +101,7 @@ public class TesterController  extends SSOController{
 				if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount()>1000){
 					if(amountPrice>10){
 						rq.setStatu(ReturnStatus.SystemError);
-						rq.setStatusreson("���û��˻����н��"+accounts.getAvailableamount());
+//						rq.setStatusreson("���û��˻����н��"+accounts.getAvailableamount());
 						return JsonUtil.objectToJsonStr(rq);
 					}
 				}
@@ -120,7 +120,6 @@ public class TesterController  extends SSOController{
 				freeLog.setUsetype(Integer.parseInt(AmountType.free.toString()));//��ֵ
 				freeLog.setCreatetime(new Date());
 				cashlogMapper.insert(freeLog);
-				//��ֵ ��� = ʵ�ʽ��*3 
 				Double totalPriceTemp=amountPrice*3;
 				
 				if(accounts!=null){

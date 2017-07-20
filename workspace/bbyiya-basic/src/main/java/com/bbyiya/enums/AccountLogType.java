@@ -1,18 +1,27 @@
 package com.bbyiya.enums;
 
 public enum AccountLogType {
+	
+	/*--------------------账户消费-------------------------*/
 	/**
-     * 货款消费
+     * 购物消费
      */
 	use_payment(1),
+    /**
+     * 运费消耗
+     */
+    use_freight(3),
+    
+    /*----------------- 账户收入-------------------------*/
     /**
      * 充值
      */
     get_recharge(2),
     /**
-     * 运费消耗
+     * 红包获取
      */
-    use_freight(3);
+    get_redPackets(4);
+	
 
     private final int Type;
 

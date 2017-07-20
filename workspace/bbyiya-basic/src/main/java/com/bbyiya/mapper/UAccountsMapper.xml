@@ -3,7 +3,8 @@
 <mapper namespace="com.bbyiya.dao.UAccountsMapper" >
   <resultMap id="BaseResultMap" type="com.bbyiya.model.UAccounts" >
     <id column="UserID" property="userid" jdbcType="BIGINT" />
-    <result column="AvailableAmount" property="availableamount" jdbcType="DECIMAL" />
+    <result column="AvailableAmount" property="availableamount" jdbcType="DOUBLE" />
+    <result column="FreezeCashAmount" property="freezecashamount" jdbcType="DOUBLE" />
   </resultMap>
   <sql id="Base_Column_List" >
     UserID, AvailableAmount
@@ -19,8 +20,10 @@
     where UserID = #{userid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.UAccounts" >
-    insert into u_accounts (UserID, AvailableAmount)
-    values (#{userid,jdbcType=BIGINT}, #{availableamount,jdbcType=DECIMAL})
+    insert into u_accounts (UserID, AvailableAmount, FreezeCashAmount
+      )
+    values (#{userid,jdbcType=BIGINT}, #{availableamount,jdbcType=DOUBLE}, #{freezecashamount,jdbcType=DOUBLE}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.UAccounts" >
     insert into u_accounts
@@ -31,13 +34,19 @@
       <if test="availableamount != null" >
         AvailableAmount,
       </if>
+      <if test="freezecashamount != null" >
+        FreezeCashAmount,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="userid != null" >
         #{userid,jdbcType=BIGINT},
       </if>
       <if test="availableamount != null" >
-        #{availableamount,jdbcType=DECIMAL},
+        #{availableamount,jdbcType=DOUBLE},
+      </if>
+      <if test="freezecashamount != null" >
+        #{freezecashamount,jdbcType=DOUBLE},
       </if>
     </trim>
   </insert>
@@ -45,14 +54,18 @@
     update u_accounts
     <set >
       <if test="availableamount != null" >
-        AvailableAmount = #{availableamount,jdbcType=DECIMAL},
+        AvailableAmount = #{availableamount,jdbcType=DOUBLE},
+      </if>
+      <if test="freezecashamount != null" >
+        FreezeCashAmount = #{freezecashamount,jdbcType=DOUBLE},
       </if>
     </set>
     where UserID = #{userid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.UAccounts" >
     update u_accounts
-    set AvailableAmount = #{availableamount,jdbcType=DECIMAL}
+    set AvailableAmount = #{availableamount,jdbcType=DOUBLE},
+      FreezeCashAmount = #{freezecashamount,jdbcType=DOUBLE}
     where UserID = #{userid,jdbcType=BIGINT}
   </update>
 </mapper>

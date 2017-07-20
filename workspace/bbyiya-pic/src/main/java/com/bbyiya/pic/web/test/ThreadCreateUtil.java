@@ -7,7 +7,7 @@ public class ThreadCreateUtil implements Runnable {
 	
 	public String url;
 	int index = 1;
-	int size = 100;// 每页处理多少条
+	int size = 100;//
 	int totalCount=100;
 	public ThreadCreateUtil(String urlStr, int pageSize,int count) {
 		url = urlStr;

@@ -56,6 +56,8 @@ public class PMyproducttemp {
 
     private Date endtime;
     
+    private Double amountlimit;
+    
 
     /*************************Vo****************************/
     
@@ -306,6 +308,14 @@ public class PMyproducttemp {
 
 	public void setTempextlist(List<PMyproducttempext> tempextlist) {
 		this.tempextlist = tempextlist;
+	}
+
+	public Double getAmountlimit() {
+		return amountlimit;
+	}
+
+	public void setAmountlimit(Double amountlimit) {
+		this.amountlimit = amountlimit;
 	}
 
 	

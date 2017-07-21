@@ -188,7 +188,7 @@ public class ProductMgtServiceImpl implements IProductMgtService {
 		newstyle.setPropertystr(style.getPropertystr());
 		newstyle.setStatus(style.getStatus());
 		//如果勾选为默认款，处理。。。
-		if(style.getIsdefault()==1){
+		if(style.getIsdefault()!=null&&style.getIsdefault()==1){
 			productstyleMapper.updateIsDefaultByProductId(style.getProductid());
 		}
 		newstyle.setIsdefault(style.getIsdefault());

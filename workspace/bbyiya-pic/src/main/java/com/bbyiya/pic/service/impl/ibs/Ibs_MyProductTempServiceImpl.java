@@ -945,7 +945,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	 *设置活动完成目标
 	 * @return
 	 */
-	public ReturnModel setTempCompletecondition(Long userId,Integer tempid,Integer blessCount,Integer maxCompleteCount){
+	public ReturnModel setTempCompletecondition(Long userId,Integer tempid,Integer blessCount,Integer maxCompleteCount,Double amountlimit){
 		ReturnModel rq=new ReturnModel();
 		if(tempid==null){
 			rq.setStatu(ReturnStatus.ParamError);
@@ -969,8 +969,23 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 				rq.setStatusreson("不好意思，活动已开启不能修改这些设置");
 				return rq;
 			}
+			//金额的上限为活动对应的册子的B端价格
+			if(amountlimit!=null&&amountlimit.doubleValue()>0){
+				//得到册子的B端价格
+				if(temp.getStyleid()!=null&&temp.getStyleid()>0){
+					PProductstyles style=styleMapper.selectByPrimaryKey(temp.getStyleid());
+					if(style!=null){
+						if(amountlimit.doubleValue()>style.getAgentprice().doubleValue()){
+							rq.setStatu(ReturnStatus.ParamError);
+							rq.setStatusreson("红包金额不能大于代理商代理价格，代理价格为["+style.getAgentprice()+"]！");
+							return rq;
+						}
+					}
+				}
+			}
 			temp.setBlesscount(blessCount);
 			temp.setMaxcompletecount(maxCompleteCount);
+			temp.setAmountlimit(amountlimit);
 			myproducttempMapper.updateByPrimaryKeySelective(temp);
 		}
 		rq.setStatu(ReturnStatus.Success);

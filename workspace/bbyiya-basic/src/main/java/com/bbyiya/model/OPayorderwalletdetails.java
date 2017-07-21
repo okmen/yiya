@@ -16,6 +16,8 @@ public class OPayorderwalletdetails {
     private Date paytime;
 
     private Long cartid;
+    
+    private Integer status;
 
     public String getPayid() {
         return payid;
@@ -72,4 +74,13 @@ public class OPayorderwalletdetails {
     public void setCartid(Long cartid) {
         this.cartid = cartid;
     }
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+    
 }

@@ -9,6 +9,7 @@
     <result column="Amount" property="amount" jdbcType="DOUBLE" />
     <result column="PayTime" property="paytime" jdbcType="TIMESTAMP" />
     <result column="CartId" property="cartid" jdbcType="BIGINT" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     PayId, UserId, HeadImg, ForUserId, Amount, PayTime, CartId
@@ -26,10 +27,10 @@
   <insert id="insert" parameterType="com.bbyiya.model.OPayorderwalletdetails" >
     insert into o_payorderwalletdetails (PayId, UserId, HeadImg, 
       ForUserId, Amount, PayTime, 
-      CartId)
+      CartId, Status)
     values (#{payid,jdbcType=VARCHAR}, #{userid,jdbcType=BIGINT}, #{headimg,jdbcType=VARCHAR}, 
       #{foruserid,jdbcType=BIGINT}, #{amount,jdbcType=DOUBLE}, #{paytime,jdbcType=TIMESTAMP}, 
-      #{cartid,jdbcType=BIGINT})
+      #{cartid,jdbcType=BIGINT}, #{status,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.OPayorderwalletdetails" >
     insert into o_payorderwalletdetails
@@ -55,6 +56,9 @@
       <if test="cartid != null" >
         CartId,
       </if>
+      <if test="status != null" >
+        Status,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="payid != null" >
@@ -77,6 +81,9 @@
       </if>
       <if test="cartid != null" >
         #{cartid,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -101,6 +108,9 @@
       <if test="cartid != null" >
         CartId = #{cartid,jdbcType=BIGINT},
       </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
     </set>
     where PayId = #{payid,jdbcType=VARCHAR}
   </update>
@@ -111,7 +121,8 @@
       ForUserId = #{foruserid,jdbcType=BIGINT},
       Amount = #{amount,jdbcType=DOUBLE},
       PayTime = #{paytime,jdbcType=TIMESTAMP},
-      CartId = #{cartid,jdbcType=BIGINT}
+      CartId = #{cartid,jdbcType=BIGINT},
+      Status = #{status,jdbcType=INTEGER}
     where PayId = #{payid,jdbcType=VARCHAR}
   </update>
 </mapper>

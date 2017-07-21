@@ -411,8 +411,10 @@ public class Json2Objects {
 					if(citycode>0){
 						applyarea.setCitycode(citycode);
 					}
+					if(applyarea.getAreacode()!=null&&applyarea.getProvincecode()!=null&&applyarea.getCitycode()!=null){
+						arealist.add(applyarea);
+					}
 					
-					arealist.add(applyarea);
 				}
 			}
 			

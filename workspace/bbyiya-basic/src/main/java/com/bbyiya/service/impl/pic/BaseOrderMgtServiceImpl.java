@@ -1285,7 +1285,8 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				detail.setForuserid(userFor);
 				detail.setPayid(payId); 
 				detail.setPaytime(new Date()); 
-				walletDetailMapper.insert(detail);
+				detail.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
+				walletDetailMapper.insert(detail); 
 				rqModel.setStatu(ReturnStatus.Success);
 				rqModel.setBasemodle(payId); 
 			}else {

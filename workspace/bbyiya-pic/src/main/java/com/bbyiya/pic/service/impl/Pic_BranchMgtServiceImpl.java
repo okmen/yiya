@@ -839,7 +839,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			rq.setStatusreson("退驻成功");
 		} else {
 			rq.setStatu(ReturnStatus.SystemError);
-			rq.setStatusreson("找不到代理商记录");
+			rq.setStatusreson("还不是正式的代理商，不能进行退驻操作！");
 		} 
 		return rq;
 	}
@@ -944,7 +944,6 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			}else{
 				branchesMapper.updateByPrimaryKey(branch);
 			}
-				
 
 			//影楼内部账号录入
 			UBranchusers branchuser=branchuserMapper.selectByPrimaryKey(apply.getAgentuserid());

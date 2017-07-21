@@ -139,7 +139,7 @@ public interface IIbs_MyProductTempService {
 	 * @return
 	 */
 	ReturnModel setTempCompletecondition(Long userId, Integer tempid,
-			Integer blessCount, Integer maxCompleteCount);
+			Integer blessCount, Integer maxCompleteCount,Double amountlimit);
 	/**
 	 * 得到活动码活动的款式列表
 	 * @param tempid

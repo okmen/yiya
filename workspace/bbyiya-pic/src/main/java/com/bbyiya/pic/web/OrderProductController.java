@@ -18,13 +18,20 @@ import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PProductsMapper;
 import com.bbyiya.dao.PProductstyleexpMapper;
 import com.bbyiya.dao.PProductstylesMapper;
+import com.bbyiya.dao.UAccountsMapper;
+import com.bbyiya.enums.AccountLogType;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.DMyproductdiscountmodel;
 import com.bbyiya.model.PMyproducts;
+import com.bbyiya.model.PMyproductsinvites;
+import com.bbyiya.model.PMyproducttemp;
+import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.model.PProducts;
 import com.bbyiya.model.PProductstyleexp;
 import com.bbyiya.model.PProductstyles;
+import com.bbyiya.model.UAccounts;
 import com.bbyiya.service.pic.IBaseDiscountService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -40,6 +47,8 @@ public class OrderProductController extends SSOController {
 	 */
 	@Resource(name = "baseDiscountServiceImpl")
 	private IBaseDiscountService discountService;
+	@Autowired
+	private UAccountsMapper accountsMapper;//账户信息
 	@Autowired
 	private PProductstylesMapper styleMapper;
 	
@@ -113,13 +122,14 @@ public class OrderProductController extends SSOController {
 		if (user != null) {
 			PProductstyles style = styleMapper.selectByPrimaryKey(styleId);
 			PMyproducts mycart= mycartMapper.selectByPrimaryKey(cartId);
+			
+			
 			if (style != null) {
 				List<DMyproductdiscountmodel> disList =null;
 				//普通用户才有优惠购买资格
 				if(!(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.salesman))){
 					disList=discountService.findMycartDiscount(user.getUserId(), cartId);
 				}
-				discountService.findMycartDiscount(user.getUserId(), cartId);
 				PProducts product = productMapper.selectByPrimaryKey(style.getProductid());
 				if (product != null) {
 					Map<String, Object> map = new HashMap<String, Object>();
@@ -140,6 +150,12 @@ public class OrderProductController extends SSOController {
 							}
 						}
 					}
+					//得到用户的可减免的账户金额
+					UAccounts accounts=accountsMapper.selectByPrimaryKey(user.getUserId());
+					if(accounts!=null){
+						map.put("redAmount", accounts.getAvailableamount()==null?0:accounts.getAvailableamount());
+					}
+					
 					rq.setBasemodle(map);
 					rq.setStatu(ReturnStatus.Success);
 				}

@@ -219,7 +219,11 @@ public class BranchMgtController extends SSOController {
 						if(!ObjectUtil.isEmpty(branchUsers.getMobilephone())){
 							UAgentapply applyInfo=(UAgentapply)JsonUtil.jsonStrToObject(agentJson, UAgentapply.class);
 							List<UAgentapplyareas> arealist=Json2Objects.getParam_AgentApplyareas(areacodeJson);
-							
+							if(arealist==null||arealist.size()<=0){
+								rq.setStatu(ReturnStatus.ParamError);
+								rq.setStatusreson("请选择要代理的区域！");
+								return JsonUtil.objectToJsonStr(rq);
+							}
 							rq =branchService.applyAgentNew(ObjectUtil.parseLong(branchUserId), applyInfo,arealist);
 						}else {
 							rq.setStatu(ReturnStatus.ParamError);

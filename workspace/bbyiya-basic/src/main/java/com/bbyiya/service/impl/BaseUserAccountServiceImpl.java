@@ -169,6 +169,46 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 	}
 	
 	/**
+	 * 冻结金额账户的收支记录
+	 * @param userId
+	 * @param type
+	 * @param amount
+	 * @param PayId
+	 * @param transOrderId 运单号
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean add_FreezeCashAccountsLog(long userId,int type,Double amount,String PayId,String transOrderId)throws Exception{
+		if(amount==null||userId<=0)
+			return false;
+		UAccounts accounts=accountsMapper.selectByPrimaryKey(userId);
+		//1.流水记录
+		UAccountslogs log=new UAccountslogs();
+		log.setUserid(userId);
+		log.setCreatetime(new Date());
+		log.setType(type);
+		if (type==Integer.parseInt(AccountLogType.use_payment.toString())) {
+			log.setAmount((-1)*Math.abs(amount)); 
+			log.setOrderid(PayId); 
+			accountslogsMapper.insert(log);
+		} else {
+			return false;
+		}
+		//-----------账户冻结金额修正--------------------------------------------------
+		if(accounts!=null){
+			double totalamount=accounts.getFreezecashamount()==null?0d:accounts.getFreezecashamount();
+			accounts.setFreezecashamount(totalamount+log.getAmount()); 
+			accountsMapper.updateByPrimaryKeySelective(accounts);
+		}else {
+			accounts=new UAccounts();
+			accounts.setUserid(userId); 
+			accounts.setFreezecashamount(log.getAmount());
+			accountsMapper.insert(accounts);
+		}
+		return true;
+	}
+	
+	/**
 	 * 
 	 * @param userId
 	 * @param type

@@ -56,4 +56,16 @@ public interface IBaseUserAccountService {
 	 * @throws Exception
 	 */
 	boolean add_accountsLog(long userId,int type,Double amount,String PayId,String transOrderId)throws Exception;
+	/**
+	 * 添加冻结金额记录
+	 * @param userId
+	 * @param type
+	 * @param amount
+	 * @param PayId
+	 * @param transOrderId
+	 * @return
+	 * @throws Exception
+	 */
+	boolean add_FreezeCashAccountsLog(long userId, int type, Double amount,
+			String PayId, String transOrderId) throws Exception;
 }

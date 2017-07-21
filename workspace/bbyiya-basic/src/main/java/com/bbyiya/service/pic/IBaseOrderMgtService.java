@@ -4,9 +4,11 @@ import java.util.List;
 
 import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproducts;
+import com.bbyiya.model.UUsers;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.order.UserOrderSubmitParam;
 import com.bbyiya.vo.order.UserOrderSubmitRepeatParam;
+import com.bbyiya.vo.user.LoginSuccessResult;
 
 public interface IBaseOrderMgtService {
 
@@ -89,7 +91,17 @@ public interface IBaseOrderMgtService {
 	 */
 	boolean addPayOrder(Long userId, String payId, String userOrderId, Integer payOrderType , Double totalPrice);
 
-
+	/**
+	 * 红包支付 （生成支付单）
+	 * @param user
+	 * @param cartId
+	 * @param payId
+	 * @param userOrderId
+	 * @param payOrderType
+	 * @param totalPrice
+	 * @return
+	 */
+	ReturnModel addPayOrderForRedPackges(LoginSuccessResult user,Long cartId, String payId, String userOrderId, Integer payOrderType , Double totalPrice) ;
 	
 	/**
 	 * 获取用户购买订单列表

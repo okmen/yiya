@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.baseUtils.GenUtils;
+import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.dao.EErrorsMapper;
 import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OOrderproductdetailsMapper;
@@ -22,9 +23,11 @@ import com.bbyiya.dao.OOrderproductphotosMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
 //import com.bbyiya.dao.OPayforuserorderMapper;
 import com.bbyiya.dao.OPayorderMapper;
+import com.bbyiya.dao.OPayorderwalletdetailsMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.PMyproductsMapper;
+import com.bbyiya.dao.PMyproductsinvitesMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
 import com.bbyiya.dao.PProductsMapper;
 import com.bbyiya.dao.PProductstylepropertyMapper;
@@ -41,6 +44,7 @@ import com.bbyiya.dao.UCashlogsMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.AccountLogType;
+import com.bbyiya.enums.AmountType;
 import com.bbyiya.enums.CustomerSourceTypeEnum;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.OrderTypeEnum;
@@ -51,6 +55,7 @@ import com.bbyiya.enums.pic.AgentStatusEnum;
 import com.bbyiya.enums.pic.BranchStatusEnum;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
 import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
+import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.DMyproductdiscountmodel;
 import com.bbyiya.model.EErrors;
 import com.bbyiya.model.OOrderaddress;
@@ -58,9 +63,11 @@ import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproductphotos;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OPayorder;
+import com.bbyiya.model.OPayorderwalletdetails;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
+import com.bbyiya.model.PMyproductsinvites;
 import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.model.PPostmodel;
 import com.bbyiya.model.PProducts;
@@ -91,6 +98,7 @@ import com.bbyiya.vo.order.UserOrderParam;
 import com.bbyiya.vo.order.UserOrderResult;
 import com.bbyiya.vo.order.UserOrderSubmitParam;
 import com.bbyiya.vo.order.UserOrderSubmitRepeatParam;
+import com.bbyiya.vo.user.LoginSuccessResult;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
@@ -122,6 +130,8 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	private PProductstylepropertyMapper propertyMapper;
 	@Autowired
 	private PMyproductsMapper myproductMapper;//我的作品
+	@Autowired
+	private PMyproductsinvitesMapper inviteMapper;
 	
 	@Autowired
 	private PMyproductdetailsMapper mydetailMapper;
@@ -134,13 +144,15 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	@Autowired
 	private OOrderproductphotosMapper ophotoMapper;// 订单产品
 	
-	
 	@Autowired
 	private OUserordersMapper userOrdersMapper;// 订单
 	@Autowired
 	private OPayorderMapper payOrderMapper;// 支付单
 	@Autowired
 	private OOrderproductdetailsMapper odetailMapper;// 产品图片集合
+	
+	@Autowired
+	private OPayorderwalletdetailsMapper walletDetailMapper;
 	
 
 	/*------------------------用户信息模块----------------------------------*/
@@ -1232,6 +1244,61 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		payorder.setCreatetime(new Date());
 		payOrderMapper.insert(payorder);
 		return true;
+	}
+	
+	public ReturnModel addPayOrderForRedPackges(LoginSuccessResult user,Long cartId, String payId, String userOrderId, Integer payOrderType , Double totalPrice) {
+		ReturnModel rqModel=new ReturnModel();
+		rqModel.setStatu(ReturnStatus.SystemError);
+		PMyproducts mycart=myproductMapper.selectByPrimaryKey(cartId);
+		if(mycart!=null) {
+			//作品拥有者
+			UUsers myUsers=usersMapper.selectByPrimaryKey(mycart.getUserid());
+			//红包付给谁
+			Long userFor=0l;
+			//作品是否是B端用户
+			if(myUsers!=null&&!(ValidateUtils.isIdentity(myUsers.getIdentity(), UserIdentityEnums.salesman)||ValidateUtils.isIdentity(myUsers.getIdentity(), UserIdentityEnums.branch))){
+				//如果不是B端用户 红包直接付给作品拥有者
+				userFor=mycart.getUserid();
+			}else {//如果作品属于B端，付给协同编辑者
+				List<PMyproductsinvites> invitelist=inviteMapper.findListByCartId(cartId);
+				if(invitelist!=null&&invitelist.size()>0){
+					if(invitelist.get(0).getInviteuserid()!=null){
+						userFor=invitelist.get(0).getInviteuserid();
+					}
+				}
+			}
+			if(userFor>0){
+				OPayorder payorder = new OPayorder();
+				payorder.setPayid(payId);
+				payorder.setUserorderid(userOrderId);
+				payorder.setUserid(user.getUserId());
+				payorder.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
+				payorder.setOrdertype(payOrderType); 
+				payorder.setTotalprice(totalPrice);
+				payorder.setCreatetime(new Date());
+				payOrderMapper.insert(payorder);	
+				OPayorderwalletdetails detail=new OPayorderwalletdetails();
+				detail.setAmount(totalPrice);
+				detail.setCartid(cartId);
+				detail.setUserid(user.getUserId());
+				detail.setHeadimg(user.getHeadImg());
+				detail.setForuserid(userFor);
+				detail.setPayid(payId); 
+				detail.setPaytime(new Date()); 
+				walletDetailMapper.insert(detail);
+				rqModel.setStatu(ReturnStatus.Success);
+				rqModel.setBasemodle(payId); 
+			}else {
+				rqModel.setStatusreson("红包暂时发不了~~");
+				addlog("红包暂时发不了~~");
+				return rqModel;
+			}
+		}else {
+			addlog("作品不存在，红包暂时发不了~~");
+			rqModel.setStatusreson("红包暂时发不了~~");
+			return rqModel;
+		}
+		return rqModel;
 	}
 	
 	/**

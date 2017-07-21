@@ -12,7 +12,11 @@ public enum PayOrderTypeEnum {
     /**
      * 邮费充值
      */
-    postage(3) 
+    postage(3) ,
+    /**
+     * 红包
+     */
+    redPackets(4);
     ;
 
     private final int Type;

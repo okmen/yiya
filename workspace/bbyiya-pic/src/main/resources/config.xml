@@ -65,6 +65,17 @@
 		<item type="1" codes="710000,810000,820000" />
 		<item type="3" codes="460321,460322,460323" />
 	</o_excludedareas>
+	<uploadcdns><!-- 七牛cdn域名 -->
+		<item domain="http://pic.bbyiya.com" bucketname="yiya"  default="1" />
+		<item domain="http://pic1.bbyiya.com" bucketname="yiya1" default="0" />
+		<item domain="http://pic2.bbyiya.com" bucketname="yiya" default="1" />
+		<item domain="http://pic4.bbyiya.com" bucketname="yiya" default="1" />
+	</uploadcdns>
+	<imguploadcdnsdefault><!-- 七牛cdn域名 -->
+		<item domain="http://pic.bbyiya.com" bucketname="yiya" />
+		<item domain="http://pic2.bbyiya.com" bucketname="yiya"  />
+		<item domain="http://pic4.bbyiya.com" bucketname="yiya"/>
+	</imguploadcdnsdefault>
 	<!-- 物流公司信息 -->
 	<postInfo>
 		<item code="tiantian" name="天天快递"/>

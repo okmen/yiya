@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.dao.OPayorderwalletdetailsMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductchildinfoMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
@@ -26,6 +27,7 @@ import com.bbyiya.dao.PProductstylesMapper;
 import com.bbyiya.dao.PScenesMapper;
 import com.bbyiya.dao.PStylecoordinateMapper;
 import com.bbyiya.dao.PStylecoordinateitemMapper;
+import com.bbyiya.dao.UAccountsMapper;
 import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UChildreninfoMapper;
 import com.bbyiya.dao.UUseraddressMapper;
@@ -35,6 +37,7 @@ import com.bbyiya.enums.pic.InviteStatus;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
 import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
 import com.bbyiya.model.DMyproductdiscountmodel;
+import com.bbyiya.model.OPayorderwalletdetails;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproductchildinfo;
 import com.bbyiya.model.PMyproductdetails;
@@ -45,9 +48,11 @@ import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.model.PProductdetails;
 import com.bbyiya.model.PProducts;
+import com.bbyiya.model.PProductstyles;
 import com.bbyiya.model.PScenes;
 import com.bbyiya.model.PStylecoordinate;
 import com.bbyiya.model.PStylecoordinateitem;
+import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UChildreninfo;
 import com.bbyiya.model.UUsers;
@@ -62,6 +67,7 @@ import com.bbyiya.pic.vo.product.MyProductsDetailsResult;
 import com.bbyiya.pic.vo.product.MyProductsResult;
 import com.bbyiya.pic.vo.product.MyProductsTempVo;
 import com.bbyiya.pic.vo.product.ProductSampleResultVO;
+import com.bbyiya.pic.vo.product.PublicFinacingMyPro;
 import com.bbyiya.service.pic.IBaseDiscountService;
 import com.bbyiya.service.pic.IBaseUserAddressService;
 import com.bbyiya.utils.ConfigUtil;
@@ -1049,6 +1055,39 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		return rq;
 	}
 	
+	@Autowired
+	private OPayorderwalletdetailsMapper walletdetailsMapper;
+	
+	public ReturnModel getPublicFincingInfo(long cartId){
+		ReturnModel rq=new ReturnModel();
+		Map<String, Object> map=new HashMap<String, Object>();
+		PublicFinacingMyPro pro=new PublicFinacingMyPro();
+		List<MyProductsDetailsResult> detailsList = mydetailDao.findMyProductDetailsResult(cartId);
+		if(detailsList!=null&&detailsList.size()>0){
+			pro.setHeadImg(detailsList.get(0).getImgurl()) ;
+		}
+		PMyproducttempapply apply=tempapplyMapper.getMyProducttempApplyByCartId(cartId);
+		if(apply!=null&&apply.getStyleid()!=null&&apply.getProductid()!=null){
+			PMyproducttemp temp=tempMapper.selectByPrimaryKey(apply.getTempid());
+			if(temp!=null){
+				pro.setAmountLimit(temp.getAmountlimit()) ;
+			}
+			PProductstyles style = styleMapper.selectByPrimaryKey(apply.getStyleid()); 
+			if(style!=null){
+				pro.setPrice( style.getPrice()) ;
+			}
+			PProducts products=productsMapper.selectByPrimaryKey(apply.getProductid());
+			if(products!=null){
+				pro.setTitle( products.getTitle());
+			}
+		}
+		map.put("pro", pro);
+		map.put("amountlist", walletdetailsMapper.findWalletsByCartId(cartId));
+		rq.setBasemodle(map);
+		rq.setStatu(ReturnStatus.Success); 
+		return rq;
+	}
+	
 	private MyProductsResult getCartDetailsRedis(long userId,Long cartId){
 		String keycart=ConfigUtil.getSingleValue("currentRedisKey-Base")+"_cartIdMy_"+cartId;
 		MyProductsResult myproductRedis=(MyProductsResult)RedisUtil.getObject(keycart);
@@ -1160,6 +1199,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		return myproduct;
 	}
 	
+	@Autowired
+	private UAccountsMapper accountsMapper;
 	/**
 	 * 异业活动 作品参与活动
 	 * @param userId
@@ -1187,6 +1228,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					vo.setCommentCount(0); 
 				}
 			}
+			//我的申请信息
 			PMyproducttempapply apply= tempapplyMapper.getMyProducttempApplyByCartId(myproduct.getCartid());
 			if(apply==null){
 				apply=tempapplyMapper.getMyProducttempApplyByUserId(myproduct.getTempid(), userId);
@@ -1200,6 +1242,21 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				vo.setStyleId(mtemp.getStyleid());
 			}else {
 				vo.setStyleId(apply.getProductid()); 
+			}
+			//---------是否可以众筹--------------
+			if(mtemp.getAmountlimit()!=null&&mtemp.getAmountlimit().doubleValue()>0){
+				vo.setPublicAmountLimit(mtemp.getAmountlimit());
+				if(apply.getStatus()!=null&&(apply.getStatus().intValue()==Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString())||
+						apply.getStatus().intValue()==Integer.parseInt(MyProducttempApplyStatusEnum.pass.toString()))){
+					vo.setPublicAmountNeedMore(0d);
+				}else {
+					UAccounts accounts= accountsMapper.selectByPrimaryKey(userId);
+					if(accounts!=null){
+						vo.setPublicAmountNeedMore(mtemp.getAmountlimit().doubleValue()-(accounts.getAvailableamount()==null?0d:accounts.getAvailableamount().doubleValue()));
+					}else {
+						vo.setPublicAmountNeedMore(mtemp.getAmountlimit());
+					}
+				}
 			}
 			return vo;
 		}

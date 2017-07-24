@@ -32,7 +32,7 @@
     TempId, BranchUserId, Title, Status, Count, Remark, CartId, CreateTime, NeedVerifer, 
     Discription, TempCodeUrl, TempCodeSm, ApplyCount, Type, StyleId, MaxApplyCount, CompleteCount, 
     MaxCompleteCount, BlessCount, IsAutoOrder, OrderHours, IsBranchAddress, BeginTime, 
-    EndTime
+    EndTime,AmountLimit
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 

@@ -146,6 +146,20 @@ public class MyProductController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/publicFindetails")
+	public String publicFindetails(@RequestParam(required = false, defaultValue = "0") long cartId) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			rq=proService.getPublicFincingInfo(cartId); 
+		} else {// 非登录分享页
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("未登录");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 
 	/**
 	 * P14 作品详情（通过产品Id获取）

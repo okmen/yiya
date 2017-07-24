@@ -24,6 +24,14 @@ public class MyProductsTempVo implements Serializable{
 	private Long styleId;
 	
 	private int mytempStatus;
+	/**
+	 * 众筹金额
+	 */
+	private Double publicAmountLimit;
+	/***
+	 * 还需要众筹金额
+	 */
+	private Double publicAmountNeedMore;
 	
 	private List<DMyproductdiscountmodel> discountList;
 	
@@ -74,6 +82,18 @@ public class MyProductsTempVo implements Serializable{
 	}
 	public void setStyleId(Long styleId) {
 		this.styleId = styleId;
+	}
+	public Double getPublicAmountLimit() {
+		return publicAmountLimit;
+	}
+	public void setPublicAmountLimit(Double publicAmountLimit) {
+		this.publicAmountLimit = publicAmountLimit;
+	}
+	public Double getPublicAmountNeedMore() {
+		return publicAmountNeedMore;
+	}
+	public void setPublicAmountNeedMore(Double publicAmountNeedMore) {
+		this.publicAmountNeedMore = publicAmountNeedMore;
 	}
 	
 	

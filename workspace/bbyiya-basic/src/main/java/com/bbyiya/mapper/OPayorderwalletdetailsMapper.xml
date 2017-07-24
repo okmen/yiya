@@ -10,9 +10,10 @@
     <result column="PayTime" property="paytime" jdbcType="TIMESTAMP" />
     <result column="CartId" property="cartid" jdbcType="BIGINT" />
     <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="NickName" property="nickname" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    PayId, UserId, HeadImg, ForUserId, Amount, PayTime, CartId
+    PayId, UserId, HeadImg, ForUserId, Amount, PayTime, CartId, Status, NickName
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -24,9 +25,8 @@
     select 
     <include refid="Base_Column_List" />
     from o_payorderwalletdetails
-    where CartId = #{cartId,jdbcType=BIGINT} order by  PayTime desc 
+    where CartId = #{cartId,jdbcType=BIGINT} and Status=1  order by  PayTime desc 
   </select>
-  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from o_payorderwalletdetails
     where PayId = #{payid,jdbcType=VARCHAR}
@@ -34,10 +34,12 @@
   <insert id="insert" parameterType="com.bbyiya.model.OPayorderwalletdetails" >
     insert into o_payorderwalletdetails (PayId, UserId, HeadImg, 
       ForUserId, Amount, PayTime, 
-      CartId, Status)
+      CartId, Status, NickName
+      )
     values (#{payid,jdbcType=VARCHAR}, #{userid,jdbcType=BIGINT}, #{headimg,jdbcType=VARCHAR}, 
       #{foruserid,jdbcType=BIGINT}, #{amount,jdbcType=DOUBLE}, #{paytime,jdbcType=TIMESTAMP}, 
-      #{cartid,jdbcType=BIGINT}, #{status,jdbcType=INTEGER})
+      #{cartid,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, #{nickname,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.OPayorderwalletdetails" >
     insert into o_payorderwalletdetails
@@ -66,6 +68,9 @@
       <if test="status != null" >
         Status,
       </if>
+      <if test="nickname != null" >
+        NickName,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="payid != null" >
@@ -91,6 +96,9 @@
       </if>
       <if test="status != null" >
         #{status,jdbcType=INTEGER},
+      </if>
+      <if test="nickname != null" >
+        #{nickname,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -118,6 +126,9 @@
       <if test="status != null" >
         Status = #{status,jdbcType=INTEGER},
       </if>
+      <if test="nickname != null" >
+        NickName = #{nickname,jdbcType=VARCHAR},
+      </if>
     </set>
     where PayId = #{payid,jdbcType=VARCHAR}
   </update>
@@ -129,7 +140,8 @@
       Amount = #{amount,jdbcType=DOUBLE},
       PayTime = #{paytime,jdbcType=TIMESTAMP},
       CartId = #{cartid,jdbcType=BIGINT},
-      Status = #{status,jdbcType=INTEGER}
+      Status = #{status,jdbcType=INTEGER},
+      NickName = #{nickname,jdbcType=VARCHAR}
     where PayId = #{payid,jdbcType=VARCHAR}
   </update>
 </mapper>

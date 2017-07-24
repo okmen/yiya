@@ -338,6 +338,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					orderTotalPrice+=param.getPostPrice();
 					userOrder.setOrdertotalprice(orderTotalPrice);//订单总价 
 				}
+				Double walletAmount=0.0;
 				//是否优惠购买
 				if(userOrder.getUserid()!=null&&param.getCartId()!=null){
 					List<DMyproductdiscountmodel> dislit=discountService.findMycartDiscount(userOrder.getUserid(), param.getCartId());
@@ -350,36 +351,16 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 									userOrder.setOrdertotalprice(orderTotalPrice); 
 								}
 								
-								//得到可减免的红包金额
-								UAccounts accounts=accountsMapper.selectByPrimaryKey(userOrder.getUserid());
-								if(accounts!=null){
-									double redAmount=0.0;
-									if(accounts.getAvailableamount()==null){
-										accounts.setAvailableamount(0.0);
-									}
-									if(accounts.getFreezecashamount()==null){
-										accounts.setFreezecashamount(0.0);
-									}
-									if(orderTotalPrice>accounts.getAvailableamount()){
-										redAmount=accounts.getAvailableamount();
-										
-									}else{
-										redAmount=orderTotalPrice;
-									}
-									//把红包转移到冻结金额
-									accounts.setFreezecashamount(accounts.getFreezecashamount()+redAmount);
-									accounts.setAvailableamount(accounts.getAvailableamount()-redAmount);
-									accountsMapper.updateByPrimaryKey(accounts);
-									userOrder.setOrdertotalprice(orderTotalPrice-redAmount);
-								}
-								
+								//add at 2017-07-21 by julie得到可减免的红包金额得到可减免的红包金额
+								//得到可减免的钱包金额
+								walletAmount=accountService.transferCashAccountsToFreeze(userOrder.getUserid(),orderTotalPrice);
 							}
 						}
 					}
 				}
 				
 				// 插入支付订单记录
-				addPayOrder(param.getUserId(), payId, payId, orderTotalPrice);
+				addPayOrder(param.getUserId(), payId, payId, orderTotalPrice,walletAmount);
 				// 插入客户记录------------------------------------------------------
 				if(userOrder.getAgentuserid()!=null&&userOrder.getAgentuserid()>0){
 					UUsers users=usersMapper.selectByPrimaryKey(userOrder.getUserid());
@@ -713,30 +694,10 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 								userOrder_Repeat.setOrdertotalprice(orderTotalPrice);// 订单总价
 							}
 							
-							//得到可减免的红包金额
-							UAccounts accounts=accountsMapper.selectByPrimaryKey(userId);
-							if(accounts!=null){
-								double redAmount=0.0;
-								if(accounts.getAvailableamount()==null){
-									accounts.setAvailableamount(0.0);
-								}
-								if(accounts.getFreezecashamount()==null){
-									accounts.setFreezecashamount(0.0);
-								}
-								if(orderTotalPrice>accounts.getAvailableamount()){
-									redAmount=accounts.getAvailableamount();
-									
-								}else{
-									redAmount=orderTotalPrice;
-								}
-								//把红包转移到冻结金额
-								accounts.setFreezecashamount(accounts.getFreezecashamount()+redAmount);
-								accounts.setAvailableamount(accounts.getAvailableamount()-redAmount);
-								accountsMapper.updateByPrimaryKey(accounts);
-								userOrder_Repeat.setOrdertotalprice(orderTotalPrice-redAmount);
-							}
+							//add at 2017-07-21 by julie 得到可支付的红包金额
+							Double walletAmount=accountService.transferCashAccountsToFreeze(userId,orderTotalPrice);
 							
-							addPayOrder(userId, payId, payId, orderTotalPrice); // 插入支付订单记录
+							addPayOrder(userId, payId, payId, orderTotalPrice,walletAmount); // 插入支付订单记录
 						}
 						
 //						for (OOrderproductdetails dd : details) {
@@ -1010,7 +971,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 						return rq;
 					}
 				}
-				addPayOrder(userId, payId, payId, totalPrice_pay); // 插入支付订单记录
+				addPayOrder(userId, payId, payId, totalPrice_pay,0.0); // 插入支付订单记录
 				rq.setStatu(ReturnStatus.Success);
 				Map<String, Object> mapResult = new HashMap<String, Object>();
 				mapResult.put("payId", payId);
@@ -1234,7 +1195,17 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			if(!ObjectUtil.isEmpty(orderInfo.getPaytime())){ 
 				model.setPayTimeStr(DateUtil.getTimeStr(orderInfo.getPaytime(), "yyyy-MM-dd HH:mm:ss")); 
 			}
-			model.setPayType(orderInfo.getPaytype()); 
+			model.setPayType(orderInfo.getPaytype());
+			if(!ObjectUtil.isEmpty(orderInfo.getPayid())){
+				OPayorder payorder=payOrderMapper.selectByPrimaryKey(orderInfo.getPayid());
+				if(payorder!=null){
+					//Ordertotalprice=totalprice+Postage-disAmount
+					model.setCashAmount(payorder.getCashamount());
+					model.setWalletAmount(payorder.getWalletamount());
+					model.setDisAmount(orderInfo.getTotalprice()+(orderInfo.getPostage()==null?0d:orderInfo.getPostage())-orderInfo.getOrdertotalprice());				
+				}
+			}
+			
 			List<OOrderproducts> proList = oproductMapper.findOProductsByOrderId(orderInfo.getUserorderid());
 			model.setProlist(proList);
 			OOrderaddress addr= orderaddressMapper.selectByPrimaryKey(orderInfo.getOrderaddressid());
@@ -1305,13 +1276,15 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	 * @param payId
 	 * @param totalPrice
 	 */
-	public void addPayOrder(Long userId, String payId, String userOrderId, Double totalPrice) {
+	public void addPayOrder(Long userId, String payId, String userOrderId, Double totalPrice,Double walletAmount) {
 		OPayorder payorder = new OPayorder();
 		payorder.setPayid(payId);
 		payorder.setUserorderid(userOrderId);
 		payorder.setUserid(userId);
 		payorder.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
 		payorder.setTotalprice(totalPrice);
+		payorder.setWalletamount(walletAmount);
+		payorder.setCashamount(totalPrice.doubleValue()-walletAmount.doubleValue());
 		payorder.setCreatetime(new Date());
 		payOrderMapper.insert(payorder);
 	}

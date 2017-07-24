@@ -11,9 +11,12 @@ public class UserOrderResult implements Serializable {
 
 	private String userOrderId;
 	private String payId;
-	private Double totalprice;
-	private Double postage;
-	private Double orderTotalPrice;
+	private Double totalprice;//订单产品金额
+	private Double postage;//邮费
+	private Double orderTotalPrice;//实付金额 包括现金支付
+	private Double disAmount;//优惠金额
+	private Double walletAmount;//钱包支付
+	private Double cashAmount;//现金支付
 	private Integer status;
 	private Long branchUserId;
 	private String remark;
@@ -174,6 +177,30 @@ public class UserOrderResult implements Serializable {
 
 	public void setExpressCode(String expressCode) {
 		this.expressCode = expressCode;
+	}
+
+	public Double getDisAmount() {
+		return disAmount;
+	}
+
+	public Double getWalletAmount() {
+		return walletAmount;
+	}
+
+	public Double getCashAmount() {
+		return cashAmount;
+	}
+
+	public void setDisAmount(Double disAmount) {
+		this.disAmount = disAmount;
+	}
+
+	public void setWalletAmount(Double walletAmount) {
+		this.walletAmount = walletAmount;
+	}
+
+	public void setCashAmount(Double cashAmount) {
+		this.cashAmount = cashAmount;
 	}
 	
 	

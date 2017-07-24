@@ -834,6 +834,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 							PMyproducttemp temp = tempMapper.selectByPrimaryKey(item.getTempid());
 							if (temp != null && temp.getTitle() != null) {
 								item.setTempTitle(temp.getTitle());
+								item.setStyleid(temp.getStyleid());
 							}
 						}else{
 							if(inviteusers!=null){
@@ -908,6 +909,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					item.setActiveStatus(apply.getStatus());
 					item.setAddress(apply.getAdress());
 					item.setSort(apply.getSort());
+					if(apply.getStyleid()!=null&&apply.getStyleid()>0){
+						item.setStyleid(apply.getStyleid());
+					}
 				}else{
 					if(item.getCount()<12){
 						//制作中

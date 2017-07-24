@@ -153,7 +153,7 @@ public class OrderProductController extends SSOController {
 					//得到用户的可减免的账户金额
 					UAccounts accounts=accountsMapper.selectByPrimaryKey(user.getUserId());
 					if(accounts!=null){
-						map.put("redAmount", accounts.getAvailableamount()==null?0:accounts.getAvailableamount());
+						map.put("walletAmount", accounts.getAvailableamount()==null?0:accounts.getAvailableamount());
 					}
 					
 					rq.setBasemodle(map);

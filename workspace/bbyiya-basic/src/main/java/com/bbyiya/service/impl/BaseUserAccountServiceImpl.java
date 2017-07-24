@@ -169,7 +169,33 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 	}
 	
 	/**
-	 * 冻结金额账户的收支记录
+	 * 使用红包将钱转移到冻结账户
+	 * @param userId
+	 * @param totalpricce
+	 * @return
+	 * @throws Exception
+	 */
+	public Double transferCashAccountsToFreeze(long userId,Double totalPrice)throws Exception{
+		UAccounts accounts=accountsMapper.selectByPrimaryKey(userId);
+		Double walletAmount=0.0;
+		if(accounts!=null){
+			if(accounts.getAvailableamount()==null){
+				accounts.setAvailableamount(0.0);
+			}
+			if(accounts.getFreezecashamount()==null){
+				accounts.setFreezecashamount(0.0);
+			}
+			walletAmount=(totalPrice>accounts.getAvailableamount())? accounts.getAvailableamount():totalPrice;
+			//把红包转移到冻结金额
+			accounts.setFreezecashamount(accounts.getFreezecashamount()+walletAmount);
+			accounts.setAvailableamount(accounts.getAvailableamount()-walletAmount);
+			accountsMapper.updateByPrimaryKey(accounts);
+			
+		}
+		return walletAmount;
+	}
+	/**
+	 * 消费冻结金额
 	 * @param userId
 	 * @param type
 	 * @param amount

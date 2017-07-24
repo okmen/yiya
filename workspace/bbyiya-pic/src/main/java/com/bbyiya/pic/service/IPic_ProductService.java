@@ -37,6 +37,12 @@ public interface IPic_ProductService {
 	 */
 	ReturnModel getMyProductInfoNew(long userId,long cartId);
 	/**
+	 * 众筹页详情
+	 * @param cartId
+	 * @return
+	 */
+	ReturnModel getPublicFincingInfo(long cartId);
+	/**
 	 * 作品详情 - 通过userId，productId 获取编辑作品详情
 	 * @param userId
 	 * @param productId

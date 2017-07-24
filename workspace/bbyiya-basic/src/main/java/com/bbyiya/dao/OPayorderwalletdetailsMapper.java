@@ -1,5 +1,9 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.OPayorderwalletdetails;
 
 public interface OPayorderwalletdetailsMapper {
@@ -14,4 +18,6 @@ public interface OPayorderwalletdetailsMapper {
     int updateByPrimaryKeySelective(OPayorderwalletdetails record);
 
     int updateByPrimaryKey(OPayorderwalletdetails record);
+    
+    List<OPayorderwalletdetails> findWalletsByCartId(@Param("cartId")Long cartId);
 }

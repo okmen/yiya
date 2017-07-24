@@ -1098,6 +1098,15 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				if((orderTotalPrice==null||payorder.getTotalprice()==null||orderTotalPrice.doubleValue()!=payorder.getTotalprice().doubleValue())){//预付单过期
 					isNew =true;
 				}
+				//是否使用红包支付
+				if(payorder.getWalletamount()!=null&&payorder.getWalletamount().doubleValue()>0){
+					UAccounts userAccounts=accountsMapper.selectByPrimaryKey(payorder.getUserid());
+					double freeAccount=userAccounts==null?0:(userAccounts.getFreezecashamount()==null?0:userAccounts.getFreezecashamount().doubleValue());
+					if(freeAccount<payorder.getWalletamount().doubleValue()){
+						isNew=true;
+						payorder.setWalletamount(freeAccount);
+					}
+				}
 				if(isNew){
 					OPayorder payorderNew = new OPayorder();
 					payorderNew.setPayid(GenUtils.getOrderNo(payorder.getUserid()));
@@ -1105,6 +1114,8 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					payorderNew.setUserid(payorder.getUserid());
 					payorderNew.setPaytype(payorder.getPaytype());
 					payorderNew.setTotalprice(orderTotalPrice);
+					payorderNew.setWalletamount(payorder.getWalletamount());
+					payorderNew.setCashamount(orderTotalPrice-(payorder.getWalletamount()==null?0d:payorder.getWalletamount().doubleValue()));  
 					payorderNew.setStatus(payorder.getStatus());
 					payorderNew.setOrdertype(payorder.getOrdertype());
 					payorderNew.setCreatetime(new Date());
@@ -1271,7 +1282,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		OUserorders userorders=userOrdersMapper.selectByPrimaryKey(userOrderId);
 		if(userorders!=null){
 			OPayorder orderInfo=payOrderMapper.selectByPrimaryKey(userorders.getPayid());
-			if(userorders.getStatus()!=null&&userorders.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())&&orderInfo!=null){
+			if(userorders.getStatus()!=null&&userorders.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())&&orderInfo!=null){							
 				OPayorder payNew=getPayOrderNew(orderInfo, userorders.getOrdertotalprice());
 				if(payNew!=null){
 					userorders.setPayid(payNew.getPayid()); 
@@ -1281,8 +1292,8 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				if(orderInfo.getStatus()!=null&&orderInfo.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
 					Map<String, Object> map=new HashMap<String, Object>();
 					map.put("payId", userorders.getPayid());
-					map.put("totalPrice", orderInfo.getTotalprice());
-					rq.setStatu(ReturnStatus.Success);
+					map.put("totalPrice", orderInfo.getTotalprice().doubleValue()-(orderInfo.getWalletamount()==null?0d:orderInfo.getWalletamount().doubleValue()));
+					rq.setStatu(ReturnStatus.Success); 
 					rq.setBasemodle(map);
 				}else {
 					rq.setStatu(ReturnStatus.SystemError);

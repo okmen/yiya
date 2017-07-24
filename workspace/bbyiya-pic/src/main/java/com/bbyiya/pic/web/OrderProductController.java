@@ -19,15 +19,10 @@ import com.bbyiya.dao.PProductsMapper;
 import com.bbyiya.dao.PProductstyleexpMapper;
 import com.bbyiya.dao.PProductstylesMapper;
 import com.bbyiya.dao.UAccountsMapper;
-import com.bbyiya.enums.AccountLogType;
 import com.bbyiya.enums.ReturnStatus;
-import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.DMyproductdiscountmodel;
 import com.bbyiya.model.PMyproducts;
-import com.bbyiya.model.PMyproductsinvites;
-import com.bbyiya.model.PMyproducttemp;
-import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.model.PProducts;
 import com.bbyiya.model.PProductstyleexp;
 import com.bbyiya.model.PProductstyles;
@@ -153,7 +148,7 @@ public class OrderProductController extends SSOController {
 					//得到用户的可减免的账户金额
 					UAccounts accounts=accountsMapper.selectByPrimaryKey(user.getUserId());
 					if(accounts!=null){
-						map.put("redAmount", accounts.getAvailableamount()==null?0:accounts.getAvailableamount());
+						map.put("walletAmount", accounts.getAvailableamount()==null?0:accounts.getAvailableamount());
 					}
 					
 					rq.setBasemodle(map);

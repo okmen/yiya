@@ -20,6 +20,13 @@
     from o_payorderwalletdetails
     where PayId = #{payid,jdbcType=VARCHAR}
   </select>
+  <select id="findWalletsByCartId" resultMap="BaseResultMap"  ><!-- 获取众筹金额列表  -->
+    select 
+    <include refid="Base_Column_List" />
+    from o_payorderwalletdetails
+    where CartId = #{cartId,jdbcType=BIGINT} order by  PayTime desc 
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from o_payorderwalletdetails
     where PayId = #{payid,jdbcType=VARCHAR}

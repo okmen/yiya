@@ -68,4 +68,13 @@ public interface IBaseUserAccountService {
 	 */
 	boolean add_FreezeCashAccountsLog(long userId, int type, Double amount,
 			String PayId, String transOrderId) throws Exception;
+	
+	/**
+	 * 使用红包将钱转移到冻结账户
+	 * @param userId
+	 * @param totalPrice
+	 * @throws Exception
+	 */
+	Double transferCashAccountsToFreeze(long userId, Double totalPrice)
+			throws Exception;
 }

@@ -351,8 +351,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 									userOrder.setOrdertotalprice(orderTotalPrice); 
 								}
 								
-								//add at 2017-07-21 by julie得到可减免的红包金额得到可减免的红包金额
-								//得到可减免的钱包金额
+								//add at 2017-07-21 by julie得到可减免的红包金额转移到冻结账户
 								walletAmount=accountService.transferCashAccountsToFreeze(userOrder.getUserid(),orderTotalPrice);
 							}
 						}
@@ -540,8 +539,28 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 								param.setAgentUserId(branches.getAgentuserid());
 								//double totalprice=(style.getPrice()* param.getCount())/3;
 								double totalprice = style.getAgentprice() * param.getCount();
+								
+								//*************add by julie at 2017-07-24****************************/
+								Double walletAmount=0.0;
+								Double cashAmount=totalprice;//再需支付的现金金额
+								
+								PMyproducts mycart= myproductMapper.selectByPrimaryKey(oproduct.getCartid());
+								if(mycart!=null&&mycart.getTempid()!=null){					
+									PMyproducttemp temp=tempMapper.selectByPrimaryKey(mycart.getTempid());
+									PMyproducttempapply tempapply=tempApplyMapper.getMyProducttempApplyByCartId(oproduct.getCartid());
+									List<PMyproductsinvites> inviteslist=myinviteMapper.findListByCartId(oproduct.getCartid());
+									Long inviteuserid=null;
+									if(inviteslist!=null&&inviteslist.size()>0){
+										inviteuserid=inviteslist.get(0).getInviteuserid();
+									}
+									if(inviteuserid!=null&&inviteuserid.longValue()>0&&tempapply!=null&&tempapply.getStatus().intValue()==Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString())&&temp!=null&&temp.getAmountlimit()!=null&&temp.getAmountlimit()>0){
+										walletAmount=temp.getAmountlimit();
+										cashAmount=totalprice-walletAmount;
+									}
+								}
+								//*************End****************************/
 								UAccounts accounts = accountsMapper.selectByPrimaryKey(branches.getBranchuserid());
-								if(accounts==null||accounts.getAvailableamount() == null|| accounts.getAvailableamount() <totalprice){
+								if(accounts==null||accounts.getAvailableamount() == null|| accounts.getAvailableamount() <cashAmount){
 									rq.setStatu(ReturnStatus.CashError);
 									rq.setStatusreson("影楼账户余额不足，无法下单！请通知管理员进行充值，以免影响您的业务！");
 									return rq;
@@ -694,22 +713,12 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 								userOrder_Repeat.setOrdertotalprice(orderTotalPrice);// 订单总价
 							}
 							
-							//add at 2017-07-21 by julie 得到可支付的红包金额
+							//add at 2017-07-21 by julie 得到可支付的红包金额转移到冻结金额
 							Double walletAmount=accountService.transferCashAccountsToFreeze(userId,orderTotalPrice);
 							
 							addPayOrder(userId, payId, payId, orderTotalPrice,walletAmount); // 插入支付订单记录
 						}
 						
-//						for (OOrderproductdetails dd : details) {
-//							OOrderproductdetails det=new OOrderproductdetails();
-//							det.setOrderproductid(orderProduct.getOrderproductid());
-//							det.setBackimageurl(dd.getBackimageurl());
-//							det.setCreatetime(new Date());
-//							det.setImageurl(dd.getImageurl());
-//							det.setPosition(dd.getPosition());
-//							det.setPrintno(dd.getPrintno());
-//							odetailMapper.insert(det);
-//						}
 						for (OOrderproductphotos ph : photos) {
 							OOrderproductphotos phpt=new OOrderproductphotos();
 							phpt.setContent(ph.getContent());
@@ -803,13 +812,33 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			UUsers users=usersMapper.selectByPrimaryKey(param.getUserId());
 			if(users!=null){
 				if(orderType==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){//影楼订单
+					
 					UBranchusers branchusers= branchusersMapper.selectByPrimaryKey(param.getUserId());
 					if(branchusers!=null&&branchusers.getBranchuserid()!=null) {
 						UBranches branches=branchesMapper.selectByPrimaryKey(branchusers.getBranchuserid());
 						if(branches!=null&&branches.getStatus()!=null&&branches.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.ok.toString())){
-							double totalprice=(style.getPrice()*count)/3;
+							double totalprice=(style.getAgentprice()*count);
+							//double totalprice=(style.getPrice()*count)/3;
+							//*************add by julie at 2017-07-24****************************/
+							Double walletAmount=0.0;
+							Double cashAmount=totalprice;//再需支付的现金金额
+							if(mycart!=null&&mycart.getTempid()!=null){					
+								PMyproducttemp temp=tempMapper.selectByPrimaryKey(mycart.getTempid());
+								PMyproducttempapply tempapply=tempApplyMapper.getMyProducttempApplyByCartId(param.getCartId());
+								List<PMyproductsinvites> inviteslist=myinviteMapper.findListByCartId(param.getCartId());
+								Long inviteuserid=null;
+								if(inviteslist!=null&&inviteslist.size()>0){
+									inviteuserid=inviteslist.get(0).getInviteuserid();
+								}
+								if(inviteuserid!=null&&inviteuserid.longValue()>0&&tempapply!=null&&tempapply.getStatus().intValue()==Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString())&&temp!=null&&temp.getAmountlimit()!=null&&temp.getAmountlimit()>0){
+									walletAmount=temp.getAmountlimit();
+									cashAmount=totalprice-walletAmount;
+								}
+							}
+							//*************End****************************/
+							
 							UAccounts accounts= accountsMapper.selectByPrimaryKey(branches.getBranchuserid());
-							if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount().doubleValue()>=totalprice){
+							if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount().doubleValue()>=cashAmount){
 								 rq.setStatu(ReturnStatus.Success);
 								 param.setBranchUserId(branches.getBranchuserid());
 								 param.setAgentUserId(branches.getAgentuserid()); 

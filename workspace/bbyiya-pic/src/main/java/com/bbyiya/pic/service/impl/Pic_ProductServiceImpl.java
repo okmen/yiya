@@ -142,6 +142,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	@Autowired
 	private IPic_OrderMgtDao orderDao;
 	
+	@Autowired
+	private OPayorderwalletdetailsMapper walletdetailsMapper;
+	
 	@Resource(name = "baseUserAddressServiceImpl")
 	private IBaseUserAddressService baseAddressService;
 	//优惠信息
@@ -1055,16 +1058,27 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		return rq;
 	}
 	
-	@Autowired
-	private OPayorderwalletdetailsMapper walletdetailsMapper;
+
 	
 	public ReturnModel getPublicFincingInfo(long cartId){
+		
 		ReturnModel rq=new ReturnModel();
 		Map<String, Object> map=new HashMap<String, Object>();
+		//返回结果类
 		PublicFinacingMyPro pro=new PublicFinacingMyPro();
-		List<MyProductsDetailsResult> detailsList = mydetailDao.findMyProductDetailsResult(cartId);
-		if(detailsList!=null&&detailsList.size()>0){
-			pro.setHeadImg(detailsList.get(0).getImgurl()) ;
+		//作品图片
+		String headImgKey= ConfigUtil.getSingleValue("currentRedisKey-Base")+"_HEADIMG_KEY_" +cartId;
+		String ImgDefault=RedisUtil.getString(headImgKey);
+		if(!ObjectUtil.isEmpty(ImgDefault)){
+			pro.setHeadImg(ImgDefault);
+		}else {
+			List<MyProductsDetailsResult> detailsList = mydetailDao.findMyProductDetailsResult(cartId);
+			if(detailsList!=null&&detailsList.size()>0){
+				pro.setHeadImg(detailsList.get(0).getImgurl()) ;
+				RedisUtil.setString(headImgKey, detailsList.get(0).getImgurl(), 600); 
+			}else {//默认封面
+				pro.setHeadImg("http://pic.bbyiya.com/484983733454448354.png");
+			}
 		}
 		PMyproducttempapply apply=tempapplyMapper.getMyProducttempApplyByCartId(cartId);
 		if(apply!=null&&apply.getStyleid()!=null&&apply.getProductid()!=null){
@@ -1072,13 +1086,26 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			if(temp!=null){
 				pro.setAmountLimit(temp.getAmountlimit()) ;
 			}
+			//款式
 			PProductstyles style = styleMapper.selectByPrimaryKey(apply.getStyleid()); 
 			if(style!=null){
 				pro.setPrice( style.getPrice()) ;
 			}
+			//相册 -阶段
 			PProducts products=productsMapper.selectByPrimaryKey(apply.getProductid());
 			if(products!=null){
 				pro.setTitle( products.getTitle());
+			}
+			if (apply.getStatus()!=null&&(apply.getStatus().intValue()==Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString())||
+					apply.getStatus().intValue()==Integer.parseInt(MyProducttempApplyStatusEnum.pass.toString()))) {
+				pro.setPublicAmountNeed(0d);
+			}else {
+				UAccounts accounts=accountsMapper.selectByPrimaryKey(apply.getUserid());
+				if(accounts!=null){
+					pro.setPublicAmountNeed(temp.getAmountlimit().doubleValue()-(accounts.getAvailableamount()==null?0d:accounts.getAvailableamount().doubleValue()));
+				}else {
+					pro.setPublicAmountNeed(temp.getAmountlimit());
+				} 
 			}
 		}
 		map.put("pro", pro);

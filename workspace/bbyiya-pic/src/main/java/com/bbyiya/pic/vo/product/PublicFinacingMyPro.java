@@ -9,6 +9,7 @@ public class PublicFinacingMyPro implements Serializable{
 	private Double amountLimit;
 	private Double price;
 	private String title;
+	private Double publicAmountNeed;
 	public String getHeadImg() {
 		return headImg;
 	}
@@ -32,6 +33,12 @@ public class PublicFinacingMyPro implements Serializable{
 	}
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	public Double getPublicAmountNeed() {
+		return publicAmountNeed;
+	}
+	public void setPublicAmountNeed(Double publicAmountNeed) {
+		this.publicAmountNeed = publicAmountNeed;
 	}
 	
 	

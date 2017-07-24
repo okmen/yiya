@@ -16,8 +16,10 @@ public class OPayorderwalletdetails {
     private Date paytime;
 
     private Long cartid;
-    
+
     private Integer status;
+
+    private String nickname;
 
     public String getPayid() {
         return payid;
@@ -75,12 +77,19 @@ public class OPayorderwalletdetails {
         this.cartid = cartid;
     }
 
-	public Integer getStatus() {
-		return status;
-	}
+    public Integer getStatus() {
+        return status;
+    }
 
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
-    
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname == null ? null : nickname.trim();
+    }
 }

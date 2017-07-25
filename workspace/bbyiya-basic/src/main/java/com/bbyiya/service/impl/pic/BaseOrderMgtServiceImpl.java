@@ -332,6 +332,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					orderTotalPrice+=param.getPostPrice();
 					userOrder.setOrdertotalprice(orderTotalPrice);//订单总价 
 				}
+				Double walletAmount=0.0;
 				//是否优惠购买
 				if(userOrder.getUserid()!=null&&param.getCartId()!=null){
 					List<DMyproductdiscountmodel> dislit=discountService.findMycartDiscount(userOrder.getUserid(), param.getCartId());
@@ -344,36 +345,15 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 									userOrder.setOrdertotalprice(orderTotalPrice); 
 								}
 								
-								//得到可减免的红包金额
-								UAccounts accounts=accountsMapper.selectByPrimaryKey(userOrder.getUserid());
-								if(accounts!=null){
-									double redAmount=0.0;
-									if(accounts.getAvailableamount()==null){
-										accounts.setAvailableamount(0.0);
-									}
-									if(accounts.getFreezecashamount()==null){
-										accounts.setFreezecashamount(0.0);
-									}
-									if(orderTotalPrice>accounts.getAvailableamount()){
-										redAmount=accounts.getAvailableamount();
-										
-									}else{
-										redAmount=orderTotalPrice;
-									}
-									//把红包转移到冻结金额
-									accounts.setFreezecashamount(accounts.getFreezecashamount()+redAmount);
-									accounts.setAvailableamount(accounts.getAvailableamount()-redAmount);
-									accountsMapper.updateByPrimaryKey(accounts);
-									userOrder.setOrdertotalprice(orderTotalPrice-redAmount);
-								}
-								
+								//add at 2017-07-21 by julie得到可减免的红包金额转移到冻结账户
+								walletAmount=accountService.transferCashAccountsToFreeze(userOrder.getUserid(),orderTotalPrice);
 							}
 						}
 					}
 				}
 				
 				// 插入支付订单记录
-				addPayOrder(param.getUserId(), payId, payId, orderTotalPrice);
+				addPayOrder(param.getUserId(), payId, payId, orderTotalPrice,walletAmount);
 				// 插入客户记录------------------------------------------------------
 				if(userOrder.getAgentuserid()!=null&&userOrder.getAgentuserid()>0){
 					UUsers users=usersMapper.selectByPrimaryKey(userOrder.getUserid());
@@ -553,8 +533,28 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 								param.setAgentUserId(branches.getAgentuserid());
 								//double totalprice=(style.getPrice()* param.getCount())/3;
 								double totalprice = style.getAgentprice() * param.getCount();
+								
+								//*************add by julie at 2017-07-24****************************/
+								Double walletAmount=0.0;
+								Double cashAmount=totalprice;//再需支付的现金金额
+								
+								PMyproducts mycart= myproductMapper.selectByPrimaryKey(oproduct.getCartid());
+								if(mycart!=null&&mycart.getTempid()!=null){					
+									PMyproducttemp temp=tempMapper.selectByPrimaryKey(mycart.getTempid());
+									PMyproducttempapply tempapply=tempApplyMapper.getMyProducttempApplyByCartId(oproduct.getCartid());
+									List<PMyproductsinvites> inviteslist=myinviteMapper.findListByCartId(oproduct.getCartid());
+									Long inviteuserid=null;
+									if(inviteslist!=null&&inviteslist.size()>0){
+										inviteuserid=inviteslist.get(0).getInviteuserid();
+									}
+									if(inviteuserid!=null&&inviteuserid.longValue()>0&&tempapply!=null&&tempapply.getStatus().intValue()==Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString())&&temp!=null&&temp.getAmountlimit()!=null&&temp.getAmountlimit()>0){
+										walletAmount=temp.getAmountlimit();
+										cashAmount=totalprice-walletAmount;
+									}
+								}
+								//*************End****************************/
 								UAccounts accounts = accountsMapper.selectByPrimaryKey(branches.getBranchuserid());
-								if(accounts==null||accounts.getAvailableamount() == null|| accounts.getAvailableamount() <totalprice){
+								if(accounts==null||accounts.getAvailableamount() == null|| accounts.getAvailableamount() <cashAmount){
 									rq.setStatu(ReturnStatus.CashError);
 									rq.setStatusreson("影楼账户余额不足，无法下单！请通知管理员进行充值，以免影响您的业务！");
 									return rq;
@@ -707,42 +707,12 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 								userOrder_Repeat.setOrdertotalprice(orderTotalPrice);// 订单总价
 							}
 							
-							//得到可减免的红包金额
-							UAccounts accounts=accountsMapper.selectByPrimaryKey(userId);
-							if(accounts!=null){
-								double redAmount=0.0;
-								if(accounts.getAvailableamount()==null){
-									accounts.setAvailableamount(0.0);
-								}
-								if(accounts.getFreezecashamount()==null){
-									accounts.setFreezecashamount(0.0);
-								}
-								if(orderTotalPrice>accounts.getAvailableamount()){
-									redAmount=accounts.getAvailableamount();
-									
-								}else{
-									redAmount=orderTotalPrice;
-								}
-								//把红包转移到冻结金额
-								accounts.setFreezecashamount(accounts.getFreezecashamount()+redAmount);
-								accounts.setAvailableamount(accounts.getAvailableamount()-redAmount);
-								accountsMapper.updateByPrimaryKey(accounts);
-								userOrder_Repeat.setOrdertotalprice(orderTotalPrice-redAmount);
-							}
+							//add at 2017-07-21 by julie 得到可支付的红包金额转移到冻结金额
+							Double walletAmount=accountService.transferCashAccountsToFreeze(userId,orderTotalPrice);
 							
-							addPayOrder(userId, payId, payId, orderTotalPrice); // 插入支付订单记录
+							addPayOrder(userId, payId, payId, orderTotalPrice,walletAmount); // 插入支付订单记录
 						}
 						
-//						for (OOrderproductdetails dd : details) {
-//							OOrderproductdetails det=new OOrderproductdetails();
-//							det.setOrderproductid(orderProduct.getOrderproductid());
-//							det.setBackimageurl(dd.getBackimageurl());
-//							det.setCreatetime(new Date());
-//							det.setImageurl(dd.getImageurl());
-//							det.setPosition(dd.getPosition());
-//							det.setPrintno(dd.getPrintno());
-//							odetailMapper.insert(det);
-//						}
 						for (OOrderproductphotos ph : photos) {
 							OOrderproductphotos phpt=new OOrderproductphotos();
 							phpt.setContent(ph.getContent());
@@ -836,13 +806,33 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			UUsers users=usersMapper.selectByPrimaryKey(param.getUserId());
 			if(users!=null){
 				if(orderType==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){//影楼订单
+					
 					UBranchusers branchusers= branchusersMapper.selectByPrimaryKey(param.getUserId());
 					if(branchusers!=null&&branchusers.getBranchuserid()!=null) {
 						UBranches branches=branchesMapper.selectByPrimaryKey(branchusers.getBranchuserid());
 						if(branches!=null&&branches.getStatus()!=null&&branches.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.ok.toString())){
-							double totalprice=(style.getPrice()*count)/3;
+							double totalprice=(style.getAgentprice()*count);
+							//double totalprice=(style.getPrice()*count)/3;
+							//*************add by julie at 2017-07-24****************************/
+							Double walletAmount=0.0;
+							Double cashAmount=totalprice;//再需支付的现金金额
+							if(mycart!=null&&mycart.getTempid()!=null){					
+								PMyproducttemp temp=tempMapper.selectByPrimaryKey(mycart.getTempid());
+								PMyproducttempapply tempapply=tempApplyMapper.getMyProducttempApplyByCartId(param.getCartId());
+								List<PMyproductsinvites> inviteslist=myinviteMapper.findListByCartId(param.getCartId());
+								Long inviteuserid=null;
+								if(inviteslist!=null&&inviteslist.size()>0){
+									inviteuserid=inviteslist.get(0).getInviteuserid();
+								}
+								if(inviteuserid!=null&&inviteuserid.longValue()>0&&tempapply!=null&&tempapply.getStatus().intValue()==Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString())&&temp!=null&&temp.getAmountlimit()!=null&&temp.getAmountlimit()>0){
+									walletAmount=temp.getAmountlimit();
+									cashAmount=totalprice-walletAmount;
+								}
+							}
+							//*************End****************************/
+							
 							UAccounts accounts= accountsMapper.selectByPrimaryKey(branches.getBranchuserid());
-							if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount().doubleValue()>=totalprice){
+							if(accounts!=null&&accounts.getAvailableamount()!=null&&accounts.getAvailableamount().doubleValue()>=cashAmount){
 								 rq.setStatu(ReturnStatus.Success);
 								 param.setBranchUserId(branches.getBranchuserid());
 								 param.setAgentUserId(branches.getAgentuserid()); 
@@ -1004,7 +994,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 						return rq;
 					}
 				}
-				addPayOrder(userId, payId, payId, totalPrice_pay); // 插入支付订单记录
+				addPayOrder(userId, payId, payId, totalPrice_pay,0.0); // 插入支付订单记录
 				rq.setStatu(ReturnStatus.Success);
 				Map<String, Object> mapResult = new HashMap<String, Object>();
 				mapResult.put("payId", payId);
@@ -1092,15 +1082,6 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				if((orderTotalPrice==null||payorder.getTotalprice()==null||orderTotalPrice.doubleValue()!=payorder.getTotalprice().doubleValue())){//预付单过期
 					isNew =true;
 				}
-				//是否使用红包支付
-				if(payorder.getWalletamount()!=null&&payorder.getWalletamount().doubleValue()>0){
-					UAccounts userAccounts=accountsMapper.selectByPrimaryKey(payorder.getUserid());
-					double freeAccount=userAccounts==null?0:(userAccounts.getFreezecashamount()==null?0:userAccounts.getFreezecashamount().doubleValue());
-					if(freeAccount<payorder.getWalletamount().doubleValue()){
-						isNew=true;
-						payorder.setWalletamount(freeAccount);
-					}
-				}
 				if(isNew){
 					OPayorder payorderNew = new OPayorder();
 					payorderNew.setPayid(GenUtils.getOrderNo(payorder.getUserid()));
@@ -1108,8 +1089,6 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					payorderNew.setUserid(payorder.getUserid());
 					payorderNew.setPaytype(payorder.getPaytype());
 					payorderNew.setTotalprice(orderTotalPrice);
-					payorderNew.setWalletamount(payorder.getWalletamount());
-					payorderNew.setCashamount(orderTotalPrice-(payorder.getWalletamount()==null?0d:payorder.getWalletamount().doubleValue()));  
 					payorderNew.setStatus(payorder.getStatus());
 					payorderNew.setOrdertype(payorder.getOrdertype());
 					payorderNew.setCreatetime(new Date());
@@ -1239,7 +1218,17 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			if(!ObjectUtil.isEmpty(orderInfo.getPaytime())){ 
 				model.setPayTimeStr(DateUtil.getTimeStr(orderInfo.getPaytime(), "yyyy-MM-dd HH:mm:ss")); 
 			}
-			model.setPayType(orderInfo.getPaytype()); 
+			model.setPayType(orderInfo.getPaytype());
+			if(!ObjectUtil.isEmpty(orderInfo.getPayid())){
+				OPayorder payorder=payOrderMapper.selectByPrimaryKey(orderInfo.getPayid());
+				if(payorder!=null){
+					//Ordertotalprice=totalprice+Postage-disAmount
+					model.setCashAmount(payorder.getCashamount());
+					model.setWalletAmount(payorder.getWalletamount());
+					model.setDisAmount(orderInfo.getTotalprice()+(orderInfo.getPostage()==null?0d:orderInfo.getPostage())-orderInfo.getOrdertotalprice());				
+				}
+			}
+			
 			List<OOrderproducts> proList = oproductMapper.findOProductsByOrderId(orderInfo.getUserorderid());
 			model.setProlist(proList);
 			OOrderaddress addr= orderaddressMapper.selectByPrimaryKey(orderInfo.getOrderaddressid());
@@ -1276,7 +1265,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		OUserorders userorders=userOrdersMapper.selectByPrimaryKey(userOrderId);
 		if(userorders!=null){
 			OPayorder orderInfo=payOrderMapper.selectByPrimaryKey(userorders.getPayid());
-			if(userorders.getStatus()!=null&&userorders.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())&&orderInfo!=null){							
+			if(userorders.getStatus()!=null&&userorders.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())&&orderInfo!=null){
 				OPayorder payNew=getPayOrderNew(orderInfo, userorders.getOrdertotalprice());
 				if(payNew!=null){
 					userorders.setPayid(payNew.getPayid()); 
@@ -1286,8 +1275,8 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				if(orderInfo.getStatus()!=null&&orderInfo.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
 					Map<String, Object> map=new HashMap<String, Object>();
 					map.put("payId", userorders.getPayid());
-					map.put("totalPrice", orderInfo.getTotalprice().doubleValue()-(orderInfo.getWalletamount()==null?0d:orderInfo.getWalletamount().doubleValue()));
-					rq.setStatu(ReturnStatus.Success); 
+					map.put("totalPrice", orderInfo.getTotalprice());
+					rq.setStatu(ReturnStatus.Success);
 					rq.setBasemodle(map);
 				}else {
 					rq.setStatu(ReturnStatus.SystemError);
@@ -1310,13 +1299,15 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	 * @param payId
 	 * @param totalPrice
 	 */
-	public void addPayOrder(Long userId, String payId, String userOrderId, Double totalPrice) {
+	public void addPayOrder(Long userId, String payId, String userOrderId, Double totalPrice,Double walletAmount) {
 		OPayorder payorder = new OPayorder();
 		payorder.setPayid(payId);
 		payorder.setUserorderid(userOrderId);
 		payorder.setUserid(userId);
 		payorder.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
 		payorder.setTotalprice(totalPrice);
+		payorder.setWalletamount(walletAmount);
+		payorder.setCashamount(totalPrice.doubleValue()-walletAmount.doubleValue());
 		payorder.setCreatetime(new Date());
 		payOrderMapper.insert(payorder);
 	}

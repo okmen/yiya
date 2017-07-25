@@ -288,8 +288,16 @@ public class YiyeMgtController  extends SSOController {
 						apply.setCreatetime(new Date());
 						apply.setCompanyuserid(param.getSubUserId());
 						apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.apply.toString()));
-						apply.setStyleid(param.getStyleId());
-						apply.setProductid(param.getProductId());
+						if(param.getStyleId()!=null&&param.getStyleId()>0){
+							apply.setStyleid(param.getStyleId());
+							apply.setProductid(param.getProductId());
+						}else{
+							if(temp.getStyleid()!=null&&temp.getStyleid()>0){
+								apply.setStyleid(temp.getStyleid());
+								apply.setProductid(myproducts.getProductid());
+							}
+						}
+						
 						//异业模板 申请人数+1
 						temp.setApplycount(temp.getApplycount()==null?1:temp.getApplycount()+1);
 						tempMapper.updateByPrimaryKeySelective(temp); 

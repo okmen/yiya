@@ -204,7 +204,7 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 			
 		}
 		return walletAmount;
-	} 
+	}
 	/**
 	 * 消费冻结金额
 	 * @param userId

@@ -14,8 +14,10 @@ public class UAccountslogs {
     private String orderid;
 
     private Date createtime;
-    
+    /*--------------------自定义字段-------------------------*/
     private String createtimestr;
+    private String headImg;
+	private String nickName;
 
     public Long getLogid() {
         return logid;
@@ -71,6 +73,22 @@ public class UAccountslogs {
 
 	public void setCreatetimestr(String createtimestr) {
 		this.createtimestr = createtimestr;
+	}
+
+	public String getHeadImg() {
+		return headImg;
+	}
+
+	public void setHeadImg(String headImg) {
+		this.headImg = headImg;
+	}
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
 	}
     
 }

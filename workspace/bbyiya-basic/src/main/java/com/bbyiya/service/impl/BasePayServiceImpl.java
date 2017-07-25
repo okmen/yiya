@@ -15,10 +15,12 @@ import com.bbyiya.dao.OOrderproductdetailsMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.OPayorderextMapper;
+import com.bbyiya.dao.OPayorderwalletdetailsMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PProductstyleexpMapper;
 import com.bbyiya.dao.PProductstylesMapper;
 import com.bbyiya.dao.UAccountsMapper;
+import com.bbyiya.dao.UAccountslogsMapper;
 import com.bbyiya.dao.UBranchtransaccountsMapper;
 import com.bbyiya.dao.UBranchtransamountlogMapper;
 import com.bbyiya.dao.UCashlogsMapper;
@@ -27,6 +29,7 @@ import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.AccountLogType;
 import com.bbyiya.enums.AmountType;
 import com.bbyiya.enums.OrderStatusEnum;
+import com.bbyiya.enums.PayOrderStatusEnums;
 import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.PayTypeEnum;
 import com.bbyiya.model.EErrors;
@@ -34,10 +37,12 @@ import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.OPayorderext;
+import com.bbyiya.model.OPayorderwalletdetails;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PProductstyleexp;
 import com.bbyiya.model.PProductstyles;
 import com.bbyiya.model.UAccounts;
+import com.bbyiya.model.UAccountslogs;
 import com.bbyiya.model.UBranchtransaccounts;
 import com.bbyiya.model.UBranchtransamountlog;
 import com.bbyiya.model.UCashlogs;
@@ -64,7 +69,8 @@ public class BasePayServiceImpl implements IBasePayService{
 	
 	@Autowired
 	private OPayorderextMapper oextMapper;
-	
+	@Autowired
+	private OPayorderwalletdetailsMapper owalletMapper;
 
 	/*------------------------用户信息模块----------------------------------*/
 	@Autowired
@@ -94,7 +100,8 @@ public class BasePayServiceImpl implements IBasePayService{
 	
 	@Resource(name = "baseUserAccountService")
 	private IBaseUserAccountService accountService;
-	
+	@Autowired
+	private UAccountslogsMapper accountslogsMapper;
 	
 	/**
 	 * 订单支付成功 回写
@@ -107,61 +114,23 @@ public class BasePayServiceImpl implements IBasePayService{
 					int orderType=payOrder.getOrdertype()==null?0:payOrder.getOrdertype();
 					/*-------------------------代理商货款充值-----------------------------------------------------*/
 					if(orderType==Integer.parseInt(PayOrderTypeEnum.chongzhi.toString())) {
-//						UCashlogs log=new UCashlogs();
-//						log.setAmount(payOrder.getTotalprice());
-//						log.setUserid(payOrder.getUserid());
-//						log.setPayid(payId);
-//						log.setUsetype(Integer.parseInt(AmountType.get.toString()));//充值
-//						log.setCreatetime(new Date());
-//						cashlogsMapper.insert(log);
-//						UCashlogs freeLog=new UCashlogs();
-//						freeLog.setAmount(payOrder.getTotalprice()*2);
-//						freeLog.setUserid(payOrder.getUserid());
-//						freeLog.setPayid(payId);
-//						freeLog.setUsetype(Integer.parseInt(AmountType.free.toString()));//充值
-//						freeLog.setCreatetime(new Date());
-//						cashlogsMapper.insert(freeLog);
-//						//充值 金额 = 实际金额*3 
-//						Double totalPriceTemp=payOrder.getTotalprice()*3;
-//						UAccounts accounts=accountsMapper.selectByPrimaryKey(payOrder.getUserid());
-//						if(accounts!=null){
-//							accounts.setAvailableamount(accounts.getAvailableamount()+totalPriceTemp);
-//							accountsMapper.updateByPrimaryKeySelective(accounts);
-//						}else {
-//							accounts=new UAccounts();
-//							accounts.setUserid(payOrder.getUserid());
-//							accounts.setAvailableamount(totalPriceTemp);
-//							accountsMapper.insert(accounts);
-//						}
 						accountService.add_accountsLog(payOrder.getUserid(), Integer.parseInt(AccountLogType.get_recharge.toString()), payOrder.getTotalprice(), payId, "");
 					}
-					/*-----------------------------货款充值（完）-------------------------------------*/
-					/*-----------------------------代理商邮费 充值------------------------------------------*/
 					else if (orderType==Integer.parseInt(PayOrderTypeEnum.postage.toString())) {
-						//供应商邮费充值
-//						UBranchtransamountlog translog=new UBranchtransamountlog();
-//						translog.setBranchuserid(payOrder.getUserid());
-//						translog.setPayid(payId);
-//						translog.setAmount(payOrder.getTotalprice());
-//						translog.setType(Integer.parseInt(AmountType.get.toString()));
-//						translog.setCreatetime(new Date());
-//						transLogMapper.insert(translog);
-//						
-//						//邮费账户金额更新
-//						UBranchtransaccounts transAccount= transMapper.selectByPrimaryKey(payOrder.getUserid());
-//						if(transAccount!=null){  
-//							double amount=transAccount.getAvailableamount()==null?0d:transAccount.getAvailableamount();
-//							transAccount.setAvailableamount(amount+payOrder.getTotalprice());
-//							transMapper.updateByPrimaryKey(transAccount);
-//						}else {
-//							transAccount=new UBranchtransaccounts();
-//							transAccount.setBranchuserid(payOrder.getUserid());
-//							transAccount.setAvailableamount(payOrder.getTotalprice());
-//							transMapper.insert(transAccount);
-//						}
+						/*-----------------------------代理商邮费 充值------------------------------------------*/
 						accountService.add_accountsLog(payOrder.getUserid(), Integer.parseInt(AccountLogType.get_recharge.toString()), payOrder.getTotalprice(), payId, "");
 					}/*-------------------------------------------------------------------*/
-					
+					else if (orderType==Integer.parseInt(PayOrderTypeEnum.redPackets.toString())) {
+						//发红包------------------------
+						OPayorderwalletdetails walletDetails=owalletMapper.selectByPrimaryKey(payId);
+						if(walletDetails!=null){
+							walletDetails.setStatus(Integer.parseInt(PayOrderStatusEnums.payed.toString()));
+							owalletMapper.updateByPrimaryKeySelective(walletDetails);
+						}else {
+							addlog("payId:"+payId+",方法paySuccessProcess。发红包有误，找不到支付记录！");
+							return false;
+						}
+					}
 					/************************------------普通购物------------------********************************/
 					else {//购物
 						OUserorders userorders = userOrdersMapper.selectByPrimaryKey(payOrder.getUserorderid());
@@ -170,7 +139,7 @@ public class BasePayServiceImpl implements IBasePayService{
 								//订单作品详细
 								List<OOrderproductdetails> detailsList= odetailMapper.findOrderProductDetailsByProductOrderId(userorders.getUserorderid());
 								
-								//更新订单状态
+								//------更新订单状态----------------------------------------------
 								if(detailsList!=null&&detailsList.size()>0){
 									userorders.setStatus(Integer.parseInt(OrderStatusEnum.waitFoSend.toString()));
 									userorders.setUploadtime(new Date()); 
@@ -179,6 +148,28 @@ public class BasePayServiceImpl implements IBasePayService{
 								}
 								userorders.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString()));
 								userorders.setPaytime(new Date()); 
+							
+								
+								//是否用钱包支付了---------------------
+								if(payOrder.getWalletamount()!=null&&payOrder.getWalletamount().doubleValue()>0){
+									UAccounts accounts=accountsMapper.selectByPrimaryKey(payOrder.getUserid());
+									Double freeAmount=accounts==null?0d:(accounts.getFreezecashamount()==null?0d:accounts.getFreezecashamount().doubleValue());
+									if(payOrder.getWalletamount().doubleValue()>freeAmount){
+										addlog("payId:"+payId+",方法paySuccessProcess。用到了钱包，但是钱包金额有误！");
+										return false;
+									}
+									//释放红包冻结金额
+									UAccountslogs log=new UAccountslogs();
+									log.setUserid(payOrder.getUserid());
+									log.setCreatetime(new Date());
+									log.setType(Integer.parseInt(AccountLogType.use_payment.toString()));
+									log.setOrderid(payId);
+									accountslogsMapper.insert(log);
+									//更新钱包的冻结金额
+									accounts.setFreezecashamount(accounts.getFreezecashamount().doubleValue()-payOrder.getWalletamount().intValue());
+									accountsMapper.updateByPrimaryKeySelective(accounts);
+								}
+								//更新订单的状态---
 								userOrdersMapper.updateByPrimaryKeySelective(userorders);
 								//分提成
 //								addOrderExtend(payOrder);

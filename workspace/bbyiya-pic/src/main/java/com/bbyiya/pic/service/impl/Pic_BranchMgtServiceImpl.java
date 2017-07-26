@@ -275,6 +275,17 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		}
 		applyInfo.setAgentuserid(userId);
 		applyInfo.setCreatetime(new Date());
+		
+		if(areaList!=null&&areaList.size()>0){
+			for (UAgentapplyareas app : areaList) {
+				if(this.checkAreaCodeIsApply(applyInfo.getAgentuserid(),app.getAreacode())){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("该区域["+regionService.getAresName(app.getAreacode())+"]已被代理，不能重复代理！");
+					return rq;
+				}
+			}
+		}
+		
 		if(applyInfo.getAgentuserid()!=null&&applyInfo.getAgentuserid()>0){
 			//先删除后插入新的
 			List<UAgentapplyareas> oldareaplans=uagentapplyareaMapper.findAgentapplyareasByUserId(applyInfo.getAgentuserid());
@@ -295,12 +306,13 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 					areaplansMapper.deleteByPrimaryKey(ap.getAreacode());
 				}
 				if(areaList!=null&&areaList.size()>0){
-					for (UAgentapplyareas app : areaList) {
-						if(this.checkAreaCodeIsApply(applyInfo.getAgentuserid(),app.getAreacode())){
-							rq.setStatusreson("该区域["+app.getAreacode()+"]已被代理，不能重复代理！");
-							return rq;
-						}
-					}
+//					for (UAgentapplyareas app : areaList) {
+//						if(this.checkAreaCodeIsApply(applyInfo.getAgentuserid(),app.getAreacode())){
+//							rq.setStatu(ReturnStatus.ParamError);
+//							rq.setStatusreson("该区域["+regionService.getAresName(app.getAreacode())+"]已被代理，不能重复代理！");
+//							return rq;
+//						}
+//					}
 					//插入代理区域
 					for (UAgentapplyareas area : areaList) {
 						RAreaplans areaplan=areaplansMapper.selectByPrimaryKey(area.getAreacode());
@@ -323,14 +335,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			}
 			agentapplyMapper.updateByPrimaryKeySelective(applyInfo);
 		}else {
-			if(areaList!=null&&areaList.size()>0){
-				for (UAgentapplyareas app : areaList) {
-					if(this.checkAreaCodeIsApply(applyInfo.getAgentuserid(),app.getAreacode())){
-						rq.setStatusreson("该区域["+app.getAreacode()+"]已被代理，不能重复代理！");
-						return rq;
-					}
-				}
-			}
+			
 			applyInfo.setStatus(Integer.parseInt(AgentStatusEnum.applying.toString()));  
 			agentapplyMapper.insert(applyInfo);
 			

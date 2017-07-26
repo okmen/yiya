@@ -629,7 +629,8 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 				for (UAgentapplyareas area : agentapplyareas) {
 					boolean isApply=checkAreaCodeIsApply(apply.getAgentuserid(),area.getAreacode());
 					if(isApply){
-						rq.setStatusreson("该区域["+area.getAreacode()+"]已被代理，不能重复代理！");
+						rq.setStatu(ReturnStatus.ParamError);
+						rq.setStatusreson("该区域["+regionService.getAresName(area.getAreacode())+"]已被代理，不能重复代理！");
 						return rq;
 					}
 				}

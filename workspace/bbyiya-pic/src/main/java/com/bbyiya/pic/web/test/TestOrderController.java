@@ -4,7 +4,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -70,12 +69,18 @@ public class TestOrderController  extends SSOController{
 		ReturnModel rq = new ReturnModel();
 		if(accountService.add_accountsLog(userId, type, amount, payId, transNo)){
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("�ɹ�");
+			rq.setStatusreson("success");
 		}
 		rq.setStatu(ReturnStatus.Success);
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	/**
+	 * 支付成功测试用
+	 * @param payId
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody 
 	@RequestMapping(value = "/orderpaytest")
 	public String orderpaytest(String payId) throws Exception {
@@ -88,7 +93,7 @@ public class TestOrderController  extends SSOController{
 				rq.setStatusreson("pay success!"); 
 			}
 		}else {
-			rq.setStatusreson("������");
+			rq.setStatusreson("false!");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	

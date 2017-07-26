@@ -421,7 +421,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			}
 			agentapplyMapper.updateByPrimaryKeySelective(applyInfo);
 		}else {
-			
+			applyInfo.setStatus(Integer.parseInt(AgentStatusEnum.applying.toString()));
 			agentapplyMapper.insert(applyInfo);
 		}
 		rq.setStatu(ReturnStatus.Success);
@@ -618,10 +618,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		ReturnModel rq=new ReturnModel();
 		UAgentapply apply= agentapplyMapper.selectByPrimaryKey(agentUserId); 
 		if(apply!=null){
-			apply.setStatus(status); 
-			apply.setProcesstime(new Date());//处理时间
-			apply.setReason(msg);
-			agentapplyMapper.updateByPrimaryKeySelective(apply);
+			
 			if(status==Integer.parseInt(AgentStatusEnum.ok.toString())){//成为代理
 				List<UAgentapplyareas> agentapplyareas=uagentapplyareaMapper.findAgentapplyareasByUserId(agentUserId);
 				if(agentapplyareas==null||agentapplyareas.size()<=0){
@@ -644,8 +641,10 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("拒绝成功");
 			}
-			
-			
+			apply.setStatus(status); 
+			apply.setProcesstime(new Date());//处理时间
+			apply.setReason(msg);
+			agentapplyMapper.updateByPrimaryKeySelective(apply);
 		}else {
 			rq.setStatu(ReturnStatus.SystemError);
 			rq.setStatusreson("找不到申请资料");
@@ -985,7 +984,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 				}else if (agentapply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.applying.toString())) {
 					map.put("msg", "申请中");
 				}else if (agentapply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.no.toString())) {
-					map.put("msg", "申请不通过。");
+					map.put("msg", "申请不通过");
 				}
 			}else {
 				map.put("msg", "申请中");

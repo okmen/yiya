@@ -24,7 +24,7 @@ public class AccountMgtController extends SSOController{
 	private IBaseUserAccountService accountService;
 	
 	/**
-	 * A11 账户信息(余额信息)
+	 * A11 账户信息
 	 * @return
 	 * @throws Exception
 	 */
@@ -44,6 +44,28 @@ public class AccountMgtController extends SSOController{
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+
+	/**
+	 * 用户钱包流水
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/walletAmountLogs")
+	public String walletAmountLogs(@RequestParam(required = false, defaultValue = "1") int index, @RequestParam(required = false, defaultValue = "10") int size) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			rq = accountService.findAcountsLogsPageResult(user.getUserId(), null, index, size);
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	
 	/**
 	 * A12 账户信息-预存款交易流水
 	 * @return

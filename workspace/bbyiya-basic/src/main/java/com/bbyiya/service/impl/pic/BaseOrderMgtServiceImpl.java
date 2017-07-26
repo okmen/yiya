@@ -43,7 +43,6 @@ import com.bbyiya.dao.UCashlogsMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.AccountLogType;
-import com.bbyiya.enums.AmountType;
 import com.bbyiya.enums.CustomerSourceTypeEnum;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.OrderTypeEnum;
@@ -77,9 +76,7 @@ import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UAgents;
 import com.bbyiya.model.UBranches;
-import com.bbyiya.model.UBranchtransaccounts;
 import com.bbyiya.model.UBranchusers;
-import com.bbyiya.model.UCashlogs;
 import com.bbyiya.model.UUseraddress;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IBasePayService;
@@ -92,7 +89,6 @@ import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
-import com.bbyiya.vo.address.OrderaddressVo;
 import com.bbyiya.vo.order.UserBuyerOrderResult;
 import com.bbyiya.vo.order.UserOrderParam;
 import com.bbyiya.vo.order.UserOrderResult;
@@ -132,8 +128,6 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	private PMyproductsMapper myproductMapper;//我的作品
 	@Autowired
 	private PMyproductsinvitesMapper myinviteMapper;//我的作品
-
-	private PMyproductsinvitesMapper inviteMapper;	
 	@Autowired
 	private PMyproductdetailsMapper mydetailMapper;
 
@@ -1345,7 +1339,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				//如果不是B端用户 红包直接付给作品拥有者
 				userFor=mycart.getUserid();
 			}else {//如果作品属于B端，付给协同编辑者
-				List<PMyproductsinvites> invitelist=inviteMapper.findListByCartId(cartId);
+				List<PMyproductsinvites> invitelist=myinviteMapper.findListByCartId(cartId);
 				if(invitelist!=null&&invitelist.size()>0){
 					if(invitelist.get(0).getInviteuserid()!=null){
 						userFor=invitelist.get(0).getInviteuserid();
@@ -1353,6 +1347,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				}
 			}
 			if(userFor>0){
+				//生成支付记录
 				OPayorder payorder = new OPayorder();
 				payorder.setPayid(payId);
 				payorder.setUserorderid(userOrderId);
@@ -1362,11 +1357,13 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				payorder.setTotalprice(totalPrice);
 				payorder.setCreatetime(new Date());
 				payOrderMapper.insert(payorder);	
+				//插入红包记录
 				OPayorderwalletdetails detail=new OPayorderwalletdetails();
 				detail.setAmount(totalPrice);
 				detail.setCartid(cartId);
 				detail.setUserid(user.getUserId());
 				detail.setHeadimg(user.getHeadImg());
+				detail.setNickname(user.getNickName()); 
 				detail.setForuserid(userFor);
 				detail.setPayid(payId); 
 				detail.setPaytime(new Date()); 

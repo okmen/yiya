@@ -259,6 +259,27 @@ public class MyProductTempController extends SSOController {
 	}
 	
 	/**
+	 * 获取影楼模板列表
+	 * @param tempId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getMyProductTempById")
+	public String getMyProductTempById(Integer tempid) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=producttempService.getMyProductTempById(tempid);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
 	 * 获取影楼模板待审核用户
 	 * @param tempId
 	 * @return

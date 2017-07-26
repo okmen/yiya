@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.dao.OPayorderMapper;
+import com.bbyiya.dao.OPayorderwalletdetailsMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.UAccountsMapper;
 import com.bbyiya.dao.UAccountslogsMapper;
@@ -20,6 +21,7 @@ import com.bbyiya.enums.AmountType;
 import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.OPayorder;
+import com.bbyiya.model.OPayorderwalletdetails;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UAccountslogs;
@@ -149,7 +151,8 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 		rq.setBasemodle(resultPage);
 		return rq;
 	}
-	
+	@Autowired
+	private OPayorderwalletdetailsMapper walletMapper;
 	/**
 	 * 账户流水
 	 */
@@ -161,6 +164,14 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 		if (resultPage.getList() != null && resultPage.getList().size() > 0) {
 			for (UAccountslogs log : resultPage.getList()) {
 				log.setCreatetimestr(DateUtil.getTimeStr(log.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
+				//如果是红包收入
+				if(log.getType()!=null&&log.getType().intValue()==Integer.parseInt(AccountLogType.get_redPackets.toString())){
+					OPayorderwalletdetails walletDetail= walletMapper.selectByPrimaryKey(log.getOrderid());
+					if(walletDetail!=null){
+						log.setHeadImg(walletDetail.getHeadimg());
+						log.setNickName(walletDetail.getNickname());
+					}
+				}
 			}
 		}
 		rq.setStatu(ReturnStatus.Success);

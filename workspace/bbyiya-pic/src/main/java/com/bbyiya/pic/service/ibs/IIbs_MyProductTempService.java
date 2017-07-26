@@ -146,6 +146,10 @@ public interface IIbs_MyProductTempService {
 	 * @return
 	 */
 	ReturnModel getcodeTempStyleList(Integer tempid);
+	/**
+	 * 根据模板ID得到模板信息
+	 */
+	ReturnModel getMyProductTempById(int tempid);
 	
 
 	

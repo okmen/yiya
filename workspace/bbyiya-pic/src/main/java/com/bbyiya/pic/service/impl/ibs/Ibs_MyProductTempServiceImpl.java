@@ -380,6 +380,24 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		}		
 		return rq;
 	}
+	
+	/**
+	 * 根据模板ID得到详情信息
+	 * @param tempid
+	 * @return
+	 */
+	public ReturnModel getMyProductTempById(int tempid){
+		ReturnModel rq=new ReturnModel();	
+		PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempid);	
+		if(temp!=null){
+			rq.setBasemodle(temp);
+			rq.setStatu(ReturnStatus.Success);
+		}else{
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("模板ID不存在");
+		}		
+		return rq;
+	}
 	/**
 	 * 查询模板列表
 	 * @return

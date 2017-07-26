@@ -511,6 +511,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		applyInfo.setBranchuserid(userId);
 		applyInfo.setCreatetime(new Date());
 		applyInfo.setStatus(Integer.parseInt(BranchStatusEnum.applying.toString()));  
+		applyInfo.setReason("");
 		if(apply!=null&&applyInfo.getBranchuserid()!=null&&applyInfo.getBranchuserid()>0){
 			branchesMapper.updateByPrimaryKeySelective(applyInfo);
 		}else {

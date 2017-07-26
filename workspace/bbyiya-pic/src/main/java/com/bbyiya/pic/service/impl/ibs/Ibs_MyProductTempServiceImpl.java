@@ -182,7 +182,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			temp.setTempcodeurl(param.getCodeurl());
 			temp.setIsautoorder(param.getIsAutoOrder());
 			temp.setOrderhours(param.getOrderHours());
-			temp.setStyleid(param.getStyleId());
+			//temp.setStyleid(param.getStyleId());
 			if(ObjectUtil.isEmpty(param.getIsbranchaddress())){
 				param.setIsbranchaddress(0);
 			}

@@ -55,6 +55,7 @@ public class TesterController  extends SSOController{
 		return "exportOrder";
 	}
 	
+	@ResponseBody 
 	@RequestMapping(value = "/clearRedisByKey")
 	public String clearRedisByKey(String key) throws Exception {
 		RedisUtil.delete(key);

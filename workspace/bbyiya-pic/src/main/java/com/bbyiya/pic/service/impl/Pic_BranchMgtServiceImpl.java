@@ -657,20 +657,12 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 				rq.setStatusreson("审核成功");
 				
 				//给客户咿呀绑定的手机号发送短信
-				String sendSmsPhone="";
-				String zhanghao="";//登录账号
+				
 				UUsers user=usersMapper.getUUsersByUserID(apply.getAgentuserid());
 				if(!ObjectUtil.isEmpty(user.getMobilephone())){
-					sendSmsPhone=user.getMobilephone();
-					zhanghao=user.getMobilephone();
-				}else{
-					sendSmsPhone=apply.getPhone();
-					zhanghao=user.getUserid().toString();
-				}
-				if(!ObjectUtil.isEmpty(sendSmsPhone)){
 					SmsParam sendparam=new SmsParam();
-					//sendparam.setUserId(zhanghao);
-					SendSMSByMobile.sendSmS(Integer.parseInt(SendMsgEnums.agentApply_pass.toString()),sendSmsPhone, sendparam);					
+					sendparam.setUserId(user.getUserid());
+					SendSMSByMobile.sendSmS(Integer.parseInt(SendMsgEnums.agentApply_pass.toString()),user.getMobilephone(), sendparam);					
 				}
 			
 			}else{

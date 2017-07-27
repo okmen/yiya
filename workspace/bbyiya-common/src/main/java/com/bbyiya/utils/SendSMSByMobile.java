@@ -149,6 +149,11 @@ public class SendSMSByMobile {
 				msg="【咿呀科技】尊敬的用户，您制作的相册已发货，快递单号："+param.getTransNum()+"["+param.getTransName()+"]"; 
 				batchSend(mobile, msg); 
 			}
+		}else if (msgType==Integer.parseInt(SendMsgEnums.agentApply_pass.toString())) {
+			if(param.getUserId()!=null){
+				msg="【咿呀科技】尊敬的用户，您提交的资质已经通过审核，登录账号"+param.getUserId().toString()+",登录地址 http://ibs.bbyiya.com ，祝您生意兴隆，生活愉快。";
+				batchSend(mobile, msg);
+			}
 		}
 		return true;
 	}

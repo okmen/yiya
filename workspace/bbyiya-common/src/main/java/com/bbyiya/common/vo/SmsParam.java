@@ -18,6 +18,8 @@ public class SmsParam implements Serializable{
 	 * 物流单号
 	 */
 	private String transNum;
+	
+	private Long userId;
 
 	public Double getAmount() {
 		return amount;
@@ -49,6 +51,14 @@ public class SmsParam implements Serializable{
 
 	public void setTransNum(String transNum) {
 		this.transNum = transNum;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 	
 	

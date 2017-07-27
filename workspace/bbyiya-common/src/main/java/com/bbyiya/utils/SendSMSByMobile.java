@@ -151,7 +151,7 @@ public class SendSMSByMobile {
 			}
 		}else if (msgType==Integer.parseInt(SendMsgEnums.agentApply_pass.toString())) {
 			if(param.getUserId()!=null){
-				msg="【咿呀科技】尊敬的用户，您提交的资质已经通过审核，登录账号"+param.getUserId().toString()+",登录地址 http://ibs.bbyiya.com ，祝您生意兴隆，生活愉快。";
+				msg="【咿呀科技】尊敬的用户，您提交的资质已经通过审核，登录账号"+mobile+",登录地址 http://ibs.bbyiya.com ，祝您生意兴隆，生活愉快。";
 				batchSend(mobile, msg);
 			}
 		}

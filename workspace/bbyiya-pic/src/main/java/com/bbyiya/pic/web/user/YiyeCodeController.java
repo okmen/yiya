@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.dao.PMyproductactivitycodeMapper;
+import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
 import com.bbyiya.dao.PProductstylesMapper;
@@ -20,6 +21,7 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.ActivityCodeStatusEnum;
 import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
 import com.bbyiya.model.PMyproductactivitycode;
+import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.model.PProductstyles;
@@ -37,6 +39,8 @@ public class YiyeCodeController extends SSOController {
 	private PMyproductactivitycodeMapper codeMapper;
 	@Autowired
 	private PMyproducttempMapper tempMapper;
+	@Autowired
+	private PMyproductsMapper myMapper;
 
 	@Autowired
 	private PProductstylesMapper styleMapper;
@@ -118,6 +122,7 @@ public class YiyeCodeController extends SSOController {
 				if(codeMod!=null){
 					PMyproducttemp temp= tempMapper.selectByPrimaryKey(codeMod.getTempid());
 					if(temp!=null){
+						PMyproducts product=myMapper.selectByPrimaryKey(temp.getCartid());
 						//提交申请
 						PMyproducttempapply apply=new PMyproducttempapply();
 						apply.setTempid(codeMod.getTempid());
@@ -129,9 +134,15 @@ public class YiyeCodeController extends SSOController {
 						apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.apply.toString()));
 						if(!ObjectUtil.isEmpty(styleId)){
 							apply.setStyleid(ObjectUtil.parseLong(styleId));
+						}else{
+							if(!ObjectUtil.isEmpty(temp.getStyleid()))
+								apply.setStyleid(temp.getStyleid());
 						}
 						if(!ObjectUtil.isEmpty(productId)){
 							apply.setProductid(ObjectUtil.parseLong(productId));
+						}else{
+							if(!ObjectUtil.isEmpty(product.getProductid()))
+								apply.setProductid(product.getProductid());
 						}
 						//异业模板 申请人数+1
 						temp.setApplycount(temp.getApplycount()==null?1:temp.getApplycount()+1);
@@ -208,5 +219,33 @@ public class YiyeCodeController extends SSOController {
 			rq.setStatusreson("请输入活动码！");
 		}
 		return rq;
+	}
+	
+	
+	/**
+	 * M11-05
+	 * 通过兑换码得到活动相关的册子
+	 * @param cartid
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getTempStyleListByCode")
+	public String getTempStyleListByCode(String codenum) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		rq.setStatu(ReturnStatus.ParamError);
+		if (!ObjectUtil.isEmpty(codenum)) {
+			PMyproductactivitycode codeMod = codeMapper.selectByPrimaryKey(codenum);
+			if (codeMod != null) {
+				rq=ibs_tempService.getcodeTempStyleList(codeMod.getTempid());
+			}else {
+				rq.setStatusreson("很遗憾，你输入的活动码不正确！");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+		} else {
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("参数错误，请传入活动码！");
+		}
+		return JsonUtil.objectToJsonStr(rq);
 	}
 }

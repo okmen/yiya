@@ -462,6 +462,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 								producttitle=producttitle+"-横版-"+styles.getPrice();
 							}
 							temp.setProductName(producttitle);
+							temp.setAgentprice(styles.getAgentprice());
 						}
 					}
 				}

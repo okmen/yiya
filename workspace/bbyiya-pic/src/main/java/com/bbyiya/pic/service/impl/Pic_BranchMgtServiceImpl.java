@@ -47,6 +47,7 @@ import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UBranchtransaccounts;
 import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUserresponses;
+import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.dao.IPic_AgentAreaDao;
 import com.bbyiya.pic.dao.IPic_AgentMgtDao;
 import com.bbyiya.pic.service.IPic_BranchMgtService;
@@ -158,6 +159,9 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		List<UAgentApplyVo> list=agentDao.findUAgentapplyVOList(param);
 		PageInfo<UAgentApplyVo> result=new PageInfo<UAgentApplyVo>(list);
 		for (UAgentApplyVo agentvo : result.getList()) {
+			UUsers user=usersMapper.getUUsersByUserID(agentvo.getAgentuserid());
+			if(user!=null)
+				agentvo.setBindphone(user.getMobilephone());
 			UAccounts account=accountsMapper.selectByPrimaryKey(agentvo.getAgentuserid());
 			if(account!=null){
 				agentvo.setGoodsAmount(account.getAvailableamount());
@@ -183,6 +187,9 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		List<UBranchVo> list=agentDao.findUBranchVoList(param);
 		PageInfo<UBranchVo> result=new PageInfo<UBranchVo>(list); 
 		for (UBranchVo branchvo : result.getList()) {
+			UUsers user=usersMapper.getUUsersByUserID(branchvo.getAgentuserid());
+			if(user!=null)
+				branchvo.setBindphone(user.getMobilephone());
 			Integer count=usersMapper.getUserCountByUpUserid(param.getUserId());
 			branchvo.setUserCount(count==null?0:count);
 			branchvo.setProviceName(regionService.getProvinceName(branchvo.getProvince())) ;
@@ -202,6 +209,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			}else{
 				branchvo.setGoodsAmount(0.0);
 			}
+			
 		}
 		
 		rq.setBasemodle(result);
@@ -644,6 +652,10 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 				this.addAgentInfo(apply);
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("审核成功");
+				
+				//给客户咿呀绑定的手机号发送短信
+				
+				
 			}else{
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("拒绝成功");

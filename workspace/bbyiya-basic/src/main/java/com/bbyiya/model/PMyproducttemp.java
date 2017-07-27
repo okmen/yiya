@@ -70,6 +70,7 @@ public class PMyproducttemp {
   	private String createtimestr;
   	private String productName;//产品名称
   	private Long productid;
+  	private Double agentprice;//代理商价格
   	private List<PMyproducttempext> tempextlist;
 
     public Integer getNeedverifer() {
@@ -316,6 +317,14 @@ public class PMyproducttemp {
 
 	public void setAmountlimit(Double amountlimit) {
 		this.amountlimit = amountlimit;
+	}
+
+	public Double getAgentprice() {
+		return agentprice;
+	}
+
+	public void setAgentprice(Double agentprice) {
+		this.agentprice = agentprice;
 	}
 
 	

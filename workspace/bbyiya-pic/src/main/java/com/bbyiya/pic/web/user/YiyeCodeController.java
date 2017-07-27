@@ -41,6 +41,8 @@ public class YiyeCodeController extends SSOController {
 	private PMyproducttempMapper tempMapper;
 	@Autowired
 	private PMyproductsMapper myMapper;
+	@Autowired
+	private PMyproducttempapplyMapper applyMapper;
 
 	@Autowired
 	private PProductstylesMapper styleMapper;
@@ -77,7 +79,20 @@ public class YiyeCodeController extends SSOController {
 									map.put("property", style.getPropertystr());
 									rq.setBasemodle(map); 
 								}
+							}else{
+								if(codeMod.getCartid()!=null){
+									PMyproducttempapply tempapply=applyMapper.getMyProducttempApplyByCartId(codeMod.getCartid());
+									if(tempapply.getStyleid()!=null){
+										PProductstyles style= styleMapper.selectByPrimaryKey(tempapply.getStyleid());
+										if(style!=null){
+											map.put("price", style.getPrice());
+											map.put("property", style.getPropertystr());
+											rq.setBasemodle(map); 
+										}
+									}
+								}
 							}
+							
 							
 						}else {
 							rq.setStatu(ReturnStatus.ParamError);

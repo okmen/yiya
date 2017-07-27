@@ -1238,6 +1238,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		PMyproducttemp mtemp = tempMapper.selectByPrimaryKey(myproduct.getTempid());
 		if(mtemp!=null){
 			MyProductsTempVo vo=new MyProductsTempVo();
+			if(!ObjectUtil.isEmpty(mtemp.getCodeurl())){
+				vo.setQRCodeUrl(mtemp.getCodeurl()); 
+			}
 			//是否限定完成人数
 			if(mtemp.getMaxcompletecount()!=null&&mtemp.getMaxcompletecount()>0){
 				vo.setIsLimitQuotas(1); 

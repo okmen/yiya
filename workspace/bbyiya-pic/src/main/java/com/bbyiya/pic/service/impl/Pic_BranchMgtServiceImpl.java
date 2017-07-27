@@ -13,6 +13,8 @@ import org.springframework.dao.support.DaoSupport;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.common.enums.SendMsgEnums;
+import com.bbyiya.common.vo.SmsParam;
 import com.bbyiya.dao.RAreaplansMapper;
 import com.bbyiya.dao.RAreaplansagentpriceMapper;
 import com.bbyiya.dao.RegionMapper;
@@ -58,6 +60,7 @@ import com.bbyiya.service.IBaseUserCommonService;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
+import com.bbyiya.utils.SendSMSByMobile;
 import com.bbyiya.vo.ReturnModel;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -654,8 +657,22 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 				rq.setStatusreson("审核成功");
 				
 				//给客户咿呀绑定的手机号发送短信
-				
-				
+				String sendSmsPhone="";
+				String zhanghao="";//登录账号
+				UUsers user=usersMapper.getUUsersByUserID(apply.getAgentuserid());
+				if(!ObjectUtil.isEmpty(user.getMobilephone())){
+					sendSmsPhone=user.getMobilephone();
+					zhanghao=user.getMobilephone();
+				}else{
+					sendSmsPhone=apply.getPhone();
+					zhanghao=user.getUserid().toString();
+				}
+				if(!ObjectUtil.isEmpty(sendSmsPhone)){
+					SmsParam sendparam=new SmsParam();
+					//sendparam.setUserId(zhanghao);
+					SendSMSByMobile.sendSmS(Integer.parseInt(SendMsgEnums.agentApply_pass.toString()),sendSmsPhone, sendparam);					
+				}
+			
 			}else{
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("拒绝成功");

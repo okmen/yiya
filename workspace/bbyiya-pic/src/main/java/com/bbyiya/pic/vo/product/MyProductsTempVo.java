@@ -33,6 +33,8 @@ public class MyProductsTempVo implements Serializable{
 	 */
 	private Double publicAmountNeedMore;
 	
+	private String QRCodeUrl;
+	
 	private List<DMyproductdiscountmodel> discountList;
 	
 	public int getIsLimitQuotas() {
@@ -94,6 +96,12 @@ public class MyProductsTempVo implements Serializable{
 	}
 	public void setPublicAmountNeedMore(Double publicAmountNeedMore) {
 		this.publicAmountNeedMore = publicAmountNeedMore;
+	}
+	public String getQRCodeUrl() {
+		return QRCodeUrl;
+	}
+	public void setQRCodeUrl(String qRCodeUrl) {
+		QRCodeUrl = qRCodeUrl;
 	}
 	
 	

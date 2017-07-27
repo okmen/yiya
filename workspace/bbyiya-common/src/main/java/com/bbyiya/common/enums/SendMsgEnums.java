@@ -25,8 +25,11 @@ public enum SendMsgEnums {
     /**
      * 已发货(发货通知)
      */
-    delivery(6)
-    ;
+    delivery(6),
+    /**
+     * 代理商审核通过
+     */
+    agentApply_pass(7);
 
     private final int Type;
 

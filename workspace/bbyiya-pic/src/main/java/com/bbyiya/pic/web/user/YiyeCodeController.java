@@ -41,6 +41,8 @@ public class YiyeCodeController extends SSOController {
 	private PMyproducttempMapper tempMapper;
 	@Autowired
 	private PMyproductsMapper myMapper;
+	@Autowired
+	private PMyproducttempapplyMapper applyMapper;
 
 	@Autowired
 	private PProductstylesMapper styleMapper;
@@ -77,7 +79,20 @@ public class YiyeCodeController extends SSOController {
 									map.put("property", style.getPropertystr());
 									rq.setBasemodle(map); 
 								}
+							}else{
+								if(codeMod.getCartid()!=null){
+									PMyproducttempapply tempapply=applyMapper.getMyProducttempApplyByCartId(codeMod.getCartid());
+									if(tempapply.getStyleid()!=null){
+										PProductstyles style= styleMapper.selectByPrimaryKey(tempapply.getStyleid());
+										if(style!=null){
+											map.put("price", style.getPrice());
+											map.put("property", style.getPropertystr());
+											rq.setBasemodle(map); 
+										}
+									}
+								}
 							}
+							
 							
 						}else {
 							rq.setStatu(ReturnStatus.ParamError);
@@ -185,7 +200,26 @@ public class YiyeCodeController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-
+	/**
+	 * 活动码验证
+	 * @param commentJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/checkcode")
+	public String checkcode(String codenum) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		rq.setStatu(ReturnStatus.ParamError);
+		LoginSuccessResult user = super.getLoginUser();
+		if(user!=null&&user.getUserId()!=null){
+			rq=checkCodeNum(user.getUserId(), codenum);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	/**
 	 * 活动码验证
 	 * @param codenum

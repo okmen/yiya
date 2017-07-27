@@ -126,6 +126,8 @@ public class BasePayServiceImpl implements IBasePayService{
 						if(walletDetails!=null){
 							walletDetails.setStatus(Integer.parseInt(PayOrderStatusEnums.payed.toString()));
 							owalletMapper.updateByPrimaryKeySelective(walletDetails);
+							//更新收到红包 用户的账户信息
+							accountService.add_accountsLog(walletDetails.getForuserid(), Integer.parseInt(AccountLogType.get_redPackets.toString()), payOrder.getTotalprice(), payId, "");
 						}else {
 							addlog("payId:"+payId+",方法paySuccessProcess。发红包有误，找不到支付记录！");
 							return false;

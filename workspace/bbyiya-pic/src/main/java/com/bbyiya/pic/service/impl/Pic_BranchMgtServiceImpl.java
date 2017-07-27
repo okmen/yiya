@@ -13,6 +13,8 @@ import org.springframework.dao.support.DaoSupport;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.common.enums.SendMsgEnums;
+import com.bbyiya.common.vo.SmsParam;
 import com.bbyiya.dao.RAreaplansMapper;
 import com.bbyiya.dao.RAreaplansagentpriceMapper;
 import com.bbyiya.dao.RegionMapper;
@@ -47,6 +49,7 @@ import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UBranchtransaccounts;
 import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUserresponses;
+import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.dao.IPic_AgentAreaDao;
 import com.bbyiya.pic.dao.IPic_AgentMgtDao;
 import com.bbyiya.pic.service.IPic_BranchMgtService;
@@ -57,6 +60,7 @@ import com.bbyiya.service.IBaseUserCommonService;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
+import com.bbyiya.utils.SendSMSByMobile;
 import com.bbyiya.vo.ReturnModel;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -158,6 +162,9 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		List<UAgentApplyVo> list=agentDao.findUAgentapplyVOList(param);
 		PageInfo<UAgentApplyVo> result=new PageInfo<UAgentApplyVo>(list);
 		for (UAgentApplyVo agentvo : result.getList()) {
+			UUsers user=usersMapper.getUUsersByUserID(agentvo.getAgentuserid());
+			if(user!=null)
+				agentvo.setBindphone(user.getMobilephone());
 			UAccounts account=accountsMapper.selectByPrimaryKey(agentvo.getAgentuserid());
 			if(account!=null){
 				agentvo.setGoodsAmount(account.getAvailableamount());
@@ -183,6 +190,9 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		List<UBranchVo> list=agentDao.findUBranchVoList(param);
 		PageInfo<UBranchVo> result=new PageInfo<UBranchVo>(list); 
 		for (UBranchVo branchvo : result.getList()) {
+			UUsers user=usersMapper.getUUsersByUserID(branchvo.getAgentuserid());
+			if(user!=null)
+				branchvo.setBindphone(user.getMobilephone());
 			Integer count=usersMapper.getUserCountByUpUserid(param.getUserId());
 			branchvo.setUserCount(count==null?0:count);
 			branchvo.setProviceName(regionService.getProvinceName(branchvo.getProvince())) ;
@@ -202,6 +212,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			}else{
 				branchvo.setGoodsAmount(0.0);
 			}
+			
 		}
 		
 		rq.setBasemodle(result);
@@ -275,6 +286,17 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		}
 		applyInfo.setAgentuserid(userId);
 		applyInfo.setCreatetime(new Date());
+		
+		if(areaList!=null&&areaList.size()>0){
+			for (UAgentapplyareas app : areaList) {
+				if(this.checkAreaCodeIsApply(applyInfo.getAgentuserid(),app.getAreacode())){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("该区域["+regionService.getAresName(app.getAreacode())+"]已被代理，不能重复代理！");
+					return rq;
+				}
+			}
+		}
+		
 		if(applyInfo.getAgentuserid()!=null&&applyInfo.getAgentuserid()>0){
 			//先删除后插入新的
 			List<UAgentapplyareas> oldareaplans=uagentapplyareaMapper.findAgentapplyareasByUserId(applyInfo.getAgentuserid());
@@ -295,12 +317,13 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 					areaplansMapper.deleteByPrimaryKey(ap.getAreacode());
 				}
 				if(areaList!=null&&areaList.size()>0){
-					for (UAgentapplyareas app : areaList) {
-						if(this.checkAreaCodeIsApply(applyInfo.getAgentuserid(),app.getAreacode())){
-							rq.setStatusreson("该区域["+app.getAreacode()+"]已被代理，不能重复代理！");
-							return rq;
-						}
-					}
+//					for (UAgentapplyareas app : areaList) {
+//						if(this.checkAreaCodeIsApply(applyInfo.getAgentuserid(),app.getAreacode())){
+//							rq.setStatu(ReturnStatus.ParamError);
+//							rq.setStatusreson("该区域["+regionService.getAresName(app.getAreacode())+"]已被代理，不能重复代理！");
+//							return rq;
+//						}
+//					}
 					//插入代理区域
 					for (UAgentapplyareas area : areaList) {
 						RAreaplans areaplan=areaplansMapper.selectByPrimaryKey(area.getAreacode());
@@ -323,14 +346,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			}
 			agentapplyMapper.updateByPrimaryKeySelective(applyInfo);
 		}else {
-			if(areaList!=null&&areaList.size()>0){
-				for (UAgentapplyareas app : areaList) {
-					if(this.checkAreaCodeIsApply(applyInfo.getAgentuserid(),app.getAreacode())){
-						rq.setStatusreson("该区域["+app.getAreacode()+"]已被代理，不能重复代理！");
-						return rq;
-					}
-				}
-			}
+			
 			applyInfo.setStatus(Integer.parseInt(AgentStatusEnum.applying.toString()));  
 			agentapplyMapper.insert(applyInfo);
 			
@@ -421,7 +437,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			}
 			agentapplyMapper.updateByPrimaryKeySelective(applyInfo);
 		}else {
-			
+			applyInfo.setStatus(Integer.parseInt(AgentStatusEnum.applying.toString()));
 			agentapplyMapper.insert(applyInfo);
 		}
 		rq.setStatu(ReturnStatus.Success);
@@ -506,6 +522,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		applyInfo.setBranchuserid(userId);
 		applyInfo.setCreatetime(new Date());
 		applyInfo.setStatus(Integer.parseInt(BranchStatusEnum.applying.toString()));  
+		applyInfo.setReason("");
 		if(apply!=null&&applyInfo.getBranchuserid()!=null&&applyInfo.getBranchuserid()>0){
 			branchesMapper.updateByPrimaryKeySelective(applyInfo);
 		}else {
@@ -618,10 +635,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		ReturnModel rq=new ReturnModel();
 		UAgentapply apply= agentapplyMapper.selectByPrimaryKey(agentUserId); 
 		if(apply!=null){
-			apply.setStatus(status); 
-			apply.setProcesstime(new Date());//处理时间
-			apply.setReason(msg);
-			agentapplyMapper.updateByPrimaryKeySelective(apply);
+			
 			if(status==Integer.parseInt(AgentStatusEnum.ok.toString())){//成为代理
 				List<UAgentapplyareas> agentapplyareas=uagentapplyareaMapper.findAgentapplyareasByUserId(agentUserId);
 				if(agentapplyareas==null||agentapplyareas.size()<=0){
@@ -632,7 +646,8 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 				for (UAgentapplyareas area : agentapplyareas) {
 					boolean isApply=checkAreaCodeIsApply(apply.getAgentuserid(),area.getAreacode());
 					if(isApply){
-						rq.setStatusreson("该区域["+area.getAreacode()+"]已被代理，不能重复代理！");
+						rq.setStatu(ReturnStatus.ParamError);
+						rq.setStatusreson("该区域["+regionService.getAresName(area.getAreacode())+"]已被代理，不能重复代理！");
 						return rq;
 					}
 				}
@@ -640,12 +655,24 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 				this.addAgentInfo(apply);
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("审核成功");
+				
+				//给客户咿呀绑定的手机号发送短信
+				
+				UUsers user=usersMapper.getUUsersByUserID(apply.getAgentuserid());
+				if(!ObjectUtil.isEmpty(user.getMobilephone())){
+					SmsParam sendparam=new SmsParam();
+					sendparam.setUserId(user.getUserid());
+					SendSMSByMobile.sendSmS(Integer.parseInt(SendMsgEnums.agentApply_pass.toString()),user.getMobilephone(), sendparam);					
+				}
+			
 			}else{
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("拒绝成功");
 			}
-			
-			
+			apply.setStatus(status); 
+			apply.setProcesstime(new Date());//处理时间
+			apply.setReason(msg);
+			agentapplyMapper.updateByPrimaryKeySelective(apply);
 		}else {
 			rq.setStatu(ReturnStatus.SystemError);
 			rq.setStatusreson("找不到申请资料");
@@ -985,7 +1012,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 				}else if (agentapply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.applying.toString())) {
 					map.put("msg", "申请中");
 				}else if (agentapply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.no.toString())) {
-					map.put("msg", "申请不通过。");
+					map.put("msg", "申请不通过");
 				}
 			}else {
 				map.put("msg", "申请中");

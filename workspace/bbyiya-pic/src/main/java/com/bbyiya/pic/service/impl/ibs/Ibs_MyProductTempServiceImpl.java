@@ -182,7 +182,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			temp.setTempcodeurl(param.getCodeurl());
 			temp.setIsautoorder(param.getIsAutoOrder());
 			temp.setOrderhours(param.getOrderHours());
-			temp.setStyleid(param.getStyleId());
+			//temp.setStyleid(param.getStyleId());
 			if(ObjectUtil.isEmpty(param.getIsbranchaddress())){
 				param.setIsbranchaddress(0);
 			}
@@ -380,6 +380,24 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		}		
 		return rq;
 	}
+	
+	/**
+	 * 根据模板ID得到详情信息
+	 * @param tempid
+	 * @return
+	 */
+	public ReturnModel getMyProductTempById(int tempid){
+		ReturnModel rq=new ReturnModel();	
+		PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempid);	
+		if(temp!=null){
+			rq.setBasemodle(temp);
+			rq.setStatu(ReturnStatus.Success);
+		}else{
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("模板ID不存在");
+		}		
+		return rq;
+	}
 	/**
 	 * 查询模板列表
 	 * @return
@@ -444,6 +462,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 								producttitle=producttitle+"-横版-"+styles.getPrice();
 							}
 							temp.setProductName(producttitle);
+							temp.setAgentprice(styles.getAgentprice());
 						}
 					}
 				}

@@ -10,6 +10,7 @@ public class UBranchVo extends UBranches{
 	private String proviceName;
 	private String cityName;
 	private String areaName;
+	private String bindphone;
 	private List<String> agentArealist;
 	private List<UAgentapplyareas> agentapplyArealist;
 	private Integer userCount;//发展的用户数
@@ -62,6 +63,12 @@ public class UBranchVo extends UBranches{
 	}
 	public void setAgentapplyArealist(List<UAgentapplyareas> agentapplyArealist) {
 		this.agentapplyArealist = agentapplyArealist;
+	}
+	public String getBindphone() {
+		return bindphone;
+	}
+	public void setBindphone(String bindphone) {
+		this.bindphone = bindphone;
 	}
 	
 	

@@ -14,6 +14,7 @@ import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.pic.service.cts.IUserService;
+import com.bbyiya.service.IUserLoginService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -91,6 +92,24 @@ public class UserMgtController  extends SSOController{
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	@ResponseBody
+	@RequestMapping(value = "/findUserInfoByIdOrPhone")
+	public String findUserInfoById(String userid) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user=super.getLoginUser();
+		if(user!=null) {
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){
+				rq=userService.getUserInfo(userid);
+			}else {
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson("不是cts管理员，权限不足！");
+			}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	
 	
 }

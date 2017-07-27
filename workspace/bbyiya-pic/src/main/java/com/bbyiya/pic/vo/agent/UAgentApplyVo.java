@@ -10,6 +10,7 @@ public class UAgentApplyVo extends UAgentapply{
 	private String proviceName;
 	private String cityName;
 	private String areaName;
+	private String bindphone;//登陆绑定的手机号
 	private Double goodsAmount; //货款金额
 	private Double transAmount; //邮费金额
 	private List<UAgentapplyareas> agentapplyArealist;
@@ -56,6 +57,12 @@ public class UAgentApplyVo extends UAgentapply{
 	}
 	public void setAgentArealist(List<String> agentArealist) {
 		this.agentArealist = agentArealist;
+	}
+	public String getBindphone() {
+		return bindphone;
+	}
+	public void setBindphone(String bindphone) {
+		this.bindphone = bindphone;
 	}
 	
 	

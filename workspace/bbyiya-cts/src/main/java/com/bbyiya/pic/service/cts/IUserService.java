@@ -1,5 +1,6 @@
 package com.bbyiya.pic.service.cts;
 
+import com.bbyiya.model.UUsers;
 import com.bbyiya.vo.ReturnModel;
 
 
@@ -23,6 +24,13 @@ public interface IUserService {
 	 * @return
 	 */
 	ReturnModel findCtsMemberlist(String keywords, int index, int size);
+	/**
+	 * 手机号/咿呀号 获取用户信息
+	 * 
+	 * @param userno
+	 * @return
+	 */
+	ReturnModel getUserInfo(String userno);
 	
 	
 }

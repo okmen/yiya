@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.dao.PProductsMapper;
 import com.bbyiya.dao.PProductstylesMapper;
 import com.bbyiya.dao.PScenesMapper;
@@ -26,6 +27,7 @@ import com.bbyiya.pic.service.cts.IUserService;
 import com.bbyiya.service.IBaseUserCommonService;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.user.UUserInfoVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
@@ -105,6 +107,47 @@ public class UserServiceImpl implements IUserService{
 		rqModel.setBasemodle(resultPage);
 		return rqModel;
 		
+	}
+	
+	
+	/**
+	 * 手机号/咿呀号 获取用户信息
+	 * 
+	 * @param userno
+	 * @return
+	 */
+	public ReturnModel getUserInfo(String userno) {
+		ReturnModel rqModel=new ReturnModel();
+		rqModel.setStatu(ReturnStatus.SystemError);
+		UUserInfoVo userInfo=new UUserInfoVo();
+		// 通过手机号获取用户信息
+		UUsers user = usersMapper.getUUsersByPhone(userno);
+		if (user == null) {
+			Long userid = ObjectUtil.parseLong(userno);
+			if (userid > 0) {// 用户咿呀号
+				user = usersMapper.selectByPrimaryKey(userid);
+			}
+		}
+		if (user != null) {
+			userInfo.setUser(user);
+			long ident=user.getIdentity()==null?0:user.getIdentity();
+			if(ValidateUtils.isIdentity(ident, UserIdentityEnums.agent)){
+				userInfo.setIsAgent(1);
+			}else{
+				userInfo.setIsAgent(0);
+			}
+			
+			if(ValidateUtils.isIdentity(ident, UserIdentityEnums.branch)){
+				userInfo.setIsBranch(1);
+			}else{
+				userInfo.setIsBranch(0);
+			}
+		}
+		
+		rqModel.setBasemodle(userInfo);
+		rqModel.setStatu(ReturnStatus.Success);
+		return rqModel;
+
 	}
 	
 	

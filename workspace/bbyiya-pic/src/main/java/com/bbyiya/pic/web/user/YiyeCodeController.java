@@ -185,7 +185,26 @@ public class YiyeCodeController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-
+	/**
+	 * 活动码验证
+	 * @param commentJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/checkcode")
+	public String checkcode(String codenum) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		rq.setStatu(ReturnStatus.ParamError);
+		LoginSuccessResult user = super.getLoginUser();
+		if(user!=null&&user.getUserId()!=null){
+			rq=checkCodeNum(user.getUserId(), codenum);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	/**
 	 * 活动码验证
 	 * @param codenum

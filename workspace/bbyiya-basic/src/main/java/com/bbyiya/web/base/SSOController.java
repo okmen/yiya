@@ -58,6 +58,30 @@ public class SSOController {
 	}
 	
 	/**
+	 * 退出登录
+	 * @return
+	 */
+	public boolean loginOut(){
+		String ticket = getTicket();
+		if (ObjectUtil.isEmpty(ticket)) {
+			// 获取cookie的tiket的值
+			ticket = CookieUtils.getCookie_web(request);
+			if (ObjectUtil.isEmpty(ticket)) {
+				ticket=CookieUtils.getCookie_web(request);
+				if(ObjectUtil.isEmpty(ticket)){
+					return true;
+				}
+			}
+		}
+		Object userObject = RedisUtil.getObject(ticket);
+		if (userObject != null)// 如果存在
+		{
+			RedisUtil.delete(ticket);
+		}
+		return true;
+	}
+	
+	/**
 	 * web、wap 浏览器端获取用户信息
 	 * @return
 	 */

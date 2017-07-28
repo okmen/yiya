@@ -86,6 +86,7 @@ public class UserInfoController  extends SSOController{
 		return JsonUtil.objectToJsonStr(userMgtService.updatePWD(phone, vcode, pwd));
 	}
 	
+	
 	/**
 	 * 获取推广地址
 	 * @return

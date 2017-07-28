@@ -18,12 +18,15 @@ import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OOrderproductdetailsMapper;
 import com.bbyiya.dao.OOrderproductphotosMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
+import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductchildinfoMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
+import com.bbyiya.dao.UAccountsMapper;
 import com.bbyiya.dao.UBranchesMapper;
+import com.bbyiya.enums.AccountLogType;
 import com.bbyiya.enums.CustomerSourceTypeEnum;
 import com.bbyiya.enums.MyProductTempType;
 import com.bbyiya.enums.OrderStatusEnum;
@@ -34,11 +37,14 @@ import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproductphotos;
 import com.bbyiya.model.OOrderproducts;
+import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproductchildinfo;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
+import com.bbyiya.model.UAccounts;
+import com.bbyiya.model.UAccountslogs;
 import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.pic.dao.IPic_OrderMgtDao;
@@ -49,6 +55,7 @@ import com.bbyiya.pic.vo.order.UserOrderResultVO;
 import com.bbyiya.pic.vo.order.ibs.OrderPhotoVo;
 import com.bbyiya.pic.vo.order.ibs.OrderProductVo;
 import com.bbyiya.pic.vo.order.ibs.OrderVo;
+import com.bbyiya.service.IBaseUserAccountService;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.FileUtils;
@@ -72,6 +79,8 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 	@Autowired
 	private OUserordersMapper userOrdersMapper;
 	@Autowired
+	private OPayorderMapper payOrderMapper;
+	@Autowired
 	private IPic_OrderMgtDao orderDao;
 	@Autowired
 	private OOrderproductsMapper orderProductMapper;
@@ -91,6 +100,8 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 	@Autowired
 	private PMyproducttempMapper tempdMapper;
 	
+	@Autowired
+	private UAccountsMapper accountsMapper;//账户信息
 	/**
 	 * 获取订单列表
 	 * @param userId
@@ -427,6 +438,25 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 			return rq;
 		}
 		if(userorders!=null){
+			//得到未支付的支付订单信息
+			OPayorder payOrder=payOrderMapper.selectByPrimaryKey(orderId);
+			if(payOrder!=null){
+				if(payOrder.getWalletamount()!=null&&payOrder.getWalletamount().doubleValue()>0){
+					UAccounts accounts=accountsMapper.selectByPrimaryKey(payOrder.getUserid());
+					Double freeAmount=accounts==null?0d:(accounts.getFreezecashamount()==null?0d:accounts.getFreezecashamount().doubleValue());
+					if(payOrder.getWalletamount().doubleValue()>freeAmount){
+						rq.setStatusreson("钱包冻结金额有误，冻结金额小于订单支付的红包金额！");
+						rq.setStatu(ReturnStatus.OrderError);
+						return rq;
+					}
+					
+					//更新钱包的冻结金额
+					accounts.setFreezecashamount(accounts.getFreezecashamount().doubleValue()-payOrder.getWalletamount().doubleValue());
+					accounts.setAvailableamount(accounts.getAvailableamount().doubleValue()+payOrder.getWalletamount().doubleValue());
+					accountsMapper.updateByPrimaryKeySelective(accounts);
+				}
+			}
+			payOrderMapper.deleteByPrimaryKey(orderId);
 			List<OOrderproducts> productList=orderProductMapper.findOProductsByOrderId(userorders.getUserorderid());
 			if(productList!=null&&productList.size()>0){
 				for (OOrderproducts pro : productList) {

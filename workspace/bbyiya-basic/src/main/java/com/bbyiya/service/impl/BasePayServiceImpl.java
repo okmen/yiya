@@ -53,8 +53,8 @@ import com.bbyiya.utils.ObjectUtil;
 
 @Service("basePayServiceImpl")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
-public class BasePayServiceImpl implements IBasePayService{
-	
+public class BasePayServiceImpl implements IBasePayService {
+
 	// --------------------订单模块注解--------------------------------------
 	@Autowired
 	private OOrderaddressMapper orderaddressMapper;// 订单收货地址
@@ -66,7 +66,7 @@ public class BasePayServiceImpl implements IBasePayService{
 	private OPayorderMapper payOrderMapper;// 支付单
 	@Autowired
 	private OOrderproductdetailsMapper odetailMapper;// 产品图片集合
-	
+
 	@Autowired
 	private OPayorderextMapper oextMapper;
 	@Autowired
@@ -74,35 +74,35 @@ public class BasePayServiceImpl implements IBasePayService{
 
 	/*------------------------用户信息模块----------------------------------*/
 	@Autowired
-	private UAccountsMapper accountsMapper;//账户信息
+	private UAccountsMapper accountsMapper;// 账户信息
 	@Autowired
-	private UCashlogsMapper cashlogsMapper;//账户流水
+	private UCashlogsMapper cashlogsMapper;// 账户流水
 	@Autowired
 	private UUseraddressMapper addressMapper;// 用户收货地址
 	@Autowired
 	private UUsersMapper usersMapper;
-	
+
 	/*-----------------------产品模块--------------------------------------------*/
 	@Autowired
 	private PProductstyleexpMapper styltExpMapper;
 	@Autowired
 	private PProductstylesMapper styleMapper;
-	
+
 	/*-- ---------------------错误日志记录-------------------------------------------*/
 	@Autowired
 	private EErrorsMapper logMapper;
-	
+
 	/*-----------------------------------------*/
 	@Autowired
 	private UBranchtransaccountsMapper transMapper;
 	@Autowired
 	private UBranchtransamountlogMapper transLogMapper;
-	
+
 	@Resource(name = "baseUserAccountService")
 	private IBaseUserAccountService accountService;
 	@Autowired
 	private UAccountslogsMapper accountslogsMapper;
-	
+
 	/**
 	 * 订单支付成功 回写
 	 */
@@ -110,91 +110,83 @@ public class BasePayServiceImpl implements IBasePayService{
 		if (!ObjectUtil.isEmpty(payId)) {
 			try {
 				OPayorder payOrder = payOrderMapper.selectByPrimaryKey(payId);
-				if (payOrder != null && payOrder.getStatus()!=null && payOrder.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())) {
-					int orderType=payOrder.getOrdertype()==null?0:payOrder.getOrdertype();
+				if (payOrder != null && payOrder.getStatus() != null && payOrder.getStatus().intValue() == Integer.parseInt(OrderStatusEnum.noPay.toString())) {
+					int orderType = payOrder.getOrdertype() == null ? 0 : payOrder.getOrdertype();
 					/*-------------------------代理商货款充值-----------------------------------------------------*/
-					if(orderType==Integer.parseInt(PayOrderTypeEnum.chongzhi.toString())) {
+					if (orderType == Integer.parseInt(PayOrderTypeEnum.chongzhi.toString())) {
 						accountService.add_accountsLog(payOrder.getUserid(), Integer.parseInt(AccountLogType.get_recharge.toString()), payOrder.getTotalprice(), payId, "");
-					}
-					else if (orderType==Integer.parseInt(PayOrderTypeEnum.postage.toString())) {
+					} else if (orderType == Integer.parseInt(PayOrderTypeEnum.postage.toString())) {
 						/*-----------------------------代理商邮费 充值------------------------------------------*/
 						accountService.add_accountsLog(payOrder.getUserid(), Integer.parseInt(AccountLogType.get_recharge.toString()), payOrder.getTotalprice(), payId, "");
 					}/*-------------------------------------------------------------------*/
-					else if (orderType==Integer.parseInt(PayOrderTypeEnum.redPackets.toString())) {
-						//发红包------------------------
-						OPayorderwalletdetails walletDetails=owalletMapper.selectByPrimaryKey(payId);
-						if(walletDetails!=null){
+					else if (orderType == Integer.parseInt(PayOrderTypeEnum.redPackets.toString())) {
+						// 发红包------------------------
+						OPayorderwalletdetails walletDetails = owalletMapper.selectByPrimaryKey(payId);
+						if (walletDetails != null) {
 							walletDetails.setStatus(Integer.parseInt(PayOrderStatusEnums.payed.toString()));
 							owalletMapper.updateByPrimaryKeySelective(walletDetails);
-							//更新收到红包 用户的账户信息
+							// 更新收到红包 用户的账户信息
 							accountService.add_accountsLog(walletDetails.getForuserid(), Integer.parseInt(AccountLogType.get_redPackets.toString()), payOrder.getTotalprice(), payId, "");
-						}else {
-							addlog("payId:"+payId+",方法paySuccessProcess。发红包有误，找不到支付记录！");
+						} else {
+							addlog("payId:" + payId + ",方法paySuccessProcess。发红包有误，找不到支付记录！");
 							return false;
 						}
 					}
-					/************************------------普通购物------------------********************************/
-					else {//购物
+					/************************ ------------普通购物------------------ ********************************/
+					else {// 购物
 						OUserorders userorders = userOrdersMapper.selectByPrimaryKey(payOrder.getUserorderid());
-						if (userorders != null) {
-							if (userorders.getStatus().intValue() == Integer.parseInt(OrderStatusEnum.noPay.toString())) {
-								//订单作品详细
-								List<OOrderproductdetails> detailsList= odetailMapper.findOrderProductDetailsByProductOrderId(userorders.getUserorderid());
-								
-								//------更新订单状态----------------------------------------------
-								if(detailsList!=null&&detailsList.size()>0){
-									userorders.setStatus(Integer.parseInt(OrderStatusEnum.waitFoSend.toString()));
-									userorders.setUploadtime(new Date()); 
-								}else {
-									userorders.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
+						// 在可支付的状态中---
+						if (userorders != null && userorders.getStatus().intValue() == Integer.parseInt(OrderStatusEnum.noPay.toString())) {
+							double walletPayAmount = payOrder.getWalletamount() == null ? 0d : payOrder.getWalletamount().doubleValue();
+							// ------------------使用了钱包------------------------------------------
+							if (walletPayAmount > 0) {
+								UAccounts accounts = accountsMapper.selectByPrimaryKey(payOrder.getUserid());
+								Double freeAmount = accounts == null ? 0d : (accounts.getFreezecashamount() == null ? 0d : accounts.getFreezecashamount().doubleValue());
+								if (walletPayAmount > freeAmount) {// 钱包需要支付的金额不够！
+									addlog("payId:" + payId + ",方法paySuccessProcess。用到了钱包，但是钱包金额有误！");
+									return false;
 								}
+								// 插入钱包支付流水
+								UAccountslogs log = new UAccountslogs();
+								log.setUserid(payOrder.getUserid());
+								log.setCreatetime(new Date());
+								log.setType(Integer.parseInt(AccountLogType.use_payment.toString()));
+								log.setAmount((-1) * Math.abs(payOrder.getWalletamount()));
+								log.setOrderid(payId);
+								accountslogsMapper.insert(log);
+								// 更新钱包的冻结金额
+								accounts.setFreezecashamount(accounts.getFreezecashamount().doubleValue() - payOrder.getWalletamount().doubleValue());
+								accountsMapper.updateByPrimaryKeySelective(accounts);
+
+							} else {
 								userorders.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString()));
-								userorders.setPaytime(new Date()); 
-							
-								
-								//是否用钱包支付了---------------------
-								if(payOrder.getWalletamount()!=null&&payOrder.getWalletamount().doubleValue()>0){
-									UAccounts accounts=accountsMapper.selectByPrimaryKey(payOrder.getUserid());
-									Double freeAmount=accounts==null?0d:(accounts.getFreezecashamount()==null?0d:accounts.getFreezecashamount().doubleValue());
-									if(payOrder.getWalletamount().doubleValue()>freeAmount){
-										addlog("payId:"+payId+",方法paySuccessProcess。用到了钱包，但是钱包金额有误！");
-										return false;
-									}
-									//释放红包冻结金额
-									UAccountslogs log=new UAccountslogs();
-									log.setUserid(payOrder.getUserid());
-									log.setCreatetime(new Date());
-									log.setType(Integer.parseInt(AccountLogType.use_payment.toString()));
-									log.setAmount((-1)*Math.abs(payOrder.getWalletamount()));
-									log.setOrderid(payId);
-									accountslogsMapper.insert(log);
-									//更新钱包的冻结金额
-									accounts.setFreezecashamount(accounts.getFreezecashamount().doubleValue()-payOrder.getWalletamount().intValue());
-									accountsMapper.updateByPrimaryKeySelective(accounts);
-								}
-								//更新订单的状态---
-								userOrdersMapper.updateByPrimaryKeySelective(userorders);
-								//分提成
-//								addOrderExtend(payOrder);
 							}
+							userorders.setPaytime(new Date());
+							userorders.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
+							// 支付单状态修改
+							payOrder.setPaytime(new Date());
+							payOrder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
+							double payAmount = payOrder.getTotalprice() - (payOrder.getWalletamount() == null ? 0d : payOrder.getWalletamount().doubleValue());
+							if (payAmount <= 0) {// 钱包支付
+								payOrder.setPaytype(Integer.parseInt(PayTypeEnum.walletPay.toString()));
+								userorders.setPaytype(Integer.parseInt(PayTypeEnum.walletPay.toString()));
+							} else {
+								payOrder.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString()));
+							}
+							// 支付单修改
+							payOrderMapper.updateByPrimaryKeySelective(payOrder);
+							// 订单状态修改
+							userOrdersMapper.updateByPrimaryKeySelective(userorders);
+							return true;
+						} else {// 不在支付状态中
+							addlog("payId:" + payId + ",方法paySuccessProcess。不在可支付的userOrder状态！");
 						}
 					}
-					//更新支付订单状态-----------------------
-					payOrder.setPaytime(new Date());
-					payOrder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
-					double payAmount=payOrder.getTotalprice()-(payOrder.getWalletamount()==null?0d:payOrder.getWalletamount().doubleValue());
-					if(payAmount<=0){//钱包支付
-						payOrder.setPaytype(Integer.parseInt(PayTypeEnum.walletPay.toString())); 
-					}else {
-						payOrder.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString())); 
-					}
-					payOrderMapper.updateByPrimaryKeySelective(payOrder);
-					return true;
-				}else {
-					addlog("payId:"+payId+",方法paySuccessProcess。不在可支付的状态！");
+				} else {
+					addlog("payId:" + payId + ",方法paySuccessProcess。不在可支付的状态！");
 				}
 			} catch (Exception e) {
-				addlog("payId:"+payId+",方法paySuccessProcess。"+e.getMessage());
+				addlog("payId:" + payId + ",方法paySuccessProcess。" + e.getMessage());
 			}
 		}
 		return false;
@@ -202,13 +194,14 @@ public class BasePayServiceImpl implements IBasePayService{
 
 	/**
 	 * 上级订单
+	 * 
 	 * @param payorder
 	 */
-	public void addOrderExtend(OPayorder payorder){
+	public void addOrderExtend(OPayorder payorder) {
 		try {
-			UUsers user= usersMapper.selectByPrimaryKey(payorder.getUserid());
-			if(user!=null&&user.getUpuserid()!=null&&user.getUpuserid()>0){
-				OPayorderext ext=new OPayorderext();
+			UUsers user = usersMapper.selectByPrimaryKey(payorder.getUserid());
+			if (user != null && user.getUpuserid() != null && user.getUpuserid() > 0) {
+				OPayorderext ext = new OPayorderext();
 				ext.setPayid(payorder.getPayid());
 				ext.setUserorderid(payorder.getUserorderid());
 				ext.setUserid(payorder.getUserid());
@@ -219,26 +212,25 @@ public class BasePayServiceImpl implements IBasePayService{
 				oextMapper.insert(ext);
 			}
 		} catch (Exception e) {
-			addlog("userOrderId:"+payorder.getUserorderid()+",方法addOrderExtend。"+e.getMessage());
+			addlog("userOrderId:" + payorder.getUserorderid() + ",方法addOrderExtend。" + e.getMessage());
 		}
 	}
-	
-	
+
 	/**
 	 * 订单完成后新增销量
 	 */
-	public void addProductExt(String userOrderId){
+	public void addProductExt(String userOrderId) {
 		try {
-			OOrderproducts oproduct= oproductMapper.getOProductsByOrderId(userOrderId);
-			if(oproduct!=null&&oproduct.getSalesuserid()!=null){
-				PProductstyleexp styleExp= styltExpMapper.selectByPrimaryKey(oproduct.getSalesuserid());
-				if(styleExp!=null){
-					int count=styleExp.getSalecount()==null?0:styleExp.getSalecount();
-					styleExp.setSalecount(count+oproduct.getCount()); 
-				}else {
-					PProductstyles style=styleMapper.selectByPrimaryKey(oproduct.getStyleid());
-					if(style!=null){
-						styleExp=new PProductstyleexp();
+			OOrderproducts oproduct = oproductMapper.getOProductsByOrderId(userOrderId);
+			if (oproduct != null && oproduct.getSalesuserid() != null) {
+				PProductstyleexp styleExp = styltExpMapper.selectByPrimaryKey(oproduct.getSalesuserid());
+				if (styleExp != null) {
+					int count = styleExp.getSalecount() == null ? 0 : styleExp.getSalecount();
+					styleExp.setSalecount(count + oproduct.getCount());
+				} else {
+					PProductstyles style = styleMapper.selectByPrimaryKey(oproduct.getStyleid());
+					if (style != null) {
+						styleExp = new PProductstyleexp();
 						styleExp.setStyleid(oproduct.getStyleid());
 						styleExp.setProductid(style.getProductid());
 						styleExp.setSalecount(oproduct.getCount());
@@ -247,10 +239,10 @@ public class BasePayServiceImpl implements IBasePayService{
 				}
 			}
 		} catch (Exception e) {
-			addlog("userOrderId："+userOrderId+",方法addProductExt。"+e); 
+			addlog("userOrderId：" + userOrderId + ",方法addProductExt。" + e);
 		}
 	}
-	
+
 	/**
 	 * 插入错误Log
 	 * 
@@ -261,10 +253,10 @@ public class BasePayServiceImpl implements IBasePayService{
 			EErrors errors = new EErrors();
 			errors.setClassname(this.getClass().getName());
 			errors.setMsg(msg);
-			errors.setCreatetime(new Date()); 
+			errors.setCreatetime(new Date());
 			logMapper.insert(errors);
 		} catch (Exception e) {
-			
+
 		}
 	}
 

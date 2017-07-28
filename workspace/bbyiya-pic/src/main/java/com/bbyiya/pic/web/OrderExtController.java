@@ -106,32 +106,6 @@ public class OrderExtController  extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-//	@ResponseBody
-//	@RequestMapping(value = "/walletPay")
-//	public String walletPay(String payId) throws Exception {
-//		ReturnModel rq = new ReturnModel();
-//		LoginSuccessResult user = super.getLoginUser();
-//		if (user != null) {
-//			OPayorder payorder=payMapper.selectByPrimaryKey(payId);
-//			if(payorder!=null&&payorder.getUserid()!=null&&payorder.getUserid().longValue()==user.getUserId().longValue()){
-//				double payPrice=payorder.getTotalprice()-(payorder.getWalletamount()==null?0d:payorder.getWalletamount().doubleValue());
-//				if(payPrice<=0d){
-//					boolean result=orderMgtService.paySuccessProcess(payId);
-//					if(result){
-//						rq.setStatu(ReturnStatus.Success);
-//						rq.setStatusreson("支付成功");
-//					}else {
-//						rq.setStatu(ReturnStatus.SystemError);
-//						rq.setStatusreson("失败");
-//					}
-//				}
-//			}
-//		} else {
-//			rq.setStatu(ReturnStatus.LoginError);
-//			rq.setStatusreson("登录过期");
-//		}
-//		return JsonUtil.objectToJsonStr(rq);
-//	}
 	
 	public List<Map<String, Object>> findlist(int size){
 		String key="orderlastlist_key_"+size;

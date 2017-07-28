@@ -165,6 +165,7 @@ public class BasePayServiceImpl implements IBasePayService{
 									log.setUserid(payOrder.getUserid());
 									log.setCreatetime(new Date());
 									log.setType(Integer.parseInt(AccountLogType.use_payment.toString()));
+									log.setAmount((-1)*Math.abs(payOrder.getWalletamount()));
 									log.setOrderid(payId);
 									accountslogsMapper.insert(log);
 									//更新钱包的冻结金额
@@ -181,7 +182,12 @@ public class BasePayServiceImpl implements IBasePayService{
 					//更新支付订单状态-----------------------
 					payOrder.setPaytime(new Date());
 					payOrder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
-					payOrder.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString())); 
+					double payAmount=payOrder.getTotalprice()-(payOrder.getWalletamount()==null?0d:payOrder.getWalletamount().doubleValue());
+					if(payAmount<=0){//钱包支付
+						payOrder.setPaytype(Integer.parseInt(PayTypeEnum.walletPay.toString())); 
+					}else {
+						payOrder.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString())); 
+					}
 					payOrderMapper.updateByPrimaryKeySelective(payOrder);
 					return true;
 				}else {

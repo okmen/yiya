@@ -7,9 +7,13 @@ public enum PayTypeEnum {
      */
     weiXin(1),
 	/**
-     * 预存款
+     * 预存款（企业账户）
      */
-    yiyaCash(2)
+    yiyaCash(2),
+    /**
+     * 钱包支付（普通用户）
+     */
+    walletPay(3)
     ;
 
     private final int Type;

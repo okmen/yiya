@@ -7,7 +7,7 @@
     <result column="FreezeCashAmount" property="freezecashamount" jdbcType="DOUBLE" />
   </resultMap>
   <sql id="Base_Column_List" >
-    UserID, AvailableAmount
+    UserID, AvailableAmount,FreezeCashAmount
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 

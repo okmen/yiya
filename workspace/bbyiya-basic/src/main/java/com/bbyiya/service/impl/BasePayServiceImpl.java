@@ -169,7 +169,7 @@ public class BasePayServiceImpl implements IBasePayService{
 									log.setOrderid(payId);
 									accountslogsMapper.insert(log);
 									//更新钱包的冻结金额
-									accounts.setFreezecashamount(accounts.getFreezecashamount().doubleValue()-payOrder.getWalletamount().intValue());
+									accounts.setFreezecashamount(accounts.getFreezecashamount().doubleValue()-payOrder.getWalletamount().doubleValue());
 									accountsMapper.updateByPrimaryKeySelective(accounts);
 								}
 								//更新订单的状态---

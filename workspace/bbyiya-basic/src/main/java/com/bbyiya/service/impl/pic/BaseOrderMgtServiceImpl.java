@@ -332,7 +332,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					orderTotalPrice+=param.getPostPrice();
 					userOrder.setOrdertotalprice(orderTotalPrice);//订单总价 
 				}
-				Double walletAmount=0.0;
+				
 				//是否优惠购买
 				if(userOrder.getUserid()!=null&&param.getCartId()!=null){
 					List<DMyproductdiscountmodel> dislit=discountService.findMycartDiscount(userOrder.getUserid(), param.getCartId());
@@ -344,14 +344,13 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 									orderTotalPrice=orderTotalPrice-dis.getAmount();
 									userOrder.setOrdertotalprice(orderTotalPrice); 
 								}
-								
-								//add at 2017-07-21 by julie得到可减免的红包金额转移到冻结账户
-								walletAmount=accountService.transferCashAccountsToFreeze(userOrder.getUserid(),orderTotalPrice);
 							}
 						}
 					}
 				}
-				
+				Double walletAmount=0.0;
+				//add at 2017-07-21 by julie得到可减免的红包金额转移到冻结账户
+				walletAmount=accountService.transferCashAccountsToFreeze(userOrder.getUserid(),orderTotalPrice);
 				// 插入支付订单记录
 				addPayOrder(param.getUserId(), payId, payId, orderTotalPrice,walletAmount);
 				// 插入客户记录------------------------------------------------------

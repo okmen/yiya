@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.dao.OOrderproductsMapper;
+import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductsinvitesMapper;
 import com.bbyiya.dao.PProductstylesMapper;
@@ -23,10 +24,12 @@ import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.OOrderproducts;
+import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproductsinvites;
 import com.bbyiya.model.PProductstyles;
 import com.bbyiya.model.UUsers;
+import com.bbyiya.service.IBasePayService;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
@@ -51,8 +54,12 @@ public class OrderExtController  extends SSOController {
 	private PMyproductsinvitesMapper inviteMapper;
 	@Autowired
 	private UUsersMapper userMapper;
+	@Autowired
+	private OPayorderMapper payMapper;
 	@Resource(name="baseOrderMgtServiceImpl")
 	private IBaseOrderMgtService orderservice;
+	@Resource(name = "basePayServiceImpl")
+	private IBasePayService orderMgtService;
 	
 	
 	/**
@@ -98,6 +105,33 @@ public class OrderExtController  extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+//	@ResponseBody
+//	@RequestMapping(value = "/walletPay")
+//	public String walletPay(String payId) throws Exception {
+//		ReturnModel rq = new ReturnModel();
+//		LoginSuccessResult user = super.getLoginUser();
+//		if (user != null) {
+//			OPayorder payorder=payMapper.selectByPrimaryKey(payId);
+//			if(payorder!=null&&payorder.getUserid()!=null&&payorder.getUserid().longValue()==user.getUserId().longValue()){
+//				double payPrice=payorder.getTotalprice()-(payorder.getWalletamount()==null?0d:payorder.getWalletamount().doubleValue());
+//				if(payPrice<=0d){
+//					boolean result=orderMgtService.paySuccessProcess(payId);
+//					if(result){
+//						rq.setStatu(ReturnStatus.Success);
+//						rq.setStatusreson("支付成功");
+//					}else {
+//						rq.setStatu(ReturnStatus.SystemError);
+//						rq.setStatusreson("失败");
+//					}
+//				}
+//			}
+//		} else {
+//			rq.setStatu(ReturnStatus.LoginError);
+//			rq.setStatusreson("登录过期");
+//		}
+//		return JsonUtil.objectToJsonStr(rq);
+//	}
 	
 	public List<Map<String, Object>> findlist(int size){
 		String key="orderlastlist_key_"+size;

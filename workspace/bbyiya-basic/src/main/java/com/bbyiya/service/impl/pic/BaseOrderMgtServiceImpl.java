@@ -186,6 +186,8 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	private UBranchtransaccountsMapper transMapper;
 	@Resource(name = "baseDiscountServiceImpl")
 	private IBaseDiscountService discountService;
+	@Resource(name = "basePayServiceImpl")
+	private IBasePayService orderMgtService;
 
 	/**
 	 * 提交订单（param已经被验证）
@@ -332,7 +334,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					orderTotalPrice+=param.getPostPrice();
 					userOrder.setOrdertotalprice(orderTotalPrice);//订单总价 
 				}
-				Double walletAmount=0.0;
+				
 				//是否优惠购买
 				if(userOrder.getUserid()!=null&&param.getCartId()!=null){
 					List<DMyproductdiscountmodel> dislit=discountService.findMycartDiscount(userOrder.getUserid(), param.getCartId());
@@ -344,14 +346,13 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 									orderTotalPrice=orderTotalPrice-dis.getAmount();
 									userOrder.setOrdertotalprice(orderTotalPrice); 
 								}
-								
-								//add at 2017-07-21 by julie得到可减免的红包金额转移到冻结账户
-								walletAmount=accountService.transferCashAccountsToFreeze(userOrder.getUserid(),orderTotalPrice);
 							}
 						}
 					}
 				}
-				
+				Double walletAmount=0.0;
+				//add at 2017-07-21 by julie得到可减免的红包金额转移到冻结账户
+				walletAmount=accountService.transferCashAccountsToFreeze(userOrder.getUserid(),orderTotalPrice);
 				// 插入支付订单记录
 				addPayOrder(param.getUserId(), payId, payId, orderTotalPrice,walletAmount);
 				// 插入客户记录------------------------------------------------------
@@ -1089,7 +1090,9 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					payorderNew.setUserid(payorder.getUserid());
 					payorderNew.setPaytype(payorder.getPaytype());
 					payorderNew.setTotalprice(orderTotalPrice);
-					payorderNew.setStatus(payorder.getStatus());
+					payorderNew.setWalletamount(payorder.getWalletamount()); 
+					payorderNew.setCashamount(orderTotalPrice-(payorder.getWalletamount()==null?0d:payorder.getWalletamount().doubleValue()));
+					payorderNew.setStatus(payorder.getStatus()); 
 					payorderNew.setOrdertype(payorder.getOrdertype());
 					payorderNew.setCreatetime(new Date());
 					payOrderMapper.insert(payorderNew);
@@ -1274,8 +1277,20 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				}
 				if(orderInfo.getStatus()!=null&&orderInfo.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
 					Map<String, Object> map=new HashMap<String, Object>();
-					map.put("payId", userorders.getPayid());
-					map.put("totalPrice", orderInfo.getTotalprice());
+					double payPrice=orderInfo.getTotalprice()-(orderInfo.getWalletamount()==null?0d:orderInfo.getWalletamount().doubleValue());				
+					if(payPrice<=0d){
+						//钱包全额支付
+						if(orderMgtService.paySuccessProcess(userorders.getPayid())){
+							map.put("payed", 1); 
+						}else {
+							rq.setStatu(ReturnStatus.SystemError);
+							rq.setStatusreson("支付失败");
+							return rq;
+						} 
+					}
+					map.put("payId", userorders.getPayid()); 
+					map.put("totalPrice", orderInfo.getTotalprice()-(orderInfo.getWalletamount()==null?0d:orderInfo.getWalletamount().doubleValue()));
+					
 					rq.setStatu(ReturnStatus.Success);
 					rq.setBasemodle(map);
 				}else {

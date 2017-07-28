@@ -17,7 +17,7 @@
     <result column="CashAmount" property="cashamount" jdbcType="DOUBLE" />
   </resultMap>
   <sql id="Base_Column_List" >
-   PayId, UserOrderId, UserId, PrepayId, Status, TotalPrice, CreateTime, PrepayTime, PayTime, PayType,OrderType
+   PayId, UserOrderId, UserId, PrepayId, Status, TotalPrice, CreateTime, PrepayTime, PayTime, PayType,OrderType,WalletAmount,CashAmount
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 

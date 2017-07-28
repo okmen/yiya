@@ -34,6 +34,7 @@ public class MyProductsTempVo implements Serializable{
 	private Double publicAmountNeedMore;
 	
 	private String QRCodeUrl;
+	private String QRcontent;
 	
 	private List<DMyproductdiscountmodel> discountList;
 	
@@ -102,6 +103,12 @@ public class MyProductsTempVo implements Serializable{
 	}
 	public void setQRCodeUrl(String qRCodeUrl) {
 		QRCodeUrl = qRCodeUrl;
+	}
+	public String getQRcontent() {
+		return QRcontent;
+	}
+	public void setQRcontent(String qRcontent) {
+		QRcontent = qRcontent;
 	}
 	
 	

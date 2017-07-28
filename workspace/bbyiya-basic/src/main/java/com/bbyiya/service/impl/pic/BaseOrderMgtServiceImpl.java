@@ -186,6 +186,8 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	private UBranchtransaccountsMapper transMapper;
 	@Resource(name = "baseDiscountServiceImpl")
 	private IBaseDiscountService discountService;
+	@Resource(name = "basePayServiceImpl")
+	private IBasePayService orderMgtService;
 
 	/**
 	 * 提交订单（param已经被验证）
@@ -1088,7 +1090,9 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					payorderNew.setUserid(payorder.getUserid());
 					payorderNew.setPaytype(payorder.getPaytype());
 					payorderNew.setTotalprice(orderTotalPrice);
-					payorderNew.setStatus(payorder.getStatus());
+					payorderNew.setWalletamount(payorder.getWalletamount()); 
+					payorderNew.setCashamount(orderTotalPrice-(payorder.getWalletamount()==null?0d:payorder.getWalletamount().doubleValue()));
+					payorderNew.setStatus(payorder.getStatus()); 
 					payorderNew.setOrdertype(payorder.getOrdertype());
 					payorderNew.setCreatetime(new Date());
 					payOrderMapper.insert(payorderNew);
@@ -1217,7 +1221,6 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			if(!ObjectUtil.isEmpty(orderInfo.getPaytime())){ 
 				model.setPayTimeStr(DateUtil.getTimeStr(orderInfo.getPaytime(), "yyyy-MM-dd HH:mm:ss")); 
 			}
-			model.setPayType(orderInfo.getPaytype());
 			if(!ObjectUtil.isEmpty(orderInfo.getPayid())){
 				OPayorder payorder=payOrderMapper.selectByPrimaryKey(orderInfo.getPayid());
 				if(payorder!=null){
@@ -1225,6 +1228,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					model.setCashAmount(payorder.getCashamount());
 					model.setWalletAmount(payorder.getWalletamount());
 					model.setDisAmount(orderInfo.getTotalprice()+(orderInfo.getPostage()==null?0d:orderInfo.getPostage())-orderInfo.getOrdertotalprice());				
+					model.setPayType(payorder.getPaytype()); 
 				}
 			}
 			
@@ -1273,8 +1277,22 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				}
 				if(orderInfo.getStatus()!=null&&orderInfo.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.noPay.toString())){
 					Map<String, Object> map=new HashMap<String, Object>();
-					map.put("payId", userorders.getPayid());
-					map.put("totalPrice", orderInfo.getTotalprice());
+					double payPrice=orderInfo.getTotalprice().doubleValue()-(orderInfo.getWalletamount()==null?0d:orderInfo.getWalletamount().doubleValue());				
+					if(payPrice<=0d){
+						//钱包全额支付
+						if(orderMgtService.paySuccessProcess(userorders.getPayid())){
+							map.put("payed", 1); 
+						}else {
+							rq.setStatu(ReturnStatus.SystemError);
+							rq.setStatusreson("支付失败");
+							return rq;
+						} 
+					}else {
+						map.put("payed", 0); 
+					}
+					map.put("payId", userorders.getPayid()); 
+					map.put("totalPrice", orderInfo.getTotalprice()-(orderInfo.getWalletamount()==null?0d:orderInfo.getWalletamount().doubleValue()));
+					
 					rq.setStatu(ReturnStatus.Success);
 					rq.setBasemodle(map);
 				}else {

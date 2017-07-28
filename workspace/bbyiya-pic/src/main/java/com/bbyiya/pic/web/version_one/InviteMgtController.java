@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
+import com.bbyiya.dao.UAccountsMapper;
 import com.bbyiya.dao.UAgentcustomersMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.enums.ReturnStatus;
@@ -17,6 +18,7 @@ import com.bbyiya.enums.pic.InviteStatus;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
+import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UUseraddress;
 import com.bbyiya.pic.service.IPic_myProductService;
@@ -43,6 +45,8 @@ public class InviteMgtController  extends SSOController {
 	private PMyproducttempMapper tempMapper;
 	@Autowired
 	private UAgentcustomersMapper customerMapper;
+	@Autowired
+	private UAccountsMapper accountMapper;
 	
 	@Resource(name = "regionServiceImpl")
 	private IRegionService regionService;
@@ -87,7 +91,6 @@ public class InviteMgtController  extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			
 			if(status!=null&&status==Integer.parseInt(InviteStatus.ok.toString())){
 				//更新用户活动收获地址信息
 				long userAddressId=ObjectUtil.parseLong(addressId);
@@ -112,11 +115,24 @@ public class InviteMgtController  extends SSOController {
 						apply.setStreet(address.getStreetdetail());
 						apply.setArea(address.getArea());
 						apply.setAdress(regionService.getProvinceName(address.getProvince())+regionService.getCityName(address.getCity())+regionService.getAresName(address.getArea())+address.getStreetdetail());
-						tempApplyMapper.updateByPrimaryKeySelective(apply);
-						
+												
 						//异业合作模板
 						PMyproducttemp temp=tempMapper.selectByPrimaryKey(apply.getTempid());
-						if(temp!=null){
+						if(temp!=null) {
+							if(temp.getAmountlimit()!=null&&temp.getAmountlimit()>0){
+								UAccounts accounts=accountMapper.selectByPrimaryKey(user.getUserId());
+								//账户可用金额
+								double amounts= accounts==null?0d:(accounts.getAvailableamount()==null?0d:accounts.getAvailableamount().doubleValue());
+
+								if (amounts < temp.getAmountlimit().doubleValue()) {
+									rq.setStatu(ReturnStatus.ParamError);
+									rq.setStatusreson("众筹金额不足！");
+									return JsonUtil.objectToJsonStr(rq);
+								}
+								accounts.setFreezecashamount(temp.getAmountlimit());
+								accounts.setAvailableamount(amounts - temp.getAmountlimit().doubleValue());
+								accountMapper.updateByPrimaryKeySelective(accounts);
+							}
 							UAgentcustomers customer= customerMapper.getCustomersByBranchUserId(temp.getBranchuserid(), user.getUserId());
 							if(customer!=null){
 								if(ObjectUtil.isEmpty(customer.getPhone())){
@@ -128,7 +144,8 @@ public class InviteMgtController  extends SSOController {
 								}
 							}
 						}
-						
+						//更新申请状态
+						tempApplyMapper.updateByPrimaryKeySelective(apply);
 					}
 				}//收获地址信息（完）------------------
 				

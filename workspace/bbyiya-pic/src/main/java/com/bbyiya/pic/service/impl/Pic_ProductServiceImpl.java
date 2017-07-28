@@ -1240,6 +1240,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			MyProductsTempVo vo=new MyProductsTempVo();
 			if(!ObjectUtil.isEmpty(mtemp.getCodeurl())){
 				vo.setQRCodeUrl(mtemp.getCodeurl()); 
+				vo.setQRcontent(mtemp.getTempcodesm());
 			}
 			//是否限定完成人数
 			if(mtemp.getMaxcompletecount()!=null&&mtemp.getMaxcompletecount()>0){

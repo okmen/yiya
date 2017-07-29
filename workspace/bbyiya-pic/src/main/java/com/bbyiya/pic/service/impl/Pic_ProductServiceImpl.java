@@ -1060,7 +1060,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 	
 
 	
-	public ReturnModel getPublicFincingInfo(long cartId){
+	public ReturnModel getPublicFincingInfo(long cartId,long userId){
 		
 		ReturnModel rq=new ReturnModel();
 		Map<String, Object> map=new HashMap<String, Object>();
@@ -1106,6 +1106,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				}else {
 					pro.setPublicAmountNeed(temp.getAmountlimit());
 				} 
+			}
+			if(apply.getUserid()!=null&&apply.getUserid().longValue()==userId){
+				pro.setIsMine(1); 
 			}
 		}
 		map.put("pro", pro);

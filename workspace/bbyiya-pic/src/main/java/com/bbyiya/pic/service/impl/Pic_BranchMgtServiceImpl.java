@@ -317,13 +317,6 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 					areaplansMapper.deleteByPrimaryKey(ap.getAreacode());
 				}
 				if(areaList!=null&&areaList.size()>0){
-//					for (UAgentapplyareas app : areaList) {
-//						if(this.checkAreaCodeIsApply(applyInfo.getAgentuserid(),app.getAreacode())){
-//							rq.setStatu(ReturnStatus.ParamError);
-//							rq.setStatusreson("该区域["+regionService.getAresName(app.getAreacode())+"]已被代理，不能重复代理！");
-//							return rq;
-//						}
-//					}
 					//插入代理区域
 					for (UAgentapplyareas area : areaList) {
 						RAreaplans areaplan=areaplansMapper.selectByPrimaryKey(area.getAreacode());
@@ -342,6 +335,20 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 							areaplansMapper.insert(areaplan);
 						}
 					}
+					//如是是正式代理商，同步更新
+					UAgents agentModel=agentsMapper.selectByPrimaryKey(apply.getAgentuserid());
+					if(agentModel!=null){
+						agentModel.setProvince(areaList.get(0).getProvincecode());
+						agentModel.setCity(areaList.get(0).getCitycode());
+						agentModel.setArea(areaList.get(0).getAreacode());
+						agentModel.setAgentcompanyname(applyInfo.getAgentcompanyname());
+						agentModel.setContactname(applyInfo.getContactname());
+						agentModel.setPhone(applyInfo.getPhone());
+						agentModel.setStreetdetail(applyInfo.getStreetdetail());
+						agentModel.setUsername(applyInfo.getUsername());
+						agentsMapper.updateByPrimaryKeySelective(agentModel);
+					}
+
 				}
 			}
 			agentapplyMapper.updateByPrimaryKeySelective(applyInfo);

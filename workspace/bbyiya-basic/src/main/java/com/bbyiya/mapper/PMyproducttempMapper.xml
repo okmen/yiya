@@ -52,8 +52,8 @@
     <if test="status != null" >
        and  Status = #{status,jdbcType=INTEGER}
     </if>
-     <if test="keywords != null and keywords!=''" > 
-       and  Title LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' )
+    <if test="keywords != null and keywords!=''" > 
+       and  (TempId=#{keywords,jdbcType=VARCHAR} OR Title LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ))
     </if>
     order by CreateTime desc
   </select>

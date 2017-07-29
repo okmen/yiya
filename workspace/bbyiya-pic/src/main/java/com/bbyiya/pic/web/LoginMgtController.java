@@ -60,7 +60,11 @@ public class LoginMgtController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	
+	/**
+	 * 退出登录
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/loginOut")
 	public String loginOuts() throws Exception {

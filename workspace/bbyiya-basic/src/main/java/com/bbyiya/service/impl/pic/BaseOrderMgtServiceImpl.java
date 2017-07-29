@@ -687,7 +687,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 
 							if (accounts != null && accounts.getAvailableamount() != null && accounts.getAvailableamount().doubleValue() >= cashAmount) {
 								// 影楼订单，直接预存款支付 ， 插入支付记录
-								if (payOrder_logAdd(param.getBranchUserId(), orderId, orderId, payprice,walletAmount,cashAmount)) {
+								if (payOrder_logAdd(param.getBranchUserId(), orderId, orderId, cashAmount,walletAmount,cashAmount)) {
 									
 									userOrder_Repeat.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
 									userOrder_Repeat.setPaytime(new Date());
@@ -1473,7 +1473,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 			payOrderMapper.insert(payorder);
 			
 			//消费扣减余额
-			accountService.add_accountsLog(userId, Integer.parseInt(AccountLogType.use_payment.toString()), payprice, payId, userOrderId);
+			accountService.add_accountsLog(userId, Integer.parseInt(AccountLogType.use_payment.toString()), cashamount, payId, userOrderId);
 			
 			//订单完成后新增销量
 			basePayService.addProductExt(userOrderId);

@@ -43,7 +43,7 @@ public class Pic_PayMgtServiceImpl implements IPic_PayMgtService {
 			double totalPrice = 0d;
 			OPayorder payorder = payMapper.selectByPrimaryKey(orderNo);
 			if (payorder != null) {
-				totalPrice = payorder.getTotalprice();
+				totalPrice = payorder.getTotalprice()-(payorder.getWalletamount()==null?0d:payorder.getWalletamount().doubleValue()); 
 				if (!ObjectUtil.isEmpty(payorder.getPrepayid())) {
 					prepay_id = payorder.getPrepayid();
 				}

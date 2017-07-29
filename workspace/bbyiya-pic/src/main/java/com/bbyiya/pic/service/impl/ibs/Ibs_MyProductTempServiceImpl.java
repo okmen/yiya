@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.dao.PMyproductactivitycodeMapper;
 import com.bbyiya.dao.PMyproductchildinfoMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.PMyproductsMapper;
@@ -40,6 +41,7 @@ import com.bbyiya.enums.pic.InviteStatus;
 import com.bbyiya.enums.pic.InviteType;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
 import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
+import com.bbyiya.model.PMyproductactivitycode;
 import com.bbyiya.model.PMyproductchildinfo;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
@@ -75,6 +77,8 @@ import com.github.pagehelper.PageInfo;
 public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	@Autowired
 	private PMyproducttempMapper myproducttempMapper;
+	@Autowired
+	private PMyproductactivitycodeMapper codeMapper;
 	@Autowired
 	private PMyproducttempextMapper myproducttempextMapper;
 	@Autowired
@@ -406,6 +410,13 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);
 		if(type==null) type=0;
+		//通过关键字查询是否是兑换码
+		if(!ObjectUtil.isEmpty(keywords)){
+			PMyproductactivitycode code=codeMapper.selectByPrimaryKey(keywords);
+			if(code!=null){
+				keywords=code.getTempid().toString();
+			}
+		}
 		PageHelper.startPage(index, size);	
 		List<PMyproducttemp>  templist=myproducttempMapper.findBranchMyProductTempList(userid,status,keywords,type);
 		PageInfo<PMyproducttemp> reuslt=new PageInfo<PMyproducttemp>(templist); 

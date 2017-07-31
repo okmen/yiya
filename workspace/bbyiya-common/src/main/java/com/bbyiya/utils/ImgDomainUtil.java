@@ -12,19 +12,15 @@ public class ImgDomainUtil {
 	 */
 	private static List<Map<String, String>> imgdomainDefault=ConfigUtil.getMaplist("imguploadcdnsdefault");
 	
-	
+	/**
+	 * 获取全路径图片地址
+	 * @param imageUrl
+	 * @return
+	 */
 	public static String getImageUrl_Full(String imageUrl){
 		if(ObjectUtil.isEmpty(imageUrl))
 			return imageUrl;
 		if(imageUrl.contains("http://")||imageUrl.contains("https://")){
-//			for (Map<String, String> map : imgdomainDefault) {
-//				//随机域名
-//				if(imageUrl.contains(map.get("domain"))){
-//					int index = new Random().nextInt(imgdomainDefault.size());
-//					String imgdomain=imgdomainDefault.get(index).get("domain");
-//					return imageUrl.replace(map.get("domain"), imgdomain);
-//				}
-//			}
 			return imageUrl;
 		}
 		int index = new Random().nextInt(imgdomainDefault.size());
@@ -32,11 +28,26 @@ public class ImgDomainUtil {
 		return imgdomain+"/"+imageUrl;
 	}
 	
-//	public static String getImageUrl(String imageUrl,int size){
-//		if(ObjectUtil.isEmpty(imageUrl))
-//			return imageUrl;
-//		if(imageUrl.contains("http://")||imageUrl.contains("https://"))
-//			return imageUrl;
-//		return IMG_DOMAIN+imageUrl;
-//	}
+	/**
+	 * 获取原图
+	 * @param imageUrl
+	 * @return
+	 */
+	public static String getImageUrl_Sourse(String imageUrl){
+		if(ObjectUtil.isEmpty(imageUrl))
+			return imageUrl;
+		if(imageUrl.contains("http://")||imageUrl.contains("https://")){
+			for (Map<String, String> map : imgdomainDefault) {
+				if(imageUrl.contains(map.get("domain"))){
+					imageUrl= imageUrl.replace(map.get("domain"), map.get("source"));
+					return imageUrl;
+				}
+			}
+			return imageUrl;
+		}
+		int index = new Random().nextInt(imgdomainDefault.size());
+		String imgdomain=imgdomainDefault.get(index).get("domain");
+		return imgdomain+"/"+imageUrl;
+	}
+	
 }

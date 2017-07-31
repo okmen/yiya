@@ -30,6 +30,7 @@ import com.bbyiya.dao.PMyproducttempverlogsMapper;
 import com.bbyiya.dao.PMyproducttempverusersMapper;
 import com.bbyiya.dao.PProductsMapper;
 import com.bbyiya.dao.PProductstylesMapper;
+import com.bbyiya.dao.UAccountsMapper;
 import com.bbyiya.dao.UAgentcustomersMapper;
 import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UUsersMapper;
@@ -54,6 +55,7 @@ import com.bbyiya.model.PMyproducttempverlogs;
 import com.bbyiya.model.PMyproducttempverusers;
 import com.bbyiya.model.PProducts;
 import com.bbyiya.model.PProductstyles;
+import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUsers;
@@ -109,6 +111,8 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	private PProductsMapper productsMapper;
 	@Autowired
 	private PProductstylesMapper styleMapper;
+	@Autowired
+	private UAccountsMapper accountMapper;
 
 	/**
 	 * 优惠信息
@@ -920,16 +924,37 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		
 		PMyproducttempapply tempapply=myproducttempapplyMapper.getMyProducttempApplyByCartId(cartid);
 		if(tempapply!=null){
-			tempapply.setStatus(status);
-			tempapply.setReason(reason);
-			myproducttempapplyMapper.updateByPrimaryKeySelective(tempapply);
 			if(status==Integer.parseInt(MyProducttempApplyStatusEnum.nopass.toString())){
+				//异业合作模板:如果是红包众筹的活动则需要把红包冻结金额给退回
+				PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempapply.getTempid());
+				if(temp!=null) {
+					if(temp.getAmountlimit()!=null&&temp.getAmountlimit()>0){
+						UAccounts accounts=accountMapper.selectByPrimaryKey(tempapply.getUserid());
+
+						double freezeamounts= accounts==null?0d:(accounts.getFreezecashamount()==null?0d:accounts.getFreezecashamount().doubleValue());
+						double availableamount=accounts==null?0d:(accounts.getAvailableamount()==null?0d:accounts.getAvailableamount().doubleValue());
+						if (freezeamounts < temp.getAmountlimit().doubleValue()) {
+							rq.setStatu(ReturnStatus.ParamError);
+							rq.setStatusreson("冻结不足！");
+							return rq;
+						}
+						accounts.setFreezecashamount(freezeamounts-temp.getAmountlimit().doubleValue());
+						accounts.setAvailableamount(availableamount + temp.getAmountlimit().doubleValue());
+						accountMapper.updateByPrimaryKeySelective(accounts);
+					}
+					
+				}
+				
 				PMyproductsinvites invites=inviteMapper.getInviteByPhoneAndCartId(tempapply.getMobilephone(), cartid);
 				if(invites!=null){
 					invites.setStatus(Integer.parseInt(InviteStatus.agree.toString()));
 					inviteMapper.updateByPrimaryKeySelective(invites);
 				}
+				
 			}
+			tempapply.setStatus(status);
+			tempapply.setReason(reason);
+			myproducttempapplyMapper.updateByPrimaryKeySelective(tempapply);
 		}
 		
 		rq.setStatu(ReturnStatus.Success);

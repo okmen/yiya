@@ -153,7 +153,7 @@ public class MyProductController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			rq=proService.getPublicFincingInfo(cartId); 
+			rq=proService.getPublicFincingInfo(cartId,user.getUserId()); 
 		} else {// 非登录分享页
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("未登录");

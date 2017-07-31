@@ -10,6 +10,7 @@ public class PublicFinacingMyPro implements Serializable{
 	private Double price;
 	private String title;
 	private Double publicAmountNeed;
+	private int isMine;
 	public String getHeadImg() {
 		return headImg;
 	}
@@ -39,6 +40,12 @@ public class PublicFinacingMyPro implements Serializable{
 	}
 	public void setPublicAmountNeed(Double publicAmountNeed) {
 		this.publicAmountNeed = publicAmountNeed;
+	}
+	public int getIsMine() {
+		return isMine;
+	}
+	public void setIsMine(int isMine) {
+		this.isMine = isMine;
 	}
 	
 	

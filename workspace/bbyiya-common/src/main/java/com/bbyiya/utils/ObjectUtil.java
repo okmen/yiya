@@ -735,7 +735,7 @@ public class ObjectUtil {
 			buffer.flip();
 			return new String(buffer.array(), "utf-8");
 		} catch (Exception e) {
-			// TODO: handle exception
+			
 		}
 		return filterEmoji(text);
 	} 

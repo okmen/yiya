@@ -64,7 +64,7 @@ public class CommentsController extends SSOController{
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
 			if(!ObjectUtil.isEmpty(commentJson)){
-				commentJson=ObjectUtil.filterUtf8Mb4(commentJson);
+				commentJson=ObjectUtil.filterEmoji(commentJson);
 			}
 			PMyproductcomments param = Json2Objects.getParam_PMyproductcomments(commentJson);
 			if (param != null) {

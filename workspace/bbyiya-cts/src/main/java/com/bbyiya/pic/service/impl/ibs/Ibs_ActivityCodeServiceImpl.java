@@ -106,7 +106,6 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 
 		PMyproducts myproduct = new PMyproducts();	
 		myproduct.setUserid(userid);
-		//myproduct.setProductid(param.getProductid());
 		myproduct.setCreatetime(new Date());
 		myproduct.setStatus(Integer.parseInt(MyProductStatusEnum.ok.toString()));
 		myproduct.setUpdatetime(new Date());	
@@ -128,7 +127,6 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 		}if(!ObjectUtil.isEmpty(param.getCodesm())){
 			temp.setTempcodesm(param.getCodesm());
 		}
-		//temp.setStyleid(param.getStyleId());
 		temp.setIsautoorder(1);//默认都是自动下单0 手工下单，1自动下单
 		temp.setOrderhours(0); 
 		temp.setMaxapplycount(param.getApplycount()==null?0:param.getApplycount());//报名人数为0时不限制

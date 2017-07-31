@@ -41,47 +41,55 @@ public class HeartbeatJob extends QuartzJobBean {
 	}
 	
 	/**
-	 * ¹«ÓÃjob
+	 * å…¬ç”¨job
 	 */
 	private void JobRun(){
-		
-
 		try {
-			autoOrderService.dotempAutoOrderSumbit();
-			Log.info("dotempAutoOrderSumbitÖ´ĞĞ×Ô¶¯ÏÂµ¥²Ù×÷Íê³É£¡");
+			List<Map<String, String>> joblist=ConfigUtil.getMaplist("jobs");
+			//åŠ ä¸€ä¸ªå¼€å…³
+			if(joblist!=null&&joblist.size()>0){
+				for (Map<String, String> job : joblist) {
+					if(ObjectUtil.parseInt(job.get("seton"))==1&&job.get("id").equalsIgnoreCase("dotempAutoOrderSumbit")){
+						autoOrderService.dotempAutoOrderSumbit();
+						Log.info("dotempAutoOrderSumbitæ‰§è¡Œè‡ªåŠ¨ä¸‹å•æ“ä½œå®Œæˆï¼");
+					}
+				}	
+				
+			}
+			
 		} catch (Exception e) {
 			Log.error(e.toString());
-			Log.error("dotempAutoOrderSumbit·½·¨Ö´ĞĞ³ö´í£¡"+e.getMessage());
+			Log.error("dotempAutoOrderSumbitæ–¹æ³•æ‰§è¡Œå‡ºé”™ï¼"+e.getMessage());
 			e.printStackTrace();
 		}
 			
 //		synchronized(this){
-//			//»ñÈ¡¹«ÓÃjobµÄ·şÎñÁĞ±í
+//			//è·å–å…¬ç”¨jobçš„æœåŠ¡åˆ—è¡¨
 //			List<Map<String, String>> joblist=ConfigUtil.getMaplist("jobs");
 //			if(joblist!=null&&joblist.size()>0){
 //				String keyBase=ConfigUtil.getSingleValue("currentRedisKey-Base")+"_job";
 //				Date nowtime =new Date();
 //				for (Map<String, String> job : joblist) {
 //					if(ObjectUtil.parseInt(job.get("seton"))==1 ){
-//						//·şÎñµÄ keyid
+//						//æœåŠ¡çš„ keyid
 //						String key=keyBase+"_"+job.get("id");
 //						JobTime timeMod=  (JobTime)RedisUtil.getObject(key);
 //						if(timeMod!=null&&timeMod.getLastTime()!=null){
 //							long timeSpanLong= nowtime.getTime()-timeMod.getLastTime().getTime();
 //							long timeSpan=timeSpanLong/1000;
 //							if(timeSpan>ObjectUtil.parseLong(job.get("timespan"))){
-//								//´ïµ½jobµÄÖ´ĞĞÊ±¼ä
+//								//è¾¾åˆ°jobçš„æ‰§è¡Œæ—¶é—´
 //								if(ObjectUtil.parseInt(job.get("ispost"))==1){
 //									HttpRequestHelper.sendPost(job.get("posturl"),""); 
 //								}else{
-//									//µ÷È¥±¾µØ
+//									//è°ƒå»æœ¬åœ°
 //									doLocalServiceMothod(job.get("id"));
 //								}
-//								//´ïµ½jobÆô¶¯Ìõ¼ş£¬Ö´ĞĞjobÈÎÎñ
+//								//è¾¾åˆ°jobå¯åŠ¨æ¡ä»¶ï¼Œæ‰§è¡Œjobä»»åŠ¡
 //								timeMod.setLastTime(nowtime);
 //								RedisUtil.setObject(key, timeMod);
 //							}
-//						}else {//¸Õ½øÀ´Ê±²»Ö´ĞĞjob
+//						}else {//åˆšè¿›æ¥æ—¶ä¸æ‰§è¡Œjob
 //							timeMod=new JobTime();
 //							timeMod.setLastTime(nowtime);
 //							RedisUtil.setObject(key, timeMod);
@@ -98,7 +106,7 @@ public class HeartbeatJob extends QuartzJobBean {
 //			String keyString=ConfigUtil.getSingleValue("currentRedisKey-Base")+"_jobutil_"+serviceId;
 //			int isrun= ObjectUtil.parseInt(RedisUtil.getString(keyString));
 //			if(isrun>0){
-//				Log.error("jobÈë¿Ú×èÀ¹"+DateUtil.getTimeStr(new Date(), "yyyyMMdd HH:mm:ss")); 
+//				Log.error("jobå…¥å£é˜»æ‹¦"+DateUtil.getTimeStr(new Date(), "yyyyMMdd HH:mm:ss")); 
 //				return;
 //			}else {
 //				RedisUtil.setString(keyString, "1", 30);  
@@ -106,13 +114,13 @@ public class HeartbeatJob extends QuartzJobBean {
 //			
 //			if(serviceId.equalsIgnoreCase("dotempAutoOrderSumbit")){
 //				autoOrderService.dotempAutoOrderSumbit();	
-//				Log.info(serviceId+"Ö´ĞĞ×Ô¶¯µ¥ÏÂµ¥²Ù×÷£¡");
+//				Log.info(serviceId+"æ‰§è¡Œè‡ªåŠ¨å•ä¸‹å•æ“ä½œï¼");
 //			}else{
-//				//System.out.println("ÎŞ·½·¨Ö´ĞĞ£¡");
+//				//System.out.println("æ— æ–¹æ³•æ‰§è¡Œï¼");
 //			}
 //		} catch (Exception e) {
-//			Log.error(serviceId+"·½·¨Ö´ĞĞ³ö´í£¡");
-//			addSysLog(serviceId+"·½·¨Ö´ĞĞ³ö´í£¡",serviceId,"×Ô¶¯ÏÂµ¥");
+//			Log.error(serviceId+"æ–¹æ³•æ‰§è¡Œå‡ºé”™ï¼");
+//			addSysLog(serviceId+"æ–¹æ³•æ‰§è¡Œå‡ºé”™ï¼",serviceId,"è‡ªåŠ¨ä¸‹å•");
 //		}
 //		
 //		

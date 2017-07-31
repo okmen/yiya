@@ -88,9 +88,14 @@ public class MyProductTempController extends SSOController {
 				rq.setStatusreson("活动需知存在危险字符!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
+			if(ObjectUtil.isEmpty(param.getCodeurl())&&!ObjectUtil.isEmpty(param.getCodesm())){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("设置了二维码简介，二维码图片不能为空!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
 			if(!ObjectUtil.isEmpty(param.getCodesm())&&!ObjectUtil.validSqlStr(param.getCodesm())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("二维码文字说明在危险字符!");
+				rq.setStatusreson("二维码简介在危险字符!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			rq=producttempService.addMyProductTemp(user.getUserId(), param);
@@ -124,7 +129,12 @@ public class MyProductTempController extends SSOController {
 			}
 			if(!ObjectUtil.isEmpty(codesm)&&!ObjectUtil.validSqlStr(codesm)){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("二维码文字说明在危险字符!");
+				rq.setStatusreson("二维码简介说明在危险字符!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			if(ObjectUtil.isEmpty(codeurl)&&!ObjectUtil.isEmpty(codesm)){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("设置了二维码简介说明，二维码图片不能为空!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			rq=producttempService.editTempCodeUrl(tempid,codeurl,codesm,discription);
@@ -180,9 +190,14 @@ public class MyProductTempController extends SSOController {
 				rq.setStatusreson("活动需知存在危险字符!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
+			if(ObjectUtil.isEmpty(param.getCodeurl())&&!ObjectUtil.isEmpty(param.getCodesm())){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("设置了二维码简介，二维码图片不能为空!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
 			if(!ObjectUtil.isEmpty(param.getCodesm())&&!ObjectUtil.validSqlStr(param.getCodesm())){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("二维码文字说明存在危险字符!");
+				rq.setStatusreson("二维码简介说明存在危险字符!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			

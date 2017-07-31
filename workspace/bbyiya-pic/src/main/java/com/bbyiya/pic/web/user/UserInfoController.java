@@ -44,11 +44,11 @@ public class UserInfoController  extends SSOController{
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			if(!ObjectUtil.isEmpty(userInfoJson)){
-				userInfoJson=ObjectUtil.filterUtf8Mb4(userInfoJson);
-			}
 			UUserInfoParam param=(UUserInfoParam)JsonUtil.jsonStrToObject(userInfoJson, UUserInfoParam.class);
 			if(param!=null){
+				if(!ObjectUtil.isEmpty(param.getNickName())){
+					param.setNickName(ObjectUtil.filterUtf8Mb4(param.getNickName()));
+				}
 				rq= userInfoMgtService.editUUsers(user.getUserId(), param);
 				if(ReturnStatus.Success.equals(rq.getStatu()) ){
 					LoginSuccessResult loginUser= userInfoMgtService.getLoginSuccessResult(user.getUserId());

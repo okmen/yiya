@@ -44,9 +44,9 @@ public class MyProductController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			if(!ObjectUtil.isEmpty(myproductJson)){
-				myproductJson=ObjectUtil.filterUtf8Mb4(myproductJson);
-			}
+//			if(!ObjectUtil.isEmpty(myproductJson)){
+//				myproductJson=ObjectUtil.filterUtf8Mb4(myproductJson);
+//			}
 			MyProductParam param = Json2Objects.getParam_MyProductParam(myproductJson);
 			if (param != null) {
 				if (param.getDetails() != null && param.getDetails().size() > 12) {
@@ -80,9 +80,6 @@ public class MyProductController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			if(!ObjectUtil.isEmpty(myproductJson)){
-				myproductJson=ObjectUtil.filterUtf8Mb4(myproductJson);
-			}
 			MyProductParam param = Json2Objects.getParam_MyProductParam(myproductJson);
 			if (param != null) {
 				if (param.getDetails() != null && param.getDetails().size() > 12) {

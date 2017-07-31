@@ -83,6 +83,7 @@ public class Json2Objects {
 			param.setProductid(ObjectUtil.parseLong(String.valueOf(model.get("productid"))));
 			String title=String.valueOf(model.get("title"));
 			if(!ObjectUtil.isEmpty(title)&&!"null".equals(title)){
+				title=ObjectUtil.filterEmoji(title);
 				param.setTitle(title);
 			}
 			String author=String.valueOf(model.get("author"));
@@ -91,6 +92,7 @@ public class Json2Objects {
 			}
 			String desc=String.valueOf(model.get("description"));
 			if(!ObjectUtil.isEmpty(desc)&&!"null".equals(desc)){
+				desc=ObjectUtil.filterEmoji(desc);
 				param.setDescription(desc);
 			}
 			String childJsonString=String.valueOf(model.get("childInfo"));
@@ -101,6 +103,7 @@ public class Json2Objects {
 					UChildInfoParam childParam=new UChildInfoParam();
 					String nickname=String.valueOf(chidMod.get("nickName"));
 					if(!ObjectUtil.isEmpty(nickname)&&!"null".equals(nickname)){
+						nickname=ObjectUtil.filterEmoji(nickname);
 						childParam.setNickName(nickname);
 						isEdit=true;
 					}
@@ -130,6 +133,7 @@ public class Json2Objects {
 					PMyproductdetails mo=new PMyproductdetails();
 					String content=String.valueOf(dd.get("content"));
 					if(!ObjectUtil.isEmpty(content)&&!content.equals("null")){
+						content=ObjectUtil.filterEmoji(content);
 						mo.setContent(content);
 					}
 					String scenTitle=String.valueOf(dd.get("title"));
@@ -138,6 +142,7 @@ public class Json2Objects {
 						mo.setSceneid(scenid); 
 					}
 					if (!ObjectUtil.isEmpty(scenTitle)&&!scenTitle.equals("null")) {
+						scenTitle=ObjectUtil.filterEmoji(scenTitle);
 						mo.setTitle(scenTitle);
 						if(scenid>=0){
 							mo.setSceneid(scenid); 
@@ -145,6 +150,7 @@ public class Json2Objects {
 					} 
 					String dec=String.valueOf(dd.get("description"));
 					if(!ObjectUtil.isEmpty(dec)&&!dec.equals("null")){
+						dec=ObjectUtil.filterEmoji(dec);
 						mo.setDescription(dec);
 					}
 					if(dd.get("imgurl")!=null){

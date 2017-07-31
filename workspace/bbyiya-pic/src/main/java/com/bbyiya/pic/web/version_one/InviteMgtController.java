@@ -123,13 +123,13 @@ public class InviteMgtController  extends SSOController {
 								UAccounts accounts=accountMapper.selectByPrimaryKey(user.getUserId());
 								//账户可用金额
 								double amounts= accounts==null?0d:(accounts.getAvailableamount()==null?0d:accounts.getAvailableamount().doubleValue());
-
+								double freezecashamount=accounts==null?0d:(accounts.getFreezecashamount()==null?0d:accounts.getFreezecashamount().doubleValue());
 								if (amounts < temp.getAmountlimit().doubleValue()) {
 									rq.setStatu(ReturnStatus.ParamError);
 									rq.setStatusreson("众筹金额不足！");
 									return JsonUtil.objectToJsonStr(rq);
 								}
-								accounts.setFreezecashamount(temp.getAmountlimit());
+								accounts.setFreezecashamount(freezecashamount+temp.getAmountlimit().doubleValue());
 								accounts.setAvailableamount(amounts - temp.getAmountlimit().doubleValue());
 								accountMapper.updateByPrimaryKeySelective(accounts);
 							}

@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.poi.ss.util.ImageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,6 +60,7 @@ import com.bbyiya.service.IBaseUserAccountService;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.FileUtils;
+import com.bbyiya.utils.ImgDomainUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.PageInfoUtil;
 import com.bbyiya.utils.upload.FileDownloadUtils;
@@ -625,6 +627,7 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 						OOrderproductphotos ph=new OOrderproductphotos();
 						ph.setOrderproductid(orderproducts.getOrderproductid());
 						ph.setImgurl(dd.getImgurl());
+						ImgDomainUtil.getImageUrl_Full(dd.getImgurl());
 						ph.setContent(dd.getContent());
 						ph.setSenendes(dd.getDescription());
 						ph.setTitle(dd.getTitle());

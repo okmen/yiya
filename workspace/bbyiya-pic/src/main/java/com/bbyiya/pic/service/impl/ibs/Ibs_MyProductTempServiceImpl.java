@@ -924,9 +924,6 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		
 		PMyproducttempapply tempapply=myproducttempapplyMapper.getMyProducttempApplyByCartId(cartid);
 		if(tempapply!=null){
-			tempapply.setStatus(status);
-			tempapply.setReason(reason);
-			myproducttempapplyMapper.updateByPrimaryKeySelective(tempapply);
 			if(status==Integer.parseInt(MyProducttempApplyStatusEnum.nopass.toString())){
 				//异业合作模板:如果是红包众筹的活动则需要把红包冻结金额给退回
 				PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempapply.getTempid());
@@ -953,7 +950,11 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 					invites.setStatus(Integer.parseInt(InviteStatus.agree.toString()));
 					inviteMapper.updateByPrimaryKeySelective(invites);
 				}
+				
 			}
+			tempapply.setStatus(status);
+			tempapply.setReason(reason);
+			myproducttempapplyMapper.updateByPrimaryKeySelective(tempapply);
 		}
 		
 		rq.setStatu(ReturnStatus.Success);

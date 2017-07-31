@@ -93,6 +93,11 @@ public class ActivityCodeController extends SSOController {
 				rq.setStatusreson("活动名称存在危险字符!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
+			if(ObjectUtil.isEmpty(param.getCodeurl())&&!ObjectUtil.isEmpty(param.getCodesm())){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("设置了二维码文字说明，二维码图片不能为空!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
 			if(!ObjectUtil.isEmpty(param.getCodesm())&&!ObjectUtil.validSqlStr(param.getCodesm())){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("二维码文字说明在危险字符!");

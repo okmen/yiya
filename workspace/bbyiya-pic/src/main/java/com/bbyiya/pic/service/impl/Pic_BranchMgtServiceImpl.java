@@ -479,7 +479,17 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 
 		UAgentapply agentapply= agentapplyMapper.selectByPrimaryKey(applyInfo.getAgentuserid());
 		if(agentapply==null){
-			rq.setStatusreson("找不到相应的代理商信息！");
+			rq.setStatusreson("找不到相应的总店代理商信息！");
+			return rq;
+		}
+		if(agentapply!=null&&agentapply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.applying.toString())){
+			rq.setStatusreson("总店代理商申请还在待审核阶段，请先审核总店，再申请分店信息！");
+			return rq;
+		}else if(agentapply!=null&&agentapply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.no.toString())){
+			rq.setStatusreson("总店代理商申请没通过，不能申请分店！");
+			return rq;
+		}else if(agentapply!=null&&agentapply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.tuizhu.toString())){
+			rq.setStatusreson("总店代理商已退驻，不能申请分店！");
 			return rq;
 		}
 		if(agentapply.getAgentuserid().longValue()==applyInfo.getBranchuserid()){

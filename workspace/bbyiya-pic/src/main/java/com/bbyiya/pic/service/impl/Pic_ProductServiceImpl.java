@@ -1128,8 +1128,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			}
 		}
 		MyProductsResult result=getCartDetails(userId,cartId);
-		if(result!=null&&result.getDetailslist()!=null&&result.getDetailslist().size()>=12){
-			RedisUtil.setObject(keycart, result, 600);
+		if(result!=null){
 			if(result.getTempVo()!=null&&result.getInviteUserId()!=null&&result.getInviteUserId().longValue()==userId){
 				List<DMyproductdiscountmodel> disList= discountService.findMycartDiscount(userId, cartId);
 				if(disList!=null&&disList.size()>0){
@@ -1138,6 +1137,9 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					}
 					result.getTempVo().setDiscountList(disList); 
 				}
+			}
+			if(result.getDetailslist()!=null&&result.getDetailslist().size()>=12){
+				RedisUtil.setObject(keycart, result, 600);
 			}
 		}
 		return result;
@@ -1241,8 +1243,8 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 		PMyproducttemp mtemp = tempMapper.selectByPrimaryKey(myproduct.getTempid());
 		if(mtemp!=null){
 			MyProductsTempVo vo=new MyProductsTempVo();
-			if(!ObjectUtil.isEmpty(mtemp.getCodeurl())){
-				vo.setQRCodeUrl(mtemp.getCodeurl()); 
+			if(!ObjectUtil.isEmpty(mtemp.getTempcodeurl())){
+				vo.setQRCodeUrl(mtemp.getTempcodeurl()); 
 				vo.setQRcontent(mtemp.getTempcodesm());
 			}
 			//是否限定完成人数

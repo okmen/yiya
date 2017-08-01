@@ -612,6 +612,9 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 			//订单图片信息
 			List<OOrderproductphotos> photosList= ophotosMapper.findOrderProductPhotosByProductOrderId(orderproducts.getOrderproductid());
 			if(photosList!=null&&photosList.size()>0){
+//				for (OOrderproductphotos img : photosList) {
+//					img.setImgurl(ImgDomainUtil.getImageUrl_Sourse(img.getImgurl()));
+//				}
 				map.put("photos", photosList);
 				rq.setStatu(ReturnStatus.Success);
 				rq.setBasemodle(map); 
@@ -627,7 +630,7 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 						OOrderproductphotos ph=new OOrderproductphotos();
 						ph.setOrderproductid(orderproducts.getOrderproductid());
 						ph.setImgurl(dd.getImgurl());
-						ImgDomainUtil.getImageUrl_Full(dd.getImgurl());
+//						ph.setImgurl(ImgDomainUtil.getImageUrl_Sourse(dd.getImgurl()));
 						ph.setContent(dd.getContent());
 						ph.setSenendes(dd.getDescription());
 						ph.setTitle(dd.getTitle());

@@ -210,7 +210,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			if(transaccount!=null){
 				branchvo.setTransAmount(transaccount.getAvailableamount());
 			}else{
-				branchvo.setGoodsAmount(0.0);
+				branchvo.setTransAmount(0.0);
 			}
 			
 		}

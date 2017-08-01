@@ -806,12 +806,12 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 					//影楼内部账号录入
 					branchuser=new UBranchusers();
 					branchuser.setAgentuserid(apply.getAgentuserid());
-					branchuser.setBranchuserid(apply.getAgentuserid());
+					branchuser.setBranchuserid(apply.getBranchuserid());
 					branchuser.setCreatetime(new Date());
 					branchuser.setName(apply.getContactname());
 					branchuser.setPhone(apply.getPhone());
 					branchuser.setStatus(Integer.parseInt(BranchStatusEnum.ok.toString()));
-					branchuser.setUserid(apply.getAgentuserid());		
+					branchuser.setUserid(apply.getBranchuserid());		
 					branchuserMapper.insert(branchuser);
 				}else{
 					branchuser.setStatus(Integer.parseInt(BranchStatusEnum.ok.toString()));

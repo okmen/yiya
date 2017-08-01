@@ -116,7 +116,7 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 				userModel.setCreatetime(new Date());
 				userModel.setStatus(Integer.parseInt(UserStatusEnum.noPwd.toString()));
 				if(!ObjectUtil.isEmpty(param.getNickName())){
-					userModel.setNickname(param.getNickName());
+					userModel.setNickname(ObjectUtil.filterEmoji(param.getNickName())); 
 				}
 				if(!ObjectUtil.isEmpty(param.getHeadImg())){
 					userModel.setUserimg(param.getHeadImg());

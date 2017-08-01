@@ -456,11 +456,11 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		ReturnModel rq=new ReturnModel();
 		UBranches apply= branchesMapper.selectByPrimaryKey(userId); 
 		if(apply!=null){
-			if(apply.getStatus()!=null&&apply.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.ok.toString())){
-				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("您已经是合作商了，不能再次提交！");
-				return rq;
-			}
+//			if(apply.getStatus()!=null&&apply.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.ok.toString())){
+//				rq.setStatu(ReturnStatus.SystemError);
+//				rq.setStatusreson("您已经是合作商了，不能再次提交！");
+//				return rq;
+//			}
 			applyInfo.setBranchuserid(apply.getBranchuserid());
 		}
 		rq.setStatu(ReturnStatus.SystemError);
@@ -528,19 +528,22 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		}
 		applyInfo.setBranchuserid(userId);
 		applyInfo.setCreatetime(new Date());
-		applyInfo.setStatus(Integer.parseInt(BranchStatusEnum.applying.toString()));  
 		applyInfo.setReason("");
 		applyInfo.setProvince(agentapply.getProvince());
 		applyInfo.setCity(agentapply.getCity());
 		applyInfo.setArea(agentapply.getArea());
 		
 		if(apply!=null&&applyInfo.getBranchuserid()!=null&&applyInfo.getBranchuserid()>0){
+			if(apply.getStatus()!=null&&apply.getStatus().intValue()!=Integer.parseInt(BranchStatusEnum.ok.toString())){
+				applyInfo.setStatus(Integer.parseInt(BranchStatusEnum.applying.toString()));  
+			}
 			branchesMapper.updateByPrimaryKeySelective(applyInfo);
 		}else {
+			applyInfo.setStatus(Integer.parseInt(BranchStatusEnum.applying.toString()));  
 			branchesMapper.insert(applyInfo);
 		}
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("提交成功，等待审核！"); 
+		rq.setStatusreson("提交成功！"); 
 		return rq;
 	}
 	

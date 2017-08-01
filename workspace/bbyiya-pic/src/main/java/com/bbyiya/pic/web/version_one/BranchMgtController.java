@@ -334,6 +334,37 @@ public class BranchMgtController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	/**
+	 *  分店申请
+	 * @param agentJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/cts_branchApply")
+	public String cts_branchApply(String branchJson,String branchUserId) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+				try {
+					UBranches applyInfo=(UBranches)JsonUtil.jsonStrToObject(branchJson, UBranches.class);
+					if(applyInfo!=null){
+						applyInfo.setBranchuserid(ObjectUtil.parseLong(branchUserId)); 
+					}
+					rq =branchService.applyBranchNew(ObjectUtil.parseLong(branchUserId), applyInfo);
+				} catch (Exception e) {
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("参数有误101");
+					System.out.println(e); 
+					return JsonUtil.objectToJsonStr(rq);
+				}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 //	/**
 //	 *  分店申请
 //	 * @param agentJson

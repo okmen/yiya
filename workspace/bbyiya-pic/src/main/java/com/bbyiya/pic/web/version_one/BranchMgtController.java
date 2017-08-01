@@ -309,7 +309,7 @@ public class BranchMgtController extends SSOController {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			if(user.getStatus()!=null&&user.getStatus().intValue()==Integer.parseInt(UserStatusEnum.ok.toString())){
+			if(!ObjectUtil.isEmpty(user.getMobilePhone())){
 				try {
 					UBranches applyInfo=(UBranches)JsonUtil.jsonStrToObject(branchJson, UBranches.class);
 					if(applyInfo!=null){
@@ -324,7 +324,7 @@ public class BranchMgtController extends SSOController {
 				}
 			}else {
 				rq.setStatu(ReturnStatus.LoginError_2);
-				rq.setStatusreson("未完成注册");
+				rq.setStatusreson("未完成注册,请先绑定手机号！");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 		}else {

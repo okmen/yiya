@@ -469,9 +469,29 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			return rq;
 		}
 		if(ObjectUtil.isEmpty(applyInfo.getBranchcompanyname())){
-			rq.setStatusreson("公司名称不能为空");
+			rq.setStatusreson("企业名称不能为空");
 			return rq;
 		}
+		if(ObjectUtil.isEmpty(applyInfo.getUsername())){
+			rq.setStatusreson("法人名称不能为空");
+			return rq;
+		}
+		if(ObjectUtil.isEmpty(applyInfo.getContactname())){
+			rq.setStatusreson("运营者姓名必须填");
+			return rq;
+		} 
+		if(ObjectUtil.isEmpty(applyInfo.getPhone())){
+			rq.setStatusreson("运营者电话必须填");
+			return rq;
+		} 
+		if(!ObjectUtil.isMobile(applyInfo.getPhone())){
+			rq.setStatusreson("请输入正确的手机号");
+			return rq;
+		}
+		if(ObjectUtil.isEmpty(applyInfo.getStreetdetail())){
+			rq.setStatusreson("店里收货地址必须填");
+			return rq;
+		} 
 		if(applyInfo.getAgentuserid()==null||applyInfo.getAgentuserid()<=0){
 			rq.setStatusreson("代理商咿呀号必须填");
 			return rq;
@@ -493,13 +513,13 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			return rq;
 		}
 		if(agentapply.getAgentuserid().longValue()==applyInfo.getBranchuserid()){
-			rq.setStatusreson("您已经提交过代理申请，不能再申请分店！");
+			rq.setStatusreson("您已经提交过总店代理申请，不能再申请分店！");
 			return rq;
 		}
 		//当前用户已经提交过代理申请
 		UAgentapply agentBranchApply= agentapplyMapper.selectByPrimaryKey(applyInfo.getBranchuserid());
 		if(agentBranchApply!=null){
-			rq.setStatusreson("您已经提交过代理申请，不能再申请分店！");
+			rq.setStatusreson("您已经提交过总店代理申请，不能再申请分店！");
 			return rq;
 		}
 		List<RAreaplans> agentArealist=agentAreaDao.findRAreaplansByAgentUserId(agentapply.getAgentuserid());		
@@ -516,14 +536,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			rq.setStatusreson("对不起，门店不在代理区域！");
 			return rq; 
 		}
-		if(ObjectUtil.isEmpty(applyInfo.getUsername())){
-			rq.setStatusreson("联系人必须填");
-			return rq;
-		} 
-		if(ObjectUtil.isEmpty(applyInfo.getBusinesslicense())){
-			rq.setStatusreson("营业执照必须填");
-			return rq;
-		} 
+
 		if(!ObjectUtil.validSqlStr(applyInfo.getBranchcompanyname())
 				||!ObjectUtil.validSqlStr(applyInfo.getUsername())
 				||!ObjectUtil.validSqlStr(applyInfo.getStreetdetail())

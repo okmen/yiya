@@ -472,10 +472,6 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			rq.setStatusreson("企业名称不能为空");
 			return rq;
 		}
-		if(ObjectUtil.isEmpty(applyInfo.getUsername())){
-			rq.setStatusreson("法人名称不能为空");
-			return rq;
-		}
 		if(ObjectUtil.isEmpty(applyInfo.getContactname())){
 			rq.setStatusreson("运营者姓名必须填");
 			return rq;

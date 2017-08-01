@@ -189,7 +189,7 @@ public class LoginController extends SSOController {
 						return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLoginInfo&response_type=code&scope=snsapi_userinfo#wechat_redirect" ;		
 					}
 					if(!ObjectUtil.isEmpty(nickName)&&!"null".equals(nickName)){
-						nickName=ObjectUtil.filterUtf8Mb4(nickName);
+						nickName=ObjectUtil.filterEmoji(nickName);
 						param.setNickName(nickName);
 					}
 					if(!ObjectUtil.isEmpty(headimg)&&!"null".equals(headimg)){
@@ -278,7 +278,7 @@ public class LoginController extends SSOController {
 					String nickName=String.valueOf(userJson.get("nickname"));
 					String headimg=String.valueOf(userJson.get("headimgurl"));
 					if(!ObjectUtil.isEmpty(nickName)&&!"null".equals(nickName)){
-						nickName=ObjectUtil.filterUtf8Mb4(nickName);
+						nickName=ObjectUtil.filterEmoji(nickName);
 						param.setNickName(nickName);
 					}
 					if(!ObjectUtil.isEmpty(headimg)&&!"null".equals(headimg)){

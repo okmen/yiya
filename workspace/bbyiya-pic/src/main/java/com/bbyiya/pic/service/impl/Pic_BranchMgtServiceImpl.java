@@ -496,7 +496,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		boolean isInArea=false;
 		if(agentArealist!=null&&agentArealist.size()>0){
 				for (RAreaplans ss : agentArealist) {
-					if(agentapply.getArea()==ss.getAreacode()){
+					if(agentapply.getArea().intValue()==ss.getAreacode().intValue()){
 						isInArea=true;
 						break;
 					}

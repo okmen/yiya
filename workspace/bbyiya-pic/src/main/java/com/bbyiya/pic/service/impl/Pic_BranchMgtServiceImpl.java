@@ -530,6 +530,10 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		applyInfo.setCreatetime(new Date());
 		applyInfo.setStatus(Integer.parseInt(BranchStatusEnum.applying.toString()));  
 		applyInfo.setReason("");
+		applyInfo.setProvince(agentapply.getProvince());
+		applyInfo.setCity(agentapply.getCity());
+		applyInfo.setArea(agentapply.getArea());
+		
 		if(apply!=null&&applyInfo.getBranchuserid()!=null&&applyInfo.getBranchuserid()>0){
 			branchesMapper.updateByPrimaryKeySelective(applyInfo);
 		}else {

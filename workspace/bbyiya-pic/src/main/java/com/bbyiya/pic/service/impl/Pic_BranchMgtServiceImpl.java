@@ -171,12 +171,12 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			}else{
 				agentvo.setGoodsAmount(0.0);
 			}
-			UBranchtransaccounts transaccount=transaccountsMapper.selectByPrimaryKey(agentvo.getAgentuserid());
-			if(transaccount!=null){
-				agentvo.setTransAmount(transaccount.getAvailableamount());
-			}else{
-				agentvo.setTransAmount(0.0);
-			}
+//			UBranchtransaccounts transaccount=transaccountsMapper.selectByPrimaryKey(agentvo.getAgentuserid());
+//			if(transaccount!=null){
+//				agentvo.setTransAmount(transaccount.getAvailableamount());
+//			}else{
+//				agentvo.setTransAmount(0.0);
+//			}
 			agentvo.setAgentapplyArealist(getAgentApplyArealistByAgentUserID(agentvo.getAgentuserid()));
 		}
 		rq.setBasemodle(result);
@@ -206,12 +206,12 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			}else{
 				branchvo.setGoodsAmount(0.0);
 			}
-			UBranchtransaccounts transaccount=transaccountsMapper.selectByPrimaryKey(branchvo.getBranchuserid());
-			if(transaccount!=null){
-				branchvo.setTransAmount(transaccount.getAvailableamount());
-			}else{
-				branchvo.setTransAmount(0.0);
-			}
+//			UBranchtransaccounts transaccount=transaccountsMapper.selectByPrimaryKey(branchvo.getBranchuserid());
+//			if(transaccount!=null){
+//				branchvo.setTransAmount(transaccount.getAvailableamount());
+//			}else{
+//				branchvo.setTransAmount(0.0);
+//			}
 			
 		}
 		

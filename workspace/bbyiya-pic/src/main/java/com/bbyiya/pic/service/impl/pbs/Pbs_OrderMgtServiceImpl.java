@@ -181,6 +181,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			userorders.setExpresscom(expressCom);
 			userorders.setExpressorder(expressOrder);
 			userorders.setExpresscode(expressCode);
+			userorders.setDeliverytime(new Date());
 			userOrdersMapper.updateByPrimaryKeySelective(userorders);
 			
 			//发送短信--已发货
@@ -227,6 +228,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			//修改订单状态为已发货状态
 			userorders.setPostage(postage);
 			userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
+			userorders.setDeliverytime(new Date());
 			userOrdersMapper.updateByPrimaryKeySelective(userorders);
 			
 			rq.setStatu(ReturnStatus.Success);
@@ -368,6 +370,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					userorders.setExpresscom(expressCom);
 					userorders.setExpressorder(expressOrder);
 					userorders.setExpresscode(expressCode);
+					
 					//只能第一张单且ordertype=1才会自动扣款
 					if(i==0&&ordertype==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){
 						ReturnModel rqmodel=addPostage(orderArr[i], postage);
@@ -380,6 +383,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					
 					//修改订单状态为已发货状态
 					userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
+					userorders.setDeliverytime(new Date());
 					userOrdersMapper.updateByPrimaryKeySelective(userorders);
 				}
 			}

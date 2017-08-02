@@ -199,11 +199,11 @@ public class BasePayServiceImpl implements IBasePayService{
 						}	
 					}/*----------购物完~~~~~~~~~~~~~~~*/
 					
-				} else if(payOrder.getStatus()!=null&&payOrder.getStatus().intValue()==Integer.parseInt(PayOrderStatusEnums.payed.toString())){
-					addlog("payId:"+payId+",方法paySuccessProcess。不在可支付的状态！");
+				} else if(payOrder!=null){
+					addlog("payId:"+payId+",方法paySuccessProcess。OPayorder不在可支付的状态！");
 					return true;
 				}else {
-					addlog("payId:"+payId+",方法paySuccessProcess。OPayorder不在可支付的状态！");
+					addlog("payId:"+payId+",方法paySuccessProcess。OPayorder找不到此订单！");
 					return false;
 				} 
 			} catch (Exception e) {

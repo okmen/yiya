@@ -15,7 +15,7 @@
     <result column="TempCodeUrl" jdbcType="VARCHAR" property="tempcodeurl" />
     <result column="TempCodeSm" jdbcType="VARCHAR" property="tempcodesm" />
     <result column="ApplyCount" jdbcType="INTEGER" property="applycount" />
-     <result column="Type" property="type" jdbcType="INTEGER" />
+    <result column="Type" property="type" jdbcType="INTEGER" />
     <result column="StyleId" property="styleid" jdbcType="BIGINT" />
     <result column="MaxApplyCount" property="maxapplycount" jdbcType="INTEGER" />
     <result column="CompleteCount" property="completecount" jdbcType="INTEGER" />
@@ -27,12 +27,13 @@
     <result column="BeginTime" property="begintime" jdbcType="TIMESTAMP" />
     <result column="EndTime" property="endtime" jdbcType="TIMESTAMP" />
     <result column="AmountLimit" property="amountlimit" jdbcType="DOUBLE" />
+    <result column="LogoUrl" property="logourl" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List">
     TempId, BranchUserId, Title, Status, Count, Remark, CartId, CreateTime, NeedVerifer, 
     Discription, TempCodeUrl, TempCodeSm, ApplyCount, Type, StyleId, MaxApplyCount, CompleteCount, 
     MaxCompleteCount, BlessCount, IsAutoOrder, OrderHours, IsBranchAddress, BeginTime, 
-    EndTime,AmountLimit
+    EndTime,AmountLimit, LogoUrl
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -111,7 +112,7 @@
       #{isbranchaddress,jdbcType=INTEGER}, #{begintime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP}, 
       #{amountlimit,jdbcType=DOUBLE})
   </insert>
-  <insert id="insert" parameterType="com.bbyiya.model.PMyproducttemp" >
+ <insert id="insert" parameterType="com.bbyiya.model.PMyproducttemp" >
     insert into p_myproducttemp (TempId, BranchUserId, Title, 
       Status, Count, Remark, 
       CartId, CreateTime, NeedVerifer, 
@@ -120,7 +121,7 @@
       MaxApplyCount, CompleteCount, MaxCompleteCount, 
       BlessCount, IsAutoOrder, OrderHours, 
       IsBranchAddress, BeginTime, EndTime, 
-      AmountLimit)
+      AmountLimit, LogoUrl)
     values (#{tempid,jdbcType=INTEGER}, #{branchuserid,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
       #{status,jdbcType=INTEGER}, #{count,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
       #{cartid,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}, #{needverifer,jdbcType=INTEGER}, 
@@ -129,7 +130,7 @@
       #{maxapplycount,jdbcType=INTEGER}, #{completecount,jdbcType=INTEGER}, #{maxcompletecount,jdbcType=INTEGER}, 
       #{blesscount,jdbcType=INTEGER}, #{isautoorder,jdbcType=INTEGER}, #{orderhours,jdbcType=INTEGER}, 
       #{isbranchaddress,jdbcType=INTEGER}, #{begintime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP}, 
-      #{amountlimit,jdbcType=DOUBLE})
+      #{amountlimit,jdbcType=DOUBLE}, #{logourl,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproducttemp" >
     insert into p_myproducttemp
@@ -209,6 +210,9 @@
       <if test="amountlimit != null" >
         AmountLimit,
       </if>
+      <if test="logourl != null" >
+        LogoUrl,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="tempid != null" >
@@ -285,6 +289,9 @@
       </if>
       <if test="amountlimit != null" >
         #{amountlimit,jdbcType=DOUBLE},
+      </if>
+      <if test="logourl != null" >
+        #{logourl,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -363,6 +370,9 @@
       <if test="amountlimit != null" >
         AmountLimit = #{amountlimit,jdbcType=DOUBLE},
       </if>
+      <if test="logourl != null" >
+        LogoUrl = #{logourl,jdbcType=VARCHAR},
+      </if>
     </set>
     where TempId = #{tempid,jdbcType=INTEGER}
   </update>
@@ -391,7 +401,8 @@
       IsBranchAddress = #{isbranchaddress,jdbcType=INTEGER},
       BeginTime = #{begintime,jdbcType=TIMESTAMP},
       EndTime = #{endtime,jdbcType=TIMESTAMP},
-      AmountLimit = #{amountlimit,jdbcType=DOUBLE}
+      AmountLimit = #{amountlimit,jdbcType=DOUBLE},
+      LogoUrl = #{logourl,jdbcType=VARCHAR}
     where TempId = #{tempid,jdbcType=INTEGER}
   </update>
 </mapper>

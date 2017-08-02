@@ -193,15 +193,19 @@ public class BasePayServiceImpl implements IBasePayService{
 							//修改支付单状态
 							payOrderMapper.updateByPrimaryKeySelective(payOrder);
 							return true;
-						}else {//不在支付状态中
+						} else {//不在支付状态中
 							addlog("payId:"+payId+",方法paySuccessProcess。不在可支付的userOrder状态！");
 							return false;
 						}	
 					}/*----------购物完~~~~~~~~~~~~~~~*/
 					
-				} else {
+				} else if(payOrder.getStatus()!=null&&payOrder.getStatus().intValue()==Integer.parseInt(PayOrderStatusEnums.payed.toString())){
 					addlog("payId:"+payId+",方法paySuccessProcess。不在可支付的状态！");
-				}
+					return true;
+				}else {
+					addlog("payId:"+payId+",方法paySuccessProcess。OPayorder不在可支付的状态！");
+					return false;
+				} 
 			} catch (Exception e) {
 				addlog("payId:"+payId+",方法paySuccessProcess。"+e.getMessage());
 			}

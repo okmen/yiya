@@ -108,6 +108,10 @@ public class InviteMgtController  extends SSOController {
 						}
 					}
 					if(apply!=null){
+						if(apply.getUserid().longValue()!=user.getUserId().longValue()){
+							rq.setStatusreson("非申请本人无法提交！"); 
+							return JsonUtil.objectToJsonStr(rq);
+						}
 						apply.setReceiver(address.getReciver()); 
 						apply.setMobilephone(address.getPhone());
 						apply.setProvince(address.getProvince());

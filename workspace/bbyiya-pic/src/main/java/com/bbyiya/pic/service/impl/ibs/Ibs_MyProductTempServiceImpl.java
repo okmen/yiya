@@ -935,7 +935,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 						double availableamount=accounts==null?0d:(accounts.getAvailableamount()==null?0d:accounts.getAvailableamount().doubleValue());
 						if (freezeamounts < temp.getAmountlimit().doubleValue()) {
 							rq.setStatu(ReturnStatus.ParamError);
-							rq.setStatusreson("冻结不足！");
+							rq.setStatusreson("冻结金额不足！");
 							return rq;
 						}
 						accounts.setFreezecashamount(freezeamounts-temp.getAmountlimit().doubleValue());

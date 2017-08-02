@@ -58,6 +58,8 @@ public class PMyproducttemp {
     
     private Double amountlimit;
     
+    private String logourl;
+    
 
     /*************************Vo****************************/
     
@@ -325,6 +327,14 @@ public class PMyproducttemp {
 
 	public void setAgentprice(Double agentprice) {
 		this.agentprice = agentprice;
+	}
+
+	public String getLogourl() {
+		return logourl;
+	}
+
+	public void setLogourl(String logourl) {
+		this.logourl = logourl;
 	}
 
 	

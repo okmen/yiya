@@ -10,7 +10,8 @@ public enum OrderStatusEnum {
      */
     payed(1),
     /**
-     * 等待发货 （已支付-》相片上传完成 ）
+     * ps:过期状态
+     * 等待发货 （已支付-》相片上传完成 ）  
      */
     waitFoSend(2),
     /**
@@ -22,6 +23,7 @@ public enum OrderStatusEnum {
      */
     recived(4),
     /**
+     * PS：过期状态
      * 等待影楼确认
      */
     waitforconf(5)

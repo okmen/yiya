@@ -284,6 +284,12 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			rq.setStatusreson("存在非法字符");
 			return rq;
 		}
+		UBranches brancher=branchesMapper.selectByPrimaryKey(userId);
+		if(brancher!=null&&brancher.getStatus()!=null&&brancher.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.ok.toString())){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("你已经申请了分店，不能再申请总店代理！");
+			return rq;
+		}
 		applyInfo.setAgentuserid(userId);
 		applyInfo.setCreatetime(new Date());
 		
@@ -424,6 +430,13 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			rq.setStatusreson("存在非法字符");
 			return rq;
 		}
+		UBranches brancher=branchesMapper.selectByPrimaryKey(userId);
+		if(brancher!=null&&brancher.getStatus()!=null&&brancher.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.ok.toString())){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("你已经申请了分店，不能再申请总店代理！");
+			return rq;
+		}
+		
 		applyInfo.setAgentuserid(userId);
 		applyInfo.setCreatetime(new Date());
 		  

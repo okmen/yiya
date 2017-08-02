@@ -78,7 +78,7 @@
        and  Status = #{status,jdbcType=INTEGER}
     </if>
      <if test="branchcompanyname != null" > 
-       and  (AgentCompanyName LIKE  CONCAT('%', #{branchcompanyname,jdbcType=VARCHAR},'%' ) OR  UserName LIKE  CONCAT('%', #{branchcompanyname,jdbcType=VARCHAR},'%' ) OR  ContactName LIKE  CONCAT('%', #{branchcompanyname,jdbcType=VARCHAR},'%' )  OR  Phone LIKE  CONCAT('%', #{branchcompanyname,jdbcType=VARCHAR},'%' ))
+       and  (AgentUserId=#{branchcompanyname,jdbcType=VARCHAR} OR AgentCompanyName LIKE  CONCAT('%', #{branchcompanyname,jdbcType=VARCHAR},'%' ) OR  UserName LIKE  CONCAT('%', #{branchcompanyname,jdbcType=VARCHAR},'%' ) OR  ContactName LIKE  CONCAT('%', #{branchcompanyname,jdbcType=VARCHAR},'%' )  OR  Phone LIKE  CONCAT('%', #{branchcompanyname,jdbcType=VARCHAR},'%' ))
     </if>
   </select>
   
@@ -95,7 +95,7 @@
        and  Status = #{status,jdbcType=INTEGER}
     </if>
     <if test="branchcompanyname != null" > 
-       and  (BranchCompanyName LIKE  CONCAT('%', #{branchcompanyname,jdbcType=VARCHAR},'%' ) OR  UserName LIKE  CONCAT('%', #{branchcompanyname,jdbcType=VARCHAR},'%' ) OR  ContactName LIKE  CONCAT('%', #{branchcompanyname,jdbcType=VARCHAR},'%' ) OR  Phone LIKE  CONCAT('%', #{branchcompanyname,jdbcType=VARCHAR},'%' ))
+       and  (BranchUserId=#{branchcompanyname,jdbcType=VARCHAR} OR BranchCompanyName LIKE  CONCAT('%', #{branchcompanyname,jdbcType=VARCHAR},'%' ) OR  UserName LIKE  CONCAT('%', #{branchcompanyname,jdbcType=VARCHAR},'%' ) OR  ContactName LIKE  CONCAT('%', #{branchcompanyname,jdbcType=VARCHAR},'%' ) OR  Phone LIKE  CONCAT('%', #{branchcompanyname,jdbcType=VARCHAR},'%' ))
     </if>
  
   </select>

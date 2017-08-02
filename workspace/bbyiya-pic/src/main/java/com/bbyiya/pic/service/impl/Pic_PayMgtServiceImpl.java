@@ -157,6 +157,7 @@ public class Pic_PayMgtServiceImpl implements IPic_PayMgtService {
 		OPayorder payorder = payMapper.selectByPrimaryKey(orderNo);
 		
 		if (payorder != null) {
+			param.setOrderType(payorder.getOrdertype()==null?0:payorder.getOrdertype()); 
 			param.setTotalprice(payorder.getTotalprice());
 		}
 		param.setOut_trade_no(orderNo);

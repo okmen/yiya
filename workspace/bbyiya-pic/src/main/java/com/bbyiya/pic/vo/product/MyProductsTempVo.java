@@ -8,22 +8,43 @@ import com.bbyiya.model.DMyproductdiscountmodel;
 public class MyProductsTempVo implements Serializable{
 	private static final long serialVersionUID = 1L;
 
-	
-	//评论任务
-	private Integer maxcommentCount;
-	//剩余
-	private Integer remainingCount;
-	
-	private int isLimitQuotas;
-	//是否限制评论数
-	private int isLimitCommentsCount;
-	
-	//已完成评论数
-	private Integer commentCount;
-	
-	private Long styleId;
-	
+
+	/**
+	 * 我的申请的状态
+	 */
 	private int mytempStatus;
+	/**
+	 * 款式
+	 */
+	private Long styleId;
+	/**
+	 * 是否限制完成人数
+	 */
+	private int isLimitQuotas;
+	/**
+	 * 剩余免费名额
+	 */
+	private Integer remainingCount;
+	/**
+	 * 是否需要评论
+	 */
+	private int isLimitCommentsCount;
+	/**
+	 * 完成条件（需要的评论数）
+	 */
+	private Integer maxcommentCount;
+	/**
+	 * 已经积攒的 评论数
+	 */
+	private Integer commentCount;
+	/**
+	 * 是否需要分享（1需要分享，0 不需要分享）
+	 */
+	private int needShared;
+	/**
+	 * 是否已经分享（1已经分享）
+	 */
+	private int haveShared;
 	/**
 	 * 众筹金额
 	 */
@@ -32,10 +53,17 @@ public class MyProductsTempVo implements Serializable{
 	 * 还需要众筹金额
 	 */
 	private Double publicAmountNeedMore;
-	
+	/**
+	 * 活动二维码 
+	 */
 	private String QRCodeUrl;
+	/**
+	 * 活动二维码描述
+	 */
 	private String QRcontent;
-	
+	/**
+	 * 优惠信息
+	 */
 	private List<DMyproductdiscountmodel> discountList;
 	
 	public int getIsLimitQuotas() {
@@ -109,6 +137,18 @@ public class MyProductsTempVo implements Serializable{
 	}
 	public void setQRcontent(String qRcontent) {
 		QRcontent = qRcontent;
+	}
+	public int getNeedShared() {
+		return needShared;
+	}
+	public void setNeedShared(int needShared) {
+		this.needShared = needShared;
+	}
+	public int getHaveShared() {
+		return haveShared;
+	}
+	public void setHaveShared(int haveShared) {
+		this.haveShared = haveShared;
 	}
 	
 	

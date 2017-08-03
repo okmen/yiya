@@ -1252,6 +1252,7 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 				vo.setIsLimitQuotas(1); 
 				vo.setRemainingCount(mtemp.getMaxcompletecount()-(mtemp.getCompletecount()==null?0:mtemp.getCompletecount()));
 			}
+			//是否需要评论（评论限制）
 			if(mtemp.getBlesscount()!=null&&mtemp.getBlesscount().intValue()>0){
 				vo.setIsLimitCommentsCount(1);
 				//规定评论数量
@@ -1264,6 +1265,10 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					vo.setCommentCount(0); 
 				}
 			}
+			//是否需要 分享 
+			if(mtemp.getNeedshared()!=null&&mtemp.getNeedshared().intValue()>0){
+				vo.setNeedShared(1);
+			}
 			//我的申请信息
 			PMyproducttempapply apply= tempapplyMapper.getMyProducttempApplyByCartId(myproduct.getCartid());
 			if(apply==null){
@@ -1271,6 +1276,10 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 			}
 			if(apply!=null){
 				vo.setMytempStatus(apply.getStatus());
+				//是否完成分享（完成条件）
+				if(vo.getNeedShared()>0&&apply.getShared()!=null&&apply.getShared().intValue()>0){
+					vo.setHaveShared(1);
+				}
 			}
 			if(apply!=null&&!ObjectUtil.isEmpty(apply.getStyleid())){
 				vo.setStyleId(apply.getStyleid());

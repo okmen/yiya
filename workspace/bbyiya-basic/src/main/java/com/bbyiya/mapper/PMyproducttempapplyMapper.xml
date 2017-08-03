@@ -30,7 +30,7 @@
   <sql id="Base_Column_List" >
     TempApplyId, TempId, UserId, Mobilephone, Province, City, Area, Street, Adress, IsDue, 
     CompanyUserId, Status, CreateTime, VerfiyTime, CompleteTime, Birthday, IsRead, Receiver, 
-    CartId, Reason, Sort, StyleId, ProductId, Shared
+    CartId, Reason, Sort, StyleId, ProductId,Shared
   </sql>
   
   <!-- 得到模板待审核的报名人数 -->

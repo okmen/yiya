@@ -1,6 +1,8 @@
 package com.bbyiya.pic.vo.order;
 
-public class OrderCountResultVO {
+import java.io.Serializable;
+
+public class OrderCountResultVO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private String starttime;//查询开始时间

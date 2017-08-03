@@ -28,12 +28,13 @@
     <result column="EndTime" property="endtime" jdbcType="TIMESTAMP" />
     <result column="AmountLimit" property="amountlimit" jdbcType="DOUBLE" />
     <result column="LogoUrl" property="logourl" jdbcType="VARCHAR" />
+     <result column="NeedShared" jdbcType="INTEGER" property="needshared" />
   </resultMap>
   <sql id="Base_Column_List">
     TempId, BranchUserId, Title, Status, Count, Remark, CartId, CreateTime, NeedVerifer, 
     Discription, TempCodeUrl, TempCodeSm, ApplyCount, Type, StyleId, MaxApplyCount, CompleteCount, 
     MaxCompleteCount, BlessCount, IsAutoOrder, OrderHours, IsBranchAddress, BeginTime, 
-    EndTime,AmountLimit, LogoUrl
+    EndTime,AmountLimit, LogoUrl, NeedShared
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -93,7 +94,7 @@
     where TempId = #{tempid,jdbcType=INTEGER}
   </delete>
   <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="tempid" parameterType="com.bbyiya.model.PMyproducttemp" >
-     insert into p_myproducttemp (TempId, BranchUserId, Title, 
+    insert into p_myproducttemp (TempId, BranchUserId, Title, 
       Status, Count, Remark, 
       CartId, CreateTime, NeedVerifer, 
       Discription, TempCodeUrl, TempCodeSm, 
@@ -101,7 +102,8 @@
       MaxApplyCount, CompleteCount, MaxCompleteCount, 
       BlessCount, IsAutoOrder, OrderHours, 
       IsBranchAddress, BeginTime, EndTime, 
-      AmountLimit)
+      AmountLimit, LogoUrl, NeedShared
+      )
     values (#{tempid,jdbcType=INTEGER}, #{branchuserid,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
       #{status,jdbcType=INTEGER}, #{count,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
       #{cartid,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}, #{needverifer,jdbcType=INTEGER}, 
@@ -110,9 +112,359 @@
       #{maxapplycount,jdbcType=INTEGER}, #{completecount,jdbcType=INTEGER}, #{maxcompletecount,jdbcType=INTEGER}, 
       #{blesscount,jdbcType=INTEGER}, #{isautoorder,jdbcType=INTEGER}, #{orderhours,jdbcType=INTEGER}, 
       #{isbranchaddress,jdbcType=INTEGER}, #{begintime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP}, 
-      #{amountlimit,jdbcType=DOUBLE})
+      #{amountlimit,jdbcType=DOUBLE}, #{logourl,jdbcType=VARCHAR}, #{needshared,jdbcType=INTEGER}
+      )
   </insert>
- <insert id="insert" parameterType="com.bbyiya.model.PMyproducttemp" >
+ <insert id="insert" parameterType="com.bbyiya.model.PMyproducttemp">
+    insert into p_myproducttemp (TempId, BranchUserId, Title, 
+      Status, Count, Remark, 
+      CartId, CreateTime, NeedVerifer, 
+      Discription, TempCodeUrl, TempCodeSm, 
+      ApplyCount, Type, StyleId, 
+      MaxApplyCount, CompleteCount, MaxCompleteCount, 
+      BlessCount, IsAutoOrder, OrderHours, 
+      IsBranchAddress, BeginTime, EndTime, 
+      AmountLimit, LogoUrl, NeedShared
+      )
+    values (#{tempid,jdbcType=INTEGER}, #{branchuserid,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{count,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
+      #{cartid,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}, #{needverifer,jdbcType=INTEGER}, 
+      #{discription,jdbcType=VARCHAR}, #{tempcodeurl,jdbcType=VARCHAR}, #{tempcodesm,jdbcType=VARCHAR}, 
+      #{applycount,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{styleid,jdbcType=BIGINT}, 
+      #{maxapplycount,jdbcType=INTEGER}, #{completecount,jdbcType=INTEGER}, #{maxcompletecount,jdbcType=INTEGER}, 
+      #{blesscount,jdbcType=INTEGER}, #{isautoorder,jdbcType=INTEGER}, #{orderhours,jdbcType=INTEGER}, 
+      #{isbranchaddress,jdbcType=INTEGER}, #{begintime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP}, 
+      #{amountlimit,jdbcType=DOUBLE}, #{logourl,jdbcType=VARCHAR}, #{needshared,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproducttemp">
+    insert into p_myproducttemp
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="tempid != null">
+        TempId,
+      </if>
+      <if test="branchuserid != null">
+        BranchUserId,
+      </if>
+      <if test="title != null">
+        Title,
+      </if>
+      <if test="status != null">
+        Status,
+      </if>
+      <if test="count != null">
+        Count,
+      </if>
+      <if test="remark != null">
+        Remark,
+      </if>
+      <if test="cartid != null">
+        CartId,
+      </if>
+      <if test="createtime != null">
+        CreateTime,
+      </if>
+      <if test="needverifer != null">
+        NeedVerifer,
+      </if>
+      <if test="discription != null">
+        Discription,
+      </if>
+      <if test="tempcodeurl != null">
+        TempCodeUrl,
+      </if>
+      <if test="tempcodesm != null">
+        TempCodeSm,
+      </if>
+      <if test="applycount != null">
+        ApplyCount,
+      </if>
+      <if test="type != null">
+        Type,
+      </if>
+      <if test="styleid != null">
+        StyleId,
+      </if>
+      <if test="maxapplycount != null">
+        MaxApplyCount,
+      </if>
+      <if test="completecount != null">
+        CompleteCount,
+      </if>
+      <if test="maxcompletecount != null">
+        MaxCompleteCount,
+      </if>
+      <if test="blesscount != null">
+        BlessCount,
+      </if>
+      <if test="isautoorder != null">
+        IsAutoOrder,
+      </if>
+      <if test="orderhours != null">
+        OrderHours,
+      </if>
+      <if test="isbranchaddress != null">
+        IsBranchAddress,
+      </if>
+      <if test="begintime != null">
+        BeginTime,
+      </if>
+      <if test="endtime != null">
+        EndTime,
+      </if>
+      <if test="amountlimit != null">
+        AmountLimit,
+      </if>
+      <if test="logourl != null">
+        LogoUrl,
+      </if>
+      <if test="needshared != null">
+        NeedShared,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="tempid != null">
+        #{tempid,jdbcType=INTEGER},
+      </if>
+      <if test="branchuserid != null">
+        #{branchuserid,jdbcType=BIGINT},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="count != null">
+        #{count,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="cartid != null">
+        #{cartid,jdbcType=BIGINT},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="needverifer != null">
+        #{needverifer,jdbcType=INTEGER},
+      </if>
+      <if test="discription != null">
+        #{discription,jdbcType=VARCHAR},
+      </if>
+      <if test="tempcodeurl != null">
+        #{tempcodeurl,jdbcType=VARCHAR},
+      </if>
+      <if test="tempcodesm != null">
+        #{tempcodesm,jdbcType=VARCHAR},
+      </if>
+      <if test="applycount != null">
+        #{applycount,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="styleid != null">
+        #{styleid,jdbcType=BIGINT},
+      </if>
+      <if test="maxapplycount != null">
+        #{maxapplycount,jdbcType=INTEGER},
+      </if>
+      <if test="completecount != null">
+        #{completecount,jdbcType=INTEGER},
+      </if>
+      <if test="maxcompletecount != null">
+        #{maxcompletecount,jdbcType=INTEGER},
+      </if>
+      <if test="blesscount != null">
+        #{blesscount,jdbcType=INTEGER},
+      </if>
+      <if test="isautoorder != null">
+        #{isautoorder,jdbcType=INTEGER},
+      </if>
+      <if test="orderhours != null">
+        #{orderhours,jdbcType=INTEGER},
+      </if>
+      <if test="isbranchaddress != null">
+        #{isbranchaddress,jdbcType=INTEGER},
+      </if>
+      <if test="begintime != null">
+        #{begintime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime != null">
+        #{endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="amountlimit != null">
+        #{amountlimit,jdbcType=DOUBLE},
+      </if>
+      <if test="logourl != null">
+        #{logourl,jdbcType=VARCHAR},
+      </if>
+      <if test="needshared != null">
+        #{needshared,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PMyproducttemp">
+    update p_myproducttemp
+    <set>
+      <if test="branchuserid != null">
+        BranchUserId = #{branchuserid,jdbcType=BIGINT},
+      </if>
+      <if test="title != null">
+        Title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="count != null">
+        Count = #{count,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        Remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="cartid != null">
+        CartId = #{cartid,jdbcType=BIGINT},
+      </if>
+      <if test="createtime != null">
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="needverifer != null">
+        NeedVerifer = #{needverifer,jdbcType=INTEGER},
+      </if>
+      <if test="discription != null">
+        Discription = #{discription,jdbcType=VARCHAR},
+      </if>
+      <if test="tempcodeurl != null">
+        TempCodeUrl = #{tempcodeurl,jdbcType=VARCHAR},
+      </if>
+      <if test="tempcodesm != null">
+        TempCodeSm = #{tempcodesm,jdbcType=VARCHAR},
+      </if>
+      <if test="applycount != null">
+        ApplyCount = #{applycount,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        Type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="styleid != null">
+        StyleId = #{styleid,jdbcType=BIGINT},
+      </if>
+      <if test="maxapplycount != null">
+        MaxApplyCount = #{maxapplycount,jdbcType=INTEGER},
+      </if>
+      <if test="completecount != null">
+        CompleteCount = #{completecount,jdbcType=INTEGER},
+      </if>
+      <if test="maxcompletecount != null">
+        MaxCompleteCount = #{maxcompletecount,jdbcType=INTEGER},
+      </if>
+      <if test="blesscount != null">
+        BlessCount = #{blesscount,jdbcType=INTEGER},
+      </if>
+      <if test="isautoorder != null">
+        IsAutoOrder = #{isautoorder,jdbcType=INTEGER},
+      </if>
+      <if test="orderhours != null">
+        OrderHours = #{orderhours,jdbcType=INTEGER},
+      </if>
+      <if test="isbranchaddress != null">
+        IsBranchAddress = #{isbranchaddress,jdbcType=INTEGER},
+      </if>
+      <if test="begintime != null">
+        BeginTime = #{begintime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime != null">
+        EndTime = #{endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="amountlimit != null">
+        AmountLimit = #{amountlimit,jdbcType=DOUBLE},
+      </if>
+      <if test="logourl != null">
+        LogoUrl = #{logourl,jdbcType=VARCHAR},
+      </if>
+      <if test="needshared != null">
+        NeedShared = #{needshared,jdbcType=INTEGER},
+      </if>
+    </set>
+    where TempId = #{tempid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PMyproducttemp">
+    update p_myproducttemp
+    set BranchUserId = #{branchuserid,jdbcType=BIGINT},
+      Title = #{title,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=INTEGER},
+      Count = #{count,jdbcType=INTEGER},
+      Remark = #{remark,jdbcType=VARCHAR},
+      CartId = #{cartid,jdbcType=BIGINT},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      NeedVerifer = #{needverifer,jdbcType=INTEGER},
+      Discription = #{discription,jdbcType=VARCHAR},
+      TempCodeUrl = #{tempcodeurl,jdbcType=VARCHAR},
+      TempCodeSm = #{tempcodesm,jdbcType=VARCHAR},
+      ApplyCount = #{applycount,jdbcType=INTEGER},
+      Type = #{type,jdbcType=INTEGER},
+      StyleId = #{styleid,jdbcType=BIGINT},
+      MaxApplyCount = #{maxapplycount,jdbcType=INTEGER},
+      CompleteCount = #{completecount,jdbcType=INTEGER},
+      MaxCompleteCount = #{maxcompletecount,jdbcType=INTEGER},
+      BlessCount = #{blesscount,jdbcType=INTEGER},
+      IsAutoOrder = #{isautoorder,jdbcType=INTEGER},
+      OrderHours = #{orderhours,jdbcType=INTEGER},
+      IsBranchAddress = #{isbranchaddress,jdbcType=INTEGER},
+      BeginTime = #{begintime,jdbcType=TIMESTAMP},
+      EndTime = #{endtime,jdbcType=TIMESTAMP},
+      AmountLimit = #{amountlimit,jdbcType=DOUBLE},
+      LogoUrl = #{logourl,jdbcType=VARCHAR},
+      NeedShared = #{needshared,jdbcType=INTEGER}
+    where TempId = #{tempid,jdbcType=INTEGER}
+  </update>
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.PMyproducttemp">
+    <id column="TempId" jdbcType="INTEGER" property="tempid" />
+    <result column="BranchUserId" jdbcType="BIGINT" property="branchuserid" />
+    <result column="Title" jdbcType="VARCHAR" property="title" />
+    <result column="Status" jdbcType="INTEGER" property="status" />
+    <result column="Count" jdbcType="INTEGER" property="count" />
+    <result column="Remark" jdbcType="VARCHAR" property="remark" />
+    <result column="CartId" jdbcType="BIGINT" property="cartid" />
+    <result column="CreateTime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="NeedVerifer" jdbcType="INTEGER" property="needverifer" />
+    <result column="Discription" jdbcType="VARCHAR" property="discription" />
+    <result column="TempCodeUrl" jdbcType="VARCHAR" property="tempcodeurl" />
+    <result column="TempCodeSm" jdbcType="VARCHAR" property="tempcodesm" />
+    <result column="ApplyCount" jdbcType="INTEGER" property="applycount" />
+    <result column="Type" jdbcType="INTEGER" property="type" />
+    <result column="StyleId" jdbcType="BIGINT" property="styleid" />
+    <result column="MaxApplyCount" jdbcType="INTEGER" property="maxapplycount" />
+    <result column="CompleteCount" jdbcType="INTEGER" property="completecount" />
+    <result column="MaxCompleteCount" jdbcType="INTEGER" property="maxcompletecount" />
+    <result column="BlessCount" jdbcType="INTEGER" property="blesscount" />
+    <result column="IsAutoOrder" jdbcType="INTEGER" property="isautoorder" />
+    <result column="OrderHours" jdbcType="INTEGER" property="orderhours" />
+    <result column="IsBranchAddress" jdbcType="INTEGER" property="isbranchaddress" />
+    <result column="BeginTime" jdbcType="TIMESTAMP" property="begintime" />
+    <result column="EndTime" jdbcType="TIMESTAMP" property="endtime" />
+    <result column="AmountLimit" jdbcType="DOUBLE" property="amountlimit" />
+    <result column="LogoUrl" jdbcType="VARCHAR" property="logourl" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    TempId, BranchUserId, Title, Status, Count, Remark, CartId, CreateTime, NeedVerifer, 
+    Discription, TempCodeUrl, TempCodeSm, ApplyCount, Type, StyleId, MaxApplyCount, CompleteCount, 
+    MaxCompleteCount, BlessCount, IsAutoOrder, OrderHours, IsBranchAddress, BeginTime, 
+    EndTime, AmountLimit, LogoUrl
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from p_myproducttemp
+    where TempId = #{tempid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from p_myproducttemp
+    where TempId = #{tempid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.PMyproducttemp">
     insert into p_myproducttemp (TempId, BranchUserId, Title, 
       Status, Count, Remark, 
       CartId, CreateTime, NeedVerifer, 
@@ -132,251 +484,251 @@
       #{isbranchaddress,jdbcType=INTEGER}, #{begintime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP}, 
       #{amountlimit,jdbcType=DOUBLE}, #{logourl,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproducttemp" >
+  <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproducttemp">
     insert into p_myproducttemp
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="tempid != null" >
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="tempid != null">
         TempId,
       </if>
-      <if test="branchuserid != null" >
+      <if test="branchuserid != null">
         BranchUserId,
       </if>
-      <if test="title != null" >
+      <if test="title != null">
         Title,
       </if>
-      <if test="status != null" >
+      <if test="status != null">
         Status,
       </if>
-      <if test="count != null" >
+      <if test="count != null">
         Count,
       </if>
-      <if test="remark != null" >
+      <if test="remark != null">
         Remark,
       </if>
-      <if test="cartid != null" >
+      <if test="cartid != null">
         CartId,
       </if>
-      <if test="createtime != null" >
+      <if test="createtime != null">
         CreateTime,
       </if>
-      <if test="needverifer != null" >
+      <if test="needverifer != null">
         NeedVerifer,
       </if>
-      <if test="discription != null" >
+      <if test="discription != null">
         Discription,
       </if>
-      <if test="tempcodeurl != null" >
+      <if test="tempcodeurl != null">
         TempCodeUrl,
       </if>
-      <if test="tempcodesm != null" >
+      <if test="tempcodesm != null">
         TempCodeSm,
       </if>
-      <if test="applycount != null" >
+      <if test="applycount != null">
         ApplyCount,
       </if>
-      <if test="type != null" >
+      <if test="type != null">
         Type,
       </if>
-      <if test="styleid != null" >
+      <if test="styleid != null">
         StyleId,
       </if>
-      <if test="maxapplycount != null" >
+      <if test="maxapplycount != null">
         MaxApplyCount,
       </if>
-      <if test="completecount != null" >
+      <if test="completecount != null">
         CompleteCount,
       </if>
-      <if test="maxcompletecount != null" >
+      <if test="maxcompletecount != null">
         MaxCompleteCount,
       </if>
-      <if test="blesscount != null" >
+      <if test="blesscount != null">
         BlessCount,
       </if>
-      <if test="isautoorder != null" >
+      <if test="isautoorder != null">
         IsAutoOrder,
       </if>
-      <if test="orderhours != null" >
+      <if test="orderhours != null">
         OrderHours,
       </if>
-      <if test="isbranchaddress != null" >
+      <if test="isbranchaddress != null">
         IsBranchAddress,
       </if>
-      <if test="begintime != null" >
+      <if test="begintime != null">
         BeginTime,
       </if>
-      <if test="endtime != null" >
+      <if test="endtime != null">
         EndTime,
       </if>
-      <if test="amountlimit != null" >
+      <if test="amountlimit != null">
         AmountLimit,
       </if>
-      <if test="logourl != null" >
+      <if test="logourl != null">
         LogoUrl,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="tempid != null" >
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="tempid != null">
         #{tempid,jdbcType=INTEGER},
       </if>
-      <if test="branchuserid != null" >
+      <if test="branchuserid != null">
         #{branchuserid,jdbcType=BIGINT},
       </if>
-      <if test="title != null" >
+      <if test="title != null">
         #{title,jdbcType=VARCHAR},
       </if>
-      <if test="status != null" >
+      <if test="status != null">
         #{status,jdbcType=INTEGER},
       </if>
-      <if test="count != null" >
+      <if test="count != null">
         #{count,jdbcType=INTEGER},
       </if>
-      <if test="remark != null" >
+      <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
       </if>
-      <if test="cartid != null" >
+      <if test="cartid != null">
         #{cartid,jdbcType=BIGINT},
       </if>
-      <if test="createtime != null" >
+      <if test="createtime != null">
         #{createtime,jdbcType=TIMESTAMP},
       </if>
-      <if test="needverifer != null" >
+      <if test="needverifer != null">
         #{needverifer,jdbcType=INTEGER},
       </if>
-      <if test="discription != null" >
+      <if test="discription != null">
         #{discription,jdbcType=VARCHAR},
       </if>
-      <if test="tempcodeurl != null" >
+      <if test="tempcodeurl != null">
         #{tempcodeurl,jdbcType=VARCHAR},
       </if>
-      <if test="tempcodesm != null" >
+      <if test="tempcodesm != null">
         #{tempcodesm,jdbcType=VARCHAR},
       </if>
-      <if test="applycount != null" >
+      <if test="applycount != null">
         #{applycount,jdbcType=INTEGER},
       </if>
-      <if test="type != null" >
+      <if test="type != null">
         #{type,jdbcType=INTEGER},
       </if>
-      <if test="styleid != null" >
+      <if test="styleid != null">
         #{styleid,jdbcType=BIGINT},
       </if>
-      <if test="maxapplycount != null" >
+      <if test="maxapplycount != null">
         #{maxapplycount,jdbcType=INTEGER},
       </if>
-      <if test="completecount != null" >
+      <if test="completecount != null">
         #{completecount,jdbcType=INTEGER},
       </if>
-      <if test="maxcompletecount != null" >
+      <if test="maxcompletecount != null">
         #{maxcompletecount,jdbcType=INTEGER},
       </if>
-      <if test="blesscount != null" >
+      <if test="blesscount != null">
         #{blesscount,jdbcType=INTEGER},
       </if>
-      <if test="isautoorder != null" >
+      <if test="isautoorder != null">
         #{isautoorder,jdbcType=INTEGER},
       </if>
-      <if test="orderhours != null" >
+      <if test="orderhours != null">
         #{orderhours,jdbcType=INTEGER},
       </if>
-      <if test="isbranchaddress != null" >
+      <if test="isbranchaddress != null">
         #{isbranchaddress,jdbcType=INTEGER},
       </if>
-      <if test="begintime != null" >
+      <if test="begintime != null">
         #{begintime,jdbcType=TIMESTAMP},
       </if>
-      <if test="endtime != null" >
+      <if test="endtime != null">
         #{endtime,jdbcType=TIMESTAMP},
       </if>
-      <if test="amountlimit != null" >
+      <if test="amountlimit != null">
         #{amountlimit,jdbcType=DOUBLE},
       </if>
-      <if test="logourl != null" >
+      <if test="logourl != null">
         #{logourl,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PMyproducttemp" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PMyproducttemp">
     update p_myproducttemp
-    <set >
-      <if test="branchuserid != null" >
+    <set>
+      <if test="branchuserid != null">
         BranchUserId = #{branchuserid,jdbcType=BIGINT},
       </if>
-      <if test="title != null" >
+      <if test="title != null">
         Title = #{title,jdbcType=VARCHAR},
       </if>
-      <if test="status != null" >
+      <if test="status != null">
         Status = #{status,jdbcType=INTEGER},
       </if>
-      <if test="count != null" >
+      <if test="count != null">
         Count = #{count,jdbcType=INTEGER},
       </if>
-      <if test="remark != null" >
+      <if test="remark != null">
         Remark = #{remark,jdbcType=VARCHAR},
       </if>
-      <if test="cartid != null" >
+      <if test="cartid != null">
         CartId = #{cartid,jdbcType=BIGINT},
       </if>
-      <if test="createtime != null" >
+      <if test="createtime != null">
         CreateTime = #{createtime,jdbcType=TIMESTAMP},
       </if>
-      <if test="needverifer != null" >
+      <if test="needverifer != null">
         NeedVerifer = #{needverifer,jdbcType=INTEGER},
       </if>
-      <if test="discription != null" >
+      <if test="discription != null">
         Discription = #{discription,jdbcType=VARCHAR},
       </if>
-      <if test="tempcodeurl != null" >
+      <if test="tempcodeurl != null">
         TempCodeUrl = #{tempcodeurl,jdbcType=VARCHAR},
       </if>
-      <if test="tempcodesm != null" >
+      <if test="tempcodesm != null">
         TempCodeSm = #{tempcodesm,jdbcType=VARCHAR},
       </if>
-      <if test="applycount != null" >
+      <if test="applycount != null">
         ApplyCount = #{applycount,jdbcType=INTEGER},
       </if>
-      <if test="type != null" >
+      <if test="type != null">
         Type = #{type,jdbcType=INTEGER},
       </if>
-      <if test="styleid != null" >
+      <if test="styleid != null">
         StyleId = #{styleid,jdbcType=BIGINT},
       </if>
-      <if test="maxapplycount != null" >
+      <if test="maxapplycount != null">
         MaxApplyCount = #{maxapplycount,jdbcType=INTEGER},
       </if>
-      <if test="completecount != null" >
+      <if test="completecount != null">
         CompleteCount = #{completecount,jdbcType=INTEGER},
       </if>
-      <if test="maxcompletecount != null" >
+      <if test="maxcompletecount != null">
         MaxCompleteCount = #{maxcompletecount,jdbcType=INTEGER},
       </if>
-      <if test="blesscount != null" >
+      <if test="blesscount != null">
         BlessCount = #{blesscount,jdbcType=INTEGER},
       </if>
-      <if test="isautoorder != null" >
+      <if test="isautoorder != null">
         IsAutoOrder = #{isautoorder,jdbcType=INTEGER},
       </if>
-      <if test="orderhours != null" >
+      <if test="orderhours != null">
         OrderHours = #{orderhours,jdbcType=INTEGER},
       </if>
-      <if test="isbranchaddress != null" >
+      <if test="isbranchaddress != null">
         IsBranchAddress = #{isbranchaddress,jdbcType=INTEGER},
       </if>
-      <if test="begintime != null" >
+      <if test="begintime != null">
         BeginTime = #{begintime,jdbcType=TIMESTAMP},
       </if>
-      <if test="endtime != null" >
+      <if test="endtime != null">
         EndTime = #{endtime,jdbcType=TIMESTAMP},
       </if>
-      <if test="amountlimit != null" >
+      <if test="amountlimit != null">
         AmountLimit = #{amountlimit,jdbcType=DOUBLE},
       </if>
-      <if test="logourl != null" >
+      <if test="logourl != null">
         LogoUrl = #{logourl,jdbcType=VARCHAR},
       </if>
     </set>
     where TempId = #{tempid,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PMyproducttemp" >
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PMyproducttemp">
     update p_myproducttemp
     set BranchUserId = #{branchuserid,jdbcType=BIGINT},
       Title = #{title,jdbcType=VARCHAR},

@@ -41,6 +41,10 @@ public class UBranches {
     
     private String reason;
 
+    private String logo;
+
+    private String promotionstr;
+
     public Long getBranchuserid() {
         return branchuserid;
     }
@@ -192,4 +196,21 @@ public class UBranches {
     public void setReason(String reason) {
         this.reason = reason == null ? null : reason.trim();
     }
+
+	public String getLogo() {
+		return logo;
+	}
+
+	public void setLogo(String logo) {
+		this.logo = logo;
+	}
+
+	public String getPromotionstr() {
+		return promotionstr;
+	}
+
+	public void setPromotionstr(String promotionstr) {
+		this.promotionstr = promotionstr;
+	}
+    
 }

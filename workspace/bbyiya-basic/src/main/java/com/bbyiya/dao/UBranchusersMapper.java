@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.bbyiya.model.UBranchusers;
-import com.bbyiya.vo.agent.UBranchUserTempVo;
 
 public interface UBranchusersMapper {
     int deleteByPrimaryKey(Long userid);

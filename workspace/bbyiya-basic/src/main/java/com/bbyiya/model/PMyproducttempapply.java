@@ -42,6 +42,7 @@ public class PMyproducttempapply {
 	private Long styleid;
 
     private Long productid;
+    private Integer shared;
 
 	/***************** 添加的VO字段 *************************/
 
@@ -291,5 +292,13 @@ public class PMyproducttempapply {
     public void setProductid(Long productid) {
         this.productid = productid;
     }
+
+	public Integer getShared() {
+		return shared;
+	}
+
+	public void setShared(Integer shared) {
+		this.shared = shared;
+	}
 
 }

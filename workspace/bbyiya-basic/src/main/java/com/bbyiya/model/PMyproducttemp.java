@@ -59,6 +59,8 @@ public class PMyproducttemp {
     private Double amountlimit;
     
     private String logourl;
+
+    private Integer needshared;
     
 
     /*************************Vo****************************/
@@ -335,6 +337,14 @@ public class PMyproducttemp {
 
 	public void setLogourl(String logourl) {
 		this.logourl = logourl;
+	}
+
+	public Integer getNeedshared() {
+		return needshared;
+	}
+
+	public void setNeedshared(Integer needshared) {
+		this.needshared = needshared;
 	}
 
 	

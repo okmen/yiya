@@ -13,6 +13,7 @@ import java.util.SortedMap;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.log4j.Logger;
 
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.encrypt.MD5Encrypt;
@@ -23,7 +24,6 @@ import com.bbyiya.utils.encrypt.MD5Encrypt;
  *
  */
 public class WxAppPayUtils {
-
 	/**
 	 * 时间串
 	 * @return
@@ -206,7 +206,7 @@ public class WxAppPayUtils {
 			packageParams.add(new BasicNameValuePair("appid", WxPayAppConfig.APPID));
 			packageParams.add(new BasicNameValuePair("mch_id", WxPayAppConfig.PARNER));// 商户号
 			packageParams.add(new BasicNameValuePair("nonce_str", nonceStr));
-			packageParams.add(new BasicNameValuePair("body", "yiya-order:" + orderNo));// "订单:"+orderNo
+			packageParams.add(new BasicNameValuePair("body", "yiya-12Photos"));// "订单:"+orderNo
 			packageParams.add(new BasicNameValuePair("attach", "order:" + orderNo));
 			packageParams.add(new BasicNameValuePair("out_trade_no", orderNo));
 			packageParams.add(new BasicNameValuePair("total_fee", totalFee));
@@ -240,7 +240,14 @@ public class WxAppPayUtils {
 			packageParams.add(new BasicNameValuePair("appid", WxPayAppConfig.APPID));
 			packageParams.add(new BasicNameValuePair("mch_id", WxPayAppConfig.PARNER));// 商户号
 			packageParams.add(new BasicNameValuePair("nonce_str", param.getNonce_str()));
-			packageParams.add(new BasicNameValuePair("body", "yiya-order:" + param.getOut_trade_no()));// "订单:"+orderNo
+			if(param.getOrderType()==0){
+				packageParams.add(new BasicNameValuePair("body", "咿呀十二纪念册"));// "yiya-order:" + param.getOut_trade_no())
+			}else if(param.getOrderType()==2){
+				packageParams.add(new BasicNameValuePair("body","账户充值"));// 
+			}else if (param.getOrderType()==4) {
+				packageParams.add(new BasicNameValuePair("body","咿呀红包"));// 
+			}
+		
 			packageParams.add(new BasicNameValuePair("attach", "order:" + param.getOut_trade_no()));
 			packageParams.add(new BasicNameValuePair("out_trade_no", param.getOut_trade_no()));
 			packageParams.add(new BasicNameValuePair("total_fee", totalFee));
@@ -254,7 +261,7 @@ public class WxAppPayUtils {
 			
 			String urlString = WxPayAppConfig.WX_URL;
 			String msgString = WxUtil.httpsRequest(urlString, xmlstring);
-			System.out.println(msgString); 
+//			System.out.println(msgString); 
 			Map<String, Object> map = WxUtil.xml2Map(msgString);
 			return map;
 

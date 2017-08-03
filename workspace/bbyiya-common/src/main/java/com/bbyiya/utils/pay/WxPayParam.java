@@ -8,6 +8,7 @@ public class WxPayParam {
 	private String spbill_create_ip;
 	private String product_id;
 	private String trade_type;
+	private int orderType;
 	public String getNonce_str() {
 		return nonce_str;
 	}
@@ -43,6 +44,12 @@ public class WxPayParam {
 	}
 	public void setTrade_type(String trade_type) {
 		this.trade_type = trade_type;
+	}
+	public int getOrderType() {
+		return orderType;
+	}
+	public void setOrderType(int orderType) {
+		this.orderType = orderType;
 	}
 	
 	

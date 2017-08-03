@@ -4,18 +4,22 @@ public class MyProductTempAddParam {
 	private String title;
 	private String remark;
 	private Long productid;
-	private Integer needverifer;
-	private String discription;
-	private String codeurl;
-	private String codesm;
-	private Long styleId;
-	private Integer isAutoOrder;
+	private Integer needverifer;//是否需要审核
+	private String discription; //活动须知
+	private String codeurl;	//二维码链接
+	private String codesm;  //二维码描述
+	private Long styleId;  //款示ID
+	private Integer isAutoOrder; //是否自动下单，默认都为否
 	private Integer orderHours;
-	private Integer tempid;
+	private Integer tempid; 
 	private Integer isbranchaddress; //下单是否影楼地址
-	private Integer type; //活动类型
+	private Integer type; //活动类型 0普通活动 2活动码 1 指定手机号
 	private Integer blesscount; //集祝福数量
 	private Integer applycount;//活动码数量（报名总数）
+	private String logourl;//主办方logo
+	private Integer maxcompletecount;//最大的完成人数
+	private Double amountlimit;//需筹集的红包金额
+	private Integer needshared;//是否需要分享
 	public String getTitle() {
 		return title;
 	}
@@ -105,6 +109,30 @@ public class MyProductTempAddParam {
 	}
 	public void setApplycount(Integer applycount) {
 		this.applycount = applycount;
+	}
+	public String getLogourl() {
+		return logourl;
+	}
+	public void setLogourl(String logourl) {
+		this.logourl = logourl;
+	}
+	public Integer getMaxcompletecount() {
+		return maxcompletecount;
+	}
+	public Double getAmountlimit() {
+		return amountlimit;
+	}
+	public Integer getNeedshared() {
+		return needshared;
+	}
+	public void setMaxcompletecount(Integer maxcompletecount) {
+		this.maxcompletecount = maxcompletecount;
+	}
+	public void setAmountlimit(Double amountlimit) {
+		this.amountlimit = amountlimit;
+	}
+	public void setNeedshared(Integer needshared) {
+		this.needshared = needshared;
 	}
 	
 	

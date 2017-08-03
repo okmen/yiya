@@ -118,7 +118,7 @@ public class MyProductTempController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/editTempCodeUrl")
-	public String editTempCodeUrl(Integer tempid,String codeurl,String codesm,String discription) throws Exception {
+	public String editTempCodeUrl(Integer tempid,String codeurl,String codesm,String discription,String logourl) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
@@ -137,7 +137,7 @@ public class MyProductTempController extends SSOController {
 				rq.setStatusreson("设置了二维码简介说明，二维码图片不能为空!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			rq=producttempService.editTempCodeUrl(tempid,codeurl,codesm,discription);
+			rq=producttempService.editTempCodeUrl(tempid,codeurl,codesm,discription,logourl);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

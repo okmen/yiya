@@ -223,6 +223,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			temp.setTempcodeurl(codeurl);
 			temp.setTempcodesm(codesm);
 			temp.setDiscription(discription);
+			temp.setLogourl(logourl);
 			myproducttempMapper.updateByPrimaryKey(temp);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("修改模板二维码成功！");

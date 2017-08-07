@@ -203,6 +203,8 @@ public class UserLoginService implements IUserLoginService {
 	public LoginSuccessResult getLoginSuccessResult_Common(UUsers user) {
 		LoginSuccessResult result = new LoginSuccessResult();
 		result.setUserId(user.getUserid());
+		result.setUpUserId(user.getUpuserid());
+		result.setSourseUserId(user.getSourseuserid()); 
 		result.setIdentity(user.getIdentity());
 		result.setMobilePhone(user.getMobilephone());
 		result.setNickName(user.getNickname());

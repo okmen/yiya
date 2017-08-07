@@ -124,7 +124,7 @@ public class SendSMSByMobile {
 	 */
 	public static boolean sendSmS(int msgType,String mobile,SmsParam param){
 		String msg="";
-		//注册验证码
+		//验证码 类 短信-- 参数（type）
 		if(msgType==Integer.parseInt(SendMsgEnums.register.toString())){
 			//验证码
 			String verifyCode = String.valueOf(Math.random()).substring(2, 6);
@@ -138,23 +138,48 @@ public class SendSMSByMobile {
 				return false;
 			}
 		}
-		//用户充值
+		//通知- 用户充值 (param: amount)
 		else if (msgType==Integer.parseInt(SendMsgEnums.recharge.toString())) {
 			msg="【咿呀科技】尊敬的用户，您的帐号于"+DateUtil.getTimeStr(new Date(), "yyyy-MM-dd HH:mm")+"成功充值"+param.getAmount()+"元。（客服电话：13760131762）。";
 			batchSend(mobile, msg); 
 		}
-		//已发货-短信通知
+		//通知- 用户充值 cts管理员收（参数：param: amount, rechargeType， userId）
+		else if (msgType==Integer.parseInt(SendMsgEnums.recharge_adminUser.toString())) {
+			if(param.getRechargeType()==0){
+				msg = "【咿呀科技】帐号"+param.getUserId().toString()+"于" + DateUtil.getTimeStr(new Date(), "yyyy-MM-dd HH:mm") + "通过微信支付成功充值" + param.getAmount() + "元。";
+				batchSend(mobile, msg);	
+			}else if (param.getRechargeType()==1) {
+				msg = "【咿呀科技】帐号"+param.getUserId().toString()+"于" + DateUtil.getTimeStr(new Date(), "yyyy-MM-dd HH:mm") + "通过cts管理员成功充值" + param.getAmount() + "元。";
+				batchSend(mobile, msg);	
+			}
+		}
+		//通知- 已发货
 		else if (msgType==Integer.parseInt(SendMsgEnums.delivery.toString())) {
 			if(!(param==null||ObjectUtil.isEmpty(param.getTransName())||ObjectUtil.isEmpty(param.getTransNum()))){
 				msg="【咿呀科技】尊敬的用户，您制作的相册已发货，快递单号："+param.getTransNum()+"["+param.getTransName()+"]"; 
 				batchSend(mobile, msg); 
 			}
-		}else if (msgType==Integer.parseInt(SendMsgEnums.agentApply_pass.toString())) {
+		}
+		//通知- 代理商审核通过
+		else if (msgType==Integer.parseInt(SendMsgEnums.agentApply_pass.toString())) {
 			String userId=param==null?mobile:(param.getUserId()==null?mobile:param.getUserId().toString());
-//			msg="【咿呀科技】尊敬的用户，您提交的资质已经通过审核，登录账号"+mobile+",登录地址 http://ibs.bbyiya.com ，祝您生意兴隆，生活愉快。";
 			msg="【咿呀科技】您的资质已经通过审核，您的账号"+userId+",登录地址http://ibs.bbyiya.com ，祝您生活愉快。";
-			
 			batchSend(mobile, msg);
+		}
+		//通知-  异业合作 审核
+		else if (msgType==Integer.parseInt(SendMsgEnums.yiye_Apply_ver.toString())) {
+			if(param!=null){
+				if(!ObjectUtil.isEmpty(param.getYiye_title())){
+					if(param.getYiye_status()==1){
+						msg="【咿呀科技】恭喜您通过了'"+param.getYiye_title()+"'的审核，请到活动公众号上开始制作，客服会尽快与您联系。";
+						batchSend(mobile, msg);
+					}else if (param.getYiye_status()==2) {
+						msg="【咿呀科技】抱歉，您未通过'"+param.getYiye_title()+"'的审核。别灰心，您可以到咿呀科技公众号制作，祝您生活愉快。";
+						batchSend(mobile, msg);
+					}
+				}
+			}
+			
 		}
 		return true;
 	}

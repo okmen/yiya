@@ -11,7 +11,6 @@ import com.bbyiya.common.enums.SendMsgEnums;
 import com.bbyiya.common.vo.SmsParam;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
-import com.bbyiya.enums.user.UserStatusEnum;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
@@ -46,7 +45,7 @@ public class SendMsgController {
 		if(codeType>0){
 			if(codeType==(Integer.parseInt(SendMsgEnums.register.toString()))){
 				UUsers user= userDao.getUUsersByPhone(phone);
-				if(user!=null&&user.getStatus()!=null&&user.getStatus().intValue()==Integer.parseInt(UserStatusEnum.ok.toString())){
+				if(user!=null&&user.getUserid()!=null){
 					rq.setStatu(ReturnStatus.VcodeError_3); 
 					rq.setStatusreson("手机号已经注册！");
 					return JsonUtil.objectToJsonStr(rq); 
@@ -85,6 +84,14 @@ public class SendMsgController {
 		return JsonUtil.objectToJsonStr(rq); 
     }
 	
+	/**
+	 * 测试用
+	 * @param phone
+	 * @param type
+	 * @param amount
+	 * @return
+	 * @throws MapperException
+	 */
 	@ResponseBody
     @RequestMapping(value = "/sendMsg2")
     public String sendMsg2(String phone,String type,String amount) throws MapperException

@@ -10,9 +10,21 @@ import java.io.Serializable;
  */
 public class LoginSuccessResult  implements Serializable{
 	private static final long serialVersionUID = 1L;
-	
+	/**
+	 * 咿呀号
+	 */
 	private Long userId;
-	 //头像
+	/**
+	 * 推荐人 咿呀号
+	 */
+	private Long upUserId;
+	/**
+	 * 最初 代理商 咿呀号
+	 */
+	private Long sourseUserId;
+	/**
+	 * 头像
+	 */
     private String headImg;
     //昵称
     private String nickName;
@@ -26,8 +38,6 @@ public class LoginSuccessResult  implements Serializable{
     //用户状态
     private Integer status;
     
-    private Integer isTester;
-    
     //是否有填写宝宝信息
     private int haveBabyInfo;
     //宝宝信息
@@ -37,9 +47,6 @@ public class LoginSuccessResult  implements Serializable{
      */
     private Long identity;
     
-//    private int isAgent;
-//    private int isBranch;
-//    private int isBranchMember;
     //登陆票据
     private String ticket;
     //第三方注册标记
@@ -120,30 +127,18 @@ public class LoginSuccessResult  implements Serializable{
 	public void setBirthday(String birthday) {
 		this.birthday = birthday;
 	}
-	public Integer getIsTester() {
-		return isTester;
+	public Long getUpUserId() {
+		return upUserId;
 	}
-	public void setIsTester(Integer isTester) {
-		this.isTester = isTester;
+	public void setUpUserId(Long upUserId) {
+		this.upUserId = upUserId;
 	}
-//	public int getIsAgent() {
-//		return isAgent;
-//	}
-//	public void setIsAgent(int isAgent) {
-//		this.isAgent = isAgent;
-//	}
-//	public int getIsBranch() {
-//		return isBranch;
-//	}
-//	public void setIsBranch(int isBranch) {
-//		this.isBranch = isBranch;
-//	}
-//	public int getIsBranchMember() {
-//		return isBranchMember;
-//	}
-//	public void setIsBranchMember(int isBranchMember) {
-//		this.isBranchMember = isBranchMember;
-//	}
+	public Long getSourseUserId() {
+		return sourseUserId;
+	}
+	public void setSourseUserId(Long sourseUserId) {
+		this.sourseUserId = sourseUserId;
+	}
 	
 	
 

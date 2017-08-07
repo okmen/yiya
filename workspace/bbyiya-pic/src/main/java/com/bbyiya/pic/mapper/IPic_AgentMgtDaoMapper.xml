@@ -47,11 +47,13 @@
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="ProcessTime" property="processtime" jdbcType="TIMESTAMP" />
     <result column="Reason" property="reason" jdbcType="VARCHAR" />
+    <result column="Logo" property="logo" jdbcType="VARCHAR" />
+    <result column="PromotionStr" property="promotionstr" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="UBranches_Column_List" >
     BranchUserId, BranchCompanyName, AgentUserId, UserName, ContactName, Phone, Province, 
     City, Area, StreetDetail, BusinessLicense, BusinessScope, ShopImg, TeamImg, Remark, 
-    Status, CreateTime, ProcessTime, Reason
+    Status, CreateTime, ProcessTime, Reason, Logo, PromotionStr
   </sql>
    <!-- 代理商申请信息Model-->
   <resultMap id="UAgentapplyVOResult" type="com.bbyiya.pic.vo.agent.UAgentApplyVo" extends="UAgentapplyMap">  

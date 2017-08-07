@@ -127,6 +127,9 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 		}if(!ObjectUtil.isEmpty(param.getCodesm())){
 			temp.setTempcodesm(param.getCodesm());
 		}
+		if(!ObjectUtil.isEmpty(param.getLogourl())){
+			temp.setLogourl(param.getLogourl());
+		}
 		temp.setIsautoorder(1);//默认都是自动下单0 手工下单，1自动下单
 		temp.setOrderhours(0); 
 		temp.setMaxapplycount(param.getApplycount()==null?0:param.getApplycount());//报名人数为0时不限制

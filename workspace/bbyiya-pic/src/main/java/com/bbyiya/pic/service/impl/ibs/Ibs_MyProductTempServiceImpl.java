@@ -148,13 +148,20 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		temp.setDiscription(param.getDiscription());
 		if(!ObjectUtil.isEmpty(param.getCodeurl())){
 			temp.setTempcodeurl(param.getCodeurl());
-		}if(!ObjectUtil.isEmpty(param.getCodesm())){
+		}
+		if(!ObjectUtil.isEmpty(param.getCodesm())){
 			temp.setTempcodesm(param.getCodesm());
+		}
+		if(!ObjectUtil.isEmpty(param.getLogourl())){
+			temp.setLogourl(param.getLogourl());
 		}
 		temp.setStyleid(param.getStyleId());
 		temp.setIsautoorder(param.getIsAutoOrder());
 		temp.setOrderhours(param.getOrderHours());
-		temp.setApplycount(0);//报名人数为0时不限制
+		temp.setApplycount(param.getApplycount());//报名人数为0时不限制
+		temp.setAmountlimit(param.getAmountlimit()==null?0:param.getAmountlimit());//需筹集的红包金额
+		temp.setNeedshared(param.getNeedshared()==null?0:param.getNeedshared()); //活动要求：是否需要分享
+		temp.setMaxcompletecount(param.getMaxcompletecount()==null?0:param.getMaxcompletecount());
 		if(ObjectUtil.isEmpty(param.getIsbranchaddress())){
 			param.setIsbranchaddress(0);
 		}
@@ -188,9 +195,9 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			temp.setDiscription(param.getDiscription());
 			temp.setTempcodesm(param.getCodesm());
 			temp.setTempcodeurl(param.getCodeurl());
+			temp.setLogourl(param.getLogourl());	
 			temp.setIsautoorder(param.getIsAutoOrder());
 			temp.setOrderhours(param.getOrderHours());
-			//temp.setStyleid(param.getStyleId());
 			if(ObjectUtil.isEmpty(param.getIsbranchaddress())){
 				param.setIsbranchaddress(0);
 			}
@@ -206,9 +213,9 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	}
 	
 	/**
-	 * 修改二维码信息
+	 * 修改活动二维码信息
 	 * */
-	public ReturnModel editTempCodeUrl(Integer tempid,String codeurl,String codesm,String discription){
+	public ReturnModel editTempCodeUrl(Integer tempid,String codeurl,String codesm,String discription,String logourl){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);	
 		PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempid);
@@ -216,6 +223,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			temp.setTempcodeurl(codeurl);
 			temp.setTempcodesm(codesm);
 			temp.setDiscription(discription);
+			temp.setLogourl(logourl);
 			myproducttempMapper.updateByPrimaryKey(temp);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("修改模板二维码成功！");

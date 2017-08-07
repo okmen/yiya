@@ -16,6 +16,10 @@ public class MyProductTempAddParam {
 	private Integer type; //活动类型
 	private Integer blesscount; //集祝福数量
 	private Integer applycount;//活动码数量（报名总数）
+	private String logourl;
+	private Integer maxcompletecount;//最大的完成人数
+	private Double amountlimit;//需筹集的红包金额
+	private Integer needshared;//是否需要分享
 	public String getTitle() {
 		return title;
 	}
@@ -105,6 +109,30 @@ public class MyProductTempAddParam {
 	}
 	public void setApplycount(Integer applycount) {
 		this.applycount = applycount;
+	}
+	public String getLogourl() {
+		return logourl;
+	}
+	public void setLogourl(String logourl) {
+		this.logourl = logourl;
+	}
+	public Integer getMaxcompletecount() {
+		return maxcompletecount;
+	}
+	public Double getAmountlimit() {
+		return amountlimit;
+	}
+	public Integer getNeedshared() {
+		return needshared;
+	}
+	public void setMaxcompletecount(Integer maxcompletecount) {
+		this.maxcompletecount = maxcompletecount;
+	}
+	public void setAmountlimit(Double amountlimit) {
+		this.amountlimit = amountlimit;
+	}
+	public void setNeedshared(Integer needshared) {
+		this.needshared = needshared;
 	}
 	
 	

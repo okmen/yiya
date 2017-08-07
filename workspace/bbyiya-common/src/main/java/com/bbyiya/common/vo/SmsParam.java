@@ -4,7 +4,9 @@ import java.io.Serializable;
 
 public class SmsParam implements Serializable{
 	private static final long serialVersionUID = 1L;
-	
+	/**
+	 * 充值金额
+	 */
 	private Double amount;
 	/**
 	 * 订单号
@@ -18,8 +20,22 @@ public class SmsParam implements Serializable{
 	 * 物流单号
 	 */
 	private String transNum;
-	
+	/**
+	 * 账户号（咿呀号）
+	 */
 	private Long userId;
+	/**
+	 * 充值方式（0微信充值，1 cts管理员充值）
+	 */
+	private int rechargeType;
+	/**
+	 * 异业活动标题
+	 */
+	private String yiye_title;
+	/**
+	 * 异业 审核（1表示通过，2表示不通过）
+	 */
+	private int yiye_status;
 
 	public Double getAmount() {
 		return amount;
@@ -59,6 +75,30 @@ public class SmsParam implements Serializable{
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+
+	public String getYiye_title() {
+		return yiye_title;
+	}
+
+	public void setYiye_title(String yiye_title) {
+		this.yiye_title = yiye_title;
+	}
+
+	public int getYiye_status() {
+		return yiye_status;
+	}
+
+	public void setYiye_status(int yiye_status) {
+		this.yiye_status = yiye_status;
+	}
+
+	public int getRechargeType() {
+		return rechargeType;
+	}
+
+	public void setRechargeType(int rechargeType) {
+		this.rechargeType = rechargeType;
 	}
 	
 	

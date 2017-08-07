@@ -19,6 +19,10 @@ public enum SendMsgEnums {
      */
     recharge(4),
     /**
+     * 通知 咿呀管理员
+     */
+    recharge_adminUser(9),
+    /**
      * 订单支付
      */
     payOrder(5),
@@ -29,7 +33,12 @@ public enum SendMsgEnums {
     /**
      * 代理商审核通过
      */
-    agentApply_pass(7);
+    agentApply_pass(7),
+    /**
+     * 异业合作 审核通知
+     */
+    yiye_Apply_ver(8)
+    ;
 
     private final int Type;
 

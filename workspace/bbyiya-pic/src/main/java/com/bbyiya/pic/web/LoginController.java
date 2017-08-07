@@ -204,6 +204,8 @@ public class LoginController extends SSOController {
 							String paramtest="?headImg="+param.getHeadImg()+"&loginType="+param.getLoginType()+"&nickName="+ URLEncoder.encode(param.getNickName(),"utf-8")+"&openId="+param.getOpenId()+"&upUid="+param.getUpUserId();
 							if(!ObjectUtil.isEmpty(logintemp.getRedirect_url())&&!"null".equals(logintemp.getRedirect_url())){
 								paramtest+="&redirect_url="+URLEncoder.encode(logintemp.getRedirect_url(), "gb2312"); 
+							}else if (!ObjectUtil.isEmpty(logintemp.getUpUserId())) {//测试店铺页
+								paramtest+="&redirect_url="+URLEncoder.encode(ConfigUtil.getSingleValue("photo-net-url")+"?uid="+logintemp.getUpUserId(), "gb2312"); 
 							}
 							//跳转mpic测试接口地址中转
 							return "redirect:" + ConfigUtil.getSingleValue("mpic-net-url")+paramtest;
@@ -232,9 +234,10 @@ public class LoginController extends SSOController {
 		if (rqModel.getStatu().equals(ReturnStatus.Success)) {
 			//用户跳转
 			if(logintemp!=null&&!ObjectUtil.isEmpty(logintemp.getRedirect_url())){
-				
 				return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+logintemp.getRedirect_url(); 
-			}
+			}else if (logintemp!=null&&!ObjectUtil.isEmpty(logintemp.getUpUserId())) {//店铺页
+				return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+"uid="+logintemp.getUpUserId(); 
+			} 
 			return "redirect:" + ConfigUtil.getSingleValue("loginbackurl") ;
 		} else {
 			return "redirect:" + ConfigUtil.getSingleValue("loginbackurl") ;

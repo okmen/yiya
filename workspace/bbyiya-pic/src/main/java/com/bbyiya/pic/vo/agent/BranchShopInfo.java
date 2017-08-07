@@ -7,6 +7,7 @@ public class BranchShopInfo implements Serializable{
 	
 	private String logo;
 	private String promotionStr;
+	private int mobileBind;
 	public String getLogo() {
 		return logo;
 	}
@@ -18,6 +19,12 @@ public class BranchShopInfo implements Serializable{
 	}
 	public void setPromotionStr(String promotionStr) {
 		this.promotionStr = promotionStr;
+	}
+	public int getMobileBind() {
+		return mobileBind;
+	}
+	public void setMobileBind(int mobileBind) {
+		this.mobileBind = mobileBind;
 	}
 	
 	

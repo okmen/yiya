@@ -203,6 +203,16 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 		return rq;
 	}
 	
+	/**
+	 * 自动签收的功能
+	 * @return
+	 */
+	public ReturnModel doReceiving(){
+		ReturnModel rq=new ReturnModel();
+		//查询所有已发货的订单，
+		
+		return rq;
+	}
 	public void addSysLog(String msg,String jobid,String jobname){
 		SysLogs log=new SysLogs();
 		log.setContent(msg);

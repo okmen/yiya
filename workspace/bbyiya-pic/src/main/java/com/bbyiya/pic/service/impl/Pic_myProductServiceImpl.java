@@ -48,6 +48,7 @@ import com.bbyiya.pic.dao.IMyProductsDao;
 import com.bbyiya.pic.service.IPic_myProductService;
 import com.bbyiya.pic.service.ibs.IIbs_MyProductTempService;
 import com.bbyiya.pic.vo.product.MyProductListVo;
+import com.bbyiya.service.pic.IBaseDiscountService;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
@@ -87,6 +88,12 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 	private PMyproducttempapplyMapper tempApplyMapper;
 	@Autowired
 	private PMyproductextMapper myproductextMapper;
+	
+	/**
+	 * 优惠信息
+	 */
+	@Resource(name = "baseDiscountServiceImpl")
+	private IBaseDiscountService discountService;
 	/**
 	 * 协同编辑 邀请 
 	 */
@@ -601,8 +608,36 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 						tempMapper.updateByPrimaryKeySelective(temp);
 						if(temp.getMaxcompletecount()!=null&&temp.getMaxcompletecount().intValue()>0){
 							if(temp.getCompletecount().intValue()>=temp.getMaxcompletecount().intValue()){
-								//活动结束 TODO
-								tempServiceImpl.editMyProductTempStatus(Integer.parseInt(MyProductTempStatusEnum.over.toString()), temp.getTempid());
+								//活动结束 TODO 不自动关闭活动，将未提交的作品置为活动失败状态 edit by julie at 2017/08/04
+								//tempServiceImpl.editMyProductTempStatus(Integer.parseInt(MyProductTempStatusEnum.over.toString()), temp.getTempid());
+								
+								//将参与中的用户置为活动失败，得到状态为1 4状态的用户  
+								List<Integer> statuslist=new ArrayList<Integer>();
+								statuslist.add(Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString()));//已审核
+								statuslist.add(Integer.parseInt(MyProducttempApplyStatusEnum.nopass.toString()));//作品审核不通过
+								List<PMyproducttempapply>  applyInlist=tempApplyMapper.findMyProducttempApplyInList(temp.getTempid(), statuslist);
+								if(applyInlist!=null&&applyInlist.size()>0){
+									for (PMyproducttempapply applyin : applyInlist) {
+										applyin.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.fails.toString()));
+										tempApplyMapper.updateByPrimaryKeySelective(applyin);
+										
+										//活动失败的参与作品 分发优惠
+										if(applyin.getCartid()!=null&&applyin.getCartid().longValue()>0){
+											discountService.addTempDiscount(applyin.getCartid());
+										}
+									}
+								}
+								
+								//将模板的待审核用户的状态全置为审核失败
+								List<PMyproducttempapply>  applylist=tempApplyMapper.findMyProducttempApplyList(temp.getTempid(), Integer.parseInt(MyProducttempApplyStatusEnum.apply.toString()));
+								if(applylist!=null&&applylist.size()>0){
+									for (PMyproducttempapply tempapply : applylist) {
+										tempapply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.refuse.toString()));
+										tempApplyMapper.updateByPrimaryKeySelective(tempapply);
+										
+									}
+								}
+								
 							}
 						}
 					}

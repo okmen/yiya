@@ -44,6 +44,13 @@ public interface IIbs_ActivityCodeService {
 	 * @return
 	 */
 	ReturnModel getActivityCodeDetail(Integer tempid);
+	/**
+	 * 修改活动备注
+	 * @param tempid
+	 * @param remark
+	 * @return
+	 */
+	ReturnModel editTempRemark(Integer tempid, String remark);
 	
 
 	

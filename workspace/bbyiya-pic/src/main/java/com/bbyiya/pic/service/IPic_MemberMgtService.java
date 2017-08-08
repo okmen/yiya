@@ -56,7 +56,7 @@ public interface IPic_MemberMgtService {
 	 * @param branchUserId
 	 * @return
 	 */
-	ReturnModel findCustomerslistByAgentUserId(Long branchUserId,String keywords,int index,int size);
+	ReturnModel findCustomerslistByAgentUserId(Long branchUserId,String keywords,String starttime,String endtime,Integer sourcetype,int index,int size);
 	/**
 	 * 根据UserId得到客户的购买列表
 	 * @param userId
@@ -68,5 +68,12 @@ public interface IPic_MemberMgtService {
 	 * @param branchUserId
 	 * @return
 	 */
-	ReturnModel findMarketCustomerslistByBranchUserId(Long branchUserId,String keywords,int index,int size);
+	ReturnModel findMarketCustomerslistByBranchUserId(Long branchUserId,String keywords,String starttime,String endtime,Integer sourcetype,int index,int size);
+	/**
+	 * 修改客户备注
+	 * @param customerId
+	 * @param remark
+	 * @return
+	 */
+	ReturnModel editRemark(Long customerId, String remark);
 }

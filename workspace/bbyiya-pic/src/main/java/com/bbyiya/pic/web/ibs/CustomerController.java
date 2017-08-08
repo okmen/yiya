@@ -11,6 +11,7 @@ import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.pic.service.IPic_MemberMgtService;
 import com.bbyiya.pic.utils.Json2Objects;
 import com.bbyiya.utils.JsonUtil;
+import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
@@ -28,11 +29,11 @@ public class CustomerController extends SSOController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/list")
-	public String memberslist(String keywords,int index,int size) throws Exception {
+	public String memberslist(String keywords,String starttime,String endtime,Integer sourcetype,int index,int size) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq=memberMgtService.findCustomerslistByAgentUserId(user.getUserId(),keywords,index,size);
+			rq=memberMgtService.findCustomerslistByAgentUserId(user.getUserId(),keywords,starttime,endtime,sourcetype,index,size);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
@@ -47,11 +48,11 @@ public class CustomerController extends SSOController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/marketlist")
-	public String marketlist(int index,int size,String keywords) throws Exception {
+	public String marketlist(int index,int size,String keywords,String starttime,String endtime,Integer sourcetype) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq=memberMgtService.findMarketCustomerslistByBranchUserId(user.getUserId(),keywords,index,size);
+			rq=memberMgtService.findMarketCustomerslistByBranchUserId(user.getUserId(),keywords,starttime,endtime,sourcetype,index,size);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
@@ -117,6 +118,26 @@ public class CustomerController extends SSOController{
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			rq=memberMgtService.deleteCustomer(user.getUserId(), customerId); 
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 修改客户备注
+	 * @param customerId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/editremark")
+	public String editremark(long customerId,String remark) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=memberMgtService.editRemark(customerId,remark); 
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

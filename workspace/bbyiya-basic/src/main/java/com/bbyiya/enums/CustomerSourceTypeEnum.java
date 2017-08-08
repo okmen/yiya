@@ -2,7 +2,7 @@ package com.bbyiya.enums;
 
 public enum CustomerSourceTypeEnum {
 	 /**
-     * 客户一对一邀请
+     * 影楼一对一邀请
      */
     oneinvite(1),
 	/**

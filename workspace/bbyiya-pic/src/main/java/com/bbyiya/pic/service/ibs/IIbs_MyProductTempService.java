@@ -131,7 +131,7 @@ public interface IIbs_MyProductTempService {
 	ReturnModel setTempMaxApplyCount(Long userId, Integer tempid,
 			Integer maxApplyCount);
 	/**
-	 * 设置活动完成目标
+	 * 设置活动门槛信息
 	 * @param userId
 	 * @param tempid
 	 * @param blessCount
@@ -139,7 +139,7 @@ public interface IIbs_MyProductTempService {
 	 * @return
 	 */
 	ReturnModel setTempCompletecondition(Long userId, Integer tempid,
-			Integer blessCount, Integer maxCompleteCount,Double amountlimit);
+			Integer maxapplyCount,Integer maxCompleteCount,Integer needverifer);
 	/**
 	 * 得到活动码活动的款式列表
 	 * @param tempid

@@ -5,20 +5,25 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import net.sf.json.JSONObject;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.cts.service.ITempAutoOrderSumbitService;
+import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
 import com.bbyiya.dao.SysLogsMapper;
 import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.enums.MyProductTempStatusEnum;
+import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.OOrderproducts;
+import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
@@ -26,8 +31,10 @@ import com.bbyiya.model.SysLogs;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
+import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
+import com.bbyiya.utils.logistics.LogisticsQuery;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.address.OrderaddressParam;
 import com.bbyiya.vo.order.SubmitOrderProductParam;
@@ -54,13 +61,18 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 	@Autowired
 	private SysLogsMapper syslogMapper;
 	
+	@Autowired
+	private OUserordersMapper userorderMapper;
+	
 	@Resource(name = "regionServiceImpl")
 	private IRegionService regionService;
 
 	
 	@Resource(name = "baseOrderMgtServiceImpl")
 	private IBaseOrderMgtService orderMgtService;
-	
+	/**
+	 * 自动下单的功能
+	 */
 	public ReturnModel dotempAutoOrderSumbit(){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.Success);
@@ -207,12 +219,35 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 	 * 自动签收的功能
 	 * @return
 	 */
-	public ReturnModel doReceiving(){
-		ReturnModel rq=new ReturnModel();
-		//查询所有已发货的订单，
-		
-		return rq;
+	public void doAutoReceiving(){
+		//查询所有已发货的订单
+		List<OUserorders> orderlist=userorderMapper.findOrderByStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
+		if(orderlist!=null&&orderlist.size()>0){
+			for (OUserorders order : orderlist) {
+				if(!ObjectUtil.isEmpty(order.getExpresscode())&&!ObjectUtil.isEmpty(order.getExpressorder())){
+					String resultStr=LogisticsQuery.getLogisticsQueryByNum(order.getExpresscode(), order.getExpressorder());
+					JSONObject model = JSONObject.fromObject(resultStr);		
+					if (model != null) {
+						String message = String.valueOf(model.get("message"));
+						if(!ObjectUtil.isEmpty(message)&&message.equalsIgnoreCase("ok")){
+							String state = String.valueOf(model.get("state"));
+							/*快递单当前签收状态，包括0在途中、1已揽收、2疑难、3已签收、4退签、5同城派送中、6退回、7转单等7个状态，其中4-7需要另外开通才有效，详见章3.1.3 */
+							if(state!=null&&ObjectUtil.parseInt(state).intValue()==3){
+								order.setStatus(Integer.parseInt(OrderStatusEnum.recived.toString()));
+								userorderMapper.updateByPrimaryKey(order);
+								Log.info("订单【"+order.getUserorderid()+"】自动签收成功！");
+							}
+						}
+					}
+				}
+				
+			}
+		}else{
+			Log.info("暂无待签收的订单！");
+		}
 	}
+	
+	
 	public void addSysLog(String msg,String jobid,String jobname){
 		SysLogs log=new SysLogs();
 		log.setContent(msg);

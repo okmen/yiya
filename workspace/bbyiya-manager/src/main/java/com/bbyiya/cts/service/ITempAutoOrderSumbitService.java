@@ -11,4 +11,10 @@ public interface ITempAutoOrderSumbitService {
 	 */
 	ReturnModel dotempAutoOrderSumbit();
 	
+	/**
+	 * 自动签收订单
+	 * @return
+	 */
+	void doAutoReceiving();
+	
 }

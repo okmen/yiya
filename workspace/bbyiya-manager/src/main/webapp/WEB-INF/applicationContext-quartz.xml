@@ -26,16 +26,43 @@
 	<!-- 另一种触发器是CornTrigger -->
 	<bean id="cornTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="HeartbeatJobDetail" />
-		<!-- 每个300s触发 -->
-		<property name="cronExpression" value="0 0/1 * * * ?" />
+		<!-- 每个5分钟触发 -->
+		<property name="cronExpression" value="0 0/5 * * * ?" />
 	</bean>
+	
+	
+	<!-- 自动签收订单定时器服务  -->
+	<bean id="auotReceivingJobDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass" value="com.bbyiya.cts.job.OrderReceivingJob"></property>
+		<property name="jobDataAsMap">
+			<map>
+				<description>jobDataAsMap</description>
+			</map>
+		</property>
+	</bean>
+	<!-- 自动签收订单CornTrigger -->
+	<bean id="auotReceivingTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="auotReceivingJobDetail" />
+		<!-- 每个5分钟触发 -->
+		<property name="cronExpression" value="0 0 24 * * ?" />
+	</bean>
+	
+	
+	
+	
 	<!-- 定义核心调度器 -->
 	<bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 	    <property name="jobFactory" ref="jobFactory"></property>
 		<property name="triggers">
-			<ref bean="cornTrigger" />  
+			<list>
+				<ref bean="cornTrigger" />  
+				<ref bean="auotReceivingTrigger" />  
+			</list>
 		</property>
 	</bean>
+	
+	
+	
 	
 </beans>
   

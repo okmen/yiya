@@ -169,8 +169,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		if(ObjectUtil.isEmpty(param.getIsbranchaddress())){
 			param.setIsbranchaddress(0);
 		}
-		temp.setApplycount(param.getApplycount());//报名人数为0时不限制
-		temp.setMaxcompletecount(param.getApplycount()==null?0:param.getApplycount());
+		temp.setMaxcompletecount(param.getApplycount()==null?0:param.getApplycount());//报名人数为0时不限制
 		temp.setIsbranchaddress(param.getIsbranchaddress());
 		temp.setType(Integer.parseInt(MyProductTempType.normal.toString()));//默认为普通类型
 		myproducttempMapper.insertReturnId(temp);

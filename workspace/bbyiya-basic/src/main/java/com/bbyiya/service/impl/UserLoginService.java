@@ -219,20 +219,20 @@ public class UserLoginService implements IUserLoginService {
 			result.setBirthday(DateUtil.getTimeStr(user.getBirthday(), "yyyy-MM-dd"));
 		}
 		// 完成注册// =》设置baby信息
-		if (user.getStatus().intValue() == Integer.parseInt(UserStatusEnum.ok.toString())) {
-			UChildreninfo childModel = childMapper.selectByPrimaryKey(user.getUserid());
-			if (childModel != null) {
-				// 获取宝宝信息
-				UChildInfo child = new UChildInfo();
-				if (childModel.getBirthday() != null) {
-					child.setBirthdayStr(DateUtil.getTimeStr(childModel.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
-					child.setBirthday(childModel.getBirthday());
-				}
-				child.setNickName(childModel.getNickname());
-				result.setBabyInfo(child);
-				result.setHaveBabyInfo(1);// 已经填写宝宝信息
+//		if (user.getStatus().intValue() == Integer.parseInt(UserStatusEnum.ok.toString())) {
+		UChildreninfo childModel = childMapper.selectByPrimaryKey(user.getUserid());
+		if (childModel != null) {
+			// 获取宝宝信息
+			UChildInfo child = new UChildInfo();
+			if (childModel.getBirthday() != null) {
+				child.setBirthdayStr(DateUtil.getTimeStr(childModel.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
+				child.setBirthday(childModel.getBirthday());
 			}
+			child.setNickName(childModel.getNickname());
+			result.setBabyInfo(child);
+			result.setHaveBabyInfo(1);// 已经填写宝宝信息
 		}
+//		}
 		return result;
 	}
 

@@ -35,6 +35,7 @@ import com.bbyiya.dao.PProductstylesMapper;
 import com.bbyiya.dao.UAccountsMapper;
 import com.bbyiya.dao.UAgentcustomersMapper;
 import com.bbyiya.dao.UBranchusersMapper;
+import com.bbyiya.dao.UChildreninfoMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.CustomerSourceTypeEnum;
 import com.bbyiya.enums.MyProductTempStatusEnum;
@@ -60,6 +61,7 @@ import com.bbyiya.model.PProductstyles;
 import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UBranchusers;
+import com.bbyiya.model.UChildreninfo;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.service.ibs.IIbs_MyProductTempService;
 import com.bbyiya.pic.vo.product.MyProductTempAddParam;
@@ -74,6 +76,7 @@ import com.bbyiya.utils.QRCodeUtil;
 import com.bbyiya.utils.SendSMSByMobile;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.agent.UBranchUserTempVo;
+import com.bbyiya.vo.user.UChildInfo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
@@ -100,6 +103,8 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	private PMyproductchildinfoMapper childinfoMapper;
 	@Autowired
 	private UUsersMapper usersMapper;
+	@Autowired
+	private UChildreninfoMapper childMapper;
 	@Autowired
 	private UAgentcustomersMapper customerMapper;
 	@Autowired
@@ -644,26 +649,17 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			newproducts.setInvitestatus(Integer.parseInt(InviteStatus.agree.toString()));
 			myMapper.insertReturnId(newproducts);
 			
-			PMyproductchildinfo childinfo=childinfoMapper.selectByPrimaryKey(myproducts.getCartid());
-			PMyproductchildinfo newchildinfo=new PMyproductchildinfo();				
-			if(childinfo!=null){
-				newchildinfo.setBirthday(childinfo.getBirthday());
+			//新增作品宝宝生日
+			if(!ObjectUtil.isEmpty(apply.getBirthday())){
+				PMyproductchildinfo newchildinfo=new PMyproductchildinfo();			
 				newchildinfo.setCartid(newproducts.getCartid());
+				newchildinfo.setBirthday(apply.getBirthday());
+				newchildinfo.setUserid(apply.getUserid());	
 				newchildinfo.setCreatetime(new Date());
-				newchildinfo.setNickname(childinfo.getNickname());
-				newchildinfo.setRelation(childinfo.getRelation());
-				newchildinfo.setUserid(newproducts.getUserid());
-				newchildinfo.setIsdue(childinfo.getIsdue());				
-			}else{
-				newchildinfo.setBirthday(new Date());
-				newchildinfo.setCartid(newproducts.getCartid());
-				newchildinfo.setCreatetime(new Date());
-				newchildinfo.setNickname("");
-				newchildinfo.setRelation("");
-				newchildinfo.setUserid(newproducts.getUserid());
 				newchildinfo.setIsdue(0);
+				childinfoMapper.insert(newchildinfo);
 			}
-			childinfoMapper.insert(newchildinfo);
+			
 			List<PMyproductdetails> details=myDetaiMapper.findMyProductdetails(myproducts.getCartid());
 			if(details!=null&&details.size()>0){
 				for (PMyproductdetails detail : details) {

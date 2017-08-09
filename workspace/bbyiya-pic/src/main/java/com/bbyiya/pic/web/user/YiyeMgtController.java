@@ -319,7 +319,7 @@ public class YiyeMgtController  extends SSOController {
 							}
 						}
 						
-						if(!isNeedVer){// 不需要审核 调取 新增作品、客户信息
+						if(!isNeedVer) {// 不需要审核 调取 新增作品、客户信息
 							//验证是否是免费领取的用户
 							ResultMsg rMsg=verUser(temp.getTempid().intValue(),user);
 							if(rMsg.getStatus()!=1){
@@ -374,7 +374,7 @@ public class YiyeMgtController  extends SSOController {
 						//插入申请提交信息
 						tempApplyMapper.insert(apply);
 						
-						//更新用户宝宝生日信息
+						//需要审核---  更新用户宝宝生日信息
 						UChildreninfo childinfo=childrenMapper.selectByPrimaryKey(user.getUserId());
 						if(childinfo==null){
 							childinfo=new UChildreninfo();
@@ -386,6 +386,10 @@ public class YiyeMgtController  extends SSOController {
 							childinfo.setBirthday(param.getDateTime());
 							childrenMapper.updateByPrimaryKey(childinfo);
 						}
+						
+						//更新用户登录信息
+						super.updateLoginUser(user.getUserId()); 
+						
 						rq.setStatu(ReturnStatus.Success);
 						rq.setStatusreson("提交申请成功！");
 					}

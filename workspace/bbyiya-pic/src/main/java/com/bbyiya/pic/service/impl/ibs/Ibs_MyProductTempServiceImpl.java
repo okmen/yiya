@@ -161,7 +161,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		temp.setStyleid(param.getStyleId());
 		temp.setIsautoorder(param.getIsAutoOrder());
 		temp.setOrderhours(param.getOrderHours());
-		temp.setApplycount(param.getApplycount());//报名人数为0时不限制
+		
 		temp.setAmountlimit(param.getAmountlimit()==null?0:param.getAmountlimit());//需筹集的红包金额
 		temp.setNeedshared(param.getNeedshared()==null?0:param.getNeedshared()); //活动要求：是否需要分享
 		temp.setBlesscount(param.getBlesscount()==null?0:param.getBlesscount());//集的祝福数
@@ -169,6 +169,8 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		if(ObjectUtil.isEmpty(param.getIsbranchaddress())){
 			param.setIsbranchaddress(0);
 		}
+		temp.setApplycount(param.getApplycount());//报名人数为0时不限制
+		temp.setMaxcompletecount(param.getApplycount()==null?0:param.getApplycount());
 		temp.setIsbranchaddress(param.getIsbranchaddress());
 		temp.setType(Integer.parseInt(MyProductTempType.normal.toString()));//默认为普通类型
 		myproducttempMapper.insertReturnId(temp);

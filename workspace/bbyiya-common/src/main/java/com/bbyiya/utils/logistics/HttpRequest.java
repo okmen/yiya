@@ -1,5 +1,7 @@
 package com.bbyiya.utils.logistics;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -41,9 +43,17 @@ public class HttpRequest {
 			method.setRequestBody(assembleRequestParams(params));
 		}
 		String result = "";
+		BufferedReader in = null;
 		try {
 			httpClient.executeMethod(method);
-			result = new String(method.getResponseBody(), codePage);
+			
+			in = new BufferedReader(
+					new InputStreamReader(method.getResponseBodyAsStream(), codePage));
+			String line;
+			while ((line = in.readLine()) != null) {
+				result += line;
+			}
+			//result = new String(method.getResponseBody(), codePage);
 		} catch (final Exception e) {
 			throw e;
 		} finally {
@@ -59,9 +69,17 @@ public class HttpRequest {
 
 		final GetMethod method = new GetMethod(url);
 		String result = "";
+		BufferedReader in = null;
 		try {
 			httpClient.executeMethod(method);
-			result = new String(method.getResponseBody(), codePage);
+			in = new BufferedReader(
+					new InputStreamReader(method.getResponseBodyAsStream(), codePage));
+			String line;
+			while ((line = in.readLine()) != null) {
+				result += line;
+			}
+			
+			//result = new String(method.getResponseBody(), codePage);
 		} catch (final Exception e) {
 			throw e;
 		} finally {

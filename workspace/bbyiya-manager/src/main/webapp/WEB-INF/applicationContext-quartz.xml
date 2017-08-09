@@ -44,7 +44,7 @@
 	<bean id="auotReceivingTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="auotReceivingJobDetail" />
 		<!-- 每个5分钟触发 -->
-		<property name="cronExpression" value="0 0 24 * * ?" />
+		<property name="cronExpression" value="0 0 23 * * ?" />
 	</bean>
 	
 	

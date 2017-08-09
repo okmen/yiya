@@ -146,10 +146,10 @@ public class SendSMSByMobile {
 		//通知- 用户充值 cts管理员收（参数：param: amount, rechargeType， userId）
 		else if (msgType==Integer.parseInt(SendMsgEnums.recharge_adminUser.toString())) {
 			if(param.getRechargeType()==0){
-				msg = "【咿呀科技】帐号"+param.getUserId().toString()+"于" + DateUtil.getTimeStr(new Date(), "yyyy-MM-dd HH:mm") + "通过微信支付成功充值" + param.getAmount() + "元。";
+				msg = "【咿呀科技】帐号["+param.getUserId().toString()+"]"+param.getUserName()+"于" + DateUtil.getTimeStr(new Date(), "yyyy-MM-dd HH:mm") + "通过微信支付成功充值" + param.getAmount() + "元。";
 				batchSend(mobile, msg);	
 			}else if (param.getRechargeType()==1) {
-				msg = "【咿呀科技】帐号"+param.getUserId().toString()+"于" + DateUtil.getTimeStr(new Date(), "yyyy-MM-dd HH:mm") + "通过cts管理员成功充值" + param.getAmount() + "元。";
+				msg = "【咿呀科技】帐号["+param.getUserId().toString()+"]"+param.getUserName()+"于" + DateUtil.getTimeStr(new Date(), "yyyy-MM-dd HH:mm") + "通过cts管理员成功充值" + param.getAmount() + "元。";
 				batchSend(mobile, msg);	
 			}
 		}

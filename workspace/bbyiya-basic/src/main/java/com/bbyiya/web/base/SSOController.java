@@ -1,11 +1,12 @@
 package com.bbyiya.web.base;
 
-//import javax.servlet.http.Cookie;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.bbyiya.service.IUserInfoMgtService;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.user.LoginSuccessResult;
@@ -18,35 +19,30 @@ import com.bbyiya.baseUtils.CookieUtils;
  *
  */
 public class SSOController {
-	@Autowired
-	public HttpServletRequest request;
-	@Autowired
-	public HttpServletResponse response;
-	
 	/**
 	 * 管理员登录 cookie缓存名
 	 */
-	protected static String PHOTO_TOKEN="pic12_token_user";
+	protected static String PHOTO_TOKEN = "pic12_token_user";
 	/**
 	 * 用户登陆成功后返回类
 	 */
 	private LoginSuccessResult user;
 
+	@Autowired
+	public HttpServletRequest request;
+	@Autowired
+	public HttpServletResponse response;
+
+	@Resource(name = "userInfoMgtService")
+	private IUserInfoMgtService userInfoMgtService;
+
 	/**
-	 * 微店用户
+	 * 用户
 	 */
 	public LoginSuccessResult getLoginUser() {
 		String ticket = getTicket();
 		if (ObjectUtil.isEmpty(ticket)) {
-			// 获取cookie的tiket的值
-//			ticket = CookieUtils.getCookieBySessionId(request);
-			ticket = CookieUtils.getCookie_web(request);
-			if (ObjectUtil.isEmpty(ticket)) {
-				ticket=CookieUtils.getCookie_web(request);
-				if(ObjectUtil.isEmpty(ticket)){
-					return null;
-				}
-			}
+			return null;
 		}
 		Object userObject = RedisUtil.getObject(ticket);
 		if (userObject != null)// 如果存在
@@ -56,22 +52,16 @@ public class SSOController {
 		}
 		return null;// 用户过期
 	}
-	
+
 	/**
 	 * 退出登录
+	 * 
 	 * @return
 	 */
-	public boolean loginOut(){
+	public boolean loginOut() {
 		String ticket = getTicket();
 		if (ObjectUtil.isEmpty(ticket)) {
-			// 获取cookie的tiket的值
-			ticket = CookieUtils.getCookie_web(request);
-			if (ObjectUtil.isEmpty(ticket)) {
-				ticket=CookieUtils.getCookie_web(request);
-				if(ObjectUtil.isEmpty(ticket)){
-					return true;
-				}
-			}
+			return true;
 		}
 		Object userObject = RedisUtil.getObject(ticket);
 		if (userObject != null)// 如果存在
@@ -80,15 +70,15 @@ public class SSOController {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * web、wap 浏览器端获取用户信息
+	 * 
 	 * @return
 	 */
 	public LoginSuccessResult getWebLoginUser() {
-//		String ticket = CookieUtils.getCookieBySessionId(request);
 		String ticket = CookieUtils.getCookie_web(request);
-		if(ObjectUtil.isEmpty(ticket))
+		if (ObjectUtil.isEmpty(ticket))
 			return null;
 		Object userObject = RedisUtil.getObject(ticket);
 		if (userObject != null)// 如果存在
@@ -100,33 +90,9 @@ public class SSOController {
 		return null;// 用户过期
 	}
 
-	/**
-	 * 
-	 * @param request
-	 * @return
-	 */
-	public static LoginSuccessResult getLoginUser(HttpServletRequest request) {
-		String ticket = getTicket(request);
-		// 判断tiekt是否为空
-		if (ObjectUtil.isEmpty(ticket)) {
-//			ticket = CookieUtils.getCookieBySessionId(request);
-			ticket = CookieUtils.getCookie_web(request);
-			if (ObjectUtil.isEmpty(ticket)) {
-				return null;
-			}
-		}
-		Object userObject = RedisUtil.getObject(ticket);
-		if (userObject != null)// 如果存在
-		{
-			RedisUtil.setExpire(ticket, 86400);// 延长时间
-			LoginSuccessResult user = (LoginSuccessResult) userObject;
-			return user;
-		}
-		return null;// 用户过期
-	}
 
 	/**
-	 * 获取用户登录Ticket
+	 * 获取用户登录 Ticket
 	 * 
 	 * @return
 	 */
@@ -134,18 +100,37 @@ public class SSOController {
 		String ticket = request.getHeader("ticket");
 		if (ObjectUtil.isEmpty(ticket)) {
 			ticket = request.getParameter("ticket");
+			if(ObjectUtil.isEmpty(ticket)){
+				// 获取cookie中的ticket
+				ticket = CookieUtils.getCookie_web(request);
+			}
 		}
 		return ticket;
 	}
+	
 
-	public static String getTicket(HttpServletRequest request) {
-		String ticket = request.getHeader("ticket");
+	
+	/**
+	 * 更新 用户登录信息
+	 * @param userId
+	 */
+	public  void updateLoginUser(Long userId){
+		String ticket = getTicket();
 		if (ObjectUtil.isEmpty(ticket)) {
-			ticket = request.getParameter("ticket");
+			ticket = CookieUtils.getCookie_web(request);
 		}
-		return ticket;
+		if (!ObjectUtil.isEmpty(ticket)) {
+			LoginSuccessResult loginUser = userInfoMgtService.getLoginSuccessResult(userId);
+			if (loginUser != null) {
+				RedisUtil.setObject(ticket, loginUser, 86400);
+			}
+		}
 	}
 
+	/**
+	 * 获取用户ip
+	 * @return
+	 */
 	public String getIpStr() {
 		String ipAddres = request.getHeader("x-forwarded-for");
 		if (ObjectUtil.isEmpty(ipAddres)) {

@@ -111,8 +111,7 @@ public class MyProductTempController extends SSOController {
 	 * @param title
 	 * @param remark
 	 * @param tempid
-	 * @param needverifer
-	 * @param discription
+	 * @param discription 活动需知
 	 * @return
 	 * @throws Exception
 	 */
@@ -137,6 +136,16 @@ public class MyProductTempController extends SSOController {
 				rq.setStatusreson("设置了二维码简介说明，二维码图片不能为空!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
+			if(ObjectUtil.isEmpty(discription)){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("活动需知不能为空!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			if(!ObjectUtil.isEmpty(discription)&&!ObjectUtil.validSqlStr(discription)){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("活动需知存在危险字符!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
 			rq=producttempService.editTempCodeUrl(tempid,codeurl,codesm,discription,logourl);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
@@ -146,7 +155,7 @@ public class MyProductTempController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	/**
-	 * 修改模板
+	 * 修改模板基本信息
 	 * @param index
 	 * @param size
 	 * @return
@@ -180,26 +189,17 @@ public class MyProductTempController extends SSOController {
 				rq.setStatusreson("活动名称存在危险字符!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			if(param.getNeedverifer()==1&&ObjectUtil.isEmpty(param.getDiscription())){
-				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("活动需知不能为空!");
-				return JsonUtil.objectToJsonStr(rq);
-			}
-			if(!ObjectUtil.isEmpty(param.getDiscription())&&!ObjectUtil.validSqlStr(param.getDiscription())){
-				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("活动需知存在危险字符!");
-				return JsonUtil.objectToJsonStr(rq);
-			}
-			if(ObjectUtil.isEmpty(param.getCodeurl())&&!ObjectUtil.isEmpty(param.getCodesm())){
-				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("设置了二维码简介，二维码图片不能为空!");
-				return JsonUtil.objectToJsonStr(rq);
-			}
-			if(!ObjectUtil.isEmpty(param.getCodesm())&&!ObjectUtil.validSqlStr(param.getCodesm())){
-				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("二维码简介说明存在危险字符!");
-				return JsonUtil.objectToJsonStr(rq);
-			}
+			
+//			if(ObjectUtil.isEmpty(param.getCodeurl())&&!ObjectUtil.isEmpty(param.getCodesm())){
+//				rq.setStatu(ReturnStatus.ParamError);
+//				rq.setStatusreson("设置了二维码简介，二维码图片不能为空!");
+//				return JsonUtil.objectToJsonStr(rq);
+//			}
+//			if(!ObjectUtil.isEmpty(param.getCodesm())&&!ObjectUtil.validSqlStr(param.getCodesm())){
+//				rq.setStatu(ReturnStatus.ParamError);
+//				rq.setStatusreson("二维码简介说明存在危险字符!");
+//				return JsonUtil.objectToJsonStr(rq);
+//			}
 			
 			rq=producttempService.editMyProductTemp(param);
 		}else {
@@ -476,14 +476,14 @@ public class MyProductTempController extends SSOController {
 	}
 	
 	/**
-	 * 设置活动完成条件
+	 * 设置活动门槛
 	 * @param tempid
 	 * @return
 	 * @throws Exception
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/setTempCompletecondition")
-	public String setTempCompletecondition(Integer tempid,Integer blessCount,Integer maxCompleteCount,String amountlimit) throws Exception {
+	public String setTempCompletecondition(Integer tempid,Integer maxapplyCount,Integer maxCompleteCount,Integer needverifer) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
@@ -492,7 +492,7 @@ public class MyProductTempController extends SSOController {
 				rq.setStatusreson("tempid参数不能为空！");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			rq=producttempService.setTempCompletecondition(user.getUserId(),tempid,blessCount,maxCompleteCount,ObjectUtil.parseDouble(amountlimit));
+			rq=producttempService.setTempCompletecondition(user.getUserId(),tempid,maxapplyCount,maxCompleteCount,needverifer);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

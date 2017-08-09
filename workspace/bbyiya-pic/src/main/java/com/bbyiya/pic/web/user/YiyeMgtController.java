@@ -24,6 +24,7 @@ import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
 import com.bbyiya.dao.PMyproducttempusersMapper;
 import com.bbyiya.dao.PProductstylesMapper;
+import com.bbyiya.dao.UChildreninfoMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.enums.MyProductTempStatusEnum;
 import com.bbyiya.enums.MyProductTempType;
@@ -39,6 +40,7 @@ import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.model.PMyproducttempext;
 import com.bbyiya.model.PMyproducttempusers;
 import com.bbyiya.model.PProductstyles;
+import com.bbyiya.model.UChildreninfo;
 import com.bbyiya.pic.dao.IMyProductsDao;
 import com.bbyiya.pic.service.ibs.IIbs_MyProductTempService;
 import com.bbyiya.pic.vo.product.MyProductListVo;
@@ -86,6 +88,8 @@ public class YiyeMgtController  extends SSOController {
 
 	@Autowired
 	private PProductstylesMapper styleMapper;
+	@Autowired
+	private UChildreninfoMapper childrenMapper;
 	/**
 	 * 优惠信息
 	 */
@@ -308,6 +312,12 @@ public class YiyeMgtController  extends SSOController {
 							//需要审核
 							isNeedVer=true;
 						}
+						//如果已达到活动目标完成人数，则不需要审核
+						if(temp.getMaxcompletecount()!=null&&temp.getMaxcompletecount().intValue()>0){
+							if(temp.getCompletecount().intValue()>=temp.getMaxcompletecount().intValue()){
+								isNeedVer=false;
+							}
+						}
 						
 						if(!isNeedVer){// 不需要审核 调取 新增作品、客户信息
 							//验证是否是免费领取的用户
@@ -349,10 +359,33 @@ public class YiyeMgtController  extends SSOController {
 								tempUsrMapper.updateByPrimaryKeySelective(tempUser); 
 							}
 						}
-					
+						
+						//如果已达到活动目标完成人数，则自动置为活动失败状态，C端提示活动名额已满，可享受半价优惠
+						if(temp.getMaxcompletecount()!=null&&temp.getMaxcompletecount().intValue()>0){
+							if(temp.getCompletecount().intValue()>=temp.getMaxcompletecount().intValue()){
+								apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.fails.toString()));
+								//活动失败的参与作品 分发优惠
+								if(apply.getCartid()!=null&&apply.getCartid().longValue()>0){
+									discountService.addTempDiscount(apply.getCartid());
+								}
+							}
+						}
+						
 						//插入申请提交信息
 						tempApplyMapper.insert(apply);
 						
+						//更新用户宝宝生日信息
+						UChildreninfo childinfo=childrenMapper.selectByPrimaryKey(user.getUserId());
+						if(childinfo==null){
+							childinfo=new UChildreninfo();
+							childinfo.setCreatetime(new Date());
+							childinfo.setUserid(user.getUserId());
+							childinfo.setBirthday(param.getDateTime());
+							childrenMapper.insert(childinfo);
+						}else{
+							childinfo.setBirthday(param.getDateTime());
+							childrenMapper.updateByPrimaryKey(childinfo);
+						}
 						rq.setStatu(ReturnStatus.Success);
 						rq.setStatusreson("提交申请成功！");
 					}
@@ -511,7 +544,7 @@ public class YiyeMgtController  extends SSOController {
 						apply.setVerfiytimestr(DateUtil.getTimeStr(apply.getVerfiytime(), "yyyy-MM-dd HH:mm:ss"));
 					}
 					if(!ObjectUtil.isEmpty(apply.getBirthday())){
-						apply.setBirthdaystr(DateUtil.getTimeStr(apply.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
+						apply.setBirthdaystr(DateUtil.getTimeStr(apply.getBirthday(), "yyyy-MM-dd"));
 					}
 				}
 				rq.setBasemodle(reuslt);

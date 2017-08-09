@@ -236,7 +236,7 @@ public class LoginController extends SSOController {
 			if(logintemp!=null&&!ObjectUtil.isEmpty(logintemp.getRedirect_url())){
 				return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+logintemp.getRedirect_url(); 
 			}else if (logintemp!=null&&!ObjectUtil.isEmpty(logintemp.getUpUserId())) {//店铺页
-				return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+"uid="+logintemp.getUpUserId(); 
+				return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+"?uid="+logintemp.getUpUserId(); 
 			} 
 			return "redirect:" + ConfigUtil.getSingleValue("loginbackurl") ;
 		} else {
@@ -325,8 +325,10 @@ public class LoginController extends SSOController {
 				}else {
 					return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+logintemp.getRedirect_url();
 				}
-//				return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+logintemp.getRedirect_url(); 
-			}
+//				
+			}else if (logintemp!=null&&!ObjectUtil.isEmpty(logintemp.getUpUserId())) {//店铺页
+				return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+"?uid="+logintemp.getUpUserId(); 
+			} 
 			return "redirect:" + ConfigUtil.getSingleValue("loginbackurl") ;
 		} else {
 			return "redirect:" + ConfigUtil.getSingleValue("loginbackurl") ;

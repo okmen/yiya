@@ -1,5 +1,6 @@
 package com.bbyiya.pic.web.user;
 
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 
@@ -99,7 +100,8 @@ public class UserInfoController  extends SSOController{
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			rq.setStatu(ReturnStatus.Success);
-			rq.setBasemodle(ConfigUtil.getSingleValue("shareulr-base")+"uid="+user.getUserId()); 
+			String redirct_url=ConfigUtil.getSingleValue("currentDomain")+"?uid="+user.getUserId();
+			rq.setBasemodle(ConfigUtil.getSingleValue("shareulr-base")+"uid="+user.getUserId()+"&redirct_url="+URLEncoder.encode(redirct_url.toString(),"utf-8")); 
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

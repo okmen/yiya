@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bbyiya.baseUtils.CookieUtils;
 import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.pic.service.IPic_ProductService;
 import com.bbyiya.pic.utils.Json2Objects;
 import com.bbyiya.pic.vo.product.MyProductParam;
+import com.bbyiya.service.IUserInfoMgtService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
@@ -30,7 +32,7 @@ public class MyProductController extends SSOController {
 	private IPic_ProductService proService;
 	@Autowired
 	private PMyproductdetailsMapper detaiMapper;
-
+	
 	/**
 	 * P08 保存我的作品(新增/修改) 每次修改都是先清除原有的，再新增
 	 * 
@@ -44,9 +46,6 @@ public class MyProductController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-//			if(!ObjectUtil.isEmpty(myproductJson)){
-//				myproductJson=ObjectUtil.filterUtf8Mb4(myproductJson);
-//			}
 			MyProductParam param = Json2Objects.getParam_MyProductParam(myproductJson);
 			if (param != null) {
 				if (param.getDetails() != null && param.getDetails().size() > 12) {
@@ -56,6 +55,10 @@ public class MyProductController extends SSOController {
 				}
 //				rq = proService.saveOrEdit_MyProducts(user.getUserId(), param);
 				rq=proService.Modify_MyProducts(user.getUserId(), param);
+				//用户宝宝信息更新
+				if(param.getChildInfo()!=null&&ReturnStatus.Success.equals(rq.getStatu())){
+					super.updateLoginUser(user.getUserId()); 
+				}
 			} else {
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("参数有误");
@@ -89,6 +92,10 @@ public class MyProductController extends SSOController {
 				}
 //				rq = proService.Edit_MyProducts(user.getUserId(), param);
 				rq=proService.Modify_MyProducts(user.getUserId(), param);
+				//用户宝宝信息更新
+				if(param.getChildInfo()!=null&&ReturnStatus.Success.equals(rq.getStatu())){
+					super.updateLoginUser(user.getUserId());
+				}
 			} else {
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("参数有误");

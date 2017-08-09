@@ -26,7 +26,7 @@ public class LogisticsQuery {
 		String resp="";
 		try {
 			resp = new HttpRequest().postData("http://poll.kuaidi100.com/poll/query.do", params, "utf-8").toString();
-			System.out.println(resp);			
+			//System.out.println(resp);			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

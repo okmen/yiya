@@ -40,6 +40,12 @@
     from o_userorders
     where UserOrderId = #{userorderid,jdbcType=VARCHAR}
   </select>
+  <select id="findOrderByStatus" resultMap="BaseResultMap"  ><!-- 01 根据UserId 获取用户的订单列表 -->
+    select 
+    <include refid="Base_Column_List" />
+    from o_userorders
+    where Status=#{status,jdbcType=INTEGER}  order by OrderTime desc
+  </select>
   <select id="findOrderByUserId" resultMap="BaseResultMap"  ><!-- 01 根据UserId 获取用户的订单列表 -->
     select 
     <include refid="Base_Column_List" />

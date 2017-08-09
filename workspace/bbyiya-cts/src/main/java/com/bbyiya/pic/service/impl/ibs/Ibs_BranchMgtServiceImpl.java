@@ -10,6 +10,7 @@ import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.pic.service.ibs.IIbs_BranchMgtService;
+import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.ReturnModel;
 
 @Service("ibs_BranchMgtService")
@@ -30,6 +31,7 @@ public class Ibs_BranchMgtServiceImpl implements IIbs_BranchMgtService{
 		branch.setLogo(logo);
 		branch.setPromotionstr(promotionstr);
 		branchesMapper.updateByPrimaryKeySelective(branch);
+		
 		rqModel.setStatu(ReturnStatus.Success);
 		rqModel.setStatusreson("修改店铺页信息成功！");
 		return rqModel;		

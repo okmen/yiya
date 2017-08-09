@@ -168,7 +168,7 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 	 * @param branchUserId
 	 *   @return  
 	 */
-	public ReturnModel findCustomerslistByAgentUserId(Long branchUserId,String keywords,int index,int size){
+	public ReturnModel findCustomerslistByAgentUserId(Long branchUserId,String keywords,String starttime,String endtime,Integer sourcetype,int index,int size){
 		ReturnModel rqModel=new ReturnModel();
 		UBranches branch=branchesMapper.selectByPrimaryKey(branchUserId);
 		if(branch==null){
@@ -176,16 +176,19 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 			rqModel.setBasemodle(null);
 			return rqModel;
 		}
+		if(endtime!=null&&!endtime.equals("")){
+			endtime=DateUtil.getEndTime(endtime);
+		}
 		PageHelper.startPage(index, size);
 		//获取待营销客户列表
-		List<UAgentcustomersVo> list= customerMapper.findCustomersByAgentUserId(branch.getAgentuserid(),keywords,0);
+		List<UAgentcustomersVo> list= customerMapper.findCustomersByAgentUserId(branch.getAgentuserid(),keywords,0,starttime,endtime,sourcetype);
 		
 		for (UAgentcustomersVo cus : list) {
-			if(cus.getCreatetime()!=null) cus.setCreatetimeStr(DateUtil.getTimeStr(cus.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
+			if(cus.getCreatetime()!=null) cus.setCreatetimeStr(DateUtil.getTimeStr(cus.getCreatetime(), "yyyy-MM-dd"));
 			UChildreninfo child=childMapper.selectByPrimaryKey(cus.getUserid());
 			if(child!=null){
 				if(child.getBirthday()!=null)
-					cus.setBabyBirthday(DateUtil.getTimeStr(child.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
+					cus.setBabyBirthday(DateUtil.getTimeStr(child.getBirthday(), "yyyy-MM-dd"));
 				else
 					cus.setBabyBirthday("");
 				cus.setBabyNickName(child.getNickname());
@@ -217,7 +220,7 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 	 * @param branchUserId
 	 *   @return  
 	 */
-	public ReturnModel findMarketCustomerslistByBranchUserId(Long branchUserId,String keywords,int index,int size){
+	public ReturnModel findMarketCustomerslistByBranchUserId(Long branchUserId,String keywords,String starttime,String endtime,Integer sourcetype,int index,int size){
 		ReturnModel rqModel=new ReturnModel();
 		UBranches branch=branchesMapper.selectByPrimaryKey(branchUserId);
 		if(branch==null){
@@ -225,30 +228,33 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 			rqModel.setBasemodle(null);
 			return rqModel;
 		}
+		if(endtime!=null&&!endtime.equals("")){
+			endtime=DateUtil.getEndTime(endtime);
+		}
 		//获取已获取客户列表
 		PageHelper.startPage(index, size);
-		List<UAgentcustomersVo> list= customerMapper.findCustomersByBranchUserId(branch.getAgentuserid(),keywords,1);
+		List<UAgentcustomersVo> list= customerMapper.findCustomersByBranchUserId(branch.getAgentuserid(),keywords,1,starttime,endtime,sourcetype);
 		
 		for (UAgentcustomersVo cus : list) {
-			if(cus.getCreatetime()!=null) cus.setCreatetimeStr(DateUtil.getTimeStr(cus.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
+			if(cus.getCreatetime()!=null) cus.setCreatetimeStr(DateUtil.getTimeStr(cus.getCreatetime(), "yyyy-MM-dd"));
 			UChildreninfo child=childMapper.selectByPrimaryKey(cus.getUserid());
 			if(child!=null){
 				if(child.getBirthday()!=null)
-					cus.setBabyBirthday(DateUtil.getTimeStr(child.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
+					cus.setBabyBirthday(DateUtil.getTimeStr(child.getBirthday(), "yyyy-MM-dd"));
 				else
 					cus.setBabyBirthday("");
 				cus.setBabyNickName(child.getNickname());
 			}	
-			OUserorders order=orderMapper.findLatelyOrderByUserId(cus.getUserid());
-			if(order!=null){
-				cus.setLastBuyDateStr(DateUtil.getTimeStr(order.getOrdertime(), "yyyy-MM-dd HH:mm:ss"));
-			}
+//			OUserorders order=orderMapper.findLatelyOrderByUserId(cus.getUserid());
+//			if(order!=null){
+//				cus.setLastBuyDateStr(DateUtil.getTimeStr(order.getOrdertime(), "yyyy-MM-dd HH:mm:ss"));
+//			}
 			//得到客户来源
 			if(cus.getSourcetype()==null){
-				cus.setSourcename("客户一对一");
+				cus.setSourcename("影楼一对一");
 			}
 			else if(cus.getSourcetype()!=null&&cus.getSourcetype()==Integer.parseInt(CustomerSourceTypeEnum.oneinvite.toString())){
-				cus.setSourcename("客户一对一");
+				cus.setSourcename("影楼一对一");
 			}else if(cus.getSourcetype()!=null&&cus.getSourcetype()==Integer.parseInt(CustomerSourceTypeEnum.temp.toString())){
 				PMyproducttemp temp=tempMapper.selectByPrimaryKey(cus.getExtid());
 				if(temp!=null){
@@ -297,7 +303,7 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 		return rqModel;
 	}
 	
-	public ReturnModel editCustomer(Long branchUserId,UAgentcustomers param){
+	public ReturnModel editCustomer(Long customerId,UAgentcustomers param){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.ParamError);
 		if(param==null||param.getCustomerid()==null||param.getCustomerid()<=0){
@@ -325,6 +331,21 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 			customerMapper.updateByPrimaryKeySelective(model);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("修改成功");
+		}else {
+			rq.setStatusreson("找不到相应的客户！"); 
+		} 
+		return rq;
+	}
+	
+	public ReturnModel editRemark(Long customerId,String remark){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.ParamError);	
+		UAgentcustomers model= customerMapper.selectByPrimaryKey(customerId);
+		if(model!=null){
+			model.setRemark(remark);
+			customerMapper.updateByPrimaryKeySelective(model);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("修改备注成功");
 		}else {
 			rq.setStatusreson("找不到相应的客户！"); 
 		} 

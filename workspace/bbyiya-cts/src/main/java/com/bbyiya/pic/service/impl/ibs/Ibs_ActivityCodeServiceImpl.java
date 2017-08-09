@@ -124,7 +124,8 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 		temp.setDiscription(param.getDiscription()); //活动需知
 		if(!ObjectUtil.isEmpty(param.getCodeurl())){
 			temp.setTempcodeurl(param.getCodeurl());
-		}if(!ObjectUtil.isEmpty(param.getCodesm())){
+		}
+		if(!ObjectUtil.isEmpty(param.getCodesm())){
 			temp.setTempcodesm(param.getCodesm());
 		}
 		if(!ObjectUtil.isEmpty(param.getLogourl())){
@@ -134,6 +135,8 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 		temp.setOrderhours(0); 
 		temp.setMaxapplycount(param.getApplycount()==null?0:param.getApplycount());//报名人数为0时不限制
 		temp.setBlesscount(param.getBlesscount()==null?0:param.getBlesscount());//收集祝福数
+		temp.setNeedshared(param.getNeedshared()==null?0:param.getNeedshared()); //活动要求：是否需要分享
+		
 		if(ObjectUtil.isEmpty(param.getIsbranchaddress())){
 			param.setIsbranchaddress(0);
 		}
@@ -254,7 +257,7 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 						// 得到宝宝生日
 						PMyproductchildinfo childinfo = mychildMapper.selectByPrimaryKey(myproduct.getCartid());
 						if (childinfo != null && childinfo.getBirthday() != null) {
-							codevo.setBirthdayStr(DateUtil.getTimeStr(childinfo.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
+							codevo.setBirthdayStr(DateUtil.getTimeStr(childinfo.getBirthday(), "yyyy-MM-dd"));
 							codevo.setIsDue(childinfo.getIsdue()==null?0:childinfo.getIsdue());
 						}
 						PMyproducttempapply tempapply=tempapplyMapper.getMyProducttempApplyByCartId(myproduct.getCartid());
@@ -378,6 +381,20 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 					}
 				}
 			}
+		}
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("设置成功！");
+		return rq;
+	}
+	/**
+	 * 修改活动备注
+	 */
+	public ReturnModel editTempRemark(Integer tempid,String remark){
+		ReturnModel rq=new ReturnModel();
+		PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempid);
+		if(temp!=null){
+			temp.setRemark(remark);
+			myproducttempMapper.updateByPrimaryKey(temp);
 		}
 		rq.setStatu(ReturnStatus.Success);
 		rq.setStatusreson("设置成功！");

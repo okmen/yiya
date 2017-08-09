@@ -201,7 +201,7 @@ public class Ibs_MyProductServiceImpl implements IIbs_MyproductService{
 				// 得到宝宝生日
 				PMyproductchildinfo childinfo = mychildMapper.selectByPrimaryKey(item.getCartid());
 				if (childinfo != null && childinfo.getBirthday() != null) {
-					item.setBirthdayStr(DateUtil.getTimeStr(childinfo.getBirthday(), "yyyy-MM-dd HH:mm:ss"));
+					item.setBirthdayStr(DateUtil.getTimeStr(childinfo.getBirthday(), "yyyy-MM-dd"));
 					item.setIsDue(childinfo.getIsdue()==null?0:childinfo.getIsdue());
 				}
 				

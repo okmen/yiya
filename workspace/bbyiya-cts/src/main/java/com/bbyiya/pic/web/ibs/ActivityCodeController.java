@@ -192,6 +192,22 @@ public class ActivityCodeController extends SSOController {
 	}
 	
 	/**
+	 * 编辑活动备注信息
+	 * @param tempid
+	 * @param remark
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/editTempRemark")
+	public String editTempRemark(Integer tempid,String remark) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		rq=activitycodeService.editTempRemark(tempid, remark);
+		return JsonUtil.objectToJsonStr(rq);
+		
+	}
+	
+	/**
 	 * 条形码excel导出
 	 * @param request
 	 * @return

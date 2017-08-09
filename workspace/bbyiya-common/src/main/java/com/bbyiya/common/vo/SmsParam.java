@@ -25,6 +25,10 @@ public class SmsParam implements Serializable{
 	 */
 	private Long userId;
 	/**
+	 * 用户信息
+	 */
+	private String userName;
+	/**
 	 * 充值方式（0微信充值，1 cts管理员充值）
 	 */
 	private int rechargeType;
@@ -99,6 +103,14 @@ public class SmsParam implements Serializable{
 
 	public void setRechargeType(int rechargeType) {
 		this.rechargeType = rechargeType;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	
 	

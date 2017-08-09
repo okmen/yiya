@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.common.enums.SendMsgEnums;
+import com.bbyiya.common.vo.SmsParam;
 import com.bbyiya.dao.PMyproductactivitycodeMapper;
 import com.bbyiya.dao.PMyproductchildinfoMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
@@ -69,6 +71,7 @@ import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.PageInfoUtil;
 import com.bbyiya.utils.QRCodeUtil;
+import com.bbyiya.utils.SendSMSByMobile;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.agent.UBranchUserTempVo;
 import com.github.pagehelper.PageHelper;
@@ -161,6 +164,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		temp.setApplycount(param.getApplycount());//报名人数为0时不限制
 		temp.setAmountlimit(param.getAmountlimit()==null?0:param.getAmountlimit());//需筹集的红包金额
 		temp.setNeedshared(param.getNeedshared()==null?0:param.getNeedshared()); //活动要求：是否需要分享
+		temp.setBlesscount(param.getBlesscount()==null?0:param.getBlesscount());//集的祝福数
 		temp.setMaxcompletecount(param.getMaxcompletecount()==null?0:param.getMaxcompletecount());
 		if(ObjectUtil.isEmpty(param.getIsbranchaddress())){
 			param.setIsbranchaddress(0);
@@ -190,18 +194,19 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(param.getTempid());
 		if(temp!=null){
 			temp.setTitle(param.getTitle());
-			temp.setRemark(param.getRemark());
-			temp.setNeedverifer(param.getNeedverifer());
-			temp.setDiscription(param.getDiscription());
-			temp.setTempcodesm(param.getCodesm());
-			temp.setTempcodeurl(param.getCodeurl());
-			temp.setLogourl(param.getLogourl());	
-			temp.setIsautoorder(param.getIsAutoOrder());
-			temp.setOrderhours(param.getOrderHours());
+			temp.setRemark(param.getRemark());			
 			if(ObjectUtil.isEmpty(param.getIsbranchaddress())){
 				param.setIsbranchaddress(0);
 			}
 			temp.setIsbranchaddress(param.getIsbranchaddress());
+//			temp.setNeedverifer(param.getNeedverifer());
+//			temp.setDiscription(param.getDiscription());
+//			temp.setTempcodesm(param.getCodesm());
+//			temp.setTempcodeurl(param.getCodeurl());
+//			temp.setLogourl(param.getLogourl());	
+//			temp.setIsautoorder(param.getIsAutoOrder());
+//			temp.setOrderhours(param.getOrderHours());
+			
 			myproducttempMapper.updateByPrimaryKey(temp);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("修改模板成功！");
@@ -446,7 +451,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 					e1.printStackTrace();
 				}
 				temp.setCodeurl(url);
-				temp.setCreatetimestr(DateUtil.getTimeStr(temp.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
+				temp.setCreatetimestr(DateUtil.getTimeStr(temp.getCreatetime(), "yyyy-MM-dd"));
 				//得到待审核数量
 				Integer checkCount=myproducttempapplyMapper.getNeedCheckApllyCountByTemp(temp.getTempid(),Integer.parseInt(MyProducttempApplyStatusEnum.apply.toString()));
 				temp.setNeedCheckCount(checkCount==null?0:checkCount);
@@ -559,6 +564,16 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 				rq.setStatu(ReturnStatus.Success);
 				content="审核不通过";
 				rq.setStatusreson("拒绝成功");
+			}
+			
+			if(!ObjectUtil.isEmpty(apply.getMobilephone())){
+				PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(apply.getTempid());
+				SmsParam sendparam=new SmsParam();
+				sendparam.setYiye_status(status);
+				if(temp!=null){
+					sendparam.setYiye_title(temp.getTitle());
+				}
+				SendSMSByMobile.sendSmS(Integer.parseInt(SendMsgEnums.yiye_Apply_ver.toString()),apply.getMobilephone(), sendparam);					
 			}
 			apply.setStatus(status);
 			myproducttempapplyMapper.updateByPrimaryKey(apply);	
@@ -1005,50 +1020,37 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	}
 	
 	/**
-	 *设置活动完成目标
+	 *设置活动门槛信息
 	 * @return
 	 */
-	public ReturnModel setTempCompletecondition(Long userId,Integer tempid,Integer blessCount,Integer maxCompleteCount,Double amountlimit){
+	public ReturnModel setTempCompletecondition(Long userId,Integer tempid,Integer maxapplyCount,Integer maxCompleteCount,Integer needverifer){
 		ReturnModel rq=new ReturnModel();
 		if(tempid==null){
 			rq.setStatu(ReturnStatus.ParamError);
 			rq.setStatusreson("参数错误：tempid为空！");
 			return rq;
-		}		
-		if(blessCount==null){
-			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("参数错误：blessCount为空！");
-			return rq;
-		}
-		if(maxCompleteCount==null){
-			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("参数错误：maxCompleteCount为空！");
-			return rq;
-		}
+		}	
+		maxapplyCount=(maxapplyCount==null)?0:maxapplyCount;
+		maxCompleteCount=(maxCompleteCount==null)?0:maxCompleteCount;
 		PMyproducttemp temp=myproducttempMapper.selectByPrimaryKey(tempid);
 		if(temp!=null){
-			if(temp.getStatus()!=null&&temp.getStatus().intValue()==Integer.parseInt(MyProductTempStatusEnum.enable.toString())){
+			//得到总报名人数
+			int applycount=(temp.getApplycount()==null?0:temp.getApplycount());
+			if(maxapplyCount.intValue()!=0&&maxapplyCount.intValue()<applycount){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("不好意思，活动已开启不能修改这些设置");
+				rq.setStatusreson("报名人数限制不得小于总报名人数！");
 				return rq;
 			}
-			//金额的上限为活动对应的册子的B端价格
-			if(amountlimit!=null&&amountlimit.doubleValue()>0){
-				//得到册子的B端价格
-				if(temp.getStyleid()!=null&&temp.getStyleid()>0){
-					PProductstyles style=styleMapper.selectByPrimaryKey(temp.getStyleid());
-					if(style!=null){
-						if(amountlimit.doubleValue()>style.getAgentprice().doubleValue()){
-							rq.setStatu(ReturnStatus.ParamError);
-							rq.setStatusreson("红包金额不能大于代理商代理价格，代理价格为["+style.getAgentprice()+"]！");
-							return rq;
-						}
-					}
-				}
+			//得到总完成人数
+			int completeCount=(temp.getCompletecount()==null?0:temp.getCompletecount());
+			if(maxCompleteCount.intValue()!=0&&maxCompleteCount.intValue()<completeCount){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("目标完成活动人数限制不得小于目前的完成为数！");
+				return rq;
 			}
-			temp.setBlesscount(blessCount);
+			temp.setMaxapplycount(maxapplyCount);
 			temp.setMaxcompletecount(maxCompleteCount);
-			temp.setAmountlimit(amountlimit);
+			temp.setNeedverifer(needverifer==null?0:needverifer);
 			myproducttempMapper.updateByPrimaryKeySelective(temp);
 		}
 		rq.setStatu(ReturnStatus.Success);

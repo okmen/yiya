@@ -2,6 +2,7 @@ package com.bbyiya.service.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.common.enums.SendMsgEnums;
+import com.bbyiya.common.vo.SmsParam;
 import com.bbyiya.dao.EErrorsMapper;
 import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OOrderproductdetailsMapper;
@@ -21,6 +24,8 @@ import com.bbyiya.dao.PProductstyleexpMapper;
 import com.bbyiya.dao.PProductstylesMapper;
 import com.bbyiya.dao.UAccountsMapper;
 import com.bbyiya.dao.UAccountslogsMapper;
+import com.bbyiya.dao.UAdminMapper;
+import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.dao.UBranchtransaccountsMapper;
 import com.bbyiya.dao.UBranchtransamountlogMapper;
 import com.bbyiya.dao.UCashlogsMapper;
@@ -43,13 +48,17 @@ import com.bbyiya.model.PProductstyleexp;
 import com.bbyiya.model.PProductstyles;
 import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UAccountslogs;
+import com.bbyiya.model.UAdmin;
+import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UBranchtransaccounts;
 import com.bbyiya.model.UBranchtransamountlog;
 import com.bbyiya.model.UCashlogs;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IBasePayService;
 import com.bbyiya.service.IBaseUserAccountService;
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.utils.SendSMSByMobile;
 
 @Service("basePayServiceImpl")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
@@ -81,6 +90,10 @@ public class BasePayServiceImpl implements IBasePayService{
 	private UUseraddressMapper addressMapper;// 用户收货地址
 	@Autowired
 	private UUsersMapper usersMapper;
+	@Autowired
+	private UAdminMapper adminMapper;
+	@Autowired
+	private UBranchesMapper branchMapper;
 	
 	/*-----------------------产品模块--------------------------------------------*/
 	@Autowired
@@ -118,9 +131,40 @@ public class BasePayServiceImpl implements IBasePayService{
 					int orderType=payOrder.getOrdertype()==null?0:payOrder.getOrdertype();
 					/*-------------------------代理商货款充值-----------------------------------------------------*/
 					if(orderType==Integer.parseInt(PayOrderTypeEnum.chongzhi.toString())) {
+						//账户、流水 变动
 						accountService.add_accountsLog(payOrder.getUserid(), Integer.parseInt(AccountLogType.get_recharge.toString()), payOrder.getTotalprice(), payId, "");
 						//更新支付单
 						payOrderMapper.updateByPrimaryKeySelective(payOrder);
+						//------------------------------------短信通知--------------------
+						SmsParam param=new SmsParam();
+						param.setAmount(payOrder.getTotalprice());
+						UUsers branchUsers= usersMapper.selectByPrimaryKey(payOrder.getUserid());
+						UBranches branches=branchMapper.selectByPrimaryKey(payOrder.getUserid());
+						if(branchUsers!=null&&!ObjectUtil.isEmpty(branchUsers.getMobilephone())){
+							 //短信通知商户
+							 SendSMSByMobile.sendSmS(Integer.parseInt(SendMsgEnums.recharge.toString()), branchUsers.getMobilephone(), param);
+						}
+						if(branches!=null){
+							param.setUserName(branches.getBranchcompanyname()); 
+						}
+						//通知 咿呀相关人员
+						String adminPhones= ConfigUtil.getSingleValue("adminPhones");
+						if(!ObjectUtil.isEmpty(adminPhones)){
+							String[] phones=adminPhones.split(",");
+							if(phones!=null&&phones.length>0){
+								param.setUserId(payOrder.getUserid()); 
+								//cts充值
+//								if(ObjectUtil.isEmpty(payOrder.getPrepayid())){
+//									param.setRechargeType(1);
+//								}
+								for (String phone : phones) {
+									if(!ObjectUtil.isEmpty(phone)&&ObjectUtil.isMobile(phone)){
+										SendSMSByMobile.sendSmS(Integer.parseInt(SendMsgEnums.recharge_adminUser.toString()),phone, param);
+									}
+								}
+							}
+						}
+						/*****************************************************/
 						return true;
 					}
 					else if (orderType==Integer.parseInt(PayOrderTypeEnum.postage.toString())) {

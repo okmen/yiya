@@ -361,22 +361,20 @@ public class YiyeMgtController  extends SSOController {
 							}
 						}
 
-						
+						//插入申请提交信息
+						tempApplyMapper.insert(apply);
 						
 						//如果已达到活动目标完成人数，则自动置为活动失败状态，C端提示活动名额已满，可享受半价优惠
 						if(temp.getMaxcompletecount()!=null&&temp.getMaxcompletecount().intValue()>0){
 							if(temp.getCompletecount()!=null&&temp.getCompletecount().intValue()>=temp.getMaxcompletecount().intValue()){
 								//活动失败
 								apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.fails.toString()));
-								tempApplyMapper.insert(apply);
+								tempApplyMapper.updateByPrimaryKeySelective(apply);
 								//活动失败的参与作品 分发优惠
 								if(apply.getCartid()!=null&&apply.getCartid().longValue()>0){
 									discountService.addTempDiscount(apply.getCartid());
 								}
 							}
-						}else {
-							//插入申请提交信息
-							tempApplyMapper.insert(apply);
 						}
 						
 						//需要审核---  更新用户宝宝生日信息

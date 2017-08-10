@@ -234,7 +234,11 @@ public class LoginController extends SSOController {
 		if (rqModel.getStatu().equals(ReturnStatus.Success)) {
 			//用户跳转
 			if(logintemp!=null&&!ObjectUtil.isEmpty(logintemp.getRedirect_url())){
-				return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+logintemp.getRedirect_url(); 
+				if(logintemp.getRedirect_url().contains("http")){
+					return "redirect:"+logintemp.getRedirect_url(); 
+				}else {
+					return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+logintemp.getRedirect_url(); 	
+				}
 			}else if (logintemp!=null&&!ObjectUtil.isEmpty(logintemp.getUpUserId())) {//店铺页
 				return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+"?uid="+logintemp.getUpUserId(); 
 			} 

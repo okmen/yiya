@@ -166,7 +166,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		temp.setStyleid(param.getStyleId());
 		temp.setIsautoorder(param.getIsAutoOrder());
 		temp.setOrderhours(param.getOrderHours());
-		temp.setApplycount(param.getApplycount());//报名人数为0时不限制
+		
 		temp.setAmountlimit(param.getAmountlimit()==null?0:param.getAmountlimit());//需筹集的红包金额
 		temp.setNeedshared(param.getNeedshared()==null?0:param.getNeedshared()); //活动要求：是否需要分享
 		temp.setBlesscount(param.getBlesscount()==null?0:param.getBlesscount());//集的祝福数
@@ -174,6 +174,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 		if(ObjectUtil.isEmpty(param.getIsbranchaddress())){
 			param.setIsbranchaddress(0);
 		}
+		temp.setMaxapplycount(param.getApplycount()==null?0:param.getApplycount());//报名人数为0时不限制
 		temp.setIsbranchaddress(param.getIsbranchaddress());
 		temp.setType(Integer.parseInt(MyProductTempType.normal.toString()));//默认为普通类型
 		myproducttempMapper.insertReturnId(temp);
@@ -1019,7 +1020,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	 *设置活动门槛信息
 	 * @return
 	 */
-	public ReturnModel setTempCompletecondition(Long userId,Integer tempid,Integer maxapplyCount,Integer maxCompleteCount,Integer needverifer){
+	public ReturnModel setTempCompletecondition(Long userId,Integer tempid,Integer maxapplyCount,Integer maxCompleteCount,Integer needverifer,Integer needshared,Integer blesscount,Double amountlimit){
 		ReturnModel rq=new ReturnModel();
 		if(tempid==null){
 			rq.setStatu(ReturnStatus.ParamError);
@@ -1047,6 +1048,12 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			temp.setMaxapplycount(maxapplyCount);
 			temp.setMaxcompletecount(maxCompleteCount);
 			temp.setNeedverifer(needverifer==null?0:needverifer);
+			
+			if(temp.getStatus()==Integer.parseInt(MyProductTempStatusEnum.disabled.toString())){
+				temp.setAmountlimit(amountlimit==null?0:amountlimit);
+				temp.setBlesscount(blesscount==null?0:blesscount);
+				temp.setNeedshared(needshared==null?0:needshared);
+			}
 			myproducttempMapper.updateByPrimaryKeySelective(temp);
 		}
 		rq.setStatu(ReturnStatus.Success);

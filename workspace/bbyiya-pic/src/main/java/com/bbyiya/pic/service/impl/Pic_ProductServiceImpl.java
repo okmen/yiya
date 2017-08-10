@@ -921,6 +921,17 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					if(apply.getStyleid()!=null&&apply.getStyleid()>0){
 						item.setStyleid(apply.getStyleid());
 					}
+					if(apply.getCompanyuserid()!=null&&apply.getCompanyuserid().doubleValue()>0){
+						UBranchusers branchuser=branchusersMapper.selectByPrimaryKey(apply.getCompanyuserid());
+						if(branchuser!=null&&branchuser.getName()!=null){
+							item.setUserName(branchuser.getName());
+						}else{
+							UUsers users = usersMapper.selectByPrimaryKey(apply.getCompanyuserid());
+							if (users != null) {
+								item.setUserName(users.getNickname());
+							}
+						}
+					}
 				}else{
 					if(item.getCount()<12){
 						//制作中

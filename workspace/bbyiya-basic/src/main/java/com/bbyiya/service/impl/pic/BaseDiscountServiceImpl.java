@@ -44,52 +44,51 @@ public class BaseDiscountServiceImpl implements IBaseDiscountService {
 	
 	@SuppressWarnings("null")
 	public void addTempDiscount(Long cartId) {
+		//我参加了异业合作
+		PMyproducttempapply apply = applyMapper.getMyProducttempApplyByCartId(cartId);
 //		PMyproducts mycart=mycartMapper.selectByPrimaryKey(cartId);
-//		if(mycart!=null&&(mycart.getIstemp()==null||mycart.getIstemp().intValue()!=1)&&mycart.getTempid()!=null) {
+		if(apply!=null&&apply.getProductid()!=null) {
 			try {
-				List<DMyproductdiscountmodel> discountlist=disModMapper.findListByProductId(cartId);
+				List<DMyproductdiscountmodel> discountlist=disModMapper.findListByProductId(apply.getProductid());
 				if(discountlist!=null&&discountlist.size()>0){
 					DMyproductdiscounts mydis=discountMapper.selectByPrimaryKey(cartId);
 					if(mydis!=null){
 						return;
 					}else {
-						//我参加了异业合作
-						PMyproducttempapply apply = applyMapper.getMyProducttempApplyByCartId(cartId);
-						if(apply!=null){
-							UUsers users= userMapper.selectByPrimaryKey(apply.getUserid());
-							if(users!=null&&users.getIdentity()!=null&&(ValidateUtils.isIdentity(users.getIdentity(), UserIdentityEnums.branch)||ValidateUtils.isIdentity(users.getIdentity(), UserIdentityEnums.salesman))){
-								return ;
-							}
-							mydis=new DMyproductdiscounts();
-							mydis.setCartid(cartId); 
-							mydis.setUserid(apply.getUserid());
-							mydis.setStatus(0);
-							mydis.setCreatetime(new Date());
-							mydis.setDiscounttype(1);
-							discountMapper.insert(mydis);
-							//我参加活动
-							DMyproductdiscountYiye dis_yiye= discountDetailMapper.selectByPrimaryKey(cartId);
-							if(dis_yiye!=null){
-								dis_yiye.setDiscountjson(JsonUtil.objectToJsonStr(discountlist));
-								dis_yiye.setCreatetime(new Date());
-								discountDetailMapper.updateByPrimaryKeySelective(dis_yiye);
-							}else {
-								dis_yiye=new DMyproductdiscountYiye();
-								dis_yiye.setCartid(cartId);
-								dis_yiye.setDiscountjson(JsonUtil.objectToJsonStr(discountlist));
-								dis_yiye.setCreatetime(new Date());
-								discountDetailMapper.insert(dis_yiye);
-							}
+						UUsers users = userMapper.selectByPrimaryKey(apply.getUserid());
+						if (users != null && users.getIdentity() != null && (ValidateUtils.isIdentity(users.getIdentity(), UserIdentityEnums.branch) || ValidateUtils.isIdentity(users.getIdentity(), UserIdentityEnums.salesman))) {
+							return;
 						}
+						mydis = new DMyproductdiscounts();
+						mydis.setCartid(cartId);
+						mydis.setUserid(apply.getUserid());
+						mydis.setStatus(0);
+						mydis.setCreatetime(new Date());
+						mydis.setDiscounttype(1);
+						discountMapper.insert(mydis);
+						// 我参加活动
+						DMyproductdiscountYiye dis_yiye = discountDetailMapper.selectByPrimaryKey(cartId);
+						if (dis_yiye != null) {
+							dis_yiye.setDiscountjson(JsonUtil.objectToJsonStr(discountlist));
+							dis_yiye.setCreatetime(new Date());
+							discountDetailMapper.updateByPrimaryKeySelective(dis_yiye);
+						} else {
+							dis_yiye = new DMyproductdiscountYiye();
+							dis_yiye.setCartid(cartId);
+							dis_yiye.setDiscountjson(JsonUtil.objectToJsonStr(discountlist));
+							dis_yiye.setCreatetime(new Date());
+							discountDetailMapper.insert(dis_yiye);
+						}
+
 					}
 				}
 			} catch (Exception e) {
 				logHelper.error(e); 
 //				System.out.println(e);
 			}
-//		}else {
-//			logHelper.error("找不到作品cartId="+cartId); 
-//		}
+		}else {
+			logHelper.error("找不到作品cartId="+cartId); 
+		}
 	}
 	/**
 	 * 获取我作品的优惠

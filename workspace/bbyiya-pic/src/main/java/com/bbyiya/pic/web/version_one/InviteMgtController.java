@@ -86,6 +86,43 @@ public class InviteMgtController  extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
+	/**
+	 * 是否活动失败
+	 * @param cartId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/checkAct")
+	public String processInvite(Long cartId) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			PMyproducttempapply apply= tempApplyMapper.getMyProducttempApplyByCartId(cartId);
+			if(apply!=null&&apply.getUserid()!=null&&apply.getUserid().longValue()==user.getUserId().longValue()){
+				//异业合作模板
+				PMyproducttemp temp=tempMapper.selectByPrimaryKey(apply.getTempid());
+				if(temp!=null){
+					//如果已达到活动目标完成人数，则自动置为活动失败状态，C端提示活动名额已满，可享受半价优惠
+					if(temp.getMaxcompletecount()!=null&&temp.getMaxcompletecount().intValue()>0){
+						if(temp.getCompletecount()!=null&&temp.getCompletecount().intValue()>=temp.getMaxcompletecount().intValue()){
+							apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.fails.toString()));
+							//活动失败的参与作品 分发优惠
+							if(apply.getCartid()!=null&&apply.getCartid().longValue()>0){
+								discountService.addTempDiscount(apply.getCartid());
+							}
+							rq.setStatu(ReturnStatus.ParamError);
+							rq.setStatusreson("对不起，活动名额已满，不要灰心您仍然可以享受优惠购买！");
+							return JsonUtil.objectToJsonStr(rq);
+						}
+					}
+				}	
+			}
+		}
+		rq.setStatu(ReturnStatus.Success); 
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 	
 	/**
 	 * 处理我的邀请(已完成活动)
@@ -101,7 +138,6 @@ public class InviteMgtController  extends SSOController {
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			if(status!=null&&status==Integer.parseInt(InviteStatus.ok.toString())){
-
 				//更新用户活动收获地址信息
 				long userAddressId=ObjectUtil.parseLong(addressId);
 				if(userAddressId>0){
@@ -134,20 +170,20 @@ public class InviteMgtController  extends SSOController {
 						PMyproducttemp temp=tempMapper.selectByPrimaryKey(apply.getTempid());
 						if(temp!=null) {
 							
-							//如果已达到活动目标完成人数，则自动置为活动失败状态，C端提示活动名额已满，可享受半价优惠
-							if(temp.getMaxcompletecount()!=null&&temp.getMaxcompletecount().intValue()>0){
-								if(temp.getCompletecount().intValue()>=temp.getMaxcompletecount().intValue()){
-									apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.fails.toString()));
-									//活动失败的参与作品 分发优惠
-									if(apply.getCartid()!=null&&apply.getCartid().longValue()>0){
-										discountService.addTempDiscount(apply.getCartid());
-									}
-									rq.setStatu(ReturnStatus.ParamError);
-									rq.setStatusreson("对不起，活动名额已满，不要灰心您仍然可以享受优惠购买！");
-									return JsonUtil.objectToJsonStr(rq);
-								}
-							}	
-							
+//							//如果已达到活动目标完成人数，则自动置为活动失败状态，C端提示活动名额已满，可享受半价优惠
+//							if(temp.getMaxcompletecount()!=null&&temp.getMaxcompletecount().intValue()>0){
+//								if(temp.getCompletecount()!=null&&temp.getCompletecount().intValue()>=temp.getMaxcompletecount().intValue()){
+//									apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.fails.toString()));
+//									//活动失败的参与作品 分发优惠
+//									if(apply.getCartid()!=null&&apply.getCartid().longValue()>0){
+//										discountService.addTempDiscount(apply.getCartid());
+//									}
+//									rq.setStatu(ReturnStatus.ParamError);
+//									rq.setStatusreson("对不起，活动名额已满，不要灰心您仍然可以享受优惠购买！");
+//									return JsonUtil.objectToJsonStr(rq);
+//								}
+//							}	
+							//冻结众筹金额
 							if(temp.getAmountlimit()!=null&&temp.getAmountlimit()>0){
 								UAccounts accounts=accountMapper.selectByPrimaryKey(user.getUserId());
 								//账户可用金额

@@ -309,13 +309,6 @@ public class YiyeMgtController  extends SSOController {
 						//是否需要审核
 						boolean isNeedVer=false;
 
-						//如果已达到活动目标完成人数，则不需要审核
-						if(temp.getMaxcompletecount()!=null&&temp.getMaxcompletecount().intValue()>0){
-							if(temp.getCompletecount().intValue()>=temp.getMaxcompletecount().intValue()){
-								isNeedVer=false;
-							}
-						}
-						
 						if(!isNeedVer){// 不需要审核 调取 新增作品、客户信息
 							//验证是否是免费领取的用户
 							ResultMsg rMsg=verUser(temp.getTempid().intValue(),user);

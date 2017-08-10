@@ -107,6 +107,7 @@ public class InviteMgtController  extends SSOController {
 					if(temp.getMaxcompletecount()!=null&&temp.getMaxcompletecount().intValue()>0){
 						if(temp.getCompletecount()!=null&&temp.getCompletecount().intValue()>=temp.getMaxcompletecount().intValue()){
 							apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.fails.toString()));
+							tempApplyMapper.updateByPrimaryKeySelective(apply);
 							//活动失败的参与作品 分发优惠
 							if(apply.getCartid()!=null&&apply.getCartid().longValue()>0){
 								discountService.addTempDiscount(apply.getCartid());

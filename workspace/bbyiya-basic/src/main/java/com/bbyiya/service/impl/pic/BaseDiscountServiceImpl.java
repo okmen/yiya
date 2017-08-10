@@ -44,10 +44,10 @@ public class BaseDiscountServiceImpl implements IBaseDiscountService {
 	
 	@SuppressWarnings("null")
 	public void addTempDiscount(Long cartId) {
-		PMyproducts mycart=mycartMapper.selectByPrimaryKey(cartId);
-		if(mycart!=null&&(mycart.getIstemp()==null||mycart.getIstemp().intValue()!=1)&&mycart.getTempid()!=null){
+//		PMyproducts mycart=mycartMapper.selectByPrimaryKey(cartId);
+//		if(mycart!=null&&(mycart.getIstemp()==null||mycart.getIstemp().intValue()!=1)&&mycart.getTempid()!=null) {
 			try {
-				List<DMyproductdiscountmodel> discountlist=disModMapper.findListByProductId(mycart.getProductid());
+				List<DMyproductdiscountmodel> discountlist=disModMapper.findListByProductId(cartId);
 				if(discountlist!=null&&discountlist.size()>0){
 					DMyproductdiscounts mydis=discountMapper.selectByPrimaryKey(cartId);
 					if(mydis!=null){
@@ -85,9 +85,11 @@ public class BaseDiscountServiceImpl implements IBaseDiscountService {
 				}
 			} catch (Exception e) {
 				logHelper.error(e); 
-				System.out.println(e);
+//				System.out.println(e);
 			}
-		}
+//		}else {
+//			logHelper.error("找不到作品cartId="+cartId); 
+//		}
 	}
 	/**
 	 * 获取我作品的优惠

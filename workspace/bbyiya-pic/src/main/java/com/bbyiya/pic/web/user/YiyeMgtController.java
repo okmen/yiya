@@ -343,6 +343,7 @@ public class YiyeMgtController  extends SSOController {
 										Map<String, Object> mapr= (Map<String, Object>)rq.getBasemodle();
 										if(mapr!=null){
 											codeMod.setCartid((Long)mapr.get("mycartid"));
+											apply.setCartid(codeMod.getCartid()); 
 										}
 									} catch (Exception e) {
 										

@@ -32,10 +32,10 @@ import com.github.pagehelper.PageInfo;
 @Controller
 @RequestMapping(value = "/user")
 public class UserInfoController  extends SSOController{
-	@Resource(name = "userInfoMgtService")
-	private IUserInfoMgtService userInfoMgtService;
-	@Resource(name = "userInfoMgtService")
-	private IUserInfoMgtService userMgtService;
+//	@Resource(name = "userInfoMgtService")
+//	private IUserInfoMgtService userInfoMgtService;
+	
+	
 	@Autowired
 	private UUsersMapper usermapper;
 	
@@ -52,14 +52,7 @@ public class UserInfoController  extends SSOController{
 				}
 				rq= userInfoMgtService.editUUsers(user.getUserId(), param);
 				if(ReturnStatus.Success.equals(rq.getStatu()) ){
-					LoginSuccessResult loginUser= userInfoMgtService.getLoginSuccessResult(user.getUserId());
-					if(loginUser!=null){
-						String ticket=super.getTicket();
-						if(ObjectUtil.isEmpty(ticket)){
-							ticket=CookieUtils.getCookie_web(request);
-						}
-						RedisUtil.setObject(ticket, loginUser, 86400); 
-					}
+					super.updateLoginUser(user.getUserId()); 
 				}
 			}
 			rq.setStatu(ReturnStatus.Success);
@@ -84,7 +77,7 @@ public class UserInfoController  extends SSOController{
 	@ResponseBody
 	@RequestMapping(value = "/info/updatePwd")
 	public String updatePwd(String phone, String vcode, String pwd) throws Exception {
-		return JsonUtil.objectToJsonStr(userMgtService.updatePWD(phone, vcode, pwd));
+		return JsonUtil.objectToJsonStr(userInfoMgtService.updatePWD(phone, vcode, pwd));
 	}
 	
 	

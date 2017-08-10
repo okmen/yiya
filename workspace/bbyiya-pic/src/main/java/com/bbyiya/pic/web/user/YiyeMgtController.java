@@ -308,8 +308,13 @@ public class YiyeMgtController  extends SSOController {
 						
 						//是否需要审核
 						boolean isNeedVer=false;
-
-						if(!isNeedVer){// 不需要审核 调取 新增作品、客户信息
+						if(temp.getNeedverifer()!=null&&temp.getNeedverifer().intValue()>0){
+							//需要审核
+							isNeedVer=true;
+						}
+						
+						
+						if(!isNeedVer) {// 不需要审核 调取 新增作品、客户信息
 							//验证是否是免费领取的用户
 							ResultMsg rMsg=verUser(temp.getTempid().intValue(),user);
 							if(rMsg.getStatus()!=1){
@@ -333,6 +338,7 @@ public class YiyeMgtController  extends SSOController {
 										Map<String, Object> mapr= (Map<String, Object>)rq.getBasemodle();
 										if(mapr!=null){
 											codeMod.setCartid((Long)mapr.get("mycartid"));
+											apply.setCartid(codeMod.getCartid()); 
 										}
 									} catch (Exception e) {
 										
@@ -349,13 +355,10 @@ public class YiyeMgtController  extends SSOController {
 								tempUsrMapper.updateByPrimaryKeySelective(tempUser); 
 							}
 						}
-						
 
-						
 						//插入申请提交信息
 						tempApplyMapper.insert(apply);
-						
-						//更新用户宝宝生日信息
+						//需要审核---  更新用户宝宝生日信息
 						UChildreninfo childinfo=childrenMapper.selectByPrimaryKey(user.getUserId());
 						if(childinfo==null){
 							childinfo=new UChildreninfo();
@@ -367,6 +370,10 @@ public class YiyeMgtController  extends SSOController {
 							childinfo.setBirthday(param.getDateTime());
 							childrenMapper.updateByPrimaryKey(childinfo);
 						}
+						
+						//更新用户登录信息
+						super.updateLoginUser(user.getUserId()); 
+						
 						rq.setStatu(ReturnStatus.Success);
 						rq.setStatusreson("提交申请成功！");
 					}

@@ -32,9 +32,12 @@ public class SSOController {
 	public HttpServletRequest request;
 	@Autowired
 	public HttpServletResponse response;
-
+	
+	/**
+	 * 用户信息处理
+	 */
 	@Resource(name = "userInfoMgtService")
-	private IUserInfoMgtService userInfoMgtService;
+	public IUserInfoMgtService userInfoMgtService;
 
 	/**
 	 * 用户

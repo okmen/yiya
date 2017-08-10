@@ -1024,7 +1024,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	 *设置活动门槛信息
 	 * @return
 	 */
-	public ReturnModel setTempCompletecondition(Long userId,Integer tempid,Integer maxapplyCount,Integer maxCompleteCount,Integer needverifer){
+	public ReturnModel setTempCompletecondition(Long userId,Integer tempid,Integer maxapplyCount,Integer maxCompleteCount,Integer needverifer,Integer needshared,Integer blesscount,Double amountlimit){
 		ReturnModel rq=new ReturnModel();
 		if(tempid==null){
 			rq.setStatu(ReturnStatus.ParamError);
@@ -1052,6 +1052,12 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			temp.setMaxapplycount(maxapplyCount);
 			temp.setMaxcompletecount(maxCompleteCount);
 			temp.setNeedverifer(needverifer==null?0:needverifer);
+			
+			if(temp.getStatus()==Integer.parseInt(MyProductTempStatusEnum.disabled.toString())){
+				temp.setAmountlimit(amountlimit==null?0:amountlimit);
+				temp.setBlesscount(blesscount==null?0:blesscount);
+				temp.setNeedshared(needshared==null?0:needshared);
+			}
 			myproducttempMapper.updateByPrimaryKeySelective(temp);
 		}
 		rq.setStatu(ReturnStatus.Success);

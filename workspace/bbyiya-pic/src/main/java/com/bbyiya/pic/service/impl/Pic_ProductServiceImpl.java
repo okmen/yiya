@@ -921,6 +921,17 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 					if(apply.getStyleid()!=null&&apply.getStyleid()>0){
 						item.setStyleid(apply.getStyleid());
 					}
+					if(apply.getCompanyuserid()!=null&&apply.getCompanyuserid().doubleValue()>0){
+						UUsers users = usersMapper.selectByPrimaryKey(apply.getCompanyuserid());
+						if (users != null) {
+							item.setUserName(users.getMobilephone());
+							if (ObjectUtil.isEmpty(users.getUserimg())) {
+								item.setUserImg("http://pic.bbyiya.com/userdefaultimg-2017-0303-01.png");
+							} else {
+								item.setUserImg(users.getUserimg());
+							}
+						}
+					}
 				}else{
 					if(item.getCount()<12){
 						//制作中

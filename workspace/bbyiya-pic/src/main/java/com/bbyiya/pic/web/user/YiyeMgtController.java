@@ -143,7 +143,7 @@ public class YiyeMgtController  extends SSOController {
 							result.setApplyStatus(-1); 
 						}
 						//活动结束 是否有优惠购买资格
-						if(temp.getStatus()!=null&&temp.getStatus().intValue()==Integer.parseInt(MyProductTempStatusEnum.over.toString())){
+//						if(temp.getStatus()!=null&&temp.getStatus().intValue()==Integer.parseInt(MyProductTempStatusEnum.over.toString())){
 							if(apply!=null&&apply.getStatus()!=null&&apply.getStatus()==Integer.parseInt(MyProducttempApplyStatusEnum.fails.toString())){
 							    if(apply.getCartid()!=null&&!(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.salesman))){
 							    	List<DMyproductdiscountmodel> listdis=discountService.findMycartDiscount(user.getUserId(), apply.getCartid());
@@ -157,7 +157,7 @@ public class YiyeMgtController  extends SSOController {
 				    					discountService.addTempDiscount(apply.getCartid()); 
 									}
 							    }
-							}
+//							}
 						}
 						result.setTemp(temp);
 						rq.setStatu(ReturnStatus.Success);
@@ -313,7 +313,6 @@ public class YiyeMgtController  extends SSOController {
 							isNeedVer=true;
 						}
 						
-						
 						if(!isNeedVer) {// 不需要审核 调取 新增作品、客户信息
 							//验证是否是免费领取的用户
 							ResultMsg rMsg=verUser(temp.getTempid().intValue(),user);
@@ -358,6 +357,8 @@ public class YiyeMgtController  extends SSOController {
 
 						//插入申请提交信息
 						tempApplyMapper.insert(apply);
+						
+						
 						//需要审核---  更新用户宝宝生日信息
 						UChildreninfo childinfo=childrenMapper.selectByPrimaryKey(user.getUserId());
 						if(childinfo==null){

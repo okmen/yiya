@@ -573,8 +573,8 @@ public class ObjectUtil {
 	// 过滤 ‘
 	// ORACLE 注解 -- /**/
 	// 关键字过滤 update ,delete
-	static String reg="[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]"; 
-	//static String reg = "(?:')|(?:--)|(/\\*(?:.|[\\n\\r])*?\\*/)|" + "(\\b(select|update|and|or|delete|insert|trancate|char|into|substr|ascii|declare|exec|count|master|into|drop|execute)\\b)";
+	static String reg = "(?:')|(?:--)|(/\\*(?:.|[\\n\\r])*?\\*/)|" + "(\\b(select|update|delete|insert|trancate|char|into|substr|ascii|declare|exec|count|master|into|drop|execute)\\b)";
+
 	static Pattern sqlPattern = Pattern.compile(reg, Pattern.CASE_INSENSITIVE);
 
 	/***************************************************************************

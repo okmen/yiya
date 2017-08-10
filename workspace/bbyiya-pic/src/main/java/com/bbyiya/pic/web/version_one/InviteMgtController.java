@@ -15,6 +15,7 @@ import com.bbyiya.dao.UAgentcustomersMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.InviteStatus;
+import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
@@ -23,6 +24,7 @@ import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UUseraddress;
 import com.bbyiya.pic.service.IPic_myProductService;
 import com.bbyiya.service.IRegionService;
+import com.bbyiya.service.pic.IBaseDiscountService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -50,6 +52,13 @@ public class InviteMgtController  extends SSOController {
 	
 	@Resource(name = "regionServiceImpl")
 	private IRegionService regionService;
+	
+	/**
+	 * 优惠信息
+	 */
+	@Resource(name = "baseDiscountServiceImpl")
+	private IBaseDiscountService discountService;
+	
 	/**
 	 * 发送 协同编辑 邀请
 	 * @param province
@@ -92,6 +101,7 @@ public class InviteMgtController  extends SSOController {
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			if(status!=null&&status==Integer.parseInt(InviteStatus.ok.toString())){
+
 				//更新用户活动收获地址信息
 				long userAddressId=ObjectUtil.parseLong(addressId);
 				if(userAddressId>0){
@@ -123,6 +133,21 @@ public class InviteMgtController  extends SSOController {
 						//异业合作模板
 						PMyproducttemp temp=tempMapper.selectByPrimaryKey(apply.getTempid());
 						if(temp!=null) {
+							
+							//如果已达到活动目标完成人数，则自动置为活动失败状态，C端提示活动名额已满，可享受半价优惠
+							if(temp.getMaxcompletecount()!=null&&temp.getMaxcompletecount().intValue()>0){
+								if(temp.getCompletecount().intValue()>=temp.getMaxcompletecount().intValue()){
+									apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.fails.toString()));
+									//活动失败的参与作品 分发优惠
+									if(apply.getCartid()!=null&&apply.getCartid().longValue()>0){
+										discountService.addTempDiscount(apply.getCartid());
+									}
+									rq.setStatu(ReturnStatus.ParamError);
+									rq.setStatusreson("对不起，活动名额已满，不要灰心您仍然可以享受优惠购买！");
+									return JsonUtil.objectToJsonStr(rq);
+								}
+							}	
+							
 							if(temp.getAmountlimit()!=null&&temp.getAmountlimit()>0){
 								UAccounts accounts=accountMapper.selectByPrimaryKey(user.getUserId());
 								//账户可用金额

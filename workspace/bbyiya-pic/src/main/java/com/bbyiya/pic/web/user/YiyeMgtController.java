@@ -308,10 +308,7 @@ public class YiyeMgtController  extends SSOController {
 						
 						//是否需要审核
 						boolean isNeedVer=false;
-						if(temp.getNeedverifer()!=null&&temp.getNeedverifer().intValue()>0){
-							//需要审核
-							isNeedVer=true;
-						}
+
 						//如果已达到活动目标完成人数，则不需要审核
 						if(temp.getMaxcompletecount()!=null&&temp.getMaxcompletecount().intValue()>0){
 							if(temp.getCompletecount().intValue()>=temp.getMaxcompletecount().intValue()){
@@ -360,16 +357,7 @@ public class YiyeMgtController  extends SSOController {
 							}
 						}
 						
-						//如果已达到活动目标完成人数，则自动置为活动失败状态，C端提示活动名额已满，可享受半价优惠
-						if(temp.getMaxcompletecount()!=null&&temp.getMaxcompletecount().intValue()>0){
-							if(temp.getCompletecount().intValue()>=temp.getMaxcompletecount().intValue()){
-								apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.fails.toString()));
-								//活动失败的参与作品 分发优惠
-								if(apply.getCartid()!=null&&apply.getCartid().longValue()>0){
-									discountService.addTempDiscount(apply.getCartid());
-								}
-							}
-						}
+
 						
 						//插入申请提交信息
 						tempApplyMapper.insert(apply);

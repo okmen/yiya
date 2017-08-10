@@ -922,13 +922,13 @@ public class Pic_ProductServiceImpl implements IPic_ProductService {
 						item.setStyleid(apply.getStyleid());
 					}
 					if(apply.getCompanyuserid()!=null&&apply.getCompanyuserid().doubleValue()>0){
-						UUsers users = usersMapper.selectByPrimaryKey(apply.getCompanyuserid());
-						if (users != null) {
-							item.setUserName(users.getMobilephone());
-							if (ObjectUtil.isEmpty(users.getUserimg())) {
-								item.setUserImg("http://pic.bbyiya.com/userdefaultimg-2017-0303-01.png");
-							} else {
-								item.setUserImg(users.getUserimg());
+						UBranchusers branchuser=branchusersMapper.selectByPrimaryKey(apply.getCompanyuserid());
+						if(branchuser!=null&&branchuser.getName()!=null){
+							item.setUserName(branchuser.getName());
+						}else{
+							UUsers users = usersMapper.selectByPrimaryKey(apply.getCompanyuserid());
+							if (users != null) {
+								item.setUserName(users.getNickname());
 							}
 						}
 					}

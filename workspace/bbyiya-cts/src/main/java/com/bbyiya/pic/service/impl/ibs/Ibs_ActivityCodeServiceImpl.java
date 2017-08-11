@@ -225,6 +225,7 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 				}
 				//0未使用，1已使用 
 				codevo.setActiveStatus(code.getStatus());
+				
 				if(!ObjectUtil.isEmpty(code.getCartid())){
 					PMyproducts myproduct=myMapper.selectByPrimaryKey(code.getCartid());
 					if(myproduct!=null){

@@ -592,7 +592,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 					//达到积攒要求
 					if(temp.getBlesscount()!=null&&temp.getBlesscount().intValue()>0){
 						PMyproductext exp=myproductextMapper.selectByPrimaryKey(cartId);
-						if(exp.getCommentscount()!=null&&exp.getCommentscount().intValue()>=temp.getBlesscount().intValue()){
+						if(exp!=null&& exp.getCommentscount()!=null&&exp.getCommentscount().intValue()>=temp.getBlesscount().intValue()){
 							ishaveComplete=true;
 						}
 					}else {//不需要积攒

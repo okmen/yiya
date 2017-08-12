@@ -90,7 +90,7 @@ public class LoginController extends SSOController {
 		}
 //		return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin&response_type=code&scope=snsapi_userinfo#wechat_redirect" ;		
 		
-		return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin&response_type=code&scope=snsapi_base#wechat_redirect" ;		
+		return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WxPayConfig.APPID+"&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin&response_type=code&scope=snsapi_base#wechat_redirect" ;		
 	}
 	
 	/**
@@ -186,7 +186,7 @@ public class LoginController extends SSOController {
 					String headimg=String.valueOf(userJson.get("headimgurl"));
 //					//没有用户信息
 					if((ObjectUtil.isEmpty(nickName)||"null".equals(nickName))&&(ObjectUtil.isEmpty(headimg)||"null".equals(headimg))){
-						return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLoginInfo&response_type=code&scope=snsapi_userinfo#wechat_redirect" ;		
+						return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WxPayConfig.APPID+"&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLoginInfo&response_type=code&scope=snsapi_userinfo#wechat_redirect" ;		
 					}
 					if(!ObjectUtil.isEmpty(nickName)&&!"null".equals(nickName)){
 						nickName=ObjectUtil.filterEmoji(nickName);

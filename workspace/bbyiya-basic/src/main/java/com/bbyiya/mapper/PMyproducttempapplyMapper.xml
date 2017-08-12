@@ -25,12 +25,14 @@
     <result column="Sort" property="sort" jdbcType="INTEGER" />
     <result column="StyleId" property="styleid" jdbcType="BIGINT" />
     <result column="ProductId" property="productid" jdbcType="BIGINT" />
-     <result column="Shared" property="shared" jdbcType="INTEGER" />
+    <result column="Shared" property="shared" jdbcType="INTEGER" />
+    <result column="AddrBranchUserId" property="addrbranchuserid" jdbcType="BIGINT" />
+    <result column="UserOrderId" property="userorderid" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     TempApplyId, TempId, UserId, Mobilephone, Province, City, Area, Street, Adress, IsDue, 
     CompanyUserId, Status, CreateTime, VerfiyTime, CompleteTime, Birthday, IsRead, Receiver, 
-    CartId, Reason, Sort, StyleId, ProductId,Shared
+    CartId, Reason, Sort, StyleId, ProductId, Shared, AddrBranchUserId, UserOrderId
   </sql>
   
   <!-- 得到模板待审核的报名人数 -->
@@ -97,8 +99,8 @@
       CreateTime, VerfiyTime, CompleteTime, 
       Birthday, IsRead, Receiver, 
       CartId, Reason, Sort, 
-      StyleId, ProductId, Shared
-      )
+      StyleId, ProductId, Shared, 
+      AddrBranchUserId, UserOrderId)
     values (#{tempapplyid,jdbcType=BIGINT}, #{tempid,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, 
       #{mobilephone,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, 
       #{area,jdbcType=INTEGER}, #{street,jdbcType=VARCHAR}, #{adress,jdbcType=VARCHAR}, 
@@ -106,8 +108,8 @@
       #{createtime,jdbcType=TIMESTAMP}, #{verfiytime,jdbcType=TIMESTAMP}, #{completetime,jdbcType=TIMESTAMP}, 
       #{birthday,jdbcType=TIMESTAMP}, #{isread,jdbcType=INTEGER}, #{receiver,jdbcType=VARCHAR}, 
       #{cartid,jdbcType=BIGINT}, #{reason,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, 
-      #{styleid,jdbcType=BIGINT}, #{productid,jdbcType=BIGINT}, #{shared,jdbcType=INTEGER}
-      )
+      #{styleid,jdbcType=BIGINT}, #{productid,jdbcType=BIGINT}, #{shared,jdbcType=INTEGER}, 
+      #{addrbranchuserid,jdbcType=BIGINT}, #{userorderid,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.PMyproducttempapply" >
     insert into p_myproducttempapply
@@ -184,6 +186,12 @@
       <if test="shared != null" >
         Shared,
       </if>
+      <if test="addrbranchuserid != null" >
+        AddrBranchUserId,
+      </if>
+      <if test="userorderid != null" >
+        UserOrderId,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="tempapplyid != null" >
@@ -257,6 +265,12 @@
       </if>
       <if test="shared != null" >
         #{shared,jdbcType=INTEGER},
+      </if>
+      <if test="addrbranchuserid != null" >
+        #{addrbranchuserid,jdbcType=BIGINT},
+      </if>
+      <if test="userorderid != null" >
+        #{userorderid,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -332,6 +346,12 @@
       <if test="shared != null" >
         Shared = #{shared,jdbcType=INTEGER},
       </if>
+      <if test="addrbranchuserid != null" >
+        AddrBranchUserId = #{addrbranchuserid,jdbcType=BIGINT},
+      </if>
+      <if test="userorderid != null" >
+        UserOrderId = #{userorderid,jdbcType=VARCHAR},
+      </if>
     </set>
     where TempApplyId = #{tempapplyid,jdbcType=BIGINT}
   </update>
@@ -359,7 +379,9 @@
       Sort = #{sort,jdbcType=INTEGER},
       StyleId = #{styleid,jdbcType=BIGINT},
       ProductId = #{productid,jdbcType=BIGINT},
-      Shared = #{shared,jdbcType=INTEGER}
+      Shared = #{shared,jdbcType=INTEGER},
+      AddrBranchUserId = #{addrbranchuserid,jdbcType=BIGINT},
+      UserOrderId = #{userorderid,jdbcType=VARCHAR}
     where TempApplyId = #{tempapplyid,jdbcType=BIGINT}
   </update>
 </mapper>

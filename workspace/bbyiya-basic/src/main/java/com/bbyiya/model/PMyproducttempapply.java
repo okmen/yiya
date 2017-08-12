@@ -44,6 +44,10 @@ public class PMyproducttempapply {
     private Long productid;
     private Integer shared;
 
+    private Long addrbranchuserid;
+
+    private String userorderid;
+
 	/***************** 添加的VO字段 *************************/
 
 	private String tempName;
@@ -299,6 +303,22 @@ public class PMyproducttempapply {
 
 	public void setShared(Integer shared) {
 		this.shared = shared;
+	}
+
+	public Long getAddrbranchuserid() {
+		return addrbranchuserid;
+	}
+
+	public void setAddrbranchuserid(Long addrbranchuserid) {
+		this.addrbranchuserid = addrbranchuserid;
+	}
+
+	public String getUserorderid() {
+		return userorderid;
+	}
+
+	public void setUserorderid(String userorderid) {
+		this.userorderid = userorderid;
 	}
 
 }

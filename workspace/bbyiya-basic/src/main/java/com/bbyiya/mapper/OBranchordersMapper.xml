@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.OBranchordersMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.OBranchorders" >
+    <id column="UserOrderId" property="userorderid" jdbcType="VARCHAR" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="CustomerName" property="customername" jdbcType="VARCHAR" />
+    <result column="CartId" property="cartid" jdbcType="BIGINT" />
+    <result column="BranchUserId" property="branchuserid" jdbcType="BIGINT" />
+    <result column="AgentUserId" property="agentuserid" jdbcType="BIGINT" />
+    <result column="ProductId" property="productid" jdbcType="BIGINT" />
+    <result column="StyleId" property="styleid" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    UserOrderId, UserId, CustomerName, CartId, BranchUserId, AgentUserId, ProductId, 
+    StyleId
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from o_branchorders
+    where UserOrderId = #{userorderid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from o_branchorders
+    where UserOrderId = #{userorderid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.OBranchorders" >
+    insert into o_branchorders (UserOrderId, UserId, CustomerName, 
+      CartId, BranchUserId, AgentUserId, 
+      ProductId, StyleId)
+    values (#{userorderid,jdbcType=VARCHAR}, #{userid,jdbcType=BIGINT}, #{customername,jdbcType=VARCHAR}, 
+      #{cartid,jdbcType=BIGINT}, #{branchuserid,jdbcType=BIGINT}, #{agentuserid,jdbcType=BIGINT}, 
+      #{productid,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.OBranchorders" >
+    insert into o_branchorders
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userorderid != null" >
+        UserOrderId,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="customername != null" >
+        CustomerName,
+      </if>
+      <if test="cartid != null" >
+        CartId,
+      </if>
+      <if test="branchuserid != null" >
+        BranchUserId,
+      </if>
+      <if test="agentuserid != null" >
+        AgentUserId,
+      </if>
+      <if test="productid != null" >
+        ProductId,
+      </if>
+      <if test="styleid != null" >
+        StyleId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userorderid != null" >
+        #{userorderid,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="customername != null" >
+        #{customername,jdbcType=VARCHAR},
+      </if>
+      <if test="cartid != null" >
+        #{cartid,jdbcType=BIGINT},
+      </if>
+      <if test="branchuserid != null" >
+        #{branchuserid,jdbcType=BIGINT},
+      </if>
+      <if test="agentuserid != null" >
+        #{agentuserid,jdbcType=BIGINT},
+      </if>
+      <if test="productid != null" >
+        #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="styleid != null" >
+        #{styleid,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.OBranchorders" >
+    update o_branchorders
+    <set >
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="customername != null" >
+        CustomerName = #{customername,jdbcType=VARCHAR},
+      </if>
+      <if test="cartid != null" >
+        CartId = #{cartid,jdbcType=BIGINT},
+      </if>
+      <if test="branchuserid != null" >
+        BranchUserId = #{branchuserid,jdbcType=BIGINT},
+      </if>
+      <if test="agentuserid != null" >
+        AgentUserId = #{agentuserid,jdbcType=BIGINT},
+      </if>
+      <if test="productid != null" >
+        ProductId = #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="styleid != null" >
+        StyleId = #{styleid,jdbcType=BIGINT},
+      </if>
+    </set>
+    where UserOrderId = #{userorderid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.OBranchorders" >
+    update o_branchorders
+    set UserId = #{userid,jdbcType=BIGINT},
+      CustomerName = #{customername,jdbcType=VARCHAR},
+      CartId = #{cartid,jdbcType=BIGINT},
+      BranchUserId = #{branchuserid,jdbcType=BIGINT},
+      AgentUserId = #{agentuserid,jdbcType=BIGINT},
+      ProductId = #{productid,jdbcType=BIGINT},
+      StyleId = #{styleid,jdbcType=BIGINT}
+    where UserOrderId = #{userorderid,jdbcType=VARCHAR}
+  </update>
+</mapper>

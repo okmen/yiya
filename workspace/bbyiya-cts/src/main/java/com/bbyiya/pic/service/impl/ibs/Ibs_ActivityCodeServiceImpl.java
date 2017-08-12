@@ -153,13 +153,24 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 		//生成活动码
 		for(int i=0;i<param.getApplycount();i++){
 			String idString= GenUtils.generateUuid_Char8();
-			PMyproductactivitycode code=new PMyproductactivitycode();
-			code.setBranchuserid(userid);
-			code.setCodeno(idString);
-			code.setCreatetime(new Date());
-			code.setStatus(Integer.parseInt(ActivityCodeStatusEnum.notuse.toString()));
-			code.setTempid(temp.getTempid());
-			activitycodeMapper.insert(code);
+			PMyproductactivitycode code=activitycodeMapper.selectByPrimaryKey(idString);
+			while(code!=null){
+				idString= GenUtils.generateUuid_Char8();
+				code=activitycodeMapper.selectByPrimaryKey(idString);
+				if(code==null){
+					break;
+				}
+			}
+			PMyproductactivitycode	codelast=new PMyproductactivitycode();
+			codelast.setBranchuserid(userid);
+			codelast.setCodeno(idString);
+			codelast.setCreatetime(new Date());
+			codelast.setStatus(Integer.parseInt(ActivityCodeStatusEnum.notuse.toString()));
+			codelast.setTempid(temp.getTempid());
+			activitycodeMapper.insert(codelast);
+			
+					
+			
 		}
 		
 		myproduct.setTempid(temp.getTempid());

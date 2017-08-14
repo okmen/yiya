@@ -16,6 +16,8 @@ public class OBranchorders {
     private Long productid;
 
     private Long styleid;
+    
+    private Long frombranchuserid;
 
     public String getUserorderid() {
         return userorderid;
@@ -80,4 +82,13 @@ public class OBranchorders {
     public void setStyleid(Long styleid) {
         this.styleid = styleid;
     }
+
+	public Long getFrombranchuserid() {
+		return frombranchuserid;
+	}
+
+	public void setFrombranchuserid(Long frombranchuserid) {
+		this.frombranchuserid = frombranchuserid;
+	}
+    
 }

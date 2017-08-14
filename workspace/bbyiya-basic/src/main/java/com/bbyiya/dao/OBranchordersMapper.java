@@ -20,5 +20,5 @@ public interface OBranchordersMapper {
 
     int updateByPrimaryKey(OBranchorders record);
     
-    List<BranchOrderVo> findBranchOrdersByBranchUserId(@Param("branchUserId")Long branchUserId,@Param("status") Integer status,@Param("keywords") String keywords);
+    List<BranchOrderVo>findBranchOrdersByBranchUserId(@Param("branchUserId")Long branchUserId,@Param("status") Integer status,@Param("keywords") String keywords);
 }

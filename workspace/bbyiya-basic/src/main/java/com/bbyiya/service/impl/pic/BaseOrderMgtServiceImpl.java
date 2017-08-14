@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bbyiya.baseUtils.GenUtils;
 import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.dao.EErrorsMapper;
+import com.bbyiya.dao.OBranchordersMapper;
 import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OOrderproductdetailsMapper;
 import com.bbyiya.dao.OOrderproductphotosMapper;
@@ -144,6 +145,9 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	
 	@Autowired
 	private OUserordersMapper userOrdersMapper;// 订单
+	
+	@Autowired
+	private OBranchordersMapper branchOrderMapper;
 	@Autowired
 	private OPayorderMapper payOrderMapper;// 支付单
 	@Autowired
@@ -392,13 +396,21 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 					PMyproducttempapply apply= tempApplyMapper.getMyProducttempApplyByCartId(param.getCartId());
 					if(apply!=null){
 						//如果选择的是影楼分店地址
-						if(apply!=null&&apply.getAddrbranchuserid()!=null&&apply.getAddrbranchuserid()>0){
+						if(apply.getAddrbranchuserid()!=null&&apply.getAddrbranchuserid()>0){
 							OBranchorders branchorder=new OBranchorders();
 							branchorder.setAgentuserid(param.getAgentUserId());
+							branchorder.setFrombranchuserid(param.getBranchUserId());
 							branchorder.setBranchuserid(apply.getAddrbranchuserid());
+							branchorder.setCartid(param.getCartId());
+							branchorder.setProductid(orderProduct.getProductid());
+							branchorder.setStyleid(orderProduct.getStyleid());	
+							branchorder.setCustomername(apply.getUsername());//客户名称
+							branchorder.setUserid(apply.getUserid());//客户ID
+							branchorder.setUserorderid(orderId);
+							branchOrderMapper.insert(branchorder);
 						}
 						
-						
+						apply.setUserorderid(orderId);
 						apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.pass.toString()));
 						tempApplyMapper.updateByPrimaryKeySelective(apply);
 						

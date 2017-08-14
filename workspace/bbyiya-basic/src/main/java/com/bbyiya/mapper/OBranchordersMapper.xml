@@ -10,10 +10,11 @@
     <result column="AgentUserId" property="agentuserid" jdbcType="BIGINT" />
     <result column="ProductId" property="productid" jdbcType="BIGINT" />
     <result column="StyleId" property="styleid" jdbcType="BIGINT" />
+    <result column="FromBranchUserId" property="frombranchuserid" jdbcType="BIGINT" />
   </resultMap>
   <sql id="Base_Column_List" >
     UserOrderId, UserId, CustomerName, CartId, BranchUserId, AgentUserId, ProductId, 
-    StyleId
+    StyleId, FromBranchUserId
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -21,6 +22,22 @@
     from o_branchorders
     where UserOrderId = #{userorderid,jdbcType=VARCHAR}
   </select>
+    <!-- 分店用订单结果类Result -->
+  <resultMap id="BranchOrderVoResult" type="com.bbyiya.vo.order.BranchOrderVo" extends="BaseResultMap">  
+  </resultMap>  
+  
+  <!-- 01 获取来自分店的的订单-->
+  <select id="findBranchOrdersByBranchUserId" resultMap="BranchOrderVoResult"  >
+    select a.UserOrderId as userorderid, a.UserId as userid, a.CustomerName as customername, a.CartId as cartid, a.BranchUserId as branchuserid, a.AgentUserId as agentuserid, a.ProductId as productid, a.StyleId as styleid,b.Mobilephone as phone,b.Adress as address,b.Birthday as babybirthday,b.TempId as tempid
+    from o_branchorders a inner join p_myproducttempapply b on a.CartId=b.CartId
+    where a.BranchUserId = #{branchUserId,jdbcType=BIGINT} 
+    <if test="keywords != null and keywords!=''" >
+        and  (a.UserOrderId  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) or a.CustomerName  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) or b.Mobilephone LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) )
+    </if>
+    order by a.UserOrderId desc
+  </select>
+  
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from o_branchorders
     where UserOrderId = #{userorderid,jdbcType=VARCHAR}
@@ -28,10 +45,12 @@
   <insert id="insert" parameterType="com.bbyiya.model.OBranchorders" >
     insert into o_branchorders (UserOrderId, UserId, CustomerName, 
       CartId, BranchUserId, AgentUserId, 
-      ProductId, StyleId)
+      ProductId, StyleId, FromBranchUserId
+      )
     values (#{userorderid,jdbcType=VARCHAR}, #{userid,jdbcType=BIGINT}, #{customername,jdbcType=VARCHAR}, 
       #{cartid,jdbcType=BIGINT}, #{branchuserid,jdbcType=BIGINT}, #{agentuserid,jdbcType=BIGINT}, 
-      #{productid,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT})
+      #{productid,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, #{frombranchuserid,jdbcType=BIGINT}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.OBranchorders" >
     insert into o_branchorders
@@ -60,6 +79,9 @@
       <if test="styleid != null" >
         StyleId,
       </if>
+      <if test="frombranchuserid != null" >
+        FromBranchUserId,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="userorderid != null" >
@@ -85,6 +107,9 @@
       </if>
       <if test="styleid != null" >
         #{styleid,jdbcType=BIGINT},
+      </if>
+      <if test="frombranchuserid != null" >
+        #{frombranchuserid,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -112,6 +137,9 @@
       <if test="styleid != null" >
         StyleId = #{styleid,jdbcType=BIGINT},
       </if>
+      <if test="frombranchuserid != null" >
+        FromBranchUserId = #{frombranchuserid,jdbcType=BIGINT},
+      </if>
     </set>
     where UserOrderId = #{userorderid,jdbcType=VARCHAR}
   </update>
@@ -123,7 +151,8 @@
       BranchUserId = #{branchuserid,jdbcType=BIGINT},
       AgentUserId = #{agentuserid,jdbcType=BIGINT},
       ProductId = #{productid,jdbcType=BIGINT},
-      StyleId = #{styleid,jdbcType=BIGINT}
+      StyleId = #{styleid,jdbcType=BIGINT},
+      FromBranchUserId = #{frombranchuserid,jdbcType=BIGINT}
     where UserOrderId = #{userorderid,jdbcType=VARCHAR}
   </update>
 </mapper>

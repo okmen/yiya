@@ -45,6 +45,7 @@ import com.bbyiya.enums.pic.InviteStatus;
 import com.bbyiya.enums.pic.InviteType;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
 import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
+import com.bbyiya.enums.pic.YiyeAddressType;
 import com.bbyiya.model.PMyproductactivitycode;
 import com.bbyiya.model.PMyproductchildinfo;
 import com.bbyiya.model.PMyproductdetails;
@@ -708,7 +709,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 				myTempUserMapper.updateByPrimaryKeySelective(tempuser);
 			}
 			//如果使用了门店自提的地址，则分店也要获取该客户
-			if(temp.getIsbranchaddress().intValue()==2&&apply.getAddrbranchuserid()!=null&&apply.getAddrbranchuserid().doubleValue()>0){
+			if(temp.getIsbranchaddress().intValue()==Integer.parseInt(YiyeAddressType.branchList.toString())&&apply.getAddrbranchuserid()!=null&&apply.getAddrbranchuserid().doubleValue()>0){
 				UBranchusers branchuseraddr=branchuserMapper.selectByPrimaryKey(apply.getAddrbranchuserid());
 				if(branchuseraddr!=null){
 					UAgentcustomers cusaddr= customerMapper.getCustomersByBranchUserId(branchuseraddr.getBranchuserid(),apply.getUserid());

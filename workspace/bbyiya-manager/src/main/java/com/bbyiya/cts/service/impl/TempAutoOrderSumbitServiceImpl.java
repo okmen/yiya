@@ -22,6 +22,7 @@ import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.enums.MyProductTempStatusEnum;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.pic.YiyeAddressType;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproducts;
@@ -107,7 +108,7 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 					
 					OrderaddressParam addressParam=new OrderaddressParam();
 					//使用门店自选地址
-					if(temp.getIsbranchaddress()!=null&&temp.getIsbranchaddress().intValue()==2){
+					if(temp.getIsbranchaddress()!=null&&temp.getIsbranchaddress().intValue()==Integer.parseInt(YiyeAddressType.branchList.toString())){
 						PMyproducttempapply tempapply=applyMapper.getMyProducttempApplyByCartId(myproduct.getCartid());					
 						if(tempapply.getAddrbranchuserid()!=null&&tempapply.getAddrbranchuserid().doubleValue()>0){
 							UBranches branches=branchesMapper.selectByPrimaryKey(tempapply.getAddrbranchuserid());
@@ -122,7 +123,7 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 							}
 						}
 						
-					}else if(temp.getIsbranchaddress()!=null&&temp.getIsbranchaddress().intValue()==1){
+					}else if(temp.getIsbranchaddress()!=null&&temp.getIsbranchaddress().intValue()==Integer.parseInt(YiyeAddressType.branchSelf.toString())){
 						UBranches branches=branchesMapper.selectByPrimaryKey(temp.getBranchuserid());
 						if (branches != null) {
 							addressParam.setUserid(branches.getBranchuserid());

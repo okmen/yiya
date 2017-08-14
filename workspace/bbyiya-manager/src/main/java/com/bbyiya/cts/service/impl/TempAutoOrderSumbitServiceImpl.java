@@ -106,8 +106,23 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 					productParam.setCartId(myproduct.getCartid());
 					
 					OrderaddressParam addressParam=new OrderaddressParam();
-					//使用影楼地址
-					if(temp.getIsbranchaddress()!=null&&temp.getIsbranchaddress().intValue()==1){
+					//使用门店自选地址
+					if(temp.getIsbranchaddress()!=null&&temp.getIsbranchaddress().intValue()==2){
+						PMyproducttempapply tempapply=applyMapper.getMyProducttempApplyByCartId(myproduct.getCartid());					
+						if(tempapply.getAddrbranchuserid()!=null&&tempapply.getAddrbranchuserid().doubleValue()>0){
+							UBranches branches=branchesMapper.selectByPrimaryKey(tempapply.getAddrbranchuserid());
+							if (branches != null) {
+								addressParam.setUserid(branches.getBranchuserid());
+								addressParam.setPhone(branches.getPhone());
+								addressParam.setReciver(branches.getUsername());
+								addressParam.setCity(branches.getCity());
+								addressParam.setProvince(branches.getProvince());
+								addressParam.setDistrict(branches.getArea());
+								addressParam.setStreetdetail(branches.getStreetdetail());
+							}
+						}
+						
+					}else if(temp.getIsbranchaddress()!=null&&temp.getIsbranchaddress().intValue()==1){
 						UBranches branches=branchesMapper.selectByPrimaryKey(temp.getBranchuserid());
 						if (branches != null) {
 							addressParam.setUserid(branches.getBranchuserid());

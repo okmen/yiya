@@ -175,7 +175,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 			param.setIsbranchaddress(0);
 		}
 		temp.setMaxapplycount(param.getApplycount()==null?0:param.getApplycount());//报名人数为0时不限制
-		temp.setIsbranchaddress(param.getIsbranchaddress());
+		temp.setIsbranchaddress(param.getIsbranchaddress());//1影楼地址 0 用户报名地址,2 用户自选门店地址
 		temp.setType(Integer.parseInt(MyProductTempType.normal.toString()));//默认为普通类型
 		myproducttempMapper.insertReturnId(temp);
 		
@@ -707,13 +707,50 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 				tempuser.setPasscount((tempuser.getPasscount()==null?0:tempuser.getPasscount())+1);
 				myTempUserMapper.updateByPrimaryKeySelective(tempuser);
 			}
-			
+			//如果使用了门店自提的地址，则分店也要获取该客户
+			if(temp.getIsbranchaddress().intValue()==2&&apply.getAddrbranchuserid()!=null&&apply.getAddrbranchuserid().doubleValue()>0){
+				UBranchusers branchuseraddr=branchuserMapper.selectByPrimaryKey(apply.getAddrbranchuserid());
+				if(branchuseraddr!=null){
+					UAgentcustomers cusaddr= customerMapper.getCustomersByBranchUserId(branchuseraddr.getBranchuserid(),apply.getUserid());
+					if(cusaddr==null){
+						cusaddr=new UAgentcustomers();
+						cusaddr.setAgentuserid(branchuseraddr.getAgentuserid());
+						cusaddr.setBranchuserid(branchuseraddr.getBranchuserid());
+						cusaddr.setUserid(apply.getUserid());
+						cusaddr.setStatus(1);
+						cusaddr.setPhone(invoMo.getInvitephone());
+						cusaddr.setAddress(apply.getAdress());
+						if(ObjectUtil.isEmpty(apply.getUsername())){
+							UUsers user=usersMapper.selectByPrimaryKey(apply.getUserid());
+							if(user!=null){
+								cusaddr.setName(user.getNickname());
+							}
+						}else{
+							cusaddr.setName(apply.getUsername());
+						}
+						cusaddr.setCreatetime(new Date());
+						cusaddr.setIsmarket(1);
+						cusaddr.setSourcetype(Integer.parseInt(CustomerSourceTypeEnum.temp.toString()));
+						cusaddr.setExtid(myproducts.getTempid());
+						cusaddr.setStaffuserid(myproducts.getUserid());
+						customerMapper.insert(cusaddr);
+					}else{
+						if(ObjectUtil.isEmpty(cusaddr.getIsmarket())||cusaddr.getIsmarket().intValue()==0){
+							cusaddr.setIsmarket(1);	
+							cusaddr.setExtid(myproducts.getTempid());
+							cusaddr.setSourcetype(Integer.parseInt(CustomerSourceTypeEnum.temp.toString()));
+							cusaddr.setStaffuserid(myproducts.getUserid());
+							customerMapper.updateByPrimaryKey(cusaddr);
+						}
+					}
+				}
+			}
 			
 			//添加影楼已获取的客户信息
 			UBranchusers branchuser=branchuserMapper.selectByPrimaryKey(myproducts.getUserid());
 			if(branchuser!=null){
 				//添加成为影楼的已获取客户
-				UAgentcustomers cus= customerMapper.getCustomersByAgentUserId(branchuser.getAgentuserid(),apply.getUserid());
+				UAgentcustomers cus= customerMapper.getCustomersByBranchUserId(branchuser.getBranchuserid(),apply.getUserid());
 				if(cus==null){
 					cus=new UAgentcustomers();
 					cus.setAgentuserid(branchuser.getAgentuserid());
@@ -1020,7 +1057,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 	 *设置活动门槛信息
 	 * @return
 	 */
-	public ReturnModel setTempCompletecondition(Long userId,Integer tempid,Integer maxapplyCount,Integer maxCompleteCount,Integer needverifer,Integer needshared,Integer blesscount,Double amountlimit){
+	public ReturnModel setTempCompletecondition(Long userId,Integer tempid,Integer maxapplyCount,Integer maxCompleteCount,Integer needverifer,Integer needshared,Integer blesscount,Double amountlimit,Integer isbranchaddress){
 		ReturnModel rq=new ReturnModel();
 		if(tempid==null){
 			rq.setStatu(ReturnStatus.ParamError);
@@ -1053,6 +1090,7 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 				temp.setAmountlimit(amountlimit==null?0:amountlimit);
 				temp.setBlesscount(blesscount==null?0:blesscount);
 				temp.setNeedshared(needshared==null?0:needshared);
+				temp.setIsbranchaddress(isbranchaddress);
 			}
 			myproducttempMapper.updateByPrimaryKeySelective(temp);
 		}

@@ -7,7 +7,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,6 +58,7 @@ import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.DMyproductdiscountmodel;
 import com.bbyiya.model.EErrors;
+import com.bbyiya.model.OBranchorders;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproductphotos;
@@ -359,10 +362,11 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				if(userOrder.getAgentuserid()!=null&&userOrder.getAgentuserid()>0){
 					UUsers users=usersMapper.selectByPrimaryKey(userOrder.getUserid());
 					if(users!=null){
-						UAgentcustomers customer= customerMapper.getCustomersByAgentUserId(userOrder.getAgentuserid(), userOrder.getUserid());
+						UAgentcustomers customer= customerMapper.getCustomersByBranchUserId(userOrder.getBranchuserid(), userOrder.getUserid());
 						if(customer==null){
 							UAgentcustomers cus=new UAgentcustomers();
 							cus.setAgentuserid(userOrder.getAgentuserid());
+							cus.setBranchuserid(userOrder.getBranchuserid());
 							cus.setUserid(userOrder.getUserid());
 							cus.setStatus(1);
 							cus.setPhone(users.getMobilephone());
@@ -386,10 +390,21 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				//-----------------------异业合作---------------------------------------------------------
 				if(Integer.parseInt(OrderTypeEnum.brachOrder.toString())==orderType && mycart.getTempid()!=null){
 					PMyproducttempapply apply= tempApplyMapper.getMyProducttempApplyByCartId(param.getCartId());
-					//if(apply!=null&&apply.getStatus()!=null&&apply.getStatus().intValue()==Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString())){
+					if(apply!=null){
+						//如果选择的是影楼分店地址
+						if(apply!=null&&apply.getAddrbranchuserid()!=null&&apply.getAddrbranchuserid()>0){
+							OBranchorders branchorder=new OBranchorders();
+							branchorder.setAgentuserid(param.getAgentUserId());
+							branchorder.setBranchuserid(apply.getAddrbranchuserid());
+						}
+						
+						
 						apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.pass.toString()));
 						tempApplyMapper.updateByPrimaryKeySelective(apply);
-					//}
+						
+						
+					}
+					
 				}//-----------------------------------------------------------------------------------
 			}else {
 				throw new Exception("作品不存在！");

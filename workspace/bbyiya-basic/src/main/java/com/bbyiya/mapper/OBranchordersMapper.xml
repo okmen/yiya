@@ -10,10 +10,11 @@
     <result column="AgentUserId" property="agentuserid" jdbcType="BIGINT" />
     <result column="ProductId" property="productid" jdbcType="BIGINT" />
     <result column="StyleId" property="styleid" jdbcType="BIGINT" />
+    <result column="FromBranchUserId" property="frombranchuserid" jdbcType="BIGINT" />
   </resultMap>
   <sql id="Base_Column_List" >
     UserOrderId, UserId, CustomerName, CartId, BranchUserId, AgentUserId, ProductId, 
-    StyleId
+    StyleId, FromBranchUserId
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -28,10 +29,12 @@
   <insert id="insert" parameterType="com.bbyiya.model.OBranchorders" >
     insert into o_branchorders (UserOrderId, UserId, CustomerName, 
       CartId, BranchUserId, AgentUserId, 
-      ProductId, StyleId)
+      ProductId, StyleId, FromBranchUserId
+      )
     values (#{userorderid,jdbcType=VARCHAR}, #{userid,jdbcType=BIGINT}, #{customername,jdbcType=VARCHAR}, 
       #{cartid,jdbcType=BIGINT}, #{branchuserid,jdbcType=BIGINT}, #{agentuserid,jdbcType=BIGINT}, 
-      #{productid,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT})
+      #{productid,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, #{frombranchuserid,jdbcType=BIGINT}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.OBranchorders" >
     insert into o_branchorders
@@ -60,6 +63,9 @@
       <if test="styleid != null" >
         StyleId,
       </if>
+      <if test="frombranchuserid != null" >
+        FromBranchUserId,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="userorderid != null" >
@@ -85,6 +91,9 @@
       </if>
       <if test="styleid != null" >
         #{styleid,jdbcType=BIGINT},
+      </if>
+      <if test="frombranchuserid != null" >
+        #{frombranchuserid,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -112,6 +121,9 @@
       <if test="styleid != null" >
         StyleId = #{styleid,jdbcType=BIGINT},
       </if>
+      <if test="frombranchuserid != null" >
+        FromBranchUserId = #{frombranchuserid,jdbcType=BIGINT},
+      </if>
     </set>
     where UserOrderId = #{userorderid,jdbcType=VARCHAR}
   </update>
@@ -123,7 +135,8 @@
       BranchUserId = #{branchuserid,jdbcType=BIGINT},
       AgentUserId = #{agentuserid,jdbcType=BIGINT},
       ProductId = #{productid,jdbcType=BIGINT},
-      StyleId = #{styleid,jdbcType=BIGINT}
+      StyleId = #{styleid,jdbcType=BIGINT},
+      FromBranchUserId = #{frombranchuserid,jdbcType=BIGINT}
     where UserOrderId = #{userorderid,jdbcType=VARCHAR}
   </update>
 </mapper>

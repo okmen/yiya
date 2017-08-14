@@ -16,6 +16,7 @@ import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
+import com.bbyiya.dao.PProductsMapper;
 import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UChildreninfoMapper;
@@ -30,6 +31,7 @@ import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
+import com.bbyiya.model.PProducts;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.pic.service.ibs.IIbs_OrderMgtService;
 import com.bbyiya.service.pic.IBaseUserAddressService;
@@ -60,7 +62,8 @@ public class Ibs_OrderMgtServiceImpl implements IIbs_OrderMgtService{
 	private UBranchusersMapper branchusersMapper;// 影楼信息
 	@Autowired
 	private OUserordersMapper orderMapper;
-	
+	@Autowired
+	private PProductsMapper productsMapper;
 	
 	@Resource(name = "baseUserAddressServiceImpl")
 	private IBaseUserAddressService baseAddressService;
@@ -78,7 +81,11 @@ public class Ibs_OrderMgtServiceImpl implements IIbs_OrderMgtService{
 				if(branches!=null){
 					order.setBranchname(branches.getBranchcompanyname());
 				}
-				
+				// 得到制作类型
+				PProducts product = productsMapper.selectByPrimaryKey(order.getProductid());
+				if (product != null && product.getTitle() != null) {
+					order.setProducttitle(product.getTitle());
+				}	
 			}	
 			rq.setBasemodle(resultPage);
 		}

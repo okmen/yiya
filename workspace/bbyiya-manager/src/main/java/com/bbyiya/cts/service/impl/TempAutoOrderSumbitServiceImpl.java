@@ -95,11 +95,15 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 					}else{
 						RedisUtil.setObject(key, cartid, 3600);
 					}
+					PMyproducttempapply tempapply=applyMapper.getMyProducttempApplyByCartId(myproduct.getCartid());					
 					
 					//调用下单接口
 					SubmitOrderProductParam productParam=new SubmitOrderProductParam();
 					productParam.setProductId(myproduct.getProductid());
 					Long styleId=temp.getStyleid();
+					if(tempapply!=null&&tempapply.getStyleid()!=null&&tempapply.getStyleid()>0){
+						styleId=tempapply.getStyleid();
+					}
 					//如果为空，默认为竖板
 					if(ObjectUtil.isEmpty(styleId)) styleId=myproduct.getProductid();
 					productParam.setStyleId(styleId);
@@ -109,8 +113,7 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 					OrderaddressParam addressParam=new OrderaddressParam();
 					//使用门店自选地址
 					if(temp.getIsbranchaddress()!=null&&temp.getIsbranchaddress().intValue()==Integer.parseInt(YiyeAddressType.branchList.toString())){
-						PMyproducttempapply tempapply=applyMapper.getMyProducttempApplyByCartId(myproduct.getCartid());					
-						if(tempapply.getAddrbranchuserid()!=null&&tempapply.getAddrbranchuserid().doubleValue()>0){
+						if(tempapply!=null&&tempapply.getAddrbranchuserid()!=null&&tempapply.getAddrbranchuserid().doubleValue()>0){
 							UBranches branches=branchesMapper.selectByPrimaryKey(tempapply.getAddrbranchuserid());
 							if (branches != null) {
 								addressParam.setUserid(branches.getBranchuserid());
@@ -135,15 +138,17 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 							addressParam.setStreetdetail(branches.getStreetdetail());
 						}
 					}else{
-						PMyproducttempapply tempapply=applyMapper.getMyProducttempApplyByCartId(myproduct.getCartid());					
 						//用户报名地址
-						addressParam.setUserid(tempapply.getUserid());
-						addressParam.setCity(tempapply.getCity());
-						addressParam.setDistrict(tempapply.getArea());
-						addressParam.setPhone(tempapply.getMobilephone());
-						addressParam.setProvince(tempapply.getProvince());
-						addressParam.setReciver(tempapply.getReceiver());
-						addressParam.setStreetdetail(tempapply.getStreet());
+						if(tempapply!=null){
+							addressParam.setUserid(tempapply.getUserid());
+							addressParam.setCity(tempapply.getCity());
+							addressParam.setDistrict(tempapply.getArea());
+							addressParam.setPhone(tempapply.getMobilephone());
+							addressParam.setProvince(tempapply.getProvince());
+							addressParam.setReciver(tempapply.getReceiver());
+							addressParam.setStreetdetail(tempapply.getStreet());
+						}
+						
 					}
 					
 					

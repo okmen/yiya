@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 
 
+
 import com.bbyiya.model.OOrderaddress;
 
 public class BranchOrderVo implements Serializable {
@@ -43,6 +44,8 @@ public class BranchOrderVo implements Serializable {
 	private String branchname;
 	//订单状态
 	private Integer status;
+	//来源影楼名称
+	private Long frombranchuserid;
 	public String getUserorderid() {
 		return userorderid;
 	}
@@ -134,6 +137,12 @@ public class BranchOrderVo implements Serializable {
 	}
 	public void setBranchname(String branchname) {
 		this.branchname = branchname;
+	}
+	public Long getFrombranchuserid() {
+		return frombranchuserid;
+	}
+	public void setFrombranchuserid(Long frombranchuserid) {
+		this.frombranchuserid = frombranchuserid;
 	}
 	
 	

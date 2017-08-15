@@ -77,8 +77,9 @@ public class Ibs_OrderMgtServiceImpl implements IIbs_OrderMgtService{
 		PageInfo<BranchOrderVo> resultPage=new PageInfo<BranchOrderVo>(branchorders); 
 		if(resultPage!=null&&resultPage.getList()!=null&&resultPage.getList().size()>0){
 			for (BranchOrderVo order : branchorders) {
-				UBranches branches=branchesMapper.selectByPrimaryKey(order.getBranchuserid());
+				UBranches branches=branchesMapper.selectByPrimaryKey(order.getFrombranchuserid());
 				if(branches!=null){
+					
 					order.setBranchname(branches.getBranchcompanyname());
 				}
 				// 得到制作类型

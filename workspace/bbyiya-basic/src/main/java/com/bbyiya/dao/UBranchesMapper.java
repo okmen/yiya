@@ -1,5 +1,9 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.UBranches;
 
 public interface UBranchesMapper {
@@ -14,4 +18,7 @@ public interface UBranchesMapper {
     int updateByPrimaryKeySelective(UBranches record);
 
     int updateByPrimaryKey(UBranches record);
+    
+    List<UBranches> findBranchesByAgentUserId(@Param("agentUserId")Long agengUserId);
+    
 }

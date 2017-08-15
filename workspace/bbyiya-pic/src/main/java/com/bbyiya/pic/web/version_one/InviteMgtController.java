@@ -13,9 +13,11 @@ import com.bbyiya.dao.PMyproducttempapplyMapper;
 import com.bbyiya.dao.UAccountsMapper;
 import com.bbyiya.dao.UAgentcustomersMapper;
 import com.bbyiya.dao.UUseraddressMapper;
+import com.bbyiya.enums.AccountLogType;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.InviteStatus;
 import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
+import com.bbyiya.enums.pic.YiyeAddressType;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
@@ -134,11 +136,11 @@ public class InviteMgtController  extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/processInvite")
-	public String processInvite(Long cartId,Integer status,String addressId) throws Exception {
+	public String processInvite(Long cartId,Integer status,String addressId,String branchUserId) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			if(status!=null&&status==Integer.parseInt(InviteStatus.ok.toString())){
+			if(status!=null&&status==Integer.parseInt(InviteStatus.ok.toString())) {
 				//更新用户活动收获地址信息
 				long userAddressId=ObjectUtil.parseLong(addressId);
 				if(userAddressId>0){
@@ -170,20 +172,6 @@ public class InviteMgtController  extends SSOController {
 						//异业合作模板
 						PMyproducttemp temp=tempMapper.selectByPrimaryKey(apply.getTempid());
 						if(temp!=null) {
-							
-//							//如果已达到活动目标完成人数，则自动置为活动失败状态，C端提示活动名额已满，可享受半价优惠
-//							if(temp.getMaxcompletecount()!=null&&temp.getMaxcompletecount().intValue()>0){
-//								if(temp.getCompletecount()!=null&&temp.getCompletecount().intValue()>=temp.getMaxcompletecount().intValue()){
-//									apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.fails.toString()));
-//									//活动失败的参与作品 分发优惠
-//									if(apply.getCartid()!=null&&apply.getCartid().longValue()>0){
-//										discountService.addTempDiscount(apply.getCartid());
-//									}
-//									rq.setStatu(ReturnStatus.ParamError);
-//									rq.setStatusreson("对不起，活动名额已满，不要灰心您仍然可以享受优惠购买！");
-//									return JsonUtil.objectToJsonStr(rq);
-//								}
-//							}	
 							//冻结众筹金额
 							if(temp.getAmountlimit()!=null&&temp.getAmountlimit()>0){
 								UAccounts accounts=accountMapper.selectByPrimaryKey(user.getUserId());
@@ -207,6 +195,13 @@ public class InviteMgtController  extends SSOController {
 								if(ObjectUtil.isEmpty(customer.getAddress())){
 									customer.setAddress(apply.getAdress()); 
 									customerMapper.updateByPrimaryKeySelective(customer);
+								}
+							}
+							//门店选择-用户所选门店的userId
+							long bUserId=ObjectUtil.parseLong(branchUserId);
+							if(bUserId>0){
+								if(temp.getIsbranchaddress()!=null&&temp.getIsbranchaddress().longValue()==Integer.parseInt(YiyeAddressType.branchList.toString())){
+									apply.setAddrbranchuserid(bUserId); 
 								}
 							}
 						}

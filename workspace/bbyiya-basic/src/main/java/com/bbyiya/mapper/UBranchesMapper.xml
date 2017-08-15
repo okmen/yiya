@@ -35,6 +35,12 @@
     from u_branches
     where BranchUserId = #{branchuserid,jdbcType=BIGINT}
   </select>
+  <select id="findBranchesByAgentUserId" resultMap="BaseResultMap"  ><!-- 获取代理商的所有分店  -->
+    select 
+    <include refid="Base_Column_List" />
+    from u_branches
+    where AgentUserId = #{agentUserId,jdbcType=BIGINT} and Status=1
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from u_branches
     where BranchUserId = #{branchuserid,jdbcType=BIGINT}

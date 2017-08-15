@@ -109,9 +109,10 @@ public class Ibs_OrderManageServiceImpl implements IIbs_OrderManageService{
 					addressList.add(orderAddress);
 				}
 			}
-			//得到作品用户申请地址
+			//得到作品用户申请地址或门店自选地址
 			PMyproducttempapply tempApply=myproductapplyMapper.getMyProducttempApplyByCartId(cartid);
 			if(tempApply!=null){
+				//用户申请地址
 				OrderaddressVo orderAddress2 = new OrderaddressVo();
 				orderAddress2.setUserid(tempApply.getUserid());
 				orderAddress2.setPhone(tempApply.getMobilephone());
@@ -125,6 +126,27 @@ public class Ibs_OrderManageServiceImpl implements IIbs_OrderManageService{
 				orderAddress2.setStreetdetail(tempApply.getStreet());
 				orderAddress2.setAddressType(1);
 				addressList.add(orderAddress2);
+				//门店自选地址
+				if(tempApply.getAddrbranchuserid()!=null&&tempApply.getAddrbranchuserid().doubleValue()>0){
+					UBranches branches=branchesMapper.selectByPrimaryKey(tempApply.getAddrbranchuserid());
+					if(branches!=null){
+						OrderaddressVo orderAddress3 = new OrderaddressVo();
+						orderAddress3.setUserid(branches.getBranchuserid());
+						orderAddress3.setPhone(branches.getPhone());
+						orderAddress3.setReciver(branches.getContactname());
+						orderAddress3.setCity(branches.getCity());
+						orderAddress3.setProvince(branches.getProvince());
+						orderAddress3.setDistrict(branches.getArea());
+						orderAddress3.setCityName(regionService.getCityName(branches.getCity()));
+						orderAddress3.setProvinceName(regionService.getProvinceName(branches.getProvince()));
+						orderAddress3.setDistrictName(regionService.getAresName(branches.getArea()));
+						orderAddress3.setStreetdetail(branches.getStreetdetail());
+						orderAddress3.setAddressType(2);
+						addressList.add(orderAddress3);
+					}
+					
+					
+				}
 			}
 			
 			rq.setBasemodle(addressList);

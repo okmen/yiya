@@ -483,7 +483,7 @@ public class MyProductTempController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/setTempCompletecondition")
-	public String setTempCompletecondition(Integer tempid,Integer maxapplyCount,Integer maxCompleteCount,Integer needverifer,Double amountlimit,Integer needshared,Integer blesscount) throws Exception {
+	public String setTempCompletecondition(Integer tempid,Integer maxapplyCount,Integer maxCompleteCount,Integer needverifer,Double amountlimit,Integer needshared,Integer blesscount,Integer isbranchaddress) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
@@ -492,7 +492,7 @@ public class MyProductTempController extends SSOController {
 				rq.setStatusreson("tempid参数不能为空！");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			rq=producttempService.setTempCompletecondition(user.getUserId(),tempid,maxapplyCount,maxCompleteCount,needverifer,needshared,blesscount,amountlimit);
+			rq=producttempService.setTempCompletecondition(user.getUserId(),tempid,maxapplyCount,maxCompleteCount,needverifer,needshared,blesscount,amountlimit,isbranchaddress);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

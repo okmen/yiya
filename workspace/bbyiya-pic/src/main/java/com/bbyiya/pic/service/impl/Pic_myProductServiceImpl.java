@@ -320,7 +320,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				UBranchusers branchuser=branchuserMapper.selectByPrimaryKey(myproducts.getUserid());
 				if(branchuser!=null){
 					//添加成为影楼的已获取客户
-					UAgentcustomers cus= customerMapper.getCustomersByAgentUserId(branchuser.getAgentuserid(),userId);
+					UAgentcustomers cus= customerMapper.getCustomersByBranchUserId(branchuser.getBranchuserid(),userId);
 					if(cus==null){
 						cus=new UAgentcustomers();
 						cus.setAgentuserid(branchuser.getAgentuserid());
@@ -480,7 +480,7 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				UBranchusers branchuser=branchuserMapper.selectByPrimaryKey(myproducts.getUserid());
 				if(branchuser!=null){
 					//添加成为影楼的已获取客户
-					UAgentcustomers cus= customerMapper.getCustomersByAgentUserId(branchuser.getAgentuserid(),userId);
+					UAgentcustomers cus= customerMapper.getCustomersByBranchUserId(branchuser.getBranchuserid(),userId);
 					if(cus==null){
 						cus=new UAgentcustomers();
 						cus.setAgentuserid(branchuser.getAgentuserid());

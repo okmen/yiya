@@ -606,7 +606,9 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 			//订单作品宝宝信息
 			PMyproductchildinfo child= pmyChildMapper.selectByPrimaryKey(orderproducts.getCartid());
 			if(child!=null){
-				child.setBirthdayStr(DateUtil.getTimeStr(child.getBirthday(), "yyyy-MM-dd"));  
+				if(child.getBirthday()!=null){
+					child.setBirthdayStr(DateUtil.getTimeStr(child.getBirthday(), "yyyy-MM-dd"));  
+				}
 				map.put("child", child);
 			}
 			//订单图片信息

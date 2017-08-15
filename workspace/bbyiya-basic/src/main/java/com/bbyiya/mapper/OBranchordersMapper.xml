@@ -22,6 +22,22 @@
     from o_branchorders
     where UserOrderId = #{userorderid,jdbcType=VARCHAR}
   </select>
+    <!-- 分店用订单结果类Result -->
+  <resultMap id="BranchOrderVoResult" type="com.bbyiya.vo.order.BranchOrderVo" extends="BaseResultMap">  
+  </resultMap>  
+  
+  <!-- 01 获取来自分店的的订单-->
+  <select id="findBranchOrdersByBranchUserId" resultMap="BranchOrderVoResult"  >
+    select a.UserOrderId as userorderid, a.UserId as userid, a.CustomerName as customername, a.CartId as cartid, a.BranchUserId as branchuserid, a.AgentUserId as agentuserid, a.ProductId as productid, a.StyleId as styleid,b.Mobilephone as phone,b.Adress as address,b.Birthday as babybirthday,b.TempId as tempid
+    from o_branchorders a inner join p_myproducttempapply b on a.CartId=b.CartId
+    where a.BranchUserId = #{branchUserId,jdbcType=BIGINT} 
+    <if test="keywords != null and keywords!=''" >
+        and  (a.UserOrderId  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) or a.CustomerName  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) or b.Mobilephone LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) )
+    </if>
+    order by a.UserOrderId desc
+  </select>
+  
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from o_branchorders
     where UserOrderId = #{userorderid,jdbcType=VARCHAR}

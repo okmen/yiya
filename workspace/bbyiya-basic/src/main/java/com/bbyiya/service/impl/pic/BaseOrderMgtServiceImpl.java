@@ -7,7 +7,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bbyiya.baseUtils.GenUtils;
 import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.dao.EErrorsMapper;
+import com.bbyiya.dao.OBranchordersMapper;
 import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OOrderproductdetailsMapper;
 import com.bbyiya.dao.OOrderproductphotosMapper;
@@ -56,6 +59,7 @@ import com.bbyiya.enums.pic.MyProducttempApplyStatusEnum;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.DMyproductdiscountmodel;
 import com.bbyiya.model.EErrors;
+import com.bbyiya.model.OBranchorders;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproductphotos;
@@ -141,6 +145,9 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	
 	@Autowired
 	private OUserordersMapper userOrdersMapper;// 订单
+	
+	@Autowired
+	private OBranchordersMapper branchOrderMapper;
 	@Autowired
 	private OPayorderMapper payOrderMapper;// 支付单
 	@Autowired
@@ -359,10 +366,11 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				if(userOrder.getAgentuserid()!=null&&userOrder.getAgentuserid()>0){
 					UUsers users=usersMapper.selectByPrimaryKey(userOrder.getUserid());
 					if(users!=null){
-						UAgentcustomers customer= customerMapper.getCustomersByAgentUserId(userOrder.getAgentuserid(), userOrder.getUserid());
+						UAgentcustomers customer= customerMapper.getCustomersByBranchUserId(userOrder.getBranchuserid(), userOrder.getUserid());
 						if(customer==null){
 							UAgentcustomers cus=new UAgentcustomers();
 							cus.setAgentuserid(userOrder.getAgentuserid());
+							cus.setBranchuserid(userOrder.getBranchuserid());
 							cus.setUserid(userOrder.getUserid());
 							cus.setStatus(1);
 							cus.setPhone(users.getMobilephone());
@@ -386,10 +394,34 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				//-----------------------异业合作---------------------------------------------------------
 				if(Integer.parseInt(OrderTypeEnum.brachOrder.toString())==orderType && mycart.getTempid()!=null){
 					PMyproducttempapply apply= tempApplyMapper.getMyProducttempApplyByCartId(param.getCartId());
-					//if(apply!=null&&apply.getStatus()!=null&&apply.getStatus().intValue()==Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString())){
+					if(apply!=null){
+						//如果选择的是影楼分店地址
+						if(apply.getAddrbranchuserid()!=null&&apply.getAddrbranchuserid()>0){
+							OBranchorders branchorder=new OBranchorders();
+							branchorder.setAgentuserid(param.getAgentUserId());
+							branchorder.setFrombranchuserid(param.getBranchUserId());
+							branchorder.setBranchuserid(apply.getAddrbranchuserid());
+							branchorder.setCartid(param.getCartId());
+							branchorder.setProductid(orderProduct.getProductid());
+							branchorder.setStyleid(orderProduct.getStyleid());	
+							if(ObjectUtil.isEmpty(apply.getReceiver())){
+								UUsers user=usersMapper.selectByPrimaryKey(apply.getUserid());
+								if(user!=null) branchorder.setCustomername(user.getNickname());
+							}else{
+								branchorder.setCustomername(apply.getReceiver());//客户名称
+							}
+							branchorder.setUserid(apply.getUserid());//客户ID
+							branchorder.setUserorderid(orderId);
+							branchOrderMapper.insert(branchorder);
+						}
+						
+						apply.setUserorderid(orderId);
 						apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.pass.toString()));
 						tempApplyMapper.updateByPrimaryKeySelective(apply);
-					//}
+						
+						
+					}
+					
 				}//-----------------------------------------------------------------------------------
 			}else {
 				throw new Exception("作品不存在！");

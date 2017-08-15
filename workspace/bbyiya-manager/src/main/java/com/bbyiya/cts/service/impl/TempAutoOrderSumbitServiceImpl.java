@@ -100,9 +100,11 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 					//调用下单接口
 					SubmitOrderProductParam productParam=new SubmitOrderProductParam();
 					productParam.setProductId(myproduct.getProductid());
-					Long styleId=temp.getStyleid();
-					if(tempapply!=null&&tempapply.getStyleid()!=null&&tempapply.getStyleid()>0){
+					Long styleId=null;
+					if(tempapply!=null&&tempapply.getStyleid()!=null){
 						styleId=tempapply.getStyleid();
+					}else{
+						styleId=temp.getStyleid();
 					}
 					//如果为空，默认为竖板
 					if(ObjectUtil.isEmpty(styleId)) styleId=myproduct.getProductid();

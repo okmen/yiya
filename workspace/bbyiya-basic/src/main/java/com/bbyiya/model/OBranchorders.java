@@ -1,5 +1,7 @@
 package com.bbyiya.model;
 
+import java.util.Date;
+
 public class OBranchorders {
     private String userorderid;
 
@@ -18,6 +20,8 @@ public class OBranchorders {
     private Long styleid;
     
     private Long frombranchuserid;
+    
+    private Date createtime;
 
     public String getUserorderid() {
         return userorderid;
@@ -89,6 +93,14 @@ public class OBranchorders {
 
 	public void setFrombranchuserid(Long frombranchuserid) {
 		this.frombranchuserid = frombranchuserid;
+	}
+
+	public Date getCreatetime() {
+		return createtime;
+	}
+
+	public void setCreatetime(Date createtime) {
+		this.createtime = createtime;
 	}
     
 }

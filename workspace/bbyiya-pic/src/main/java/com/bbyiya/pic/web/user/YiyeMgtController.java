@@ -225,6 +225,26 @@ public class YiyeMgtController  extends SSOController {
 				if(myproducts!=null&&myproducts.getIstemp()!=null&&myproducts.getTempid()!=null){
 					PMyproducttemp temp= tempMapper.selectByPrimaryKey(myproducts.getTempid());
 					if(temp!=null){
+						
+						/*--------------------已经提交过申请---------------------------------------*/
+						PMyproducttempapply applyOld= tempApplyMapper.getMyProducttempApplyByUserId(temp.getTempid(), user.getUserId());
+						if(applyOld!=null){
+							if(applyOld.getStatus()!=null&&applyOld.getStatus().intValue()==Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString())){
+								List<MyProductListVo>list= myproductDao.getMyProductByTempId(temp.getTempid(), user.getUserId());
+								if(list!=null&&list.size()>0){
+									Map<String, Object> map = new HashMap<String, Object>();
+									map.put("tempId", myproducts.getTempid());
+									map.put("mycartid", list.get(0).getCartid());
+									rq.setBasemodle(map);
+									rq.setStatu(ReturnStatus.Success);
+									return JsonUtil.objectToJsonStr(rq);
+								} 
+							}
+							rq.setStatu(ReturnStatus.ParamError);
+							rq.setStatusreson("您已提交过申请！");
+							return JsonUtil.objectToJsonStr(rq);
+						}/*-----------------------------------------------------------------------*/
+						
 						if(temp.getStatus()!=null&&temp.getStatus().intValue()!=Integer.parseInt(MyProductTempStatusEnum.enable.toString())){
 							rq.setStatusreson("不好意思，活动已过期（或已失效）");
 							return JsonUtil.objectToJsonStr(rq);
@@ -261,24 +281,7 @@ public class YiyeMgtController  extends SSOController {
 							}
 						}
 						
-						/*--------------------已经提交过申请---------------------------------------*/
-						PMyproducttempapply applyOld= tempApplyMapper.getMyProducttempApplyByUserId(temp.getTempid(), user.getUserId());
-						if(applyOld!=null){
-							if(applyOld.getStatus()!=null&&applyOld.getStatus().intValue()==Integer.parseInt(MyProducttempApplyStatusEnum.ok.toString())){
-								List<MyProductListVo>list= myproductDao.getMyProductByTempId(temp.getTempid(), user.getUserId());
-								if(list!=null&&list.size()>0){
-									Map<String, Object> map = new HashMap<String, Object>();
-									map.put("tempId", myproducts.getTempid());
-									map.put("mycartid", list.get(0).getCartid());
-									rq.setBasemodle(map);
-									rq.setStatu(ReturnStatus.Success);
-									return JsonUtil.objectToJsonStr(rq);
-								} 
-							}
-							rq.setStatu(ReturnStatus.ParamError);
-							rq.setStatusreson("您已提交过申请！");
-							return JsonUtil.objectToJsonStr(rq);
-						}/*-----------------------------------------------------------------------*/
+					
 						
 						//提交申请
 						PMyproducttempapply apply=new PMyproducttempapply();

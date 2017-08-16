@@ -107,7 +107,7 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 						styleId=temp.getStyleid();
 					}
 					//如果为空，默认为竖板
-					if(ObjectUtil.isEmpty(styleId)) styleId=myproduct.getProductid();
+					//if(ObjectUtil.isEmpty(styleId)) styleId=myproduct.getProductid();
 					productParam.setStyleId(styleId);
 					productParam.setCount(1);
 					productParam.setCartId(myproduct.getCartid());

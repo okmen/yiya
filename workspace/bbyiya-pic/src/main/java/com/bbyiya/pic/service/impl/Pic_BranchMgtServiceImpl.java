@@ -284,15 +284,15 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			rq.setStatusreson("存在非法字符");
 			return rq;
 		}
+		applyInfo.setAgentuserid(userId);
+		applyInfo.setCreatetime(new Date());
+		
 		UBranches brancher=branchesMapper.selectByPrimaryKey(userId);
-		if(brancher!=null&&brancher.getStatus()!=null&&brancher.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.ok.toString())){
+		if(brancher!=null&&brancher.getStatus()!=null&&brancher.getStatus().intValue()==Integer.parseInt(BranchStatusEnum.ok.toString())&&brancher.getBranchuserid()!=applyInfo.getAgentuserid()){
 			rq.setStatu(ReturnStatus.ParamError);
 			rq.setStatusreson("你已经申请了分店，不能再申请总店代理！");
 			return rq;
 		}
-		applyInfo.setAgentuserid(userId);
-		applyInfo.setCreatetime(new Date());
-		
 		if(areaList!=null&&areaList.size()>0){
 			for (UAgentapplyareas app : areaList) {
 				if(this.checkAreaCodeIsApply(applyInfo.getAgentuserid(),app.getAreacode())){
@@ -521,13 +521,13 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			rq.setStatusreson("总店代理商已退驻，不能申请分店！");
 			return rq;
 		}
-		if(agentapply.getAgentuserid().longValue()==applyInfo.getBranchuserid()){
+		if(applyInfo.getAgentuserid()!=applyInfo.getBranchuserid()&&agentapply.getAgentuserid().longValue()==applyInfo.getBranchuserid().longValue()){
 			rq.setStatusreson("您已经提交过总店代理申请，不能再申请分店！");
 			return rq;
 		}
 		//当前用户已经提交过代理申请
 		UAgentapply agentBranchApply= agentapplyMapper.selectByPrimaryKey(applyInfo.getBranchuserid());
-		if(agentBranchApply!=null){
+		if(applyInfo.getAgentuserid()!=applyInfo.getBranchuserid()&&agentBranchApply!=null){
 			rq.setStatusreson("您已经提交过总店代理申请，不能再申请分店！");
 			return rq;
 		}
@@ -613,13 +613,13 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			rq.setStatusreson("找不到相应的代理商信息！");
 			return rq;
 		}
-		if(agentapply.getAgentuserid().longValue()==applyInfo.getBranchuserid()){
+		if(applyInfo.getAgentuserid()!=applyInfo.getBranchuserid()&&agentapply.getAgentuserid().longValue()==applyInfo.getBranchuserid().longValue()){
 			rq.setStatusreson("您已经提交过代理申请，不能再申请分店！");
 			return rq;
 		}
 		//当前用户已经提交过代理申请
 		UAgentapply agentBranchApply= agentapplyMapper.selectByPrimaryKey(applyInfo.getBranchuserid());
-		if(agentBranchApply!=null){
+		if(applyInfo.getAgentuserid()!=applyInfo.getBranchuserid()&&agentBranchApply!=null){
 			rq.setStatusreson("您已经提交过代理申请，不能再申请分店！");
 			return rq;
 		}
@@ -1051,9 +1051,13 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			agentapply.setAgentArealist(getAgentApplyareasByAgentUserID(agentapply.getAgentuserid()));
 			List<UAgentapplyareas> arealist=getAgentApplyArealistByAgentUserID(agentapply.getAgentuserid());
 			agentapply.setAgentapplyArealist(arealist);
-			map.put("applyInfo", agentapply);
+			
 			if(agentapply.getStatus()!=null){
 				if(agentapply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.ok.toString())){
+					UBranches branch=branchesMapper.selectByPrimaryKey(agentUserId);
+					if(branch!=null){
+						agentapply.setStreetdetail(branch.getStreetdetail());
+					}
 					map.put("msg", "已经成为代理商");
 				}else if (agentapply.getStatus().intValue()==Integer.parseInt(AgentStatusEnum.applying.toString())) {
 					map.put("msg", "申请中");
@@ -1063,6 +1067,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 			}else {
 				map.put("msg", "申请中");
 			}
+			map.put("applyInfo", agentapply);
 		}else {
 			map.put("isApplyed", 0);
 		}

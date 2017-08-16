@@ -28,7 +28,7 @@
   
   <!-- 01 获取来自分店的的订单-->
   <select id="findBranchOrdersByBranchUserId" resultMap="BranchOrderVoResult"  >
-    select a.UserOrderId as userorderid, a.UserId as userid, a.CustomerName as customername, a.CartId as cartid, a.BranchUserId as branchuserid, a.AgentUserId as agentuserid, a.ProductId as productid, a.StyleId as styleid,a.FromBranchUserId as frombranchuserid,b.Mobilephone as phone,b.Adress as address,b.Birthday as babybirthday,b.TempId as tempid
+    select a.UserOrderId as userorderid, a.UserId as userid, a.CustomerName as customername, a.CartId as cartid, a.BranchUserId as branchuserid, a.AgentUserId as agentuserid, a.ProductId as productid, a.StyleId as styleid,a.FromBranchUserId as frombranchuserid,b.Mobilephone as phone,b.Adress as address,b.Birthday as birthday,b.TempId as tempid
     from o_branchorders a inner join p_myproducttempapply b on a.CartId=b.CartId
     where a.BranchUserId = #{branchUserId,jdbcType=BIGINT} 
     <if test="keywords != null and keywords!=''" >

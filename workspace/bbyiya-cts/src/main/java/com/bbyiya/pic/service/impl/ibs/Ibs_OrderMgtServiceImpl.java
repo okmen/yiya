@@ -14,6 +14,7 @@ import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.OUserordersMapper;
+import com.bbyiya.dao.PMyproductchildinfoMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PProductsMapper;
@@ -29,6 +30,7 @@ import com.bbyiya.model.OBranchorders;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OUserorders;
+import com.bbyiya.model.PMyproductchildinfo;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PProducts;
@@ -52,6 +54,11 @@ public class Ibs_OrderMgtServiceImpl implements IIbs_OrderMgtService{
 	
 	@Autowired
 	private PMyproducttempMapper tempMapper;
+	@Autowired
+	private PMyproductsMapper myMapper;
+	
+	@Autowired
+	private PMyproductchildinfoMapper mychildinfoMapper;
 	/*-------------------用户信息------------------------------------------------*/
 	
 	@Autowired
@@ -77,9 +84,16 @@ public class Ibs_OrderMgtServiceImpl implements IIbs_OrderMgtService{
 		PageInfo<BranchOrderVo> resultPage=new PageInfo<BranchOrderVo>(branchorders); 
 		if(resultPage!=null&&resultPage.getList()!=null&&resultPage.getList().size()>0){
 			for (BranchOrderVo order : branchorders) {
+				if(order.getBirthday()!=null){
+					order.setBabybirthdaystr(DateUtil.getTimeStr(order.getBirthday(), "yyyy-MM-dd"));
+				}else{
+					PMyproductchildinfo mychildinfo=mychildinfoMapper.selectByPrimaryKey(order.getCartid());
+					if(mychildinfo!=null){
+						order.setBabybirthdaystr(DateUtil.getTimeStr(mychildinfo.getBirthday(), "yyyy-MM-dd"));
+					}
+				}
 				UBranches branches=branchesMapper.selectByPrimaryKey(order.getFrombranchuserid());
 				if(branches!=null){
-					
 					order.setBranchname(branches.getBranchcompanyname());
 				}
 				// 得到制作类型

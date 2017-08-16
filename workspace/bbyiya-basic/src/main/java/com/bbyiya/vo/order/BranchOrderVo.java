@@ -3,7 +3,7 @@ package com.bbyiya.vo.order;
 import java.io.Serializable;
 
 
-
+import java.util.Date;
 
 import com.bbyiya.model.OOrderaddress;
 
@@ -35,7 +35,8 @@ public class BranchOrderVo implements Serializable {
 	
 	private String phone;
 	
-	private String babybirthday;
+	private Date birthday;
+	private String babybirthdaystr;
 	
 	private String address;
 
@@ -77,9 +78,7 @@ public class BranchOrderVo implements Serializable {
 	public String getPhone() {
 		return phone;
 	}
-	public String getBabybirthday() {
-		return babybirthday;
-	}
+	
 	public String getAddress() {
 		return address;
 	}
@@ -120,9 +119,7 @@ public class BranchOrderVo implements Serializable {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	public void setBabybirthday(String babybirthday) {
-		this.babybirthday = babybirthday;
-	}
+	
 	public void setAddress(String address) {
 		this.address = address;
 	}
@@ -143,6 +140,18 @@ public class BranchOrderVo implements Serializable {
 	}
 	public void setFrombranchuserid(Long frombranchuserid) {
 		this.frombranchuserid = frombranchuserid;
+	}
+	public Date getBirthday() {
+		return birthday;
+	}
+	public String getBabybirthdaystr() {
+		return babybirthdaystr;
+	}
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+	public void setBabybirthdaystr(String babybirthdaystr) {
+		this.babybirthdaystr = babybirthdaystr;
 	}
 	
 	

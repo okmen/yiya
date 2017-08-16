@@ -395,8 +395,8 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				if(Integer.parseInt(OrderTypeEnum.brachOrder.toString())==orderType && mycart.getTempid()!=null){
 					PMyproducttempapply apply= tempApplyMapper.getMyProducttempApplyByCartId(param.getCartId());
 					if(apply!=null){
-						//如果选择的是影楼分店地址
-						if(apply.getAddrbranchuserid()!=null&&apply.getAddrbranchuserid()>0){
+						//如果选择的是影楼分店地址,并且不是选择的本店地址
+						if(apply.getAddrbranchuserid()!=null&&apply.getAddrbranchuserid()>0&&apply.getAddrbranchuserid().doubleValue()!=mycart.getUserid().doubleValue()){
 							OBranchorders branchorder=new OBranchorders();
 							branchorder.setAgentuserid(param.getAgentUserId());
 							branchorder.setFrombranchuserid(param.getBranchUserId());

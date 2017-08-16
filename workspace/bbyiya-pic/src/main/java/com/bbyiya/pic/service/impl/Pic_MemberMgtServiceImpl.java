@@ -149,6 +149,11 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 		}
 		UBranchusers usBranchusers= branchusersMapper.selectByPrimaryKey(userId); 
 		if(usBranchusers!=null){
+			if(usBranchusers.getUserid().doubleValue()==usBranchusers.getBranchuserid().doubleValue()){
+				rqModel.setStatu(ReturnStatus.ParamError);
+				rqModel.setStatusreson("该账号是影楼管理员，不能删除该账号！"); 
+				return rqModel;
+			}
 			if(usBranchusers.getBranchuserid()!=null&&usBranchusers.getBranchuserid().longValue()==branchUserId){
 				//是否转移员工下的协助邀请的客户作品
 				branchusersMapper.deleteByPrimaryKey(userId);
@@ -181,7 +186,7 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 		}
 		PageHelper.startPage(index, size);
 		//获取待营销客户列表
-		List<UAgentcustomersVo> list= customerMapper.findCustomersByAgentUserId(branch.getAgentuserid(),keywords,0,starttime,endtime,sourcetype);
+		List<UAgentcustomersVo> list= customerMapper.findCustomersByAgentUserId(branch.getBranchuserid(),keywords,0,starttime,endtime,sourcetype);
 		
 		for (UAgentcustomersVo cus : list) {
 			if(cus.getCreatetime()!=null) cus.setCreatetimeStr(DateUtil.getTimeStr(cus.getCreatetime(), "yyyy-MM-dd"));
@@ -233,7 +238,7 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 		}
 		//获取已获取客户列表
 		PageHelper.startPage(index, size);
-		List<UAgentcustomersVo> list= customerMapper.findCustomersByBranchUserId(branch.getAgentuserid(),keywords,1,starttime,endtime,sourcetype);
+		List<UAgentcustomersVo> list= customerMapper.findCustomersByBranchUserId(branch.getBranchuserid(),keywords,1,starttime,endtime,sourcetype);
 		
 		for (UAgentcustomersVo cus : list) {
 			if(cus.getCreatetime()!=null) cus.setCreatetimeStr(DateUtil.getTimeStr(cus.getCreatetime(), "yyyy-MM-dd"));

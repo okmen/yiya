@@ -24,6 +24,7 @@ import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
 import com.bbyiya.dao.PScenesMapper;
 import com.bbyiya.dao.UAgentcustomersMapper;
+import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.CustomerSourceTypeEnum;
@@ -42,6 +43,7 @@ import com.bbyiya.model.PMyproductsinvites;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.model.UAgentcustomers;
+import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.dao.IMyProductsDao;
@@ -77,6 +79,8 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 	
 	@Autowired
 	private UBranchusersMapper branchuserMapper;
+	@Autowired
+	private UBranchesMapper branchesMapper;
 	/*------------------------产品模块-------------------------------------*/
 	@Autowired
 	private PScenesMapper sceneMapper;
@@ -318,6 +322,14 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				
 				//添加影楼已获取的客户信息
 				UBranchusers branchuser=branchuserMapper.selectByPrimaryKey(myproducts.getUserid());
+				if(branchuser==null){
+					UBranches branches=branchesMapper.selectByPrimaryKey(myproducts.getUserid());
+					if(branches!=null){
+						branchuser=new UBranchusers();
+						branchuser.setAgentuserid(branches.getAgentuserid());
+						branchuser.setBranchuserid(branches.getBranchuserid());
+					}
+				}
 				if(branchuser!=null){
 					//添加成为影楼的已获取客户
 					UAgentcustomers cus= customerMapper.getCustomersByBranchUserId(branchuser.getBranchuserid(),userId);
@@ -584,6 +596,46 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 			if(apply!=null&&apply.getStatus()!=null&&apply.getStatus().intValue()!=Integer.parseInt(MyProducttempApplyStatusEnum.pass.toString())
 					&&apply.getStatus().intValue()!=Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString())
 					&&apply.getStatus().intValue()!=Integer.parseInt(MyProducttempApplyStatusEnum.fails.toString())) {
+				
+				
+				//如果使用了门店自提的地址，则分店也要获取该客户
+				if(apply.getAddrbranchuserid()!=null&&apply.getAddrbranchuserid().doubleValue()>0){
+					UBranches branchuseraddr=branchesMapper.selectByPrimaryKey(apply.getAddrbranchuserid());
+					if(branchuseraddr!=null){
+						UAgentcustomers cusaddr= customerMapper.getCustomersByBranchUserId(apply.getAddrbranchuserid(),apply.getUserid());
+						if(cusaddr==null){
+							cusaddr=new UAgentcustomers();
+							cusaddr.setAgentuserid(branchuseraddr.getAgentuserid());
+							cusaddr.setBranchuserid(branchuseraddr.getBranchuserid());
+							cusaddr.setUserid(apply.getUserid());
+							cusaddr.setStatus(1);
+							cusaddr.setPhone(apply.getMobilephone());
+							cusaddr.setAddress(apply.getAdress());
+							if(ObjectUtil.isEmpty(apply.getUsername())){
+								UUsers user=usersMapper.selectByPrimaryKey(apply.getUserid());
+								if(user!=null){
+									cusaddr.setName(user.getNickname());
+								}
+							}else{
+								cusaddr.setName(apply.getUsername());
+							}
+							cusaddr.setCreatetime(new Date());
+							cusaddr.setIsmarket(1);
+							cusaddr.setSourcetype(Integer.parseInt(CustomerSourceTypeEnum.temp.toString()));
+							cusaddr.setExtid(myproducts.getTempid());
+							cusaddr.setStaffuserid(myproducts.getUserid());
+							customerMapper.insert(cusaddr);
+						}else{
+							if(ObjectUtil.isEmpty(cusaddr.getIsmarket())||cusaddr.getIsmarket().intValue()==0){
+								cusaddr.setIsmarket(1);	
+								cusaddr.setExtid(myproducts.getTempid());
+								cusaddr.setSourcetype(Integer.parseInt(CustomerSourceTypeEnum.temp.toString()));
+								cusaddr.setStaffuserid(myproducts.getUserid());
+								customerMapper.updateByPrimaryKey(cusaddr);
+							}
+						}
+					}
+				}	
 				//完成活动要求 设置
 				PMyproducttemp temp=tempMapper.selectByPrimaryKey(apply.getTempid());
 				if(temp!=null){

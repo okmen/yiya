@@ -24,6 +24,7 @@ import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
 import com.bbyiya.dao.PScenesMapper;
 import com.bbyiya.dao.UAgentcustomersMapper;
+import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.CustomerSourceTypeEnum;
@@ -42,6 +43,7 @@ import com.bbyiya.model.PMyproductsinvites;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.model.UAgentcustomers;
+import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.dao.IMyProductsDao;
@@ -77,6 +79,8 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 	
 	@Autowired
 	private UBranchusersMapper branchuserMapper;
+	@Autowired
+	private UBranchesMapper branchesMapper;
 	/*------------------------产品模块-------------------------------------*/
 	@Autowired
 	private PScenesMapper sceneMapper;
@@ -318,6 +322,14 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				
 				//添加影楼已获取的客户信息
 				UBranchusers branchuser=branchuserMapper.selectByPrimaryKey(myproducts.getUserid());
+				if(branchuser==null){
+					UBranches branches=branchesMapper.selectByPrimaryKey(myproducts.getUserid());
+					if(branches!=null){
+						branchuser=new UBranchusers();
+						branchuser.setAgentuserid(branches.getAgentuserid());
+						branchuser.setBranchuserid(branches.getBranchuserid());
+					}
+				}
 				if(branchuser!=null){
 					//添加成为影楼的已获取客户
 					UAgentcustomers cus= customerMapper.getCustomersByBranchUserId(branchuser.getBranchuserid(),userId);
@@ -588,9 +600,9 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 				
 				//如果使用了门店自提的地址，则分店也要获取该客户
 				if(apply.getAddrbranchuserid()!=null&&apply.getAddrbranchuserid().doubleValue()>0){
-					UBranchusers branchuseraddr=branchuserMapper.selectByPrimaryKey(apply.getAddrbranchuserid());
+					UBranches branchuseraddr=branchesMapper.selectByPrimaryKey(apply.getAddrbranchuserid());
 					if(branchuseraddr!=null){
-						UAgentcustomers cusaddr= customerMapper.getCustomersByBranchUserId(branchuseraddr.getBranchuserid(),apply.getUserid());
+						UAgentcustomers cusaddr= customerMapper.getCustomersByBranchUserId(apply.getAddrbranchuserid(),apply.getUserid());
 						if(cusaddr==null){
 							cusaddr=new UAgentcustomers();
 							cusaddr.setAgentuserid(branchuseraddr.getAgentuserid());

@@ -149,6 +149,11 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 		}
 		UBranchusers usBranchusers= branchusersMapper.selectByPrimaryKey(userId); 
 		if(usBranchusers!=null){
+			if(usBranchusers.getUserid().doubleValue()==usBranchusers.getBranchuserid().doubleValue()){
+				rqModel.setStatu(ReturnStatus.ParamError);
+				rqModel.setStatusreson("该账号是影楼管理员，不能删除该账号！"); 
+				return rqModel;
+			}
 			if(usBranchusers.getBranchuserid()!=null&&usBranchusers.getBranchuserid().longValue()==branchUserId){
 				//是否转移员工下的协助邀请的客户作品
 				branchusersMapper.deleteByPrimaryKey(userId);

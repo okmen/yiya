@@ -35,7 +35,7 @@
     <if test="keywords != null and keywords!=''" >
         and  (a.UserOrderId  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) or a.CustomerName  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) or b.Mobilephone LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) )
     </if>
-    order by a.UserOrderId desc
+    order by a.CreateTime desc
   </select>
   
   

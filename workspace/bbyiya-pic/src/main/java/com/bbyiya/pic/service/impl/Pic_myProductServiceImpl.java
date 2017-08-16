@@ -584,6 +584,46 @@ public class Pic_myProductServiceImpl implements IPic_myProductService{
 			if(apply!=null&&apply.getStatus()!=null&&apply.getStatus().intValue()!=Integer.parseInt(MyProducttempApplyStatusEnum.pass.toString())
 					&&apply.getStatus().intValue()!=Integer.parseInt(MyProducttempApplyStatusEnum.complete.toString())
 					&&apply.getStatus().intValue()!=Integer.parseInt(MyProducttempApplyStatusEnum.fails.toString())) {
+				
+				
+				//如果使用了门店自提的地址，则分店也要获取该客户
+				if(apply.getAddrbranchuserid()!=null&&apply.getAddrbranchuserid().doubleValue()>0){
+					UBranchusers branchuseraddr=branchuserMapper.selectByPrimaryKey(apply.getAddrbranchuserid());
+					if(branchuseraddr!=null){
+						UAgentcustomers cusaddr= customerMapper.getCustomersByBranchUserId(branchuseraddr.getBranchuserid(),apply.getUserid());
+						if(cusaddr==null){
+							cusaddr=new UAgentcustomers();
+							cusaddr.setAgentuserid(branchuseraddr.getAgentuserid());
+							cusaddr.setBranchuserid(branchuseraddr.getBranchuserid());
+							cusaddr.setUserid(apply.getUserid());
+							cusaddr.setStatus(1);
+							cusaddr.setPhone(apply.getMobilephone());
+							cusaddr.setAddress(apply.getAdress());
+							if(ObjectUtil.isEmpty(apply.getUsername())){
+								UUsers user=usersMapper.selectByPrimaryKey(apply.getUserid());
+								if(user!=null){
+									cusaddr.setName(user.getNickname());
+								}
+							}else{
+								cusaddr.setName(apply.getUsername());
+							}
+							cusaddr.setCreatetime(new Date());
+							cusaddr.setIsmarket(1);
+							cusaddr.setSourcetype(Integer.parseInt(CustomerSourceTypeEnum.temp.toString()));
+							cusaddr.setExtid(myproducts.getTempid());
+							cusaddr.setStaffuserid(myproducts.getUserid());
+							customerMapper.insert(cusaddr);
+						}else{
+							if(ObjectUtil.isEmpty(cusaddr.getIsmarket())||cusaddr.getIsmarket().intValue()==0){
+								cusaddr.setIsmarket(1);	
+								cusaddr.setExtid(myproducts.getTempid());
+								cusaddr.setSourcetype(Integer.parseInt(CustomerSourceTypeEnum.temp.toString()));
+								cusaddr.setStaffuserid(myproducts.getUserid());
+								customerMapper.updateByPrimaryKey(cusaddr);
+							}
+						}
+					}
+				}	
 				//完成活动要求 设置
 				PMyproducttemp temp=tempMapper.selectByPrimaryKey(apply.getTempid());
 				if(temp!=null){

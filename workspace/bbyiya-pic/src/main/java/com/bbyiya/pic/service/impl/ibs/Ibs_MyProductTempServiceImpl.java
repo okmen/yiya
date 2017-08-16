@@ -708,44 +708,6 @@ public class Ibs_MyProductTempServiceImpl implements IIbs_MyProductTempService{
 				tempuser.setPasscount((tempuser.getPasscount()==null?0:tempuser.getPasscount())+1);
 				myTempUserMapper.updateByPrimaryKeySelective(tempuser);
 			}
-			//如果使用了门店自提的地址，则分店也要获取该客户
-			if(apply.getAddrbranchuserid()!=null&&apply.getAddrbranchuserid().doubleValue()>0){
-				UBranchusers branchuseraddr=branchuserMapper.selectByPrimaryKey(apply.getAddrbranchuserid());
-				if(branchuseraddr!=null){
-					UAgentcustomers cusaddr= customerMapper.getCustomersByBranchUserId(branchuseraddr.getBranchuserid(),apply.getUserid());
-					if(cusaddr==null){
-						cusaddr=new UAgentcustomers();
-						cusaddr.setAgentuserid(branchuseraddr.getAgentuserid());
-						cusaddr.setBranchuserid(branchuseraddr.getBranchuserid());
-						cusaddr.setUserid(apply.getUserid());
-						cusaddr.setStatus(1);
-						cusaddr.setPhone(invoMo.getInvitephone());
-						cusaddr.setAddress(apply.getAdress());
-						if(ObjectUtil.isEmpty(apply.getUsername())){
-							UUsers user=usersMapper.selectByPrimaryKey(apply.getUserid());
-							if(user!=null){
-								cusaddr.setName(user.getNickname());
-							}
-						}else{
-							cusaddr.setName(apply.getUsername());
-						}
-						cusaddr.setCreatetime(new Date());
-						cusaddr.setIsmarket(1);
-						cusaddr.setSourcetype(Integer.parseInt(CustomerSourceTypeEnum.temp.toString()));
-						cusaddr.setExtid(myproducts.getTempid());
-						cusaddr.setStaffuserid(myproducts.getUserid());
-						customerMapper.insert(cusaddr);
-					}else{
-						if(ObjectUtil.isEmpty(cusaddr.getIsmarket())||cusaddr.getIsmarket().intValue()==0){
-							cusaddr.setIsmarket(1);	
-							cusaddr.setExtid(myproducts.getTempid());
-							cusaddr.setSourcetype(Integer.parseInt(CustomerSourceTypeEnum.temp.toString()));
-							cusaddr.setStaffuserid(myproducts.getUserid());
-							customerMapper.updateByPrimaryKey(cusaddr);
-						}
-					}
-				}
-			}
 			
 			//添加影楼已获取的客户信息
 			UBranchusers branchuser=branchuserMapper.selectByPrimaryKey(myproducts.getUserid());

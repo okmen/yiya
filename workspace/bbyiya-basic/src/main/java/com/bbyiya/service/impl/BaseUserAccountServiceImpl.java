@@ -1,7 +1,9 @@
 package com.bbyiya.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,6 +60,9 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 	/*-------------------账户流水----------------------------------------*/
 	@Autowired
 	private UAccountslogsMapper accountslogsMapper;
+	
+	@Autowired
+	private OPayorderwalletdetailsMapper walletMapper;
 	
 	/**
 	 * 获取用户账户信息
@@ -151,8 +156,7 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 		rq.setBasemodle(resultPage);
 		return rq;
 	}
-	@Autowired
-	private OPayorderwalletdetailsMapper walletMapper;
+	
 	/**
 	 * 账户流水
 	 */
@@ -178,6 +182,32 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 		rq.setBasemodle(resultPage);
 		return rq;
 	}
+	
+	
+	/**
+	 * 推广流水及总推广收入
+	 */
+	public ReturnModel findCommissionDetailsPageResult(Long userId, int index, int size) {
+		ReturnModel rq = new ReturnModel();
+		PageHelper.startPage(index, size);
+		List<UAccountslogs> logs = accountslogsMapper.findCommissionDetails(userId, Integer.parseInt(AccountLogType.get_Commission.toString()));
+		PageInfo<UAccountslogs> resultPage = new PageInfo<UAccountslogs>(logs);
+		if (resultPage.getList() != null && resultPage.getList().size() > 0) {
+			for (UAccountslogs log : resultPage.getList()) {
+				log.setCreatetimestr(DateUtil.getTimeStr(log.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
+			}
+		}
+		
+		Double sumCommission = accountslogsMapper.getSumCommissionDetails(userId, Integer.parseInt(AccountLogType.get_Commission.toString()));
+		
+		HashMap<String, Object> map=new HashMap<String, Object>();
+		map.put("sumCommission", sumCommission);
+		map.put("listpage", resultPage);
+		rq.setStatu(ReturnStatus.Success);
+		rq.setBasemodle(map);
+		return rq;
+	}
+	
 	
 	/**
 	 * 使用红包将钱转移到冻结账户

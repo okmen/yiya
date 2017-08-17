@@ -77,4 +77,12 @@ public interface IBaseUserAccountService {
 	 */
 	Double transferCashAccountsToFreeze(long userId, Double totalPrice)
 			throws Exception;
+	/**
+	 * 影楼推广流水
+	 * @param userId
+	 * @param index
+	 * @param size
+	 * @return
+	 */
+	ReturnModel findCommissionDetailsPageResult(Long userId, int index, int size);
 }

@@ -120,7 +120,7 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 							if (branches != null) {
 								addressParam.setUserid(branches.getBranchuserid());
 								addressParam.setPhone(branches.getPhone());
-								addressParam.setReciver(branches.getUsername());
+								addressParam.setReciver(branches.getContactname());
 								addressParam.setCity(branches.getCity());
 								addressParam.setProvince(branches.getProvince());
 								addressParam.setDistrict(branches.getArea());
@@ -133,7 +133,7 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 						if (branches != null) {
 							addressParam.setUserid(branches.getBranchuserid());
 							addressParam.setPhone(branches.getPhone());
-							addressParam.setReciver(branches.getUsername());
+							addressParam.setReciver(branches.getContactname());
 							addressParam.setCity(branches.getCity());
 							addressParam.setProvince(branches.getProvince());
 							addressParam.setDistrict(branches.getArea());

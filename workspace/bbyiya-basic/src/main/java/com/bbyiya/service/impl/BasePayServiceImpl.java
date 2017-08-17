@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.common.enums.SendMsgEnums;
 import com.bbyiya.common.vo.SmsParam;
 import com.bbyiya.dao.EErrorsMapper;
@@ -37,6 +38,7 @@ import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.PayOrderStatusEnums;
 import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.PayTypeEnum;
+import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.EErrors;
 import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproducts;
@@ -232,10 +234,13 @@ public class BasePayServiceImpl implements IBasePayService{
 								payOrder.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString())); 
 							}
 						
-							//订单状态修改
+							//--订单状态修改---
 							userOrdersMapper.updateByPrimaryKeySelective(userorders);	
-							//修改支付单状态
+							//--修改支付单状态----
 							payOrderMapper.updateByPrimaryKeySelective(payOrder);
+							
+							//---销售分成--------------------------
+							addCommission(payOrder,userorders.getUserorderid());
 							return true;
 						} else {//不在支付状态中
 							addlog("payId:"+payId+",方法paySuccessProcess。不在可支付的userOrder状态！");
@@ -261,25 +266,72 @@ public class BasePayServiceImpl implements IBasePayService{
 	 * 上级订单
 	 * @param payorder
 	 */
-	public void addOrderExtend(OPayorder payorder){
+//	public void addOrderExtend(OPayorder payorder){
+//		try {
+//			UUsers user= usersMapper.selectByPrimaryKey(payorder.getUserid());
+//			if(user!=null&&user.getUpuserid()!=null&&user.getUpuserid()>0){
+//				OPayorderext ext=new OPayorderext();
+//				ext.setPayid(payorder.getPayid());
+//				ext.setUserorderid(payorder.getUserorderid());
+//				ext.setUserid(payorder.getUserid());
+//				ext.setUpuserid(user.getUpuserid());
+//				ext.setTotalprice(payorder.getTotalprice());
+//				ext.setCreatetime(new Date());
+//				ext.setStatus(payorder.getStatus());
+//				oextMapper.insert(ext);
+//			}
+//		} catch (Exception e) {
+//			addlog("userOrderId:"+payorder.getUserorderid()+",方法addOrderExtend。"+e.getMessage());
+//		}
+//	}
+	
+
+	
+	/**
+	 * 新增销售分成
+	 * @param userOrder
+	 */
+	private void addCommission(OPayorder payorder,String userOrderId){
 		try {
-			UUsers user= usersMapper.selectByPrimaryKey(payorder.getUserid());
-			if(user!=null&&user.getUpuserid()!=null&&user.getUpuserid()>0){
-				OPayorderext ext=new OPayorderext();
-				ext.setPayid(payorder.getPayid());
-				ext.setUserorderid(payorder.getUserorderid());
-				ext.setUserid(payorder.getUserid());
-				ext.setUpuserid(user.getUpuserid());
-				ext.setTotalprice(payorder.getTotalprice());
-				ext.setCreatetime(new Date());
-				ext.setStatus(payorder.getStatus());
-				oextMapper.insert(ext);
+			UUsers buyer=usersMapper.selectByPrimaryKey(payorder.getUserid());
+			//非代理商用户
+			long branchUserId=0l;
+			if(buyer!=null&&!ValidateUtils.isIdentity(buyer.getIdentity(), UserIdentityEnums.branch)){
+				//如果上级用户是影楼
+				if(buyer.getUpuserid()!=null&&buyer.getUpuserid().longValue()>0){
+					UUsers upUser=usersMapper.selectByPrimaryKey(buyer.getUpuserid());
+					if(upUser!=null&&ValidateUtils.isIdentity(upUser.getIdentity(), UserIdentityEnums.branch)){
+						branchUserId=buyer.getUpuserid();
+					}
+				}
+			    if(branchUserId<=0&&buyer.getSourseuserid()!=null){
+					UUsers souseUsers=usersMapper.selectByPrimaryKey(buyer.getSourseuserid());
+					if(souseUsers!=null&&ValidateUtils.isIdentity(souseUsers.getIdentity(), UserIdentityEnums.branch)){
+						branchUserId=buyer.getSourseuserid();
+					}
+				}
+			}
+			
+			if(branchUserId>0){
+				//销售分成
+				OOrderproducts oproduct= oproductMapper.getOProductsByOrderId(userOrderId);
+				if(oproduct!=null&&oproduct.getStyleid()!=null){
+					PProductstyles style= styleMapper.selectByPrimaryKey(oproduct.getStyleid());
+					if(style!=null&&style.getAgentprice()!=null){
+						double conPrice=style.getAgentprice().doubleValue()*oproduct.getCount().intValue();
+						//统一运费10块
+						double postAmount=10d;
+						double commission= payorder.getTotalprice().doubleValue()-conPrice-postAmount;
+						if(commission>0){
+							accountService.add_accountsLog(branchUserId, Integer.parseInt(AccountLogType.get_Commission.toString()), commission, payorder.getPayid(), "");
+						}
+					}
+				}
 			}
 		} catch (Exception e) {
-			addlog("userOrderId:"+payorder.getUserorderid()+",方法addOrderExtend。"+e.getMessage());
+			addlog("payId:"+payorder.getPayid()+",订单分成。"+e.getMessage());
 		}
 	}
-	
 	
 	/**
 	 * 订单完成后新增销量

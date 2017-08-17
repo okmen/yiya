@@ -305,6 +305,11 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 			log.setOrderid(PayId); 
 			accountslogsMapper.insert(log);
 		}
+		else if (type==Integer.parseInt(AccountLogType.get_Commission.toString())) {
+			log.setAmount(Math.abs(amount)); 
+			log.setOrderid(PayId); 
+			accountslogsMapper.insert(log);
+		}
 		//购物消费
 		else if (type==Integer.parseInt(AccountLogType.use_payment.toString())) {
 			log.setAmount((-1)*Math.abs(amount)); 

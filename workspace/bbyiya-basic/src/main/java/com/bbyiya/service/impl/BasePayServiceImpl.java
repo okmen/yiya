@@ -304,12 +304,12 @@ public class BasePayServiceImpl implements IBasePayService{
 						branchUserId=buyer.getUpuserid();
 					}
 				}
-			    if(branchUserId<=0&&buyer.getSourseuserid()!=null){
-					UUsers souseUsers=usersMapper.selectByPrimaryKey(buyer.getSourseuserid());
-					if(souseUsers!=null&&ValidateUtils.isIdentity(souseUsers.getIdentity(), UserIdentityEnums.branch)){
-						branchUserId=buyer.getSourseuserid();
-					}
-				}
+//			    if(branchUserId<=0&&buyer.getSourseuserid()!=null){
+//					UUsers souseUsers=usersMapper.selectByPrimaryKey(buyer.getSourseuserid());
+//					if(souseUsers!=null&&ValidateUtils.isIdentity(souseUsers.getIdentity(), UserIdentityEnums.branch)){
+//						branchUserId=buyer.getSourseuserid();
+//					}
+//				}
 			}
 			
 			if(branchUserId>0){

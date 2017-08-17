@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.baseUtils.CookieUtils;
+import com.bbyiya.dao.UChildreninfoMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.model.UChildreninfo;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IUserInfoMgtService;
 import com.bbyiya.utils.ConfigUtil;
@@ -38,7 +40,8 @@ public class UserInfoController  extends SSOController{
 	
 	@Autowired
 	private UUsersMapper usermapper;
-	
+	@Autowired
+	private UChildreninfoMapper uchildrenmapper;
 	@ResponseBody
 	@RequestMapping(value = "/info/edit")
 	public String getAccountInfo(String userInfoJson) throws Exception {
@@ -134,6 +137,10 @@ public class UserInfoController  extends SSOController{
 				}
 				if(ObjectUtil.isEmpty(uu.getUserimg())){
 					uu.setUserimg(ConfigUtil.getSingleValue("default-headimg")); 
+				}
+				UChildreninfo child=uchildrenmapper.selectByPrimaryKey(uu.getUserid());
+				if(child!=null&&child.getBirthday()!=null){
+					uu.setBirthdaystr(DateUtil.getTimeStr(child.getBirthday(), "yyyy-MM-dd"));
 				}
 			}
 			rq.setStatu(ReturnStatus.Success);

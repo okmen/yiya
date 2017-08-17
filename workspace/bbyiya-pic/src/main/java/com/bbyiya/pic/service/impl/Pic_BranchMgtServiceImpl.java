@@ -1249,7 +1249,7 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 		ReturnModel rqModel=new ReturnModel();
 		UBranches branch=branchesMapper.selectByPrimaryKey(branchUserId);
 		branch.setStreetdetail(streetdetail);
-		branch.setUsername(name);
+		branch.setContactname(name);
 		branch.setPhone(phone);
 		branchesMapper.updateByPrimaryKeySelective(branch);
 		rqModel.setStatu(ReturnStatus.Success);

@@ -404,6 +404,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 							branchorder.setCartid(param.getCartId());
 							branchorder.setProductid(orderProduct.getProductid());
 							branchorder.setStyleid(orderProduct.getStyleid());	
+							branchorder.setCreatetime(userOrder.getOrdertime());
 							if(ObjectUtil.isEmpty(apply.getReceiver())){
 								UUsers user=usersMapper.selectByPrimaryKey(apply.getUserid());
 								if(user!=null) branchorder.setCustomername(user.getNickname());

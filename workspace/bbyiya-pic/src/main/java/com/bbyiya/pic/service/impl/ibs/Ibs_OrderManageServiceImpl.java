@@ -97,7 +97,7 @@ public class Ibs_OrderManageServiceImpl implements IIbs_OrderManageService{
 					OrderaddressVo orderAddress = new OrderaddressVo();
 					orderAddress.setUserid(branches.getBranchuserid());
 					orderAddress.setPhone(branches.getPhone());
-					orderAddress.setReciver(branches.getUsername());
+					orderAddress.setReciver(branches.getContactname());
 					orderAddress.setCity(branches.getCity());
 					orderAddress.setProvince(branches.getProvince());
 					orderAddress.setDistrict(branches.getArea());

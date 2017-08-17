@@ -97,49 +97,6 @@ public class WxPublicUtils {
 	
 	
 	
-//	public static ReturnModel getWxConfig(String accessToken,String webUrl){
-//		ReturnModel rqModel=new ReturnModel();
-//		String url="https://api.weixin.qq.com/cgi-bin/ticket/getticket";
-//		String postResult= HttpRequestHelper.sendPost(url, "access_token="+accessToken+"&type=jsapi");
-//		JSONObject model = JSONObject.fromObject(postResult);
-//		if(model!=null) {
-//			int errCode=ObjectUtil.parseInt(String.valueOf(model.get("errcode")));
-//			String ticket=String.valueOf(model.get("ticket"));
-//			if(errCode==0&&!ObjectUtil.isEmpty(ticket)) {
-//				String noString= WxPayUtils.genNonceStr();
-//				String timeStr=String.valueOf(WxPayUtils.genTimeStamp());
-//				List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-//				parameters.add(new BasicNameValuePair("noncestr", noString));
-//				parameters.add(new BasicNameValuePair("timestamp", timeStr));
-//				parameters.add(new BasicNameValuePair("jsapi_ticket", ticket));
-//				parameters.add(new BasicNameValuePair("url", webUrl));
-//				try {
-//					String sign= Sha1Encrypt.SHA1(parameters);
-//					Map<String, Object> result=new HashMap<String, Object>();
-//					result.put("appId", WxPayConfig.APPID);
-//					result.put("timestamp", timeStr);
-//					result.put("nonceStr", noString);
-//					result.put("signature", sign);
-//					result.put("jsApiList",null);
-//					rqModel.setStatu(ReturnStatus.Success);
-//					rqModel.setBasemodle(result);
-//					rqModel.setStatusreson(ticket);
-//					return rqModel;
-//					
-//				} catch (DigestException e) {
-//					
-//					e.printStackTrace();
-//					rqModel.setStatu(ReturnStatus.SystemError);
-//					rqModel.setBasemodle(e);
-//				}
-//			}
-//		}
-//		RedisUtil.delete(ACCESS_TOKEN);
-//		rqModel.setStatu(ReturnStatus.Success);
-//		rqModel.setStatusreson("ticket获取失败");
-//		rqModel.setBasemodle(postResult);
-//		return rqModel;
-//	}
 	
 	/**
 	 * 获取微信分享 config

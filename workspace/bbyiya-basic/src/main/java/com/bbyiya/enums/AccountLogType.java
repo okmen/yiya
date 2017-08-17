@@ -20,7 +20,11 @@ public enum AccountLogType {
     /**
      * 红包获取
      */
-    get_redPackets(4);
+    get_redPackets(4),
+	/**
+	 * 推广 佣金
+	 */
+	get_Commission(5);
 	
 
     private final int Type;

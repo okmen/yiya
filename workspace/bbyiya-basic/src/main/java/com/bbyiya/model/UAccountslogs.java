@@ -18,7 +18,7 @@ public class UAccountslogs {
     private String createtimestr;
     private String headImg;
 	private String nickName;
-
+	private Double ordertotalprice;//订单总金额
     public Long getLogid() {
         return logid;
     }
@@ -90,5 +90,15 @@ public class UAccountslogs {
 	public void setNickName(String nickName) {
 		this.nickName = nickName;
 	}
+
+	public Double getOrdertotalprice() {
+		return ordertotalprice;
+	}
+
+	public void setOrdertotalprice(Double ordertotalprice) {
+		this.ordertotalprice = ordertotalprice;
+	}
+	
+	
     
 }

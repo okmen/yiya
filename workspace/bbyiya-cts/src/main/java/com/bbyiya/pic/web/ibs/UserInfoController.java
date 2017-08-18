@@ -2,13 +2,17 @@ package com.bbyiya.pic.web.ibs;
 
 import java.util.Date;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.bbyiya.dao.UChildreninfoMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.model.UChildreninfo;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
@@ -25,7 +29,8 @@ import com.github.pagehelper.PageInfo;
 public class UserInfoController  extends SSOController{
 	@Autowired
 	private UUsersMapper usermapper;
-	
+	@Autowired
+	private UChildreninfoMapper uchildrenmapper;
 	
 	/**
 	 * 我的自传播用户列表
@@ -60,6 +65,10 @@ public class UserInfoController  extends SSOController{
 				}
 				if(ObjectUtil.isEmpty(uu.getUserimg())){
 					uu.setUserimg(ConfigUtil.getSingleValue("default-headimg")); 
+				}
+				UChildreninfo child=uchildrenmapper.selectByPrimaryKey(uu.getUserid());
+				if(child!=null&&child.getBirthday()!=null){
+					uu.setBirthdaystr(DateUtil.getTimeStr(child.getBirthday(), "yyyy-MM-dd"));
 				}
 			}
 			rq.setStatu(ReturnStatus.Success);

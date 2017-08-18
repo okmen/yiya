@@ -25,4 +25,18 @@ public interface UAccountslogsMapper {
      * @return
      */
     List<UAccountslogs> findAccountsLogs(@Param("userId")Long userId,@Param("accountLogType")Integer type);
+    /**
+     * 影楼推广流水
+     * @param userId
+     * @return
+     */
+    List<UAccountslogs> findCommissionDetails(@Param("userId")Long userId,@Param("accountLogType")Integer type);
+    
+    /**
+     * 得到总推广收入
+     * @param userId
+     * @param type
+     * @return
+     */
+    Double getSumCommissionDetails(@Param("userId")Long userId,@Param("accountLogType")Integer type);
 }

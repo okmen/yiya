@@ -28,6 +28,28 @@
     </if>
     order by LogId desc 
   </select>
+  
+   <!-- 用户订单结果类Result -->
+  <resultMap id="CommissionDetailsResultMap" type="com.bbyiya.model.UAccountslogs" extends="BaseResultMap">  
+  </resultMap> 
+  
+  <!-- 查看推广流水记录 -->
+  <select id="findCommissionDetails" resultMap="CommissionDetailsResultMap" >
+    select a.*,b.TotalPrice as ordertotalprice from u_accountslogs a,o_payorder b 
+    where a.OrderId=b.PayId and  a.UserId = #{userId,jdbcType=BIGINT}
+    and a.Type= #{accountLogType,jdbcType=INTEGER}
+    order by a.LogId desc 
+  </select>
+  
+   <!-- 统计推广总流水记录 -->
+  <select id="getSumCommissionDetails" resultType="java.lang.Double"  >
+    select sum(a.Amount) as ordertotalprice from u_accountslogs a,o_payorder b 
+    where a.OrderId=b.PayId and  a.UserId = #{userId,jdbcType=BIGINT} 
+    and a.Type= #{accountLogType,jdbcType=INTEGER}
+   
+  </select>
+  
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from u_accountslogs
     where LogId = #{logid,jdbcType=BIGINT}

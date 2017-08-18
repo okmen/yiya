@@ -1,8 +1,6 @@
 package com.bbyiya.service.impl;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -33,28 +31,21 @@ import com.bbyiya.dao.UCashlogsMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.AccountLogType;
-import com.bbyiya.enums.AmountType;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.PayOrderStatusEnums;
 import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.PayTypeEnum;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.EErrors;
-import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OPayorder;
-import com.bbyiya.model.OPayorderext;
 import com.bbyiya.model.OPayorderwalletdetails;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PProductstyleexp;
 import com.bbyiya.model.PProductstyles;
 import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UAccountslogs;
-import com.bbyiya.model.UAdmin;
 import com.bbyiya.model.UBranches;
-import com.bbyiya.model.UBranchtransaccounts;
-import com.bbyiya.model.UBranchtransamountlog;
-import com.bbyiya.model.UCashlogs;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IBasePayService;
 import com.bbyiya.service.IBaseUserAccountService;
@@ -77,7 +68,6 @@ public class BasePayServiceImpl implements IBasePayService{
 	private OPayorderMapper payOrderMapper;// 支付单
 	@Autowired
 	private OOrderproductdetailsMapper odetailMapper;// 产品图片集合
-	
 	@Autowired
 	private OPayorderextMapper oextMapper;
 	@Autowired
@@ -117,6 +107,9 @@ public class BasePayServiceImpl implements IBasePayService{
 	private IBaseUserAccountService accountService;
 	@Autowired
 	private UAccountslogsMapper accountslogsMapper;
+	
+//	@Resource(name="basePostMgtServiceImpl")
+//	private IBasePostMgtService postService;
 	
 	/**
 	 * 订单支付成功 回写

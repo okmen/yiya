@@ -27,6 +27,7 @@ import com.bbyiya.dao.UAdminMapper;
 import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.dao.UBranchtransaccountsMapper;
 import com.bbyiya.dao.UBranchtransamountlogMapper;
+import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UCashlogsMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
@@ -46,6 +47,7 @@ import com.bbyiya.model.PProductstyles;
 import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UAccountslogs;
 import com.bbyiya.model.UBranches;
+import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IBasePayService;
 import com.bbyiya.service.IBaseUserAccountService;
@@ -77,15 +79,13 @@ public class BasePayServiceImpl implements IBasePayService{
 	@Autowired
 	private UAccountsMapper accountsMapper;//账户信息
 	@Autowired
-	private UCashlogsMapper cashlogsMapper;//账户流水
-	@Autowired
 	private UUseraddressMapper addressMapper;// 用户收货地址
 	@Autowired
 	private UUsersMapper usersMapper;
 	@Autowired
-	private UAdminMapper adminMapper;
-	@Autowired
 	private UBranchesMapper branchMapper;
+	@Autowired
+	private UBranchusersMapper branchUserMapper;
 	
 	/*-----------------------产品模块--------------------------------------------*/
 	@Autowired
@@ -293,8 +293,19 @@ public class BasePayServiceImpl implements IBasePayService{
 				//如果上级用户是影楼
 				if(buyer.getUpuserid()!=null&&buyer.getUpuserid().longValue()>0){
 					UUsers upUser=usersMapper.selectByPrimaryKey(buyer.getUpuserid());
+					//如果上级用户是影楼---分利
 					if(upUser!=null&&ValidateUtils.isIdentity(upUser.getIdentity(), UserIdentityEnums.branch)){
 						branchUserId=buyer.getUpuserid();
+					}
+					//如果上级用户是  影楼的员工--找到影楼userId  --分利
+					else if (upUser!=null&&ValidateUtils.isIdentity(upUser.getIdentity(), UserIdentityEnums.salesman)) {
+						UBranchusers branchuser= branchUserMapper.selectByPrimaryKey(buyer.getUpuserid());
+						if(branchuser!=null){
+							UUsers upBranchUser=usersMapper.selectByPrimaryKey(branchuser.getBranchuserid());
+							if(upBranchUser!=null&&ValidateUtils.isIdentity(upBranchUser.getIdentity(), UserIdentityEnums.branch)){
+								branchUserId=branchuser.getBranchuserid();
+							}
+						}
 					}
 				}
 //			    if(branchUserId<=0&&buyer.getSourseuserid()!=null){

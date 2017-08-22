@@ -1,5 +1,7 @@
 package com.bbyiya.pic.web.version_one;
 
+import java.util.Date;
+
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,6 +111,7 @@ public class InviteMgtController  extends SSOController {
 					if(temp.getMaxcompletecount()!=null&&temp.getMaxcompletecount().intValue()>0){
 						if(temp.getCompletecount()!=null&&temp.getCompletecount().intValue()>=temp.getMaxcompletecount().intValue()){
 							apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.fails.toString()));
+							apply.setCompletetime(new Date());
 							tempApplyMapper.updateByPrimaryKeySelective(apply);
 							//活动失败的参与作品 分发优惠
 							if(apply.getCartid()!=null&&apply.getCartid().longValue()>0){
@@ -205,6 +208,7 @@ public class InviteMgtController  extends SSOController {
 								}
 							}
 						}
+						apply.setCompletetime(new Date());
 						//更新申请状态
 						tempApplyMapper.updateByPrimaryKeySelective(apply);
 					}

@@ -1,5 +1,7 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
 import com.bbyiya.model.UAgents;
 
 public interface UAgentsMapper {
@@ -14,4 +16,6 @@ public interface UAgentsMapper {
     int updateByPrimaryKeySelective(UAgents record);
 
     int updateByPrimaryKey(UAgents record);
+    
+    List<UAgents> findAgentlistAll();
 }

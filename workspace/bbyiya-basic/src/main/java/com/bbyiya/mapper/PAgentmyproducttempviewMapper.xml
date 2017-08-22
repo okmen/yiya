@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.PAgentmyproducttempviewMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.PAgentmyproducttempview" >
+    <id column="AgentUserId" property="agentuserid" jdbcType="BIGINT" />
+    <result column="ApplyCountNew" property="applycountnew" jdbcType="INTEGER" />
+    <result column="CompleteCountNew" property="completecountnew" jdbcType="INTEGER" />
+    <result column="OrderCountNew" property="ordercountnew" jdbcType="INTEGER" />
+    <result column="CartCountNew" property="cartcountnew" jdbcType="INTEGER" />
+    <result column="UpdateTime" property="updatetime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    AgentUserId, ApplyCountNew, CompleteCountNew, OrderCountNew, CartCountNew, UpdateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from p_agentmyproducttempview
+    where AgentUserId = #{agentuserid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from p_agentmyproducttempview
+    where AgentUserId = #{agentuserid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.PAgentmyproducttempview" >
+    insert into p_agentmyproducttempview (AgentUserId, ApplyCountNew, CompleteCountNew, 
+      OrderCountNew, CartCountNew, UpdateTime
+      )
+    values (#{agentuserid,jdbcType=BIGINT}, #{applycountnew,jdbcType=INTEGER}, #{completecountnew,jdbcType=INTEGER}, 
+      #{ordercountnew,jdbcType=INTEGER}, #{cartcountnew,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.PAgentmyproducttempview" >
+    insert into p_agentmyproducttempview
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="agentuserid != null" >
+        AgentUserId,
+      </if>
+      <if test="applycountnew != null" >
+        ApplyCountNew,
+      </if>
+      <if test="completecountnew != null" >
+        CompleteCountNew,
+      </if>
+      <if test="ordercountnew != null" >
+        OrderCountNew,
+      </if>
+      <if test="cartcountnew != null" >
+        CartCountNew,
+      </if>
+      <if test="updatetime != null" >
+        UpdateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="agentuserid != null" >
+        #{agentuserid,jdbcType=BIGINT},
+      </if>
+      <if test="applycountnew != null" >
+        #{applycountnew,jdbcType=INTEGER},
+      </if>
+      <if test="completecountnew != null" >
+        #{completecountnew,jdbcType=INTEGER},
+      </if>
+      <if test="ordercountnew != null" >
+        #{ordercountnew,jdbcType=INTEGER},
+      </if>
+      <if test="cartcountnew != null" >
+        #{cartcountnew,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PAgentmyproducttempview" >
+    update p_agentmyproducttempview
+    <set >
+      <if test="applycountnew != null" >
+        ApplyCountNew = #{applycountnew,jdbcType=INTEGER},
+      </if>
+      <if test="completecountnew != null" >
+        CompleteCountNew = #{completecountnew,jdbcType=INTEGER},
+      </if>
+      <if test="ordercountnew != null" >
+        OrderCountNew = #{ordercountnew,jdbcType=INTEGER},
+      </if>
+      <if test="cartcountnew != null" >
+        CartCountNew = #{cartcountnew,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null" >
+        UpdateTime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where AgentUserId = #{agentuserid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PAgentmyproducttempview" >
+    update p_agentmyproducttempview
+    set ApplyCountNew = #{applycountnew,jdbcType=INTEGER},
+      CompleteCountNew = #{completecountnew,jdbcType=INTEGER},
+      OrderCountNew = #{ordercountnew,jdbcType=INTEGER},
+      CartCountNew = #{cartcountnew,jdbcType=INTEGER},
+      UpdateTime = #{updatetime,jdbcType=TIMESTAMP}
+    where AgentUserId = #{agentuserid,jdbcType=BIGINT}
+  </update>
+</mapper>

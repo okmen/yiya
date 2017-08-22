@@ -255,28 +255,6 @@ public class BasePayServiceImpl implements IBasePayService{
 		return false;
 	}
 
-	/**
-	 * 上级订单
-	 * @param payorder
-	 */
-//	public void addOrderExtend(OPayorder payorder){
-//		try {
-//			UUsers user= usersMapper.selectByPrimaryKey(payorder.getUserid());
-//			if(user!=null&&user.getUpuserid()!=null&&user.getUpuserid()>0){
-//				OPayorderext ext=new OPayorderext();
-//				ext.setPayid(payorder.getPayid());
-//				ext.setUserorderid(payorder.getUserorderid());
-//				ext.setUserid(payorder.getUserid());
-//				ext.setUpuserid(user.getUpuserid());
-//				ext.setTotalprice(payorder.getTotalprice());
-//				ext.setCreatetime(new Date());
-//				ext.setStatus(payorder.getStatus());
-//				oextMapper.insert(ext);
-//			}
-//		} catch (Exception e) {
-//			addlog("userOrderId:"+payorder.getUserorderid()+",方法addOrderExtend。"+e.getMessage());
-//		}
-//	}
 	
 
 	
@@ -289,31 +267,35 @@ public class BasePayServiceImpl implements IBasePayService{
 			UUsers buyer=usersMapper.selectByPrimaryKey(payorder.getUserid());
 			//非代理商用户
 			long branchUserId=0l;
+			long upUserIdentity=0l;
 			if(buyer!=null&&!ValidateUtils.isIdentity(buyer.getIdentity(), UserIdentityEnums.branch)){
 				//如果上级用户是影楼
 				if(buyer.getUpuserid()!=null&&buyer.getUpuserid().longValue()>0){
 					UUsers upUser=usersMapper.selectByPrimaryKey(buyer.getUpuserid());
-					//如果上级用户是影楼---分利
-					if(upUser!=null&&ValidateUtils.isIdentity(upUser.getIdentity(), UserIdentityEnums.branch)){
-						branchUserId=buyer.getUpuserid();
-					}
-					//如果上级用户是  影楼的员工--找到影楼userId  --分利
-					else if (upUser!=null&&ValidateUtils.isIdentity(upUser.getIdentity(), UserIdentityEnums.salesman)) {
-						UBranchusers branchuser= branchUserMapper.selectByPrimaryKey(buyer.getUpuserid());
-						if(branchuser!=null){
-							UUsers upBranchUser=usersMapper.selectByPrimaryKey(branchuser.getBranchuserid());
-							if(upBranchUser!=null&&ValidateUtils.isIdentity(upBranchUser.getIdentity(), UserIdentityEnums.branch)){
-								branchUserId=branchuser.getBranchuserid();
+					if(upUser!=null){
+						//上级用户的身份标识
+						upUserIdentity=upUser.getIdentity();
+						
+						//如果上级用户是影楼---分利
+						if(ValidateUtils.isIdentity(upUser.getIdentity(), UserIdentityEnums.branch)){
+							branchUserId=buyer.getUpuserid();
+						}
+						//如果上级用户是  影楼的员工--找到影楼userId  --分利
+						else if (ValidateUtils.isIdentity(upUser.getIdentity(), UserIdentityEnums.salesman)) {
+							UBranchusers branchuser= branchUserMapper.selectByPrimaryKey(buyer.getUpuserid());
+							if(branchuser!=null){
+								UUsers upBranchUser=usersMapper.selectByPrimaryKey(branchuser.getBranchuserid());
+								if(upBranchUser!=null&&ValidateUtils.isIdentity(upBranchUser.getIdentity(), UserIdentityEnums.branch)){
+									branchUserId=branchuser.getBranchuserid();
+								}
 							}
+						}
+						//如果上级用户是 流量主
+						else if (ValidateUtils.isIdentity(upUser.getIdentity(), UserIdentityEnums.wei)) {
+							branchUserId=buyer.getUpuserid();
 						}
 					}
 				}
-//			    if(branchUserId<=0&&buyer.getSourseuserid()!=null){
-//					UUsers souseUsers=usersMapper.selectByPrimaryKey(buyer.getSourseuserid());
-//					if(souseUsers!=null&&ValidateUtils.isIdentity(souseUsers.getIdentity(), UserIdentityEnums.branch)){
-//						branchUserId=buyer.getSourseuserid();
-//					}
-//				}
 			}
 			
 			if(branchUserId>0){
@@ -326,12 +308,17 @@ public class BasePayServiceImpl implements IBasePayService{
 						//统一运费10块
 						double postAmount=10d;
 						double commission= payorder.getTotalprice().doubleValue()-conPrice-postAmount;
+						//如果是流量主，成本增加7元
+						if(!ValidateUtils.isIdentity(upUserIdentity, UserIdentityEnums.branch)&&ValidateUtils.isIdentity(upUserIdentity, UserIdentityEnums.wei)){
+							commission=commission-7d;
+						}
 						if(commission>0){
 							accountService.add_accountsLog(branchUserId, Integer.parseInt(AccountLogType.get_Commission.toString()), commission, payorder.getPayid(), "");
 						}
 					}
 				}
 			}
+			
 		} catch (Exception e) {
 			addlog("payId:"+payorder.getPayid()+",订单分成。"+e.getMessage());
 		}

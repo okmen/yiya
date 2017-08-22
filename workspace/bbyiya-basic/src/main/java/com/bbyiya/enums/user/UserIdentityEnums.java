@@ -19,7 +19,7 @@ public enum UserIdentityEnums {
      */
     pbs(16),
     /**
-     * 微商合作
+     * 流量主 
      */
     wei(32),
     /**

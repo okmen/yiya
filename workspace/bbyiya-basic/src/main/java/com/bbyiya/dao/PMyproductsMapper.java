@@ -96,6 +96,25 @@ public interface PMyproductsMapper {
 	 */
 	List<MyProductResultVo> findMyInviteProductslist(@Param("inviteUserId")Long inviteUserId,@Param("phone")String phone,@Param("branchUserId")Long branchUserId);
 	
-	
+	/**
+	 * 获取可自动下单的活动作品
+	 * @param tempid
+	 * @param ordertime
+	 * @return
+	 */
 	List<PMyproducts> findCanOrderMyProducts(@Param("tempid") Integer tempid,@Param("ordertime") Integer ordertime);
+	
+	/**
+	 * 代理商影楼一对一的作品总数
+	 * @param agentuserid
+	 * @return
+	 */
+	Integer getAgentOneToOneApplyCount(@Param("agentuserid")Long agentuserid);
+	
+	/**
+	 * 代理商影楼一对一的作品总下单数
+	 * @param agentuserid
+	 * @return
+	 */
+	Integer getAgentOneToOneCompleteCount(@Param("agentuserid")Long agentuserid);
 }

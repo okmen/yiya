@@ -21,4 +21,5 @@ public interface UBranchesMapper {
     
     List<UBranches> findBranchesByAgentUserId(@Param("agentUserId")Long agengUserId);
     
-}
+    List<UBranches> findBranchlistAll();
+ }

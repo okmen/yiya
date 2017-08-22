@@ -155,6 +155,7 @@ public class ActivityStatisticsServiceImpl implements IActivityStatisticsService
 				}else{
 					startTimeStr=DateUtil.getSpecifiedDayAfter(starttime, i)+ " 00:00:00";
 					endTimeStr=DateUtil.getEndTime(startTimeStr);
+					
 					xcontent[i]=DateUtil.getTimeStr(DateUtil.getDateByString("yyyy-MM-dd", startTimeStr), "MM月dd");
 				}
 				Integer applycount=tempapplyMapper.countTempApplyByDay(tempid, startTimeStr, endTimeStr);

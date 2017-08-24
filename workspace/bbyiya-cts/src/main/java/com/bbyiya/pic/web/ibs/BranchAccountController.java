@@ -65,12 +65,12 @@ public class BranchAccountController  extends SSOController{
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)){
+//			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)){
 				rq= accountService.findCommissionDetailsPageResult(user.getUserId(), index, size);
-			}else {
-				rq.setStatu(ReturnStatus.SystemError_1);
-				rq.setStatusreson("权限不足");
-			} 
+//			}else {
+//				rq.setStatu(ReturnStatus.SystemError_1);
+//				rq.setStatusreson("权限不足");
+//			} 
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

@@ -25,7 +25,20 @@ public class ActivityStatisticsController  extends SSOController{
 	@Resource(name = "ctsActivityStatisticsService")
 	private IActivityStatisticsService statisticsService;
 	
-	
+	@ResponseBody
+	@RequestMapping(value = "/OrderCountPage")
+	public String OrderCountPage(Long agentUserId,int index,int size) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=statisticsService.OrderCountPage(agentUserId);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	
 	@ResponseBody
 	@RequestMapping(value = "/activityCountPage")

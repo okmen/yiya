@@ -20,11 +20,16 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.UAdmin;
 import com.bbyiya.model.UAgents;
+import com.bbyiya.pic.dao.IPic_DataTempDao;
 import com.bbyiya.pic.service.cts.IActivityStatisticsService;
+import com.bbyiya.pic.vo.AgentDateVO;
 import com.bbyiya.pic.vo.activity.AllActivityCountResultVO;
+import com.bbyiya.pic.vo.order.AgentOrderReportVO;
+import com.bbyiya.pic.vo.report.ReportActivityTableDataVO;
 import com.bbyiya.pic.vo.report.ReportJsonData;
 import com.bbyiya.pic.vo.report.ReportLineDataVO;
 import com.bbyiya.utils.DateUtil;
+import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -41,6 +46,27 @@ public class ActivityStatisticsServiceImpl implements IActivityStatisticsService
 	private PMyproducttempapplyMapper tempapplyMapper;
 	@Autowired
 	private UAgentsMapper agentMapper;
+	@Autowired
+	private IPic_DataTempDao temCtsDao;
+	/**
+	 * cts代理商订单统计页面
+	 * @param userid
+	 * @return
+	 */
+	public ReturnModel OrderCountPage(Long agentuserid){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.SystemError);	
+		AgentOrderReportVO agentReprotVo=new AgentOrderReportVO();
+		//得到总订单数量
+		List<AgentDateVO> orderlist=temCtsDao.findOrderVO(agentuserid, null, null);
+		if(orderlist!=null&&orderlist.size()>0){
+			agentReprotVo.setTotalordercount(orderlist.get(0).getOrderCountNew());
+		}
+		
+		rq.setStatu(ReturnStatus.Success);
+		return rq;
+	}
+	
 	/**
 	 * 活动统计页面
 	 * @param userid
@@ -67,19 +93,6 @@ public class ActivityStatisticsServiceImpl implements IActivityStatisticsService
 		Integer xkzapplycount=mytempMapper.getAgentActivityApplyCountByType(agentuserid, Integer.parseInt(MyProductTempType.normal.toString()));
 		//兑换码活动总报名人数
 		Integer codeapplycount=mytempMapper.getAgentActivityApplyCountByType(agentuserid, Integer.parseInt(MyProductTempType.code.toString()));
-//		//影楼一对一总报名人数
-//		Integer ylydyApplycount=myproductMapper.getAgentOneToOneApplyCount(agentuserid);
-//		if(ylydyApplycount==null)ylydyApplycount=0;
-//		//影楼一对一作品总下单人数
-//		Integer ylydyCompletecount=myproductMapper.getAgentOneToOneCompleteCount(agentuserid);
-//		if(ylydyCompletecount==null)ylydyCompletecount=0;
-//		
-//		PMyproducttemp oneTone=new PMyproducttemp();
-//		oneTone.setTitle("影楼一对一");
-//		oneTone.setStatus(1);
-//		oneTone.setType(1);
-//		oneTone.setApplycount(ylydyApplycount);
-//		oneTone.setCompletecount(ylydyCompletecount);
 		
 		//活动报名人数及完成人数统计
 		HashMap<String, Object> countmap=mytempMapper.getAgentApplyCompleteMap(agentuserid);	
@@ -128,6 +141,11 @@ public class ActivityStatisticsServiceImpl implements IActivityStatisticsService
 			PMyproducttemp temp=mytempMapper.selectByPrimaryKey(tempid);
 			resultmap.put("tempinfo", temp);
 			//选择天，天数不能大于24天
+			if(ObjectUtil.isEmpty(starttime)||ObjectUtil.isEmpty(endtime)){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("请选择时间段！");
+				return rq;
+			}
 			int days=DateUtil.daysBetween(starttime, endtime);
 			if(type.intValue()==1){
 				//精确到小时
@@ -147,25 +165,31 @@ public class ActivityStatisticsServiceImpl implements IActivityStatisticsService
 			String[]xcontent=new String[days];
 			List<Integer> dataapply=new ArrayList<Integer>();
 			List<Integer> datacomplete=new ArrayList<Integer>();
+			List<ReportActivityTableDataVO> tableDataList=new ArrayList<ReportActivityTableDataVO>();
+			
 			String startTimeStr="";
 			String endTimeStr="";
 			for(int i=0;i<days;i++){
-				
+				ReportActivityTableDataVO tabledata=new ReportActivityTableDataVO();
 				if(type.intValue()==1){//精确到小时
 					if(endTimeStr=="") endTimeStr=DateUtil.getTimeStr(DateUtil.getDateByString("yyyy-MM-dd", starttime),"yyyy-MM-dd")+ " 00:00:00";
 					startTimeStr=endTimeStr;
 					endTimeStr=DateUtil.addDateHour(startTimeStr, 1);
 					xcontent[i]=(i+1)+"";
+					tabledata.setDateTime(startTimeStr);
 				}else{
 					startTimeStr=DateUtil.getSpecifiedDayAfter(starttime, i)+ " 00:00:00";
 					endTimeStr=DateUtil.getEndTime(startTimeStr);
-					
 					xcontent[i]=DateUtil.getTimeStr(DateUtil.getDateByString("yyyy-MM-dd", startTimeStr), "MM月dd");
+					tabledata.setDateTime(startTimeStr);
 				}
 				Integer applycount=tempapplyMapper.countTempApplyByDay(tempid, startTimeStr, endTimeStr);
 				Integer completecount=tempapplyMapper.countTempCompleteByDay(tempid, startTimeStr, endTimeStr);
 				dataapply.add(applycount);
 				datacomplete.add(completecount);
+				tabledata.setCompleteCount(completecount);
+				tabledata.setApplyCount(applycount);
+				tableDataList.add(tabledata);
 			}
 			List<ReportJsonData> reportjsondata=new ArrayList<ReportJsonData>();
 			ReportJsonData jsonDataApply=new ReportJsonData();
@@ -182,6 +206,7 @@ public class ActivityStatisticsServiceImpl implements IActivityStatisticsService
 			tld.setData(reportjsondata);
 			
 			resultmap.put("jsons", tld);
+			resultmap.put("tabledata", tableDataList);
 			rq.setStatu(ReturnStatus.Success);	
 			rq.setBasemodle(resultmap);
 			

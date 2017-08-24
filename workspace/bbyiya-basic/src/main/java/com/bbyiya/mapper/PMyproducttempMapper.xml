@@ -72,7 +72,7 @@
    
   <!-- 得到代理商的报名和完成总人数-->
   <select id="getAgentApplyCompleteMap" resultMap="AllApplyCompleteMap" >
-    select Sum(ApplyCount),Sum(CompleteCount) from p_myproducttemp a,u_branches b where a.BranchUserId=b.BranchUserId and b.AgentUserId=#{agentuserid,jdbcType=BIGINT} and a.Status!=2
+    select COALESCE(Sum(ApplyCount),0) as applyCount ,COALESCE(Sum(CompleteCount),0)as completeCount  from p_myproducttemp a,u_branches b where a.BranchUserId=b.BranchUserId and b.AgentUserId=#{agentuserid,jdbcType=BIGINT} and a.Status!=2
   </select>
   
   

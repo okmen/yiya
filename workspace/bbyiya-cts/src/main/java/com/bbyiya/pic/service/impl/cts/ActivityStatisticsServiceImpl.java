@@ -13,11 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
+import com.bbyiya.dao.UAgentsMapper;
 import com.bbyiya.enums.MyProductTempStatusEnum;
 import com.bbyiya.enums.MyProductTempType;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.UAdmin;
+import com.bbyiya.model.UAgents;
 import com.bbyiya.pic.service.cts.IActivityStatisticsService;
 import com.bbyiya.pic.vo.activity.AllActivityCountResultVO;
 import com.bbyiya.pic.vo.report.ReportJsonData;
@@ -37,6 +39,8 @@ public class ActivityStatisticsServiceImpl implements IActivityStatisticsService
 	private PMyproductsMapper myproductMapper;
 	@Autowired
 	private PMyproducttempapplyMapper tempapplyMapper;
+	@Autowired
+	private UAgentsMapper agentMapper;
 	/**
 	 * 活动统计页面
 	 * @param userid
@@ -187,7 +191,19 @@ public class ActivityStatisticsServiceImpl implements IActivityStatisticsService
 		
 		return rq;
 	}
-		
-
+	
+	/**
+	 * 得到所有代理商列表
+	 * @return
+	 * @throws ParseException
+	 */
+	public ReturnModel getAgentList(){
+		ReturnModel rq=new ReturnModel();
+		List<UAgents> agentlist= agentMapper.findAgentlistAll();
+		rq.setStatu(ReturnStatus.Success);	
+		rq.setBasemodle(agentlist);
+		return rq;
+	}
+	
 	
 }

@@ -195,9 +195,10 @@ public class Cts_UWeiUserServiceImpl implements ICts_UWeiUserManageService{
 		rq.setStatu(ReturnStatus.ParamError);
 		UWeiuserapplys apply=weiuserApplyMapper.selectByPrimaryKey(weiUserId);
 		UWeiusers weiuser=weiuserMapper.selectByPrimaryKey(weiUserId);
-		if(weiuser.getStatus()==Integer.parseInt(weiUserStatusEnum.ok.toString())){
+		if(weiuser!=null&&weiuser.getStatus()==Integer.parseInt(weiUserStatusEnum.ok.toString())){
 			rq.setStatu(ReturnStatus.ParamError);
 			rq.setStatusreson("已审核通过的流量主不能删除！");
+			return rq;
 		}
 		if(apply!=null){
 			apply.setStatus(Integer.parseInt(weiUserStatusEnum.del.toString()));

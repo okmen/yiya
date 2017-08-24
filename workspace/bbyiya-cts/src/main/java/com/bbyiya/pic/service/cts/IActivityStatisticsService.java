@@ -25,5 +25,12 @@ public interface IActivityStatisticsService {
 	ReturnModel activityDetailsCountPage(Integer tempid, String starttime,
 			String endtime, Integer type)throws ParseException;
 	
+	/**
+	 * 得到代理商列表
+	 * @return
+	 * @throws ParseException
+	 */
+	ReturnModel getAgentList();
+	
 	
 }

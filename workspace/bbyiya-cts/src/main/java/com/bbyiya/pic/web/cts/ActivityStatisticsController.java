@@ -65,5 +65,20 @@ public class ActivityStatisticsController  extends SSOController{
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-
+	
+	
+	@ResponseBody
+	@RequestMapping(value = "/getAgentList")
+	public String getAgentList() throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=statisticsService.getAgentList();
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 }

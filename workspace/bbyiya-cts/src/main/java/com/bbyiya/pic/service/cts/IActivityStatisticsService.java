@@ -32,5 +32,12 @@ public interface IActivityStatisticsService {
 	 */
 	ReturnModel getAgentList();
 	
+	/**
+	 * cts代理商订单统计总览
+	 * @param agentuserid
+	 * @return
+	 */
+	ReturnModel OrderCountPage(Long agentuserid);
+	
 	
 }

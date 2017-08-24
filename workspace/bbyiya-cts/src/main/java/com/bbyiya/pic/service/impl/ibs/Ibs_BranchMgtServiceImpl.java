@@ -28,12 +28,18 @@ public class Ibs_BranchMgtServiceImpl implements IIbs_BranchMgtService{
 	public ReturnModel editBranchShopInfo(Long branchUserId,String logo,String promotionstr){	
 		ReturnModel rqModel=new ReturnModel();
 		UBranches branch=branchesMapper.selectByPrimaryKey(branchUserId);
-		branch.setLogo(logo);
-		branch.setPromotionstr(promotionstr);
-		branchesMapper.updateByPrimaryKeySelective(branch);
+		if(branch!=null){
+			branch.setLogo(logo);
+			branch.setPromotionstr(promotionstr);
+			branchesMapper.updateByPrimaryKeySelective(branch);
+			
+			rqModel.setStatu(ReturnStatus.Success);
+			rqModel.setStatusreson("修改店铺页信息成功！");
+		}else{
+			rqModel.setStatu(ReturnStatus.SystemError);
+			rqModel.setStatusreson("不是影楼身份，不能上传logo！");
+		}
 		
-		rqModel.setStatu(ReturnStatus.Success);
-		rqModel.setStatusreson("修改店铺页信息成功！");
 		return rqModel;		
 	}
 	

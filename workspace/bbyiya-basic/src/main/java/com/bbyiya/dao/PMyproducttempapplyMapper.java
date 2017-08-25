@@ -70,5 +70,19 @@ public interface PMyproducttempapplyMapper {
      * @return
      */
     Integer getMaxSortByTempId(@Param("tempid") Integer tempid);
+    
+    /**
+     * 根据活动ID得到活动每天的报名人数
+     * @param tempid
+     * @return
+     */
+    Integer countTempApplyByDay(@Param("tempid") Integer tempid,@Param("startTimeStr") String startTimeStr,@Param("endTimeStr") String endTimeStr);
    
+    /**
+     * 根据活动ID得到活动每天的完成人数
+     * @param tempid
+     * @return
+     */
+    Integer countTempCompleteByDay(@Param("tempid") Integer tempid,@Param("startTimeStr") String startTimeStr,
+    		@Param("endTimeStr") String endTimeStr);
 }

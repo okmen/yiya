@@ -1,6 +1,8 @@
 package com.bbyiya.dao;
 
+import java.util.HashMap;
 import java.util.List;
+
 
 
 
@@ -50,4 +52,33 @@ public interface PMyproducttempMapper {
     List<PMyproducttemp> findAllAutoOrderTempByStatus(@Param("status") Integer status);
     
     List<PMyproducttemp> findAllTemp(@Param("tempid")Integer tempid);
+    /**
+     * 根据活动状态得到代理商的活动数量
+     * @param agentuserid
+     * @param status
+     * @return
+     */
+    Integer getAgentActivityCountByStatus(@Param("agentuserid") Long agentuserid,@Param("status") Integer status);
+    
+    /**
+     * 根据活动类型得到代理商各类活动报名人数
+     * @param agentuserid
+     * @param status
+     * @return
+     */
+    Integer getAgentActivityApplyCountByType(@Param("agentuserid") Long agentuserid,@Param("type") Integer type);
+ 
+    /**
+     * 得到代理商活动的总报名人数
+     * @param agentuserid
+     * @return
+     */
+    HashMap<String, Object>getAgentApplyCompleteMap(@Param("agentuserid") Long agentuserid);
+    
+    /**
+     * 代理商举办的所有活动
+     * @param agentuserid
+     * @return
+     */
+    List<PMyproducttemp>  findAllTempListByAgentUserId(@Param("agentuserid") Long agentuserid);
 }

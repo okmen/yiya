@@ -400,4 +400,82 @@ public class DateUtil {
         return "刚刚";
     }
 	
+    
+    /** 
+     * 获得指定日期的前n天 
+     *  
+     * @param specifiedDay 
+     * @return 
+     * @throws Exception 
+     */  
+    public static String getSpecifiedDayBefore(String specifiedDay,int dd) { 
+        Calendar c = Calendar.getInstance();  
+        Date date = null;  
+        try {  
+            date = new SimpleDateFormat("yy-MM-dd").parse(specifiedDay);  
+        } catch (ParseException e) {  
+            e.printStackTrace();  
+        }  
+        c.setTime(date);  
+        int day = c.get(Calendar.DATE);  
+        c.set(Calendar.DATE, day - dd);  
+  
+        String dayBefore = new SimpleDateFormat("yyyy-MM-dd").format(c  
+                .getTime());  
+        return dayBefore;  
+    }  
+  
+    /** 
+     * 获得指定日期的后n天 
+     *  
+     * @param specifiedDay 
+     * @return 
+     */  
+    public static String getSpecifiedDayAfter(String specifiedDay,int dd) {  
+        Calendar c = Calendar.getInstance();  
+        Date date = null;  
+        try {  
+            date = new SimpleDateFormat("yy-MM-dd").parse(specifiedDay);  
+        } catch (ParseException e) {  
+            e.printStackTrace();  
+        }  
+        c.setTime(date);  
+        int day = c.get(Calendar.DATE);  
+        c.set(Calendar.DATE, day + dd);  
+  
+        String dayAfter = new SimpleDateFormat("yyyy-MM-dd")  
+                .format(c.getTime());  
+        return dayAfter;  
+    }  
+    /**
+     * 设定一个日期时间，加几小时（小时或者天）后得到新的日期
+     * @param day
+     * @param x
+     * @return
+     */
+    public static String addDateHour(String day, int x){
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 24小时制  
+        //引号里面个格式也可以是 HH:mm:ss或者HH:mm等等，很随意的，不过在主函数调用时，要和输入的变
+        //量day格式一致
+        Date date = null;   
+        try {   
+            date = format.parse(day);   
+        } catch (Exception ex) {   
+            ex.printStackTrace();   
+        }   
+        if (date == null)   
+            return "";   
+        System.out.println("front:" + format.format(date)); //显示输入的日期  
+        Calendar cal = Calendar.getInstance();   
+        cal.setTime(date);   
+        cal.add(Calendar.HOUR, x);// 24小时制   
+        date = cal.getTime();   
+        System.out.println("after:" + format.format(date));  //显示更新后的日期 
+        cal = null;   
+        return format.format(date);   
+      
+    }
+    
+    
 }

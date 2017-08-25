@@ -145,6 +145,16 @@ where a.CartId=b.CartId and a.Status!=3 and a.Status!=4 and a.IsTemp=0 and (a.Te
     order by b.CreateTime desc 
   </select>
   
+   <!-- 代理商影楼一对一的作品总数-->
+  <select id="getAgentOneToOneApplyCount" resultType="java.lang.Integer" >
+   select count(a.CartId) from p_myproducts a,u_branches b where a.UserId=b.BranchUserId  and a.`Status`!=3 and a.IsTemp=0 and a.TempId is null 
+and a.InviteStatus!=2 and a.InviteStatus!=1 and b.AgentUserId=#{agentuserid,jdbcType=BIGINT}
+  </select>
+   <!-- 代理商影楼一对一的作品总下单数1制作中， 2已下单，3删除，4禁用-->
+  <select id="getAgentOneToOneCompleteCount" resultType="java.lang.Integer" >
+   select count(a.CartId) from p_myproducts a,u_branches b where a.UserId=b.BranchUserId  and a.`Status`!=3 and a.IsTemp=0 and a.TempId is null 
+and a.InviteStatus!=2 and a.InviteStatus!=1 and a.`Status`=2  and b.AgentUserId=#{agentuserid,jdbcType=BIGINT}
+  </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from p_myproducts

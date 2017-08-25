@@ -42,6 +42,40 @@
     from p_myproducttemp
     where TempId = #{tempid,jdbcType=INTEGER}
   </select>
+  
+  <!-- 得到代理商举办的所有活动-->
+  <select id="findAllTempListByAgentUserId" resultMap="BaseResultMap" >
+    select a.* from p_myproducttemp a,u_branches b where a.BranchUserId=b.BranchUserId and b.AgentUserId=#{agentuserid,jdbcType=BIGINT} and a.Status!=2
+    order by a.Status asc,a.CreateTime desc
+  </select>
+  
+  <!-- 根据活动状态得到代理商的活动数量-->
+  <select id="getAgentActivityCountByStatus" resultType="java.lang.Integer" >
+    select count(a.TempId) from p_myproducttemp a,u_branches b where a.BranchUserId=b.BranchUserId and b.AgentUserId=#{agentuserid,jdbcType=BIGINT} and a.Status!=2
+    <if test="status != null" >
+       and a.`Status`=#{status,jdbcType=INTEGER}
+    </if> 
+  </select>
+  
+   <!-- 根据活动类型得到代理商各类活动报名总数-->
+  <select id="getAgentActivityApplyCountByType" resultType="java.lang.Integer" >
+    select sum(a.ApplyCount) from p_myproducttemp a,u_branches b where a.BranchUserId=b.BranchUserId and b.AgentUserId=#{agentuserid,jdbcType=BIGINT} and a.Status!=2
+    <if test="type != null" >
+       and a.Type=#{type,jdbcType=INTEGER}
+    </if> 
+  </select>
+  
+   <resultMap id="AllApplyCompleteMap" type="java.util.HashMap">
+        <result column="sum(ApplyCount)" property="applyCount" jdbcType="VARCHAR"/>
+        <result column="sum(CompleteCount)" property="completeCount" jdbcType="VARCHAR"/>
+   </resultMap>
+   
+  <!-- 得到代理商的报名和完成总人数-->
+  <select id="getAgentApplyCompleteMap" resultMap="AllApplyCompleteMap" >
+    select COALESCE(Sum(ApplyCount),0) as applyCount ,COALESCE(Sum(CompleteCount),0)as completeCount  from p_myproducttemp a,u_branches b where a.BranchUserId=b.BranchUserId and b.AgentUserId=#{agentuserid,jdbcType=BIGINT} and a.Status!=2
+  </select>
+  
+  
   <!-- 获取影楼用户的模板 -->
   <select id="findBranchMyProductTempList" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 

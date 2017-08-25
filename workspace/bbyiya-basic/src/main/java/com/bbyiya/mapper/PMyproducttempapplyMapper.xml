@@ -76,6 +76,21 @@
     from p_myproducttempapply  where  UserId=#{userid,jdbcType=BIGINT} and (IsRead is null or IsRead=0)
   </select>
   
+  
+  <!-- 根据活动ID得到活动每天的报名人数 -->
+  <select id="countTempApplyByDay" resultType="java.lang.Integer"  >
+    select  count(*)
+    from p_myproducttempapply  where  TempId= #{tempid,jdbcType=INTEGER} 
+     And CreateTime &gt;= #{startTimeStr,jdbcType=VARCHAR} AND CreateTime &lt;= #{endTimeStr,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 根据活动ID得到活动每天的完成人数 -->
+  <select id="countTempCompleteByDay" resultType="java.lang.Integer"  >
+    select  count(*)
+    from p_myproducttempapply  where  TempId= #{tempid,jdbcType=INTEGER} 
+     And CompleteTime &gt;= #{startTimeStr,jdbcType=VARCHAR} AND CompleteTime &lt;= #{endTimeStr,jdbcType=VARCHAR}
+  </select>
+  
   <!-- 得到模板已通过申请的最大序号 -->
   <select id="getMaxSortByTempId" resultType="java.lang.Integer"  parameterType="java.lang.Integer" >
     select max(Sort) from p_myproducttempapply where TempId = #{tempid,jdbcType=INTEGER} and STATUS!=0 and STATUS!=2

@@ -27,7 +27,7 @@ public class ActivityStatisticsController  extends SSOController{
 	
 	@ResponseBody
 	@RequestMapping(value = "/OrderCountPage")
-	public String OrderCountPage(Long agentUserId,int index,int size) throws Exception {
+	public String OrderCountPage(Long agentUserId) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){

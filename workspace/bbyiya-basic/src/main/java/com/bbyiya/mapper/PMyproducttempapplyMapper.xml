@@ -16,7 +16,7 @@
     <result column="Status" property="status" jdbcType="INTEGER" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="VerfiyTime" property="verfiytime" jdbcType="TIMESTAMP" />
-    <result column="CompleteTime" property="completetime" jdbcType="DATE" />
+    <result column="CompleteTime" property="completetime" jdbcType="TIMESTAMP" />
     <result column="Birthday" property="birthday" jdbcType="TIMESTAMP" />
     <result column="IsRead" property="isread" jdbcType="INTEGER" />
     <result column="Receiver" jdbcType="VARCHAR" property="receiver" />

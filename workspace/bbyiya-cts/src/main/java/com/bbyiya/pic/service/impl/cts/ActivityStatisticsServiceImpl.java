@@ -161,7 +161,7 @@ public class ActivityStatisticsServiceImpl implements IActivityStatisticsService
 				rq.setStatusreson("请选择时间段！");
 				return rq;
 			}
-			int days=DateUtil.daysBetween(starttime, endtime);
+			int days=DateUtil.daysBetween(starttime, endtime)+1;
 			if(type.intValue()==1){
 				//精确到小时
 				if(days>1){
@@ -191,7 +191,7 @@ public class ActivityStatisticsServiceImpl implements IActivityStatisticsService
 					startTimeStr=endTimeStr;
 					endTimeStr=DateUtil.addDateHour(startTimeStr, 1);
 					xcontent[i]=(i+1)+"";
-					tabledata.setDateTime(startTimeStr);
+					tabledata.setDateTime(endTimeStr);
 				}else{
 					startTimeStr=DateUtil.getSpecifiedDayAfter(starttime, i)+ " 00:00:00";
 					endTimeStr=DateUtil.getEndTime(startTimeStr);

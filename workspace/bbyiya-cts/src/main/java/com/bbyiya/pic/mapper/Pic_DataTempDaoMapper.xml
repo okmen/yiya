@@ -24,7 +24,7 @@
     from (SELECT a.TempId, a.ApplyCount,a.CompleteCount,a.BranchUserId,b.AgentUserId,b.BranchCompanyName FROM p_myproducttemp as a LEFT JOIN u_branches as b   on a.BranchUserId=b.BranchUserId)as c 
 	LEFT JOIN u_agents as d on c.AgentUserId=d.AgentUserId LEFT JOIN p_agentmyproducttempview as e on d.AgentUserId=e.AgentUserId WHERE d.AgentUserId is not null
 	<if test="branchcompanyname != null" ><!-- 名称搜索 -->
-       and (c.BranchUserId=#{branchcompanyname,jdbcType=VARCHAR} OR c.BranchCompanyName LIKE  CONCAT('%', #{branchcompanyname,jdbcType=VARCHAR},'%' ))
+       and (d.AgentUserId=#{branchcompanyname,jdbcType=VARCHAR} OR d.AgentCompanyName LIKE  CONCAT('%', #{branchcompanyname,jdbcType=VARCHAR},'%' ))
     </if>
 	GROUP BY c.AgentUserId 
 	

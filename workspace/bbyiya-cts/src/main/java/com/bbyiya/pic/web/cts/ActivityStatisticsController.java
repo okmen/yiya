@@ -27,7 +27,7 @@ public class ActivityStatisticsController  extends SSOController{
 	
 	@ResponseBody
 	@RequestMapping(value = "/OrderCountPage")
-	public String OrderCountPage(Long agentUserId,int index,int size) throws Exception {
+	public String OrderCountPage(Long agentUserId) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
@@ -42,11 +42,11 @@ public class ActivityStatisticsController  extends SSOController{
 	
 	@ResponseBody
 	@RequestMapping(value = "/activityCountPage")
-	public String activityCountPage(Long agentUserId,int index,int size) throws Exception {
+	public String activityCountPage(Long agentUserId,int index,int size,Integer status) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq=statisticsService.getActivityStaticsticsPage(agentUserId,index,size);
+			rq=statisticsService.getActivityStaticsticsPage(agentUserId,index,size,status);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

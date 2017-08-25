@@ -80,5 +80,5 @@ public interface PMyproducttempMapper {
      * @param agentuserid
      * @return
      */
-    List<PMyproducttemp>  findAllTempListByAgentUserId(@Param("agentuserid") Long agentuserid);
+    List<PMyproducttemp>  findAllTempListByAgentUserId(@Param("agentuserid") Long agentuserid,@Param("status") Integer status);
 }

@@ -46,7 +46,10 @@
   <!-- 得到代理商举办的所有活动-->
   <select id="findAllTempListByAgentUserId" resultMap="BaseResultMap" >
     select a.* from p_myproducttemp a,u_branches b where a.BranchUserId=b.BranchUserId and b.AgentUserId=#{agentuserid,jdbcType=BIGINT} and a.Status!=2
-    order by a.Status asc,a.CreateTime desc
+    <if test="status != null" >
+       and a.`Status`=#{status,jdbcType=INTEGER}
+    </if> 
+    order by a.CreateTime desc
   </select>
   
   <!-- 根据活动状态得到代理商的活动数量-->

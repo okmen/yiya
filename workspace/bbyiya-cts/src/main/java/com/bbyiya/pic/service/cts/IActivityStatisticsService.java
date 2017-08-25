@@ -12,7 +12,7 @@ public interface IActivityStatisticsService {
 	 * @param agentuserid
 	 * @return
 	 */
-	ReturnModel getActivityStaticsticsPage(Long agentuserid,int index,int size);
+	ReturnModel getActivityStaticsticsPage(Long agentuserid,int index,int size,Integer status);
 	
 	/**
 	 * 单个活动的统计页

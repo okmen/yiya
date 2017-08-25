@@ -20,11 +20,13 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.UAdmin;
 import com.bbyiya.model.UAgents;
+import com.bbyiya.pic.dao.IAgentOrderReportDao;
 import com.bbyiya.pic.dao.IPic_DataTempDao;
 import com.bbyiya.pic.service.cts.IActivityStatisticsService;
 import com.bbyiya.pic.vo.AgentDateVO;
 import com.bbyiya.pic.vo.activity.AllActivityCountResultVO;
 import com.bbyiya.pic.vo.order.AgentOrderReportVO;
+import com.bbyiya.pic.vo.order.BranchOrderReportVO;
 import com.bbyiya.pic.vo.report.ReportActivityTableDataVO;
 import com.bbyiya.pic.vo.report.ReportJsonData;
 import com.bbyiya.pic.vo.report.ReportLineDataVO;
@@ -48,6 +50,8 @@ public class ActivityStatisticsServiceImpl implements IActivityStatisticsService
 	private UAgentsMapper agentMapper;
 	@Autowired
 	private IPic_DataTempDao temCtsDao;
+	@Autowired
+	private IAgentOrderReportDao orderReportDao;
 	/**
 	 * cts代理商订单统计页面
 	 * @param userid
@@ -62,7 +66,18 @@ public class ActivityStatisticsServiceImpl implements IActivityStatisticsService
 		if(orderlist!=null&&orderlist.size()>0){
 			agentReprotVo.setTotalordercount(orderlist.get(0).getOrderCountNew());
 		}
+		//得到分店总数
+		Integer totalbranchcount=orderReportDao.getBranchCountByagentUserId(agentuserid);
+		agentReprotVo.setTotalbranchcount(totalbranchcount==null?0:totalbranchcount);
+		agentReprotVo.setAgentUserId(agentuserid);
 		
+		List<BranchOrderReportVO> branchorderlist=orderReportDao.findBranchOrderReportVo(agentuserid, null, null);
+		
+		
+		agentReprotVo.setBranchorder(branchorderlist);
+		HashMap<String, Object> resultmap=new HashMap<String, Object>();
+		resultmap.put("agentReprotVo", agentReprotVo);
+		rq.setBasemodle(resultmap);
 		rq.setStatu(ReturnStatus.Success);
 		return rq;
 	}
@@ -72,7 +87,7 @@ public class ActivityStatisticsServiceImpl implements IActivityStatisticsService
 	 * @param userid
 	 * @return
 	 */
-	public ReturnModel getActivityStaticsticsPage(Long agentuserid,int index,int size){
+	public ReturnModel getActivityStaticsticsPage(Long agentuserid,int index,int size,Integer status){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);	
 		AllActivityCountResultVO countvo=new AllActivityCountResultVO();
@@ -105,7 +120,7 @@ public class ActivityStatisticsServiceImpl implements IActivityStatisticsService
 		countvo.setCodeApplyNum(codeapplycount);
 
 		PageHelper.startPage(index, size);
-		List<PMyproducttemp> templist=mytempMapper.findAllTempListByAgentUserId(agentuserid);
+		List<PMyproducttemp> templist=mytempMapper.findAllTempListByAgentUserId(agentuserid,status);
 		PageInfo<PMyproducttemp> resultPage = new PageInfo<PMyproducttemp>(templist);
 		HashMap<String, Object> mapresult=new HashMap<String, Object>();
 		mapresult.put("countvo", countvo);
@@ -146,7 +161,7 @@ public class ActivityStatisticsServiceImpl implements IActivityStatisticsService
 				rq.setStatusreson("请选择时间段！");
 				return rq;
 			}
-			int days=DateUtil.daysBetween(starttime, endtime);
+			int days=DateUtil.daysBetween(starttime, endtime)+1;
 			if(type.intValue()==1){
 				//精确到小时
 				if(days>1){
@@ -156,9 +171,9 @@ public class ActivityStatisticsServiceImpl implements IActivityStatisticsService
 				}
 				days=24;
 			}else{//精确到天
-				if(days>24){
+				if(days>31){
 					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("日期不能大于24天！");
+					rq.setStatusreson("日期不能大于31天！");
 					return rq;
 				}
 			}
@@ -176,7 +191,7 @@ public class ActivityStatisticsServiceImpl implements IActivityStatisticsService
 					startTimeStr=endTimeStr;
 					endTimeStr=DateUtil.addDateHour(startTimeStr, 1);
 					xcontent[i]=(i+1)+"";
-					tabledata.setDateTime(startTimeStr);
+					tabledata.setDateTime(endTimeStr);
 				}else{
 					startTimeStr=DateUtil.getSpecifiedDayAfter(starttime, i)+ " 00:00:00";
 					endTimeStr=DateUtil.getEndTime(startTimeStr);

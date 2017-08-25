@@ -46,6 +46,9 @@
   <!-- 得到代理商举办的所有活动-->
   <select id="findAllTempListByAgentUserId" resultMap="BaseResultMap" >
     select a.* from p_myproducttemp a,u_branches b where a.BranchUserId=b.BranchUserId and b.AgentUserId=#{agentuserid,jdbcType=BIGINT} and a.Status!=2
+    <if test="status != null" >
+       and a.`Status`=#{status,jdbcType=INTEGER}
+    </if> 
     order by a.CreateTime desc
   </select>
   

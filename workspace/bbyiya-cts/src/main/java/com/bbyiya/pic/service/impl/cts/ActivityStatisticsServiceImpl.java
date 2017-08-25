@@ -87,7 +87,7 @@ public class ActivityStatisticsServiceImpl implements IActivityStatisticsService
 	 * @param userid
 	 * @return
 	 */
-	public ReturnModel getActivityStaticsticsPage(Long agentuserid,int index,int size){
+	public ReturnModel getActivityStaticsticsPage(Long agentuserid,int index,int size,Integer status){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);	
 		AllActivityCountResultVO countvo=new AllActivityCountResultVO();
@@ -120,7 +120,7 @@ public class ActivityStatisticsServiceImpl implements IActivityStatisticsService
 		countvo.setCodeApplyNum(codeapplycount);
 
 		PageHelper.startPage(index, size);
-		List<PMyproducttemp> templist=mytempMapper.findAllTempListByAgentUserId(agentuserid);
+		List<PMyproducttemp> templist=mytempMapper.findAllTempListByAgentUserId(agentuserid,status);
 		PageInfo<PMyproducttemp> resultPage = new PageInfo<PMyproducttemp>(templist);
 		HashMap<String, Object> mapresult=new HashMap<String, Object>();
 		mapresult.put("countvo", countvo);

@@ -17,5 +17,12 @@ public interface IIbs_MyproductService {
 			Integer status, Integer inviteStatus, String keywords, int index,
 			int size);
 	
+	/**
+	 * 得到影楼作品的邀请二唯码
+	 * @param cartid
+	 * @return
+	 */
+	ReturnModel getProductInviteCode(Long userId,Long cartid)throws Exception;
+	
 	
 }

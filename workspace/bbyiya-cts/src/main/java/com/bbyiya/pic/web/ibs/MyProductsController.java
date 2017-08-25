@@ -1,5 +1,8 @@
 package com.bbyiya.pic.web.ibs;
 
+import java.util.Date;
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
@@ -8,8 +11,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.pic.InviteStatus;
+import com.bbyiya.model.PMyproducts;
+import com.bbyiya.model.PMyproductsinvites;
 import com.bbyiya.pic.service.ibs.IIbs_MyproductService;
+import com.bbyiya.utils.ConfigUtil;
+import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.JsonUtil;
+import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
@@ -38,6 +47,27 @@ public class MyProductsController extends SSOController {
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			rq=proService.findMyProductsSourceCustomerOfBranch(user.getUserId(),null,inviteStatus,keywords,index,size);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 得到影楼作品的邀请二唯码
+	 * @param cartid
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getProductInviteCode")
+	public String getProductInviteCode(String cartid) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=proService.getProductInviteCode(user.getUserId(), ObjectUtil.parseLong(cartid));
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

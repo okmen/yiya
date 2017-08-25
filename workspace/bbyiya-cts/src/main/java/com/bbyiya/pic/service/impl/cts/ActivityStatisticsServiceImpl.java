@@ -191,7 +191,7 @@ public class ActivityStatisticsServiceImpl implements IActivityStatisticsService
 					startTimeStr=endTimeStr;
 					endTimeStr=DateUtil.addDateHour(startTimeStr, 1);
 					xcontent[i]=(i+1)+"";
-					tabledata.setDateTime(endTimeStr);
+					tabledata.setDateTime(startTimeStr+"至"+endTimeStr);
 				}else{
 					startTimeStr=DateUtil.getSpecifiedDayAfter(starttime, i)+ " 00:00:00";
 					endTimeStr=DateUtil.getEndTime(startTimeStr);

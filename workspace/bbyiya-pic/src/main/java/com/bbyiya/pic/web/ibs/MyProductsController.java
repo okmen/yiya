@@ -39,7 +39,7 @@ public class MyProductsController extends SSOController {
 	
 	
 	/**
-	 * IBS客户一对一作品列表
+	 * IBS影楼一对一作品列表
 	 * @param index
 	 * @param size
 	 * @return

@@ -191,12 +191,13 @@ public class ActivityStatisticsServiceImpl implements IActivityStatisticsService
 					startTimeStr=endTimeStr;
 					endTimeStr=DateUtil.addDateHour(startTimeStr, 1);
 					xcontent[i]=(i+1)+"";
-					tabledata.setDateTime(endTimeStr);
+					tabledata.setDateTime(startTimeStr+"至"+endTimeStr);
 				}else{
-					startTimeStr=DateUtil.getSpecifiedDayAfter(starttime, i)+ " 00:00:00";
+					String startTimetemp=DateUtil.getSpecifiedDayAfter(starttime, i);
+					startTimeStr=startTimetemp+ " 00:00:00";
 					endTimeStr=DateUtil.getEndTime(startTimeStr);
 					xcontent[i]=DateUtil.getTimeStr(DateUtil.getDateByString("yyyy-MM-dd", startTimeStr), "MM月dd");
-					tabledata.setDateTime(startTimeStr);
+					tabledata.setDateTime(startTimetemp);
 				}
 				Integer applycount=tempapplyMapper.countTempApplyByDay(tempid, startTimeStr, endTimeStr);
 				Integer completecount=tempapplyMapper.countTempCompleteByDay(tempid, startTimeStr, endTimeStr);

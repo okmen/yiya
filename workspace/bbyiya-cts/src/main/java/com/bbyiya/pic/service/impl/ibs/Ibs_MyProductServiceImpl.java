@@ -1,6 +1,9 @@
 package com.bbyiya.pic.service.impl.ibs;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -31,6 +34,7 @@ import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproductchildinfo;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproductext;
+import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproductsinvites;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
@@ -39,6 +43,7 @@ import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.service.ibs.IIbs_MyproductService;
 import com.bbyiya.service.pic.IBaseUserAddressService;
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -244,6 +249,38 @@ public class Ibs_MyProductServiceImpl implements IIbs_MyproductService{
 		}
 		return mylist;
 	}
+	
+
+	public ReturnModel getProductInviteCode(Long userId,Long cartid) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		PMyproducts mycart= myMapper.selectByPrimaryKey(cartid);
+		if(mycart.getInvitestatus()!=null&&mycart.getInvitestatus()>0){
+			List<PMyproductsinvites> invitesList= inviteMapper.findListByCartId(cartid);
+			for (PMyproductsinvites inv : invitesList) {
+				if(inv.getStatus()!=null&&(inv.getStatus()==Integer.parseInt(InviteStatus.inviting.toString())||inv.getStatus()==Integer.parseInt(InviteStatus.lgnore.toString()))){
+					inviteMapper.deleteByPrimaryKey(inv.getInviteid());
+				}else {
+					rq.setStatu(ReturnStatus.SystemError);
+					rq.setStatusreson("邀请已经被接受，无法重新邀请！");
+					return rq;
+				}
+			}
+			mycart.setInvitestatus(0);
+		}
+		
+		String versionString=DateUtil.getTimeStr(new Date(), "yyyyMMddHHMMss"); 
+		mycart.setVersion(versionString);
+		myMapper.updateByPrimaryKeySelective(mycart);
+		
+		String redirct_url=ConfigUtil.getSingleValue("currentDomain")+"invite?uid="+userId+"&workId="+cartid+"&version="+versionString;	
+		String url="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+URLEncoder.encode(redirct_url,"utf-8");
+		rq.setStatusreson("生成模板二维码成功");
+		rq.setStatu(ReturnStatus.Success);
+		rq.setBasemodle(url);
+		return rq;
+		
+	}
+		
 
 	
 }

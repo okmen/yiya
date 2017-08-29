@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiActivityoffMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiActivityoff" >
+    <id column="Id" property="id" jdbcType="BIGINT" />
+    <result column="ActId" property="actid" jdbcType="INTEGER" />
+    <result column="PromoterUserId" property="promoteruserid" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Id, ActId, PromoterUserId
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_activityoff
+    where Id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ti_activityoff
+    where Id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiActivityoff" >
+    insert into ti_activityoff (Id, ActId, PromoterUserId
+      )
+    values (#{id,jdbcType=BIGINT}, #{actid,jdbcType=INTEGER}, #{promoteruserid,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiActivityoff" >
+    insert into ti_activityoff
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        Id,
+      </if>
+      <if test="actid != null" >
+        ActId,
+      </if>
+      <if test="promoteruserid != null" >
+        PromoterUserId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="actid != null" >
+        #{actid,jdbcType=INTEGER},
+      </if>
+      <if test="promoteruserid != null" >
+        #{promoteruserid,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiActivityoff" >
+    update ti_activityoff
+    <set >
+      <if test="actid != null" >
+        ActId = #{actid,jdbcType=INTEGER},
+      </if>
+      <if test="promoteruserid != null" >
+        PromoterUserId = #{promoteruserid,jdbcType=BIGINT},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiActivityoff" >
+    update ti_activityoff
+    set ActId = #{actid,jdbcType=INTEGER},
+      PromoterUserId = #{promoteruserid,jdbcType=BIGINT}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiUserdiscountsMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiUserdiscounts" >
+    <id column="Id" property="id" jdbcType="BIGINT" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="DiscountId" property="discountid" jdbcType="INTEGER" />
+    <result column="WorkId" property="workid" jdbcType="BIGINT" />
+    <result column="ActId" property="actid" jdbcType="INTEGER" />
+    <result column="PromoterUserId" property="promoteruserid" jdbcType="BIGINT" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="ExpiredTime" property="expiredtime" jdbcType="TIMESTAMP" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Id, UserId, DiscountId, WorkId, ActId, PromoterUserId, CreateTime, ExpiredTime, Status
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_userdiscounts
+    where Id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ti_userdiscounts
+    where Id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiUserdiscounts" >
+    insert into ti_userdiscounts (Id, UserId, DiscountId, 
+      WorkId, ActId, PromoterUserId, 
+      CreateTime, ExpiredTime, Status
+      )
+    values (#{id,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{discountid,jdbcType=INTEGER}, 
+      #{workid,jdbcType=BIGINT}, #{actid,jdbcType=INTEGER}, #{promoteruserid,jdbcType=BIGINT}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{expiredtime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiUserdiscounts" >
+    insert into ti_userdiscounts
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        Id,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="discountid != null" >
+        DiscountId,
+      </if>
+      <if test="workid != null" >
+        WorkId,
+      </if>
+      <if test="actid != null" >
+        ActId,
+      </if>
+      <if test="promoteruserid != null" >
+        PromoterUserId,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+      <if test="expiredtime != null" >
+        ExpiredTime,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="discountid != null" >
+        #{discountid,jdbcType=INTEGER},
+      </if>
+      <if test="workid != null" >
+        #{workid,jdbcType=BIGINT},
+      </if>
+      <if test="actid != null" >
+        #{actid,jdbcType=INTEGER},
+      </if>
+      <if test="promoteruserid != null" >
+        #{promoteruserid,jdbcType=BIGINT},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expiredtime != null" >
+        #{expiredtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiUserdiscounts" >
+    update ti_userdiscounts
+    <set >
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="discountid != null" >
+        DiscountId = #{discountid,jdbcType=INTEGER},
+      </if>
+      <if test="workid != null" >
+        WorkId = #{workid,jdbcType=BIGINT},
+      </if>
+      <if test="actid != null" >
+        ActId = #{actid,jdbcType=INTEGER},
+      </if>
+      <if test="promoteruserid != null" >
+        PromoterUserId = #{promoteruserid,jdbcType=BIGINT},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expiredtime != null" >
+        ExpiredTime = #{expiredtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiUserdiscounts" >
+    update ti_userdiscounts
+    set UserId = #{userid,jdbcType=BIGINT},
+      DiscountId = #{discountid,jdbcType=INTEGER},
+      WorkId = #{workid,jdbcType=BIGINT},
+      ActId = #{actid,jdbcType=INTEGER},
+      PromoterUserId = #{promoteruserid,jdbcType=BIGINT},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      ExpiredTime = #{expiredtime,jdbcType=TIMESTAMP},
+      Status = #{status,jdbcType=INTEGER}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

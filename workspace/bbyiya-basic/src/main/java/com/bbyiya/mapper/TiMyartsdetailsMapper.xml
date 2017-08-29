@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiMyartsdetailsMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiMyartsdetails" >
+    <id column="DetailId" property="detailid" jdbcType="BIGINT" />
+    <result column="WorkId" property="workid" jdbcType="BIGINT" />
+    <result column="Sort" property="sort" jdbcType="INTEGER" />
+    <result column="ImageUrl" property="imageurl" jdbcType="VARCHAR" />
+    <result column="Content" property="content" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    DetailId, WorkId, Sort, ImageUrl, Content, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_myartsdetails
+    where DetailId = #{detailid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ti_myartsdetails
+    where DetailId = #{detailid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiMyartsdetails" >
+    insert into ti_myartsdetails (DetailId, WorkId, Sort, 
+      ImageUrl, Content, CreateTime
+      )
+    values (#{detailid,jdbcType=BIGINT}, #{workid,jdbcType=BIGINT}, #{sort,jdbcType=INTEGER}, 
+      #{imageurl,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiMyartsdetails" >
+    insert into ti_myartsdetails
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="detailid != null" >
+        DetailId,
+      </if>
+      <if test="workid != null" >
+        WorkId,
+      </if>
+      <if test="sort != null" >
+        Sort,
+      </if>
+      <if test="imageurl != null" >
+        ImageUrl,
+      </if>
+      <if test="content != null" >
+        Content,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="detailid != null" >
+        #{detailid,jdbcType=BIGINT},
+      </if>
+      <if test="workid != null" >
+        #{workid,jdbcType=BIGINT},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="imageurl != null" >
+        #{imageurl,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiMyartsdetails" >
+    update ti_myartsdetails
+    <set >
+      <if test="workid != null" >
+        WorkId = #{workid,jdbcType=BIGINT},
+      </if>
+      <if test="sort != null" >
+        Sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="imageurl != null" >
+        ImageUrl = #{imageurl,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        Content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where DetailId = #{detailid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiMyartsdetails" >
+    update ti_myartsdetails
+    set WorkId = #{workid,jdbcType=BIGINT},
+      Sort = #{sort,jdbcType=INTEGER},
+      ImageUrl = #{imageurl,jdbcType=VARCHAR},
+      Content = #{content,jdbcType=VARCHAR},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where DetailId = #{detailid,jdbcType=BIGINT}
+  </update>
+</mapper>

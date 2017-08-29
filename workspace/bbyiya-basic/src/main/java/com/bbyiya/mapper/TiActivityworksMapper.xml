@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiActivityworksMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiActivityworks" >
+    <id column="WorkId" property="workid" jdbcType="BIGINT" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="ActId" property="actid" jdbcType="INTEGER" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="ExtCount" property="extcount" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="AddressType" property="addresstype" jdbcType="INTEGER" />
+    <result column="Reciever" property="reciever" jdbcType="VARCHAR" />
+    <result column="Mobiephone" property="mobiephone" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    WorkId, UserId, ActId, Status, ExtCount, CreateTime, AddressType, Reciever, Mobiephone
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_activityworks
+    where WorkId = #{workid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ti_activityworks
+    where WorkId = #{workid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiActivityworks" >
+    insert into ti_activityworks (WorkId, UserId, ActId, 
+      Status, ExtCount, CreateTime, 
+      AddressType, Reciever, Mobiephone
+      )
+    values (#{workid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{actid,jdbcType=INTEGER}, 
+      #{status,jdbcType=INTEGER}, #{extcount,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{addresstype,jdbcType=INTEGER}, #{reciever,jdbcType=VARCHAR}, #{mobiephone,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiActivityworks" >
+    insert into ti_activityworks
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="workid != null" >
+        WorkId,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="actid != null" >
+        ActId,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="extcount != null" >
+        ExtCount,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+      <if test="addresstype != null" >
+        AddressType,
+      </if>
+      <if test="reciever != null" >
+        Reciever,
+      </if>
+      <if test="mobiephone != null" >
+        Mobiephone,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="workid != null" >
+        #{workid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="actid != null" >
+        #{actid,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="extcount != null" >
+        #{extcount,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="addresstype != null" >
+        #{addresstype,jdbcType=INTEGER},
+      </if>
+      <if test="reciever != null" >
+        #{reciever,jdbcType=VARCHAR},
+      </if>
+      <if test="mobiephone != null" >
+        #{mobiephone,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiActivityworks" >
+    update ti_activityworks
+    <set >
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="actid != null" >
+        ActId = #{actid,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="extcount != null" >
+        ExtCount = #{extcount,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="addresstype != null" >
+        AddressType = #{addresstype,jdbcType=INTEGER},
+      </if>
+      <if test="reciever != null" >
+        Reciever = #{reciever,jdbcType=VARCHAR},
+      </if>
+      <if test="mobiephone != null" >
+        Mobiephone = #{mobiephone,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where WorkId = #{workid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiActivityworks" >
+    update ti_activityworks
+    set UserId = #{userid,jdbcType=BIGINT},
+      ActId = #{actid,jdbcType=INTEGER},
+      Status = #{status,jdbcType=INTEGER},
+      ExtCount = #{extcount,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      AddressType = #{addresstype,jdbcType=INTEGER},
+      Reciever = #{reciever,jdbcType=VARCHAR},
+      Mobiephone = #{mobiephone,jdbcType=VARCHAR}
+    where WorkId = #{workid,jdbcType=BIGINT}
+  </update>
+</mapper>

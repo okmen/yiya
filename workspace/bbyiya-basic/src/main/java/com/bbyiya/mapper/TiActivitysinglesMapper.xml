@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiActivitysinglesMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiActivitysingles" >
+    <id column="ActSingleId" property="actsingleid" jdbcType="BIGINT" />
+    <result column="ActId" property="actid" jdbcType="INTEGER" />
+    <result column="PromoterUserId" property="promoteruserid" jdbcType="BIGINT" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="GetsTime" property="getstime" jdbcType="TIMESTAMP" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ActSingleId, ActId, PromoterUserId, UserId, CreateTime, GetsTime, Status
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_activitysingles
+    where ActSingleId = #{actsingleid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ti_activitysingles
+    where ActSingleId = #{actsingleid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiActivitysingles" >
+    insert into ti_activitysingles (ActSingleId, ActId, PromoterUserId, 
+      UserId, CreateTime, GetsTime, 
+      Status)
+    values (#{actsingleid,jdbcType=BIGINT}, #{actid,jdbcType=INTEGER}, #{promoteruserid,jdbcType=BIGINT}, 
+      #{userid,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}, #{getstime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiActivitysingles" >
+    insert into ti_activitysingles
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="actsingleid != null" >
+        ActSingleId,
+      </if>
+      <if test="actid != null" >
+        ActId,
+      </if>
+      <if test="promoteruserid != null" >
+        PromoterUserId,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+      <if test="getstime != null" >
+        GetsTime,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="actsingleid != null" >
+        #{actsingleid,jdbcType=BIGINT},
+      </if>
+      <if test="actid != null" >
+        #{actid,jdbcType=INTEGER},
+      </if>
+      <if test="promoteruserid != null" >
+        #{promoteruserid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="getstime != null" >
+        #{getstime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiActivitysingles" >
+    update ti_activitysingles
+    <set >
+      <if test="actid != null" >
+        ActId = #{actid,jdbcType=INTEGER},
+      </if>
+      <if test="promoteruserid != null" >
+        PromoterUserId = #{promoteruserid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="getstime != null" >
+        GetsTime = #{getstime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ActSingleId = #{actsingleid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiActivitysingles" >
+    update ti_activitysingles
+    set ActId = #{actid,jdbcType=INTEGER},
+      PromoterUserId = #{promoteruserid,jdbcType=BIGINT},
+      UserId = #{userid,jdbcType=BIGINT},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      GetsTime = #{getstime,jdbcType=TIMESTAMP},
+      Status = #{status,jdbcType=INTEGER}
+    where ActSingleId = #{actsingleid,jdbcType=BIGINT}
+  </update>
+</mapper>

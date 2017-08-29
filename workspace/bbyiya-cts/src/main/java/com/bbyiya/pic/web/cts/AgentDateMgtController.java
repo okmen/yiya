@@ -92,8 +92,8 @@ public class AgentDateMgtController {
 	public void updateYesterdayData() {
 		Date endTime = DateUtil.getTimesmorning();
 		Date starttime = DateUtil.getYesterdaymorning();
-		String keyName = ConfigUtil.getSingleValue("currentRedisKey-Base") + "_yesterdayDataNew08251";
-		long keyString = ObjectUtil.parseLong(RedisUtil.getString(keyName));
+		String keyName = ConfigUtil.getSingleValue("currentRedisKey-Base") + "_yDataNew08263";
+		long keyString = ObjectUtil.parseLong(String.valueOf(RedisUtil.getObject(keyName))); 
 		if (keyString > 0) {
 			if (keyString > endTime.getTime()) {
 				// System.out.println(1);
@@ -187,11 +187,10 @@ public class AgentDateMgtController {
 					}
 				}
 			}
+			RedisUtil.setObject(keyName, (new Date()).getTime());
 		} catch (Exception e) {
 			addlog("昨日数据更新：" + e);
 		}
-
-		RedisUtil.setString(keyName, String.valueOf((new Date()).getTime()));
 	}
 
 	/**

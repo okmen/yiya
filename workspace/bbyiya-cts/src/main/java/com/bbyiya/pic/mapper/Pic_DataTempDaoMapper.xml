@@ -67,10 +67,10 @@
        and c.AgentUserId= #{agentUserId,jdbcType=BIGINT} 
     </if>
 	<if test="startTime != null " >
-       and date(a.CreateTime) &gt;= date(#{startTime,jdbcType=TIMESTAMP})  
+       and a.CreateTime &gt;= #{startTime,jdbcType=TIMESTAMP} 
     </if>
     <if test="endTime != null" >
-      and date(a.CreateTime) &lt;= date(#{endTime,jdbcType=TIMESTAMP})    
+      and a.CreateTime &lt;= #{endTime,jdbcType=TIMESTAMP}    
     </if>
 	GROUP BY c.AgentUserId  
     </select>
@@ -83,10 +83,10 @@
       and c.AgentUserId= #{agentUserId,jdbcType=BIGINT} 
     </if>
 	<if test="startTime != null " >
-      and date(a.CompleteTime) &gt;= date(#{startTime,jdbcType=TIMESTAMP})  
+      and a.CompleteTime &gt;= #{startTime,jdbcType=TIMESTAMP}  
     </if>
     <if test="endTime != null" >
-      and date(a.CompleteTime) &lt;= date(#{endTime,jdbcType=TIMESTAMP})    
+      and a.CompleteTime &lt;= #{endTime,jdbcType=TIMESTAMP}    
     </if>
 	 GROUP BY c.AgentUserId
    </select>
@@ -98,10 +98,10 @@
       and AgentUserId= #{agentUserId,jdbcType=BIGINT} 
      </if>
 	 <if test="startTime != null " >
-      and date(PayTime) &gt;= date(#{startTime,jdbcType=TIMESTAMP})  
+      and PayTime &gt;= #{startTime,jdbcType=TIMESTAMP} 
      </if>
      <if test="endTime != null" >
-      and date(PayTime)&lt;= date(#{endTime,jdbcType=TIMESTAMP})    
+      and PayTime &lt;= #{endTime,jdbcType=TIMESTAMP}   
      </if>
 	  GROUP BY AgentUserId 
    </select>
@@ -113,10 +113,10 @@
       and a.AgentUserId= #{agentUserId,jdbcType=BIGINT} 
      </if>
 	 <if test="startTime != null " >
-       and date(b.CreateTime) &gt;= date(#{startTime,jdbcType=TIMESTAMP})  
+       and b.CreateTime &gt;= #{startTime,jdbcType=TIMESTAMP}  
      </if>
      <if test="endTime != null" >
-       and date(b.CreateTime)&lt;= date(#{endTime,jdbcType=TIMESTAMP})    
+       and b.CreateTime &lt;= #{endTime,jdbcType=TIMESTAMP}    
      </if>
 	 GROUP BY a.AgentUserId
    </select>
@@ -130,10 +130,10 @@
       and  b.AgentUserId= #{agentUserId,jdbcType=BIGINT} 
      </if>
 	 <if test="startTime != null " >
-       and date(c.CreateTime) &gt;= date(#{startTime,jdbcType=TIMESTAMP})  
+       and c.CreateTime &gt;= #{startTime,jdbcType=TIMESTAMP} 
      </if>
      <if test="endTime != null" >
-       and date(c.CreateTime)&lt;= date(#{endTime,jdbcType=TIMESTAMP})    
+       and c.CreateTime &lt;= #{endTime,jdbcType=TIMESTAMP}    
      </if>
 	  GROUP BY b.AgentUserId
     </select>

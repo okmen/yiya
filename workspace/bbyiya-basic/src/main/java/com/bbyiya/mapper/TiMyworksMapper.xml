@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiMyworksMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiMyworks" >
+    <id column="WorkId" property="workid" jdbcType="BIGINT" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="ProductId" property="productid" jdbcType="BIGINT" />
+    <result column="StyleId" property="styleid" jdbcType="BIGINT" />
+    <result column="Title" property="title" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="CompleteTime" property="completetime" jdbcType="TIMESTAMP" />
+    <result column="ActId" property="actid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    WorkId, UserId, ProductId, StyleId, Title, CreateTime, CompleteTime, ActId
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_myworks
+    where WorkId = #{workid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ti_myworks
+    where WorkId = #{workid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiMyworks" >
+    insert into ti_myworks (WorkId, UserId, ProductId, 
+      StyleId, Title, CreateTime, 
+      CompleteTime, ActId)
+    values (#{workid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{productid,jdbcType=BIGINT}, 
+      #{styleid,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{completetime,jdbcType=TIMESTAMP}, #{actid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiMyworks" >
+    insert into ti_myworks
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="workid != null" >
+        WorkId,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="productid != null" >
+        ProductId,
+      </if>
+      <if test="styleid != null" >
+        StyleId,
+      </if>
+      <if test="title != null" >
+        Title,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+      <if test="completetime != null" >
+        CompleteTime,
+      </if>
+      <if test="actid != null" >
+        ActId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="workid != null" >
+        #{workid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="productid != null" >
+        #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="styleid != null" >
+        #{styleid,jdbcType=BIGINT},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="completetime != null" >
+        #{completetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actid != null" >
+        #{actid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiMyworks" >
+    update ti_myworks
+    <set >
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="productid != null" >
+        ProductId = #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="styleid != null" >
+        StyleId = #{styleid,jdbcType=BIGINT},
+      </if>
+      <if test="title != null" >
+        Title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="completetime != null" >
+        CompleteTime = #{completetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actid != null" >
+        ActId = #{actid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where WorkId = #{workid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiMyworks" >
+    update ti_myworks
+    set UserId = #{userid,jdbcType=BIGINT},
+      ProductId = #{productid,jdbcType=BIGINT},
+      StyleId = #{styleid,jdbcType=BIGINT},
+      Title = #{title,jdbcType=VARCHAR},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      CompleteTime = #{completetime,jdbcType=TIMESTAMP},
+      ActId = #{actid,jdbcType=INTEGER}
+    where WorkId = #{workid,jdbcType=BIGINT}
+  </update>
+</mapper>

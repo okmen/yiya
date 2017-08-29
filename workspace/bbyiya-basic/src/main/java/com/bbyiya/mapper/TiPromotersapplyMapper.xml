@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiPromotersapplyMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiPromotersapply" >
+    <id column="PromoterUserId" property="promoteruserid" jdbcType="BIGINT" />
+    <result column="AgentUserId" property="agentuserid" jdbcType="BIGINT" />
+    <result column="CompanyName" property="companyname" jdbcType="VARCHAR" />
+    <result column="Contacts" property="contacts" jdbcType="VARCHAR" />
+    <result column="Mobilephone" property="mobilephone" jdbcType="VARCHAR" />
+    <result column="Province" property="province" jdbcType="INTEGER" />
+    <result column="City" property="city" jdbcType="INTEGER" />
+    <result column="Area" property="area" jdbcType="INTEGER" />
+    <result column="StreetDetails" property="streetdetails" jdbcType="VARCHAR" />
+    <result column="CreatTime" property="creattime" jdbcType="TIMESTAMP" />
+    <result column="Reason" property="reason" jdbcType="VARCHAR" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="ProcessTime" property="processtime" jdbcType="TIMESTAMP" />
+    <result column="Remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    PromoterUserId, AgentUserId, CompanyName, Contacts, Mobilephone, Province, City, 
+    Area, StreetDetails, CreatTime, Reason, Status, ProcessTime, Remark
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_promotersapply
+    where PromoterUserId = #{promoteruserid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ti_promotersapply
+    where PromoterUserId = #{promoteruserid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiPromotersapply" >
+    insert into ti_promotersapply (PromoterUserId, AgentUserId, CompanyName, 
+      Contacts, Mobilephone, Province, 
+      City, Area, StreetDetails, 
+      CreatTime, Reason, Status, 
+      ProcessTime, Remark)
+    values (#{promoteruserid,jdbcType=BIGINT}, #{agentuserid,jdbcType=BIGINT}, #{companyname,jdbcType=VARCHAR}, 
+      #{contacts,jdbcType=VARCHAR}, #{mobilephone,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, 
+      #{city,jdbcType=INTEGER}, #{area,jdbcType=INTEGER}, #{streetdetails,jdbcType=VARCHAR}, 
+      #{creattime,jdbcType=TIMESTAMP}, #{reason,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{processtime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiPromotersapply" >
+    insert into ti_promotersapply
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="promoteruserid != null" >
+        PromoterUserId,
+      </if>
+      <if test="agentuserid != null" >
+        AgentUserId,
+      </if>
+      <if test="companyname != null" >
+        CompanyName,
+      </if>
+      <if test="contacts != null" >
+        Contacts,
+      </if>
+      <if test="mobilephone != null" >
+        Mobilephone,
+      </if>
+      <if test="province != null" >
+        Province,
+      </if>
+      <if test="city != null" >
+        City,
+      </if>
+      <if test="area != null" >
+        Area,
+      </if>
+      <if test="streetdetails != null" >
+        StreetDetails,
+      </if>
+      <if test="creattime != null" >
+        CreatTime,
+      </if>
+      <if test="reason != null" >
+        Reason,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="processtime != null" >
+        ProcessTime,
+      </if>
+      <if test="remark != null" >
+        Remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="promoteruserid != null" >
+        #{promoteruserid,jdbcType=BIGINT},
+      </if>
+      <if test="agentuserid != null" >
+        #{agentuserid,jdbcType=BIGINT},
+      </if>
+      <if test="companyname != null" >
+        #{companyname,jdbcType=VARCHAR},
+      </if>
+      <if test="contacts != null" >
+        #{contacts,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilephone != null" >
+        #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=INTEGER},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=INTEGER},
+      </if>
+      <if test="area != null" >
+        #{area,jdbcType=INTEGER},
+      </if>
+      <if test="streetdetails != null" >
+        #{streetdetails,jdbcType=VARCHAR},
+      </if>
+      <if test="creattime != null" >
+        #{creattime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="reason != null" >
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="processtime != null" >
+        #{processtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiPromotersapply" >
+    update ti_promotersapply
+    <set >
+      <if test="agentuserid != null" >
+        AgentUserId = #{agentuserid,jdbcType=BIGINT},
+      </if>
+      <if test="companyname != null" >
+        CompanyName = #{companyname,jdbcType=VARCHAR},
+      </if>
+      <if test="contacts != null" >
+        Contacts = #{contacts,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilephone != null" >
+        Mobilephone = #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        Province = #{province,jdbcType=INTEGER},
+      </if>
+      <if test="city != null" >
+        City = #{city,jdbcType=INTEGER},
+      </if>
+      <if test="area != null" >
+        Area = #{area,jdbcType=INTEGER},
+      </if>
+      <if test="streetdetails != null" >
+        StreetDetails = #{streetdetails,jdbcType=VARCHAR},
+      </if>
+      <if test="creattime != null" >
+        CreatTime = #{creattime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="reason != null" >
+        Reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="processtime != null" >
+        ProcessTime = #{processtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null" >
+        Remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where PromoterUserId = #{promoteruserid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiPromotersapply" >
+    update ti_promotersapply
+    set AgentUserId = #{agentuserid,jdbcType=BIGINT},
+      CompanyName = #{companyname,jdbcType=VARCHAR},
+      Contacts = #{contacts,jdbcType=VARCHAR},
+      Mobilephone = #{mobilephone,jdbcType=VARCHAR},
+      Province = #{province,jdbcType=INTEGER},
+      City = #{city,jdbcType=INTEGER},
+      Area = #{area,jdbcType=INTEGER},
+      StreetDetails = #{streetdetails,jdbcType=VARCHAR},
+      CreatTime = #{creattime,jdbcType=TIMESTAMP},
+      Reason = #{reason,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=INTEGER},
+      ProcessTime = #{processtime,jdbcType=TIMESTAMP},
+      Remark = #{remark,jdbcType=VARCHAR}
+    where PromoterUserId = #{promoteruserid,jdbcType=BIGINT}
+  </update>
+</mapper>

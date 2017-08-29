@@ -72,8 +72,13 @@ public class ActivityStatisticsServiceImpl implements IActivityStatisticsService
 		agentReprotVo.setAgentUserId(agentuserid);
 		
 		List<BranchOrderReportVO> branchorderlist=orderReportDao.findBranchOrderReportVo(agentuserid, null, null);
-		
-		
+		for (BranchOrderReportVO branchorder : branchorderlist) {
+			double orderpercent=0.0;
+			if(agentReprotVo.getTotalordercount()!=null||agentReprotVo.getTotalordercount()!=0){
+				 orderpercent=(branchorder.getTotalOrdercount()==null?0:branchorder.getTotalOrdercount())/agentReprotVo.getTotalordercount();	
+			}
+			branchorder.setOrderPercent(orderpercent);
+		}
 		agentReprotVo.setBranchorder(branchorderlist);
 		HashMap<String, Object> resultmap=new HashMap<String, Object>();
 		resultmap.put("agentReprotVo", agentReprotVo);

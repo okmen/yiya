@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiDiscountdetailsMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiDiscountdetails" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="DiscountId" property="discountid" jdbcType="INTEGER" />
+    <result column="Discount" property="discount" jdbcType="DOUBLE" />
+    <result column="StyleId" property="styleid" jdbcType="BIGINT" />
+    <result column="ProductId" property="productid" jdbcType="BIGINT" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, DiscountId, Discount, StyleId, ProductId, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_discountdetails
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ti_discountdetails
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiDiscountdetails" >
+    insert into ti_discountdetails (id, DiscountId, Discount, 
+      StyleId, ProductId, CreateTime
+      )
+    values (#{id,jdbcType=INTEGER}, #{discountid,jdbcType=INTEGER}, #{discount,jdbcType=DOUBLE}, 
+      #{styleid,jdbcType=BIGINT}, #{productid,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiDiscountdetails" >
+    insert into ti_discountdetails
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="discountid != null" >
+        DiscountId,
+      </if>
+      <if test="discount != null" >
+        Discount,
+      </if>
+      <if test="styleid != null" >
+        StyleId,
+      </if>
+      <if test="productid != null" >
+        ProductId,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="discountid != null" >
+        #{discountid,jdbcType=INTEGER},
+      </if>
+      <if test="discount != null" >
+        #{discount,jdbcType=DOUBLE},
+      </if>
+      <if test="styleid != null" >
+        #{styleid,jdbcType=BIGINT},
+      </if>
+      <if test="productid != null" >
+        #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiDiscountdetails" >
+    update ti_discountdetails
+    <set >
+      <if test="discountid != null" >
+        DiscountId = #{discountid,jdbcType=INTEGER},
+      </if>
+      <if test="discount != null" >
+        Discount = #{discount,jdbcType=DOUBLE},
+      </if>
+      <if test="styleid != null" >
+        StyleId = #{styleid,jdbcType=BIGINT},
+      </if>
+      <if test="productid != null" >
+        ProductId = #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiDiscountdetails" >
+    update ti_discountdetails
+    set DiscountId = #{discountid,jdbcType=INTEGER},
+      Discount = #{discount,jdbcType=DOUBLE},
+      StyleId = #{styleid,jdbcType=BIGINT},
+      ProductId = #{productid,jdbcType=BIGINT},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

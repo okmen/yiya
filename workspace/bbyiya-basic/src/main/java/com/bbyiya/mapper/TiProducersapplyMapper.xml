@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiProducersapplyMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiProducersapply" >
+    <id column="ProducerUserId" property="produceruserid" jdbcType="BIGINT" />
+    <result column="CompanyName" property="companyname" jdbcType="VARCHAR" />
+    <result column="Contacts" property="contacts" jdbcType="VARCHAR" />
+    <result column="Mobilephone" property="mobilephone" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="ProcessTime" property="processtime" jdbcType="TIMESTAMP" />
+    <result column="Reason" property="reason" jdbcType="VARCHAR" />
+    <result column="Remark" property="remark" jdbcType="VARCHAR" />
+    <result column="Province" property="province" jdbcType="INTEGER" />
+    <result column="City" property="city" jdbcType="INTEGER" />
+    <result column="Area" property="area" jdbcType="INTEGER" />
+    <result column="StreetDetail" property="streetdetail" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ProducerUserId, CompanyName, Contacts, Mobilephone, CreateTime, ProcessTime, Reason, 
+    Remark, Province, City, Area, StreetDetail
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_producersapply
+    where ProducerUserId = #{produceruserid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ti_producersapply
+    where ProducerUserId = #{produceruserid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiProducersapply" >
+    insert into ti_producersapply (ProducerUserId, CompanyName, Contacts, 
+      Mobilephone, CreateTime, ProcessTime, 
+      Reason, Remark, Province, 
+      City, Area, StreetDetail
+      )
+    values (#{produceruserid,jdbcType=BIGINT}, #{companyname,jdbcType=VARCHAR}, #{contacts,jdbcType=VARCHAR}, 
+      #{mobilephone,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{processtime,jdbcType=TIMESTAMP}, 
+      #{reason,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, 
+      #{city,jdbcType=INTEGER}, #{area,jdbcType=INTEGER}, #{streetdetail,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiProducersapply" >
+    insert into ti_producersapply
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="produceruserid != null" >
+        ProducerUserId,
+      </if>
+      <if test="companyname != null" >
+        CompanyName,
+      </if>
+      <if test="contacts != null" >
+        Contacts,
+      </if>
+      <if test="mobilephone != null" >
+        Mobilephone,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+      <if test="processtime != null" >
+        ProcessTime,
+      </if>
+      <if test="reason != null" >
+        Reason,
+      </if>
+      <if test="remark != null" >
+        Remark,
+      </if>
+      <if test="province != null" >
+        Province,
+      </if>
+      <if test="city != null" >
+        City,
+      </if>
+      <if test="area != null" >
+        Area,
+      </if>
+      <if test="streetdetail != null" >
+        StreetDetail,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="produceruserid != null" >
+        #{produceruserid,jdbcType=BIGINT},
+      </if>
+      <if test="companyname != null" >
+        #{companyname,jdbcType=VARCHAR},
+      </if>
+      <if test="contacts != null" >
+        #{contacts,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilephone != null" >
+        #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="processtime != null" >
+        #{processtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="reason != null" >
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=INTEGER},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=INTEGER},
+      </if>
+      <if test="area != null" >
+        #{area,jdbcType=INTEGER},
+      </if>
+      <if test="streetdetail != null" >
+        #{streetdetail,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiProducersapply" >
+    update ti_producersapply
+    <set >
+      <if test="companyname != null" >
+        CompanyName = #{companyname,jdbcType=VARCHAR},
+      </if>
+      <if test="contacts != null" >
+        Contacts = #{contacts,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilephone != null" >
+        Mobilephone = #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="processtime != null" >
+        ProcessTime = #{processtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="reason != null" >
+        Reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        Remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        Province = #{province,jdbcType=INTEGER},
+      </if>
+      <if test="city != null" >
+        City = #{city,jdbcType=INTEGER},
+      </if>
+      <if test="area != null" >
+        Area = #{area,jdbcType=INTEGER},
+      </if>
+      <if test="streetdetail != null" >
+        StreetDetail = #{streetdetail,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ProducerUserId = #{produceruserid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiProducersapply" >
+    update ti_producersapply
+    set CompanyName = #{companyname,jdbcType=VARCHAR},
+      Contacts = #{contacts,jdbcType=VARCHAR},
+      Mobilephone = #{mobilephone,jdbcType=VARCHAR},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      ProcessTime = #{processtime,jdbcType=TIMESTAMP},
+      Reason = #{reason,jdbcType=VARCHAR},
+      Remark = #{remark,jdbcType=VARCHAR},
+      Province = #{province,jdbcType=INTEGER},
+      City = #{city,jdbcType=INTEGER},
+      Area = #{area,jdbcType=INTEGER},
+      StreetDetail = #{streetdetail,jdbcType=VARCHAR}
+    where ProducerUserId = #{produceruserid,jdbcType=BIGINT}
+  </update>
+</mapper>

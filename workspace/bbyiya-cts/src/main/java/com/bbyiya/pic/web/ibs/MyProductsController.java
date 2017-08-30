@@ -56,7 +56,7 @@ public class MyProductsController extends SSOController {
 	}
 	
 	/**
-	 * 得到影楼作品的邀请二唯码
+	 * 得到影楼作品的邀请二维码
 	 * @param cartid
 	 * @return
 	 * @throws Exception

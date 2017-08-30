@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.baseUtils.GenUtils;
 import com.bbyiya.baseUtils.ValidateUtils;
+import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.UAccountsMapper;
 import com.bbyiya.dao.UAdminMapper;
 import com.bbyiya.dao.UAdminactionlogsMapper;
@@ -21,8 +22,11 @@ import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.AccountLogType;
 import com.bbyiya.enums.AdminActionType;
 import com.bbyiya.enums.AmountType;
+import com.bbyiya.enums.OrderStatusEnum;
+import com.bbyiya.enums.PayTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.user.UserIdentityEnums;
+import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UAdmin;
 import com.bbyiya.model.UAdminactionlogs;
@@ -52,7 +56,8 @@ public class AccountController  extends SSOController{
 	private UBranchtransaccountsMapper transaccountMapper;
 	@Autowired
 	private UBranchtransamountlogMapper transaccountlogMapper;
-	
+	@Autowired
+	private OPayorderMapper payOrderMapper;// 支付单
 	@Autowired
 	private UCashlogsMapper cashlogMapper;
 	@Autowired
@@ -81,6 +86,18 @@ public class AccountController  extends SSOController{
 				UUsers branch= userMapper.getUUsersByUserID(branchuserid);
 				if(branch!=null&&ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.branch)) {
 					String payId=GenUtils.getOrderNo(9999l); 
+					OPayorder payorder = new OPayorder();
+					payorder.setPayid(payId);
+					payorder.setUserorderid("");
+					payorder.setUserid(branchuserid);
+					payorder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
+					payorder.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString()));
+					payorder.setPaytime(new Date()); 					
+					payorder.setTotalprice(amountPrice);
+					payorder.setCashamount(amountPrice);
+					payorder.setWalletamount(null);
+					payorder.setCreatetime(new Date());
+					payOrderMapper.insert(payorder);
 					boolean result=accountService.add_accountsLog(branchuserid, Integer.parseInt(AccountLogType.get_recharge.toString()), amountPrice, payId, "");
 					if(result){
 						UAccounts accounts=accountMapper.selectByPrimaryKey(branchuserid);

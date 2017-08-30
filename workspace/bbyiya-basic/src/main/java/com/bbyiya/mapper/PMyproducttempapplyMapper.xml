@@ -87,7 +87,7 @@
   <!-- 根据活动ID得到活动每天的完成人数 -->
   <select id="countTempCompleteByDay" resultType="java.lang.Integer"  >
     select  count(*)
-    from p_myproducttempapply  where  TempId= #{tempid,jdbcType=INTEGER} 
+    from p_myproducttempapply  where  TempId= #{tempid,jdbcType=INTEGER} and Status!=4
      And CompleteTime &gt;= #{startTimeStr,jdbcType=VARCHAR} AND CompleteTime &lt;= #{endTimeStr,jdbcType=VARCHAR}
   </select>
   

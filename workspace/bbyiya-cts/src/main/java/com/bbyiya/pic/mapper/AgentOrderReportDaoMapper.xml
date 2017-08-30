@@ -16,8 +16,8 @@
   
   <!-- 02 得到代理商分店订单的总数-->
   <select id="findBranchOrderReportVo" resultMap="BaseResultMap">
-   	 SELECT AgentUserId,BranchUserId,COUNT(BranchUserId) as totalOrdercount FROM o_userorders 
-     WHERE agentUserId is not null 
+   	 SELECT AgentUserId,BranchUserId,COUNT(BranchUserId) as totalOrdercount,(select BranchCompanyName from u_branches   where u_branches.BranchUserId=o_userorders.BranchUserId ) as branchCompanyName  FROM o_userorders 
+     WHERE agentUserId is not null  and BranchUserId is not null
      <if test="agentUserId != null " >
       and AgentUserId= #{agentUserId,jdbcType=BIGINT} 
      </if>

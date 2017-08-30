@@ -1,7 +1,11 @@
 package com.bbyiya.utils.pay;
 
 import com.bbyiya.utils.ConfigUtil;
-
+/**
+ * 咿呀科技（公众号支付）
+ * @author Administrator
+ *
+ */
 public class WxPayConfig {
 	/**
 	 * 商户号

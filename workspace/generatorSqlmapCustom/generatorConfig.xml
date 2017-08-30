@@ -45,9 +45,13 @@
 		</javaClientGenerator>
 		<!-- 指定数据库表 -->
 <<<<<<< HEAD
+<<<<<<< HEAD
 		<table tableName="p_productstyleexp" enableCountByExample="false"
 =======
 		<table tableName="ti_userdiscounts" enableCountByExample="false"
+>>>>>>> branch 'dev/zy' of https://github.com/okmen/yiya.git
+=======
+		<table tableName="ti_activityworks" enableCountByExample="false"
 >>>>>>> branch 'dev/zy' of https://github.com/okmen/yiya.git
 			enableUpdateByExample="false" enableDeleteByExample="false"
 			enableSelectByExample="false" selectByExampleQueryId="false"></table>

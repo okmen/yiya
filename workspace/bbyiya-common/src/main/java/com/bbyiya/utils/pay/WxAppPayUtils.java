@@ -13,7 +13,6 @@ import java.util.SortedMap;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.log4j.Logger;
 
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.encrypt.MD5Encrypt;
@@ -42,79 +41,6 @@ public class WxAppPayUtils {
 		return MD5Encrypt.getMessageDigest(String.valueOf(random.nextInt(10000)).getBytes()).toUpperCase();
 	}
 
-	/**
-	 * 获取支付参数（带签名）
-	 * @param orderNo
-	 * @param prepay_id
-	 * @param totalPrice
-	 * @param ip
-	 * @return
-	 */
-//	public static ResultMsg getWxPayParam(String orderNo, String prepay_id, double totalPrice, String ip) {
-//		ResultMsg msgResult = new ResultMsg();
-//		if(ObjectUtil.isEmpty(orderNo)||ObjectUtil.isEmpty(ip)){
-//			msgResult.setStatus(-2);
-//			msgResult.setMsg("参数有误！");
-//			return msgResult;
-//		}
-//		try {
-//			// 随机字符串
-//			String nonceStr = genNonceStr();
-//			if (ObjectUtil.isEmpty(prepay_id)) {
-//				Map<String, Object> map = doInBackground(ip, totalPrice, orderNo, nonceStr);
-//				if (map != null) {
-//					if (map.get("return_code").equals("SUCCESS")) {
-//						Object prepayID = map.get("prepay_id");
-//						if (prepayID != null) {
-//							prepay_id = map.get("prepay_id").toString();
-//						} else {
-//							msgResult.setStatus(-1);
-//							msgResult.setMsg(map.get("err_code_des").toString());
-//							return msgResult;
-//						}
-//
-//					} else {
-//						msgResult.setStatus(-1);
-//						msgResult.setMsg(map.get("return_msg").toString());
-//						return msgResult;
-//					}
-//
-//				} else {
-//					msgResult.setStatus(-1);
-//					msgResult.setMsg("系统错误");
-//					return msgResult;
-//				}
-//			}
-//			String timeStamp = String.valueOf(genTimeStamp());
-//
-//			List<NameValuePair> packageParams = new LinkedList<NameValuePair>();
-//			packageParams.add(new BasicNameValuePair("appid", WxPayAppConfig.APPID));
-//			packageParams.add(new BasicNameValuePair("partnerid", WxPayAppConfig.PARNER));// 商户号
-//			packageParams.add(new BasicNameValuePair("prepayid", prepay_id));
-//			packageParams.add(new BasicNameValuePair("package", "Sign=WXPay"));
-//			packageParams.add(new BasicNameValuePair("noncestr", nonceStr));
-//			packageParams.add(new BasicNameValuePair("timestamp", timeStamp));
-//			String sign = genPackageSign(packageParams);
-//
-//			Map<String, String> map_param = new HashMap<String, String>();
-//			map_param.put("appid", WxPayAppConfig.APPID);
-//			map_param.put("partnerId", WxPayAppConfig.PARNER);
-//			map_param.put("prepayId", prepay_id);
-//			map_param.put("package", "Sign=WXPay");
-//			map_param.put("nonceStr", nonceStr);
-//			map_param.put("timeStamp", timeStamp);
-//			map_param.put("sign", sign);
-//
-//			msgResult.setStatus(1);
-//			msgResult.setMsg(JsonUtil.objectToJsonStr(map_param));
-//
-//		} catch (Exception e) {
-//			// TODO: handle exception
-//			msgResult.setStatus(-2);
-//			msgResult.setMsg(e.getMessage());
-//		}
-//		return msgResult;
-//	}
 	
 	/**
 	 * 订单查询
@@ -183,7 +109,7 @@ public class WxAppPayUtils {
 		String urlString = WxPayAppConfig.WX_URL;
 		String entityString = genProductArgs(ipStr, totalPrice, orderNo, nonceStr);
 		String msgString = WxUtil.httpsRequest(urlString, entityString);
-		System.out.println(msgString); 
+//		System.out.println(msgString); 
 		Map<String, Object> map = WxUtil.xml2Map(msgString);
 		return map;
 	}

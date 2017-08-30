@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiProductstylesMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiProductstyles" >
+    <id column="StyleId" property="styleid" jdbcType="BIGINT" />
+    <result column="ProductId" property="productid" jdbcType="BIGINT" />
+    <result column="Price" property="price" jdbcType="DOUBLE" />
+    <result column="PromoterPrice" property="promoterprice" jdbcType="DOUBLE" />
+    <result column="ImgCount" property="imgcount" jdbcType="INTEGER" />
+    <result column="ProductType" property="producttype" jdbcType="INTEGER" />
+    <result column="DefaultImg" property="defaultimg" jdbcType="VARCHAR" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.bbyiya.model.TiProductstyles" extends="BaseResultMap" >
+    <result column="Description" property="description" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    StyleId, ProductId, Price, PromoterPrice, ImgCount, ProductType, DefaultImg, Status
+  </sql>
+  <sql id="Blob_Column_List" >
+    Description
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from ti_productstyles
+    where StyleId = #{styleid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ti_productstyles
+    where StyleId = #{styleid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiProductstyles" >
+    insert into ti_productstyles (StyleId, ProductId, Price, 
+      PromoterPrice, ImgCount, ProductType, 
+      DefaultImg, Status, Description
+      )
+    values (#{styleid,jdbcType=BIGINT}, #{productid,jdbcType=BIGINT}, #{price,jdbcType=DOUBLE}, 
+      #{promoterprice,jdbcType=DOUBLE}, #{imgcount,jdbcType=INTEGER}, #{producttype,jdbcType=INTEGER}, 
+      #{defaultimg,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{description,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiProductstyles" >
+    insert into ti_productstyles
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="styleid != null" >
+        StyleId,
+      </if>
+      <if test="productid != null" >
+        ProductId,
+      </if>
+      <if test="price != null" >
+        Price,
+      </if>
+      <if test="promoterprice != null" >
+        PromoterPrice,
+      </if>
+      <if test="imgcount != null" >
+        ImgCount,
+      </if>
+      <if test="producttype != null" >
+        ProductType,
+      </if>
+      <if test="defaultimg != null" >
+        DefaultImg,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="description != null" >
+        Description,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="styleid != null" >
+        #{styleid,jdbcType=BIGINT},
+      </if>
+      <if test="productid != null" >
+        #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="promoterprice != null" >
+        #{promoterprice,jdbcType=DOUBLE},
+      </if>
+      <if test="imgcount != null" >
+        #{imgcount,jdbcType=INTEGER},
+      </if>
+      <if test="producttype != null" >
+        #{producttype,jdbcType=INTEGER},
+      </if>
+      <if test="defaultimg != null" >
+        #{defaultimg,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiProductstyles" >
+    update ti_productstyles
+    <set >
+      <if test="productid != null" >
+        ProductId = #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="price != null" >
+        Price = #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="promoterprice != null" >
+        PromoterPrice = #{promoterprice,jdbcType=DOUBLE},
+      </if>
+      <if test="imgcount != null" >
+        ImgCount = #{imgcount,jdbcType=INTEGER},
+      </if>
+      <if test="producttype != null" >
+        ProductType = #{producttype,jdbcType=INTEGER},
+      </if>
+      <if test="defaultimg != null" >
+        DefaultImg = #{defaultimg,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="description != null" >
+        Description = #{description,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where StyleId = #{styleid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.bbyiya.model.TiProductstyles" >
+    update ti_productstyles
+    set ProductId = #{productid,jdbcType=BIGINT},
+      Price = #{price,jdbcType=DOUBLE},
+      PromoterPrice = #{promoterprice,jdbcType=DOUBLE},
+      ImgCount = #{imgcount,jdbcType=INTEGER},
+      ProductType = #{producttype,jdbcType=INTEGER},
+      DefaultImg = #{defaultimg,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=INTEGER},
+      Description = #{description,jdbcType=LONGVARCHAR}
+    where StyleId = #{styleid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiProductstyles" >
+    update ti_productstyles
+    set ProductId = #{productid,jdbcType=BIGINT},
+      Price = #{price,jdbcType=DOUBLE},
+      PromoterPrice = #{promoterprice,jdbcType=DOUBLE},
+      ImgCount = #{imgcount,jdbcType=INTEGER},
+      ProductType = #{producttype,jdbcType=INTEGER},
+      DefaultImg = #{defaultimg,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=INTEGER}
+    where StyleId = #{styleid,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,5 +1,9 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.TiDiscountdetails;
 
 public interface TiDiscountdetailsMapper {
@@ -14,4 +18,11 @@ public interface TiDiscountdetailsMapper {
     int updateByPrimaryKeySelective(TiDiscountdetails record);
 
     int updateByPrimaryKey(TiDiscountdetails record);
+    
+    /**
+     * 优惠券具体详情
+     * @param discountId
+     * @return
+     */
+    List<TiDiscountdetails> findDiscountlist(@Param("discountId")Integer discountId);
 }

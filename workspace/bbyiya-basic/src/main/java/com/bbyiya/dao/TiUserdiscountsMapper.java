@@ -1,5 +1,9 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.TiUserdiscounts;
 
 public interface TiUserdiscountsMapper {
@@ -14,4 +18,10 @@ public interface TiUserdiscountsMapper {
     int updateByPrimaryKeySelective(TiUserdiscounts record);
 
     int updateByPrimaryKey(TiUserdiscounts record);
+    /**
+     * 我的优惠券
+     * @param userId
+     * @return
+     */
+    List<TiUserdiscounts> findMyDiscounts(@Param("userId")Long userId);
 }

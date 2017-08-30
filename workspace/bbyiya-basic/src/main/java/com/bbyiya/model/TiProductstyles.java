@@ -18,6 +18,8 @@ public class TiProductstyles {
     private Integer status;
 
     private String description;
+    
+    private String imgjson;
 
     public Long getStyleid() {
         return styleid;
@@ -90,4 +92,13 @@ public class TiProductstyles {
     public void setDescription(String description) {
         this.description = description == null ? null : description.trim();
     }
+
+	public String getImgjson() {
+		return imgjson;
+	}
+
+	public void setImgjson(String imgjson) {
+		this.imgjson = imgjson;
+	}
+    
 }

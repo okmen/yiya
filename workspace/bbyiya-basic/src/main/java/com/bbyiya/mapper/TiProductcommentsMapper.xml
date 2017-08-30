@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiProductcommentsMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiProductcomments" >
+    <id column="Id" property="id" jdbcType="BIGINT" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="HeadImg" property="headimg" jdbcType="VARCHAR" />
+    <result column="StyleId" property="styleid" jdbcType="BIGINT" />
+    <result column="ProductId" property="productid" jdbcType="BIGINT" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="Content" property="content" jdbcType="VARCHAR" />
+    <result column="ImgJson" property="imgjson" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Id, UserId, HeadImg, StyleId, ProductId, CreateTime, Content, ImgJson
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_productcomments
+    where Id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ti_productcomments
+    where Id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiProductcomments" >
+    insert into ti_productcomments (Id, UserId, HeadImg, 
+      StyleId, ProductId, CreateTime, 
+      Content, ImgJson)
+    values (#{id,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{headimg,jdbcType=VARCHAR}, 
+      #{styleid,jdbcType=BIGINT}, #{productid,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{content,jdbcType=VARCHAR}, #{imgjson,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiProductcomments" >
+    insert into ti_productcomments
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        Id,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="headimg != null" >
+        HeadImg,
+      </if>
+      <if test="styleid != null" >
+        StyleId,
+      </if>
+      <if test="productid != null" >
+        ProductId,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+      <if test="content != null" >
+        Content,
+      </if>
+      <if test="imgjson != null" >
+        ImgJson,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="headimg != null" >
+        #{headimg,jdbcType=VARCHAR},
+      </if>
+      <if test="styleid != null" >
+        #{styleid,jdbcType=BIGINT},
+      </if>
+      <if test="productid != null" >
+        #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="imgjson != null" >
+        #{imgjson,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiProductcomments" >
+    update ti_productcomments
+    <set >
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="headimg != null" >
+        HeadImg = #{headimg,jdbcType=VARCHAR},
+      </if>
+      <if test="styleid != null" >
+        StyleId = #{styleid,jdbcType=BIGINT},
+      </if>
+      <if test="productid != null" >
+        ProductId = #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null" >
+        Content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="imgjson != null" >
+        ImgJson = #{imgjson,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiProductcomments" >
+    update ti_productcomments
+    set UserId = #{userid,jdbcType=BIGINT},
+      HeadImg = #{headimg,jdbcType=VARCHAR},
+      StyleId = #{styleid,jdbcType=BIGINT},
+      ProductId = #{productid,jdbcType=BIGINT},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      Content = #{content,jdbcType=VARCHAR},
+      ImgJson = #{imgjson,jdbcType=VARCHAR}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -18,6 +18,13 @@
     from ti_discountdetails
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="findDiscountlist" resultMap="BaseResultMap" ><!-- 获取优惠券优惠信息 -->
+    select 
+    <include refid="Base_Column_List" />
+    from ti_discountdetails
+    where DiscountId = #{discountId,jdbcType=INTEGER}
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from ti_discountdetails
     where id = #{id,jdbcType=INTEGER}

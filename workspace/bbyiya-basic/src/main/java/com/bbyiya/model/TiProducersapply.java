@@ -27,6 +27,8 @@ public class TiProducersapply {
 
     private String streetdetail;
 
+    private Integer status;
+
     public Long getProduceruserid() {
         return produceruserid;
     }
@@ -121,5 +123,13 @@ public class TiProducersapply {
 
     public void setStreetdetail(String streetdetail) {
         this.streetdetail = streetdetail == null ? null : streetdetail.trim();
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

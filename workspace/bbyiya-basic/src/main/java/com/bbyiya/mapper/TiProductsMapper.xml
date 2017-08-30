@@ -9,23 +9,22 @@
     <result column="Title" property="title" jdbcType="VARCHAR" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="UpdateTime" property="updatetime" jdbcType="TIMESTAMP" />
-  </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="com.bbyiya.model.TiProducts" extends="BaseResultMap" >
-    <result column="Description" property="description" jdbcType="LONGVARCHAR" />
+    <result column="Description" property="description" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    ProductId, Status, Price, DefaultImg, Title, CreateTime, UpdateTime
+    ProductId, Status, Price, DefaultImg, Title, CreateTime, UpdateTime,Description 
   </sql>
-  <sql id="Blob_Column_List" >
-    Description
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
     from ti_products
     where ProductId = #{productid,jdbcType=BIGINT}
+  </select>
+  <select id="findProductlist" resultMap="BaseResultMap"  ><!-- 台历、挂历、年历 产品列表 -->
+    select 
+    <include refid="Base_Column_List" />
+    from ti_products
+    where Status = 1 
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from ti_products
@@ -37,7 +36,7 @@
       UpdateTime, Description)
     values (#{productid,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, #{price,jdbcType=DOUBLE}, 
       #{defaultimg,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
-      #{updatetime,jdbcType=TIMESTAMP}, #{description,jdbcType=LONGVARCHAR})
+      #{updatetime,jdbcType=TIMESTAMP}, #{description,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiProducts" >
     insert into ti_products
@@ -90,7 +89,7 @@
         #{updatetime,jdbcType=TIMESTAMP},
       </if>
       <if test="description != null" >
-        #{description,jdbcType=LONGVARCHAR},
+        #{description,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -116,20 +115,9 @@
         UpdateTime = #{updatetime,jdbcType=TIMESTAMP},
       </if>
       <if test="description != null" >
-        Description = #{description,jdbcType=LONGVARCHAR},
+        Description = #{description,jdbcType=VARCHAR},
       </if>
     </set>
-    where ProductId = #{productid,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.bbyiya.model.TiProducts" >
-    update ti_products
-    set Status = #{status,jdbcType=INTEGER},
-      Price = #{price,jdbcType=DOUBLE},
-      DefaultImg = #{defaultimg,jdbcType=VARCHAR},
-      Title = #{title,jdbcType=VARCHAR},
-      CreateTime = #{createtime,jdbcType=TIMESTAMP},
-      UpdateTime = #{updatetime,jdbcType=TIMESTAMP},
-      Description = #{description,jdbcType=LONGVARCHAR}
     where ProductId = #{productid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiProducts" >
@@ -139,7 +127,8 @@
       DefaultImg = #{defaultimg,jdbcType=VARCHAR},
       Title = #{title,jdbcType=VARCHAR},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
-      UpdateTime = #{updatetime,jdbcType=TIMESTAMP}
+      UpdateTime = #{updatetime,jdbcType=TIMESTAMP},
+      Description = #{description,jdbcType=VARCHAR}
     where ProductId = #{productid,jdbcType=BIGINT}
   </update>
 </mapper>

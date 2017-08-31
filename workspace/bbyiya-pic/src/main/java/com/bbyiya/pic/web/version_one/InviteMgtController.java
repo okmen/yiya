@@ -1,6 +1,8 @@
 package com.bbyiya.pic.web.version_one;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -29,6 +31,7 @@ import com.bbyiya.model.UUseraddress;
 import com.bbyiya.pic.service.IPic_myProductService;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.service.pic.IBaseDiscountService;
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -113,9 +116,25 @@ public class InviteMgtController  extends SSOController {
 							apply.setStatus(Integer.parseInt(MyProducttempApplyStatusEnum.fails.toString()));
 							apply.setCompletetime(new Date());
 							tempApplyMapper.updateByPrimaryKeySelective(apply);
+							
+							
 							//活动失败的参与作品 分发优惠
 							if(apply.getCartid()!=null&&apply.getCartid().longValue()>0){
-								discountService.addTempDiscount(apply.getCartid());
+								boolean haveDis=true;
+								//是否发优惠券（针对流量主活动）
+								List<Map<String, String>>mapNodis=ConfigUtil.getMaplist("tempNoDiscount");
+								if(mapNodis!=null&&mapNodis.size()>0){
+									for (Map<String, String> map : mapNodis) {
+										int tempid=ObjectUtil.parseInt(map.get("tempId")) ;
+										if(tempid>0&&tempid==temp.getTempid().intValue()){
+											//不发优惠券
+											haveDis=false;
+										}
+									}
+								}
+								if(haveDis){
+									discountService.addTempDiscount(apply.getCartid());
+								}
 							}
 							rq.setStatu(ReturnStatus.ParamError);
 							rq.setStatusreson("对不起，活动名额已满，不要灰心您仍然可以享受优惠购买！");

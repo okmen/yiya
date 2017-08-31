@@ -1,6 +1,7 @@
 package com.bbyiya.pic.web.calendar;
 
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,22 +9,30 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bbyiya.dao.OOrderproductsMapper;
+import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.TiDiscountdetailsMapper;
+import com.bbyiya.dao.TiProductcommentsMapper;
 import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiProductsextMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
 import com.bbyiya.dao.TiUserdiscountsMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.TiDiscountdetails;
-import com.bbyiya.model.TiProducts;
+import com.bbyiya.model.TiProductcomments;
 import com.bbyiya.model.TiProductsext;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiUserdiscounts;
+import com.bbyiya.model.UUsers;
 import com.bbyiya.utils.JsonUtil;
+import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.calendar.product.TiProductResult;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 @Controller
 @RequestMapping(value = "/ti_product")
@@ -38,6 +47,10 @@ public class Ti_ProductController  extends SSOController {
 	private TiProductsextMapper proExtMapper;
 	@Autowired
 	private TiProductstylesMapper styleMapper;
+	@Autowired
+	private TiProductcommentsMapper commentMapper;
+	@Autowired
+	private OOrderproductsMapper oproductMapper;
 	
 	/**
 	 * 挂历列表
@@ -112,4 +125,76 @@ public class Ti_ProductController  extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	/**
+	 * 产品评论列表
+	 * @param productId
+	 * @param index
+	 * @param size
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/proComments")
+	public String proComments(long productId,int index ,int size) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			PageHelper.startPage(index, size);
+			List<TiProductcomments> commentlist=commentMapper.findListByProductId(productId);
+			PageInfo<TiProductcomments> resultPage=new PageInfo<TiProductcomments>(commentlist);
+			rq.setBasemodle(resultPage); 
+			rq.setStatu(ReturnStatus.Success);
+		}else { 
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 新增评论
+	 * @param productId
+	 * @param index
+	 * @param size
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/addComments")
+	public String addComments(String userOrderId,String content,String imgJson) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(!(ObjectUtil.isEmpty(userOrderId)||ObjectUtil.isEmpty(content))){
+			  try {
+					List<OOrderproducts> oproducts = oproductMapper.findOProductsByOrderId(userOrderId);
+					if (oproducts != null) {
+						TiProductcomments model = new TiProductcomments();
+						model.setContent(content);
+						model.setCreatetime(new Date());
+						model.setHeadimg(user.getHeadImg());
+						model.setOrderproductid(oproducts.get(0).getOrderproductid()); 
+						model.setProductid(oproducts.get(0).getProductid());
+						model.setStyleid(oproducts.get(0).getStyleid());
+						model.setUserid(user.getUserId());
+						if (!ObjectUtil.isEmpty(imgJson)) {
+							model.setImgjson(imgJson);
+						}
+						commentMapper.insert(model);
+					}
+				} catch (Exception e) {
+					
+				}
+			}
+			rq.setStatu(ReturnStatus.Success);
+		}else { 
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 }

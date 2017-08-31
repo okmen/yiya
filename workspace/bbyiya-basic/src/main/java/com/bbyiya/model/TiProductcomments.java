@@ -18,6 +18,8 @@ public class TiProductcomments {
     private String content;
 
     private String imgjson;
+    
+    private String orderproductid;
 
     public Long getId() {
         return id;
@@ -82,4 +84,14 @@ public class TiProductcomments {
     public void setImgjson(String imgjson) {
         this.imgjson = imgjson == null ? null : imgjson.trim();
     }
+
+	public String getOrderproductid() {
+		return orderproductid;
+	}
+
+	public void setOrderproductid(String orderproductid) {
+		this.orderproductid = orderproductid;
+	}
+    
+    
 }

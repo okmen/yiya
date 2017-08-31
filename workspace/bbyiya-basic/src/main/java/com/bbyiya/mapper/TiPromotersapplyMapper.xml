@@ -21,6 +21,44 @@
     PromoterUserId, AgentUserId, CompanyName, Contacts, Mobilephone, Province, City, 
     Area, StreetDetails, CreatTime, Reason, Status, ProcessTime, Remark
   </sql>
+  
+   <!-- 推广者申请信息Model-->
+  <resultMap id="TiPromoterapplyVOResult" type="com.bbyiya.vo.calendar.TiPromoterApplyVo" extends="BaseResultMap">  
+  </resultMap>  
+  
+   <!-- 通过代理userId获取代理申请model -->
+  <select id="getTiPromoterapplyVOById" resultMap="TiPromoterapplyVOResult" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_promotersapply
+    where PromoterUserId = #{promoteruserid,jdbcType=BIGINT}
+  </select>
+  
+  <!-- 获取申请列表 -->
+  <select id="findTiPromoterapplyVOList" resultMap="TiPromoterapplyVOResult" parameterType="com.bbyiya.vo.calendar.TiAgentSearchParam" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_promotersapply
+    where 1=1
+    <if test="userId != null" >
+        and  PromoterUserId = #{userId,jdbcType=BIGINT}
+    </if>
+    <if test="agentUserId != null" >
+        and  AgentUserId = #{agentUserId,jdbcType=BIGINT}
+    </if>
+    <if test="status != null" >
+       and  Status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="companyName != null" > 
+       and  (PromoterUserId=#{companyName,jdbcType=VARCHAR} 
+       OR CompanyName LIKE  CONCAT('%', #{companyName,jdbcType=VARCHAR},'%' ) 
+       OR  Contacts LIKE  CONCAT('%', #{companyName,jdbcType=VARCHAR},'%' )  
+       OR  Mobilephone LIKE  CONCAT('%', #{companyName,jdbcType=VARCHAR},'%' ))
+    </if>
+  </select>
+  
+  
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />

@@ -11,6 +11,15 @@
   <sql id="Base_Column_List" >
     UserId, PromoterUserId, Name, Status, CreateTime
   </sql>
+  
+  <!--根据PromoterUserId得到推广者下的员工  -->
+  <select id="findEmployeelistByPromoterUserId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_promoteremployees
+    where PromoterUserId = #{promoteruserid,jdbcType=BIGINT}
+  </select>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />

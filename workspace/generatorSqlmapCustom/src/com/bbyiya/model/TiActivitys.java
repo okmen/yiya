@@ -27,9 +27,9 @@ public class TiActivitys {
 
     private Date createtime;
 
-    private String description;
-    
     private String remark;
+
+    private String description;
 
     public Integer getActid() {
         return actid;
@@ -127,6 +127,14 @@ public class TiActivitys {
         this.createtime = createtime;
     }
 
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark == null ? null : remark.trim();
+    }
+
     public String getDescription() {
         return description;
     }
@@ -134,14 +142,4 @@ public class TiActivitys {
     public void setDescription(String description) {
         this.description = description == null ? null : description.trim();
     }
-
-	public String getRemark() {
-		return remark;
-	}
-
-	public void setRemark(String remark) {
-		this.remark = remark;
-	}
-    
-    
 }

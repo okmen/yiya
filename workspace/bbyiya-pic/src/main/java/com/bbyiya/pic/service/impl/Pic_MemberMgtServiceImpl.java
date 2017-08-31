@@ -111,7 +111,7 @@ public class Pic_MemberMgtServiceImpl implements IPic_MemberMgtService{
 				//如果不是本影楼的分销人员，依然可以被添加
 				if(usBranchusers.getBranchuserid()!=null&&usBranchusers.getBranchuserid().intValue()==branchUserId){
 					rqModel.setStatu(ReturnStatus.ParamError);
-					rqModel.setStatusreson("该用户已经您的员工，不能重复添加！");
+					rqModel.setStatusreson("该用户已经是您的员工，不能重复添加！");
 					return rqModel;
 				}else{
 					rqModel.setStatu(ReturnStatus.ParamError);

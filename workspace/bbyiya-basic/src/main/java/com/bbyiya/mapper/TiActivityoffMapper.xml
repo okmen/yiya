@@ -9,6 +9,15 @@
   <sql id="Base_Column_List" >
     Id, ActId, PromoterUserId
   </sql>
+  
+  
+  <select id="selectByPromoterUserIdAndActId" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_activityoff
+    where PromoterUserId = #{promoteruserid,jdbcType=BIGINT} and ActId=#{actid,jdbcType=INTEGER}
+  </select>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />

@@ -26,30 +26,6 @@
   <sql id="Blob_Column_List" >
     Description
   </sql>
-  
-  <resultMap id="TiActivitysVOResult" type="com.bbyiya.vo.calendar.TiActivitysVo" extends="BaseResultMap">  
-  </resultMap>  
-  
-  <select id="findCalenderActivityList" resultMap="TiActivitysVOResult"  >
-    select 
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from ti_activitys
-    where ProducerUserId = #{produceruserid,jdbcType=BIGINT}
-    <if test="type != null" >
-       and  Type = #{type,jdbcType=INTEGER}
-    </if>
-    <if test="status != null" >
-       and  Status = #{status,jdbcType=INTEGER}
-    </if>
-    <if test="keywords != null and keywords!=''" > 
-       and  (ActId=#{keywords,jdbcType=VARCHAR} OR Title LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ))
-    </if>
-    order by CreateTime desc
-  </select>
-  
-  
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />

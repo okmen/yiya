@@ -1,5 +1,9 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.TiPromoteremployees;
 
 public interface TiPromoteremployeesMapper {
@@ -14,4 +18,6 @@ public interface TiPromoteremployeesMapper {
     int updateByPrimaryKeySelective(TiPromoteremployees record);
 
     int updateByPrimaryKey(TiPromoteremployees record);
+    
+    List<TiPromoteremployees>findEmployeelistByPromoterUserId(@Param("promoteruserid")Long  promoteruserid);
 }

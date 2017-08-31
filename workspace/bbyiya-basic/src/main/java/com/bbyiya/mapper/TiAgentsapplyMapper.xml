@@ -20,6 +20,39 @@
     AgentUserId, CompanyName, Contacts, Mobilephone, Status, CreateTime, ProcessTime, 
     Reason, Remark, Province, City, Area, StreetDetail
   </sql>
+  
+   <!-- 代理商申请信息Model-->
+  <resultMap id="TiAgentapplyVOResult" type="com.bbyiya.vo.calendar.TiAgentApplyVo" extends="BaseResultMap">  
+  </resultMap>  
+  
+  <!-- 通过代理userId获取代理申请model -->
+  <select id="getUAgentapplyVOByAgentUserId" resultMap="TiAgentapplyVOResult" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_agentsapply
+    where AgentUserId = #{agentuserid,jdbcType=BIGINT}
+  </select>
+  
+  <!-- 获取申请列表 -->
+  <select id="findTiAgentapplyVOList" resultMap="TiAgentapplyVOResult" parameterType="com.bbyiya.vo.calendar.TiAgentSearchParam" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_agentsapply
+    where 1=1
+    <if test="userId != null" >
+        and  AgentUserId = #{userId,jdbcType=BIGINT}
+    </if>
+    <if test="status != null" >
+       and  Status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="companyName != null" > 
+       and  (AgentUserId=#{companyName,jdbcType=VARCHAR} 
+       OR CompanyName LIKE  CONCAT('%', #{companyName,jdbcType=VARCHAR},'%' ) 
+       OR  Contacts LIKE  CONCAT('%', #{companyName,jdbcType=VARCHAR},'%' )  
+       OR  Mobilephone LIKE  CONCAT('%', #{companyName,jdbcType=VARCHAR},'%' ))
+    </if>
+  </select>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />

@@ -14,10 +14,11 @@
     <result column="City" property="city" jdbcType="INTEGER" />
     <result column="Area" property="area" jdbcType="INTEGER" />
     <result column="StreetDetail" property="streetdetail" jdbcType="VARCHAR" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     ProducerUserId, CompanyName, Contacts, Mobilephone, CreateTime, ProcessTime, Reason, 
-    Remark, Province, City, Area, StreetDetail
+    Remark, Province, City, Area, StreetDetail, Status
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -29,17 +30,49 @@
     delete from ti_producersapply
     where ProducerUserId = #{produceruserid,jdbcType=BIGINT}
   </delete>
+  <!-- 推广者申请信息Model-->
+  <resultMap id="TiProducersapplyVOResult" type="com.bbyiya.vo.calendar.TiProducersApplyVo" extends="BaseResultMap">  
+  </resultMap>  
+  
+  <!-- 通过代理userId获取代理申请model -->
+  <select id="getTiProducersapplyVOById" resultMap="TiProducersapplyVOResult" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_producersapply
+    where ProducerUserId = #{produceruserid,jdbcType=BIGINT}
+  </select>
+  
+  <!-- 获取申请列表 -->
+  <select id="findTiProducersapplyVOList" resultMap="TiProducersapplyVOResult" parameterType="com.bbyiya.vo.calendar.TiAgentSearchParam" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_producersapply
+    where 1=1
+    <if test="userId != null" >
+        and  ProducerUserId = #{userId,jdbcType=BIGINT}
+    </if>  
+    <if test="status != null" >
+       and  Status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="companyName != null" > 
+       and  (ProducerUserId=#{companyName,jdbcType=VARCHAR} 
+       OR  CompanyName LIKE  CONCAT('%', #{companyName,jdbcType=VARCHAR},'%' ) 
+       OR  Contacts LIKE  CONCAT('%', #{companyName,jdbcType=VARCHAR},'%' )  
+       OR  Mobilephone LIKE  CONCAT('%', #{companyName,jdbcType=VARCHAR},'%' ))
+    </if>
+  </select>
+  
   <insert id="insert" parameterType="com.bbyiya.model.TiProducersapply" >
     insert into ti_producersapply (ProducerUserId, CompanyName, Contacts, 
       Mobilephone, CreateTime, ProcessTime, 
       Reason, Remark, Province, 
-      City, Area, StreetDetail
-      )
+      City, Area, StreetDetail, 
+      Status)
     values (#{produceruserid,jdbcType=BIGINT}, #{companyname,jdbcType=VARCHAR}, #{contacts,jdbcType=VARCHAR}, 
       #{mobilephone,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{processtime,jdbcType=TIMESTAMP}, 
       #{reason,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, 
-      #{city,jdbcType=INTEGER}, #{area,jdbcType=INTEGER}, #{streetdetail,jdbcType=VARCHAR}
-      )
+      #{city,jdbcType=INTEGER}, #{area,jdbcType=INTEGER}, #{streetdetail,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiProducersapply" >
     insert into ti_producersapply
@@ -80,6 +113,9 @@
       <if test="streetdetail != null" >
         StreetDetail,
       </if>
+      <if test="status != null" >
+        Status,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="produceruserid != null" >
@@ -117,6 +153,9 @@
       </if>
       <if test="streetdetail != null" >
         #{streetdetail,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -156,6 +195,9 @@
       <if test="streetdetail != null" >
         StreetDetail = #{streetdetail,jdbcType=VARCHAR},
       </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
     </set>
     where ProducerUserId = #{produceruserid,jdbcType=BIGINT}
   </update>
@@ -171,7 +213,8 @@
       Province = #{province,jdbcType=INTEGER},
       City = #{city,jdbcType=INTEGER},
       Area = #{area,jdbcType=INTEGER},
-      StreetDetail = #{streetdetail,jdbcType=VARCHAR}
+      StreetDetail = #{streetdetail,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=INTEGER}
     where ProducerUserId = #{produceruserid,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -19,6 +19,8 @@ public class TiProducts {
 
     private String description;
     private String imgjson;
+
+    private Integer postmodelid;
     
     
 
@@ -92,6 +94,14 @@ public class TiProducts {
 
 	public void setImgjson(String imgjson) {
 		this.imgjson = imgjson;
+	}
+
+	public Integer getPostmodelid() {
+		return postmodelid;
+	}
+
+	public void setPostmodelid(Integer postmodelid) {
+		this.postmodelid = postmodelid;
 	}
     
     

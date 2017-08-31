@@ -21,7 +21,13 @@ public class TiProducts {
     private String imgjson;
 
     private Integer postmodelid;
-    
+
+
+    private Integer advertcount;
+
+    private String advertdescription;
+
+    private String advertimgjson;
     
 
     public Long getProductid() {
@@ -102,6 +108,30 @@ public class TiProducts {
 
 	public void setPostmodelid(Integer postmodelid) {
 		this.postmodelid = postmodelid;
+	}
+
+	public Integer getAdvertcount() {
+		return advertcount;
+	}
+
+	public void setAdvertcount(Integer advertcount) {
+		this.advertcount = advertcount;
+	}
+
+	public String getAdvertdescription() {
+		return advertdescription;
+	}
+
+	public void setAdvertdescription(String advertdescription) {
+		this.advertdescription = advertdescription;
+	}
+
+	public String getAdvertimgjson() {
+		return advertimgjson;
+	}
+
+	public void setAdvertimgjson(String advertimgjson) {
+		this.advertimgjson = advertimgjson;
 	}
     
     

@@ -14,17 +14,42 @@
     <result column="CompleteCount" property="completecount" jdbcType="INTEGER" />
     <result column="Status" property="status" jdbcType="INTEGER" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="Remark" property="remark" jdbcType="VARCHAR" />
   </resultMap>
   <resultMap id="ResultMapWithBLOBs" type="com.bbyiya.model.TiActivitys" extends="BaseResultMap" >
     <result column="Description" property="description" jdbcType="LONGVARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     ActId, Title, ProducerUserId, ProductId, StyleId, FreeCount, ActType, ExtCount, ApplyCount, 
-    CompleteCount, Status, CreateTime
+    CompleteCount, Status, CreateTime, Remark
   </sql>
   <sql id="Blob_Column_List" >
     Description
   </sql>
+  
+  <resultMap id="TiActivitysVOResult" type="com.bbyiya.vo.calendar.TiActivitysVo" extends="BaseResultMap">  
+  </resultMap>  
+  
+  <select id="findCalenderActivityList" resultMap="TiActivitysVOResult"  >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from ti_activitys
+    where ProducerUserId = #{produceruserid,jdbcType=BIGINT}
+    <if test="type != null" >
+       and  Type = #{type,jdbcType=INTEGER}
+    </if>
+    <if test="status != null" >
+       and  Status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="keywords != null and keywords!=''" > 
+       and  (ActId=#{keywords,jdbcType=VARCHAR} OR Title LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ))
+    </if>
+    order by CreateTime desc
+  </select>
+  
+  
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
@@ -42,12 +67,12 @@
       ProductId, StyleId, FreeCount, 
       ActType, ExtCount, ApplyCount, 
       CompleteCount, Status, CreateTime, 
-      Description)
+      Remark, Description)
     values (#{actid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{produceruserid,jdbcType=BIGINT}, 
       #{productid,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, #{freecount,jdbcType=INTEGER}, 
       #{acttype,jdbcType=INTEGER}, #{extcount,jdbcType=INTEGER}, #{applycount,jdbcType=INTEGER}, 
       #{completecount,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
-      #{description,jdbcType=LONGVARCHAR})
+      #{remark,jdbcType=VARCHAR}, #{description,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiActivitys" >
     insert into ti_activitys
@@ -87,6 +112,9 @@
       </if>
       <if test="createtime != null" >
         CreateTime,
+      </if>
+      <if test="remark != null" >
+        Remark,
       </if>
       <if test="description != null" >
         Description,
@@ -129,6 +157,9 @@
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
       </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
       <if test="description != null" >
         #{description,jdbcType=LONGVARCHAR},
       </if>
@@ -170,6 +201,9 @@
       <if test="createtime != null" >
         CreateTime = #{createtime,jdbcType=TIMESTAMP},
       </if>
+      <if test="remark != null" >
+        Remark = #{remark,jdbcType=VARCHAR},
+      </if>
       <if test="description != null" >
         Description = #{description,jdbcType=LONGVARCHAR},
       </if>
@@ -189,6 +223,7 @@
       CompleteCount = #{completecount,jdbcType=INTEGER},
       Status = #{status,jdbcType=INTEGER},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      Remark = #{remark,jdbcType=VARCHAR},
       Description = #{description,jdbcType=LONGVARCHAR}
     where ActId = #{actid,jdbcType=INTEGER}
   </update>
@@ -204,7 +239,8 @@
       ApplyCount = #{applycount,jdbcType=INTEGER},
       CompleteCount = #{completecount,jdbcType=INTEGER},
       Status = #{status,jdbcType=INTEGER},
-      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      Remark = #{remark,jdbcType=VARCHAR}
     where ActId = #{actid,jdbcType=INTEGER}
   </update>
 </mapper>

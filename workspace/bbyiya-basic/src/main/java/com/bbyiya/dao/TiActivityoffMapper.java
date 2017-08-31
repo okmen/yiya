@@ -1,5 +1,7 @@
 package com.bbyiya.dao;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.TiActivityoff;
 
 public interface TiActivityoffMapper {
@@ -14,4 +16,6 @@ public interface TiActivityoffMapper {
     int updateByPrimaryKeySelective(TiActivityoff record);
 
     int updateByPrimaryKey(TiActivityoff record);
+    
+    TiActivityoff selectByPromoterUserIdAndActId(@Param("promoteruserid")Long  promoteruserid,@Param("actid")Integer  actid);
 }

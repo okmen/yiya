@@ -82,7 +82,7 @@ public class Ibs_TiPromoterEmployeeServiceImpl implements IIbs_TiPromoterEmploye
 			employeeMapper.insert(employee);
 			
 			//被添加的用户的身份标示   预留
-			//userBasic.addUserIdentity(member.getUserid(),UserIdentityEnums.salesman); 
+			userBasic.addUserIdentity(member.getUserid(),UserIdentityEnums.ti_employees); 
 			rqModel.setStatu(ReturnStatus.Success);
 			rqModel.setStatusreson("添加成功！");
 		}else {

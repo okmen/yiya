@@ -194,7 +194,7 @@ public class CalendarActivityController extends SSOController {
 	
 	
 	/**
-	 * 员工活动无权限列表
+	 * 员工活动权限列表
 	 * @param tempApplyId
 	 * @return
 	 * @throws Exception

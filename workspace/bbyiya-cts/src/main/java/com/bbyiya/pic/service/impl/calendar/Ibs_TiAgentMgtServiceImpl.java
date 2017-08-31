@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.bbyiya.dao.TiAgentsMapper;
 import com.bbyiya.dao.TiAgentsapplyMapper;
 import com.bbyiya.dao.TiProducersMapper;
@@ -22,6 +23,7 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.ProducersStatusEnum;
 import com.bbyiya.enums.calendar.PromoterStatusEnum;
 import com.bbyiya.enums.calendar.TiAgentStatusEnum;
+import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.TiAgents;
 import com.bbyiya.model.TiAgentsapply;
 import com.bbyiya.model.TiProducers;
@@ -172,10 +174,6 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 			rq.setStatusreson("代理商ID号不能为空");
 			return rq;
 		}
-//		if(ObjectUtil.isEmpty(applyInfo.getPromoteruserid())){
-//			rq.setStatusreson("生产商ID号不能为空");
-//			return rq;
-//		}
 		if(ObjectUtil.isEmpty(applyInfo.getCompanyname())){
 			rq.setStatusreson("公司名称不能为空");
 			return rq;
@@ -336,7 +334,7 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 				this.addAgentInfo(apply);
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("审核成功");
-				
+				apply.setStatus(Integer.parseInt(TiAgentStatusEnum.ok.toString())); 
 //				//给客户咿呀绑定的手机号发送短信
 //				UUsers user=usersMapper.getUUsersByUserID(apply.getAgentuserid());
 //				if(!ObjectUtil.isEmpty(user.getMobilephone())){
@@ -346,10 +344,10 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 //				}
 			
 			}else{
+				apply.setStatus(Integer.parseInt(TiAgentStatusEnum.no.toString())); 
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("拒绝成功");
 			}
-			apply.setStatus(status); 
 			apply.setProcesstime(new Date());//处理时间
 			apply.setReason(msg);
 			agentapplyMapper.updateByPrimaryKeySelective(apply);
@@ -385,7 +383,7 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 				agentsMapper.updateByPrimaryKey(agentModel);
 			}
 			//更新代理身份标识 预留
-			//userBasic.addUserIdentity(apply.getAgentuserid(),UserIdentityEnums.agent); 
+			userBasic.addUserIdentity(apply.getAgentuserid(),UserIdentityEnums.ti_agent); 
 		}
 	}
 	
@@ -399,13 +397,14 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 			if(status==Integer.parseInt(PromoterStatusEnum.ok.toString())){//成为代理商
 				//代理商 申请信息复制到正式代理表
 				this.addPromoterInfo(apply);
+				apply.setStatus(Integer.parseInt(PromoterStatusEnum.ok.toString())); 
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("审核成功");
 			}else{
+				apply.setStatus(Integer.parseInt(PromoterStatusEnum.no.toString())); 
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("拒绝成功");
 			}
-			apply.setStatus(status); 
 			apply.setProcesstime(new Date());//处理时间
 			apply.setReason(msg);
 			promoterapplyMapper.updateByPrimaryKeySelective(apply);
@@ -429,10 +428,16 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 				promoterModel=new TiPromoters();
 				isadd=true;
 			}
+			promoterModel.setPromoteruserid(apply.getPromoteruserid());
 			promoterModel.setAgentuserid(apply.getAgentuserid());
 			promoterModel.setCompanyname(apply.getCompanyname());
 			promoterModel.setContacts(apply.getContacts());
 			promoterModel.setMobilephone(apply.getMobilephone());
+			promoterModel.setProvince(apply.getProvince());
+			promoterModel.setCity(apply.getCity());
+			promoterModel.setArea(apply.getArea());
+			promoterModel.setStreetdetails(apply.getStreetdetails());
+			promoterModel.setRemark(apply.getRemark());
 			promoterModel.setStatus(Integer.parseInt(PromoterStatusEnum.ok.toString()));
 			if(isadd){
 				promoterMapper.insertSelective(promoterModel);
@@ -440,7 +445,7 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 				promoterMapper.updateByPrimaryKey(promoterModel);
 			}
 			//更新代理身份标识 预留
-			//userBasic.addUserIdentity(apply.getPromoteruserid(),UserIdentityEnums.agent); 
+			userBasic.addUserIdentity(apply.getPromoteruserid(),UserIdentityEnums.ti_promoter); 
 			
 			TiPromoteremployees employee=promoteremployeeMapper.selectByPrimaryKey(promoterModel.getPromoteruserid());
 			if(employee==null){
@@ -471,13 +476,14 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 			if(status==Integer.parseInt(ProducersStatusEnum.ok.toString())){//成为代理商
 				//代理商 申请信息复制到正式代理表
 				this.addProducersInfo(apply);
+				apply.setStatus(Integer.parseInt(ProducersStatusEnum.ok.toString())); 
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("审核成功");
 			}else{
+				apply.setStatus(Integer.parseInt(ProducersStatusEnum.no.toString())); 
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("拒绝成功");
 			}
-			apply.setStatus(status); 
 			apply.setProcesstime(new Date());//处理时间
 			apply.setReason(msg);
 			producersapplyMapper.updateByPrimaryKeySelective(apply);
@@ -513,7 +519,7 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 				producersMapper.updateByPrimaryKey(producersModel);
 			}
 			//更新代理身份标识 预留
-			//userBasic.addUserIdentity(apply.getProduceruserid(),UserIdentityEnums.agent); 
+			userBasic.addUserIdentity(apply.getProduceruserid(),UserIdentityEnums.ti_producer); 
 		}
 	}
 	
@@ -560,7 +566,7 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 			
 			if(promoterapply.getStatus()!=null){
 				if(promoterapply.getStatus().intValue()==Integer.parseInt(PromoterStatusEnum.ok.toString())){
-					map.put("msg", "已经成为代理商");
+					map.put("msg", "已经成为推广者");
 				}else if (promoterapply.getStatus().intValue()==Integer.parseInt(PromoterStatusEnum.applying.toString())) {
 					map.put("msg", "申请中");
 				}else if (promoterapply.getStatus().intValue()==Integer.parseInt(PromoterStatusEnum.no.toString())) {
@@ -591,7 +597,7 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 			
 			if(producersapply.getStatus()!=null){
 				if(producersapply.getStatus().intValue()==Integer.parseInt(ProducersStatusEnum.ok.toString())){
-					map.put("msg", "已经成为代理商");
+					map.put("msg", "已经成为生产商");
 				}else if (producersapply.getStatus().intValue()==Integer.parseInt(ProducersStatusEnum.applying.toString())) {
 					map.put("msg", "申请中");
 				}else if (producersapply.getStatus().intValue()==Integer.parseInt(ProducersStatusEnum.no.toString())) {

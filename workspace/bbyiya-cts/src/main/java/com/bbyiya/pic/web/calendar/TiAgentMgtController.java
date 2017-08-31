@@ -151,18 +151,18 @@ public class TiAgentMgtController extends SSOController {
 	}
 	
 	/**
-	 *  CTS端推广者申请
+	 *  IBS端推广者申请
 	 * @param agentJson
 	 * @return
 	 * @throws Exception
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/cts_promoterApply")
-	public String cts_promoterApply(String promoterUserId,String promoterJson) throws Exception {
+	@RequestMapping(value = "/ibs_promoterApply")
+	public String ibs_promoterApply(String promoterUserId,String promoterJson) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_promoter)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_employees)){
 				UUsers promoterUsers= userMapper.getUUsersByUserID(ObjectUtil.parseLong(promoterUserId));
 				if(promoterUsers!=null){
 					if(!ObjectUtil.isEmpty(promoterUsers.getMobilephone())){
@@ -227,6 +227,51 @@ public class TiAgentMgtController extends SSOController {
 			}else {
 				rq.setStatu(ReturnStatus.LoginError_2);
 				rq.setStatusreson("未完成注册,请先绑定手机号！");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * CTS端生产者申请
+	 * @param agentJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/cts_producersApply")
+	public String cts_producersApply(String producersUserId,String producersJson) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
+				UUsers agentUsers= userMapper.getUUsersByUserID(ObjectUtil.parseLong(producersUserId));
+				if(agentUsers!=null&&!ObjectUtil.isEmpty(agentUsers.getMobilephone())){
+					try {
+						TiProducersapply applyInfo=(TiProducersapply)JsonUtil.jsonStrToObject(producersJson, TiProducersapply.class);
+						if(applyInfo!=null){
+							applyInfo.setProduceruserid(user.getUserId()); 
+						}
+						rq =agentService.applyProducers(ObjectUtil.parseLong(producersUserId), applyInfo);
+					} catch (Exception e) {
+						rq.setStatu(ReturnStatus.ParamError);
+						rq.setStatusreson("参数有误101");
+						System.out.println(e); 
+						return JsonUtil.objectToJsonStr(rq);
+					}
+				}else {
+					rq.setStatu(ReturnStatus.LoginError_2);
+					rq.setStatusreson("未完成注册,请先绑定手机号！");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+			}else {
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("无此权限");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 		}else {
@@ -324,7 +369,7 @@ public class TiAgentMgtController extends SSOController {
 	
 	
 	/**
-	 * 判断用户代理商申请状态
+	 * C端判断用户代理商申请状态
 	 * @param type
 	 * @return
 	 * @throws Exception
@@ -341,6 +386,33 @@ public class TiAgentMgtController extends SSOController {
 				rq=agentService.getPromoterApplyStatusModel(user.getUserId());
 			}else {
 				rq=agentService.getproducersApplyStatusModel(user.getUserId());
+			}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * CTS端判断用户代理商申请状态
+	 * @param type
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/cts_getApplyStatus")
+	public String cts_getApplyStatus(Long userId,Integer type) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(type!=null&&type==1){
+				rq=agentService.getAgentApplyStatusModel(userId);
+			}else if(type!=null&&type==2){
+				rq=agentService.getPromoterApplyStatusModel(userId);
+			}else {
+				rq=agentService.getproducersApplyStatusModel(userId);
 			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);

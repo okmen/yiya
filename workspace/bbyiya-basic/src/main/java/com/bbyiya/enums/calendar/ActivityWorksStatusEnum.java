@@ -1,9 +1,5 @@
 package com.bbyiya.enums.calendar;
-/**
- * 
- * 用户参与情况状态
- *
- */
+
 public enum ActivityWorksStatusEnum {
 	/**
      * 已参与,已报名

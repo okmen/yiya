@@ -10,21 +10,16 @@
     <result column="ProductType" property="producttype" jdbcType="INTEGER" />
     <result column="DefaultImg" property="defaultimg" jdbcType="VARCHAR" />
     <result column="Status" property="status" jdbcType="INTEGER" />
-  </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="com.bbyiya.model.TiProductstyles" extends="BaseResultMap" >
-    <result column="Description" property="description" jdbcType="LONGVARCHAR" />
+    <result column="Description" property="description" jdbcType="VARCHAR" />
+    <result column="ImgJson" property="imgjson" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    StyleId, ProductId, Price, PromoterPrice, ImgCount, ProductType, DefaultImg, Status
+    StyleId, ProductId, Price, PromoterPrice, ImgCount, ProductType, DefaultImg, Status, 
+    Description, ImgJson
   </sql>
-  <sql id="Blob_Column_List" >
-    Description
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
     from ti_productstyles
     where StyleId = #{styleid,jdbcType=BIGINT}
   </select>
@@ -35,12 +30,12 @@
   <insert id="insert" parameterType="com.bbyiya.model.TiProductstyles" >
     insert into ti_productstyles (StyleId, ProductId, Price, 
       PromoterPrice, ImgCount, ProductType, 
-      DefaultImg, Status, Description
-      )
+      DefaultImg, Status, Description, 
+      ImgJson)
     values (#{styleid,jdbcType=BIGINT}, #{productid,jdbcType=BIGINT}, #{price,jdbcType=DOUBLE}, 
       #{promoterprice,jdbcType=DOUBLE}, #{imgcount,jdbcType=INTEGER}, #{producttype,jdbcType=INTEGER}, 
-      #{defaultimg,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{description,jdbcType=LONGVARCHAR}
-      )
+      #{defaultimg,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{description,jdbcType=VARCHAR}, 
+      #{imgjson,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiProductstyles" >
     insert into ti_productstyles
@@ -72,6 +67,9 @@
       <if test="description != null" >
         Description,
       </if>
+      <if test="imgjson != null" >
+        ImgJson,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="styleid != null" >
@@ -99,7 +97,10 @@
         #{status,jdbcType=INTEGER},
       </if>
       <if test="description != null" >
-        #{description,jdbcType=LONGVARCHAR},
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="imgjson != null" >
+        #{imgjson,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -128,21 +129,12 @@
         Status = #{status,jdbcType=INTEGER},
       </if>
       <if test="description != null" >
-        Description = #{description,jdbcType=LONGVARCHAR},
+        Description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="imgjson != null" >
+        ImgJson = #{imgjson,jdbcType=VARCHAR},
       </if>
     </set>
-    where StyleId = #{styleid,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.bbyiya.model.TiProductstyles" >
-    update ti_productstyles
-    set ProductId = #{productid,jdbcType=BIGINT},
-      Price = #{price,jdbcType=DOUBLE},
-      PromoterPrice = #{promoterprice,jdbcType=DOUBLE},
-      ImgCount = #{imgcount,jdbcType=INTEGER},
-      ProductType = #{producttype,jdbcType=INTEGER},
-      DefaultImg = #{defaultimg,jdbcType=VARCHAR},
-      Status = #{status,jdbcType=INTEGER},
-      Description = #{description,jdbcType=LONGVARCHAR}
     where StyleId = #{styleid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiProductstyles" >
@@ -153,7 +145,9 @@
       ImgCount = #{imgcount,jdbcType=INTEGER},
       ProductType = #{producttype,jdbcType=INTEGER},
       DefaultImg = #{defaultimg,jdbcType=VARCHAR},
-      Status = #{status,jdbcType=INTEGER}
+      Status = #{status,jdbcType=INTEGER},
+      Description = #{description,jdbcType=VARCHAR},
+      ImgJson = #{imgjson,jdbcType=VARCHAR}
     where StyleId = #{styleid,jdbcType=BIGINT}
   </update>
 </mapper>

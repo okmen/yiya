@@ -13,7 +13,5 @@ public interface TiProductstylesMapper {
 
     int updateByPrimaryKeySelective(TiProductstyles record);
 
-    int updateByPrimaryKeyWithBLOBs(TiProductstyles record);
-
     int updateByPrimaryKey(TiProductstyles record);
 }

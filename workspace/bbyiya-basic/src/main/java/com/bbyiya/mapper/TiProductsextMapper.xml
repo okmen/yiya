@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiProductsextMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiProductsext" >
+    <id column="ProductId" property="productid" jdbcType="BIGINT" />
+    <result column="Sales" property="sales" jdbcType="INTEGER" />
+    <result column="CommentCount" property="commentcount" jdbcType="INTEGER" />
+    <result column="MonthsSales" property="monthssales" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ProductId, Sales, CommentCount, MonthsSales
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_productsext
+    where ProductId = #{productid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ti_productsext
+    where ProductId = #{productid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiProductsext" >
+    insert into ti_productsext (ProductId, Sales, CommentCount, 
+      MonthsSales)
+    values (#{productid,jdbcType=BIGINT}, #{sales,jdbcType=INTEGER}, #{commentcount,jdbcType=INTEGER}, 
+      #{monthssales,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiProductsext" >
+    insert into ti_productsext
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="productid != null" >
+        ProductId,
+      </if>
+      <if test="sales != null" >
+        Sales,
+      </if>
+      <if test="commentcount != null" >
+        CommentCount,
+      </if>
+      <if test="monthssales != null" >
+        MonthsSales,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="productid != null" >
+        #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="sales != null" >
+        #{sales,jdbcType=INTEGER},
+      </if>
+      <if test="commentcount != null" >
+        #{commentcount,jdbcType=INTEGER},
+      </if>
+      <if test="monthssales != null" >
+        #{monthssales,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiProductsext" >
+    update ti_productsext
+    <set >
+      <if test="sales != null" >
+        Sales = #{sales,jdbcType=INTEGER},
+      </if>
+      <if test="commentcount != null" >
+        CommentCount = #{commentcount,jdbcType=INTEGER},
+      </if>
+      <if test="monthssales != null" >
+        MonthsSales = #{monthssales,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ProductId = #{productid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiProductsext" >
+    update ti_productsext
+    set Sales = #{sales,jdbcType=INTEGER},
+      CommentCount = #{commentcount,jdbcType=INTEGER},
+      MonthsSales = #{monthssales,jdbcType=INTEGER}
+    where ProductId = #{productid,jdbcType=BIGINT}
+  </update>
+</mapper>

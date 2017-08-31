@@ -11,7 +11,7 @@
 		</commentGenerator>
 		<!--数据库连接的信息：驱动类、连接地址、用户名、密码 -->
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
-			connectionURL="jdbc:mysql://120.77.168.103:3306/bbyiya" userId="root"
+			connectionURL="jdbc:mysql://118.178.131.1:3306/bbyiya" userId="root"
 			password="bbyiya.net@20170111">
 		</jdbcConnection>
 		<!-- <jdbcConnection driverClass="oracle.jdbc.OracleDriver" connectionURL="jdbc:oracle:thin:@127.0.0.1:1521:yycg" 
@@ -44,15 +44,7 @@
 			<property name="enableSubPackages" value="false" />
 		</javaClientGenerator>
 		<!-- 指定数据库表 -->
-<<<<<<< HEAD
-<<<<<<< HEAD
-		<table tableName="p_productstyleexp" enableCountByExample="false"
-=======
-		<table tableName="ti_userdiscounts" enableCountByExample="false"
->>>>>>> branch 'dev/zy' of https://github.com/okmen/yiya.git
-=======
-		<table tableName="ti_activityworks" enableCountByExample="false"
->>>>>>> branch 'dev/zy' of https://github.com/okmen/yiya.git
+		<table tableName="ti_producersapply" enableCountByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false"
 			enableSelectByExample="false" selectByExampleQueryId="false"></table>
 

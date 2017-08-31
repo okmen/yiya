@@ -21,12 +21,12 @@
     from ti_userdiscounts
     where Id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="findMyDiscounts" resultMap="BaseResultMap"  >
+  <select id="findMyDiscounts" resultMap="BaseResultMap"  ><!-- 我的优惠券 -->
     select 
     <include refid="Base_Column_List" />
     from ti_userdiscounts
     where UserId= #{userId,jdbcType=BIGINT} and status=0 
-    
+    order by Id asc
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >

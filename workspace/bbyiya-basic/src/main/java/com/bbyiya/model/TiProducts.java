@@ -20,15 +20,7 @@ public class TiProducts {
     private String description;
     private String imgjson;
     
-    /*-----------实体扩展字段-------------------*/
-    /**
-     * 优惠类型（1折扣，2现金优惠）
-     */
-    private Integer discountType;
-    /**
-     * 具体优惠（如：当discountType=1时 discount=0.5表示5折，当discountType=2时，discount=5表示优惠5元）
-     */
-    private Double discount;
+    
 
     public Long getProductid() {
         return productid;
@@ -93,23 +85,7 @@ public class TiProducts {
     public void setDescription(String description) {
         this.description = description == null ? null : description.trim();
     }
-
-	public Integer getDiscountType() {
-		return discountType;
-	}
-
-	public void setDiscountType(Integer discountType) {
-		this.discountType = discountType;
-	}
-
-	public Double getDiscount() {
-		return discount;
-	}
-
-	public void setDiscount(Double discount) {
-		this.discount = discount;
-	}
-
+	
 	public String getImgjson() {
 		return imgjson;
 	}

@@ -3,6 +3,7 @@ package com.bbyiya.dao;
 import java.util.List;
 
 import com.bbyiya.model.TiProducts;
+import com.bbyiya.vo.calendar.product.TiProductResult;
 
 public interface TiProductsMapper {
     int deleteByPrimaryKey(Long productid);
@@ -12,6 +13,12 @@ public interface TiProductsMapper {
     int insertSelective(TiProducts record);
 
     TiProducts selectByPrimaryKey(Long productid);
+    /**
+     * 获取model
+     * @param productid
+     * @return
+     */
+    TiProductResult getResultByProductId(Long productid);
 
     int updateByPrimaryKeySelective(TiProducts record);
 
@@ -21,5 +28,9 @@ public interface TiProductsMapper {
      * @return
      */
     List<TiProducts> findProductlist();
-    
+    /**
+     * 
+     * @return
+     */
+    List<TiProductResult> findProductResultlist();
 }

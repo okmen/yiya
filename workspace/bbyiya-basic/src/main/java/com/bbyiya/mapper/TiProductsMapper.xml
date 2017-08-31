@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.bbyiya.dao.TiProductsMapper" >
-  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiProducts" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiProducts" ><!-- 产品表tiproduct -->
     <id column="ProductId" property="productid" jdbcType="BIGINT" />
     <result column="Status" property="status" jdbcType="INTEGER" />
     <result column="Price" property="price" jdbcType="DOUBLE" />
@@ -12,6 +12,8 @@
     <result column="Description" property="description" jdbcType="VARCHAR" />
     <result column="ImgJson" property="imgjson" jdbcType="VARCHAR" />
   </resultMap>
+  <resultMap id="ProductResultMap" type="com.bbyiya.vo.calendar.product.TiProductResult" ><!-- 产品表tiproduct 扩展resultmodel -->
+  </resultMap>
   <sql id="Base_Column_List" >
     ProductId, Status, Price, DefaultImg, Title, CreateTime, UpdateTime,Description, ImgJson
   </sql>
@@ -21,7 +23,19 @@
     from ti_products
     where ProductId = #{productid,jdbcType=BIGINT}
   </select>
-  <select id="findProductlist" resultMap="BaseResultMap"  ><!-- 台历、挂历、年历 产品列表 -->
+  <select id="getResultByProductId" resultMap="ProductResultMap" parameterType="java.lang.Long" ><!-- 0获取单个实体result -->
+    select 
+    <include refid="Base_Column_List" />
+    from ti_products
+    where ProductId = #{productid,jdbcType=BIGINT}
+  </select>
+  <select id="findProductlist" resultMap="BaseResultMap"  ><!-- 1 台历、挂历、年历 产品列表 -->
+    select 
+    <include refid="Base_Column_List" />
+    from ti_products
+    where Status = 1 
+  </select>
+  <select id="findProductResultlist" resultMap="ProductResultMap"  ><!-- 2 台历、挂历、年历 产品列表 -->
     select 
     <include refid="Base_Column_List" />
     from ti_products

@@ -5,17 +5,22 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.dao.TiActivityoffMapper;
 import com.bbyiya.dao.TiActivitysMapper;
+import com.bbyiya.dao.TiActivitysinglesMapper;
+import com.bbyiya.dao.TiActivityworksMapper;
 import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiPromoteremployeesMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.calendar.ActivityWorksStatusEnum;
+import com.bbyiya.enums.calendar.TiActivityTypeEnum;
 import com.bbyiya.model.PMyproducttempusers;
 import com.bbyiya.model.TiActivityoff;
 import com.bbyiya.model.TiActivitys;
@@ -28,6 +33,7 @@ import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.PageInfoUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.calendar.TiActivitysVo;
+import com.bbyiya.vo.calendar.TiActivitysWorkVo;
 import com.bbyiya.vo.calendar.TiEmployeeActOffVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -44,6 +50,10 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 	private TiActivitysMapper activityMapper;
 	@Autowired
 	private TiProductsMapper tiproductMapper;
+	@Autowired
+	private TiActivityworksMapper actworkMapper;
+	@Autowired
+	private TiActivitysinglesMapper actworksingleMapper;
 	@Autowired
 	private TiPromoteremployeesMapper promoteremployeeMapper;
 	
@@ -118,6 +128,48 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 			ti.setCreateTimestr(DateUtil.getTimeStr(ti.getCreatetime(), "yyyy-MM-dd"));
 			TiProducts product=tiproductMapper.selectByPrimaryKey(ti.getProductid());
 			ti.setProductName(product.getTitle());
+			//得到未完成数量
+			Integer notsubmitcount=actworkMapper.getCountByActStatus(ti.getActid(), Integer.parseInt(ActivityWorksStatusEnum.apply.toString()));
+			ti.setNotsubmitcount(notsubmitcount==null?0:notsubmitcount);
+			//得到图片已提交未分享数量
+			Integer notsharecount=actworkMapper.getCountByActStatus(ti.getActid(), Integer.parseInt(ActivityWorksStatusEnum.imagesubmit.toString()));
+			ti.setNotsharecount(notsharecount==null?0:notsharecount);
+			//得到已邀请数量
+			if(ti.getActtype()==Integer.parseInt(TiActivityTypeEnum.toAll.toString())){
+				ti.setYaoqingcount(ti.getFreecount());
+			}else{
+				Integer yaoqingcount=actworksingleMapper.getYaoqingCountByActId(ti.getActid());
+				ti.setYaoqingcount(yaoqingcount==null?0:yaoqingcount);
+			}
+		}
+		rq.setBasemodle(pageresult);
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("获取列表成功！");
+		return rq;
+	}
+	
+	/**
+	 * 活动制作进度列表
+	 */
+	public ReturnModel getActWorkListByActId(int index,int size,Integer actid,Integer status,String keywords){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.SystemError);
+		
+		PageHelper.startPage(index, size);
+		List<TiActivitysWorkVo> activitylist=actworkMapper.findActWorkListByActId(actid, status, keywords);
+		PageInfo<TiActivitysWorkVo> pageresult=new PageInfo<TiActivitysWorkVo>(activitylist);
+		for (TiActivitysWorkVo ti : pageresult.getList()) {
+			ti.setCreateTimestr(DateUtil.getTimeStr(ti.getCreatetime(), "yyyy-MM-dd"));
+			UUsers user=usersMapper.selectByPrimaryKey(ti.getUserid());
+			if(user!=null){
+				ti.setWeiNickName(user.getNickname());
+			}
+			
+			List<String> orderNoList = new ArrayList<String>();
+			//得到订单集合
+			//orderMapper.findOrderListByWorkId(ti.getWorkid());
+			ti.setOrdernolist(orderNoList);
+			
 		}
 		rq.setBasemodle(pageresult);
 		rq.setStatu(ReturnStatus.Success);

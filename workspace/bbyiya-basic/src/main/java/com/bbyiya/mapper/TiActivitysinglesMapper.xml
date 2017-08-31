@@ -13,6 +13,12 @@
   <sql id="Base_Column_List" >
     ActSingleId, ActId, PromoterUserId, UserId, CreateTime, GetsTime, Status
   </sql>
+  
+   <!-- 根据活动ID得到发送的邀请总数 -->
+  <select id="getYaoqingCountByActId" resultType="java.lang.Integer"  parameterType="java.lang.Integer" >
+    select count(ActSingleId) from ti_activitysingles where ActId = #{actid,jdbcType=INTEGER}
+  </select>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />

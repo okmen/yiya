@@ -1,5 +1,10 @@
 package com.bbyiya.enums;
 
+/**
+ * 已过期
+ * @author Administrator
+ *
+ */
 public enum AmountType {
 	/**
      * 消费

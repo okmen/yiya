@@ -177,6 +177,30 @@ public class CalendarActivityController extends SSOController {
 	}
 	
 	/**
+	 * 得到活动制作进度情况列表
+	 * @param index
+	 * @param size
+	 * @param status
+	 * @param keywords
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getActWorkListByActId")
+	public String getActWorkListByActId(int index,int size,Integer actid,Integer status,String keywords) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=calendarActivityService.getActWorkListByActId(index, size,actid,status,keywords);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
 	 * 编辑活动备注信息
 	 * @param tempid
 	 * @param remark

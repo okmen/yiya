@@ -29,7 +29,24 @@ public enum UserIdentityEnums {
     /**
      * cts组员
      */
-    cts_member(128)
+    cts_member(128),
+    /*-----------------台历模块-角色身份----------------------------*/
+    /**
+     * 台历-代理商
+     */
+    ti_agent(256),
+    /**
+     * 台历-生产商
+     */
+    ti_producer(512),
+    /**
+     * 台历-推广者（影楼）
+     */
+    ti_promoter(1024),
+    /**
+     * 员工
+     */
+    ti_employees(2048)
     ;
 
     private final int Type;

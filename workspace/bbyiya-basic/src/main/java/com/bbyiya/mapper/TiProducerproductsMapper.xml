@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiProducerproductsMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiProducerproducts" >
+    <id column="Id" property="id" jdbcType="BIGINT" />
+    <result column="ProducerUserId" property="produceruserid" jdbcType="BIGINT" />
+    <result column="ProductId" property="productid" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Id, ProducerUserId, ProductId
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_producerproducts
+    where Id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ti_producerproducts
+    where Id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiProducerproducts" >
+    insert into ti_producerproducts (Id, ProducerUserId, ProductId
+      )
+    values (#{id,jdbcType=BIGINT}, #{produceruserid,jdbcType=BIGINT}, #{productid,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiProducerproducts" >
+    insert into ti_producerproducts
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        Id,
+      </if>
+      <if test="produceruserid != null" >
+        ProducerUserId,
+      </if>
+      <if test="productid != null" >
+        ProductId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="produceruserid != null" >
+        #{produceruserid,jdbcType=BIGINT},
+      </if>
+      <if test="productid != null" >
+        #{productid,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiProducerproducts" >
+    update ti_producerproducts
+    <set >
+      <if test="produceruserid != null" >
+        ProducerUserId = #{produceruserid,jdbcType=BIGINT},
+      </if>
+      <if test="productid != null" >
+        ProductId = #{productid,jdbcType=BIGINT},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiProducerproducts" >
+    update ti_producerproducts
+    set ProducerUserId = #{produceruserid,jdbcType=BIGINT},
+      ProductId = #{productid,jdbcType=BIGINT}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

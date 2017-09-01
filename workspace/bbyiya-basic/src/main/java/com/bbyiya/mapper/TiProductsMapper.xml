@@ -12,11 +12,15 @@
     <result column="Description" property="description" jdbcType="VARCHAR" />
     <result column="ImgJson" property="imgjson" jdbcType="VARCHAR" />
     <result column="PostModelId" property="postmodelid" jdbcType="INTEGER" />
+    <result column="AdvertCount" property="advertcount" jdbcType="INTEGER" />
+    <result column="AdvertDescription" property="advertdescription" jdbcType="VARCHAR" />
+    <result column="AdvertImgJson" property="advertimgjson" jdbcType="VARCHAR" />
   </resultMap>
   <resultMap id="ProductResultMap" type="com.bbyiya.vo.calendar.product.TiProductResult" ><!-- 产品表tiproduct 扩展resultmodel -->
   </resultMap>
   <sql id="Base_Column_List" >
-     ProductId, Status, Price, DefaultImg, Title, Description, CreateTime, UpdateTime, ImgJson, PostModelId
+     ProductId, Status, Price, DefaultImg, Title, Description, CreateTime, UpdateTime, 
+    ImgJson, PostModelId, AdvertCount, AdvertDescription, AdvertImgJson
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -50,11 +54,13 @@
     insert into ti_products (ProductId, Status, Price, 
       DefaultImg, Title, Description, 
       CreateTime, UpdateTime, ImgJson, 
-      PostModelId)
+      PostModelId, AdvertCount, AdvertDescription, 
+      AdvertImgJson)
     values (#{productid,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, #{price,jdbcType=DOUBLE}, 
       #{defaultimg,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
       #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{imgjson,jdbcType=VARCHAR}, 
-      #{postmodelid,jdbcType=INTEGER})
+      #{postmodelid,jdbcType=INTEGER}, #{advertcount,jdbcType=INTEGER}, #{advertdescription,jdbcType=VARCHAR}, 
+      #{advertimgjson,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiProducts" >
     insert into ti_products
@@ -89,6 +95,15 @@
       <if test="postmodelid != null" >
         PostModelId,
       </if>
+      <if test="advertcount != null" >
+        AdvertCount,
+      </if>
+      <if test="advertdescription != null" >
+        AdvertDescription,
+      </if>
+      <if test="advertimgjson != null" >
+        AdvertImgJson,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="productid != null" >
@@ -120,6 +135,15 @@
       </if>
       <if test="postmodelid != null" >
         #{postmodelid,jdbcType=INTEGER},
+      </if>
+      <if test="advertcount != null" >
+        #{advertcount,jdbcType=INTEGER},
+      </if>
+      <if test="advertdescription != null" >
+        #{advertdescription,jdbcType=VARCHAR},
+      </if>
+      <if test="advertimgjson != null" >
+        #{advertimgjson,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -153,6 +177,15 @@
       <if test="postmodelid != null" >
         PostModelId = #{postmodelid,jdbcType=INTEGER},
       </if>
+      <if test="advertcount != null" >
+        AdvertCount = #{advertcount,jdbcType=INTEGER},
+      </if>
+      <if test="advertdescription != null" >
+        AdvertDescription = #{advertdescription,jdbcType=VARCHAR},
+      </if>
+      <if test="advertimgjson != null" >
+        AdvertImgJson = #{advertimgjson,jdbcType=VARCHAR},
+      </if>
     </set>
     where ProductId = #{productid,jdbcType=BIGINT}
   </update>
@@ -166,7 +199,10 @@
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
       UpdateTime = #{updatetime,jdbcType=TIMESTAMP},
       ImgJson = #{imgjson,jdbcType=VARCHAR},
-      PostModelId = #{postmodelid,jdbcType=INTEGER}
+      PostModelId = #{postmodelid,jdbcType=INTEGER},
+      AdvertCount = #{advertcount,jdbcType=INTEGER},
+      AdvertDescription = #{advertdescription,jdbcType=VARCHAR},
+      AdvertImgJson = #{advertimgjson,jdbcType=VARCHAR}
     where ProductId = #{productid,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -14,4 +14,6 @@ public interface TiMyworksMapper {
     int updateByPrimaryKeySelective(TiMyworks record);
 
     int updateByPrimaryKey(TiMyworks record);
+    
+    int insertReturnId(TiMyworks record);
 }

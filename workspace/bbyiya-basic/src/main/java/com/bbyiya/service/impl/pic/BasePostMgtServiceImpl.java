@@ -14,10 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.dao.PPostmodelMapper;
 import com.bbyiya.dao.PPostmodelareasMapper;
+import com.bbyiya.dao.PProductsMapper;
+import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.PPostmodel;
 import com.bbyiya.model.PPostmodelareas;
+import com.bbyiya.model.PProducts;
+import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.UUseraddress;
 import com.bbyiya.service.pic.IBasePostMgtService;
 import com.bbyiya.utils.ConfigUtil;
@@ -37,6 +41,8 @@ public class BasePostMgtServiceImpl implements IBasePostMgtService{
 	private PPostmodelMapper postmodelMapper;
 	@Autowired
 	private UUseraddressMapper addressMapper;
+	@Autowired
+	private PProductsMapper productsMapper;
 	
 	public ReturnModel find_postagelist(Long addressId){
 		ReturnModel rq=new ReturnModel();
@@ -51,6 +57,29 @@ public class BasePostMgtServiceImpl implements IBasePostMgtService{
 			list=find_postlist(null);
 		rq.setStatu(ReturnStatus.Success);
 		rq.setBasemodle(list); 
+		return rq;
+	}
+	/**
+	 * 获取运费模块
+	 * @param addressId
+	 * @param productId
+	 * @return
+	 */
+	public ReturnModel find_postagelist(Long addressId,Long productId){
+		ReturnModel rq=new ReturnModel();
+		List<PPostmodel> list=new ArrayList<PPostmodel>();
+		PProducts products=productsMapper.selectByPrimaryKey(productId);
+		if(products!=null){
+			UUseraddress addr= addressMapper.get_UUserAddressByKeyId(addressId);
+			if(addr!=null){
+				PPostmodel model =getPostmodel(products.getPostmodelid(),addr.getArea());
+				if(model!=null){
+					list.add(model);
+				}
+			}
+			rq.setBasemodle(list);
+		}
+		rq.setStatu(ReturnStatus.Success);
 		return rq;
 	}
 	
@@ -70,6 +99,89 @@ public class BasePostMgtServiceImpl implements IBasePostMgtService{
 		return postList;
 	}
 	
+	public ReturnModel find_postlist(Integer area,Long productId) {
+		ReturnModel rq=new ReturnModel();
+		List<PPostmodel> list=new ArrayList<PPostmodel>();
+		PProducts products=productsMapper.selectByPrimaryKey(productId);
+		if(products!=null){
+			PPostmodel model = getPostmodel(products.getPostmodelid(), area);
+			if (model != null) {
+				list.add(model);
+			}
+			rq.setBasemodle(list);
+		}
+		rq.setStatu(ReturnStatus.Success);
+		return rq;
+	}
+	
+	@Autowired
+	private TiProductsMapper tiProductsMapper;
+	
+	/**
+	 * 根据产品获取运费情况
+	 */
+//	public List<PPostmodel> find_postlist_ti(Integer area,Long productId) {
+//		List<PPostmodel> postlist=new ArrayList<PPostmodel>();
+//		TiProducts products= tiProductsMapper.selectByPrimaryKey(productId);
+//		if(products!=null){
+//			PPostmodel post = postmodelMapper.selectByPrimaryKey(products.getPostmodelid());
+//			if (post != null) {
+//				if (area != null && area > 0) {
+//					PPostmodelareas areamod = postmodelareasMapper.getPostAreaModel(post.getPostmodelid(), area);
+//					if (areamod != null) {
+//						post.setAmount(areamod.getAmount());
+//					}
+//				}
+//				postlist.add(post);
+//			}
+//			return postlist;
+//		}
+//		return null;
+//	}
+	
+	public ReturnModel find_postlist_ti(Integer area,Long productId) {
+		ReturnModel rq=new ReturnModel();
+		List<PPostmodel> postlist=new ArrayList<PPostmodel>();
+		TiProducts products= tiProductsMapper.selectByPrimaryKey(productId);
+		if(products!=null){
+			PPostmodel post = postmodelMapper.selectByPrimaryKey(products.getPostmodelid());
+			if (post != null) {
+				if (area != null && area > 0) {
+					PPostmodelareas areamod = postmodelareasMapper.getPostAreaModel(post.getPostmodelid(), area);
+					if (areamod != null) {
+						post.setAmount(areamod.getAmount());
+					}
+				}
+				postlist.add(post);
+			}
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(postlist); 
+		}
+		return rq;
+	}
+	
+	public ReturnModel find_postlist_ti(Long addressId,Long productId) {
+		ReturnModel rq=new ReturnModel();
+		List<PPostmodel> postlist=new ArrayList<PPostmodel>();
+		TiProducts products= tiProductsMapper.selectByPrimaryKey(productId);
+		if(products!=null){
+			PPostmodel post = postmodelMapper.selectByPrimaryKey(products.getPostmodelid());
+			if (post != null) {
+				UUseraddress addr= addressMapper.get_UUserAddressByKeyId(addressId);
+				if(addr!=null){
+					PPostmodelareas areamod = postmodelareasMapper.getPostAreaModel(post.getPostmodelid(), addr.getArea());
+					if (areamod != null) {
+						post.setAmount(areamod.getAmount());
+					}
+				}
+				postlist.add(post);
+			}
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(postlist); 
+		}
+		return rq;
+		
+	}
 	public PPostmodel getPostmodel(Integer postModelId,Integer areaId){
 		PPostmodel model=postmodelMapper.selectByPrimaryKey(postModelId);
 		if(model!=null){

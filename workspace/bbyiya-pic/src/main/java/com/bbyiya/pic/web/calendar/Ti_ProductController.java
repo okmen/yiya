@@ -2,7 +2,9 @@ package com.bbyiya.pic.web.calendar;
 
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.dao.OOrderproductsMapper;
-import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.TiDiscountdetailsMapper;
+import com.bbyiya.dao.TiDiscountmodelMapper;
 import com.bbyiya.dao.TiProductcommentsMapper;
 import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiProductsextMapper;
@@ -20,11 +22,12 @@ import com.bbyiya.dao.TiUserdiscountsMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.TiDiscountdetails;
+import com.bbyiya.model.TiDiscountmodel;
 import com.bbyiya.model.TiProductcomments;
+import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiProductsext;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiUserdiscounts;
-import com.bbyiya.model.UUsers;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -41,6 +44,8 @@ public class Ti_ProductController  extends SSOController {
 	private TiProductsMapper productsMapper;
 	@Autowired
 	private TiUserdiscountsMapper mydiscountMapper;
+	@Autowired
+	private TiDiscountmodelMapper disModelMapper;
 	@Autowired
 	private TiDiscountdetailsMapper discountDetailsMapper;
 	@Autowired
@@ -63,22 +68,18 @@ public class Ti_ProductController  extends SSOController {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
+			//01产品列表
 			List<TiProductResult> proList=productsMapper.findProductResultlist();
-			List<TiUserdiscounts> discounts= mydiscountMapper.findMyDiscounts(user.getUserId());
-			if(discounts!=null&&discounts.size()>0){
-				//具体优惠信息
-				List<TiDiscountdetails> dislist= discountDetailsMapper.findDiscountlist(discounts.get(0).getDiscountid());
-				if(dislist!=null&&dislist.size()>0){
-					if(proList!=null&&proList.size()>0){
-						for (TiProductResult pro : proList) {
-							//目前默认为折扣
-							pro.setDiscountType(1); 
-							for (TiDiscountdetails dis : dislist) {
-								//商品表productId为默认款式styleId
-								if(pro.getProductid().longValue()==dis.getStyleid().longValue()){
-									pro.setDiscount(dis.getDiscount());
-								}
-							}
+			//我的优惠
+			TiDiscountmodel disModel= getDiscountList(user.getUserId());
+			if(disModel!=null&&disModel.getDetails()!=null) {
+				for (TiProductResult pro : proList) {
+					pro.setDiscountType(disModel.getType());
+					pro.setDiscountName(disModel.getTitle()); 
+					for (TiDiscountdetails dd : disModel.getDetails()) {
+						// 商品表productId为默认款式styleId
+						if (pro.getProductid().longValue() == dd.getStyleid().longValue()) {
+							pro.setDiscount(dd.getDiscount());
 						}
 					}
 				}
@@ -124,6 +125,75 @@ public class Ti_ProductController  extends SSOController {
 			return JsonUtil.objectToJsonStr(rq);
 		}
 		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 款式详情-下单页用
+	 * @param styleId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/orderStyleInfo")
+	public String orderStyleInfo(long styleId) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			Map<String, Object> map = new HashMap<String, Object>();
+			TiProductstyles style= styleMapper.selectByPrimaryKey(styleId);
+			if(style!=null){
+				TiProducts product=productsMapper.selectByPrimaryKey(style.getProductid());
+				if(product!=null) {
+					map.put("title", product.getTitle());
+					map.put("defaultImg", style.getDefaultimg());
+					map.put("price", style.getPrice());
+					map.put("styleId", styleId);
+					map.put("productId", style.getProductid());
+					map.put("propertystr", style.getDescription());
+					
+					TiDiscountmodel disModel= getDiscountList(user.getUserId());
+					if(disModel!=null&&disModel.getDetails()!=null){
+						for (TiDiscountdetails dd : disModel.getDetails()) {
+							if(dd.getStyleid().longValue()==styleId){
+								map.put("discount", dd.getDiscount());
+								map.put("discountType", disModel.getType());
+								map.put("discountName", disModel.getTitle());
+							}
+						}
+					}
+					rq.setBasemodle(map);
+					rq.setStatu(ReturnStatus.Success);
+				}
+			}
+		}else { 
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	
+	/**
+	 * 我的优惠信息
+	 * @param userId
+	 * @return
+	 */
+	private TiDiscountmodel getDiscountList(Long userId){
+		List<TiUserdiscounts> discounts = mydiscountMapper.findMyDiscounts(userId);
+		if (discounts != null && discounts.size() > 0) {
+			TiDiscountmodel model= disModelMapper.selectByPrimaryKey(discounts.get(0).getDiscountid());
+			if(model!=null){
+				// 具体优惠信息
+				List<TiDiscountdetails> dislist = discountDetailsMapper.findDiscountlist(discounts.get(0).getDiscountid());
+				if(dislist!=null&&dislist.size()>0){
+					model.setDetails(dislist);
+					return model;
+				}
+			}
+			
+		}
+		return null;
 	}
 	
 	/**

@@ -60,7 +60,7 @@ public class Ibs_TiPromoterEmployeeServiceImpl implements IIbs_TiPromoterEmploye
 		//检测影楼身份
 		TiPromoters promoter= promoterMapper.selectByPrimaryKey(promoterUserId);
 		if(promoter==null||promoter.getStatus()==null||promoter.getStatus().intValue()!=Integer.parseInt(PromoterStatusEnum.ok.toString())){
-			rqModel.setStatusreson("您不是影楼管理员，暂时没有权限！");
+			rqModel.setStatusreson("您不是推广商管理员，暂时没有权限！");
 			return rqModel;
 		}
 		//检测被添加的用户身份（必须绑定手机）
@@ -109,7 +109,7 @@ public class Ibs_TiPromoterEmployeeServiceImpl implements IIbs_TiPromoterEmploye
 		//检测影楼身份
 		TiPromoters promoter= promoterMapper.selectByPrimaryKey(promoterUserId);
 		if(promoter==null||promoter.getStatus()==null||promoter.getStatus().intValue()!=Integer.parseInt(PromoterStatusEnum.ok.toString())){
-			rqModel.setStatusreson("您不是影楼管理员，暂时没有权限！");
+			rqModel.setStatusreson("您不是推广商管理员，暂时没有权限！");
 			return rqModel;
 		}
 		TiPromoteremployees employee= employeeMapper.selectByPrimaryKey(userId); 

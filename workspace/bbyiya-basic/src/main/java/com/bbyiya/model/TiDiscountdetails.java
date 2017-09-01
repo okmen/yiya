@@ -14,6 +14,10 @@ public class TiDiscountdetails {
     private Long productid;
 
     private Date createtime;
+    
+//    private Integer discountType;
+//    
+//    private String dicountName;
 
     public Integer getId() {
         return id;
@@ -62,4 +66,8 @@ public class TiDiscountdetails {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+
+	
+    
+    
 }

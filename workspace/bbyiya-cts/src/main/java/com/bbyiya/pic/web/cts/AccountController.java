@@ -84,7 +84,7 @@ public class AccountController  extends SSOController{
 		if(user!=null) {
 			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
 				UUsers branch= userMapper.getUUsersByUserID(branchuserid);
-				if(branch!=null&&ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.branch)) {
+				if(branch!=null&&(ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.branch)||ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.ti_promoter))) {
 					String payId=GenUtils.getOrderNo(9999l); 
 					OPayorder payorder = new OPayorder();
 					payorder.setPayid(payId);

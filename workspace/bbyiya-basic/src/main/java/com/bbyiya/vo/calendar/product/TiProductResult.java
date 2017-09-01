@@ -13,6 +13,10 @@ public class TiProductResult extends TiProducts{
      */
     private Integer discountType;
     /**
+     * 优惠名称
+     */
+    private String discountName;
+    /**
      * 具体优惠（如：当discountType=1时 discount=0.5表示5折，当discountType=2时，discount=5表示优惠5元）
      */
     private Double discount;
@@ -59,6 +63,12 @@ public class TiProductResult extends TiProducts{
 	}
 	public void setStylelist(List<TiProductstyles> stylelist) {
 		this.stylelist = stylelist;
+	}
+	public String getDiscountName() {
+		return discountName;
+	}
+	public void setDiscountName(String discountName) {
+		this.discountName = discountName;
 	}
 	
 	

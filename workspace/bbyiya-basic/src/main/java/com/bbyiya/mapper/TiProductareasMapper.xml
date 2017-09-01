@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiProductareasMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiProductareas" >
+    <id column="Id" property="id" jdbcType="INTEGER" />
+    <result column="ProductId" property="productid" jdbcType="BIGINT" />
+    <result column="ProducerUserID" property="produceruserid" jdbcType="BIGINT" />
+    <result column="AreaCode" property="areacode" jdbcType="INTEGER" />
+    <result column="CityCode" property="citycode" jdbcType="INTEGER" />
+    <result column="ProvinceCode" property="provincecode" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Id, ProductId, ProducerUserID, AreaCode, CityCode, ProvinceCode
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_productareas
+    where Id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ti_productareas
+    where Id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiProductareas" >
+    insert into ti_productareas (Id, ProductId, ProducerUserID, 
+      AreaCode, CityCode, ProvinceCode
+      )
+    values (#{id,jdbcType=INTEGER}, #{productid,jdbcType=BIGINT}, #{produceruserid,jdbcType=BIGINT}, 
+      #{areacode,jdbcType=INTEGER}, #{citycode,jdbcType=INTEGER}, #{provincecode,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiProductareas" >
+    insert into ti_productareas
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        Id,
+      </if>
+      <if test="productid != null" >
+        ProductId,
+      </if>
+      <if test="produceruserid != null" >
+        ProducerUserID,
+      </if>
+      <if test="areacode != null" >
+        AreaCode,
+      </if>
+      <if test="citycode != null" >
+        CityCode,
+      </if>
+      <if test="provincecode != null" >
+        ProvinceCode,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="productid != null" >
+        #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="produceruserid != null" >
+        #{produceruserid,jdbcType=BIGINT},
+      </if>
+      <if test="areacode != null" >
+        #{areacode,jdbcType=INTEGER},
+      </if>
+      <if test="citycode != null" >
+        #{citycode,jdbcType=INTEGER},
+      </if>
+      <if test="provincecode != null" >
+        #{provincecode,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiProductareas" >
+    update ti_productareas
+    <set >
+      <if test="productid != null" >
+        ProductId = #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="produceruserid != null" >
+        ProducerUserID = #{produceruserid,jdbcType=BIGINT},
+      </if>
+      <if test="areacode != null" >
+        AreaCode = #{areacode,jdbcType=INTEGER},
+      </if>
+      <if test="citycode != null" >
+        CityCode = #{citycode,jdbcType=INTEGER},
+      </if>
+      <if test="provincecode != null" >
+        ProvinceCode = #{provincecode,jdbcType=INTEGER},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiProductareas" >
+    update ti_productareas
+    set ProductId = #{productid,jdbcType=BIGINT},
+      ProducerUserID = #{produceruserid,jdbcType=BIGINT},
+      AreaCode = #{areacode,jdbcType=INTEGER},
+      CityCode = #{citycode,jdbcType=INTEGER},
+      ProvinceCode = #{provincecode,jdbcType=INTEGER}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

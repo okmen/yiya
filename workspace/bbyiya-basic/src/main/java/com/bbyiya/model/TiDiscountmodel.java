@@ -1,6 +1,7 @@
 package com.bbyiya.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class TiDiscountmodel {
     private Integer discountid;
@@ -12,6 +13,10 @@ public class TiDiscountmodel {
     private Integer status;
 
     private Date createtime;
+    
+    /*-----------------扩展字段------------------------------*/
+    
+    private List<TiDiscountdetails> details;
 
     public Integer getDiscountid() {
         return discountid;
@@ -52,4 +57,14 @@ public class TiDiscountmodel {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+
+	public List<TiDiscountdetails> getDetails() {
+		return details;
+	}
+
+	public void setDetails(List<TiDiscountdetails> details) {
+		this.details = details;
+	}
+    
+    
 }

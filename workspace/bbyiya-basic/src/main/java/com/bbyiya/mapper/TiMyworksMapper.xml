@@ -24,6 +24,14 @@
     delete from ti_myworks
     where WorkId = #{workid,jdbcType=BIGINT}
   </delete>
+  <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="WorkId" parameterType="com.bbyiya.model.TiMyworks" >
+    insert into ti_myworks (WorkId, UserId, ProductId, 
+      StyleId, Title, CreateTime, 
+      CompleteTime, ActId)
+    values (#{workid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{productid,jdbcType=BIGINT}, 
+      #{styleid,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{completetime,jdbcType=TIMESTAMP}, #{actid,jdbcType=INTEGER})
+  </insert>
   <insert id="insert" parameterType="com.bbyiya.model.TiMyworks" >
     insert into ti_myworks (WorkId, UserId, ProductId, 
       StyleId, Title, CreateTime, 

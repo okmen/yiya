@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,12 +12,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.baseUtils.GenUtils;
 import com.bbyiya.baseUtils.ValidateUtils;
+import com.bbyiya.dao.PProductstylesMapper;
 import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.PPostmodel;
+import com.bbyiya.model.PProductstyles;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
 import com.bbyiya.service.pic.IBasePostMgtService;
 import com.bbyiya.utils.JsonUtil;
@@ -39,9 +42,11 @@ public class SubmitOrderMgtController extends SSOController {
 	 */
 	@Resource(name = "basePostMgtServiceImpl")
 	private IBasePostMgtService postMgtService;
+	@Autowired
+	private PProductstylesMapper styleMapper;
 
 	/**
-	 * 下单页-获取运费方式列表
+	 * 下单页-获取运费方式列表(12photos)
 	 * 
 	 * @param area
 	 * @param addressId
@@ -50,11 +55,24 @@ public class SubmitOrderMgtController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/findpostlist")
-	public String findpostlist(String area, String addressId) throws Exception {
+	public String findpostlist(String area, String addressId,String styleId) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
 			long addrid = ObjectUtil.parseLong(addressId);
+			//
+			if(!ObjectUtil.isEmpty(styleId)){
+				PProductstyles stylePProductstyles= styleMapper.selectByPrimaryKey(ObjectUtil.parseLong(styleId));
+				if(stylePProductstyles!=null){
+					if(addrid>0){
+						rq=postMgtService.find_postagelist(addrid, stylePProductstyles.getProductid());
+					}else {
+						rq=postMgtService.find_postlist(ObjectUtil.parseInt(area), stylePProductstyles.getProductid());
+					}
+					return JsonUtil.objectToJsonStr(rq);
+				}
+			}
+			//不指定产品
 			if (addrid > 0) {
 				rq = postMgtService.find_postagelist(addrid);
 			} else {

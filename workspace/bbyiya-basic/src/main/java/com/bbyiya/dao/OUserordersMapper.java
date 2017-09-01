@@ -47,7 +47,7 @@ public interface OUserordersMapper {
      * @param branchUserId
      * @return
      */
-    List<OUserorders> findOrdersByBranchUserId(@Param("branchUserId")Long branchUserId,@Param("status") Integer status,@Param("keywords") String keywords);
+    List<OUserorders> findOrdersByBranchUserId(@Param("branchUserId")Long branchUserId,@Param("ordertype") Integer ordertype,@Param("status") Integer status,@Param("keywords") String keywords);
     
     /**
      * 获取最新的几条订单记录
@@ -68,7 +68,7 @@ public interface OUserordersMapper {
 	 * @param cartid
 	 * @return
 	 */
-	List<OUserorders> findOrderListByCartId(@Param("cartid") Long cartid);
+	List<OUserorders> findOrderListByCartId(@Param("cartid") Long cartid,@Param("ordertype") Integer ordertype);
 	
 	/**
 	 * 根据作品ID及影楼ID得到订单

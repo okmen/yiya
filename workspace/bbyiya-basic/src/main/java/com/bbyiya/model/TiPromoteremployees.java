@@ -12,6 +12,8 @@ public class TiPromoteremployees {
     private Integer status;
 
     private Date createtime;
+    
+    private String phone;
 
     public Long getUserid() {
         return userid;
@@ -52,4 +54,14 @@ public class TiPromoteremployees {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+    
+    
 }

@@ -76,6 +76,9 @@
     a.*
     from o_userorders a left join o_orderaddress b on a.OrderAddressId=b.OrderAddressId 
     where a.BranchUserId = #{branchUserId,jdbcType=BIGINT} 
+    <if test="ordertype != null" >
+       and a.OrderType=#{ordertype,jdbcType=INTEGER}
+    </if>
      <if test="status != null" >
        and a.Status=#{status,jdbcType=INTEGER}
     </if>
@@ -93,7 +96,7 @@
   
   <!-- 根据作品ID得到订单列表  -->
    <select id="findOrderListByCartId" resultMap="BaseResultMap"  parameterType="java.lang.Long" >
-    select a.* from o_userorders a,o_orderproducts b where a.UserOrderId=b.UserOrderId and b.CartId=#{cartid,jdbcType=BIGINT}   
+    select a.* from o_userorders a,o_orderproducts b where a.UserOrderId=b.UserOrderId and b.CartId=#{cartid,jdbcType=BIGINT} and b.OrderType= #{ordertype,jdbcType=INTEGER}
   </select>
   <!-- 根据作品ID和影楼ID得到订单列表  -->
    <select id="findOrderListByCartIdAndBranchUserID" resultMap="BaseResultMap"  parameterType="java.lang.Long" >

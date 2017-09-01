@@ -38,7 +38,7 @@
     from ti_activitys
     where ProducerUserId = #{produceruserid,jdbcType=BIGINT}
     <if test="type != null" >
-       and  Type = #{type,jdbcType=INTEGER}
+       and  ActType = #{type,jdbcType=INTEGER}
     </if>
     <if test="status != null" >
        and  Status = #{status,jdbcType=INTEGER}

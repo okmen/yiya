@@ -31,11 +31,13 @@ import com.bbyiya.model.TiProducersapply;
 import com.bbyiya.model.TiPromoteremployees;
 import com.bbyiya.model.TiPromoters;
 import com.bbyiya.model.TiPromotersapply;
+import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.service.calendar.IIbs_TiAgentMgtService;
 import com.bbyiya.service.IBaseUserCommonService;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.calendar.TiAgentApplyVo;
 import com.bbyiya.vo.calendar.TiAgentSearchParam;
@@ -679,5 +681,100 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 		rq.setBasemodle(result);
 		return rq;
 	}
+	
+	/**
+	 * 获取代理商信息
+	 * @param agentUserId
+	 * @return
+	 */
+	public TiAgentApplyVo getTiAgentsInfo(Long agentUserId){	
+		//加入缓存半个小时
+		String keyString="tiagentsvo_"+agentUserId;
+		TiAgentApplyVo tiagent=(TiAgentApplyVo) RedisUtil.getObject(keyString);
+		if(tiagent==null){
+			tiagent=agentapplyMapper.getUAgentapplyVOByAgentUserId(agentUserId);	
+			if(tiagent!=null){
+				tiagent.setProvinceName(regionService.getProvinceName(tiagent.getProvince())) ;
+				tiagent.setCityName(regionService.getCityName(tiagent.getCity())) ;
+				tiagent.setAreaName(regionService.getAresName(tiagent.getArea())) ;	
+			}
+			RedisUtil.setObject(keyString, tiagent, 1800);
+		}		
+		return tiagent;		
+	}
+	
+	
+	/**
+	 * 获取推广者代理信息
+	 * @param agentUserId
+	 * @return
+	 */
+	public TiPromoterApplyVo getTiPromoterInfo(Long promoterUserId){	
+		//加入缓存半个小时
+		String keyString="tiagentsvo_"+promoterUserId;
+		TiPromoterApplyVo tiagent=(TiPromoterApplyVo) RedisUtil.getObject(keyString);
+		if(tiagent==null){
+			tiagent=promoterapplyMapper.getTiPromoterapplyVOById(promoterUserId);	
+			if(tiagent!=null){
+				tiagent.setProvinceName(regionService.getProvinceName(tiagent.getProvince())) ;
+				tiagent.setCityName(regionService.getCityName(tiagent.getCity())) ;
+				tiagent.setAreaName(regionService.getAresName(tiagent.getArea())) ;	
+			}
+			RedisUtil.setObject(keyString, tiagent, 1800);
+		}		
+		return tiagent;		
+	}
+	
+	
+	/**
+	 * 修改代理商收货地址
+	 * @param branchUserId
+	 * @return
+	 */
+	public ReturnModel editTiAgentsAddress(Long agentUserId,String streetdetail,String name,String phone){	
+		ReturnModel rqModel=new ReturnModel();
+		TiAgentsapply agentsapply=agentapplyMapper.selectByPrimaryKey(agentUserId);
+		TiAgents agents=agentsMapper.selectByPrimaryKey(agentUserId);
+		if(agents!=null){
+			agents.setContacts(name);
+			agents.setMobilephone(phone);
+			agentsMapper.updateByPrimaryKeySelective(agents);
+		}
+		if(agentsapply!=null){
+			agentsapply.setStreetdetail(streetdetail);
+			agentsapply.setContacts(name);
+			agentsapply.setMobilephone(phone);
+		}
+		rqModel.setStatu(ReturnStatus.Success);
+		rqModel.setStatusreson("修改收货地址成功！");
+		return rqModel;		
+	}
+	
+	/**
+	 * 修改代理商收货地址
+	 * @param branchUserId
+	 * @return
+	 */
+	public ReturnModel editTiPromotersAddress(Long promoteruserid,String streetdetail,String name,String phone){	
+		ReturnModel rqModel=new ReturnModel();
+		TiPromotersapply promoterapply=promoterapplyMapper.selectByPrimaryKey(promoteruserid);
+		TiPromoters promoter=promoterMapper.selectByPrimaryKey(promoteruserid);
+		if(promoterapply!=null){
+			promoterapply.setStreetdetails(streetdetail);
+			promoterapply.setContacts(name);
+			promoterapply.setMobilephone(phone);
+			promoterapplyMapper.updateByPrimaryKeySelective(promoterapply);
+		}
+		if(promoter!=null){
+			promoter.setStreetdetails(streetdetail);
+			promoter.setContacts(name);
+			promoter.setMobilephone(phone);
+			promoterMapper.updateByPrimaryKeySelective(promoter);
+		}
+		rqModel.setStatu(ReturnStatus.Success);
+		rqModel.setStatusreson("修改收货地址成功！");
+		return rqModel;		
+	}
+	
 	
 }

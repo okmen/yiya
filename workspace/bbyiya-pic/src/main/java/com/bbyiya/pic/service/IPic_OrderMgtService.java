@@ -37,7 +37,7 @@ public interface IPic_OrderMgtService {
 	 * @param status
 	 * @return
 	 */
-	ReturnModel findMyOrderlist(Long branchUserId,Integer status,String keywords,int index,int size);
+	ReturnModel findMyOrderlist(Long branchUserId,Integer ordertype,Integer status,String keywords,int index,int size);
 	/**
 	 * 
 	 * @param userOrderId

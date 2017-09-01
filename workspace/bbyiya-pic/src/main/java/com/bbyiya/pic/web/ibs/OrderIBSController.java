@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.baseUtils.ValidateUtils;
+import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.pic.service.IPic_OrderMgtService;
@@ -74,7 +75,7 @@ public class OrderIBSController extends SSOController {
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
 			if (ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)) {
-				rq = orderService.findMyOrderlist(user.getUserId(), status,keywords,index,size);
+				rq = orderService.findMyOrderlist(user.getUserId(),Integer.parseInt(OrderTypeEnum.brachOrder.toString()), status,keywords,index,size);
 			} else {
 				rq.setStatu(ReturnStatus.SystemError_1);
 				rq.setStatusreson("您还不是代理商，没有权限");

@@ -4,7 +4,9 @@ import com.bbyiya.model.TiAgentsapply;
 import com.bbyiya.model.TiProducersapply;
 import com.bbyiya.model.TiPromotersapply;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.calendar.TiAgentApplyVo;
 import com.bbyiya.vo.calendar.TiAgentSearchParam;
+import com.bbyiya.vo.calendar.TiPromoterApplyVo;
 
 public interface IIbs_TiAgentMgtService {
 	
@@ -109,5 +111,37 @@ public interface IIbs_TiAgentMgtService {
 	 */
 	ReturnModel findTiProducersApplyList(TiAgentSearchParam param, int index,
 			int size);
+	/**
+	 * 获取代理商信息
+	 * @param agentUserId
+	 * @return
+	 */
+	TiAgentApplyVo getTiAgentsInfo(Long agentUserId);
+	/**
+	 * 获取推广者代理信息
+	 * @param promoterUserId
+	 * @return
+	 */
+	TiPromoterApplyVo getTiPromoterInfo(Long promoterUserId);
+	/**
+	 * 修改推广者的收货信息
+	 * @param promoteruserid
+	 * @param streetdetail
+	 * @param name
+	 * @param phone
+	 * @return
+	 */
+	ReturnModel editTiPromotersAddress(Long promoteruserid,
+			String streetdetail, String name, String phone);
+	/**
+	 * 修改代理商收货地址
+	 * @param agentUserId
+	 * @param streetdetail
+	 * @param name
+	 * @param phone
+	 * @return
+	 */
+	ReturnModel editTiAgentsAddress(Long agentUserId, String streetdetail,
+			String name, String phone);
 	
 }

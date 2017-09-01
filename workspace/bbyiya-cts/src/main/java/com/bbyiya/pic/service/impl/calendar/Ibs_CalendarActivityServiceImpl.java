@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.TiActivityoffMapper;
 import com.bbyiya.dao.TiActivitysMapper;
 import com.bbyiya.dao.TiActivitysinglesMapper;
@@ -18,9 +19,11 @@ import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiPromoteremployeesMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
+import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.ActivityWorksStatusEnum;
 import com.bbyiya.enums.calendar.TiActivityTypeEnum;
+import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproducttempusers;
 import com.bbyiya.model.TiActivityoff;
 import com.bbyiya.model.TiActivitys;
@@ -43,9 +46,7 @@ import com.github.pagehelper.PageInfo;
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
 public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivityService{
 	
-	/*-------------------用户信息------------------------------------------------*/
-	@Autowired
-	private UUsersMapper usersMapper;
+	
 	@Autowired
 	private TiActivitysMapper activityMapper;
 	@Autowired
@@ -55,10 +56,15 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 	@Autowired
 	private TiActivitysinglesMapper actworksingleMapper;
 	@Autowired
-	private TiPromoteremployeesMapper promoteremployeeMapper;
-	
+	private TiPromoteremployeesMapper promoteremployeeMapper;	
 	@Autowired
 	private TiActivityoffMapper actoffMapper;
+	@Autowired
+	private OUserordersMapper orderMapper;
+	
+	/*-------------------用户信息------------------------------------------------*/
+	@Autowired
+	private UUsersMapper usersMapper;
 	/**
 	 * 添加日历活动
 	 * 
@@ -163,11 +169,13 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 			UUsers user=usersMapper.selectByPrimaryKey(ti.getUserid());
 			if(user!=null){
 				ti.setWeiNickName(user.getNickname());
-			}
-			
+			}		
+			// 得到作品订单集合
+			List<OUserorders> orderList = orderMapper.findOrderListByCartId(ti.getWorkid(),Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));
 			List<String> orderNoList = new ArrayList<String>();
-			//得到订单集合
-			//orderMapper.findOrderListByWorkId(ti.getWorkid());
+			for (OUserorders order : orderList) {
+				orderNoList.add(order.getUserorderid());
+			}
 			ti.setOrdernolist(orderNoList);
 			
 		}
@@ -199,6 +207,7 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 	 */
 	public ReturnModel findActivityoffList(int index,int size,Long promoterUserId,Integer actid){
 		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.Success);
 		PageHelper.startPage(index, size);	
 		List<TiPromoteremployees> list= promoteremployeeMapper.findEmployeelistByPromoterUserId(promoterUserId);		
 		PageInfo<TiPromoteremployees> reuslt=new PageInfo<TiPromoteremployees>(list); 

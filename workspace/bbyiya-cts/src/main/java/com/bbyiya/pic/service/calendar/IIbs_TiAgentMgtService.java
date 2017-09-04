@@ -1,6 +1,9 @@
 package com.bbyiya.pic.service.calendar;
 
+import java.util.List;
+
 import com.bbyiya.model.TiAgentsapply;
+import com.bbyiya.model.TiMachinemodel;
 import com.bbyiya.model.TiProducersapply;
 import com.bbyiya.model.TiPromotersapply;
 import com.bbyiya.vo.ReturnModel;
@@ -31,7 +34,7 @@ public interface IIbs_TiAgentMgtService {
 	 * @param applyInfo
 	 * @return
 	 */
-	ReturnModel applyProducers(Long userId, TiProducersapply applyInfo);
+	ReturnModel applyProducers(Long userId, TiProducersapply applyInfo,List<TiMachinemodel> machinelist);
 	/**
 	 * 代理商审核
 	 * @param adminId
@@ -143,5 +146,11 @@ public interface IIbs_TiAgentMgtService {
 	 */
 	ReturnModel editTiAgentsAddress(Long agentUserId, String streetdetail,
 			String name, String phone);
+	
+	/**
+	 * 机器列表
+	 * @return
+	 */
+	ReturnModel findMachinemodelList();
 	
 }

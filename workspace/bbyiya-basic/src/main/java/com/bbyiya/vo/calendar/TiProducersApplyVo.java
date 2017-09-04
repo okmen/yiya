@@ -1,4 +1,7 @@
 package com.bbyiya.vo.calendar;
+import java.util.List;
+
+import com.bbyiya.model.TiProducerapplymachines;
 import com.bbyiya.model.TiProducersapply;
 
 public class TiProducersApplyVo extends TiProducersapply{
@@ -6,6 +9,7 @@ public class TiProducersApplyVo extends TiProducersapply{
 	private String cityName;
 	private String areaName;
 	private String bindphone;
+	private List<TiProducerapplymachines> machines;
 	public String getProvinceName() {
 		return provinceName;
 	}
@@ -29,6 +33,12 @@ public class TiProducersApplyVo extends TiProducersapply{
 	}
 	public void setBindphone(String bindphone) {
 		this.bindphone = bindphone;
+	}
+	public List<TiProducerapplymachines> getMachines() {
+		return machines;
+	}
+	public void setMachines(List<TiProducerapplymachines> machines) {
+		this.machines = machines;
 	}
 	
 	

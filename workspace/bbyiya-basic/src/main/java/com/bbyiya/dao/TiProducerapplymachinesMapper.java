@@ -1,5 +1,9 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.TiProducerapplymachines;
 
 public interface TiProducerapplymachinesMapper {
@@ -14,4 +18,6 @@ public interface TiProducerapplymachinesMapper {
     int updateByPrimaryKeySelective(TiProducerapplymachines record);
 
     int updateByPrimaryKey(TiProducerapplymachines record);
+    
+    List<TiProducerapplymachines> findapplymachineslist(@Param("produceruserid") Long produceruserid);
 }

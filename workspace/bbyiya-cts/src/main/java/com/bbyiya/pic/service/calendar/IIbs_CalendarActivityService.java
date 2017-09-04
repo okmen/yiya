@@ -57,6 +57,16 @@ public interface IIbs_CalendarActivityService {
 	 */
 	ReturnModel setUserActPromotePermission(Long userId, Integer actid,
 			Integer status);
+	/**
+	 * 活动制作进度列表
+	 * @param index
+	 * @param size
+	 * @param keywords
+	 * @param type
+	 * @return
+	 */
+	ReturnModel getActWorkListByActId(int index, int size, Integer actid,
+			Integer status, String keywords);
 	
 	
 }

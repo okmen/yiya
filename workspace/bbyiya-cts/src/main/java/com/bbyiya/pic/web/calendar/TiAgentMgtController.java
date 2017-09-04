@@ -13,6 +13,7 @@ import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.enums.user.UserStatusEnum;
+import com.bbyiya.model.TiAgents;
 import com.bbyiya.model.TiAgentsapply;
 import com.bbyiya.model.TiProducersapply;
 import com.bbyiya.model.TiPromotersapply;
@@ -21,7 +22,9 @@ import com.bbyiya.pic.service.calendar.IIbs_TiAgentMgtService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.calendar.TiAgentApplyVo;
 import com.bbyiya.vo.calendar.TiAgentSearchParam;
+import com.bbyiya.vo.calendar.TiPromoterApplyVo;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
 
@@ -151,18 +154,18 @@ public class TiAgentMgtController extends SSOController {
 	}
 	
 	/**
-	 *  CTS端推广者申请
+	 *  IBS端推广者申请
 	 * @param agentJson
 	 * @return
 	 * @throws Exception
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/cts_promoterApply")
-	public String cts_promoterApply(String promoterUserId,String promoterJson) throws Exception {
+	@RequestMapping(value = "/ibs_promoterApply")
+	public String ibs_promoterApply(String promoterUserId,String promoterJson) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_promoter)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_employees)){
 				UUsers promoterUsers= userMapper.getUUsersByUserID(ObjectUtil.parseLong(promoterUserId));
 				if(promoterUsers!=null){
 					if(!ObjectUtil.isEmpty(promoterUsers.getMobilephone())){
@@ -227,6 +230,51 @@ public class TiAgentMgtController extends SSOController {
 			}else {
 				rq.setStatu(ReturnStatus.LoginError_2);
 				rq.setStatusreson("未完成注册,请先绑定手机号！");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * CTS端生产者申请
+	 * @param agentJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/cts_producersApply")
+	public String cts_producersApply(String producersUserId,String producersJson) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
+				UUsers agentUsers= userMapper.getUUsersByUserID(ObjectUtil.parseLong(producersUserId));
+				if(agentUsers!=null&&!ObjectUtil.isEmpty(agentUsers.getMobilephone())){
+					try {
+						TiProducersapply applyInfo=(TiProducersapply)JsonUtil.jsonStrToObject(producersJson, TiProducersapply.class);
+						if(applyInfo!=null){
+							applyInfo.setProduceruserid(user.getUserId()); 
+						}
+						rq =agentService.applyProducers(ObjectUtil.parseLong(producersUserId), applyInfo);
+					} catch (Exception e) {
+						rq.setStatu(ReturnStatus.ParamError);
+						rq.setStatusreson("参数有误101");
+						System.out.println(e); 
+						return JsonUtil.objectToJsonStr(rq);
+					}
+				}else {
+					rq.setStatu(ReturnStatus.LoginError_2);
+					rq.setStatusreson("未完成注册,请先绑定手机号！");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+			}else {
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("无此权限");
 				return JsonUtil.objectToJsonStr(rq);
 			}
 		}else {
@@ -324,7 +372,7 @@ public class TiAgentMgtController extends SSOController {
 	
 	
 	/**
-	 * 判断用户代理商申请状态
+	 * C端判断用户代理商申请状态
 	 * @param type
 	 * @return
 	 * @throws Exception
@@ -341,6 +389,33 @@ public class TiAgentMgtController extends SSOController {
 				rq=agentService.getPromoterApplyStatusModel(user.getUserId());
 			}else {
 				rq=agentService.getproducersApplyStatusModel(user.getUserId());
+			}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * CTS端判断用户代理商申请状态
+	 * @param type
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/cts_getApplyStatus")
+	public String cts_getApplyStatus(Long userId,Integer type) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(type!=null&&type==1){
+				rq=agentService.getAgentApplyStatusModel(userId);
+			}else if(type!=null&&type==2){
+				rq=agentService.getPromoterApplyStatusModel(userId);
+			}else {
+				rq=agentService.getproducersApplyStatusModel(userId);
 			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
@@ -449,4 +524,102 @@ public class TiAgentMgtController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	/**
+	 * 登陆后得到代理商信息
+	 * @param type
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getTiAgentsInfo")
+	public String getTiAgentsInfo() throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			TiAgentApplyVo branch=agentService.getTiAgentsInfo(user.getUserId());	
+			rq.setBasemodle(branch);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("获取代理商信息成功！");
+			
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 登陆后得到推广者信息
+	 * @param type
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getTiPromoterInfo")
+	public String getTiPromoterInfo() throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			TiPromoterApplyVo branch=agentService.getTiPromoterInfo(user.getUserId());	
+			rq.setBasemodle(branch);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("获取代理商信息成功！");
+			
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 修改代理商收货地址
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/editTiAgentsAddress")
+	public String editTiAgentsAddress(String streetdetail,String name,String phone ) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=agentService.editTiAgentsAddress(user.getUserId(), streetdetail,name,phone);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("修改代理商信息成功！");
+			
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	/**
+	 * 修改推广者收货地址
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/editTiPromotersAddress")
+	public String editTiPromotersAddress(String streetdetail,String name,String phone ) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=agentService.editTiPromotersAddress(user.getUserId(), streetdetail,name,phone);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("修改代理商信息成功！");
+			
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	
+	
 }

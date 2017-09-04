@@ -186,12 +186,12 @@ public class Pic_OrderMgtServiceImpl implements IPic_OrderMgtService{
 	}
 	@Autowired
 	private PMyproductsMapper myproductsMapper;
-	public ReturnModel findMyOrderlist(Long branchUserId,Integer status,String keywords,int index,int size){
+	public ReturnModel findMyOrderlist(Long branchUserId,Integer ordertype,Integer status,String keywords,int index,int size){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.Success);
 		PageHelper.startPage(index, size);
 		//订单列表
-		List<OUserorders> userorders= userOrdersMapper.findOrdersByBranchUserId(branchUserId,status,keywords);
+		List<OUserorders> userorders= userOrdersMapper.findOrdersByBranchUserId(branchUserId,ordertype,status,keywords);
 		PageInfo<OUserorders> resultPage=new PageInfo<OUserorders>(userorders); 
 		if(resultPage!=null&&resultPage.getList()!=null&&resultPage.getList().size()>0){
 			List<Long> ids = new ArrayList<Long>();

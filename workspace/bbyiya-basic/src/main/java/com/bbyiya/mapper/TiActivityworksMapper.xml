@@ -21,6 +21,30 @@
     from ti_activityworks
     where WorkId = #{workid,jdbcType=BIGINT}
   </select>
+  
+   <!-- 根据活动ID及状态得到各状态的总数 -->
+  <select id="getCountByActStatus" resultType="java.lang.Integer"  parameterType="java.lang.Integer" >
+    select count(WorkId) from ti_activityworks where ActId = #{actid,jdbcType=INTEGER} and Status=#{status,jdbcType=INTEGER}
+  </select>
+  
+  <resultMap id="TiActivityworksVOResult" type="com.bbyiya.vo.calendar.TiActivitysWorkVo" extends="BaseResultMap">  
+  </resultMap> 
+   <!-- 根据活动ID得到活动参与情况列表 -->
+  <select id="findActWorkListByActId" resultMap="TiActivityworksVOResult"  >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_activityworks
+    where ActId = #{actid,jdbcType=BIGINT}
+    <if test="status != null" >
+       and  Status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="keywords != null and keywords!=''" > 
+       and  (Mobiephone=#{keywords,jdbcType=VARCHAR} OR Reciever LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ))
+    </if>
+    order by CreateTime desc
+  </select>
+  
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from ti_activityworks
     where WorkId = #{workid,jdbcType=BIGINT}

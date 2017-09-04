@@ -1,5 +1,7 @@
 package com.bbyiya.dao;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.TiActivitysingles;
 
 public interface TiActivitysinglesMapper {
@@ -14,4 +16,6 @@ public interface TiActivitysinglesMapper {
     int updateByPrimaryKeySelective(TiActivitysingles record);
 
     int updateByPrimaryKey(TiActivitysingles record);
+    
+    Integer getYaoqingCountByActId(@Param("actid") Integer actid);
 }

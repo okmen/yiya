@@ -1,6 +1,8 @@
 package com.bbyiya.pic.web.calendar;
 
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,8 @@ import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.TiPromotersapply;
+import com.bbyiya.model.UAgentapplyareas;
+import com.bbyiya.pic.service.calendar.IIbs_TiAdvertimgsService;
 import com.bbyiya.pic.service.calendar.IIbs_TiPromoterEmployeeService;
 import com.bbyiya.pic.utils.Json2Objects;
 import com.bbyiya.utils.JsonUtil;
@@ -21,16 +25,16 @@ import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
 
 @Controller
-@RequestMapping(value = "/tiemployee")
-public class TiPromoterEmployeeController extends SSOController {
+@RequestMapping(value = "/ti_advert")
+public class TiAdvertimgsController extends SSOController {
 	
-	@Resource(name = "ibs_TiPromoterEmployeeService")
-	private IIbs_TiPromoterEmployeeService employeeService;
+	@Resource(name = "ibs_TiAdvertimgsService")
+	private IIbs_TiAdvertimgsService advertimgsService;
 	@Autowired
 	private UUsersMapper userMapper;
 	
 	/**
-	 * 内部账户管理
+	 * 添加影楼广告位
 	 * @param agentUserId
 	 * @param status
 	 * @param msg
@@ -38,12 +42,12 @@ public class TiPromoterEmployeeController extends SSOController {
 	 * @throws Exception
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/employeelist")
-	public String employeelist(int index,int size) throws Exception {
+	@RequestMapping(value = "/addorEditAdvertimgs")
+	public String addorEditAdvertimgs(Long productid,String advertImgJson) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq=employeeService.findPromoterEmployeelistByPromoterId(user.getUserId(),index,size);
+			rq=advertimgsService.addOrEditAdvertimgs(user.getUserId(),productid,advertImgJson);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
@@ -52,19 +56,18 @@ public class TiPromoterEmployeeController extends SSOController {
 	}
 	
 	/**
-	 * 新增员工信息
+	 * 得到产品的广告位信息
 	 * @param memberJson
 	 * @return
 	 * @throws Exception
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/addEmployee")
-	public String addEmployee(String memberJson) throws Exception {
+	@RequestMapping(value = "/getAdvertimgsByIds")
+	public String getAdvertimgsByIds(Long productid) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			TiEmployeeActOffVo param= (TiEmployeeActOffVo) JsonUtil.jsonStrToObject(memberJson, TiEmployeeActOffVo.class);
-			rq=employeeService.addEmployeeUser(user.getUserId(), param);
+			rq=advertimgsService.getAdvertimgsByIds(user.getUserId(), productid);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
@@ -72,25 +75,6 @@ public class TiPromoterEmployeeController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-	/**
-	 * 移除员工
-	 * @param userId
-	 * @return
-	 * @throws Exception
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/delEmployee")
-	public String delEmployee(Long  userId) throws Exception {
-		ReturnModel rq=new ReturnModel();
-		LoginSuccessResult user= super.getLoginUser();
-		if(user!=null){
-			rq=employeeService.delEmployeeUser(user.getUserId(), userId);
-		}else {
-			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
-		}
-		return JsonUtil.objectToJsonStr(rq);
-	}
 	
 	
 }

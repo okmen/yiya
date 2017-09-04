@@ -2,6 +2,7 @@ package com.bbyiya.vo.calendar.product;
 
 import java.util.List;
 
+import com.bbyiya.common.vo.ImageInfo;
 import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiProductstyles;
 
@@ -28,6 +29,8 @@ public class TiProductResult extends TiProducts{
 	 * 评论数
 	 */
 	private int commentsCount;
+	
+	private List<ImageInfo> imglist;
 	/**
 	 * 款式列表
 	 * @return
@@ -69,6 +72,12 @@ public class TiProductResult extends TiProducts{
 	}
 	public void setDiscountName(String discountName) {
 		this.discountName = discountName;
+	}
+	public List<ImageInfo> getImglist() {
+		return imglist;
+	}
+	public void setImglist(List<ImageInfo> imglist) {
+		this.imglist = imglist;
 	}
 	
 	

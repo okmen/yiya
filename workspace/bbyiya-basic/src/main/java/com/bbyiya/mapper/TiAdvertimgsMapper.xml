@@ -10,6 +10,14 @@
   <sql id="Base_Column_List" >
     Id, ProductId, PromoterUserId, AdvertImgJson
   </sql>
+  
+  <select id="getAdvertByProductIdAndPromoterId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_advertimgs
+    where ProductId = #{productid,jdbcType=BIGINT} and PromoterUserId=#{promoterid,jdbcType=BIGINT}
+  </select>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />

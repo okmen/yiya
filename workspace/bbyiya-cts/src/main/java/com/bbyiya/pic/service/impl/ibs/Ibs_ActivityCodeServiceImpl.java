@@ -30,6 +30,7 @@ import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.MyProductTempStatusEnum;
 import com.bbyiya.enums.MyProductTempType;
+import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.ActivityCodeStatusEnum;
 import com.bbyiya.enums.pic.MyProductStatusEnum;
@@ -307,7 +308,7 @@ public class Ibs_ActivityCodeServiceImpl implements IIbs_ActivityCodeService{
 							}
 						}
 						// 得到作品订单集合
-						List<OUserorders> orderList = orderMapper.findOrderListByCartId(myproduct.getCartid());
+						List<OUserorders> orderList = orderMapper.findOrderListByCartId(myproduct.getCartid(),Integer.parseInt(OrderTypeEnum.brachOrder.toString()));
 						List<String> orderNoList = new ArrayList<String>();
 						for (OUserorders order : orderList) {
 							orderNoList.add(order.getUserorderid());

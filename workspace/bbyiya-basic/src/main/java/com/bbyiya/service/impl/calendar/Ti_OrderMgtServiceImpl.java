@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.baseUtils.GenUtils;
+import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.dao.EErrorsMapper;
 import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
@@ -34,6 +35,7 @@ import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.EErrors;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproducts;
@@ -59,7 +61,9 @@ import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.service.calendar.ITi_OrderMgtService;
 import com.bbyiya.service.pic.IBasePostMgtService;
+import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.calendar.TiActivityOrderSubmitParam;
 import com.bbyiya.vo.order.UserOrderSubmitParam;
 @Service("tiOrderMgtServiceImpl")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
@@ -97,7 +101,10 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 	private OOrderproductsMapper oproductMapper;
 	@Autowired
 	private TiMyworksMapper myworksMapper;
+	@Autowired
+	private EErrorsMapper logMapper;
 
+	
 	public ReturnModel submitOrder(UserOrderSubmitParam param) {
 		ReturnModel rq = new ReturnModel();
 		try {
@@ -122,6 +129,18 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			throw new RuntimeException(e.getMessage());
 		}
 	}
+	
+	public ReturnModel submitOrder_ibs(TiActivityOrderSubmitParam param) {
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.SystemError);
+		if(param==null||ObjectUtil.isEmpty(param.getSubmitUserId())||ObjectUtil.isEmpty(param.getWorkId())){
+			rq.setStatusreson("参数不能为空！");
+			return rq;
+		}
+		return rq;
+	}
+	
+	
 
 	private ReturnModel submitOrder_common(UserOrderSubmitParam param) throws Exception {
 		ReturnModel rq = new ReturnModel();
@@ -164,6 +183,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			orderProduct.setBuyeruserid(param.getUserId()); 
 			// 获取产品信息
 			int orderType = param.getOrderType() == null ? 0 : param.getOrderType();
+			//------------------台历、挂历、年历 板块----------------------------------------
 			if (orderType == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()) || orderType == Integer.parseInt(OrderTypeEnum.ti_nomal.toString())) {
 				TiProductstyles style = styleMapper.selectByPrimaryKey(orderProduct.getStyleid());
 				if (style != null) {
@@ -171,8 +191,9 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					if (orderType == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())) {
 						orderProduct.setPrice(style.getPromoterprice());
 					} else if (orderType == Integer.parseInt(OrderTypeEnum.ti_nomal.toString())) {
+						//普通用户下单
 						orderProduct.setPrice(style.getPrice());
-						// 优惠处理
+						// 优惠、折扣处理----
 						TiDiscountmodel discountmodel = getDiscountList(param.getUserId());
 						if (discountmodel != null && discountmodel.getDetails() != null) {
 							for (TiDiscountdetails discountdetails : discountmodel.getDetails()) {
@@ -190,6 +211,10 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					userOrder.setPostage(param.getPostPrice());
 					orderTotalPrice += param.getPostPrice();
 				}
+			}else if (orderType == Integer.parseInt(OrderTypeEnum.nomal.toString()) || orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
+				// 12photos 购物订单
+				rq.setStatusreson("12photos订单暂不提供下单！");
+				return rq;
 			}
 			userOrder.setOrdertotalprice(orderTotalPrice);
 			userOrder.setTotalprice(totalPrice);
@@ -344,9 +369,22 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 		if (orderType == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())) {// 影楼订单
 			UUsers users = usersMapper.selectByPrimaryKey(param.getUserId());
 			if (users != null) {
-				TiPromoteremployees employee = ePromoteremployeesMapper.selectByPrimaryKey(users.getUserid());
-				if (employee != null && employee.getPromoteruserid() != null) {
-					TiPromoters promoter = promotersMapper.selectByPrimaryKey(employee.getPromoteruserid());
+				//推广者
+				TiPromoters promoter=null;
+				// case1: 下单人就是推广者
+				if(ValidateUtils.isIdentity(users.getIdentity(), UserIdentityEnums.ti_promoter)){
+					promoter = promotersMapper.selectByPrimaryKey(users.getUserid());
+				}
+				// case2:下单人是推广者 员工
+				else {
+					TiPromoteremployees employee = ePromoteremployeesMapper.selectByPrimaryKey(users.getUserid());
+					if (employee != null && employee.getPromoteruserid() != null) {
+						promoter = promotersMapper.selectByPrimaryKey(employee.getPromoteruserid());
+					}
+				}
+//				TiPromoteremployees employee = ePromoteremployeesMapper.selectByPrimaryKey(users.getUserid());
+//				if (employee != null && employee.getPromoteruserid() != null) {
+//					promoter = promotersMapper.selectByPrimaryKey(employee.getPromoteruserid());
 					if (promoter != null) {
 						UAccounts accounts = accountsMapper.selectByPrimaryKey(promoter.getPromoteruserid());
 						if (accounts != null && accounts.getAvailableamount() != null) {
@@ -354,13 +392,21 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 							if (accounts.getAvailableamount().doubleValue() >= totalprice) {
 								param.setBranchUserId(promoter.getPromoteruserid());
 								param.setAgentUserId(promoter.getAgentuserid());
+								param.setPostPrice(0d); 
 								rq.setStatu(ReturnStatus.Success);
 								rq.setBasemodle(param);
 								oproduct.setPrice(style.getPromoterprice());
+								rq.setStatu(ReturnStatus.Success); 
+								return rq;
 							}
 						}
+						rq.setStatusreson("账户可用余额不足！");
+						return rq;
+					}else {
+						rq.setStatusreson("非法操作！");
+						return rq;
 					}
-				}
+//				}
 			}
 		} else if (orderType == Integer.parseInt(OrderTypeEnum.ti_nomal.toString())) {
 			UUseraddress addr = addressMapper.get_UUserAddressByKeyId(param.getAddrId());// 用户收货地址
@@ -383,8 +429,6 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 		return rq;
 	}
 
-	@Autowired
-	private EErrorsMapper logMapper;
 
 	public void addlog(String msg) {
 		EErrors errors = new EErrors();

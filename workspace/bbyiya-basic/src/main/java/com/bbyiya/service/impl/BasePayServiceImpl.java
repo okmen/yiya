@@ -343,6 +343,8 @@ public class BasePayServiceImpl implements IBasePayService{
 		}
 	}
 	
+	
+	
 	/**
 	 * 订单完成后新增销量
 	 */

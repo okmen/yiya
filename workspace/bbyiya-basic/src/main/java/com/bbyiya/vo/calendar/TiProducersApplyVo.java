@@ -10,6 +10,7 @@ public class TiProducersApplyVo extends TiProducersapply{
 	private String areaName;
 	private String bindphone;
 	private List<TiProducerapplymachines> machines;
+	private Double availableAmount; //可用余额
 	public String getProvinceName() {
 		return provinceName;
 	}
@@ -39,6 +40,12 @@ public class TiProducersApplyVo extends TiProducersapply{
 	}
 	public void setMachines(List<TiProducerapplymachines> machines) {
 		this.machines = machines;
+	}
+	public Double getAvailableAmount() {
+		return availableAmount;
+	}
+	public void setAvailableAmount(Double availableAmount) {
+		this.availableAmount = availableAmount;
 	}
 	
 	

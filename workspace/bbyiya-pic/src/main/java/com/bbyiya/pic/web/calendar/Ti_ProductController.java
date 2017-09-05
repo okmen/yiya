@@ -110,12 +110,21 @@ public class Ti_ProductController  extends SSOController {
 		if(user!=null){
 			TiProductResult product=productsMapper.getResultByProductId(productId);
 			if(product!=null){
+				//产品展示图集
 				if(!ObjectUtil.isEmpty(product.getImgjson())){
 					List<ImageInfo> imList= (List<ImageInfo>)JsonUtil.jsonToList(product.getImgjson());
 					if(imList!=null&&imList.size()>0){
 						product.setImglist(imList); 
 					}
 				}
+				//产品描述图集
+				if(!ObjectUtil.isEmpty(product.getDescriptionimgjson())){
+					List<ImageInfo> imList= (List<ImageInfo>)JsonUtil.jsonToList(product.getDescriptionimgjson());
+					if(imList!=null&&imList.size()>0){
+						product.setDescriptionImglist(imList); 
+					}
+				}
+				//产品的款式列表
 				List<TiProductstyles> styleList=styleMapper.findStylelistByProductId(productId);
 				product.setStylelist(styleList);  
 				//产品销量

@@ -76,7 +76,12 @@ public class Ibs_TiOrderMgtServiceImpl implements IIbs_TiOrderMgtService{
 				vo.setStatus(order.getStatus());
 				vo.setUserid(order.getUserid());
 				vo.setBranchuserid(order.getBranchuserid());
-				vo.setPaytime(DateUtil.getTimeStr(order.getPaytime(), "yyyy-MM-dd HH:mm:ss"));
+				if(order.getPaytime()!=null){
+					vo.setPaytime(DateUtil.getTimeStr(order.getPaytime(), "yyyy-MM-dd HH:mm:ss"));
+				}else{
+					vo.setPaytime(DateUtil.getTimeStr(order.getOrdertime(), "yyyy-MM-dd HH:mm:ss"));
+					
+				}
 				for (OOrderaddress addr : addressList) {
 					if (addr.getOrderaddressid().longValue() == order.getOrderaddressid().longValue()) {
 						vo.setAddress(addr);

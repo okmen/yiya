@@ -84,7 +84,7 @@ public class AccountController  extends SSOController{
 		if(user!=null) {
 			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
 				UUsers branch= userMapper.getUUsersByUserID(branchuserid);
-				if(branch!=null&&(ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.branch)||ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.ti_promoter))) {
+				if(branch!=null&&(ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.branch)||ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.ti_promoter)||ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.ti_agent)||ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.ti_producer))) {
 					String payId=GenUtils.getOrderNo(9999l); 
 					OPayorder payorder = new OPayorder();
 					payorder.setPayid(payId);
@@ -136,49 +136,47 @@ public class AccountController  extends SSOController{
 		log.setCreatetime(new Date());
 		actLogMapper.insert(log);
 	}
-	
 	/**
-	 * cts 代理商邮费充值
+	 * cts 用户提现
 	 * @param branchuserid
 	 * @param amount
 	 * @return
 	 * @throws Exception
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/rechargeTransAccount")
-	public String rechargeTransAccount(long branchuserid,String  amount) throws Exception {
+	@RequestMapping(value = "/tixian")
+	public String tixian(long branchuserid,String  amount) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user=super.getLoginUser();
 		double amountPrice=ObjectUtil.parseDouble(amount);
 		if(user!=null) {
 			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
 				UUsers branch= userMapper.getUUsersByUserID(branchuserid);
-				if(branch!=null&&ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.branch)) {
-					UBranchtransaccounts transaccount=transaccountMapper.selectByPrimaryKey(branchuserid);
-					
-					if(transaccount!=null){
-						transaccount.setAvailableamount(transaccount.getAvailableamount()+amountPrice);
-						transaccountMapper.updateByPrimaryKeySelective(transaccount);
-					}else {
-						transaccount=new UBranchtransaccounts();
-						transaccount.setBranchuserid(branchuserid);
-						transaccount.setAvailableamount(amountPrice);
-						transaccountMapper.insert(transaccount);	
+				if(branch!=null&&(ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.branch)||ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.ti_promoter)||ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.ti_agent)||ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.ti_producer))) {
+					String payId=GenUtils.getOrderNo(9999l); 
+					OPayorder payorder = new OPayorder();
+					payorder.setPayid(payId);
+					payorder.setUserorderid("");
+					payorder.setUserid(branchuserid);
+					payorder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
+					payorder.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString()));
+					payorder.setPaytime(new Date()); 					
+					payorder.setTotalprice(amountPrice);
+					payorder.setCashamount(amountPrice);
+					payorder.setWalletamount(null);
+					payorder.setCreatetime(new Date());
+					payOrderMapper.insert(payorder);
+					boolean result=accountService.add_accountsLog(branchuserid, Integer.parseInt(AccountLogType.get_recharge.toString()), amountPrice, payId, "");
+					if(result){
+						UAccounts accounts=accountMapper.selectByPrimaryKey(branchuserid);
+						addActionLog(user.getUserId(),"[账户提现]操作成功！提现金额："+amountPrice+"元！提现用户 userId:"+branchuserid);
+						rq.setStatusreson("提现成功！账户可用金额："+accounts.getAvailableamount()+"元!"); 
+						rq.setStatu(ReturnStatus.Success);
+					}else{
+						rq.setStatusreson("提现失败！"); 
+						rq.setStatu(ReturnStatus.SystemError);
 					}
 					
-					//插入日志
-					String payId=GenUtils.getOrderNo(9999l); 
-					UBranchtransamountlog translog=new UBranchtransamountlog();
-					translog.setAmount(amountPrice);
-					translog.setBranchuserid(branchuserid);
-					translog.setCreatetime(new Date());
-					translog.setPayid(payId);
-					translog.setType(Integer.parseInt(AmountType.get.toString()));
-					transaccountlogMapper.insert(translog);
-
-					addActionLog(user.getUserId(),"[邮费账户充值]操作成功！充值金额："+amountPrice+"元！充值用户 userId:"+branchuserid);
-					rq.setStatusreson("充值成功！邮费账户可用金额："+transaccount.getAvailableamount()+"元!"); 
-					rq.setStatu(ReturnStatus.Success);
 				}else {
 					rq.setStatu(ReturnStatus.SystemError);
 					rq.setStatusreson("该用户不是影楼身份！"); 
@@ -193,5 +191,62 @@ public class AccountController  extends SSOController{
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+//	/**
+//	 * cts 代理商邮费充值
+//	 * @param branchuserid
+//	 * @param amount
+//	 * @return
+//	 * @throws Exception
+//	 */
+//	@ResponseBody
+//	@RequestMapping(value = "/rechargeTransAccount")
+//	public String rechargeTransAccount(long branchuserid,String  amount) throws Exception {
+//		ReturnModel rq = new ReturnModel();
+//		LoginSuccessResult user=super.getLoginUser();
+//		double amountPrice=ObjectUtil.parseDouble(amount);
+//		if(user!=null) {
+//			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
+//				UUsers branch= userMapper.getUUsersByUserID(branchuserid);
+//				if(branch!=null&&ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.branch)) {
+//					UBranchtransaccounts transaccount=transaccountMapper.selectByPrimaryKey(branchuserid);
+//					
+//					if(transaccount!=null){
+//						transaccount.setAvailableamount(transaccount.getAvailableamount()+amountPrice);
+//						transaccountMapper.updateByPrimaryKeySelective(transaccount);
+//					}else {
+//						transaccount=new UBranchtransaccounts();
+//						transaccount.setBranchuserid(branchuserid);
+//						transaccount.setAvailableamount(amountPrice);
+//						transaccountMapper.insert(transaccount);	
+//					}
+//					
+//					//插入日志
+//					String payId=GenUtils.getOrderNo(9999l); 
+//					UBranchtransamountlog translog=new UBranchtransamountlog();
+//					translog.setAmount(amountPrice);
+//					translog.setBranchuserid(branchuserid);
+//					translog.setCreatetime(new Date());
+//					translog.setPayid(payId);
+//					translog.setType(Integer.parseInt(AmountType.get.toString()));
+//					transaccountlogMapper.insert(translog);
+//
+//					addActionLog(user.getUserId(),"[邮费账户充值]操作成功！充值金额："+amountPrice+"元！充值用户 userId:"+branchuserid);
+//					rq.setStatusreson("充值成功！邮费账户可用金额："+transaccount.getAvailableamount()+"元!"); 
+//					rq.setStatu(ReturnStatus.Success);
+//				}else {
+//					rq.setStatu(ReturnStatus.SystemError);
+//					rq.setStatusreson("该用户不是影楼身份！"); 
+//				}
+//			}else {
+//				rq.setStatu(ReturnStatus.SystemError);
+//				rq.setStatusreson("权限不足！");
+//			}
+//		}else {
+//			rq.setStatu(ReturnStatus.LoginError);
+//			rq.setStatusreson("登录过期");
+//		}
+//		return JsonUtil.objectToJsonStr(rq);
+//	}
 
 }

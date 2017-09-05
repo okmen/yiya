@@ -9,6 +9,13 @@
   <sql id="Base_Column_List" >
     id, MachineId, ProductId
   </sql>
+  <!-- 根据machineid得到能生产的产品列表 -->
+  <select id="findProductListByMachineId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_machineproducts
+    where MachineId = #{machineid,jdbcType=INTEGER}
+  </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />

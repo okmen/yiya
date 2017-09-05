@@ -18,17 +18,18 @@ public class TiProducts {
     private Date updatetime;
 
     private String description;
+
     private String imgjson;
 
-    private Integer postmodelid;
+    private String descriptionimgjson;
 
+    private Integer postmodelid;
 
     private Integer advertcount;
 
     private String advertdescription;
 
     private String advertimgjson;
-    
 
     public Long getProductid() {
         return productid;
@@ -93,46 +94,52 @@ public class TiProducts {
     public void setDescription(String description) {
         this.description = description == null ? null : description.trim();
     }
-	
-	public String getImgjson() {
-		return imgjson;
-	}
 
-	public void setImgjson(String imgjson) {
-		this.imgjson = imgjson;
-	}
+    public String getImgjson() {
+        return imgjson;
+    }
 
-	public Integer getPostmodelid() {
-		return postmodelid;
-	}
+    public void setImgjson(String imgjson) {
+        this.imgjson = imgjson == null ? null : imgjson.trim();
+    }
 
-	public void setPostmodelid(Integer postmodelid) {
-		this.postmodelid = postmodelid;
-	}
+    public String getDescriptionimgjson() {
+        return descriptionimgjson;
+    }
 
-	public Integer getAdvertcount() {
-		return advertcount;
-	}
+    public void setDescriptionimgjson(String descriptionimgjson) {
+        this.descriptionimgjson = descriptionimgjson == null ? null : descriptionimgjson.trim();
+    }
 
-	public void setAdvertcount(Integer advertcount) {
-		this.advertcount = advertcount;
-	}
+    public Integer getPostmodelid() {
+        return postmodelid;
+    }
 
-	public String getAdvertdescription() {
-		return advertdescription;
-	}
+    public void setPostmodelid(Integer postmodelid) {
+        this.postmodelid = postmodelid;
+    }
 
-	public void setAdvertdescription(String advertdescription) {
-		this.advertdescription = advertdescription;
-	}
+    public Integer getAdvertcount() {
+        return advertcount;
+    }
 
-	public String getAdvertimgjson() {
-		return advertimgjson;
-	}
+    public void setAdvertcount(Integer advertcount) {
+        this.advertcount = advertcount;
+    }
 
-	public void setAdvertimgjson(String advertimgjson) {
-		this.advertimgjson = advertimgjson;
-	}
-    
-    
+    public String getAdvertdescription() {
+        return advertdescription;
+    }
+
+    public void setAdvertdescription(String advertdescription) {
+        this.advertdescription = advertdescription == null ? null : advertdescription.trim();
+    }
+
+    public String getAdvertimgjson() {
+        return advertimgjson;
+    }
+
+    public void setAdvertimgjson(String advertimgjson) {
+        this.advertimgjson = advertimgjson == null ? null : advertimgjson.trim();
+    }
 }

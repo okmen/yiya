@@ -9,6 +9,14 @@
   <sql id="Base_Column_List" >
     Id, ProducerUserId, ProductId
   </sql>
+  
+  <select id="findTiProducerproductsByProducerUserId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_producerproducts
+    where ProducerUserId = #{produceruserid,jdbcType=BIGINT}
+  </select>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />

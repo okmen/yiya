@@ -12,6 +12,11 @@ public enum AccountLogType {
      */
     use_freight(3),
     
+    /**
+     * 提现
+     */
+    use_cashout(6),
+    
     /*----------------- 账户收入-------------------------*/
     /**
      * 充值

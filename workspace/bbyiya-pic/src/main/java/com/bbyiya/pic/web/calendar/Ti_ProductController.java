@@ -6,11 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bbyiya.common.vo.ImageInfo;
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.TiDiscountdetailsMapper;
 import com.bbyiya.dao.TiDiscountmodelMapper;
@@ -108,6 +110,12 @@ public class Ti_ProductController  extends SSOController {
 		if(user!=null){
 			TiProductResult product=productsMapper.getResultByProductId(productId);
 			if(product!=null){
+				if(!ObjectUtil.isEmpty(product.getImgjson())){
+					List<ImageInfo> imList= (List<ImageInfo>)JsonUtil.jsonToList(product.getImgjson());
+					if(imList!=null&&imList.size()>0){
+						product.setImglist(imList); 
+					}
+				}
 				List<TiProductstyles> styleList=styleMapper.findStylelistByProductId(productId);
 				product.setStylelist(styleList);  
 				//产品销量

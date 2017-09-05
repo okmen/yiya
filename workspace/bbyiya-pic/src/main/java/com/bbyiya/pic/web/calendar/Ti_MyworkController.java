@@ -157,11 +157,15 @@ public class Ti_MyworkController extends SSOController {
 		if(user!=null){
 			TiMyworks myworks= workMapper.selectByPrimaryKey(workId);
 			if(myworks!=null){
-				List<TiMyartsdetails> details= detailMapper.findDetailsByWorkId(workId);
-				Map<String, Object> map=new HashMap<String, Object>();
-				map.put("details", details);
-				rq.setStatu(ReturnStatus.Success);
-				rq.setBasemodle(map); 
+				TiProductstyles style= styleMapper.selectByPrimaryKey(myworks.getStyleid()==null?myworks.getProductid():myworks.getStyleid());
+				if(style!=null){
+					List<TiMyartsdetails> details= detailMapper.findDetailsByWorkId(workId);
+					Map<String, Object> map=new HashMap<String, Object>();
+					map.put("details", details);
+					map.put("imgCount", style.getImgcount()); 
+					rq.setStatu(ReturnStatus.Success);
+					rq.setBasemodle(map); 
+				}
 			}
 		}else { 
 			rq.setStatu(ReturnStatus.LoginError);

@@ -428,6 +428,8 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			myworks.setUserid(param.getUserId());
 			myworks.setCreatetime(new Date());
 			myworks.setWorkid(mycart.getCartid());
+			myworks.setProductid(orderProduct.getProductid());
+			myworks.setStyleid(orderProduct.getStyleid()); 
 			myworksMapper.insert(myworks);
 			orderProduct.setCartid(myworks.getWorkid());
 			// 插入订单

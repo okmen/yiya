@@ -21,6 +21,7 @@ import com.bbyiya.dao.OPayorderwalletdetailsMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PProductstyleexpMapper;
 import com.bbyiya.dao.PProductstylesMapper;
+import com.bbyiya.dao.TiActivityworksMapper;
 import com.bbyiya.dao.UAccountsMapper;
 import com.bbyiya.dao.UAccountslogsMapper;
 import com.bbyiya.dao.UAdminMapper;
@@ -44,6 +45,7 @@ import com.bbyiya.model.OPayorderwalletdetails;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PProductstyleexp;
 import com.bbyiya.model.PProductstyles;
+import com.bbyiya.model.TiActivityworks;
 import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UAccountslogs;
 import com.bbyiya.model.UBranches;
@@ -111,6 +113,8 @@ public class BasePayServiceImpl implements IBasePayService{
 //	@Resource(name="basePostMgtServiceImpl")
 //	private IBasePostMgtService postService;
 	
+	@Autowired
+	private TiActivityworksMapper activityworksMapper;
 	/**
 	 * 订单支付成功 回写
 	 */
@@ -186,6 +190,21 @@ public class BasePayServiceImpl implements IBasePayService{
 						}
 					}
 					/************************------------普通购物------------------********************************/
+//					else if(orderType==Integer.parseInt(PayOrderTypeEnum.ti_gouwu.toString())){
+//						
+//					}
+					else if (orderType==Integer.parseInt(PayOrderTypeEnum.ti_postage.toString())) {
+						//用户付邮费
+						TiActivityworks works= activityworksMapper.selectByPrimaryKey(ObjectUtil.parseLong(payOrder.getUserorderid()));
+						if(works!=null&&ObjectUtil.parseLong(payOrder.getExtobject())>0){
+							works.setAddresstype(1);
+							works.setOrderaddressid(ObjectUtil.parseLong(payOrder.getExtobject()));
+							activityworksMapper.updateByPrimaryKeySelective(works);
+						}
+						payOrderMapper.updateByPrimaryKeySelective(payOrder);
+						//TODO 分成
+						return true;
+					}
 					else {//购物
 						OUserorders userorders = userOrdersMapper.selectByPrimaryKey(payOrder.getUserorderid());
 						// 在可支付的状态中---

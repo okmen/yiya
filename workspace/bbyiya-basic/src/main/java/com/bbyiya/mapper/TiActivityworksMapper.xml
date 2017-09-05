@@ -11,9 +11,11 @@
     <result column="AddressType" property="addresstype" jdbcType="INTEGER" />
     <result column="Reciever" property="reciever" jdbcType="VARCHAR" />
     <result column="Mobiephone" property="mobiephone" jdbcType="VARCHAR" />
+    <result column="OrderAddressId" property="orderaddressid" jdbcType="BIGINT" />
   </resultMap>
   <sql id="Base_Column_List" >
-    WorkId, UserId, ActId, Status, ExtCount, CreateTime, AddressType, Reciever, Mobiephone
+    WorkId, UserId, ActId, Status, ExtCount, CreateTime, AddressType, Reciever, Mobiephone, 
+    OrderAddressId
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -52,12 +54,12 @@
   <insert id="insert" parameterType="com.bbyiya.model.TiActivityworks" >
     insert into ti_activityworks (WorkId, UserId, ActId, 
       Status, ExtCount, CreateTime, 
-      AddressType, Reciever, Mobiephone
-      )
+      AddressType, Reciever, Mobiephone, 
+      OrderAddressId)
     values (#{workid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{actid,jdbcType=INTEGER}, 
       #{status,jdbcType=INTEGER}, #{extcount,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
-      #{addresstype,jdbcType=INTEGER}, #{reciever,jdbcType=VARCHAR}, #{mobiephone,jdbcType=VARCHAR}
-      )
+      #{addresstype,jdbcType=INTEGER}, #{reciever,jdbcType=VARCHAR}, #{mobiephone,jdbcType=VARCHAR}, 
+      #{orderaddressid,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiActivityworks" >
     insert into ti_activityworks
@@ -89,6 +91,9 @@
       <if test="mobiephone != null" >
         Mobiephone,
       </if>
+      <if test="orderaddressid != null" >
+        OrderAddressId,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="workid != null" >
@@ -117,6 +122,9 @@
       </if>
       <if test="mobiephone != null" >
         #{mobiephone,jdbcType=VARCHAR},
+      </if>
+      <if test="orderaddressid != null" >
+        #{orderaddressid,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -147,6 +155,9 @@
       <if test="mobiephone != null" >
         Mobiephone = #{mobiephone,jdbcType=VARCHAR},
       </if>
+      <if test="orderaddressid != null" >
+        OrderAddressId = #{orderaddressid,jdbcType=BIGINT},
+      </if>
     </set>
     where WorkId = #{workid,jdbcType=BIGINT}
   </update>
@@ -159,7 +170,8 @@
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
       AddressType = #{addresstype,jdbcType=INTEGER},
       Reciever = #{reciever,jdbcType=VARCHAR},
-      Mobiephone = #{mobiephone,jdbcType=VARCHAR}
+      Mobiephone = #{mobiephone,jdbcType=VARCHAR},
+      OrderAddressId = #{orderaddressid,jdbcType=BIGINT}
     where WorkId = #{workid,jdbcType=BIGINT}
   </update>
 </mapper>

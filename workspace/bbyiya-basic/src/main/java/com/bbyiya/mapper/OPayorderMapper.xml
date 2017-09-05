@@ -15,9 +15,11 @@
     <result column="OrderType" property="ordertype" jdbcType="INTEGER" />
     <result column="WalletAmount" property="walletamount" jdbcType="DOUBLE" />
     <result column="CashAmount" property="cashamount" jdbcType="DOUBLE" />
+    <result column="ExtObject" property="extobject" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-   PayId, UserOrderId, UserId, PrepayId, Status, TotalPrice, CreateTime, PrepayTime, PayTime, PayType,OrderType,WalletAmount,CashAmount
+      PayId, UserOrderId, UserId, PrepayId, Status, TotalPrice, CreateTime, PrepayTime, 
+    PayTime, PayType, OrderType, WalletAmount, CashAmount, ExtObject
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -29,17 +31,17 @@
     delete from o_payorder
     where PayId = #{payid,jdbcType=VARCHAR}
   </delete>
-   <insert id="insert" parameterType="com.bbyiya.model.OPayorder" >
+  <insert id="insert" parameterType="com.bbyiya.model.OPayorder" >
     insert into o_payorder (PayId, UserOrderId, UserId, 
       PrepayId, Status, TotalPrice, 
       CreateTime, PrepayTime, PayTime, 
       PayType, OrderType, WalletAmount, 
-      CashAmount)
+      CashAmount, ExtObject)
     values (#{payid,jdbcType=VARCHAR}, #{userorderid,jdbcType=VARCHAR}, #{userid,jdbcType=BIGINT}, 
       #{prepayid,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{totalprice,jdbcType=DOUBLE}, 
       #{createtime,jdbcType=TIMESTAMP}, #{prepaytime,jdbcType=TIMESTAMP}, #{paytime,jdbcType=TIMESTAMP}, 
       #{paytype,jdbcType=INTEGER}, #{ordertype,jdbcType=INTEGER}, #{walletamount,jdbcType=DOUBLE}, 
-      #{cashamount,jdbcType=DOUBLE})
+      #{cashamount,jdbcType=DOUBLE}, #{extobject,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.OPayorder" >
     insert into o_payorder
@@ -83,6 +85,9 @@
       <if test="cashamount != null" >
         CashAmount,
       </if>
+      <if test="extobject != null" >
+        ExtObject,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="payid != null" >
@@ -123,6 +128,9 @@
       </if>
       <if test="cashamount != null" >
         #{cashamount,jdbcType=DOUBLE},
+      </if>
+      <if test="extobject != null" >
+        #{extobject,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -165,6 +173,9 @@
       <if test="cashamount != null" >
         CashAmount = #{cashamount,jdbcType=DOUBLE},
       </if>
+      <if test="extobject != null" >
+        ExtObject = #{extobject,jdbcType=VARCHAR},
+      </if>
     </set>
     where PayId = #{payid,jdbcType=VARCHAR}
   </update>
@@ -181,7 +192,8 @@
       PayType = #{paytype,jdbcType=INTEGER},
       OrderType = #{ordertype,jdbcType=INTEGER},
       WalletAmount = #{walletamount,jdbcType=DOUBLE},
-      CashAmount = #{cashamount,jdbcType=DOUBLE}
+      CashAmount = #{cashamount,jdbcType=DOUBLE},
+      ExtObject = #{extobject,jdbcType=VARCHAR}
     where PayId = #{payid,jdbcType=VARCHAR}
   </update>
 </mapper>

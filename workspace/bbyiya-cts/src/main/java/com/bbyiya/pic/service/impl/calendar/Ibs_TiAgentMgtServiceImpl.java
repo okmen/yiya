@@ -1,5 +1,6 @@
 package com.bbyiya.pic.service.impl.calendar;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.dao.TiAgentsMapper;
 import com.bbyiya.dao.TiAgentsapplyMapper;
+import com.bbyiya.dao.TiMachinemodelMapper;
+import com.bbyiya.dao.TiProducerapplymachinesMapper;
 import com.bbyiya.dao.TiProducersMapper;
 import com.bbyiya.dao.TiProducersapplyMapper;
 import com.bbyiya.dao.TiPromoteremployeesMapper;
@@ -26,6 +29,8 @@ import com.bbyiya.enums.calendar.TiAgentStatusEnum;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.TiAgents;
 import com.bbyiya.model.TiAgentsapply;
+import com.bbyiya.model.TiMachinemodel;
+import com.bbyiya.model.TiProducerapplymachines;
 import com.bbyiya.model.TiProducers;
 import com.bbyiya.model.TiProducersapply;
 import com.bbyiya.model.TiPromoteremployees;
@@ -66,6 +71,10 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 	private TiProducersapplyMapper producersapplyMapper;
 	@Autowired
 	private TiProducersMapper producersMapper;
+	@Autowired
+	private TiMachinemodelMapper machineMapper;
+	@Autowired
+	private TiProducerapplymachinesMapper promachineMapper;
 	
 	
 	/*-------------------用户信息------------------------------------------------*/
@@ -251,7 +260,7 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 	/**
 	 * 生产商申请
 	 */
-	public ReturnModel applyProducers(Long userId,TiProducersapply applyInfo){
+	public ReturnModel applyProducers(Long userId,TiProducersapply applyInfo,List<TiMachinemodel> machinelist){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);
 		TiProducersapply apply= producersapplyMapper.selectByPrimaryKey(userId); 
@@ -286,7 +295,10 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 			rq.setStatusreson("地址必须填");
 			return rq;
 		} 
-		
+		if(machinelist==null||machinelist.size()<=0){
+			rq.setStatusreson("请选择生产机型！");
+			return rq;
+		}
 		if(!ObjectUtil.validSqlStr(applyInfo.getCompanyname())
 				||!ObjectUtil.validSqlStr(applyInfo.getContacts())
 				||!ObjectUtil.validSqlStr(applyInfo.getStreetdetail())
@@ -299,7 +311,18 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 		applyInfo.setProduceruserid(userId);
 		applyInfo.setCreatetime(new Date());
 		
-	
+		//先删除后加入
+		List<TiProducerapplymachines> applymachineList=promachineMapper.findapplymachineslist(userId);
+		for (TiProducerapplymachines applyma : applymachineList) {
+			promachineMapper.deleteByPrimaryKey(applyma.getId());
+		}
+		for (TiMachinemodel ma : machinelist) {	
+			TiProducerapplymachines applyma=new TiProducerapplymachines(); 
+			applyma.setMachineid(ma.getMachineid().longValue());
+			applyma.setMachinename(ma.getName());
+			applyma.setProduceruserid(userId);
+			promachineMapper.insert(applyma);
+		}
 		if(apply!=null&&applyInfo.getProduceruserid()!=null&&applyInfo.getProduceruserid()>0){
 			//如果是已通过审核的生产商
 			if(applyInfo.getStatus()!=null&&applyInfo.getStatus()==Integer.parseInt(ProducersStatusEnum.ok.toString())){
@@ -315,8 +338,7 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 			producersapplyMapper.updateByPrimaryKeySelective(applyInfo);
 		}else {
 			applyInfo.setStatus(Integer.parseInt(ProducersStatusEnum.applying.toString()));  
-			producersapplyMapper.insert(applyInfo);
-			
+			producersapplyMapper.insert(applyInfo);		
 		}
 		rq.setStatu(ReturnStatus.Success);
 		rq.setStatusreson("生产商资质提交成功！"); 
@@ -597,6 +619,10 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 			producersapply.setCityName(regionService.getCityName(producersapply.getCity())) ;
 			producersapply.setAreaName(regionService.getAresName(producersapply.getArea())) ;
 			
+			List<TiProducerapplymachines> machines=promachineMapper.findapplymachineslist(producersapply.getProduceruserid());
+			if(machines!=null&&machines.size()>0){
+				producersapply.setMachines(machines);
+			}
 			if(producersapply.getStatus()!=null){
 				if(producersapply.getStatus().intValue()==Integer.parseInt(ProducersStatusEnum.ok.toString())){
 					map.put("msg", "已经成为生产商");
@@ -675,8 +701,14 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 			producersvo.setCityName(regionService.getCityName(producersvo.getCity())) ;
 			producersvo.setAreaName(regionService.getAresName(producersvo.getArea())) ;
 			UUsers user=usersMapper.getUUsersByUserID(producersvo.getProduceruserid());
-			if(user!=null)
+			if(user!=null){
 				producersvo.setBindphone(user.getMobilephone());
+			}
+			List<TiProducerapplymachines> machines=promachineMapper.findapplymachineslist(producersvo.getProduceruserid());
+			if(machines!=null&&machines.size()>0){
+				producersvo.setMachines(machines);
+			}
+				
 		}
 		rq.setBasemodle(result);
 		return rq;
@@ -775,6 +807,17 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 		rqModel.setStatusreson("修改收货地址成功！");
 		return rqModel;		
 	}
+
 	
-	
+	public ReturnModel findMachinemodelList(){
+		ReturnModel rqModel=new ReturnModel();
+		List<TiMachinemodel> list=machineMapper.findMachineModelList();
+		HashMap<String, Object> map=new HashMap<String, Object>();
+		map.put("list", list);
+		rqModel.setBasemodle(map);
+		rqModel.setStatu(ReturnStatus.Success);
+		rqModel.setStatusreson("获取列表成功！");
+		return rqModel;	
+	}
+		
 }

@@ -10,6 +10,13 @@
   <sql id="Base_Column_List" >
     Id, ProducerUserId, MachineId, MachineName
   </sql>
+  <select id="findapplymachineslist" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_producerapplymachines
+    where ProducerUserId = #{produceruserid,jdbcType=INTEGER}
+  </select>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />

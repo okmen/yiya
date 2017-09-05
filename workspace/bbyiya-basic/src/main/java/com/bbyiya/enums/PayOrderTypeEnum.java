@@ -20,7 +20,11 @@ public enum PayOrderTypeEnum {
     /**
      * 台历购物
      */
-    ti_gouwu(5)
+    ti_gouwu(5),
+    /**
+     * 
+     */
+    ti_postage(6)
     ;
 
     private final int Type;

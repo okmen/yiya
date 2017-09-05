@@ -20,6 +20,8 @@ public class TiActivityworks {
     private String reciever;
 
     private String mobiephone;
+    
+    private Long orderaddressid;
 
     public Long getWorkid() {
         return workid;
@@ -92,4 +94,13 @@ public class TiActivityworks {
     public void setMobiephone(String mobiephone) {
         this.mobiephone = mobiephone == null ? null : mobiephone.trim();
     }
+
+	public Long getOrderaddressid() {
+		return orderaddressid;
+	}
+
+	public void setOrderaddressid(Long orderaddressid) {
+		this.orderaddressid = orderaddressid;
+	}
+    
 }

@@ -46,6 +46,13 @@
     from o_orderproducts
     where UserOrderId = #{userOrderId,jdbcType=VARCHAR}
   </select>
+  <select id="getOProductsByWorkId" resultMap="BaseResultMap" ><!-- 台历、挂历 ，通过作品id获取台历挂历Model -->
+    select 
+    <include refid="Base_Column_List" />
+    from o_orderproducts
+    where CartId = #{workId,jdbcType=BIGINT}
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from o_orderproducts
     where OrderProductId = #{orderproductid,jdbcType=VARCHAR}

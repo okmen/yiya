@@ -18,8 +18,11 @@ import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.OUserordersMapper;
+import com.bbyiya.dao.PMyproductsMapper;
+import com.bbyiya.dao.TiActivityworksMapper;
 import com.bbyiya.dao.TiDiscountdetailsMapper;
 import com.bbyiya.dao.TiDiscountmodelMapper;
+import com.bbyiya.dao.TiMyartsdetailsMapper;
 import com.bbyiya.dao.TiMyworksMapper;
 import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
@@ -31,10 +34,12 @@ import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
+import com.bbyiya.enums.AccountLogType;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.calendar.ActivityWorksStatusEnum;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.EErrors;
 import com.bbyiya.model.OOrderaddress;
@@ -45,8 +50,10 @@ import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PPostmodel;
 import com.bbyiya.model.PProducts;
 import com.bbyiya.model.PProductstyles;
+import com.bbyiya.model.TiActivityworks;
 import com.bbyiya.model.TiDiscountdetails;
 import com.bbyiya.model.TiDiscountmodel;
+import com.bbyiya.model.TiMyartsdetails;
 import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiProductstyles;
@@ -58,6 +65,7 @@ import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUseraddress;
 import com.bbyiya.model.UUsers;
+import com.bbyiya.service.IBaseUserAccountService;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.service.calendar.ITi_OrderMgtService;
 import com.bbyiya.service.pic.IBasePostMgtService;
@@ -68,10 +76,12 @@ import com.bbyiya.vo.order.UserOrderSubmitParam;
 @Service("tiOrderMgtServiceImpl")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
 public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
+	//------------------------产品---------------------------------------------
 	@Autowired
 	private TiProductstylesMapper styleMapper;
 	@Autowired
 	private TiProductsMapper productMapper;
+	//-------------------------用户模块-----------------------------------------------
 	@Autowired
 	private UUsersMapper usersMapper;
 	@Autowired
@@ -82,17 +92,19 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 	private UAccountsMapper accountsMapper;// 账户信息
 	@Autowired
 	private UUseraddressMapper addressMapper;
-	@Resource(name = "basePostMgtServiceImpl")
-	private IBasePostMgtService postMgtService;
 	@Autowired
 	private UBranchusersMapper branchusersMapper;
 	@Autowired
 	private UBranchesMapper branchesMapper;
-	@Autowired
-	private OOrderaddressMapper orderaddressMapper;
 	@Resource(name = "regionServiceImpl")
 	private IRegionService regionService;
 
+	@Resource(name = "basePostMgtServiceImpl")
+	private IBasePostMgtService postMgtService;
+	
+	@Resource(name = "baseUserAccountService")
+	private IBaseUserAccountService accountService;
+	//---------------------订单模块------------------------------------------------------
 	@Autowired
 	private OPayorderMapper payOrderMapper;// 支付单
 	@Autowired
@@ -100,10 +112,28 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 	@Autowired
 	private OOrderproductsMapper oproductMapper;
 	@Autowired
+	private OOrderaddressMapper orderaddressMapper;
+
+	//---------------------------作品、活动------------------------------------------------------
+	@Autowired
 	private TiMyworksMapper myworksMapper;
 	@Autowired
+	private TiActivityworksMapper activityworksMapper;
+	@Autowired
+	private TiMyartsdetailsMapper detailsMapper;
+	@Autowired
+	private PMyproductsMapper mycartMapper;
+	//------------------------优惠信息-------------------------------------------
+	@Autowired
+	private TiUserdiscountsMapper mydiscountMapper;
+	@Autowired
+	private TiDiscountmodelMapper disModelMapper;
+	@Autowired
+	private TiDiscountdetailsMapper discountDetailsMapper;
+	//--------------------
+	@Autowired
 	private EErrorsMapper logMapper;
-
+	
 	
 	public ReturnModel submitOrder(UserOrderSubmitParam param) {
 		ReturnModel rq = new ReturnModel();
@@ -130,12 +160,123 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 		}
 	}
 	
+	
+	
 	public ReturnModel submitOrder_ibs(TiActivityOrderSubmitParam param) {
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);
 		if(param==null||ObjectUtil.isEmpty(param.getSubmitUserId())||ObjectUtil.isEmpty(param.getWorkId())){
 			rq.setStatusreson("参数不能为空！");
 			return rq;
+		}
+		if(param.getCount()<=0){
+			rq.setStatusreson("数量不能小于1！");
+			return rq;
+		}
+		try {
+			//用户作品
+			TiMyworks work= myworksMapper.selectByPrimaryKey(param.getWorkId());
+			if(work==null){
+				rq.setStatusreson("作品不存在！");
+				return rq;
+			}
+			//用户作品对应的产品款式
+			TiProductstyles style=styleMapper.selectByPrimaryKey(work.getStyleid()==null?work.getProductid():work.getStyleid());
+			if(style==null){
+				rq.setStatusreson("作品信息不全！");
+				return rq;
+			}
+			
+			List<TiMyartsdetails> detailsList=detailsMapper.findDetailsByWorkId(param.getWorkId());
+			if(detailsList==null||detailsList.size()<style.getImgcount().intValue()){
+				rq.setStatusreson("作品图片数量不够！");
+				return rq;
+			}
+			//是否达到下单的状态
+			Boolean isCompleteBoolean=false;
+			TiActivityworks actWork= activityworksMapper.selectByPrimaryKey(param.getWorkId());
+			if(actWork!=null&&actWork.getStatus()!=null){
+				if(actWork.getStatus()==Integer.parseInt(ActivityWorksStatusEnum.imagesubmit.toString())||
+						actWork.getStatus()==Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString())||
+						actWork.getStatus()==Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString())){
+					isCompleteBoolean=true;
+				}
+			}
+			if(isCompleteBoolean){
+				UUsers promoter= usersMapper.selectByPrimaryKey( param.getSubmitUserId());
+				if(promoter!=null&&ValidateUtils.isIdentity(promoter.getIdentity(), UserIdentityEnums.ti_promoter)){
+					UAccounts accounts=accountsMapper.selectByPrimaryKey(param.getSubmitUserId());
+					double totalprice=style.getPromoterprice().doubleValue()*param.getCount(); 
+					if(accounts==null||accounts.getAvailableamount()==null||accounts.getAvailableamount().doubleValue()<totalprice){
+						rq.setStatusreson("您的账户余额不足！");
+						return rq;
+					}
+					//下单操作------------------
+					
+					//订单收货地址
+					long orderAddressId=0l;
+					//用户自己付邮费
+					if(actWork.getOrderaddressid()!=null&&actWork.getOrderaddressid().longValue()>0){
+						orderAddressId=actWork.getOrderaddressid();
+					}else {//寄到B端地址
+						orderAddressId= getOrderAddressIdByBUserId(param.getSubmitUserId(), Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));					
+					}
+					//订单号
+					String payId = GenUtils.getOrderNo(param.getSubmitUserId());
+					String userOrderId=payId;
+					String orderProductId=userOrderId;
+					OUserorders userOrder = new OUserorders();
+					Date ordertime = new Date();// 订单操作时间
+					userOrder.setUserorderid(userOrderId);// 用户订单号
+					userOrder.setPayid(payId); // 会写支付单号
+					userOrder.setUserid(param.getSubmitUserId());
+					userOrder.setBranchuserid(param.getSubmitUserId());// 分销商userId
+					userOrder.setRemark(param.getRemark());
+					userOrder.setOrdertype(Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));// 订单类型
+					userOrder.setOrdertime(ordertime);
+					userOrder.setPaytime(ordertime); 
+					userOrder.setStatus(Integer.parseInt(OrderStatusEnum.waitFoSend.toString()));
+					userOrder.setTotalprice(totalprice);
+					userOrder.setOrdertotalprice(totalprice); 
+					userOrder.setOrderaddressid(orderAddressId); 
+					userOrdersMapper.insert(userOrder);
+					//订单产品
+					TiProducts product=productMapper.selectByPrimaryKey(style.getProductid());
+					OOrderproducts orderProduct = new OOrderproducts();
+					orderProduct.setOrderproductid(orderProductId); 
+					orderProduct.setUserorderid(userOrderId);
+					orderProduct.setBuyeruserid(param.getSubmitUserId()); 
+					orderProduct.setProductid(work.getProductid());
+					orderProduct.setStyleid(style.getStyleid());
+					orderProduct.setPrice(style.getPromoterprice());
+					orderProduct.setCount(param.getCount());
+					orderProduct.setProductimg(style.getDefaultimg());
+					orderProduct.setProducttitle(product.getTitle());
+					orderProduct.setCartid(param.getWorkId());
+					oproductMapper.insert(orderProduct);
+					//支付单信息
+					OPayorder payorder = new OPayorder();
+					payorder.setPayid(payId);
+					payorder.setUserorderid(userOrderId);
+					payorder.setUserid(param.getSubmitUserId());
+					payorder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
+					payorder.setTotalprice(totalprice);
+					payorder.setWalletamount(totalprice);
+					payorder.setCashamount(0d);
+					payorder.setCreatetime(new Date());
+					payorder.setOrdertype(Integer.parseInt(PayOrderTypeEnum.ti_gouwu.toString()));
+					payOrderMapper.insert(payorder);  
+					//账户结算
+					accountService.add_accountsLog(param.getSubmitUserId(), Integer.parseInt(AccountLogType.use_payment.toString()), totalprice, payId, "");
+					rq.setStatu(ReturnStatus.Success);
+					rq.setStatusreson("下单成"); 
+				}
+			}else {
+				rq.setStatusreson("用户作品未完成（不在可下单的状态）！"); 
+			}
+		} catch (Exception e) {
+			addlog("活动下单：workId="+param.getWorkId()+"error:"+e.getMessage()); 
+			throw new RuntimeException(e);
 		}
 		return rq;
 	}
@@ -223,10 +364,17 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			} else {
 				addPayOrder(param.getUserId(), payId, payId, orderTotalPrice, 0d);
 			}
+			//作品id 通过 原作品表来获取
+			PMyproducts mycart=new PMyproducts();
+			mycart.setUserid(0l);
+			mycart.setCreatetime(new Date());
+			mycartMapper.insertReturnId(mycart);
+			//获取
 			TiMyworks myworks = new TiMyworks();
 			myworks.setUserid(param.getUserId());
 			myworks.setCreatetime(new Date());
-			myworksMapper.insertReturnId(myworks);
+			myworks.setWorkid(mycart.getCartid());
+			myworksMapper.insert(myworks);
 			orderProduct.setCartid(myworks.getWorkid());
 			// 插入订单
 			userOrdersMapper.insert(userOrder);
@@ -253,12 +401,6 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 		payOrderMapper.insert(payorder);  
 	}
 
-	@Autowired
-	private TiUserdiscountsMapper mydiscountMapper;
-	@Autowired
-	private TiDiscountmodelMapper disModelMapper;
-	@Autowired
-	private TiDiscountdetailsMapper discountDetailsMapper;
 
 	private TiDiscountmodel getDiscountList(Long userId) {
 		List<TiUserdiscounts> discounts = mydiscountMapper.findMyDiscounts(userId);

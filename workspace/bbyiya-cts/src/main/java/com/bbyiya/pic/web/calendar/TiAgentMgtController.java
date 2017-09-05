@@ -1,6 +1,8 @@
 package com.bbyiya.pic.web.calendar;
 
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +17,13 @@ import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.enums.user.UserStatusEnum;
 import com.bbyiya.model.TiAgents;
 import com.bbyiya.model.TiAgentsapply;
+import com.bbyiya.model.TiMachinemodel;
 import com.bbyiya.model.TiProducersapply;
 import com.bbyiya.model.TiPromotersapply;
+import com.bbyiya.model.UAgentapplyareas;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.service.calendar.IIbs_TiAgentMgtService;
+import com.bbyiya.pic.utils.Json2Objects;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -210,17 +215,18 @@ public class TiAgentMgtController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/producersApply")
-	public String producersApply(String producersJson) throws Exception {
+	public String producersApply(String producersJson,String machineJson) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			if(!ObjectUtil.isEmpty(user.getMobilePhone())){
 				try {
+					List<TiMachinemodel> machinelist=Json2Objects.getParam_Machinemodel(machineJson);
 					TiProducersapply applyInfo=(TiProducersapply)JsonUtil.jsonStrToObject(producersJson, TiProducersapply.class);
 					if(applyInfo!=null){
 						applyInfo.setProduceruserid(user.getUserId()); 
 					}
-					rq =agentService.applyProducers(user.getUserId(), applyInfo);
+					rq =agentService.applyProducers(user.getUserId(), applyInfo,machinelist);
 				} catch (Exception e) {
 					rq.setStatu(ReturnStatus.ParamError);
 					rq.setStatusreson("参数有误101");
@@ -248,7 +254,7 @@ public class TiAgentMgtController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/cts_producersApply")
-	public String cts_producersApply(String producersUserId,String producersJson) throws Exception {
+	public String cts_producersApply(String producersUserId,String producersJson,String machineJson) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
@@ -256,11 +262,13 @@ public class TiAgentMgtController extends SSOController {
 				UUsers agentUsers= userMapper.getUUsersByUserID(ObjectUtil.parseLong(producersUserId));
 				if(agentUsers!=null&&!ObjectUtil.isEmpty(agentUsers.getMobilephone())){
 					try {
+						List<TiMachinemodel> machinelist=Json2Objects.getParam_Machinemodel(machineJson);
+						
 						TiProducersapply applyInfo=(TiProducersapply)JsonUtil.jsonStrToObject(producersJson, TiProducersapply.class);
 						if(applyInfo!=null){
 							applyInfo.setProduceruserid(user.getUserId()); 
 						}
-						rq =agentService.applyProducers(ObjectUtil.parseLong(producersUserId), applyInfo);
+						rq =agentService.applyProducers(ObjectUtil.parseLong(producersUserId), applyInfo,machinelist);
 					} catch (Exception e) {
 						rq.setStatu(ReturnStatus.ParamError);
 						rq.setStatusreson("参数有误101");
@@ -620,6 +628,19 @@ public class TiAgentMgtController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	@ResponseBody
+	@RequestMapping(value = "/findMachinemodelList")
+	public String findMachinemodelList() throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			rq=agentService.findMachinemodelList();
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	
 	
 }

@@ -1,5 +1,7 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
 import com.bbyiya.model.TiMachinemodel;
 
 public interface TiMachinemodelMapper {
@@ -14,4 +16,6 @@ public interface TiMachinemodelMapper {
     int updateByPrimaryKeySelective(TiMachinemodel record);
 
     int updateByPrimaryKey(TiMachinemodel record);
+    
+    List<TiMachinemodel> findMachineModelList();
 }

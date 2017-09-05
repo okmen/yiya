@@ -11,9 +11,12 @@
     <result column="Content" property="content" jdbcType="VARCHAR" />
     <result column="ImgJson" property="imgjson" jdbcType="VARCHAR" />
     <result column="OrderProductId" property="orderproductid" jdbcType="VARCHAR" />
+    <result column="NickName" property="nickname" jdbcType="VARCHAR" />
+    <result column="StyleDescription" property="styledescription" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-   Id, UserId, HeadImg, StyleId, ProductId, CreateTime, Content, ImgJson, OrderProductId
+    Id, UserId, HeadImg, StyleId, ProductId, CreateTime, Content, ImgJson, OrderProductId, 
+    NickName, StyleDescription
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -33,15 +36,15 @@
     delete from ti_productcomments
     where Id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.bbyiya.model.TiProductcomments" >
+ <insert id="insert" parameterType="com.bbyiya.model.TiProductcomments" >
     insert into ti_productcomments (Id, UserId, HeadImg, 
       StyleId, ProductId, CreateTime, 
-      Content, ImgJson, OrderProductId
-      )
+      Content, ImgJson, OrderProductId, 
+      NickName, StyleDescription)
     values (#{id,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{headimg,jdbcType=VARCHAR}, 
       #{styleid,jdbcType=BIGINT}, #{productid,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}, 
-      #{content,jdbcType=VARCHAR}, #{imgjson,jdbcType=VARCHAR}, #{orderproductid,jdbcType=VARCHAR}
-      )
+      #{content,jdbcType=VARCHAR}, #{imgjson,jdbcType=VARCHAR}, #{orderproductid,jdbcType=VARCHAR}, 
+      #{nickname,jdbcType=VARCHAR}, #{styledescription,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiProductcomments" >
     insert into ti_productcomments
@@ -73,6 +76,12 @@
       <if test="orderproductid != null" >
         OrderProductId,
       </if>
+      <if test="nickname != null" >
+        NickName,
+      </if>
+      <if test="styledescription != null" >
+        StyleDescription,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -101,6 +110,12 @@
       </if>
       <if test="orderproductid != null" >
         #{orderproductid,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null" >
+        #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="styledescription != null" >
+        #{styledescription,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -131,6 +146,12 @@
       <if test="orderproductid != null" >
         OrderProductId = #{orderproductid,jdbcType=VARCHAR},
       </if>
+      <if test="nickname != null" >
+        NickName = #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="styledescription != null" >
+        StyleDescription = #{styledescription,jdbcType=VARCHAR},
+      </if>
     </set>
     where Id = #{id,jdbcType=BIGINT}
   </update>
@@ -143,7 +164,9 @@
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
       Content = #{content,jdbcType=VARCHAR},
       ImgJson = #{imgjson,jdbcType=VARCHAR},
-      OrderProductId = #{orderproductid,jdbcType=VARCHAR}
+      OrderProductId = #{orderproductid,jdbcType=VARCHAR},
+      NickName = #{nickname,jdbcType=VARCHAR},
+      StyleDescription = #{styledescription,jdbcType=VARCHAR}
     where Id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

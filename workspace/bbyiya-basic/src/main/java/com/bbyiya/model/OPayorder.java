@@ -31,7 +31,17 @@ public class OPayorder implements Serializable {
 	private Double walletamount;
 	
     private Double cashamount;
+    
+    private String extobject;
 	
+	public String getExtobject() {
+		return extobject;
+	}
+
+	public void setExtobject(String extobject) {
+		this.extobject = extobject;
+	}
+
 	public String getPayid() {
 		return payid;
 	}

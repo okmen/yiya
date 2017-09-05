@@ -266,6 +266,8 @@ public class Ti_ProductController  extends SSOController {
 						model.setProductid(oproducts.get(0).getProductid());
 						model.setStyleid(oproducts.get(0).getStyleid());
 						model.setUserid(user.getUserId());
+						model.setNickname(user.getNickName());
+						model.setStyledescription(oproducts.get(0).getPropertystr()); 
 						if (!ObjectUtil.isEmpty(imgJson)) {
 							model.setImgjson(imgJson);
 						}

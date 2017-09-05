@@ -82,6 +82,7 @@ public class Ti_OrderSubmitController extends SSOController {
 			rq = postMgtService.find_postlist_ti(addressId, productId);
 			
 		}
+		rq.setStatu(ReturnStatus.Success);
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
@@ -178,7 +179,7 @@ public class Ti_OrderSubmitController extends SSOController {
 							}
 						}
 						if(post.getAmount()!=null&&post.getAmount().doubleValue()>0){
-							long orderAddressId=orderMgtService.getOrderAddressId(addressId);
+							long orderAddressId=orderMgtService.addOrderAddressReturnId(addressId);
 							OPayorder payorder=new OPayorder();
 							payorder.setPayid(GenUtils.getOrderNo(user.getUserId()));
 							payorder.setCreatetime(new Date());

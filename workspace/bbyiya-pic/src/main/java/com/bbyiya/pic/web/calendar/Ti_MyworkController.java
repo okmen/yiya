@@ -3,6 +3,7 @@ package com.bbyiya.pic.web.calendar;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OUserordersMapper;
+import com.bbyiya.dao.TiActivityworksMapper;
 import com.bbyiya.dao.TiMyartsdetailsMapper;
 import com.bbyiya.dao.TiMyworksMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
@@ -19,6 +21,7 @@ import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OUserorders;
+import com.bbyiya.model.TiActivityworks;
 import com.bbyiya.model.TiMyartsdetails;
 import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiProductstyles;
@@ -36,6 +39,8 @@ public class Ti_MyworkController extends SSOController {
 	private TiProductstylesMapper styleMapper;
 	@Autowired
 	private TiMyworksMapper workMapper;
+	@Autowired
+	private TiActivityworksMapper activityworkMapper;
 	@Autowired
 	private TiMyartsdetailsMapper detailMapper;
 	@Autowired
@@ -101,8 +106,70 @@ public class Ti_MyworkController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	/**
+	 * 门店自提
+	 * @param detailJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/submitReciverInfo")
+	public String submitReciverInfo(long workId, String reciever,String phone) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.ParamError);
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(ObjectUtil.isEmpty(reciever)||ObjectUtil.isMobile(phone)){
+				rq.setStatusreson("姓名不能为空/手机号不正确");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			TiActivityworks work=activityworkMapper.selectByPrimaryKey(workId);
+			if(work!=null){
+				work.setReciever(reciever);
+				work.setMobiephone(phone);
+				activityworkMapper.updateByPrimaryKey(work);
+				rq.setStatu(ReturnStatus.Success);
+				rq.setStatusreson("成功！");
+			}else { 
+				rq.setStatusreson("作品不存在");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+		}else { 
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	
-	
+	/**
+	 * 作品详情
+	 * @param workId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/workInfo")
+	public String workInfo(long workId)throws Exception {
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.ParamError);
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			TiMyworks myworks= workMapper.selectByPrimaryKey(workId);
+			if(myworks!=null){
+				List<TiMyartsdetails> details= detailMapper.findDetailsByWorkId(workId);
+				Map<String, Object> map=new HashMap<String, Object>();
+				map.put("details", details);
+				rq.setStatu(ReturnStatus.Success);
+				rq.setBasemodle(map); 
+			}
+		}else { 
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 //	/**
 //	 * 订单图片上传
 //	 * @param detailJson

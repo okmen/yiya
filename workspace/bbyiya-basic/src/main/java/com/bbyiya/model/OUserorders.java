@@ -45,6 +45,7 @@ public class OUserorders implements Serializable{
     private Date uploadtime;
     private Integer postmodelid;
     private Date deliverytime;
+    private Long produceruserid;
     
     public String getUserorderid() {
         return userorderid;
@@ -223,6 +224,12 @@ public class OUserorders implements Serializable{
 	public void setExpresscode(String expresscode) {
 		this.expresscode = expresscode;
 	}
-    
+	public Long getProduceruserid() {
+        return produceruserid;
+    }
+
+    public void setProduceruserid(Long produceruserid) {
+        this.produceruserid = produceruserid;
+    }
     
 }

@@ -18,6 +18,10 @@ public interface ITi_OrderMgtService {
 	 * @return
 	 */
 	ReturnModel submitOrder_ibs(TiActivityOrderSubmitParam param);
-	
-	long getOrderAddressId(Long userAddressId);
+	/**
+	 * 生成订单收货地址 返回订单收货地址Id
+	 * @param userAddressId(用户收货地址Id)
+	 * @return 订单收货地址Id
+	 */
+	long addOrderAddressReturnId(Long userAddressId);
 }

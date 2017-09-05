@@ -24,6 +24,7 @@ import com.bbyiya.dao.TiDiscountdetailsMapper;
 import com.bbyiya.dao.TiDiscountmodelMapper;
 import com.bbyiya.dao.TiMyartsdetailsMapper;
 import com.bbyiya.dao.TiMyworksMapper;
+import com.bbyiya.dao.TiProductareasMapper;
 import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
 import com.bbyiya.dao.TiPromoteremployeesMapper;
@@ -55,6 +56,7 @@ import com.bbyiya.model.TiDiscountdetails;
 import com.bbyiya.model.TiDiscountmodel;
 import com.bbyiya.model.TiMyartsdetails;
 import com.bbyiya.model.TiMyworks;
+import com.bbyiya.model.TiProductareas;
 import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiPromoteremployees;
@@ -148,7 +150,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			if (orderType == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())) {// 影楼订单
 				orderAddressId = getOrderAddressIdByBUserId(param.getBranchUserId(), orderType);
 			} else {// 普通购买
-				orderAddressId = getOrderAddressId(param.getAddrId());
+				orderAddressId = addOrderAddressReturnId(param.getAddrId());
 			}
 			if (orderAddressId > 0) {
 				param.setOrderAddressId(orderAddressId);
@@ -239,6 +241,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					userOrder.setTotalprice(totalprice);
 					userOrder.setOrdertotalprice(totalprice); 
 					userOrder.setOrderaddressid(orderAddressId); 
+					userOrder.setProduceruserid(getProducerUserId(orderAddressId,work.getProductid())); 
 					userOrdersMapper.insert(userOrder);
 					//订单产品
 					TiProducts product=productMapper.selectByPrimaryKey(style.getProductid());
@@ -287,7 +290,56 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 		return rq;
 	}
 	
+	@Autowired
+	private TiProductareasMapper productareasMapper;
 	
+	public long getProducerUserId(Long orderAddressId,Long productId){//String userOrderId,
+//		OUserorders order = userOrdersMapper.selectByPrimaryKey(userOrderId);
+//		if (order.getOrdertype() != null && (Integer.parseInt(OrderTypeEnum.ti_nomal.toString()) == order.getOrdertype() || Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()) == order.getOrdertype())) {
+//			if (order.getStatus() == Integer.parseInt(OrderStatusEnum.payed.toString()) || order.getStatus() == Integer.parseInt(OrderStatusEnum.waitFoSend.toString())) {
+//				List<OOrderproducts> proList = oproductMapper.findOProductsByOrderId(userOrderId);
+//				if (proList != null && proList.size() > 0) {
+//					OOrderaddress addr = orderaddressMapper.selectByPrimaryKey(order.getOrderaddressid());
+//					if (addr != null) {
+//						UUseraddress useraddress = addressMapper.get_UUserAddressDefault(addr.getUserid());
+//						if (useraddress != null) {
+//							List<TiProductareas> list = productareasMapper.findProductAreaListByProductIdAndArea(proList.get(0).getProductid(), useraddress.getCity());
+//							if (list != null && list.size() > 0) {
+//								return list.get(0).getProduceruserid();
+//							}
+//						} else {
+//							TiPromoters promoters = promotersMapper.selectByPrimaryKey(addr.getUserid());
+//							if (promoters != null) {
+//								List<TiProductareas> list = productareasMapper.findProductAreaListByProductIdAndArea(proList.get(0).getProductid(), promoters.getCity());
+//								if (list != null && list.size() > 0) {
+//									return list.get(0).getProduceruserid();
+//								}
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+		OOrderaddress addr = orderaddressMapper.selectByPrimaryKey(orderAddressId);
+		if (addr != null) {
+			UUseraddress useraddress = addressMapper.get_UUserAddressDefault(addr.getUserid());
+			if (useraddress != null) {
+				List<TiProductareas> list = productareasMapper.findProductAreaListByProductIdAndArea(productId, useraddress.getCity());
+				if (list != null && list.size() > 0) {
+					return list.get(0).getProduceruserid();
+				}
+			} else {
+				TiPromoters promoters = promotersMapper.selectByPrimaryKey(addr.getUserid());
+				if (promoters != null) {
+					List<TiProductareas> list = productareasMapper.findProductAreaListByProductIdAndArea(productId, promoters.getCity());
+					if (list != null && list.size() > 0) {
+						return list.get(0).getProduceruserid();
+					}
+				}
+			}
+		}
+		return 0l;
+	}
 
 	private ReturnModel submitOrder_common(UserOrderSubmitParam param) throws Exception {
 		ReturnModel rq = new ReturnModel();
@@ -310,6 +362,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 		userOrder.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
 		userOrder.setIsbranch(0);
 		userOrder.setPostmodelid(param.getPostModelId());
+	
 		if (param.getOrderAddressId() != null && param.getOrderAddressId() > 0) {
 			userOrder.setOrderaddressid(param.getOrderAddressId());
 		} else {
@@ -317,7 +370,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			rq.setStatusreson("收货地址有误");
 			return rq;
 		}
-
+		userOrder.setProduceruserid(getProducerUserId(userOrder.getOrderaddressid(),param.getOrderproducts().getProductid())); 
 		if (param.getOrderproducts() != null) {
 			// 实际需要付款的总价（包括邮费）
 			Double orderTotalPrice = 0d;
@@ -334,6 +387,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			if (orderType == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()) || orderType == Integer.parseInt(OrderTypeEnum.ti_nomal.toString())) {
 				TiProductstyles style = styleMapper.selectByPrimaryKey(orderProduct.getStyleid());
 				if (style != null) {
+					orderProduct.setPropertystr(style.getDescription()); 
 					totalPrice = style.getPrice() * orderProduct.getCount();
 					if (orderType == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())) {
 						orderProduct.setPrice(style.getPromoterprice());
@@ -380,6 +434,8 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			myworks.setUserid(param.getUserId());
 			myworks.setCreatetime(new Date());
 			myworks.setWorkid(mycart.getCartid());
+			myworks.setProductid(orderProduct.getProductid());
+			myworks.setStyleid(orderProduct.getStyleid()); 
 			myworksMapper.insert(myworks);
 			orderProduct.setCartid(myworks.getWorkid());
 			// 插入订单
@@ -450,7 +506,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 				TiPromoters promoters = promotersMapper.selectByPrimaryKey(userId);
 				if (promoters != null) {
 					OOrderaddress orderAddress = new OOrderaddress();
-					orderAddress.setUserid(promoters.getProduceruserid());
+					orderAddress.setUserid(promoters.getPromoteruserid());
 					orderAddress.setPhone(promoters.getMobilephone());
 					orderAddress.setReciver(promoters.getContacts());
 					orderAddress.setCity(regionService.getCityName(promoters.getCity()));
@@ -466,7 +522,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 		return 0;
 	}
 
-	public long getOrderAddressId(Long userAddrId) {
+	public long addOrderAddressReturnId(Long userAddrId) {
 		if (userAddrId != null && userAddrId > 0) {
 			UUseraddress addr = addressMapper.get_UUserAddressByKeyId(userAddrId);
 			if (addr != null) {

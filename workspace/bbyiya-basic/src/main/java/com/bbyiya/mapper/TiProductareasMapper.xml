@@ -19,7 +19,13 @@
     from ti_productareas
     where ProductId = #{productid,jdbcType=INTEGER} and  AreaCode=#{areacode,jdbcType=INTEGER}  and ProducerUserID=#{produceruserid,jdbcType=BIGINT}   limit 1;
   </select>
-  
+  <!-- 查询产品某个区域的生产商 -->
+  <select id="findProductAreaListByProductIdAndArea" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ti_productareas
+    where ProductId = #{productId,jdbcType=INTEGER} and  AreaCode=#{areaCode,jdbcType=INTEGER} 
+  </select>
   <!-- 得到其它生产商该产品是否代理该地区 -->
   <select id="getIfExistProductAreaByOtherIds" resultMap="BaseResultMap" >
     select 

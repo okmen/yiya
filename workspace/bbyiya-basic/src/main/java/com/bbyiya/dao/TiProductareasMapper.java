@@ -24,4 +24,11 @@ public interface TiProductareasMapper {
     TiProductareas getProductAreaByIds(@Param("productid") Long productid,@Param("produceruserid") Long produceruserid,@Param("areacode") Integer areacode);
     
     TiProductareas getIfExistProductAreaByOtherIds (@Param("productid") Long productid,@Param("produceruserid") Long produceruserid,@Param("areacode") Integer areacode);
+    /**
+     * 获取产品 区域的生产商
+     * @param productId
+     * @param areaCode
+     * @return
+     */
+    List<TiProductareas> findProductAreaListByProductIdAndArea(@Param("productId")Long productId,@Param("areaCode")Integer areaCode);
 }

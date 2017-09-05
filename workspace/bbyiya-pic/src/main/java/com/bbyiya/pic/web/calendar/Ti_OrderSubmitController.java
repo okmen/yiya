@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.baseUtils.GenUtils;
-import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.PPostmodelMapper;
 import com.bbyiya.dao.PPostmodelareasMapper;
@@ -25,7 +24,6 @@ import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
-import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.PPostmodel;
@@ -33,7 +31,6 @@ import com.bbyiya.model.PPostmodelareas;
 import com.bbyiya.model.TiActivityworks;
 import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiProducts;
-import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.UUseraddress;
 import com.bbyiya.service.calendar.ITi_OrderMgtService;
 import com.bbyiya.service.pic.IBasePostMgtService;
@@ -82,6 +79,7 @@ public class Ti_OrderSubmitController extends SSOController {
 			rq = postMgtService.find_postlist_ti(addressId, productId);
 			
 		}
+		rq.setStatu(ReturnStatus.Success);
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
@@ -178,7 +176,7 @@ public class Ti_OrderSubmitController extends SSOController {
 							}
 						}
 						if(post.getAmount()!=null&&post.getAmount().doubleValue()>0){
-							long orderAddressId=orderMgtService.getOrderAddressId(addressId);
+							long orderAddressId=orderMgtService.addOrderAddressReturnId(addressId);
 							OPayorder payorder=new OPayorder();
 							payorder.setPayid(GenUtils.getOrderNo(user.getUserId()));
 							payorder.setCreatetime(new Date());

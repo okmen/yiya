@@ -7,8 +7,8 @@ import java.util.List;
 
 import com.bbyiya.model.PMyproducttempext;
 import com.bbyiya.model.TiMachinemodel;
-import com.bbyiya.model.UAgentapplyareas;
 import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.vo.RAreaVo;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -103,4 +103,52 @@ public class Json2Objects {
 		
 		return machinelist;
 	}
+	
+	public static List<RAreaVo> getParam_RAreaVo(String areacodeJson) {
+		if(ObjectUtil.isEmpty(areacodeJson)){
+			return null;
+		}
+		JSONObject model = JSONObject.fromObject(areacodeJson);
+		List<RAreaVo> arealist=null;
+		if (model != null) {
+			String detailString=String.valueOf(model.get("areacodelist"));
+			if(ObjectUtil.isEmpty(detailString)||detailString.equals("null")){
+				return null;
+			}	
+			JSONArray codearr=null;
+			try {
+				codearr = new JSONArray().fromObject(detailString);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			
+			if(codearr!=null&&codearr.size()>0){
+				arealist=new ArrayList<RAreaVo>();
+				for (int i = 0; i < codearr.size(); i++) {
+					JSONObject dd = codearr.getJSONObject(i);
+					RAreaVo applyarea=new RAreaVo();
+					int areacode=ObjectUtil.parseInt(String.valueOf(dd.get("areacode")));
+					if(areacode>0){
+						applyarea.setAreacode(areacode);
+					}
+					int provincecode=ObjectUtil.parseInt(String.valueOf(dd.get("provincecode")));
+					if(provincecode>0){
+						applyarea.setProvincecode(provincecode);
+					}
+					int citycode=ObjectUtil.parseInt(String.valueOf(dd.get("citycode")));
+					if(citycode>0){
+						applyarea.setCitycode(citycode);
+					}
+					if(applyarea.getAreacode()!=null&&applyarea.getProvincecode()!=null&&applyarea.getCitycode()!=null){
+						arealist.add(applyarea);
+					}
+					
+				}
+			} 
+			
+		}
+		
+		return arealist;
+	}
+	
 }

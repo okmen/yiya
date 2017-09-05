@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.bbyiya.pic.dao.IPic_OrderMgtDao" >
+<mapper namespace="com.bbyiya.pic.dao.ICts_OrderMgtDao" >
    <resultMap id="BaseResultMap" type="com.bbyiya.model.OUserorders" >
     <id column="UserOrderId" property="userorderid" jdbcType="VARCHAR" />
     <result column="UserId" property="userid" jdbcType="BIGINT" />
@@ -61,56 +61,13 @@
   <!-- 用 户订单结果类Result -->
   <resultMap id="UserOrderResult" type="com.bbyiya.vo.order.UserOrderResultVO" extends="BaseResultMap">  
   </resultMap>  
-  <!-- 根 据运单号查找订单信息 -->
-  <select id="findUserOrderByExpressOrder" resultMap="BaseResultMap" parameterType="java.lang.String"  >
-  	 select 
-    <include refid="Base_Column_List" />
-    	from o_userorders where ExpressOrder=#{expressOrder,jdbcType=VARCHAR} and ExpressCom=#{expressCom,jdbcType=VARCHAR}
-  
-  </select> 
+ 
   <!-- 搜索订单列表作品 --> 
-  <select id="findUserOrders" resultMap="UserOrderResult" parameterType="com.bbyiya.vo.order.SearchOrderParam"  >
-    select 
-    <include refid="Base_Column_List" />
-    from o_userorders where 1=1  
+  <select id="find_CtsUserOrders" resultMap="UserOrderResult" parameterType="com.bbyiya.vo.order.SearchOrderParam"  >
+    select  a.*
+    from o_userorders as a left join o_orderaddress b on a.OrderAddressId=b.OrderAddressId  where 1=1  
     <if test="orderNo != null" >
-        AND UserOrderId LIKE  CONCAT('%', #{orderNo,jdbcType=VARCHAR},'%' )  
-    </if>
-    <if test="startTimeStr != null" ><!--  #{startTime,jdbcType=TIMESTAMP}  -->
-        AND PayTime &gt;= #{startTimeStr,jdbcType=VARCHAR}
-    </if>
-    <if test="endTimeStr != null" ><!-- #{endTime,jdbcType=TIMESTAMP}  -->
-        AND PayTime &lt;= #{endTimeStr,jdbcType=VARCHAR}
-    </if>
-    <if test="status != null" >
-        AND Status = #{status,jdbcType=INTEGER}
-    </if>
-    <if test="agentUserId != null" >
-        AND AgentUserId = #{agentUserId,jdbcType=INTEGER}
-    </if>
-    <if test="userId != null" >
-        AND UserId = #{userId,jdbcType=INTEGER}
-    </if>
-     order by OrderTime desc
-  </select>
-  
-   <!-- Pbs用户订单结果类Result  -->
-  <resultMap id="PbsUserOrderResult" type="com.bbyiya.pic.vo.order.PbsUserOrderResultVO" extends="OOrderproductsMap">
-  		<id property="userorderid" column="UserOrderId"/>   
-        <association property="order" javaType="com.bbyiya.model.OUserorders">   
-            <id property="userorderid" column="UserOrderId"/>          
-        </association>
-  </resultMap> 
-  <!-- 搜索Pbs订单列表作品 -->
-  <select id="findPbsUserOrders" resultMap="PbsUserOrderResult" parameterType="com.bbyiya.vo.order.SearchOrderParam"  >
-    select 
-    a.OrderProductId, a.UserOrderId, a.ProductId, a.StyleId, a.BuyerUserId, a.ProductTitle, a.Price, 
-    a.BranchUserId, a.SalesUserId, a.PropertyStr, a.Count,a.ProductImg,a.CartId
-    from o_orderproducts a inner join o_userorders b on a.UserOrderId=b.UserOrderId  
-    inner join o_orderaddress c on b.OrderAddressId=c.OrderAddressId 
-    where 1=1 and OrderType!=2 and OrderType!=3
-    <if test="orderNo != null" >
-        AND (b.UserOrderId LIKE  CONCAT('%', #{orderNo,jdbcType=VARCHAR},'%' ) OR c.Phone LIKE  CONCAT('%', #{orderNo,jdbcType=VARCHAR},'%' ) ) 
+        AND (a.UserOrderId LIKE  CONCAT('%', #{orderNo,jdbcType=VARCHAR},'%' ) or b.Reciver  LIKE  CONCAT('%', #{orderNo,jdbcType=VARCHAR},'%' ) or b.Phone LIKE  CONCAT('%', #{orderNo,jdbcType=VARCHAR},'%' ))  
     </if>
     <if test="startTimeStr != null  and startTimeStr !='' " ><!--  #{startTime,jdbcType=TIMESTAMP}  -->
         AND b.PayTime &gt;= #{startTimeStr,jdbcType=VARCHAR}
@@ -118,36 +75,22 @@
     <if test="endTimeStr != null  and endTimeStr !=''" ><!-- #{endTime,jdbcType=TIMESTAMP}  -->
         AND b.PayTime &lt;= #{endTimeStr,jdbcType=VARCHAR}
     </if>
+    
+     <if test="ordertype != null" >
+        AND a.OrderType = #{ordertype,jdbcType=INTEGER}
+    </if>
     <if test="status != null" >
-        AND b.Status = #{status,jdbcType=INTEGER}
+        AND a.Status = #{status,jdbcType=INTEGER}
     </if>
     <if test="agentUserId != null" >
-        AND b.AgentUserId = #{agentUserId,jdbcType=INTEGER}
+        AND (a.AgentUserId = #{agentUserId,jdbcType=BIGINT} or a.BranchUserId=#{agentUserId,jdbcType=BIGINT})
     </if>
     <if test="userId != null" >
-        AND b.UserId = #{userId,jdbcType=INTEGER}
+        AND a.UserId = #{userId,jdbcType=INTEGER}
     </if>
-     order by b.OrderTime desc
+     order by a.OrderTime desc
   </select>
   
+ 
   
-   <!-- 搜索订单图片列表  -->
-   <select id="findOrderProductDetailsByProductOrderId" resultMap="OProductDetailMap"  >
-    select  <include refid="OOrderproductdetails_Column_List" />
-    from o_orderproductdetails where OrderProductId=#{orderProductId,jdbcType=VARCHAR}  
-    order by Position asc
-  </select>
-  
-  <!-- 根据作品ID得到未支付或图片未上传订单  -->
-   <select id="findNoPayOrderListByCartId" resultMap="BaseResultMap"  parameterType="java.lang.Long" >
-    select a.* from o_userorders a,o_orderproducts b where a.UserOrderId=b.UserOrderId and b.CartId=#{cartid,jdbcType=BIGINT} and (a.`Status`=0 or a.`Status`=1)   
-  </select>
-  <!-- 根据作品ID得到订单列表  -->
-   <select id="findOrderListByCartId" resultMap="BaseResultMap"  parameterType="java.lang.Long" >
-    select a.* from o_userorders a,o_orderproducts b where a.UserOrderId=b.UserOrderId and b.CartId=#{cartid,jdbcType=BIGINT}   
-  </select>
-  <!-- 根据作品ID和影楼ID得到订单列表  -->
-   <select id="findOrderListByCartIdAndBranchUserID" resultMap="BaseResultMap"  parameterType="java.lang.Long" >
-    select a.* from o_userorders a,o_orderproducts b where a.UserOrderId=b.UserOrderId and b.CartId=#{cartid,jdbcType=BIGINT}  and a.UserId=#{branchuserid,jdbcType=BIGINT}
-  </select>
 </mapper>

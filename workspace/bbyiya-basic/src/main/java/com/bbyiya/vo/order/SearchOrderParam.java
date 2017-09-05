@@ -1,4 +1,4 @@
-package com.bbyiya.pic.vo.order;
+package com.bbyiya.vo.order;
 
 import java.util.Date;
 
@@ -19,6 +19,7 @@ public class SearchOrderParam {
 	private Integer userId;
 	private String userName;
 	private String userPhone;
+	private Integer ordertype;
 	
 	public String getOrderNo() {
 		return orderNo;
@@ -91,6 +92,12 @@ public class SearchOrderParam {
 	}
 	public void setUserPhone(String userPhone) {
 		this.userPhone = userPhone;
+	}
+	public Integer getOrdertype() {
+		return ordertype;
+	}
+	public void setOrdertype(Integer ordertype) {
+		this.ordertype = ordertype;
 	}
 	
 	

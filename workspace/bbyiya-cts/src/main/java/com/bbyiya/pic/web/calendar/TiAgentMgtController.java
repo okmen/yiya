@@ -26,6 +26,7 @@ import com.bbyiya.pic.service.calendar.IIbs_TiAgentMgtService;
 import com.bbyiya.pic.utils.Json2Objects;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.vo.RAreaVo;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.calendar.TiAgentApplyVo;
 import com.bbyiya.vo.calendar.TiAgentSearchParam;
@@ -628,6 +629,11 @@ public class TiAgentMgtController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	/**
+	 * 得到所有机型
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/findMachinemodelList")
 	public String findMachinemodelList() throws Exception {
@@ -635,6 +641,42 @@ public class TiAgentMgtController extends SSOController {
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
 			rq=agentService.findMachinemodelList();
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 得到生产商的生产机型列表及机型可以生产的产品列表及不可设置的地区
+	 * @param producerUserId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/findMachineListByProducerUserId")
+	public String findMachineListByProducerUserId(Long producerUserId) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			rq=agentService.findMachineListByProducerUserId(producerUserId);
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value = "/setProducerProductAera")
+	public String setProducerProductAera(Long producerUserId,Long productId,String areacodeJson) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			List<RAreaVo> arealist=Json2Objects.getParam_RAreaVo(areacodeJson);
+			rq=agentService.setProducerProductAera(producerUserId,productId,arealist);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

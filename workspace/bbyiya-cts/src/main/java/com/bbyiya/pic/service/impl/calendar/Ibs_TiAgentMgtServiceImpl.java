@@ -15,12 +15,16 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bbyiya.dao.TiAgentsMapper;
 import com.bbyiya.dao.TiAgentsapplyMapper;
 import com.bbyiya.dao.TiMachinemodelMapper;
+import com.bbyiya.dao.TiMachineproductsMapper;
 import com.bbyiya.dao.TiProducerapplymachinesMapper;
+import com.bbyiya.dao.TiProducerproductsMapper;
 import com.bbyiya.dao.TiProducersMapper;
 import com.bbyiya.dao.TiProducersapplyMapper;
+import com.bbyiya.dao.TiProductareasMapper;
 import com.bbyiya.dao.TiPromoteremployeesMapper;
 import com.bbyiya.dao.TiPromotersMapper;
 import com.bbyiya.dao.TiPromotersapplyMapper;
+import com.bbyiya.dao.UAccountsMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.ProducersStatusEnum;
@@ -30,22 +34,27 @@ import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.TiAgents;
 import com.bbyiya.model.TiAgentsapply;
 import com.bbyiya.model.TiMachinemodel;
+import com.bbyiya.model.TiMachineproducts;
 import com.bbyiya.model.TiProducerapplymachines;
+import com.bbyiya.model.TiProducerproducts;
 import com.bbyiya.model.TiProducers;
 import com.bbyiya.model.TiProducersapply;
+import com.bbyiya.model.TiProductareas;
 import com.bbyiya.model.TiPromoteremployees;
 import com.bbyiya.model.TiPromoters;
 import com.bbyiya.model.TiPromotersapply;
-import com.bbyiya.model.UBranches;
+import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.service.calendar.IIbs_TiAgentMgtService;
 import com.bbyiya.service.IBaseUserCommonService;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
+import com.bbyiya.vo.RAreaVo;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.calendar.TiAgentApplyVo;
 import com.bbyiya.vo.calendar.TiAgentSearchParam;
+import com.bbyiya.vo.calendar.TiMachineproductVo;
 import com.bbyiya.vo.calendar.TiProducersApplyVo;
 import com.bbyiya.vo.calendar.TiPromoterApplyVo;
 import com.github.pagehelper.PageHelper;
@@ -70,21 +79,30 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 	@Autowired
 	private TiProducersapplyMapper producersapplyMapper;
 	@Autowired
+	private TiProducerproductsMapper producerproductMapper;
+	
+	@Autowired
 	private TiProducersMapper producersMapper;
 	@Autowired
 	private TiMachinemodelMapper machineMapper;
 	@Autowired
+	private TiMachineproductsMapper machineproductMapper;
+	@Autowired
 	private TiProducerapplymachinesMapper promachineMapper;
-	
+	@Autowired
+	private TiProductareasMapper productareaMapper;
 	
 	/*-------------------用户信息------------------------------------------------*/
 	@Autowired
 	private UUsersMapper usersMapper;
+	@Autowired
+	private UAccountsMapper accountsMapper;
 	//用户公共模块
 	@Resource(name = "baseUserCommon")
 	private IBaseUserCommonService userBasic;
 	@Resource(name = "regionServiceImpl")
 	private IRegionService regionService;
+	
 	/**
 	 * 代理商申请
 	 */
@@ -334,6 +352,26 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 					producersModel.setMobilephone(applyInfo.getMobilephone());
 					producersMapper.updateByPrimaryKeySelective(producersModel);
 				}
+				
+				//先删除后添加
+				List<TiProducerproducts> proproducts=producerproductMapper.findTiProducerproductsByProducerUserId(apply.getProduceruserid());
+				if(proproducts!=null&&proproducts.size()>0){
+					for (TiProducerproducts tiProducerproducts : proproducts) {
+						producerproductMapper.deleteByPrimaryKey(tiProducerproducts.getId());
+					}
+				}
+				List<TiProducerapplymachines> applymachines=promachineMapper.findapplymachineslist(apply.getProduceruserid());
+				if(applymachines!=null&&applymachines.size()>0){
+					for (TiProducerapplymachines applyma : applymachines) {
+						List<TiMachineproducts> maproductList=this.findProductListByMachineId(applyma.getMachineid().intValue());
+						for (TiMachineproducts product : maproductList) {
+							TiProducerproducts  proprodcut=new TiProducerproducts();
+							proprodcut.setProduceruserid(applyma.getProduceruserid());
+							proprodcut.setProductid(product.getProductid());
+							producerproductMapper.insert(proprodcut);
+						}
+					}
+				}
 			}
 			producersapplyMapper.updateByPrimaryKeySelective(applyInfo);
 		}else {
@@ -542,6 +580,28 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 			}else{
 				producersMapper.updateByPrimaryKey(producersModel);
 			}
+			
+			//先删除后添加
+			List<TiProducerproducts> proproducts=producerproductMapper.findTiProducerproductsByProducerUserId(apply.getProduceruserid());
+			if(proproducts!=null&&proproducts.size()>0){
+				for (TiProducerproducts tiProducerproducts : proproducts) {
+					producerproductMapper.deleteByPrimaryKey(tiProducerproducts.getId());
+				}
+			}
+			List<TiProducerapplymachines> applymachines=promachineMapper.findapplymachineslist(apply.getProduceruserid());
+			if(applymachines!=null&&applymachines.size()>0){
+				for (TiProducerapplymachines applyma : applymachines) {
+					List<TiMachineproducts> maproductList=this.findProductListByMachineId(applyma.getMachineid().intValue());
+					for (TiMachineproducts product : maproductList) {
+						TiProducerproducts  proprodcut=new TiProducerproducts();
+						proprodcut.setProduceruserid(applyma.getProduceruserid());
+						proprodcut.setProductid(product.getProductid());
+						producerproductMapper.insert(proprodcut);
+					}
+				}
+			}
+			
+			
 			//更新代理身份标识 预留
 			userBasic.addUserIdentity(apply.getProduceruserid(),UserIdentityEnums.ti_producer); 
 		}
@@ -658,8 +718,15 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 			agentvo.setCityName(regionService.getCityName(agentvo.getCity())) ;
 			agentvo.setAreaName(regionService.getAresName(agentvo.getArea())) ;
 			UUsers user=usersMapper.getUUsersByUserID(agentvo.getAgentuserid());
-			if(user!=null)
+			if(user!=null){
 				agentvo.setBindphone(user.getMobilephone());
+			}
+			UAccounts account=accountsMapper.selectByPrimaryKey(agentvo.getAgentuserid());
+			if(account!=null){
+				agentvo.setAvailableAmount(account.getAvailableamount());
+			}else{
+				agentvo.setAvailableAmount(0.0);
+			}
 		}
 		rq.setBasemodle(result);
 		return rq;
@@ -678,9 +745,17 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 			agentvo.setProvinceName(regionService.getProvinceName(agentvo.getProvince())) ;
 			agentvo.setCityName(regionService.getCityName(agentvo.getCity())) ;
 			agentvo.setAreaName(regionService.getAresName(agentvo.getArea())) ;
-			UUsers user=usersMapper.getUUsersByUserID(agentvo.getAgentuserid());
-			if(user!=null)
+			UUsers user=usersMapper.getUUsersByUserID(agentvo.getPromoteruserid());
+			if(user!=null){
 				agentvo.setBindphone(user.getMobilephone());
+			}
+			UAccounts account=accountsMapper.selectByPrimaryKey(agentvo.getPromoteruserid());
+			if(account!=null){
+				agentvo.setAvailableAmount(account.getAvailableamount());
+			}else{
+				agentvo.setAvailableAmount(0.0);
+			}
+				
 		}
 		rq.setBasemodle(result);
 		return rq;
@@ -704,11 +779,16 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 			if(user!=null){
 				producersvo.setBindphone(user.getMobilephone());
 			}
+			UAccounts account=accountsMapper.selectByPrimaryKey(producersvo.getProduceruserid());
+			if(account!=null){
+				producersvo.setAvailableAmount(account.getAvailableamount());
+			}else{
+				producersvo.setAvailableAmount(0.0);
+			}
 			List<TiProducerapplymachines> machines=promachineMapper.findapplymachineslist(producersvo.getProduceruserid());
 			if(machines!=null&&machines.size()>0){
 				producersvo.setMachines(machines);
-			}
-				
+			}	
 		}
 		rq.setBasemodle(result);
 		return rq;
@@ -819,5 +899,78 @@ public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
 		rqModel.setStatusreson("获取列表成功！");
 		return rqModel;	
 	}
+	
+
+	public ReturnModel findMachineListByProducerUserId(Long producerUserId){
+		ReturnModel rqModel=new ReturnModel();
+		List<TiProducerapplymachines> list=promachineMapper.findapplymachineslist(producerUserId);
+		for (TiProducerapplymachines applyma : list) {
+			List<TiMachineproducts> machineproductList=this.findProductListByMachineId(applyma.getMachineid().intValue());
+			List<TiMachineproductVo> listvo=new ArrayList<TiMachineproductVo>();
+			for (TiMachineproducts maproduct : machineproductList) {
+				TiMachineproductVo vo=new TiMachineproductVo();
+				vo.setId(maproduct.getId());
+				vo.setMachineid(maproduct.getMachineid());
+				vo.setProductid(maproduct.getProductid());
+				//得到生产商产品不能设置的区域
+				List<TiProductareas> productarea=productareaMapper.findProductCannotSetAreas(maproduct.getProductid(), producerUserId);
+				vo.setCanotSetareas(productarea);	
+				listvo.add(vo);
+			}
+			applyma.setMachineproduct(listvo);
+		}
+		//得到生产商信息
+		TiProducers producers=producersMapper.selectByPrimaryKey(producerUserId);
 		
+		
+		HashMap<String, Object> map=new HashMap<String, Object>();
+		map.put("list", list);
+		map.put("producers", producers);
+		
+		rqModel.setBasemodle(map);
+		rqModel.setStatu(ReturnStatus.Success);
+		rqModel.setStatusreson("获取列表成功！");
+		return rqModel;	
+	}
+	
+	
+	public List<TiMachineproducts> findProductListByMachineId(Integer machineid){
+		List<TiMachineproducts> machineproductList=machineproductMapper.findProductListByMachineId(machineid);
+		return machineproductList;
+	}
+	
+	/**
+	 * 设置生产商商品生产的地区
+	 */
+	public ReturnModel setProducerProductAera(Long producerUserId,Long productId,List<RAreaVo> arealist){
+		ReturnModel rqModel=new ReturnModel();
+		if(arealist==null||arealist.size()<=0){
+			rqModel.setStatu(ReturnStatus.ParamError);
+			rqModel.setStatusreson("请选择要设置的地区！");
+			return rqModel;
+		}
+		
+		for (RAreaVo rvo : arealist) {
+			TiProductareas existproductarea=productareaMapper.getIfExistProductAreaByOtherIds(productId, producerUserId,rvo.getAreacode());
+			if(existproductarea!=null){
+				rqModel.setStatu(ReturnStatus.ParamError);
+				rqModel.setStatusreson("地区["+regionService.getAresName(rvo.getAreacode())+"]已被其它生产商代理！");
+				return rqModel;
+			}
+
+			TiProductareas productarea=productareaMapper.getProductAreaByIds(productId, producerUserId,rvo.getAreacode());
+			if(productarea==null){
+				productarea=new TiProductareas();
+				productarea.setAreacode(rvo.getAreacode());
+				productarea.setCitycode(rvo.getCitycode());
+				productarea.setProvincecode(rvo.getProvincecode());
+				productarea.setProduceruserid(producerUserId);
+				productarea.setProductid(productId);
+				productareaMapper.insert(productarea);
+			}
+		}
+		rqModel.setStatu(ReturnStatus.Success);
+		rqModel.setStatusreson("设置成功！");
+		return rqModel;
+	}
 }

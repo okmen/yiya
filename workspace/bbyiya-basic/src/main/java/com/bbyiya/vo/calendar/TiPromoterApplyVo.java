@@ -6,6 +6,7 @@ public class TiPromoterApplyVo extends TiPromotersapply{
 	private String cityName;
 	private String areaName;
 	private String bindphone;
+	private Double availableAmount; //可用余额
 	public String getProvinceName() {
 		return provinceName;
 	}
@@ -29,6 +30,12 @@ public class TiPromoterApplyVo extends TiPromotersapply{
 	}
 	public void setBindphone(String bindphone) {
 		this.bindphone = bindphone;
+	}
+	public Double getAvailableAmount() {
+		return availableAmount;
+	}
+	public void setAvailableAmount(Double availableAmount) {
+		this.availableAmount = availableAmount;
 	}
 	
 	

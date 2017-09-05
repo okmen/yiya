@@ -12,6 +12,32 @@
   <sql id="Base_Column_List" >
     Id, ProductId, ProducerUserID, AreaCode, CityCode, ProvinceCode
   </sql>
+  <!--得到生产商该产品该地区是否代理  -->
+  <select id="getProductAreaByIds" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ti_productareas
+    where ProductId = #{productid,jdbcType=INTEGER} and  AreaCode=#{areacode,jdbcType=INTEGER}  and ProducerUserID=#{produceruserid,jdbcType=BIGINT}   limit 1;
+  </select>
+  
+  <!-- 得到其它生产商该产品是否代理该地区 -->
+  <select id="getIfExistProductAreaByOtherIds" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_productareas
+    where ProductId = #{productid,jdbcType=INTEGER} and ProducerUserID!=#{produceruserid,jdbcType=BIGINT}  and  AreaCode=#{areacode,jdbcType=INTEGER}  limit 1;
+  </select>
+  
+  
+  <!-- 得到生产商不能生产的地区 -->
+  <select id="findProductCannotSetAreas" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_productareas
+    where ProductId = #{productid,jdbcType=INTEGER} and ProducerUserID!=#{produceruserid,jdbcType=BIGINT}
+  </select>
+  
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />

@@ -6,6 +6,7 @@ import com.bbyiya.model.TiAgentsapply;
 import com.bbyiya.model.TiMachinemodel;
 import com.bbyiya.model.TiProducersapply;
 import com.bbyiya.model.TiPromotersapply;
+import com.bbyiya.vo.RAreaVo;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.calendar.TiAgentApplyVo;
 import com.bbyiya.vo.calendar.TiAgentSearchParam;
@@ -152,5 +153,21 @@ public interface IIbs_TiAgentMgtService {
 	 * @return
 	 */
 	ReturnModel findMachinemodelList();
+	
+	/**
+	 * 得到生产商的机型
+	 * @param producerUserId
+	 * @return
+	 */
+	ReturnModel findMachineListByProducerUserId(Long producerUserId);
+	/**
+	 * 生产商产品生产区域设置
+	 * @param producerUserId
+	 * @param productId
+	 * @param arealist
+	 * @return
+	 */
+	ReturnModel setProducerProductAera(Long producerUserId, Long productId,
+			List<RAreaVo> arealist);
 	
 }

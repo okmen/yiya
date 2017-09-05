@@ -10,9 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.dao.OBranchordersMapper;
-import com.bbyiya.dao.OOrderaddressMapper;
-import com.bbyiya.dao.OOrderproductsMapper;
-import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductchildinfoMapper;
 import com.bbyiya.dao.PMyproductsMapper;
@@ -20,26 +17,14 @@ import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PProductsMapper;
 import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.dao.UBranchusersMapper;
-import com.bbyiya.dao.UChildreninfoMapper;
-import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
-import com.bbyiya.enums.MyProductTempType;
 import com.bbyiya.enums.ReturnStatus;
-import com.bbyiya.enums.pic.InviteStatus;
-import com.bbyiya.model.OBranchorders;
-import com.bbyiya.model.OOrderaddress;
-import com.bbyiya.model.OOrderproducts;
-import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproductchildinfo;
-import com.bbyiya.model.PMyproducts;
-import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PProducts;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.pic.service.ibs.IIbs_OrderMgtService;
 import com.bbyiya.service.pic.IBaseUserAddressService;
 import com.bbyiya.utils.DateUtil;
-import com.bbyiya.utils.ObjectUtil;
-import com.bbyiya.utils.PageInfoUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.order.BranchOrderVo;
 import com.github.pagehelper.PageHelper;
@@ -59,6 +44,8 @@ public class Ibs_OrderMgtServiceImpl implements IIbs_OrderMgtService{
 	
 	@Autowired
 	private PMyproductchildinfoMapper mychildinfoMapper;
+	
+
 	/*-------------------用户信息------------------------------------------------*/
 	
 	@Autowired
@@ -107,6 +94,7 @@ public class Ibs_OrderMgtServiceImpl implements IIbs_OrderMgtService{
 		rq.setStatusreson("ok");
 		return rq;
 	}
-
+	
+	
 	
 }

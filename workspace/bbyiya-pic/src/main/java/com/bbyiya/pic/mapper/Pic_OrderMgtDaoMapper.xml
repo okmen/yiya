@@ -140,7 +140,7 @@
     a.BranchUserId, a.SalesUserId, a.PropertyStr, a.Count,a.ProductImg,a.CartId
     from o_orderproducts a inner join o_userorders b on a.UserOrderId=b.UserOrderId  
     inner join o_orderaddress c on b.OrderAddressId=c.OrderAddressId 
-    where 1=1 and OrderType!=2 and OrderType!=3 
+    where 1=1 and OrderType!=0 and OrderType!=1
     <if test="producerUserId != null" >
         AND b.ProducerUserId = #{producerUserId,jdbcType=BIGINT}
     </if>

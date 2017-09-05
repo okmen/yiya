@@ -15,5 +15,4 @@ public interface IIbs_OrderMgtService {
 	ReturnModel findMyBranchOrderlist(Long branchUserId, Integer status,
 			String keywords, int index, int size);
 	
-	
 }

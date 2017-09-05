@@ -268,8 +268,14 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					payOrderMapper.insert(payorder);  
 					//账户结算
 					accountService.add_accountsLog(param.getSubmitUserId(), Integer.parseInt(AccountLogType.use_payment.toString()), totalprice, payId, "");
+					
+					//反写活动状态
+					if(actWork!=null&&actWork.getStatus()!=null){
+						actWork.setStatus(Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString()));
+						activityworksMapper.updateByPrimaryKey(actWork);
+					}
 					rq.setStatu(ReturnStatus.Success);
-					rq.setStatusreson("下单成"); 
+					rq.setStatusreson("下单成功"); 
 				}
 			}else {
 				rq.setStatusreson("用户作品未完成（不在可下单的状态）！"); 
@@ -570,7 +576,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 		rq.setStatu(ReturnStatus.Success); 
 		return rq;
 	}
-
+	
 
 	public void addlog(String msg) {
 		EErrors errors = new EErrors();

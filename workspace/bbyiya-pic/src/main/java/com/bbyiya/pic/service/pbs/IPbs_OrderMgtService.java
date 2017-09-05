@@ -3,9 +3,8 @@ package com.bbyiya.pic.service.pbs;
 import java.util.List;
 
 import com.bbyiya.pic.vo.order.PbsUserOrderResultVO;
-import com.bbyiya.pic.vo.order.SearchOrderParam;
-import com.bbyiya.pic.vo.order.UserOrderResultVO;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.order.SearchOrderParam;
 import com.github.pagehelper.PageInfo;
 
 public interface IPbs_OrderMgtService {

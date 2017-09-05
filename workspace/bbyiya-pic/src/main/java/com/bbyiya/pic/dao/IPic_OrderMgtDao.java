@@ -7,8 +7,9 @@ import org.apache.ibatis.annotations.Param;
 import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.pic.vo.order.PbsUserOrderResultVO;
-import com.bbyiya.pic.vo.order.SearchOrderParam;
-import com.bbyiya.pic.vo.order.UserOrderResultVO;
+import com.bbyiya.vo.order.SearchOrderParam;
+import com.bbyiya.vo.order.UserOrderResultVO;
+
 
 public interface IPic_OrderMgtDao {
 

@@ -1,6 +1,8 @@
 package com.bbyiya.pic.web.calendar;
 
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +16,11 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.enums.user.UserStatusEnum;
 import com.bbyiya.model.TiAgentsapply;
+import com.bbyiya.model.TiMachinemodel;
+import com.bbyiya.model.TiProducersapply;
 import com.bbyiya.model.TiPromotersapply;
 import com.bbyiya.model.UUsers;
+import com.bbyiya.pic.utils.Json2Objects;
 import com.bbyiya.service.calendar.ITi_AgentMgtService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
@@ -155,33 +160,6 @@ public class TiAgentApplyMgtController extends SSOController {
 	
 	
 	
-	/**
-	 * 推广者审核
-	 * @param promoterUserId
-	 * @param status
-	 * @param msg
-	 * @return
-	 * @throws Exception
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/audit_PromoterApply")
-	public String audit_PromoterApply(Long promoterUserId, int status, String msg) throws Exception {
-		ReturnModel rq = new ReturnModel();
-		LoginSuccessResult user = super.getLoginUser();
-		if (user != null) {
-			
-			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){
-				rq = agentService.audit_PromoterApply(user.getUserId(), promoterUserId, status, msg);
-			}else {
-				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("无权限");
-			}
-		} else {
-			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
-		}
-		return JsonUtil.objectToJsonStr(rq);
-	}
 	
 	
 	/**
@@ -229,6 +207,46 @@ public class TiAgentApplyMgtController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	/**
+	 * C端生产者申请
+	 * @param agentJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/producersApply")
+	public String producersApply(String producersJson,String machineJson) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(!ObjectUtil.isEmpty(user.getMobilePhone())){
+				try {
+					List<TiMachinemodel> machinelist=Json2Objects.getParam_Machinemodel(machineJson);
+					TiProducersapply applyInfo=(TiProducersapply)JsonUtil.jsonStrToObject(producersJson, TiProducersapply.class);
+					if(applyInfo!=null){
+						applyInfo.setProduceruserid(user.getUserId()); 
+					}
+					rq =agentService.applyProducers(user.getUserId(), applyInfo,machinelist);
+				} catch (Exception e) {
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("参数有误101");
+					System.out.println(e); 
+					return JsonUtil.objectToJsonStr(rq);
+				}
+			}else {
+				rq.setStatu(ReturnStatus.LoginError_2);
+				rq.setStatusreson("未完成注册,请先绑定手机号！");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 	
 	
 	

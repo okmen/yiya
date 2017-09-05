@@ -12,13 +12,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.user.UserIdentityEnums;
-import com.bbyiya.pic.service.calendar.IIbs_TiOrderMgtService;
 import com.bbyiya.pic.service.ibs.IIbs_OrderMgtService;
-import com.bbyiya.service.calendar.ITi_OrderMgtService;
 import com.bbyiya.utils.JsonUtil;
-import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
-import com.bbyiya.vo.calendar.TiActivityOrderSubmitParam;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
 
@@ -28,10 +24,6 @@ public class OrderIBSController extends SSOController {
 	@Resource(name = "ibs_OrderMgtService")
 	private IIbs_OrderMgtService orderService;
 	
-	@Resource(name = "tiOrderMgtServiceImpl")
-	private  ITi_OrderMgtService basetiorderService;
-	
-	private IIbs_TiOrderMgtService ibstiorderService;
 	/**
 	 * 来自分店的订单列表
 	 * 
@@ -58,63 +50,5 @@ public class OrderIBSController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
-	/**
-	 * ibs台历下单
-	 * @param productJsonStr
-	 * @return
-	 * @throws Exception
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/ibsSubmitTiOrder")
-	public String ibsSubmitTiOrder(String productJsonStr) throws Exception {
-		ReturnModel rq = new ReturnModel();
-		LoginSuccessResult user = super.getLoginUser();
-		if (user != null) {
-			TiActivityOrderSubmitParam param = (TiActivityOrderSubmitParam) JsonUtil.jsonStrToObject(productJsonStr, TiActivityOrderSubmitParam.class);
-			if (param != null) {
-				if(ObjectUtil.isEmpty(param.getWorkId())){
-					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("活动参数有误：workId为空");
-					return JsonUtil.objectToJsonStr(rq);
-				}
-				if(ObjectUtil.isEmpty(param.getSubmitUserId())){
-					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("参数有误：submitUserId为空");
-					return JsonUtil.objectToJsonStr(rq);
-				}
-				
-				rq = basetiorderService.submitOrder_ibs(param);
-			} else {
-				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("参数有误");
-			}
-
-		} else {
-			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
-		}
-		return JsonUtil.objectToJsonStr(rq);
-	}
-	
-	/**
-	 * ibs台历下单前的地址信息
-	 * @param cartid
-	 * @return
-	 * @throws Exception
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/getIbsTiSubmitAddressList")
-	public String getIbsTiSubmitAddressList(Long workId) throws Exception {
-		ReturnModel rq=new ReturnModel();
-		LoginSuccessResult user= super.getLoginUser();
-		if(user!=null){
-			rq=ibstiorderService.getIbsTiSubmitAddressList(user.getUserId(), workId);
-		}else {
-			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
-			return JsonUtil.objectToJsonStr(rq);
-		}
-		return JsonUtil.objectToJsonStr(rq);
-	}
 	
 }

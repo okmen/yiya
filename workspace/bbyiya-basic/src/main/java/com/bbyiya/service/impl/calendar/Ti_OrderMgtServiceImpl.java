@@ -272,6 +272,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					//账户结算
 					accountService.add_accountsLog(param.getSubmitUserId(), Integer.parseInt(AccountLogType.use_payment.toString()), totalprice, payId, "");
 					
+					
 					//反写活动状态
 					if(actWork!=null&&actWork.getStatus()!=null){
 						actWork.setStatus(Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString()));

@@ -18,6 +18,12 @@
     from ti_myartsdetails
     where DetailId = #{detailid,jdbcType=BIGINT}
   </select>
+  <select id="findDetailsByWorkId" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_myartsdetails
+    where WorkId = #{workId,jdbcType=BIGINT} order by Sort  asc
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from ti_myartsdetails
     where DetailId = #{detailid,jdbcType=BIGINT}

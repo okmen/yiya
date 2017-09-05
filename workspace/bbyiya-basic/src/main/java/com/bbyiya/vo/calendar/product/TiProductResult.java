@@ -32,6 +32,10 @@ public class TiProductResult extends TiProducts{
 	
 	private List<ImageInfo> imglist;
 	/**
+	 * 产品描述图
+	 */
+	private List<ImageInfo> descriptionImglist;
+	/**
 	 * 款式列表
 	 * @return
 	 */
@@ -78,6 +82,12 @@ public class TiProductResult extends TiProducts{
 	}
 	public void setImglist(List<ImageInfo> imglist) {
 		this.imglist = imglist;
+	}
+	public List<ImageInfo> getDescriptionImglist() {
+		return descriptionImglist;
+	}
+	public void setDescriptionImglist(List<ImageInfo> descriptionImglist) {
+		this.descriptionImglist = descriptionImglist;
 	}
 	
 	

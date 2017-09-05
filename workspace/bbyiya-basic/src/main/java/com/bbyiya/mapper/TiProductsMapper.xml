@@ -11,6 +11,7 @@
     <result column="UpdateTime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="Description" property="description" jdbcType="VARCHAR" />
     <result column="ImgJson" property="imgjson" jdbcType="VARCHAR" />
+    <result column="DescriptionImgJson" property="descriptionimgjson" jdbcType="VARCHAR" />
     <result column="PostModelId" property="postmodelid" jdbcType="INTEGER" />
     <result column="AdvertCount" property="advertcount" jdbcType="INTEGER" />
     <result column="AdvertDescription" property="advertdescription" jdbcType="VARCHAR" />
@@ -19,8 +20,8 @@
   <resultMap id="ProductResultMap" type="com.bbyiya.vo.calendar.product.TiProductResult" ><!-- 产品表tiproduct 扩展resultmodel -->
   </resultMap>
   <sql id="Base_Column_List" >
-     ProductId, Status, Price, DefaultImg, Title, Description, CreateTime, UpdateTime, 
-    ImgJson, PostModelId, AdvertCount, AdvertDescription, AdvertImgJson
+    ProductId, Status, Price, DefaultImg, Title, CreateTime, UpdateTime, Description, 
+    ImgJson, DescriptionImgJson, PostModelId, AdvertCount, AdvertDescription, AdvertImgJson
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -52,15 +53,15 @@
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.TiProducts" >
     insert into ti_products (ProductId, Status, Price, 
-      DefaultImg, Title, Description, 
-      CreateTime, UpdateTime, ImgJson, 
-      PostModelId, AdvertCount, AdvertDescription, 
-      AdvertImgJson)
+      DefaultImg, Title, CreateTime, 
+      UpdateTime, Description, ImgJson, 
+      DescriptionImgJson, PostModelId, AdvertCount, 
+      AdvertDescription, AdvertImgJson)
     values (#{productid,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, #{price,jdbcType=DOUBLE}, 
-      #{defaultimg,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{imgjson,jdbcType=VARCHAR}, 
-      #{postmodelid,jdbcType=INTEGER}, #{advertcount,jdbcType=INTEGER}, #{advertdescription,jdbcType=VARCHAR}, 
-      #{advertimgjson,jdbcType=VARCHAR})
+      #{defaultimg,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{updatetime,jdbcType=TIMESTAMP}, #{description,jdbcType=VARCHAR}, #{imgjson,jdbcType=VARCHAR}, 
+      #{descriptionimgjson,jdbcType=VARCHAR}, #{postmodelid,jdbcType=INTEGER}, #{advertcount,jdbcType=INTEGER}, 
+      #{advertdescription,jdbcType=VARCHAR}, #{advertimgjson,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiProducts" >
     insert into ti_products
@@ -80,17 +81,20 @@
       <if test="title != null" >
         Title,
       </if>
-      <if test="description != null" >
-        Description,
-      </if>
       <if test="createtime != null" >
         CreateTime,
       </if>
       <if test="updatetime != null" >
         UpdateTime,
       </if>
+      <if test="description != null" >
+        Description,
+      </if>
       <if test="imgjson != null" >
         ImgJson,
+      </if>
+      <if test="descriptionimgjson != null" >
+        DescriptionImgJson,
       </if>
       <if test="postmodelid != null" >
         PostModelId,
@@ -121,17 +125,20 @@
       <if test="title != null" >
         #{title,jdbcType=VARCHAR},
       </if>
-      <if test="description != null" >
-        #{description,jdbcType=VARCHAR},
-      </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatetime != null" >
         #{updatetime,jdbcType=TIMESTAMP},
       </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
       <if test="imgjson != null" >
         #{imgjson,jdbcType=VARCHAR},
+      </if>
+      <if test="descriptionimgjson != null" >
+        #{descriptionimgjson,jdbcType=VARCHAR},
       </if>
       <if test="postmodelid != null" >
         #{postmodelid,jdbcType=INTEGER},
@@ -162,17 +169,20 @@
       <if test="title != null" >
         Title = #{title,jdbcType=VARCHAR},
       </if>
-      <if test="description != null" >
-        Description = #{description,jdbcType=VARCHAR},
-      </if>
       <if test="createtime != null" >
         CreateTime = #{createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatetime != null" >
         UpdateTime = #{updatetime,jdbcType=TIMESTAMP},
       </if>
+      <if test="description != null" >
+        Description = #{description,jdbcType=VARCHAR},
+      </if>
       <if test="imgjson != null" >
         ImgJson = #{imgjson,jdbcType=VARCHAR},
+      </if>
+      <if test="descriptionimgjson != null" >
+        DescriptionImgJson = #{descriptionimgjson,jdbcType=VARCHAR},
       </if>
       <if test="postmodelid != null" >
         PostModelId = #{postmodelid,jdbcType=INTEGER},
@@ -195,10 +205,11 @@
       Price = #{price,jdbcType=DOUBLE},
       DefaultImg = #{defaultimg,jdbcType=VARCHAR},
       Title = #{title,jdbcType=VARCHAR},
-      Description = #{description,jdbcType=VARCHAR},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
       UpdateTime = #{updatetime,jdbcType=TIMESTAMP},
+      Description = #{description,jdbcType=VARCHAR},
       ImgJson = #{imgjson,jdbcType=VARCHAR},
+      DescriptionImgJson = #{descriptionimgjson,jdbcType=VARCHAR},
       PostModelId = #{postmodelid,jdbcType=INTEGER},
       AdvertCount = #{advertcount,jdbcType=INTEGER},
       AdvertDescription = #{advertdescription,jdbcType=VARCHAR},

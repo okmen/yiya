@@ -21,6 +21,10 @@ public class TiProductcomments {
     
     private String orderproductid;
 
+    private String nickname;
+
+    private String styledescription;
+
     public Long getId() {
         return id;
     }
@@ -29,7 +33,23 @@ public class TiProductcomments {
         this.id = id;
     }
 
-    public Long getUserid() {
+    public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+	public String getStyledescription() {
+		return styledescription;
+	}
+
+	public void setStyledescription(String styledescription) {
+		this.styledescription = styledescription;
+	}
+
+	public Long getUserid() {
         return userid;
     }
 

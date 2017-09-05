@@ -41,4 +41,10 @@ public interface OOrderproductsMapper {
      * @return
      */
     OOrderproducts getOProductsByOrderId(@Param("userOrderId")String userOrderId);
+    /**
+     * 台历挂历、通过workId获取订单产品
+     * @param workId
+     * @return
+     */
+    OOrderproducts getOProductsByWorkId(@Param("workId")Long workId);
 }

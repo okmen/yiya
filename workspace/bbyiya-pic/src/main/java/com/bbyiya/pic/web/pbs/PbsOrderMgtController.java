@@ -51,14 +51,14 @@ public class PbsOrderMgtController extends SSOController {
 	@Resource(name = "pic_orderMgtService")
 	private IPic_OrderMgtService orderService;
 	/**
-	 * O01 PBS查询订单列表
-	 *  
+	 * O01 PBS_yiya12查询订单列表
+	 * @param type: 0、yiya12订单列表，1、生产商台历挂历订单列表 
 	 * @return
 	 * @throws Exception
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getOrderList")
-	public String getOrderList(String myproductJson,int index,int size) throws Exception {
+	public String getOrderList(String myproductJson,int index,int size,Integer type) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();		
 		if (user != null) {	
@@ -75,7 +75,7 @@ public class PbsOrderMgtController extends SSOController {
 
 			SearchOrderParam param = (SearchOrderParam)JSONObject.toBean(jb,SearchOrderParam.class);			
 			//SearchOrderParam param= (SearchOrderParam)JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
-			PageInfo<PbsUserOrderResultVO> result= orderMgtService.find_pbsOrderList(param,index,size);
+			PageInfo<PbsUserOrderResultVO> result= orderMgtService.find_pbsOrderList(param,type,index,size);
 			rq.setBasemodle(result);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("获取列表成功！");
@@ -85,6 +85,7 @@ public class PbsOrderMgtController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
 	
 	/**
 	 * pbs 订单图片列表，作品宝宝信息
@@ -115,7 +116,7 @@ public class PbsOrderMgtController extends SSOController {
 	 */
 	@RequestMapping(value="/orderExportExcel")
 	@ResponseBody
-	public String orderExportExcel(HttpServletRequest request, HttpServletResponse response,String myproductJson) throws MapperException {
+	public String orderExportExcel(HttpServletRequest request, HttpServletResponse response,String myproductJson,Integer type) throws MapperException {
 		// 列头
 		String[] headers =new String[25];
 		headers[0]="订单号";
@@ -174,7 +175,7 @@ public class PbsOrderMgtController extends SSOController {
 		myproductJson=myproductJson.replaceAll("\"status\":\"\"", "\"status\":null");
 		SearchOrderParam param= (SearchOrderParam)JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
 		
-		PageInfo<PbsUserOrderResultVO> page = orderMgtService.find_pbsOrderList(param,0,0);
+		PageInfo<PbsUserOrderResultVO> page = orderMgtService.find_pbsOrderList(param,type,0,0);
 		List<PbsUserOrderResultVO> list=page.getList();
 		ExportExcel<PbsUserOrderResultVO> ex = new ExportExcel<PbsUserOrderResultVO>();
 		
@@ -386,7 +387,7 @@ public class PbsOrderMgtController extends SSOController {
 			//System.out.println(param.getEndTimeStr() );
 			
 			
-			PageInfo<PbsUserOrderResultVO> page=orderMgtService.find_pbsOrderList(param, 0, 0);
+			PageInfo<PbsUserOrderResultVO> page=orderMgtService.find_pbsOrderList(param,0, 0, 0);
 			if(ObjectUtil.parseInt(isDownload)>0){
 //				if(ObjectUtil.isEmpty(fileDir)){
 //					rq.setStatu(ReturnStatus.ParamError);
@@ -422,7 +423,7 @@ public class PbsOrderMgtController extends SSOController {
 		if (user != null) {
 			SearchOrderParam param= new SearchOrderParam();
 			param.setOrderNo(orderId);
-			PageInfo<PbsUserOrderResultVO> page=orderMgtService.find_pbsOrderList(param, 0, 0);
+			PageInfo<PbsUserOrderResultVO> page=orderMgtService.find_pbsOrderList(param,0, 0, 0);
 			//rq=orderService.find_orderList(param);
 			if(ObjectUtil.parseInt(isDownload)>0){
 				if(page!=null&&page.getList()!=null&&page.getList().size()>0){
@@ -453,7 +454,7 @@ public class PbsOrderMgtController extends SSOController {
 		if (user != null) {
 			SearchOrderParam param= new SearchOrderParam();
 			param.setOrderNo(orderId);
-			PageInfo<PbsUserOrderResultVO> page=orderMgtService.find_pbsOrderList(param, 0, 0);
+			PageInfo<PbsUserOrderResultVO> page=orderMgtService.find_pbsOrderList(param,0, 0, 0);
 			if(ObjectUtil.parseInt(isDownload)>0){
 				if(page!=null&&page.getList()!=null&&page.getList().size()>0){
 					String path=orderMgtService.pbsdownloadOriginalImage(page.getList());

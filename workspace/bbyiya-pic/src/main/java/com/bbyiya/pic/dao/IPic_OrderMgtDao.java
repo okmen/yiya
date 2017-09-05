@@ -22,11 +22,19 @@ public interface IPic_OrderMgtDao {
 	List<OOrderproductdetails> findOrderProductDetailsByProductOrderId(@Param("orderProductId")String orderproductId);
 	
 	/**
-	 * 获取Pbs订单列 表  
+	 * 获取Pbs_yiya12订单列 表  
 	 * @param param
 	 * @return
 	 */
 	List<PbsUserOrderResultVO> findPbsUserOrders(SearchOrderParam param);
+	
+	/**
+	 * 获取Pbs_calender订单列 表  
+	 * 台历挂历订单列表
+	 * @param param
+	 * @return
+	 */
+	List<PbsUserOrderResultVO> findPbsTiUserOrdersByProducerUserId(SearchOrderParam param);
 	
 	/**
 	 * 根据运单号查找订单信息  

@@ -10,12 +10,12 @@ import com.github.pagehelper.PageInfo;
 public interface IPbs_OrderMgtService {
 
 	/**
-	 * 查询订单列表（pbs用）
+	 * 查询订单列表（pbs_yiya12用）
 	 * 
 	 * @param param
 	 * @return
 	 */
-	PageInfo<PbsUserOrderResultVO> find_pbsOrderList(SearchOrderParam param,int index,int size);
+	PageInfo<PbsUserOrderResultVO> find_pbsOrderList(SearchOrderParam param,Integer type,int index,int size);
 	/** 
 	 * 修改订单运单号及运费自动扣款
 	 * @author Julie 

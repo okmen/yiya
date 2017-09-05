@@ -91,14 +91,20 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	@Resource(name = "baseUserAccountService")
 	private IBaseUserAccountService accountService;
 	
-	public PageInfo<PbsUserOrderResultVO> find_pbsOrderList(SearchOrderParam param,int index,int size){
+	public PageInfo<PbsUserOrderResultVO> find_pbsOrderList(SearchOrderParam param,Integer type,int index,int size){
 		if(param==null)
 			param=new SearchOrderParam();
 		if(param.getEndTimeStr()!=null&&!param.getEndTimeStr().equals("")){
 			param.setEndTimeStr(DateUtil.getEndTime(param.getEndTimeStr()));
 		}
 		PageHelper.startPage(index, size);
-		List<PbsUserOrderResultVO> list=orderDao.findPbsUserOrders(param);
+		List<PbsUserOrderResultVO> list=null;
+		if(type==null)type=0;
+		if(type==0){
+			list=orderDao.findPbsUserOrders(param);
+		}else{
+			list=orderDao.findPbsTiUserOrdersByProducerUserId(param);
+		}
 		PageInfo<PbsUserOrderResultVO> reuslt=new PageInfo<PbsUserOrderResultVO>(list);
 		
 		if(list!=null&&list.size()>0){

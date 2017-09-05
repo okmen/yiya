@@ -12,8 +12,8 @@ public class SearchOrderParam {
 	
 	private String startTimeStr;
 	private String endTimeStr;
-	
-	private Integer agentUserId;
+	private Long producerUserId;
+	private Long agentUserId;
 	private String agentName;
 	private String agentPhone;
 	private Integer userId;
@@ -57,12 +57,7 @@ public class SearchOrderParam {
 	public void setEndTimeStr(String endTimeStr) {
 		this.endTimeStr = endTimeStr;
 	}
-	public Integer getAgentUserId() {
-		return agentUserId;
-	}
-	public void setAgentUserId(Integer agentUserId) {
-		this.agentUserId = agentUserId;
-	}
+	
 	public String getAgentName() {
 		return agentName;
 	}
@@ -98,6 +93,18 @@ public class SearchOrderParam {
 	}
 	public void setOrdertype(Integer ordertype) {
 		this.ordertype = ordertype;
+	}
+	public Long getProducerUserId() {
+		return producerUserId;
+	}
+	public Long getAgentUserId() {
+		return agentUserId;
+	}
+	public void setProducerUserId(Long producerUserId) {
+		this.producerUserId = producerUserId;
+	}
+	public void setAgentUserId(Long agentUserId) {
+		this.agentUserId = agentUserId;
 	}
 	
 	

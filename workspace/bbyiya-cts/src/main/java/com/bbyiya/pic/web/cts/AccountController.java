@@ -166,7 +166,7 @@ public class AccountController  extends SSOController{
 					payorder.setWalletamount(null);
 					payorder.setCreatetime(new Date());
 					payOrderMapper.insert(payorder);
-					boolean result=accountService.add_accountsLog(branchuserid, Integer.parseInt(AccountLogType.get_recharge.toString()), amountPrice, payId, "");
+					boolean result=accountService.add_accountsLog(branchuserid, Integer.parseInt(AccountLogType.use_cashout.toString()), amountPrice, payId, "");
 					if(result){
 						UAccounts accounts=accountMapper.selectByPrimaryKey(branchuserid);
 						addActionLog(user.getUserId(),"[账户提现]操作成功！提现金额："+amountPrice+"元！提现用户 userId:"+branchuserid);

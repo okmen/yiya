@@ -15,15 +15,13 @@ import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.enums.user.UserStatusEnum;
-import com.bbyiya.model.TiAgents;
 import com.bbyiya.model.TiAgentsapply;
 import com.bbyiya.model.TiMachinemodel;
 import com.bbyiya.model.TiProducersapply;
 import com.bbyiya.model.TiPromotersapply;
-import com.bbyiya.model.UAgentapplyareas;
 import com.bbyiya.model.UUsers;
-import com.bbyiya.pic.service.calendar.IIbs_TiAgentMgtService;
 import com.bbyiya.pic.utils.Json2Objects;
+import com.bbyiya.service.calendar.ITi_AgentMgtService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.RAreaVo;
@@ -38,8 +36,8 @@ import com.bbyiya.web.base.SSOController;
 @RequestMapping(value = "/calendar/agent/")
 public class TiAgentMgtController extends SSOController {
 	
-	@Resource(name = "ibs_TiAgentMgtService")
-	private IIbs_TiAgentMgtService agentService;
+	@Resource(name = "ti_AgentMgtService")
+	private ITi_AgentMgtService agentService;
 	@Autowired
 	private UUsersMapper userMapper;
 	/**

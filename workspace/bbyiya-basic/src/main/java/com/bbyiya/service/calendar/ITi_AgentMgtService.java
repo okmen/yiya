@@ -1,4 +1,4 @@
-package com.bbyiya.pic.service.calendar;
+package com.bbyiya.service.calendar;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import com.bbyiya.vo.calendar.TiAgentApplyVo;
 import com.bbyiya.vo.calendar.TiAgentSearchParam;
 import com.bbyiya.vo.calendar.TiPromoterApplyVo;
 
-public interface IIbs_TiAgentMgtService {
+public interface ITi_AgentMgtService {
 	
 	/**
 	 * 代理商申请

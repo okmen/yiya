@@ -1,4 +1,4 @@
-package com.bbyiya.pic.service.impl.calendar;
+package com.bbyiya.service.impl.calendar;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,9 +45,9 @@ import com.bbyiya.model.TiPromoters;
 import com.bbyiya.model.TiPromotersapply;
 import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UUsers;
-import com.bbyiya.pic.service.calendar.IIbs_TiAgentMgtService;
 import com.bbyiya.service.IBaseUserCommonService;
 import com.bbyiya.service.IRegionService;
+import com.bbyiya.service.calendar.ITi_AgentMgtService;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.RAreaVo;
@@ -61,9 +61,9 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
 
-@Service("ibs_TiAgentMgtService")
+@Service("ti_AgentMgtService")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
-public class Ibs_TiAgentMgtServiceImpl implements IIbs_TiAgentMgtService{
+public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 	
 	@Autowired
 	private TiAgentsapplyMapper agentapplyMapper;

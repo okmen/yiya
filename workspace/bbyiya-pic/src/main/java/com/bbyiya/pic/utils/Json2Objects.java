@@ -11,6 +11,7 @@ import com.bbyiya.model.PCommentstemp;
 import com.bbyiya.model.PCommentstips;
 import com.bbyiya.model.PMyproductcomments;
 import com.bbyiya.model.PMyproductdetails;
+import com.bbyiya.model.TiMachinemodel;
 import com.bbyiya.model.UAgentapplyareas;
 import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UBranchinfotemp;
@@ -428,5 +429,46 @@ public class Json2Objects {
 		
 		return arealist;
 	}
-	
+	public static List<TiMachinemodel> getParam_Machinemodel(String machineJson) {
+		if(ObjectUtil.isEmpty(machineJson)){
+			return null;
+		}
+		JSONObject model = JSONObject.fromObject(machineJson);
+		List<TiMachinemodel> machinelist=null;
+		if (model != null) {
+			String detailString=String.valueOf(model.get("machineList"));
+			if(ObjectUtil.isEmpty(detailString)||detailString.equals("null")){
+				return null;
+			}	
+			JSONArray codearr=null;
+			try {
+				codearr = new JSONArray().fromObject(detailString);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			
+			if(codearr!=null&&codearr.size()>0){
+				machinelist=new ArrayList<TiMachinemodel>();
+				for (int i = 0; i < codearr.size(); i++) {
+					JSONObject dd = codearr.getJSONObject(i);
+					TiMachinemodel machine=new TiMachinemodel();
+					int machineid=ObjectUtil.parseInt(String.valueOf(dd.get("machineid")));
+					if(machineid>0){
+						machine.setMachineid(machineid);
+					}
+					String name=String.valueOf(dd.get("name"));
+					
+					if (!(ObjectUtil.isEmpty(name) || "null".equals(name))) {
+						machine.setName(name);
+					}
+					if(machine.getMachineid()!=null&&machine.getMachineid()!=null){
+						machinelist.add(machine);
+					}
+					
+				}
+			} 
+		}
+		
+		return machinelist;
+	}
 }

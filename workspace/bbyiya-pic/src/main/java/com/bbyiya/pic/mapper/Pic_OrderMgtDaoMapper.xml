@@ -20,11 +20,13 @@
     <result column="ExpressCom" property="expresscom" jdbcType="VARCHAR" />
     <result column="ExpressOrder" property="expressorder" jdbcType="VARCHAR" />
     <result column="ExpressCode" property="expresscode" jdbcType="VARCHAR" />
+    <result column="DeliveryTime" property="deliverytime" jdbcType="TIMESTAMP" />
+    <result column="ProducerUserId" property="produceruserid" jdbcType="BIGINT" />
   </resultMap>
-  <sql id="Base_Column_List"  >
-    UserOrderId, UserId, TotalPrice, Status, OrderAddressId, PayId, Remark, OrderTime, 
-    PayTime, BranchUserId, OrderTotalPrice, PayType, OrderType, AgentUserId, IsBranch, 
-    ExpressCom,  ExpressCode,ExpressOrder
+  <sql id="Base_Column_List" >
+     UserOrderId, UserId, TotalPrice, Status, BranchUserId, OrderAddressId, PayId, Remark, 
+    OrderTime, PayTime, OrderTotalPrice, PayType, AgentUserId, IsBranch, ExpressCom, 
+    ExpressCode, ExpressOrder, OrderType, Postage, UploadTime, PostModelId, DeliveryTime,ProducerUserId
   </sql>
   <resultMap id="OProductDetailMap" type="com.bbyiya.model.OOrderproductdetails" >
     <id column="OProductDetailId" property="oproductdetailid" jdbcType="BIGINT" />
@@ -101,7 +103,7 @@
             <id property="userorderid" column="UserOrderId"/>          
         </association>
   </resultMap> 
-  <!-- 搜索Pbs订单列表作品 -->
+  <!-- Pbs搜索yiya12订单列表作品 -->
   <select id="findPbsUserOrders" resultMap="PbsUserOrderResult" parameterType="com.bbyiya.vo.order.SearchOrderParam"  >
     select 
     a.OrderProductId, a.UserOrderId, a.ProductId, a.StyleId, a.BuyerUserId, a.ProductTitle, a.Price, 
@@ -123,6 +125,39 @@
     </if>
     <if test="agentUserId != null" >
         AND b.AgentUserId = #{agentUserId,jdbcType=INTEGER}
+    </if>
+    <if test="userId != null" >
+        AND b.UserId = #{userId,jdbcType=INTEGER}
+    </if>
+     order by b.OrderTime desc
+  </select>
+  
+  
+  <!-- Pbs搜索yiya12订单列表作品 -->
+  <select id="findPbsTiUserOrdersByProducerUserId" resultMap="PbsUserOrderResult" parameterType="com.bbyiya.vo.order.SearchOrderParam"  >
+    select 
+    a.OrderProductId, a.UserOrderId, a.ProductId, a.StyleId, a.BuyerUserId, a.ProductTitle, a.Price, 
+    a.BranchUserId, a.SalesUserId, a.PropertyStr, a.Count,a.ProductImg,a.CartId
+    from o_orderproducts a inner join o_userorders b on a.UserOrderId=b.UserOrderId  
+    inner join o_orderaddress c on b.OrderAddressId=c.OrderAddressId 
+    where 1=1 and OrderType!=2 and OrderType!=3
+    <if test="orderNo != null" >
+        AND (b.UserOrderId LIKE  CONCAT('%', #{orderNo,jdbcType=VARCHAR},'%' ) OR c.Phone LIKE  CONCAT('%', #{orderNo,jdbcType=VARCHAR},'%' ) ) 
+    </if>
+    <if test="startTimeStr != null  and startTimeStr !='' " ><!--  #{startTime,jdbcType=TIMESTAMP}  -->
+        AND b.PayTime &gt;= #{startTimeStr,jdbcType=VARCHAR}
+    </if>
+    <if test="endTimeStr != null  and endTimeStr !=''" ><!-- #{endTime,jdbcType=TIMESTAMP}  -->
+        AND b.PayTime &lt;= #{endTimeStr,jdbcType=VARCHAR}
+    </if>
+    <if test="status != null" >
+        AND b.Status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="agentUserId != null" >
+        AND b.AgentUserId = #{agentUserId,jdbcType=INTEGER}
+    </if>
+    <if test="producerUserId != null" >
+        AND b.AgentUserId = #{producerUserId,jdbcType=INTEGER}
     </if>
     <if test="userId != null" >
         AND b.UserId = #{userId,jdbcType=INTEGER}

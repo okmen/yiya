@@ -192,6 +192,34 @@ public class AccountController  extends SSOController{
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	
+	/**
+	 * 账户明细记录
+	 * @param branchuserid
+	 * @param amount
+	 * @return
+	 * @throws MapperException 
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/cts_accountLog")
+	public String cts_accountLog(Long userid,Integer type, int index, int size) throws MapperException {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
+				rq= accountService.findAcountsLogsPageResult(userid, type, index, size);
+			}else {
+				rq.setStatu(ReturnStatus.SystemError_1);
+				rq.setStatusreson("权限不足");
+			} 
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 //	/**
 //	 * cts 代理商邮费充值
 //	 * @param branchuserid

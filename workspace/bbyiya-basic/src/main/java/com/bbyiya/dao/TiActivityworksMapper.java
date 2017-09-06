@@ -30,4 +30,11 @@ public interface TiActivityworksMapper {
      * @return
      */
     List<TiActivitysWorkVo>findActWorkListByActId(@Param("actid") Integer actid,@Param("status") Integer status,@Param("keywords") String keywords);
+    /**
+     * 获取用户参与的活动
+     * @param actid
+     * @param userId
+     * @return
+     */
+    TiActivityworks getActWorkListByActIdAndUserId(@Param("actid") Integer actid,@Param("userId") Long userId);
 }

@@ -9,8 +9,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bbyiya.dao.EErrorsMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
@@ -20,9 +22,9 @@ import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.model.EErrors;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OUserorders;
-import com.bbyiya.model.PProducts;
 import com.bbyiya.model.TiActivityworks;
 import com.bbyiya.model.TiMyartsdetails;
 import com.bbyiya.model.TiMyworks;
@@ -59,7 +61,7 @@ public class Ti_MyworkController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/editMyWork")
-	public String editMyWork(String detailJson) throws Exception {
+	public String editMyWork(String detailJson,@RequestParam(required = false, defaultValue = "0")int isOk) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
@@ -67,9 +69,10 @@ public class Ti_MyworkController extends SSOController {
 			if(param!=null&&param.getWorkId()!=null&&param.getDetails()!=null&&param.getDetails().size()>0){
 				TiMyworks myworks= workMapper.selectByPrimaryKey(param.getWorkId());
 				if(myworks!=null) {
-					if(myworks.getUserid()!=null&&myworks.getWorkid().longValue()==user.getUserId().longValue()){
+					if(myworks.getUserid()!=null&&myworks.getUserid().longValue()==user.getUserId().longValue()){
+						addlog(detailJson); 
 						TiProductstyles style=styleMapper.selectByPrimaryKey(myworks.getStyleid()==null?myworks.getProductid():myworks.getStyleid());
-						if(style!=null&&style.getImgcount().intValue()<=param.getDetails().size()){
+						if(style!=null&&style.getImgcount().intValue()>=param.getDetails().size()) {
 							//清除旧的
 							List<TiMyartsdetails> oldlistList= detailMapper.findDetailsByWorkId(param.getWorkId());
 							if(oldlistList!=null&&oldlistList.size()>0){
@@ -86,20 +89,21 @@ public class Ti_MyworkController extends SSOController {
 								detail.setSort(i);
 								detail.setCreatetime(time); 
 								detailMapper.insert(detail);
-								i++;
 							}
-							myworks.setCompletetime(new Date());
-							workMapper.updateByPrimaryKeySelective(myworks);
-							//图片上传时间
-							OOrderproducts oproduct= oproductOrderMapper.getOProductsByWorkId(param.getWorkId());
-							if(oproduct!=null){
-								OUserorders userorders= userOrderMapper.selectByPrimaryKey(oproduct.getUserorderid());
-								if(userorders!=null&&userorders.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.payed.toString())){
-									userorders.setStatus(Integer.parseInt(OrderStatusEnum.waitFoSend.toString()));
-									userorders.setUploadtime(new Date()); 
-									userOrderMapper.updateByPrimaryKeySelective(userorders);
-									mapResult.put("ordered", 1);
-									mapResult.put("userOrderId", userorders.getUserorderid());
+							if(isOk>0&&style.getImgcount().intValue()==param.getDetails().size()){
+								myworks.setCompletetime(new Date());
+								workMapper.updateByPrimaryKeySelective(myworks);
+								//图片上传时间
+								OOrderproducts oproduct= oproductOrderMapper.getOProductsByWorkId(param.getWorkId());
+								if(oproduct!=null){
+									OUserorders userorders= userOrderMapper.selectByPrimaryKey(oproduct.getUserorderid());
+									if(userorders!=null&&userorders.getStatus().intValue()==Integer.parseInt(OrderStatusEnum.payed.toString())){
+										userorders.setStatus(Integer.parseInt(OrderStatusEnum.waitFoSend.toString()));
+										userorders.setUploadtime(new Date()); 
+										userOrderMapper.updateByPrimaryKeySelective(userorders);
+										mapResult.put("ordered", 1);
+										mapResult.put("userOrderId", userorders.getUserorderid());
+									}
 								}
 							}
 							rq.setBasemodle(mapResult); 
@@ -107,7 +111,7 @@ public class Ti_MyworkController extends SSOController {
 							rq.setStatusreson("提交成功"); 
 						}else {
 							rq.setStatu(ReturnStatus.SystemError);
-							rq.setStatusreson("图片不足"+style.getImgcount()+"张！"); 
+							rq.setStatusreson("图片不能超过"+style.getImgcount()+"张！"); 
 						}
 					}else {
 						rq.setStatu(ReturnStatus.SystemError);
@@ -126,6 +130,7 @@ public class Ti_MyworkController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
 	
 	/**
 	 * 门店自提
@@ -201,60 +206,13 @@ public class Ti_MyworkController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-//	/**
-//	 * 订单图片上传
-//	 * @param detailJson
-//	 * @return
-//	 * @throws Exception
-//	 */
-//	@ResponseBody
-//	@RequestMapping(value = "/uploadImgsForOrder")
-//	public String uploadImgsForOrder(String detailJson) throws Exception {
-//		ReturnModel rq=new ReturnModel();
-//		LoginSuccessResult user= super.getLoginUser();
-//		if(user!=null){
-//			MyworkDetailsParam param=(MyworkDetailsParam)JsonUtil.jsonStrToObject(detailJson, MyworkDetailsParam.class);
-//			if(param!=null&&!ObjectUtil.isEmpty(param.getOrderproductId())&&param.getDetails()!=null&&param.getDetails().size()>0){
-//				//图片上传时间
-//				OOrderproducts oproduct= oproductOrderMapper.selectByPrimaryKey(param.getOrderproductId());
-//				if(oproduct!=null&&oproduct.getCartid()!=null){
-//					//作品id
-//					TiMyworks myworks= workMapper.selectByPrimaryKey(oproduct.getCartid());
-//					if(myworks!=null){
-//						TiProductstyles style=styleMapper.selectByPrimaryKey(myworks.getStyleid()==null?myworks.getProductid():myworks.getStyleid());
-//						if(style!=null&&style.getImgcount().intValue()<=param.getDetails().size()){
-//							Date time=new Date();
-//							for(int i=0;i<param.getDetails().size();i++){
-//								TiMyartsdetails detail=new TiMyartsdetails();
-//								detail.setWorkid(myworks.getWorkid());
-//								detail.setImageurl(param.getDetails().get(0).getImageurl());
-//								detail.setSort(i);
-//								detail.setCreatetime(time); 
-//								detailMapper.insert(detail);
-//								i++;
-//							}
-//							
-//							OUserorders userorders = userOrderMapper.selectByPrimaryKey(oproduct.getUserorderid());
-//							if (userorders != null && userorders.getStatus().intValue() == Integer.parseInt(OrderStatusEnum.payed.toString())) {
-//								userorders.setStatus(Integer.parseInt(OrderStatusEnum.waitFoSend.toString()));
-//								userorders.setUploadtime(new Date());
-//								userOrderMapper.updateByPrimaryKeySelective(userorders);
-//							}
-//							rq.setStatu(ReturnStatus.Success);
-//							rq.setStatusreson("提交成功"); 
-//						}else {
-//							rq.setStatu(ReturnStatus.SystemError);
-//							rq.setStatusreson("图片不足"+style.getImgcount()+"张！"); 
-//						}
-//					}
-//				}
-//				
-//			}
-//		}else { 
-//			rq.setStatu(ReturnStatus.LoginError);
-//			rq.setStatusreson("登录过期");
-//			return JsonUtil.objectToJsonStr(rq);
-//		}
-//		return JsonUtil.objectToJsonStr(rq);
-//	}
+	@Autowired
+	private EErrorsMapper logMapper;
+	public void addlog(String msg) {
+		EErrors errors = new EErrors();
+		errors.setClassname(this.getClass().getName());
+		errors.setMsg("下单失败：" + msg);
+		errors.setCreatetime(new Date());
+		logMapper.insert(errors);
+	}
 }

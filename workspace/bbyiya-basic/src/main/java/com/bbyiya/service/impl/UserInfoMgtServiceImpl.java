@@ -17,6 +17,7 @@ import com.bbyiya.dao.UChildreninfoMapper;
 import com.bbyiya.dao.UUserresponsesMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.user.UserStatusEnum;
 import com.bbyiya.model.UChildreninfo;
 import com.bbyiya.model.UUserresponses;
 import com.bbyiya.model.UUsers;
@@ -92,6 +93,7 @@ public class UserInfoMgtServiceImpl implements IUserInfoMgtService {
 		// 重置密码
 		UUsers users = userDao.getUUsersByPhone(mobile);
 		if (users != null) {
+			users.setStatus(Integer.parseInt(UserStatusEnum.ok.toString()));
 			users.setPassword(MD5Encrypt.encrypt(pwd));
 			userDao.updateByPrimaryKeySelective(users);
 			rq.setStatu(ReturnStatus.Success);

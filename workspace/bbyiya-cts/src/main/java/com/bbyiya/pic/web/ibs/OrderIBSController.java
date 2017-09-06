@@ -1,15 +1,8 @@
 package com.bbyiya.pic.web.ibs;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.List;
+
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,21 +13,17 @@ import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.pic.service.ibs.IIbs_OrderMgtService;
-import com.bbyiya.pic.vo.order.OrderCountResultVO;
-import com.bbyiya.utils.FileUtils;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
-import com.github.pagehelper.PageInfo;
-import com.sdicons.json.mapper.MapperException;
 
 @Controller
 @RequestMapping(value = "/ibs/order")
 public class OrderIBSController extends SSOController {
 	@Resource(name = "ibs_OrderMgtService")
 	private IIbs_OrderMgtService orderService;
-
+	
 	/**
 	 * 来自分店的订单列表
 	 * 
@@ -61,6 +50,5 @@ public class OrderIBSController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
-	
 	
 }

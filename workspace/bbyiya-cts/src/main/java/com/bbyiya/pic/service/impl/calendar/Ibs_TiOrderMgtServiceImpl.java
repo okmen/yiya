@@ -1,6 +1,8 @@
 package com.bbyiya.pic.service.impl.calendar;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -15,8 +17,14 @@ import com.bbyiya.dao.OOrderproductphotosMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
+import com.bbyiya.dao.TiMyartsdetailsMapper;
+import com.bbyiya.dao.TiMyworksMapper;
+import com.bbyiya.dao.TiProductsMapper;
+import com.bbyiya.dao.TiProductstylesMapper;
+import com.bbyiya.dao.TiPromotersMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.MyProductTempType;
+import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.pic.InviteStatus;
 import com.bbyiya.model.OOrderaddress;
@@ -25,35 +33,62 @@ import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.TiActivityworks;
+import com.bbyiya.model.TiMyworks;
+import com.bbyiya.model.TiProductstyles;
+import com.bbyiya.model.TiPromoters;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.service.calendar.IIbs_TiOrderMgtService;
 import com.bbyiya.pic.vo.calendar.TiOrderVo;
+import com.bbyiya.service.IRegionService;
+import com.bbyiya.service.calendar.ITi_OrderMgtService;
 import com.bbyiya.service.pic.IBaseUserAddressService;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.PageInfoUtil;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.address.OrderaddressVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
 @Service("ibs_TiOrderMgtService")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
 public class Ibs_TiOrderMgtServiceImpl implements IIbs_TiOrderMgtService{
-	@Autowired
-	private TiActivityworksMapper actworkMapper;
+	//------------------------订单---------------------------------------------
 	@Autowired
 	private OUserordersMapper orderMapper;
 	@Autowired
 	private OOrderproductsMapper orderProductMapper;
+	@Autowired
+	private OOrderaddressMapper orderaddressMapper;
+	//------------------------产品---------------------------------------------
+	@Autowired
+	private TiProductstylesMapper styleMapper;
+	@Autowired
+	private TiProductsMapper productMapper;
+	//---------------------------作品、活动------------------------------------------------------
+	@Autowired
+	private TiMyworksMapper myworksMapper;
+	@Autowired
+	private TiActivityworksMapper actworkMapper;
+	@Autowired
+	private TiMyartsdetailsMapper detailsMapper;
 	
 	/*-------------------用户信息------------------------------------------------*/
+	@Autowired
+	private TiPromotersMapper promotersMapper;
 	@Autowired
 	private UUsersMapper usersMapper;
 	@Autowired
 	private OOrderaddressMapper addressMapper;
 	@Resource(name = "baseUserAddressServiceImpl")
 	private IBaseUserAddressService baseAddressService;
+	
+	@Resource(name = "tiOrderMgtServiceImpl")
+	private  ITi_OrderMgtService basetiorderService;
+	
+	@Resource(name = "regionServiceImpl")
+	private IRegionService regionService;
 
 	public ReturnModel findTiMyOrderlist(Long branchUserId,Integer ordertype,Integer status,String keywords,int index,int size){
 		ReturnModel rq=new ReturnModel();
@@ -113,5 +148,58 @@ public class Ibs_TiOrderMgtServiceImpl implements IIbs_TiOrderMgtService{
 		return rq;
 	}
 
-	
+	public ReturnModel getIbsTiSubmitAddressList(Long submitUserId,Long workId) {
+		ReturnModel rq = new ReturnModel();
+		//用户作品
+		TiMyworks work= myworksMapper.selectByPrimaryKey(workId);
+		if(work==null){
+			rq.setStatusreson("作品不存在！");
+			return rq;
+		}
+		//用户作品对应的产品款式
+		TiProductstyles style=styleMapper.selectByPrimaryKey(work.getStyleid()==null?work.getProductid():work.getStyleid());
+		if(style==null){
+			rq.setStatusreson("作品信息不全！");
+			return rq;
+		}
+		TiActivityworks actWork= actworkMapper.selectByPrimaryKey(workId);
+		OrderaddressVo orderAddress = new OrderaddressVo();		
+		//用户自己付邮费
+		if(actWork.getOrderaddressid()!=null&&actWork.getOrderaddressid().longValue()>0){
+			OOrderaddress oaddr=orderaddressMapper.selectByPrimaryKey(actWork.getOrderaddressid());
+			if(oaddr!=null){
+				orderAddress.setUserid(oaddr.getUserid());
+				orderAddress.setPhone(oaddr.getPhone());
+				orderAddress.setReciver(oaddr.getReciver());
+				orderAddress.setCityName(oaddr.getCity());
+				orderAddress.setProvinceName(oaddr.getProvince());
+				orderAddress.setDistrictName(oaddr.getDistrict());
+				orderAddress.setStreetdetail(oaddr.getDistrict());
+				orderAddress.setAddressType(1);
+			}
+		}else {
+			//寄到B端地址
+			TiPromoters promoters = promotersMapper.selectByPrimaryKey(submitUserId);
+			if (promoters != null) {
+				orderAddress.setUserid(promoters.getPromoteruserid());
+				orderAddress.setPhone(promoters.getMobilephone());
+				orderAddress.setReciver(promoters.getContacts());
+				orderAddress.setCity(promoters.getCity());
+				orderAddress.setCityName(regionService.getCityName(promoters.getCity()));
+				orderAddress.setProvince(promoters.getProvince());
+				orderAddress.setProvinceName(regionService.getProvinceName(promoters.getProvince()));
+				orderAddress.setDistrict(promoters.getArea());
+				orderAddress.setDistrictName(regionService.getAresName(promoters.getArea()));
+				orderAddress.setStreetdetail(promoters.getStreetdetails());
+				orderAddress.setAddressType(0);
+			}				
+		}
+		HashMap<String, Object> map=new HashMap<String, Object>();
+		map.put("style", style);
+		map.put("address", orderAddress);
+		rq.setBasemodle(map);
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("成功");
+		return rq;
+	}
 }

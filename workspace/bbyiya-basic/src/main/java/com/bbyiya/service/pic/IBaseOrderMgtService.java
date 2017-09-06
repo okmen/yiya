@@ -110,6 +110,14 @@ public interface IBaseOrderMgtService {
 	 */
 	ReturnModel findUserOrderlist(Long userId,int index,int size);
 	/**
+	 * 台历挂历订单列表（用户订单）
+	 * @param userId
+	 * @param index
+	 * @param size
+	 * @return
+	 */
+	ReturnModel findUserOrderlist_ti(Long userId,int index,int size) ;
+	/**
 	 * 选择地址下单
 	 * @param param
 	 * @return

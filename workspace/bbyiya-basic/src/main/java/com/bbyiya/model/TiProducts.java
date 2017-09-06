@@ -31,6 +31,8 @@ public class TiProducts {
 
     private String advertimgjson;
 
+    private Integer cateid;
+
     public Long getProductid() {
         return productid;
     }
@@ -141,5 +143,13 @@ public class TiProducts {
 
     public void setAdvertimgjson(String advertimgjson) {
         this.advertimgjson = advertimgjson == null ? null : advertimgjson.trim();
+    }
+
+    public Integer getCateid() {
+        return cateid;
+    }
+
+    public void setCateid(Integer cateid) {
+        this.cateid = cateid;
     }
 }

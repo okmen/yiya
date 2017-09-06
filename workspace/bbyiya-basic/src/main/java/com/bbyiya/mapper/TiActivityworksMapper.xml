@@ -45,7 +45,11 @@
     </if>
     order by CreateTime desc
   </select>
-  
+  <select id="getActWorkListByActIdAndUserId" resultMap="TiActivityworksVOResult"  ><!-- 获取用户参与的活动 -->
+  	select <include refid="Base_Column_List" />
+    from ti_activityworks
+    where  ActId = #{actid,jdbcType=BIGINT} and UserId=#{userId,jdbcType=BIGINT} limit 1
+  </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from ti_activityworks

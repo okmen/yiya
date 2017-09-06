@@ -34,7 +34,13 @@
     where ProductId = #{productid,jdbcType=INTEGER} and ProducerUserID!=#{produceruserid,jdbcType=BIGINT}  and  AreaCode=#{areacode,jdbcType=INTEGER}  limit 1;
   </select>
   
-  
+  <!--生产商该产品的区域设置情况  -->
+  <select id="findProductAreasByProducerUserId" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_productareas
+    where ProductId = #{productid,jdbcType=INTEGER} and ProducerUserID=#{produceruserid,jdbcType=BIGINT}
+  </select>
   <!-- 得到生产商不能生产的地区 -->
   <select id="findProductCannotSetAreas" resultMap="BaseResultMap" >
     select 

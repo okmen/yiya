@@ -916,6 +916,8 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 				vo.setId(maproduct.getId());
 				vo.setMachineid(maproduct.getMachineid());
 				vo.setProductid(maproduct.getProductid());
+				List<TiProductareas> productarea2=productareaMapper.findProductAreasByProducerUserId(maproduct.getProductid(), producerUserId);
+				vo.setSetedareas(productarea2);
 				//得到生产商产品不能设置的区域
 				List<TiProductareas> productarea=productareaMapper.findProductCannotSetAreas(maproduct.getProductid(), producerUserId);
 				vo.setCanotSetareas(productarea);	
@@ -953,7 +955,23 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 			rqModel.setStatusreson("请选择要设置的地区！");
 			return rqModel;
 		}
-		
+		//得到原有的
+		List<TiProductareas> productareas=productareaMapper.findProductAreasByProducerUserId(productId, producerUserId);
+		if(productareas!=null&&productareas.size()>0){
+			for (TiProductareas area : productareas) {
+				boolean ishave=false;
+				for (RAreaVo rvo : arealist) {
+					if(area.getAreacode().intValue()==rvo.getAreacode().intValue()){
+						ishave=true;
+						break;
+					}
+				}
+				if(!ishave){
+					productareaMapper.deleteByPrimaryKey(area.getId());
+				}
+				
+			}
+		}
 		for (RAreaVo rvo : arealist) {
 			TiProductareas existproductarea=productareaMapper.getIfExistProductAreaByOtherIds(productId, producerUserId,rvo.getAreacode());
 			if(existproductarea!=null){
@@ -961,7 +979,7 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 				rqModel.setStatusreson("地区["+regionService.getAresName(rvo.getAreacode())+"]已被其它生产商代理！");
 				return rqModel;
 			}
-
+			
 			TiProductareas productarea=productareaMapper.getProductAreaByIds(productId, producerUserId,rvo.getAreacode());
 			if(productarea==null){
 				productarea=new TiProductareas();

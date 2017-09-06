@@ -14,6 +14,7 @@ public class TiMachineproductVo {
 	    private Long productid;
 	    
 	    private List<TiProductareas> canotSetareas;
+	    private List<TiProductareas> setedareas;
 
 		public Integer getId() {
 			return id;
@@ -46,6 +47,14 @@ public class TiMachineproductVo {
 
 		public void setCanotSetareas(List<TiProductareas> canotSetareas) {
 			this.canotSetareas = canotSetareas;
+		}
+
+		public List<TiProductareas> getSetedareas() {
+			return setedareas;
+		}
+
+		public void setSetedareas(List<TiProductareas> setedareas) {
+			this.setedareas = setedareas;
 		}
 
 		

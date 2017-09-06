@@ -823,18 +823,22 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 	 */
 	public TiPromoterApplyVo getTiPromoterInfo(Long promoterUserId){	
 		//加入缓存半个小时
-		String keyString="tiagentsvo_"+promoterUserId;
-		TiPromoterApplyVo tiagent=(TiPromoterApplyVo) RedisUtil.getObject(keyString);
-		if(tiagent==null){
-			tiagent=promoterapplyMapper.getTiPromoterapplyVOById(promoterUserId);	
-			if(tiagent!=null){
-				tiagent.setProvinceName(regionService.getProvinceName(tiagent.getProvince())) ;
-				tiagent.setCityName(regionService.getCityName(tiagent.getCity())) ;
-				tiagent.setAreaName(regionService.getAresName(tiagent.getArea())) ;	
+		String keyString="tipromotervo_"+promoterUserId;
+		TiPromoterApplyVo tipromoter=(TiPromoterApplyVo) RedisUtil.getObject(keyString);
+		if(tipromoter==null){
+			tipromoter=promoterapplyMapper.getTiPromoterapplyVOById(promoterUserId);	
+			if(tipromoter!=null){
+				tipromoter.setProvinceName(regionService.getProvinceName(tipromoter.getProvince())) ;
+				tipromoter.setCityName(regionService.getCityName(tipromoter.getCity())) ;
+				tipromoter.setAreaName(regionService.getAresName(tipromoter.getArea())) ;	
 			}
-			RedisUtil.setObject(keyString, tiagent, 1800);
+			TiAgents tiagent=agentsMapper.selectByPrimaryKey(tipromoter.getAgentuserid());
+			if(tiagent!=null){
+				tipromoter.setAgentName(tiagent.getCompanyname());
+			}
+			RedisUtil.setObject(keyString, tipromoter, 1800);
 		}		
-		return tiagent;		
+		return tipromoter;		
 	}
 	
 	

@@ -181,6 +181,11 @@ public class SendSMSByMobile {
 			}
 			
 		}
+		else if (msgType==Integer.parseInt(SendMsgEnums.remind_chongzhi.toString())) {
+			//String userId=param==null?mobile:(param.getUserId()==null?mobile:param.getUserId().toString());
+			msg="【咿呀科技】尊敬的用户，您的账户余额小于100元，请及时充值！";
+			batchSend(mobile, msg);
+		}
 		return true;
 	}
 	

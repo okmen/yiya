@@ -29,7 +29,7 @@ public class HeartbeatJob extends QuartzJobBean {
 	}
 	
 	/**
-	 * 公用job
+	 * 公用job：每5分钟执行一次
 	 */
 	private void JobRun(){
 		try {

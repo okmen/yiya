@@ -73,8 +73,11 @@ public class PbsOrderMgtController extends SSOController {
 				return JsonUtil.objectToJsonStr(rq);
 			}
 
-			SearchOrderParam param = (SearchOrderParam)JSONObject.toBean(jb,SearchOrderParam.class);			
-			//SearchOrderParam param= (SearchOrderParam)JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
+			SearchOrderParam param = (SearchOrderParam)JSONObject.toBean(jb,SearchOrderParam.class);	
+			if(type==null)type=0;
+			if(type.intValue()!=0){
+				param.setProducerUserId(user.getUserId());
+			}
 			PageInfo<PbsUserOrderResultVO> result= orderMgtService.find_pbsOrderList(param,type,index,size);
 			rq.setBasemodle(result);
 			rq.setStatu(ReturnStatus.Success);

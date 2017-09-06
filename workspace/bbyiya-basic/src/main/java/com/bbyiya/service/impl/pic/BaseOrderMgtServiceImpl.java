@@ -1207,8 +1207,12 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	public ReturnModel findUserOrderlist(Long userId,int index,int size) {
 		ReturnModel rq = new ReturnModel();
 		PageHelper.startPage(index, size);
-		List<UserBuyerOrderResult> userorderslist = userOrdersMapper.findUserOrderByUserId(userId);
-		PageInfo<UserBuyerOrderResult> resultPage=new PageInfo<UserBuyerOrderResult>(userorderslist); 
+		List<Integer> typeList=new ArrayList<Integer>();
+		typeList.add(Integer.parseInt(OrderTypeEnum.brachOrder.toString()));
+		typeList.add(Integer.parseInt(OrderTypeEnum.nomal.toString()));
+//		List<UserBuyerOrderResult> userorderslist = userOrdersMapper.findUserOrderByUserId(userId);
+		List<UserBuyerOrderResult> userorderslist = userOrdersMapper.findUserOrderByUserIdAndTypes(userId, typeList);
+		PageInfo<UserBuyerOrderResult> resultPage=new PageInfo<UserBuyerOrderResult>(userorderslist);  
 		if(resultPage!=null&&resultPage.getList()!=null&&resultPage.getList().size()>0){
 			for (UserBuyerOrderResult oo : resultPage.getList()) {
 				if(oo.getOrdertime()!=null)
@@ -1238,7 +1242,26 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		rq.setStatu(ReturnStatus.Success);
 		return rq;
 	}
-	
+	public ReturnModel findUserOrderlist_ti(Long userId,int index,int size) {
+		ReturnModel rq = new ReturnModel();
+		PageHelper.startPage(index, size);
+		List<Integer> typeList=new ArrayList<Integer>();
+		typeList.add(Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));
+		typeList.add(Integer.parseInt(OrderTypeEnum.ti_nomal.toString()));
+		List<UserBuyerOrderResult> userorderslist = userOrdersMapper.findUserOrderByUserIdAndTypes(userId,typeList); 
+		PageInfo<UserBuyerOrderResult> resultPage=new PageInfo<UserBuyerOrderResult>(userorderslist); 
+		if(resultPage!=null&&resultPage.getList()!=null&&resultPage.getList().size()>0){
+			for (UserBuyerOrderResult oo : resultPage.getList()) {
+				List<OOrderproducts> proList = oproductMapper.findOProductsByOrderId(oo.getUserorderid());
+				if(proList!=null&&proList.size()>0){
+					oo.setProduct(proList.get(0)); 
+				}
+			}
+		}
+		rq.setBasemodle(resultPage); 
+		rq.setStatu(ReturnStatus.Success);
+		return rq;
+	}
 	
 	public ReturnModel getOrderInfo(Long userId, String orderId) {
 		ReturnModel rq=new ReturnModel();

@@ -27,6 +27,13 @@ public interface OUserordersMapper {
      */
     List<OUserorders> findOrderByUserId(@Param("userId") Long userId);
     /**
+     * 获取用户订单列表
+     * @param userId
+     * @param types
+     * @return
+     */
+    List<UserBuyerOrderResult> findUserOrderByUserIdAndTypes(@Param("userId") Long userId,@Param("typeArrs")List<Integer> types);
+    /**
      * 根据状态获取订单列表
      * @param status
      * @return

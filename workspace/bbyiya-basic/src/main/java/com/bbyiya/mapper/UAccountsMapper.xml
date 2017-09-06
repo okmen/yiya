@@ -9,6 +9,18 @@
   <sql id="Base_Column_List" >
     UserID, AvailableAmount,FreezeCashAmount
   </sql>
+  
+  <!-- 需要短信通知充值的用户Model-->
+  <resultMap id="SmsRemindUserVOResult" type="com.bbyiya.vo.user.SmsRemindUserVo" extends="BaseResultMap">  
+  </resultMap> 
+  <!-- 得到需要通知的用户列表 -->
+  <select id="findSmsRemindUserList" resultMap="SmsRemindUserVOResult" parameterType="java.lang.Double" >
+    select b.userId from ti_promoters a,u_accounts b 
+    where a.promoterUserId=b.userId and b.availableAmount &lt;= #{amount,jdbcType=DOUBLE}
+    UNION ALL
+	select b.userId from u_branches a,u_accounts b where a.branchUserId=b.userId  
+	and b.availableAmount&lt;= #{amount,jdbcType=DOUBLE}
+  </select> 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />

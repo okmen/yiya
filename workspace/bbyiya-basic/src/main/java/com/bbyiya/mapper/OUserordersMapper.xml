@@ -65,7 +65,16 @@
     from o_userorders
     where UserId = #{userId,jdbcType=BIGINT}  order by OrderTime desc
   </select>
-  
+  <select id="findUserOrderByUserIdAndTypes" resultMap="UserBuyerOrderResultMap"  ><!--  根据UserId ，orderTypes  获取用户的订单列表 -->
+    select 
+    <include refid="Base_Column_List" />
+    from o_userorders
+    where UserId = #{userId,jdbcType=BIGINT} 
+	<if test="typeArrs != null" >
+       and OrderType in <foreach collection="typeArrs" item="item" index="index" open="(" separator="," close=")">#{item}</foreach>
+    </if>
+    order by OrderTime desc
+  </select>
   <select id="findOrdersByAgentUserId" resultMap="BaseResultMap"  ><!-- 02 获取待分配的订单 （代理） -->
     select 
     <include refid="Base_Column_List" />

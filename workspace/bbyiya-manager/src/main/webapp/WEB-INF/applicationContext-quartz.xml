@@ -43,8 +43,25 @@
 	<!-- 自动签收订单CornTrigger -->
 	<bean id="auotReceivingTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="auotReceivingJobDetail" />
-		<!-- 每个5分钟触发 -->
+		<!-- 每天23点触发 -->
 		<property name="cronExpression" value="0 0 23 * * ?" />
+	</bean>
+	
+	
+	<!-- 短信通知用户账户充值定时器服务  -->
+	<bean id="smsRemindUserJobDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass" value="com.bbyiya.cts.job.SmsRemindChongzhiJob"></property>
+		<property name="jobDataAsMap">
+			<map>
+				<description>jobDataAsMap</description>
+			</map>
+		</property>
+	</bean>
+	<!--  短信通知用户账户充值CornTrigger -->
+	<bean id="smsRemindUserTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="smsRemindUserJobDetail" />
+		<!-- 每个5分钟触发 -->
+		<property name="cronExpression" value="0 0/1 * * * ?" />
 	</bean>
 	
 	
@@ -55,8 +72,9 @@
 	    <property name="jobFactory" ref="jobFactory"></property>
 		<property name="triggers">
 			<list>
-				<ref bean="cornTrigger" />  
-				<ref bean="auotReceivingTrigger" />  
+				<!-- <ref bean="cornTrigger" />  
+				<ref bean="auotReceivingTrigger" />   -->
+				<ref bean="smsRemindUserTrigger" />  
 			</list>
 		</property>
 	</bean>

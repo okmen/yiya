@@ -23,4 +23,10 @@ public interface TiActivitysMapper {
     int updateByPrimaryKey(TiActivitys record);
     
     List<TiActivitysVo> findCalenderActivityList(@Param("produceruserid") Long produceruserid,@Param("status") Integer status,@Param("keywords") String keywords,@Param("type")Integer type);
+    /**
+     * 获取活动详情
+     * @param actId
+     * @return
+     */
+    TiActivitysVo getResultByActId(@Param("actid")Integer actId);
 }

@@ -17,6 +17,11 @@
     from ti_discountmodel
     where DiscountId = #{discountid,jdbcType=INTEGER}
   </select>
+  <select id="findDiscountList" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_discountmodel 
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from ti_discountmodel
     where DiscountId = #{discountid,jdbcType=INTEGER}

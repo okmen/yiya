@@ -1,5 +1,6 @@
 package com.bbyiya.vo.calendar;
 import com.bbyiya.model.TiActivitys;
+import com.bbyiya.vo.calendar.product.TiProductResult;
 
 
 public class TiActivitysVo extends TiActivitys{
@@ -8,6 +9,8 @@ public class TiActivitysVo extends TiActivitys{
 	private Integer notsubmitcount;//未完成数量，图片未提交完
 	private Integer notsharecount;//未完成分享数
 	private Integer yaoqingcount; //已邀请数量
+	
+	private TiProductResult product;
 	public String getProductName() {
 		return productName;
 	}
@@ -46,6 +49,14 @@ public class TiActivitysVo extends TiActivitys{
 
 	public void setYaoqingcount(Integer yaoqingcount) {
 		this.yaoqingcount = yaoqingcount;
+	}
+
+	public TiProductResult getProduct() {
+		return product;
+	}
+
+	public void setProduct(TiProductResult product) {
+		this.product = product;
 	}
 
 	

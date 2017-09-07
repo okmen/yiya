@@ -29,6 +29,10 @@ public class TiProductResult extends TiProducts{
 	 * 评论数
 	 */
 	private int commentsCount;
+	/**
+	 * 活动图
+	 */
+	private String imgActivity;
 	
 	private List<ImageInfo> imglist;
 	/**
@@ -88,6 +92,12 @@ public class TiProductResult extends TiProducts{
 	}
 	public void setDescriptionImglist(List<ImageInfo> descriptionImglist) {
 		this.descriptionImglist = descriptionImglist;
+	}
+	public String getImgActivity() {
+		return imgActivity;
+	}
+	public void setImgActivity(String imgActivity) {
+		this.imgActivity = imgActivity;
 	}
 	
 	

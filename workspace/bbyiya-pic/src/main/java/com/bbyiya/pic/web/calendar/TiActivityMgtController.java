@@ -120,4 +120,6 @@ public class TiActivityMgtController extends SSOController {
 		rq.setStatu(ReturnStatus.Success);
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	
 }

@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import net.sf.json.JSONObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -102,7 +104,12 @@ public class TiAgentMgtController extends SSOController {
 					}else {
 						rq.setStatu(ReturnStatus.ParamError);
 						rq.setStatusreson("用户未绑定手机号！");
+						return JsonUtil.objectToJsonStr(rq);
 					}
+				}else{
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("用户咿呀号未注册！");
+					return JsonUtil.objectToJsonStr(rq);
 				}
 			}else {
 				rq.setStatu(ReturnStatus.ParamError);
@@ -133,6 +140,11 @@ public class TiAgentMgtController extends SSOController {
 		if(user!=null){
 			if(!ObjectUtil.isEmpty(user.getMobilePhone())){
 				try {
+					JSONObject jb = JSONObject.fromObject(promoterJson);
+					if(jb.getString("agentuserid").equals("")){
+						promoterJson=promoterJson.replaceAll("\"agentuserid\":\"\"", "\"agentuserid\":null");
+					}
+					
 					TiPromotersapply applyInfo=(TiPromotersapply)JsonUtil.jsonStrToObject(promoterJson, TiPromotersapply.class);
 					if(applyInfo!=null){
 						applyInfo.setPromoteruserid(user.getUserId()); 
@@ -174,7 +186,10 @@ public class TiAgentMgtController extends SSOController {
 				if(promoterUsers!=null){
 					if(!ObjectUtil.isEmpty(promoterUsers.getMobilephone())){
 						try {
-							
+							JSONObject jb = JSONObject.fromObject(promoterJson);
+							if(jb.getString("agentuserid").equals("")){
+								promoterJson=promoterJson.replaceAll("\"agentuserid\":\"\"", "\"agentuserid\":null");
+							}
 							TiPromotersapply applyInfo=(TiPromotersapply)JsonUtil.jsonStrToObject(promoterJson, TiPromotersapply.class);
 							if(applyInfo!=null){
 								applyInfo.setPromoteruserid(user.getUserId()); 
@@ -189,7 +204,12 @@ public class TiAgentMgtController extends SSOController {
 					}else {
 						rq.setStatu(ReturnStatus.ParamError);
 						rq.setStatusreson("用户未绑定手机号！");
+						return JsonUtil.objectToJsonStr(rq);
 					}
+				}else {
+					rq.setStatu(ReturnStatus.LoginError_2);
+					rq.setStatusreson("用户未完成注册,请先绑定手机号！");
+					return JsonUtil.objectToJsonStr(rq);
 				}
 			}else {
 				rq.setStatu(ReturnStatus.ParamError);

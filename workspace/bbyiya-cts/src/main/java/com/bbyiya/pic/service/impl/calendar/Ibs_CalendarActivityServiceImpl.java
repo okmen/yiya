@@ -108,7 +108,7 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 				rq.setStatusreson("邀请总数限制不得小于总报名人数！");
 				return rq;
 			}
-			activityMapper.updateByPrimaryKey(ti);
+			activityMapper.updateByPrimaryKeyWithBLOBs(ti);
 		}
 		rq.setStatu(ReturnStatus.Success);
 		rq.setStatusreson("修改日历活动成功！");

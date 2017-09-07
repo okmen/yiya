@@ -245,7 +245,17 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 		}
 		applyInfo.setPromoteruserid(userId);
 		applyInfo.setCreattime(new Date());
-		
+		TiAgents belongagents=agentsMapper.selectByPrimaryKey(applyInfo.getAgentuserid());
+		if(belongagents==null){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("代理商咿呀号不存在！");
+			return rq;
+		}
+		if(belongagents.getStatus()!=Integer.parseInt(TiAgentStatusEnum.ok.toString())){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("代理商咿呀号未通过审核或还在审核中！");
+			return rq;
+		}
 		TiAgents agents=agentsMapper.selectByPrimaryKey(userId);		
 		if(agents!=null&&agents.getStatus()!=null&&agents.getStatus().intValue()==Integer.parseInt(TiAgentStatusEnum.ok.toString())){
 			rq.setStatu(ReturnStatus.ParamError);

@@ -48,13 +48,15 @@
     </if>
     order by CreateTime desc
   </select>
-  
-  
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
     select 
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
+    <include refid="Base_Column_List" />,<include refid="Blob_Column_List" />
+    from ti_activitys
+    where ActId = #{actid,jdbcType=INTEGER}
+  </select>
+   <select id="getResultByActId" resultMap="TiActivitysVOResult"  ><!-- get 活动详情 -->
+    select 
+    <include refid="Base_Column_List" />, <include refid="Blob_Column_List" />
     from ti_activitys
     where ActId = #{actid,jdbcType=INTEGER}
   </select>

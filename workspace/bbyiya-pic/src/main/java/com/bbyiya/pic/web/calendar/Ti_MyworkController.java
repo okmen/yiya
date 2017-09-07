@@ -85,7 +85,7 @@ public class Ti_MyworkController extends SSOController {
 							for(int i=0;i<param.getDetails().size();i++){
 								TiMyartsdetails detail=new TiMyartsdetails();
 								detail.setWorkid(param.getWorkId());
-								detail.setImageurl(param.getDetails().get(0).getImageurl());
+								detail.setImageurl(param.getDetails().get(i).getImageurl());
 								detail.setSort(i);
 								detail.setCreatetime(time); 
 								detailMapper.insert(detail);
@@ -193,10 +193,10 @@ public class Ti_MyworkController extends SSOController {
 						map.put("details", details);
 						map.put("imgCount", style.getImgcount()); 
 						map.put("cateId", products.getCateid());
+						map.put("workInfo", myworks);
 						rq.setStatu(ReturnStatus.Success);
 						rq.setBasemodle(map); 
 					}
-					
 				}
 			}
 		}else { 
@@ -206,6 +206,8 @@ public class Ti_MyworkController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	
 	@Autowired
 	private EErrorsMapper logMapper;
 	public void addlog(String msg) {

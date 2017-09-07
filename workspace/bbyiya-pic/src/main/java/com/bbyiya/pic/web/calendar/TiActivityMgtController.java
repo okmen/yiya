@@ -2,24 +2,34 @@ package com.bbyiya.pic.web.calendar;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bbyiya.common.vo.ImageInfo;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.TiActivitysMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
+import com.bbyiya.dao.TiDiscountmodelMapper;
 import com.bbyiya.dao.TiMyworksMapper;
+import com.bbyiya.dao.TiProductsMapper;
+import com.bbyiya.dao.TiUserdiscountsMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.TiActivitys;
 import com.bbyiya.model.TiActivityworks;
+import com.bbyiya.model.TiDiscountmodel;
 import com.bbyiya.model.TiMyworks;
+import com.bbyiya.model.TiUserdiscounts;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.calendar.TiActivitysVo;
+import com.bbyiya.vo.calendar.product.TiProductResult;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
 
@@ -34,6 +44,14 @@ public class TiActivityMgtController extends SSOController {
 	private TiMyworksMapper myworkMapper;
 	@Autowired
 	private PMyproductsMapper myproductMapper;
+	@Autowired
+	private TiProductsMapper productMapper;
+	
+	@Autowired
+	private TiUserdiscountsMapper userDisMapper;
+	@Autowired
+	private TiDiscountmodelMapper dismodelMapper;
+	
 	
 	/**
 	 * 活动详情
@@ -47,8 +65,26 @@ public class TiActivityMgtController extends SSOController {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			TiActivitys actInfo=actMapper.selectByPrimaryKey(actId);
+			TiActivitysVo actInfo=actMapper.getResultByActId(actId);
 			if(actInfo!=null){
+				TiProductResult productResult= productMapper.getResultByProductId(actInfo.getProductid());
+				productResult.setDescriptionImglist((List<ImageInfo>)JsonUtil.jsonToList(productResult.getDescriptionimgjson())) ;
+				if(productResult!=null){
+					switch (productResult.getCateid()) {
+					case 1:
+						productResult.setImgActivity("http://pic.bbyiya.com/20170509Figure-1001.jpg");
+						break;
+					case 2:
+						productResult.setImgActivity("http://pic.bbyiya.com/20170509Figure-1001.jpg");
+						break;
+					case 3:
+						productResult.setImgActivity("http://pic.bbyiya.com/20170509Figure-1001.jpg");
+						break;
+					default:
+						break;
+					}
+				}
+				actInfo.setProduct(productResult); 
 				rq.setBasemodle(actInfo); 
 			}
 		}else {
@@ -59,6 +95,36 @@ public class TiActivityMgtController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	/**
+	 * 款式选择（活动作品）
+	 * @param workId
+	 * @param styleId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/chooseStyle")
+	public String chooseStyle(long workId,long styleId)throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+//			TiActivityworks activityworks= activityworksMapper.selectByPrimaryKey(workId);
+			TiMyworks myworks=myworkMapper.selectByPrimaryKey(workId);
+			if(myworks!=null&&myworks.getActid()!=null){
+				myworks.setStyleid(styleId);
+				myworkMapper.updateByPrimaryKeySelective(myworks);
+				rq.setStatu(ReturnStatus.Success);
+			}else {
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson("非活动作品！"); 
+			}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+		
 	/**
 	 * 参与活动
 	 * @param actId
@@ -122,4 +188,87 @@ public class TiActivityMgtController extends SSOController {
 	}
 	
 	
+	/**
+	 * 领取优惠券
+	 * @param workId
+	 * @param styleId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getDiscounts")
+	public String getDiscounts(@RequestParam(required = false, defaultValue = "0")int actId,@RequestParam(required = false, defaultValue = "0")long workId)throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=getDiscountsCommon(actId, workId, user.getUserId());
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		} 
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 领取优惠券（两处地方，活动结束时领取，二级用户通过朋友分享领取）
+	 * @param actId
+	 * @param workId
+	 * @param userId
+	 * @return
+	 */
+	public ReturnModel getDiscountsCommon(int actId,long workId, long userId){
+		ReturnModel rq=new ReturnModel();
+		TiActivityworks activityworks=null;
+		TiMyworks myworks=null;
+		TiActivitys actInfo=null;
+		if(workId>0){
+			myworks= myworkMapper.selectByPrimaryKey(workId);
+			if(myworks!=null){
+				actId=myworks.getActid();
+				activityworks=activityworksMapper.selectByPrimaryKey(workId);
+			}
+		}
+		actInfo=actMapper.selectByPrimaryKey(actId);
+		if(actInfo==null){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("活动不存在！");
+			return rq;
+		}
+		List<TiUserdiscounts> mydislist= userDisMapper.findMyDiscounts(userId);
+		if(mydislist!=null&&mydislist.size()>0){
+			for (TiUserdiscounts dd : mydislist) {
+				if(dd.getWorkid()!=null&&dd.getWorkid().longValue()==workId){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("您已经领取过优惠券！");
+					return rq;
+				}
+				else if(dd.getActid().intValue()==actId){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("您已经领取过优惠券！");
+					return rq;
+				}
+			}
+		}
+		//获取优惠券
+		List<TiDiscountmodel> modlist= dismodelMapper.findDiscountList();
+		if(modlist!=null&&modlist.size()>0){
+			for(int i=0;i<3;i++){
+				TiUserdiscounts model=new TiUserdiscounts();
+				model.setActid(actId);
+				model.setWorkid(workId);
+				model.setCreatetime(new Date());
+				model.setDiscountid(modlist.get(0).getDiscountid());
+				model.setStatus(0);
+				model.setUserid(userId);
+				userDisMapper.insert(model);
+			}
+			if(workId>0&&activityworks!=null){
+				activityworks.setExtcount((activityworks.getExtcount()==null?0:activityworks.getExtcount().intValue())+1); 
+				activityworksMapper.updateByPrimaryKeySelective(activityworks);
+			}
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("恭喜获得3张5折优惠券（下单时自动使用）");
+		}
+		return rq;
+	}
 }

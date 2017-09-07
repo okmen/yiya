@@ -1,5 +1,6 @@
 package com.bbyiya.service.impl.calendar;
 
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,7 @@ import com.bbyiya.dao.EErrorsMapper;
 import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OPayorderMapper;
+import com.bbyiya.dao.OProducerordercountMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
@@ -46,6 +48,7 @@ import com.bbyiya.model.EErrors;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OPayorder;
+import com.bbyiya.model.OProducerordercount;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PPostmodel;
@@ -115,6 +118,8 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 	private OOrderproductsMapper oproductMapper;
 	@Autowired
 	private OOrderaddressMapper orderaddressMapper;
+	@Autowired
+	private OProducerordercountMapper producerOrderMapper;
 
 	//---------------------------作品、活动------------------------------------------------------
 	@Autowired
@@ -217,16 +222,37 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					
 					//订单收货地址
 					long orderAddressId=0l;
-					//用户自己付邮费
-					if(actWork.getOrderaddressid()!=null&&actWork.getOrderaddressid().longValue()>0){
-						orderAddressId=actWork.getOrderaddressid();
-					}else {//寄到B端地址
-						orderAddressId= getOrderAddressIdByBUserId(param.getSubmitUserId(), Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));					
+					Long producerUserId=getProducerUserId(orderAddressId,work.getProductid());
+					Integer orderindex=producerOrderMapper.getMaxOrderIndexByProducerIdAndUserId(producerUserId, param.getSubmitUserId());
+					if(orderindex==null){
+						orderindex=1;
+					}else{
+						orderindex=orderindex.intValue()+1;
 					}
+					DecimalFormat df=new DecimalFormat("0000");
+					String printindex=df.format(orderindex);
+					
 					//订单号
 					String payId = GenUtils.getOrderNo(param.getSubmitUserId());
 					String userOrderId=payId;
 					String orderProductId=userOrderId;
+					
+					OProducerordercount producerorder=new OProducerordercount();
+					producerorder.setProduceruserid(producerUserId);
+					producerorder.setUserid(param.getSubmitUserId());
+					producerorder.setUserorderid(userOrderId);
+					//得到订单编号
+					//用户自己付邮费
+					if(actWork.getOrderaddressid()!=null&&actWork.getOrderaddressid().longValue()>0){
+						orderAddressId=actWork.getOrderaddressid();
+						printindex=printindex+"A";
+					}else {//寄到B端地址
+						orderAddressId= getOrderAddressIdByBUserId(param.getSubmitUserId(), Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));
+					}
+					producerorder.setOrderindex(orderindex);
+					producerorder.setPrintindex(printindex);
+					producerOrderMapper.insert(producerorder);
+					
 					OUserorders userOrder = new OUserorders();
 					Date ordertime = new Date();// 订单操作时间
 					userOrder.setUserorderid(userOrderId);// 用户订单号
@@ -241,7 +267,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					userOrder.setTotalprice(totalprice);
 					userOrder.setOrdertotalprice(totalprice); 
 					userOrder.setOrderaddressid(orderAddressId); 
-					userOrder.setProduceruserid(getProducerUserId(orderAddressId,work.getProductid())); 
+					userOrder.setProduceruserid(producerUserId); 
 					userOrdersMapper.insert(userOrder);
 					//订单产品
 					TiProducts product=productMapper.selectByPrimaryKey(style.getProductid());
@@ -271,7 +297,6 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					payOrderMapper.insert(payorder);  
 					//账户结算
 					accountService.add_accountsLog(param.getSubmitUserId(), Integer.parseInt(AccountLogType.use_payment.toString()), totalprice, payId, "");
-					
 					
 					//反写活动状态
 					if(actWork!=null&&actWork.getStatus()!=null){

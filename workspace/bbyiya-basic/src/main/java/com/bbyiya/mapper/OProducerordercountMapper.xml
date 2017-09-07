@@ -11,6 +11,12 @@
   <sql id="Base_Column_List" >
     UserOrderId, ProducerUserId, UserId, OrderIndex, PrintIndex
   </sql>
+  <select id="getMaxOrderIndexByProducerIdAndUserId" resultType="java.lang.Integer"  parameterType="java.lang.Long" >
+    select max(OrderIndex)
+    from o_producerordercount
+    where ProducerUserId = #{produceruserid,jdbcType=BIGINT} and UserId=#{userid,jdbcType=BIGINT}
+  </select>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />

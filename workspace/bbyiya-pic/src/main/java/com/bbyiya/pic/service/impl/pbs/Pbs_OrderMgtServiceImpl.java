@@ -19,6 +19,7 @@ import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OOrderproductdetailsMapper;
 import com.bbyiya.dao.OOrderproductphotosMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
+import com.bbyiya.dao.OProducerordercountMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.TiPromotersMapper;
@@ -33,6 +34,7 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproductphotos;
+import com.bbyiya.model.OProducerordercount;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.TiPromoters;
@@ -76,6 +78,10 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	private OOrderproductphotosMapper photoMapper;
 	@Autowired
 	private OOrderaddressMapper addressMapper;
+	
+	@Autowired
+	private OProducerordercountMapper producerOrderMapper;
+	
 	@Resource(name = "regionServiceImpl")
 	private IRegionService regionService;
 	
@@ -137,6 +143,10 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					}
 				}
 				
+				OProducerordercount producerorder=producerOrderMapper.selectByPrimaryKey(product.getUserorderid());
+				if(producerorder!=null){
+					product.setPrintIndex(producerorder.getPrintindex());
+				}
 				
 				//影楼直接下单
 				if (orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())||orderType == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())) {

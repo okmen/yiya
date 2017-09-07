@@ -12,6 +12,7 @@ public class TiMachineproductVo {
 	    private Integer machineid;
 
 	    private Long productid;
+	    private String producttitle;
 	    
 	    private List<TiProductareas> canotSetareas;
 	    private List<TiProductareas> setedareas;
@@ -55,6 +56,14 @@ public class TiMachineproductVo {
 
 		public void setSetedareas(List<TiProductareas> setedareas) {
 			this.setedareas = setedareas;
+		}
+
+		public String getProducttitle() {
+			return producttitle;
+		}
+
+		public void setProducttitle(String producttitle) {
+			this.producttitle = producttitle;
 		}
 
 		

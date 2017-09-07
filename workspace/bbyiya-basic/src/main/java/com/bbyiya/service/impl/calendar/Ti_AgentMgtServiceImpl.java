@@ -21,6 +21,7 @@ import com.bbyiya.dao.TiProducerproductsMapper;
 import com.bbyiya.dao.TiProducersMapper;
 import com.bbyiya.dao.TiProducersapplyMapper;
 import com.bbyiya.dao.TiProductareasMapper;
+import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiPromoteremployeesMapper;
 import com.bbyiya.dao.TiPromotersMapper;
 import com.bbyiya.dao.TiPromotersapplyMapper;
@@ -40,6 +41,7 @@ import com.bbyiya.model.TiProducerproducts;
 import com.bbyiya.model.TiProducers;
 import com.bbyiya.model.TiProducersapply;
 import com.bbyiya.model.TiProductareas;
+import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiPromoteremployees;
 import com.bbyiya.model.TiPromoters;
 import com.bbyiya.model.TiPromotersapply;
@@ -91,6 +93,10 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 	private TiProducerapplymachinesMapper promachineMapper;
 	@Autowired
 	private TiProductareasMapper productareaMapper;
+	
+	/***************************产品*********************************/
+	@Autowired
+	private TiProductsMapper tiproductMapper;
 	
 	/*-------------------用户信息------------------------------------------------*/
 	@Autowired
@@ -916,6 +922,10 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 				vo.setId(maproduct.getId());
 				vo.setMachineid(maproduct.getMachineid());
 				vo.setProductid(maproduct.getProductid());
+				TiProducts product=tiproductMapper.selectByPrimaryKey(maproduct.getProductid());
+				if(product!=null){
+					vo.setProducttitle(product.getTitle());
+				}
 				List<TiProductareas> productarea2=productareaMapper.findProductAreasByProducerUserId(maproduct.getProductid(), producerUserId);
 				vo.setSetedareas(productarea2);
 				//得到生产商产品不能设置的区域

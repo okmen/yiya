@@ -161,23 +161,30 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);
 		
+		
+		TiActivitys act=activityMapper.selectByPrimaryKey(actid);
 		PageHelper.startPage(index, size);
 		List<TiActivitysWorkVo> activitylist=actworkMapper.findActWorkListByActId(actid, status, keywords);
 		PageInfo<TiActivitysWorkVo> pageresult=new PageInfo<TiActivitysWorkVo>(activitylist);
-		for (TiActivitysWorkVo ti : pageresult.getList()) {
-			ti.setCreateTimestr(DateUtil.getTimeStr(ti.getCreatetime(), "yyyy-MM-dd"));
-			UUsers user=usersMapper.selectByPrimaryKey(ti.getUserid());
-			if(user!=null){
-				ti.setWeiNickName(user.getNickname());
-			}		
-			// 得到作品订单集合
-			List<OUserorders> orderList = orderMapper.findOrderListByCartId(ti.getWorkid(),Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));
-			List<String> orderNoList = new ArrayList<String>();
-			for (OUserorders order : orderList) {
-				orderNoList.add(order.getUserorderid());
+		if(pageresult!=null&&pageresult.getList()!=null){
+			for (TiActivitysWorkVo ti : pageresult.getList()) {
+				if(act!=null){
+					ti.setTargetextCount(act.getExtcount());
+				}
+				ti.setCreateTimestr(DateUtil.getTimeStr(ti.getCreatetime(), "yyyy-MM-dd"));
+				UUsers user=usersMapper.selectByPrimaryKey(ti.getUserid());
+				if(user!=null){
+					ti.setWeiNickName(user.getNickname());
+				}		
+				// 得到作品订单集合
+				List<OUserorders> orderList = orderMapper.findOrderListByCartId(ti.getWorkid(),Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));
+				List<String> orderNoList = new ArrayList<String>();
+				for (OUserorders order : orderList) {
+					orderNoList.add(order.getUserorderid());
+				}
+				ti.setOrdernolist(orderNoList);
+				
 			}
-			ti.setOrdernolist(orderNoList);
-			
 		}
 		rq.setBasemodle(pageresult);
 		rq.setStatu(ReturnStatus.Success);

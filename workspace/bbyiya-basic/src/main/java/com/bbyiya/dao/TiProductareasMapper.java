@@ -19,7 +19,21 @@ public interface TiProductareasMapper {
 
     int updateByPrimaryKey(TiProductareas record);
     
+    /**
+     * 生产商该产品不能设置的区域
+     * @param productid
+     * @param produceruserid
+     * @return
+     */
     List<TiProductareas>findProductCannotSetAreas(@Param("productid") Long productid,@Param("produceruserid") Long produceruserid);
+    
+    /**
+     * 生产商该产品的区域设置情况
+     * @param productid
+     * @param produceruserid
+     * @return
+     */
+    List<TiProductareas>findProductAreasByProducerUserId(@Param("productid") Long productid,@Param("produceruserid") Long produceruserid);
     
     TiProductareas getProductAreaByIds(@Param("productid") Long productid,@Param("produceruserid") Long produceruserid,@Param("areacode") Integer areacode);
     

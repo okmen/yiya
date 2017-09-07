@@ -21,6 +21,7 @@ import com.bbyiya.dao.TiProducerproductsMapper;
 import com.bbyiya.dao.TiProducersMapper;
 import com.bbyiya.dao.TiProducersapplyMapper;
 import com.bbyiya.dao.TiProductareasMapper;
+import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiPromoteremployeesMapper;
 import com.bbyiya.dao.TiPromotersMapper;
 import com.bbyiya.dao.TiPromotersapplyMapper;
@@ -40,6 +41,7 @@ import com.bbyiya.model.TiProducerproducts;
 import com.bbyiya.model.TiProducers;
 import com.bbyiya.model.TiProducersapply;
 import com.bbyiya.model.TiProductareas;
+import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiPromoteremployees;
 import com.bbyiya.model.TiPromoters;
 import com.bbyiya.model.TiPromotersapply;
@@ -91,6 +93,10 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 	private TiProducerapplymachinesMapper promachineMapper;
 	@Autowired
 	private TiProductareasMapper productareaMapper;
+	
+	/***************************产品*********************************/
+	@Autowired
+	private TiProductsMapper tiproductMapper;
 	
 	/*-------------------用户信息------------------------------------------------*/
 	@Autowired
@@ -823,18 +829,22 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 	 */
 	public TiPromoterApplyVo getTiPromoterInfo(Long promoterUserId){	
 		//加入缓存半个小时
-		String keyString="tiagentsvo_"+promoterUserId;
-		TiPromoterApplyVo tiagent=(TiPromoterApplyVo) RedisUtil.getObject(keyString);
-		if(tiagent==null){
-			tiagent=promoterapplyMapper.getTiPromoterapplyVOById(promoterUserId);	
-			if(tiagent!=null){
-				tiagent.setProvinceName(regionService.getProvinceName(tiagent.getProvince())) ;
-				tiagent.setCityName(regionService.getCityName(tiagent.getCity())) ;
-				tiagent.setAreaName(regionService.getAresName(tiagent.getArea())) ;	
+		String keyString="tipromotervo_"+promoterUserId;
+		TiPromoterApplyVo tipromoter=(TiPromoterApplyVo) RedisUtil.getObject(keyString);
+		if(tipromoter==null){
+			tipromoter=promoterapplyMapper.getTiPromoterapplyVOById(promoterUserId);	
+			if(tipromoter!=null){
+				tipromoter.setProvinceName(regionService.getProvinceName(tipromoter.getProvince())) ;
+				tipromoter.setCityName(regionService.getCityName(tipromoter.getCity())) ;
+				tipromoter.setAreaName(regionService.getAresName(tipromoter.getArea())) ;	
 			}
-			RedisUtil.setObject(keyString, tiagent, 1800);
+			TiAgents tiagent=agentsMapper.selectByPrimaryKey(tipromoter.getAgentuserid());
+			if(tiagent!=null){
+				tipromoter.setAgentName(tiagent.getCompanyname());
+			}
+			RedisUtil.setObject(keyString, tipromoter, 1800);
 		}		
-		return tiagent;		
+		return tipromoter;		
 	}
 	
 	
@@ -912,6 +922,12 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 				vo.setId(maproduct.getId());
 				vo.setMachineid(maproduct.getMachineid());
 				vo.setProductid(maproduct.getProductid());
+				TiProducts product=tiproductMapper.selectByPrimaryKey(maproduct.getProductid());
+				if(product!=null){
+					vo.setProducttitle(product.getTitle());
+				}
+				List<TiProductareas> productarea2=productareaMapper.findProductAreasByProducerUserId(maproduct.getProductid(), producerUserId);
+				vo.setSetedareas(productarea2);
 				//得到生产商产品不能设置的区域
 				List<TiProductareas> productarea=productareaMapper.findProductCannotSetAreas(maproduct.getProductid(), producerUserId);
 				vo.setCanotSetareas(productarea);	
@@ -949,7 +965,23 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 			rqModel.setStatusreson("请选择要设置的地区！");
 			return rqModel;
 		}
-		
+		//得到原有的
+		List<TiProductareas> productareas=productareaMapper.findProductAreasByProducerUserId(productId, producerUserId);
+		if(productareas!=null&&productareas.size()>0){
+			for (TiProductareas area : productareas) {
+				boolean ishave=false;
+				for (RAreaVo rvo : arealist) {
+					if(area.getAreacode().intValue()==rvo.getAreacode().intValue()){
+						ishave=true;
+						break;
+					}
+				}
+				if(!ishave){
+					productareaMapper.deleteByPrimaryKey(area.getId());
+				}
+				
+			}
+		}
 		for (RAreaVo rvo : arealist) {
 			TiProductareas existproductarea=productareaMapper.getIfExistProductAreaByOtherIds(productId, producerUserId,rvo.getAreacode());
 			if(existproductarea!=null){
@@ -957,7 +989,7 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 				rqModel.setStatusreson("地区["+regionService.getAresName(rvo.getAreacode())+"]已被其它生产商代理！");
 				return rqModel;
 			}
-
+			
 			TiProductareas productarea=productareaMapper.getProductAreaByIds(productId, producerUserId,rvo.getAreacode());
 			if(productarea==null){
 				productarea=new TiProductareas();

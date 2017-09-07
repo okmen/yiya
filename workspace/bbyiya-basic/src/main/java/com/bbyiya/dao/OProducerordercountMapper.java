@@ -1,5 +1,7 @@
 package com.bbyiya.dao;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.OProducerordercount;
 
 public interface OProducerordercountMapper {
@@ -14,4 +16,6 @@ public interface OProducerordercountMapper {
     int updateByPrimaryKeySelective(OProducerordercount record);
 
     int updateByPrimaryKey(OProducerordercount record);
+    
+    Integer getMaxOrderIndexByProducerIdAndUserId(@Param("produceruserid")Long produceruserid,@Param("userid")Long userid);
 }

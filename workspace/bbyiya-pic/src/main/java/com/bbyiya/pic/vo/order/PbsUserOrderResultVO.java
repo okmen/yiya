@@ -20,6 +20,7 @@ public class PbsUserOrderResultVO extends OOrderproducts{
     private String buyercity;
     private String buyerdistrict;
     private String buyerstreetdetail;
+    private String printIndex;
 
 	public OUserorders getOrder() {
 		return order;
@@ -140,6 +141,16 @@ public class PbsUserOrderResultVO extends OOrderproducts{
 	public void setBranchesdistrict(String branchesdistrict) {
 		this.branchesdistrict = branchesdistrict;
 	}
+
+	public String getPrintIndex() {
+		return printIndex;
+	}
+
+	public void setPrintIndex(String printIndex) {
+		this.printIndex = printIndex;
+	}
+
+	
 	
 	
 	

@@ -19,8 +19,10 @@ import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OOrderproductdetailsMapper;
 import com.bbyiya.dao.OOrderproductphotosMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
+import com.bbyiya.dao.OProducerordercountMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
+import com.bbyiya.dao.TiPromotersMapper;
 import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.dao.UBranchtransaccountsMapper;
 import com.bbyiya.dao.UBranchtransamountlogMapper;
@@ -32,8 +34,10 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproductphotos;
+import com.bbyiya.model.OProducerordercount;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproductdetails;
+import com.bbyiya.model.TiPromoters;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UBranchtransaccounts;
 import com.bbyiya.model.UBranchtransamountlog;
@@ -74,6 +78,10 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	private OOrderproductphotosMapper photoMapper;
 	@Autowired
 	private OOrderaddressMapper addressMapper;
+	
+	@Autowired
+	private OProducerordercountMapper producerOrderMapper;
+	
 	@Resource(name = "regionServiceImpl")
 	private IRegionService regionService;
 	
@@ -88,6 +96,9 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	@Autowired
 	private UBranchtransamountlogMapper branchesTransLogMapper;
 	
+	@Autowired
+	private TiPromotersMapper promoterMapper;
+	
 	@Resource(name = "baseUserAccountService")
 	private IBaseUserAccountService accountService;
 	
@@ -99,7 +110,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 		}
 		PageHelper.startPage(index, size);
 		List<PbsUserOrderResultVO> list=null;
-		if(type==null)type=0;
+		
 		if(type==0){
 			list=orderDao.findPbsUserOrders(param);
 		}else{
@@ -114,14 +125,31 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 				if(order.getPaytime()!=null)
 					product.setPayTimeStr(DateUtil.getTimeStr(order.getPaytime(), "yyyy-MM-dd HH:mm:ss"));
 				OOrderaddress address= addressMapper.selectByPrimaryKey(order.getOrderaddressid());
-				UBranches branch=branchesMapper.selectByPrimaryKey(order.getBranchuserid());
-				if(branch!=null){
-					product.setBranchesName(branch.getBranchcompanyname());
-				}
+				UBranches branch=null;
+				
 				int orderType = order.getOrdertype() == null ? 0 : order.getOrdertype();
 				order.setOrdertype(orderType);
+				//咿呀12的生产商
+				if(orderType==Integer.parseInt(OrderTypeEnum.nomal.toString())||orderType==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){
+					branch=branchesMapper.selectByPrimaryKey(order.getBranchuserid());
+					if(branch!=null){
+						product.setBranchesName(branch.getBranchcompanyname());
+					}
+				}else{
+					//台历挂历的订单
+					TiPromoters promoters=promoterMapper.selectByPrimaryKey(order.getBranchuserid());
+					if(promoters!=null){
+						product.setBranchesName(promoters.getCompanyname());
+					}
+				}
+				
+				OProducerordercount producerorder=producerOrderMapper.selectByPrimaryKey(product.getUserorderid());
+				if(producerorder!=null){
+					product.setPrintIndex(producerorder.getPrintindex());
+				}
+				
 				//影楼直接下单
-				if (orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
+				if (orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())||orderType == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())) {
 					product.setBranchesprovince(address.getProvince());
 					product.setBranchesrcity(address.getCity());
 					product.setBranchesdistrict(address.getDistrict());
@@ -130,7 +158,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					product.setBranchesUserName(address.getReciver());
 				}else{
 					//普通用户下单如果是影楼抢单
-					if(order.getIsbranch()!=null&&order.getIsbranch()==1){
+					if(orderType==Integer.parseInt(OrderTypeEnum.nomal.toString())&&order.getIsbranch()!=null&&order.getIsbranch()==1){
 						if(branch!=null){
 							product.setBranchesprovince(regionService.getProvinceName(branch.getProvince()));
 							product.setBranchesrcity(regionService.getCityName(branch.getCity()));

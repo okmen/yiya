@@ -37,8 +37,11 @@ public enum SendMsgEnums {
     /**
      * 异业合作 审核通知
      */
-    yiye_Apply_ver(8)
-    ;
+    yiye_Apply_ver(8),
+    /**
+     * 提醒充值
+     */
+    remind_chongzhi(9);
 
     private final int Type;
 

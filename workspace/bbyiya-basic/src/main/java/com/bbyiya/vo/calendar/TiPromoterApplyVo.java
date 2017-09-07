@@ -7,6 +7,7 @@ public class TiPromoterApplyVo extends TiPromotersapply{
 	private String areaName;
 	private String bindphone;
 	private Double availableAmount; //可用余额
+	private String agentName;//隶属的代理商名称
 	public String getProvinceName() {
 		return provinceName;
 	}
@@ -36,6 +37,12 @@ public class TiPromoterApplyVo extends TiPromotersapply{
 	}
 	public void setAvailableAmount(Double availableAmount) {
 		this.availableAmount = availableAmount;
+	}
+	public String getAgentName() {
+		return agentName;
+	}
+	public void setAgentName(String agentName) {
+		this.agentName = agentName;
 	}
 	
 	

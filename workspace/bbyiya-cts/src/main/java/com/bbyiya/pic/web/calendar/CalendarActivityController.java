@@ -70,16 +70,17 @@ public class CalendarActivityController extends SSOController {
 				rq.setStatusreson("完成条件的分享数不能为空!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			if(param.getFreecount()!=null&&param.getFreecount()<=0){
+			if(param.getFreecount()!=null&&param.getFreecount()<0){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("邀请总数必须大于零!");
+				rq.setStatusreson("邀请总数不能小于0!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			if(param.getExtCount()!=null&&param.getExtCount()<=0){
+			if(param.getExtCount()!=null&&param.getExtCount()<=5){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("完成条件的分享数必须大于零!");
+				rq.setStatusreson("完成条件的分享数必须大于等于5个!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
+			
 			if(!ObjectUtil.isEmpty(param.getTitle())&&!ObjectUtil.validSqlStr(param.getTitle())){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("活动名称存在危险字符!");
@@ -127,9 +128,9 @@ public class CalendarActivityController extends SSOController {
 				rq.setStatusreson("邀请总数不能为空!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			if(param.getFreecount()!=null&&param.getFreecount()<=0){
+			if(param.getFreecount()!=null&&param.getFreecount()<0){
 				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("邀请总数必须大于零!");
+				rq.setStatusreson("邀请总数不能小于零!");
 				return JsonUtil.objectToJsonStr(rq);
 			}			
 			if(!ObjectUtil.isEmpty(param.getTitle())&&!ObjectUtil.validSqlStr(param.getTitle())){

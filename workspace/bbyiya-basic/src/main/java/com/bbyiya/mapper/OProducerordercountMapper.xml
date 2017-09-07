@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.OProducerordercountMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.OProducerordercount" >
+    <id column="UserOrderId" property="userorderid" jdbcType="VARCHAR" />
+    <result column="ProducerUserId" property="produceruserid" jdbcType="BIGINT" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="OrderIndex" property="orderindex" jdbcType="INTEGER" />
+    <result column="PrintIndex" property="printindex" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    UserOrderId, ProducerUserId, UserId, OrderIndex, PrintIndex
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from o_producerordercount
+    where UserOrderId = #{userorderid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from o_producerordercount
+    where UserOrderId = #{userorderid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.OProducerordercount" >
+    insert into o_producerordercount (UserOrderId, ProducerUserId, UserId, 
+      OrderIndex, PrintIndex)
+    values (#{userorderid,jdbcType=VARCHAR}, #{produceruserid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, 
+      #{orderindex,jdbcType=INTEGER}, #{printindex,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.OProducerordercount" >
+    insert into o_producerordercount
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userorderid != null" >
+        UserOrderId,
+      </if>
+      <if test="produceruserid != null" >
+        ProducerUserId,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="orderindex != null" >
+        OrderIndex,
+      </if>
+      <if test="printindex != null" >
+        PrintIndex,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userorderid != null" >
+        #{userorderid,jdbcType=VARCHAR},
+      </if>
+      <if test="produceruserid != null" >
+        #{produceruserid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="orderindex != null" >
+        #{orderindex,jdbcType=INTEGER},
+      </if>
+      <if test="printindex != null" >
+        #{printindex,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.OProducerordercount" >
+    update o_producerordercount
+    <set >
+      <if test="produceruserid != null" >
+        ProducerUserId = #{produceruserid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="orderindex != null" >
+        OrderIndex = #{orderindex,jdbcType=INTEGER},
+      </if>
+      <if test="printindex != null" >
+        PrintIndex = #{printindex,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where UserOrderId = #{userorderid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.OProducerordercount" >
+    update o_producerordercount
+    set ProducerUserId = #{produceruserid,jdbcType=BIGINT},
+      UserId = #{userid,jdbcType=BIGINT},
+      OrderIndex = #{orderindex,jdbcType=INTEGER},
+      PrintIndex = #{printindex,jdbcType=VARCHAR}
+    where UserOrderId = #{userorderid,jdbcType=VARCHAR}
+  </update>
+</mapper>

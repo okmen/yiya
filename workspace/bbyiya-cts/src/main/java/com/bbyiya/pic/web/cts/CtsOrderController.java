@@ -38,9 +38,16 @@ public class CtsOrderController extends SSOController {
 		LoginSuccessResult user = super.getLoginUser();		
 		if (user != null) {	
 			JSONObject jb = JSONObject.fromObject(myproductJson);
-			if(jb.getString("status")==""){
+			if(jb.getString("status").equals("")){
 				myproductJson=myproductJson.replaceAll("\"status\":\"\"", "\"status\":null");
 			}
+			if(jb.getString("ordertype").equals("")){
+				myproductJson=myproductJson.replaceAll("\"ordertype\":\"\"", "\"ordertype\":null");
+			}
+			if(jb.getString("agentUserId").equals("")){
+				myproductJson=myproductJson.replaceAll("\"agentUserId\":\"\"", "\"agentUserId\":null");
+			}
+			
 			Object object=JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
 			if(object==null){
 				rq.setStatu(ReturnStatus.ParamError);

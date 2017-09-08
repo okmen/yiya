@@ -49,7 +49,7 @@
     and ActId not in(select ActId FROM ti_activityoff where PromoterUserId= #{userId,jdbcType=BIGINT})
     order by CreateTime desc
   </select>
-  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from ti_activitys

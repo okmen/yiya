@@ -36,6 +36,7 @@ import com.bbyiya.dao.PProductstylepropertyMapper;
 import com.bbyiya.dao.PProductstylesMapper;
 import com.bbyiya.dao.RAreaplansMapper;
 import com.bbyiya.dao.RegionMapper;
+import com.bbyiya.dao.TiProductstylesMapper;
 import com.bbyiya.dao.UAccountsMapper;
 import com.bbyiya.dao.UAgentcustomersMapper;
 import com.bbyiya.dao.UAgentsMapper;
@@ -76,6 +77,7 @@ import com.bbyiya.model.PPostmodel;
 import com.bbyiya.model.PProducts;
 import com.bbyiya.model.PProductstyles;
 import com.bbyiya.model.RAreaplans;
+import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UAgentcustomers;
 import com.bbyiya.model.UAgents;
@@ -134,6 +136,9 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 	private PMyproductsinvitesMapper myinviteMapper;//我的作品
 	@Autowired
 	private PMyproductdetailsMapper mydetailMapper;
+	
+	@Autowired
+	private TiProductstylesMapper tiStyleMapper;
 
 	// --------------------订单模块注解--------------------------------------
 	@Autowired
@@ -1255,6 +1260,17 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				List<OOrderproducts> proList = oproductMapper.findOProductsByOrderId(oo.getUserorderid());
 				if(proList!=null&&proList.size()>0){
 					oo.setProduct(proList.get(0)); 
+					List<OOrderproductphotos> photoList= ophotoMapper.findOrderProductPhotosByProductOrderId(proList.get(0).getOrderproductid());
+					if(photoList!=null&&photoList.size()>0){
+						oo.setUpCount(photoList.size());
+					}else {
+						oo.setUpCount(0); 
+					}
+					TiProductstyles style= tiStyleMapper.selectByPrimaryKey(proList.get(0).getStyleid());
+					if(style!=null){
+						oo.setTargetCount(style.getImgcount());
+					}
+					
 				}
 			}
 		}

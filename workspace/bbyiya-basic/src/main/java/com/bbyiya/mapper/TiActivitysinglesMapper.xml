@@ -29,6 +29,14 @@
     delete from ti_activitysingles
     where ActSingleId = #{actsingleid,jdbcType=BIGINT}
   </delete>
+   <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="ActSingleId" parameterType="com.bbyiya.model.TiActivitysingles" >
+    insert into ti_activitysingles (ActSingleId, ActId, PromoterUserId, 
+      UserId, CreateTime, GetsTime, 
+      Status)
+    values (#{actsingleid,jdbcType=BIGINT}, #{actid,jdbcType=INTEGER}, #{promoteruserid,jdbcType=BIGINT}, 
+      #{userid,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}, #{getstime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=INTEGER})
+  </insert>
   <insert id="insert" parameterType="com.bbyiya.model.TiActivitysingles" >
     insert into ti_activitysingles (ActSingleId, ActId, PromoterUserId, 
       UserId, CreateTime, GetsTime, 

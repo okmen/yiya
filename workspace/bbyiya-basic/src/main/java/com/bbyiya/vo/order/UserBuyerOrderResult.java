@@ -17,6 +17,8 @@ public class UserBuyerOrderResult extends OUserorders implements Serializable {
 	//横版竖版
 	private Integer showType;
 	
+	private int upCount;
+	private int targetCount;
 	
 	public String getWorkTitle() {
 		return workTitle;
@@ -72,6 +74,22 @@ public class UserBuyerOrderResult extends OUserorders implements Serializable {
 
 	public void setShowType(Integer showType) {
 		this.showType = showType;
+	}
+
+	public int getUpCount() {
+		return upCount;
+	}
+
+	public void setUpCount(int upCount) {
+		this.upCount = upCount;
+	}
+
+	public int getTargetCount() {
+		return targetCount;
+	}
+
+	public void setTargetCount(int targetCount) {
+		this.targetCount = targetCount;
 	}
 	
 	

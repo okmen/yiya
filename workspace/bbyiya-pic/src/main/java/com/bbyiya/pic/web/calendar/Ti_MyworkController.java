@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.dao.EErrorsMapper;
+import com.bbyiya.dao.OOrderproductphotosMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
@@ -23,6 +24,7 @@ import com.bbyiya.dao.TiProductstylesMapper;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.EErrors;
+import com.bbyiya.model.OOrderproductphotos;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.TiActivityworks;
@@ -52,7 +54,8 @@ public class Ti_MyworkController extends SSOController {
 	private OOrderproductsMapper oproductOrderMapper;
 	@Autowired
 	private OUserordersMapper userOrderMapper;
-	
+	@Autowired
+	private OOrderproductphotosMapper ophotoMapper;
 	/**
 	 * 参与活动 -图片上传
 	 * @param detailJson
@@ -90,6 +93,7 @@ public class Ti_MyworkController extends SSOController {
 								detail.setCreatetime(time); 
 								detailMapper.insert(detail);
 							}
+							//完成上传操作
 							if(isOk>0&&style.getImgcount().intValue()==param.getDetails().size()){
 								myworks.setCompletetime(new Date());
 								workMapper.updateByPrimaryKeySelective(myworks);
@@ -101,6 +105,16 @@ public class Ti_MyworkController extends SSOController {
 										userorders.setStatus(Integer.parseInt(OrderStatusEnum.waitFoSend.toString()));
 										userorders.setUploadtime(new Date()); 
 										userOrderMapper.updateByPrimaryKeySelective(userorders);
+										List<OOrderproductphotos> photoList= ophotoMapper.findOrderProductPhotosByProductOrderId(oproduct.getOrderproductid());
+										if(photoList==null||photoList.size()<=0){
+											for(int i=0;i<param.getDetails().size();i++){
+												OOrderproductphotos detail=new OOrderproductphotos();
+												detail.setImgurl(param.getDetails().get(i).getImageurl());
+												detail.setSort(i);
+												detail.setCreatetime(time); 
+												ophotoMapper.insert(detail);
+											}
+										}
 										mapResult.put("ordered", 1);
 										mapResult.put("userOrderId", userorders.getUserorderid());
 									}

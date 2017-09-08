@@ -30,5 +30,5 @@ public interface TiActivitysMapper {
      */
     TiActivitysVo getResultByActId(@Param("actid")Integer actId);
     
-    List<TiActivitys> findActivityList(@Param("promoterUserId")Long promoterUserId,@Param("userId")Long userId);
+    List<TiActivitysVo> findActivityList(@Param("promoterUserId")Long promoterUserId,@Param("userId")Long userId);
 }

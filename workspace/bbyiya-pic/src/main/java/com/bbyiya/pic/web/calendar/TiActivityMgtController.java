@@ -11,20 +11,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.common.vo.ImageInfo;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.TiActivitysMapper;
+import com.bbyiya.dao.TiActivitysinglesMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
 import com.bbyiya.dao.TiDiscountmodelMapper;
 import com.bbyiya.dao.TiMyworksMapper;
 import com.bbyiya.dao.TiProductsMapper;
+import com.bbyiya.dao.TiPromoteremployeesMapper;
 import com.bbyiya.dao.TiUserdiscountsMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.TiActivitys;
+import com.bbyiya.model.TiActivitysingles;
 import com.bbyiya.model.TiActivityworks;
 import com.bbyiya.model.TiDiscountmodel;
 import com.bbyiya.model.TiMyworks;
+import com.bbyiya.model.TiPromoteremployees;
 import com.bbyiya.model.TiUserdiscounts;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -271,4 +277,71 @@ public class TiActivityMgtController extends SSOController {
 		}
 		return rq;
 	}
+	
+	@Autowired
+	private TiActivitysinglesMapper singMapper;
+	@Autowired
+	private TiPromoteremployeesMapper employeeMapper;
+	/**
+	 * 获取版本号
+	 * @param actId
+	 * @param workId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/genVersionNo")
+	public String genVersionNo(@RequestParam(required = false, defaultValue = "0")int actId)throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_employees)){
+				TiPromoteremployees employee= employeeMapper.selectByPrimaryKey(user.getUserId());
+				TiActivitys activitys= actMapper.selectByPrimaryKey(actId);
+				if(activitys!=null&&employee!=null&&employee.getPromoteruserid().longValue()==activitys.getProduceruserid().longValue()){
+					TiActivitysingles versionMod=new TiActivitysingles();
+					versionMod.setActid(actId);
+					versionMod.setPromoteruserid(user.getUserId());
+					versionMod.setStatus(0);
+					versionMod.setCreatetime(new Date());
+					singMapper.insertReturnId(versionMod);
+					rq.setStatu(ReturnStatus.Success);
+					rq.setBasemodle(versionMod.getActsingleid()); 
+				}
+			}else {
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("不是员工身份");
+			}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		} 
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value = "/findActslist")
+	public String findActslist()throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_employees)){
+				TiPromoteremployees employee= employeeMapper.selectByPrimaryKey(user.getUserId());
+				if(employee!=null){
+					List<TiActivitys> actlist= actMapper.findActivityList(employee.getPromoteruserid(), user.getUserId());
+					rq.setBasemodle(actlist);
+					rq.setStatu(ReturnStatus.Success);
+				} 
+			}else {
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("不是员工身份");
+			}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		} 
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 }

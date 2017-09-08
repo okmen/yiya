@@ -30,6 +30,8 @@ public class TiActivitys {
     private String description;
     
     private String remark;
+    
+    private String actimg;
 
     public Integer getActid() {
         return actid;
@@ -141,6 +143,14 @@ public class TiActivitys {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public String getActimg() {
+		return actimg;
+	}
+
+	public void setActimg(String actimg) {
+		this.actimg = actimg;
 	}
     
     

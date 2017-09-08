@@ -29,4 +29,6 @@ public interface TiActivitysMapper {
      * @return
      */
     TiActivitysVo getResultByActId(@Param("actid")Integer actId);
+    
+    List<TiActivitys> findActivityList(@Param("promoterUserId")Long promoterUserId,@Param("userId")Long userId);
 }

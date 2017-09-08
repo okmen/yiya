@@ -8,7 +8,12 @@ public interface TiActivitysinglesMapper {
     int deleteByPrimaryKey(Long actsingleid);
 
     int insert(TiActivitysingles record);
-
+    /**
+     * 新增
+     * @param record
+     * @return
+     */
+    int insertReturnId(TiActivitysingles record);
     int insertSelective(TiActivitysingles record);
 
     TiActivitysingles selectByPrimaryKey(Long actsingleid);

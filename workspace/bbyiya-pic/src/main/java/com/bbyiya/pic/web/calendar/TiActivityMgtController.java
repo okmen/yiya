@@ -38,6 +38,7 @@ import com.bbyiya.vo.calendar.TiActivitysVo;
 import com.bbyiya.vo.calendar.product.TiProductResult;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
+import com.sdicons.json.validator.impl.predicates.False;
 
 @Controller
 @RequestMapping(value = "/ti_act")
@@ -139,7 +140,7 @@ public class TiActivityMgtController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/inActivity")
-	public String inActivity(int actId)throws Exception {
+	public String inActivity(int actId,@RequestParam(required=false,defaultValue="0")long eUid, @RequestParam(required=false,defaultValue="0")long versionId)throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
@@ -147,6 +148,26 @@ public class TiActivityMgtController extends SSOController {
 			// 1活动信息
 			TiActivitys actInfo=actMapper.selectByPrimaryKey(actId);
 			if(actInfo!=null){
+				//一对一活动
+				if(actInfo.getActtype()!=null&&actInfo.getActtype().intValue()==1){
+					rq.setStatu(ReturnStatus.ParamError);
+					if(versionId<=0){
+						rq.setStatusreson("链接无效");
+						return JsonUtil.objectToJsonStr(rq);
+					}
+					TiActivitysingles single= singMapper.selectByPrimaryKey(versionId);
+					if(single==null||single.getPromoteruserid().longValue()!=actInfo.getProduceruserid().longValue()||single.getStatus().intValue()==1){
+						rq.setStatusreson("链接无效");
+						return JsonUtil.objectToJsonStr(rq);
+					}
+					if(eUid==user.getUserId()){
+						rq.setStatusreson("自己不能参与！");
+						return JsonUtil.objectToJsonStr(rq);
+					}
+					single.setUserid(user.getUserId());
+					single.setGetstime(new Date());
+					singMapper.updateByPrimaryKeySelective(single);
+				}
 				TiActivityworks activityworks= activityworksMapper.getActWorkListByActIdAndUserId(actId, user.getUserId());
 				if(activityworks!=null){
 					TiMyworks mywork= myworkMapper.selectByPrimaryKey(activityworks.getWorkid());
@@ -180,6 +201,7 @@ public class TiActivityMgtController extends SSOController {
 					// 5更新参与人数
 					actInfo.setApplycount((actInfo.getApplycount()==null?0:actInfo.getApplycount().intValue())+1); 
 					actMapper.updateByPrimaryKeySelective(actInfo);
+					
 					
 					map.put("workId", myworks.getWorkid());
 				}

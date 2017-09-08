@@ -101,7 +101,7 @@
     select 
     <include refid="Base_Column_List" />
     from o_userorders 
-    where  Status=#{status,jdbcType=INTEGER} order by PayTime desc,OrderTime desc
+    where  Status=#{status,jdbcType=INTEGER} and OrderType in(0,1)  order by PayTime desc,OrderTime desc
   </select>
   
   <!-- 根据作品ID得到订单列表  -->

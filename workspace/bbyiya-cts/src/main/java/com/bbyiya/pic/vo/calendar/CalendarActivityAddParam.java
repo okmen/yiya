@@ -9,6 +9,7 @@ public class CalendarActivityAddParam {
 	private Integer acttype;	//赠送方式
 	private Integer freecount;	//最大参与人数
 	private Integer extCount;//目标分享人数
+	private String actimg;	//活动图片
 	
 	public Integer getActivityid() {
 		return activityid;
@@ -57,6 +58,12 @@ public class CalendarActivityAddParam {
 	}
 	public void setExtCount(Integer extCount) {
 		this.extCount = extCount;
+	}
+	public String getActimg() {
+		return actimg;
+	}
+	public void setActimg(String actimg) {
+		this.actimg = actimg;
 	}
 	
 	

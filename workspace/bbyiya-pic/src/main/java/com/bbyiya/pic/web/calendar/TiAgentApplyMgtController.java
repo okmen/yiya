@@ -92,6 +92,11 @@ public class TiAgentApplyMgtController extends SSOController {
 					if(jb.getString("agentuserid").equals("")){
 						promoterJson=promoterJson.replaceAll("\"agentuserid\":\"\"", "\"agentuserid\":null");
 					}
+					if(!ObjectUtil.IsNumber(jb.getString("agentuserid"))){
+						rq.setStatu(ReturnStatus.ParamError);
+						rq.setStatusreson("代理商咿呀号请输入数字！");
+						return JsonUtil.objectToJsonStr(rq);
+					}
 					TiPromotersapply applyInfo=(TiPromotersapply)JsonUtil.jsonStrToObject(promoterJson, TiPromotersapply.class);
 					if(applyInfo!=null){
 						applyInfo.setPromoteruserid(user.getUserId()); 

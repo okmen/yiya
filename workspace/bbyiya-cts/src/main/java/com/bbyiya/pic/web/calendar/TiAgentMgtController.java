@@ -30,6 +30,7 @@ import com.bbyiya.vo.RAreaVo;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.calendar.TiAgentApplyVo;
 import com.bbyiya.vo.calendar.TiAgentSearchParam;
+import com.bbyiya.vo.calendar.TiProducersApplyVo;
 import com.bbyiya.vo.calendar.TiPromoterApplyVo;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
@@ -73,7 +74,6 @@ public class TiAgentMgtController extends SSOController {
 			rq.setStatusreson("登录过期");
 			return JsonUtil.objectToJsonStr(rq);
 		}
-		
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
@@ -144,7 +144,11 @@ public class TiAgentMgtController extends SSOController {
 					if(jb.getString("agentuserid").equals("")){
 						promoterJson=promoterJson.replaceAll("\"agentuserid\":\"\"", "\"agentuserid\":null");
 					}
-					
+					if(!ObjectUtil.IsNumber(jb.getString("agentuserid"))){
+						rq.setStatu(ReturnStatus.ParamError);
+						rq.setStatusreson("代理商咿呀号请输入数字！");
+						return JsonUtil.objectToJsonStr(rq);
+					}
 					TiPromotersapply applyInfo=(TiPromotersapply)JsonUtil.jsonStrToObject(promoterJson, TiPromotersapply.class);
 					if(applyInfo!=null){
 						applyInfo.setPromoteruserid(user.getUserId()); 
@@ -187,7 +191,7 @@ public class TiAgentMgtController extends SSOController {
 					if(!ObjectUtil.isEmpty(promoterUsers.getMobilephone())){
 						try {
 							JSONObject jb = JSONObject.fromObject(promoterJson);
-							if(jb.getString("agentuserid").equals("")){
+							if(jb.getString("agentuserid").trim().equals("")){
 								promoterJson=promoterJson.replaceAll("\"agentuserid\":\"\"", "\"agentuserid\":null");
 							}
 							TiPromotersapply applyInfo=(TiPromotersapply)JsonUtil.jsonStrToObject(promoterJson, TiPromotersapply.class);
@@ -603,6 +607,30 @@ public class TiAgentMgtController extends SSOController {
 	}
 	
 	/**
+	 * 登陆后得到生产商信息
+	 * @param type
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getTiProducerInfo")
+	public String getTiProducerInfo() throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			TiProducersApplyVo producer=agentService.getTiProducerInfo(user.getUserId());	
+			rq.setBasemodle(producer);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("获取生产商信息成功！");
+			
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	/**
 	 * 修改代理商收货地址
 	 * @return
 	 * @throws Exception
@@ -638,6 +666,29 @@ public class TiAgentMgtController extends SSOController {
 			rq=agentService.editTiPromotersAddress(user.getUserId(), streetdetail,name,phone);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("修改代理商信息成功！");
+			
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 修改生产商收货地址
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/editTiProducerAddress")
+	public String editTiProducerAddress(String streetdetail,String name,String phone ) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=agentService.editTiProducerAddress(user.getUserId(), streetdetail,name,phone);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("修改生产商信息成功！");
 			
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);

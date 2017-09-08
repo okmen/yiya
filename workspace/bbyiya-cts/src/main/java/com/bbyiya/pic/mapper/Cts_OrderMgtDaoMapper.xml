@@ -66,7 +66,7 @@
   <select id="find_CtsUserOrders" resultMap="UserOrderResult" parameterType="com.bbyiya.vo.order.SearchOrderParam"  >
     select  a.*
     from o_userorders as a left join o_orderaddress b on a.OrderAddressId=b.OrderAddressId  where 1=1  
-    <if test="orderNo != null" >
+    <if test="orderNo != null and orderNo !=''"  >
         AND (a.UserOrderId LIKE  CONCAT('%', #{orderNo,jdbcType=VARCHAR},'%' ) or b.Reciver  LIKE  CONCAT('%', #{orderNo,jdbcType=VARCHAR},'%' ) or b.Phone LIKE  CONCAT('%', #{orderNo,jdbcType=VARCHAR},'%' ))  
     </if>
     <if test="startTimeStr != null  and startTimeStr !='' " ><!--  #{startTime,jdbcType=TIMESTAMP}  -->

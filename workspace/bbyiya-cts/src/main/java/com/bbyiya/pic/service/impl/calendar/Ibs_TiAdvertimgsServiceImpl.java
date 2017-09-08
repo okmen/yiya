@@ -91,7 +91,7 @@ public class Ibs_TiAdvertimgsServiceImpl implements IIbs_TiAdvertimgsService{
 		}
 		//得到预览图
 		TiProducts products=productMapper.selectByPrimaryKey(productid);
-		if(advert!=null){
+		if(products!=null){
 			map.put("products", products);
 		}
 		rqModel.setBasemodle(map);

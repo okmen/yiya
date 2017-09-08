@@ -245,7 +245,7 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 		}
 		applyInfo.setPromoteruserid(userId);
 		applyInfo.setCreattime(new Date());
-		TiAgents belongagents=agentsMapper.selectByPrimaryKey(applyInfo.getAgentuserid());
+		TiAgentsapply belongagents=agentapplyMapper.selectByPrimaryKey(applyInfo.getAgentuserid());
 		if(belongagents==null){
 			rq.setStatu(ReturnStatus.ParamError);
 			rq.setStatusreson("代理商咿呀号不存在！");
@@ -857,6 +857,29 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 		return tipromoter;		
 	}
 	
+	/**
+	 * 获取生产商代理信息
+	 * @param agentUserId
+	 * @return
+	 */
+	public TiProducersApplyVo getTiProducerInfo(Long producerUserId){	
+		//加入缓存半个小时
+		String keyString="tiproducervo_"+producerUserId;
+		TiProducersApplyVo tiproducer=(TiProducersApplyVo) RedisUtil.getObject(keyString);
+		if(tiproducer==null){
+			tiproducer=producersapplyMapper.getTiProducersapplyVOById(producerUserId);	
+			if(tiproducer!=null){
+				tiproducer.setProvinceName(regionService.getProvinceName(tiproducer.getProvince())) ;
+				tiproducer.setCityName(regionService.getCityName(tiproducer.getCity())) ;
+				tiproducer.setAreaName(regionService.getAresName(tiproducer.getArea())) ;	
+			}
+			List<TiProducerapplymachines> machines=promachineMapper.findapplymachineslist(producerUserId);
+			tiproducer.setMachines(machines);
+			RedisUtil.setObject(keyString, tiproducer, 1800);
+		}		
+		return tiproducer;		
+	}
+	
 	
 	/**
 	 * 修改代理商收货地址
@@ -876,6 +899,7 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 			agentsapply.setStreetdetail(streetdetail);
 			agentsapply.setContacts(name);
 			agentsapply.setMobilephone(phone);
+			agentapplyMapper.updateByPrimaryKey(agentsapply);
 		}
 		rqModel.setStatu(ReturnStatus.Success);
 		rqModel.setStatusreson("修改收货地址成功！");
@@ -902,6 +926,31 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 			promoter.setContacts(name);
 			promoter.setMobilephone(phone);
 			promoterMapper.updateByPrimaryKeySelective(promoter);
+		}
+		rqModel.setStatu(ReturnStatus.Success);
+		rqModel.setStatusreson("修改收货地址成功！");
+		return rqModel;		
+	}
+	
+	/**
+	 * 修改生产商收货地址
+	 * @param branchUserId
+	 * @return
+	 */
+	public ReturnModel editTiProducerAddress(Long produceruserid,String streetdetail,String name,String phone){	
+		ReturnModel rqModel=new ReturnModel();
+		TiProducersapply producerapply=producersapplyMapper.selectByPrimaryKey(produceruserid);
+		TiProducers producer=producersMapper.selectByPrimaryKey(produceruserid);
+		if(producerapply!=null){
+			producerapply.setStreetdetail(streetdetail);
+			producerapply.setContacts(name);
+			producerapply.setMobilephone(phone);
+			producersapplyMapper.updateByPrimaryKeySelective(producerapply);
+		}
+		if(producer!=null){
+			producer.setContacts(name);
+			producer.setMobilephone(phone);
+			producersMapper.updateByPrimaryKeySelective(producer);
 		}
 		rqModel.setStatu(ReturnStatus.Success);
 		rqModel.setStatusreson("修改收货地址成功！");

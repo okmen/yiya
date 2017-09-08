@@ -1,4 +1,5 @@
 package com.bbyiya.pic.service.calendar;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import com.bbyiya.pic.vo.calendar.CalendarActivityAddParam;
@@ -67,6 +68,22 @@ public interface IIbs_CalendarActivityService {
 	 */
 	ReturnModel getActWorkListByActId(int index, int size, Integer actid,
 			Integer status, String keywords);
+	/**
+	 * 合成活动图片
+	 * @param userid
+	 * @param actid
+	 * @return
+	 * @throws UnsupportedEncodingException
+	 */
+	ReturnModel composeActImg(Long userid, Integer actid)
+			throws UnsupportedEncodingException;
+	/**
+	 * 保存合成图片
+	 * @param actid
+	 * @param actimg
+	 * @return
+	 */
+	ReturnModel savecomposeActImg(Integer actid, String actimg);
 	
 	
 }

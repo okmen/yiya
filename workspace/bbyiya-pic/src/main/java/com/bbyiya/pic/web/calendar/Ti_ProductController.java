@@ -144,6 +144,24 @@ public class Ti_ProductController  extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	@ResponseBody
+	@RequestMapping(value = "/productStyleList")
+	public String productStyleList(long productId) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			//产品的款式列表
+			List<TiProductstyles> styleList=styleMapper.findStylelistByProductId(productId);
+			rq.setBasemodle(styleList);
+			rq.setStatu(ReturnStatus.Success); 
+		}else { 
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 	/**
 	 * 款式详情-下单页用
 	 * @param styleId

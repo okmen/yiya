@@ -9,7 +9,7 @@ public class TiActivitysVo extends TiActivitys{
 	private Integer notsubmitcount;//未完成数量，图片未提交完
 	private Integer notsharecount;//未完成分享数
 	private Integer yaoqingcount; //已邀请数量
-	
+	private Long myworkId;
 	private TiProductResult product;
 	public String getProductName() {
 		return productName;
@@ -57,6 +57,14 @@ public class TiActivitysVo extends TiActivitys{
 
 	public void setProduct(TiProductResult product) {
 		this.product = product;
+	}
+
+	public Long getMyworkId() {
+		return myworkId;
+	}
+
+	public void setMyworkId(Long myworkId) {
+		this.myworkId = myworkId;
 	}
 
 	

@@ -74,6 +74,11 @@ public class TiActivityMgtController extends SSOController {
 		if(user!=null){
 			TiActivitysVo actInfo=actMapper.getResultByActId(actId);
 			if(actInfo!=null){
+				TiActivityworks myActWork= activityworksMapper.getActWorkListByActIdAndUserId(actId, user.getUserId());
+				if(myActWork!=null){
+					actInfo.setMyworkId(myActWork.getWorkid()); 
+				}
+				actInfo.setYaoqingcount(singMapper.getYaoqingCountByActId(actId));
 				TiProductResult productResult= productMapper.getResultByProductId(actInfo.getProductid());
 				productResult.setDescriptionImglist((List<ImageInfo>)JsonUtil.jsonToList(productResult.getDescriptionimgjson())) ;
 				if(productResult!=null){
@@ -351,7 +356,14 @@ public class TiActivityMgtController extends SSOController {
 			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_employees)){
 				TiPromoteremployees employee= employeeMapper.selectByPrimaryKey(user.getUserId());
 				if(employee!=null){
-					List<TiActivitys> actlist= actMapper.findActivityList(employee.getPromoteruserid(), user.getUserId());
+					List<TiActivitysVo> actlist= actMapper.findActivityList(employee.getPromoteruserid(), user.getUserId());
+					if(actlist!=null&&actlist.size()>0){
+						for (TiActivitysVo aa : actlist) {
+							if(aa.getActtype()!=null&&aa.getActtype().intValue()==1){
+								aa.setYaoqingcount(singMapper.getYaoqingCountByActId(aa.getActid())); 
+							}
+						}
+					}
 					rq.setBasemodle(actlist);
 					rq.setStatu(ReturnStatus.Success);
 				} 

@@ -75,7 +75,7 @@ public class CalendarActivityController extends SSOController {
 				rq.setStatusreson("邀请总数不能小于0!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			if(param.getExtCount()!=null&&param.getExtCount()<=5){
+			if(param.getExtCount()!=null&&param.getExtCount()<5){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("完成条件的分享数必须大于等于5个!");
 				return JsonUtil.objectToJsonStr(rq);

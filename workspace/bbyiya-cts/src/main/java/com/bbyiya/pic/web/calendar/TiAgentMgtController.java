@@ -528,7 +528,7 @@ public class TiAgentMgtController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/findPromoterApplylist")
-	public String findPromoterApplylist(String agentUserId, String status,String keywords,int index,int size) throws Exception {
+	public String findPromoterApplylist(String userId,String agentUserId, String status,String keywords,int index,int size) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
@@ -536,25 +536,24 @@ public class TiAgentMgtController extends SSOController {
 			Long agentuser=ObjectUtil.parseLong(agentUserId);
 			if(agentuser>0)
 				param.setAgentUserId(agentuser);
+			Long produceruserid=ObjectUtil.parseLong(userId);
+			if(produceruserid>0)
+				param.setUserId(produceruserid);
 			if(!ObjectUtil.isEmpty(status)){
 				param.setStatus(ObjectUtil.parseInt(status)); 
 			} 
 			if(!ObjectUtil.isEmpty(keywords)){
 				param.setCompanyName(keywords);
 			} 
+			rq = agentService.findTiPromoterApplyList(param,index,size);
 			
-			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){
-				rq = agentService.findTiPromoterApplyList(param,index,size);
-			}else {
-				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("无权限");
-			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
 	
 	/**
 	 * 登陆后得到代理商信息

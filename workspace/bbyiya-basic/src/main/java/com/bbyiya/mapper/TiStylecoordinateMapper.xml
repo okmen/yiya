@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiStylecoordinateMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiStylecoordinate" >
+    <id column="StyleId" property="styleid" jdbcType="BIGINT" />
+    <result column="ImgCoordId" property="imgcoordid" jdbcType="INTEGER" />
+    <result column="PrintCoordId" property="printcoordid" jdbcType="INTEGER" />
+    <result column="FrontImgCoordId" property="frontimgcoordid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    StyleId, ImgCoordId, PrintCoordId, FrontImgCoordId
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_stylecoordinate
+    where StyleId = #{styleid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ti_stylecoordinate
+    where StyleId = #{styleid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiStylecoordinate" >
+    insert into ti_stylecoordinate (StyleId, ImgCoordId, PrintCoordId, 
+      FrontImgCoordId)
+    values (#{styleid,jdbcType=BIGINT}, #{imgcoordid,jdbcType=INTEGER}, #{printcoordid,jdbcType=INTEGER}, 
+      #{frontimgcoordid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiStylecoordinate" >
+    insert into ti_stylecoordinate
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="styleid != null" >
+        StyleId,
+      </if>
+      <if test="imgcoordid != null" >
+        ImgCoordId,
+      </if>
+      <if test="printcoordid != null" >
+        PrintCoordId,
+      </if>
+      <if test="frontimgcoordid != null" >
+        FrontImgCoordId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="styleid != null" >
+        #{styleid,jdbcType=BIGINT},
+      </if>
+      <if test="imgcoordid != null" >
+        #{imgcoordid,jdbcType=INTEGER},
+      </if>
+      <if test="printcoordid != null" >
+        #{printcoordid,jdbcType=INTEGER},
+      </if>
+      <if test="frontimgcoordid != null" >
+        #{frontimgcoordid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiStylecoordinate" >
+    update ti_stylecoordinate
+    <set >
+      <if test="imgcoordid != null" >
+        ImgCoordId = #{imgcoordid,jdbcType=INTEGER},
+      </if>
+      <if test="printcoordid != null" >
+        PrintCoordId = #{printcoordid,jdbcType=INTEGER},
+      </if>
+      <if test="frontimgcoordid != null" >
+        FrontImgCoordId = #{frontimgcoordid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where StyleId = #{styleid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiStylecoordinate" >
+    update ti_stylecoordinate
+    set ImgCoordId = #{imgcoordid,jdbcType=INTEGER},
+      PrintCoordId = #{printcoordid,jdbcType=INTEGER},
+      FrontImgCoordId = #{frontimgcoordid,jdbcType=INTEGER}
+    where StyleId = #{styleid,jdbcType=BIGINT}
+  </update>
+</mapper>

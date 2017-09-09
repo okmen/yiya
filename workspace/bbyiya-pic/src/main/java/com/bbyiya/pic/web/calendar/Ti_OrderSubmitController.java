@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.baseUtils.GenUtils;
+import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.PPostmodelMapper;
 import com.bbyiya.dao.PPostmodelareasMapper;
@@ -24,6 +26,7 @@ import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.PPostmodel;
@@ -201,5 +204,7 @@ public class Ti_OrderSubmitController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	
 	
 }

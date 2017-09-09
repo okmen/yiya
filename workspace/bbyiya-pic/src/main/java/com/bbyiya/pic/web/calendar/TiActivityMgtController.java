@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +23,7 @@ import com.bbyiya.dao.TiDiscountmodelMapper;
 import com.bbyiya.dao.TiMyworksMapper;
 import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiPromoteremployeesMapper;
+import com.bbyiya.dao.TiPromotersMapper;
 import com.bbyiya.dao.TiUserdiscountsMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.user.UserIdentityEnums;
@@ -31,14 +34,16 @@ import com.bbyiya.model.TiActivityworks;
 import com.bbyiya.model.TiDiscountmodel;
 import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiPromoteremployees;
+import com.bbyiya.model.TiPromoters;
 import com.bbyiya.model.TiUserdiscounts;
+import com.bbyiya.service.IRegionService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.calendar.TiActivitysVo;
 import com.bbyiya.vo.calendar.product.TiProductResult;
 import com.bbyiya.vo.user.LoginSuccessResult;
+import com.bbyiya.vo.user.UUserAddressResult;
 import com.bbyiya.web.base.SSOController;
-import com.sdicons.json.validator.impl.predicates.False;
 
 @Controller
 @RequestMapping(value = "/ti_act")
@@ -178,6 +183,7 @@ public class TiActivityMgtController extends SSOController {
 					TiMyworks mywork= myworkMapper.selectByPrimaryKey(activityworks.getWorkid());
 					if(mywork!=null){
 						map.put("workId", mywork.getWorkid());
+						map.put("productId", mywork.getProductid());
 					}
 				}else {//参加活动
 					// 2 生成 作品id(cartId=workId)
@@ -209,6 +215,7 @@ public class TiActivityMgtController extends SSOController {
 					
 					
 					map.put("workId", myworks.getWorkid());
+					map.put("productId", actInfo.getProductid());
 				}
 				rq.setBasemodle(map); 
 			}
@@ -377,5 +384,37 @@ public class TiActivityMgtController extends SSOController {
 		} 
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	@Autowired
+	private TiPromotersMapper promoterMapper;
+	@Resource(name = "regionServiceImpl")
+	private IRegionService regionService;
 	
+	@ResponseBody
+	@RequestMapping(value = "/getPromoterAddress")
+	public String getPromoterAddress(int actId) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if (user != null) {
+			TiActivitys activitys = actMapper.selectByPrimaryKey(actId);
+			if (activitys != null) {
+				TiPromoters promoters = promoterMapper.selectByPrimaryKey(activitys.getProduceruserid());
+				if (promoters != null) {
+					Map<String, Object> map=new HashMap<String, Object>();
+					UUserAddressResult userAddressResult = new UUserAddressResult();
+					userAddressResult.setProvinceName(regionService.getProvinceName(promoters.getProvince()));
+					userAddressResult.setCityName(regionService.getCityName(promoters.getCity()));
+					userAddressResult.setAreaName(regionService.getAresName(promoters.getArea()));
+					userAddressResult.setStreetdetail(promoters.getStreetdetails());
+					rq.setStatu(ReturnStatus.Success);
+					map.put("address", userAddressResult);
+					map.put("company", promoters.getCompanyname());
+					rq.setBasemodle(map); 
+				}
+			}
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 }

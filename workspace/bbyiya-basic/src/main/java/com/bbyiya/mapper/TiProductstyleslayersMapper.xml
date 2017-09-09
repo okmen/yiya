@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiProductstyleslayersMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiProductstyleslayers" >
+    <id column="Id" property="id" jdbcType="BIGINT" />
+    <result column="StyleId" property="styleid" jdbcType="BIGINT" />
+    <result column="LayerImg" property="layerimg" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="Sort" property="sort" jdbcType="INTEGER" />
+    <result column="LayerImgPreview" property="layerimgpreview" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="StyleLayerResultMap" type="com.bbyiya.vo.calendar.product.TiStyleLayerResult" ><!-- 款式模板图片 -->
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Id, StyleId, LayerImg, CreateTime, Sort, LayerImgPreview
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_productstyleslayers
+    where Id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="findLayerlistByStyleId" resultMap="StyleLayerResultMap" ><!-- 01 获取款式图层列表 -->
+    select 
+    <include refid="Base_Column_List" />
+    from ti_productstyleslayers
+    where StyleId = #{styleId,jdbcType=BIGINT} order by Sort asc
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ti_productstyleslayers
+    where Id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiProductstyleslayers" >
+    insert into ti_productstyleslayers (Id, StyleId, LayerImg, 
+      CreateTime, Sort, LayerImgPreview
+      )
+    values (#{id,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, #{layerimg,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{sort,jdbcType=INTEGER}, #{layerimgpreview,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiProductstyleslayers" >
+    insert into ti_productstyleslayers
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        Id,
+      </if>
+      <if test="styleid != null" >
+        StyleId,
+      </if>
+      <if test="layerimg != null" >
+        LayerImg,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+      <if test="sort != null" >
+        Sort,
+      </if>
+      <if test="layerimgpreview != null" >
+        LayerImgPreview,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="styleid != null" >
+        #{styleid,jdbcType=BIGINT},
+      </if>
+      <if test="layerimg != null" >
+        #{layerimg,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="layerimgpreview != null" >
+        #{layerimgpreview,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiProductstyleslayers" >
+    update ti_productstyleslayers
+    <set >
+      <if test="styleid != null" >
+        StyleId = #{styleid,jdbcType=BIGINT},
+      </if>
+      <if test="layerimg != null" >
+        LayerImg = #{layerimg,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sort != null" >
+        Sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="layerimgpreview != null" >
+        LayerImgPreview = #{layerimgpreview,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiProductstyleslayers" >
+    update ti_productstyleslayers
+    set StyleId = #{styleid,jdbcType=BIGINT},
+      LayerImg = #{layerimg,jdbcType=VARCHAR},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      Sort = #{sort,jdbcType=INTEGER},
+      LayerImgPreview = #{layerimgpreview,jdbcType=VARCHAR}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

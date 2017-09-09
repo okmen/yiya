@@ -122,7 +122,10 @@ public class OrderExtController  extends SSOController {
 						if(oproduct!=null){
 							Map<String, Object> mm=new HashMap<String, Object>();
 							PProductstyles style= styleMapper.selectByPrimaryKey(oproduct.getStyleid());
-							mm.put("propertyStr", style.getPropertystr());
+							if(style!=null){
+								mm.put("propertyStr", style.getPropertystr());
+							}
+							
 							UUsers users= userMapper.selectByPrimaryKey(oo.getUserid());
 							List<PMyproductsinvites>inList= inviteMapper.findListByCartId(oproduct.getCartid());
 							if(inList!=null&&inList.size()>0){

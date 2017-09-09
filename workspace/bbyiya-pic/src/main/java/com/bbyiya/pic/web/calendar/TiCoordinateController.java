@@ -18,6 +18,7 @@ import com.bbyiya.dao.PStylecoordinateitemMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
 import com.bbyiya.dao.TiMyartsdetailsMapper;
 import com.bbyiya.dao.TiMyworksMapper;
+import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
 import com.bbyiya.dao.TiProductstyleslayersMapper;
 import com.bbyiya.dao.TiStylecoordinateMapper;
@@ -31,6 +32,7 @@ import com.bbyiya.model.PStylecoordinateitem;
 import com.bbyiya.model.TiActivityworks;
 import com.bbyiya.model.TiMyartsdetails;
 import com.bbyiya.model.TiMyworks;
+import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiStylecoordinate;
 import com.bbyiya.utils.JsonUtil;
@@ -77,7 +79,7 @@ public class TiCoordinateController  extends SSOController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getCoordinates")
-	public String getCoordinates(@RequestParam(required = false, defaultValue = "0") long styleId,long workId) throws Exception {
+	public String getCoordinates(@RequestParam(required = false, defaultValue = "0") long styleId,@RequestParam(required = false, defaultValue = "0") long workId) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
@@ -87,6 +89,8 @@ public class TiCoordinateController  extends SSOController{
 				if(detailsList!=null&&detailsList.size()>0){
 					rq=getStyleCoordResult(myworks.getStyleid(),detailsList);
 				}
+			}else if (styleId>0) {
+				rq=getStyleCoordResult(styleId,null);
 			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
@@ -163,7 +167,7 @@ public class TiCoordinateController  extends SSOController{
 							if(photoList.size()>i){
 								layerList.get(i).setWorkImgUrl(photoList.get(i).getImgurl()); 
 								//---打印号---
-								layerList.get(i).setPrintNo(workId+"-"+userorders.getUserid()+"-"+i+oproducerModel.getPrintindex()); 
+								layerList.get(i).setPrintNo(workId+"-"+userorders.getUserid()+"-"+(i+1)+"-"+oproducerModel.getPrintindex()); 
 							}
 						}
 						map.put("imgLayList", layerList);
@@ -180,15 +184,23 @@ public class TiCoordinateController  extends SSOController{
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-	
+	@Autowired
+	private TiProductsMapper productsMapper;
 	
 	public ReturnModel getStyleCoordResult(Long styleId,List<TiMyartsdetails> details) {
 		ReturnModel rq = new ReturnModel();
 		TiProductstyles style= styleMapper.selectByPrimaryKey(styleId);
-		if(style==null||style.getImgcount()<details.size()||details.size()<=0){
-			rq.setStatusreson("作品数量有误");
+		if(style==null){
+			rq.setStatusreson("产品不存在");
 			return rq;
 		}
+		if(details!=null){
+			if(style.getImgcount()<details.size()||details.size()<=0){
+				rq.setStatusreson("作品数量有误");
+				return rq;
+			}
+		}
+		TiProducts products=productsMapper.selectByPrimaryKey(style.getProductid());
 		TiStylecoordinate stylecoordinate = styleCoordMapper.selectByPrimaryKey(styleId);
 		List<TiStyleLayerResult> layerList=layerMapper.findLayerlistByStyleId(styleId);
 		if(style!=null&&stylecoordinate!=null&&layerList!=null&&layerList.size()>0){
@@ -207,12 +219,12 @@ public class TiCoordinateController  extends SSOController{
 				}else {
 					layerList.get(i).setImgCoordMod(in_pic);
 				}
-				if(details.size()>i){
+				if(details!=null&&details.size()>0&&details.size()>i){
 					layerList.get(i).setWorkImgUrl(details.get(i).getImageurl()); 
 				}
 			}
 			map.put("imgLayList", layerList);
-//			map.put("print_Mod", print_no);
+			map.put("cateId", products.getCateid()); 
 			rq.setBasemodle(map);
 			rq.setStatu(ReturnStatus.Success);
 		}

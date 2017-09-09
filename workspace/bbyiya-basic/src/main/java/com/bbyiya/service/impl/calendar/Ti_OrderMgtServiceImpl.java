@@ -364,7 +364,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 				}
 			}
 		}
-		return 0l;
+		return 75l;
 	}
 
 	private ReturnModel submitOrder_common(UserOrderSubmitParam param) throws Exception {

@@ -873,10 +873,13 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 				tiproducer.setCityName(regionService.getCityName(tiproducer.getCity())) ;
 				tiproducer.setAreaName(regionService.getAresName(tiproducer.getArea())) ;	
 			}
-			List<TiProducerapplymachines> machines=promachineMapper.findapplymachineslist(producerUserId);
-			tiproducer.setMachines(machines);
 			RedisUtil.setObject(keyString, tiproducer, 1800);
-		}		
+		}
+		List<TiProducerapplymachines> machines=promachineMapper.findapplymachineslist(producerUserId);
+		if(tiproducer!=null){
+			tiproducer.setMachines(machines);
+		}
+		
 		return tiproducer;		
 	}
 	

@@ -325,7 +325,7 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 		//提现
 		else if (type==Integer.parseInt(AccountLogType.use_cashout.toString())) {
 			log.setAmount((-1)*Math.abs(amount)); 
-			log.setOrderid(transOrderId); 
+			log.setOrderid(PayId); 
 			accountslogsMapper.insert(log);
 		}else {
 			return false;

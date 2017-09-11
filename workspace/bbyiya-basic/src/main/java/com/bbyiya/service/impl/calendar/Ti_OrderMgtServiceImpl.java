@@ -222,7 +222,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					
 					//订单收货地址
 					long orderAddressId=0l;
-					Long producerUserId=getProducerUserId(orderAddressId,work.getProductid());
+					Long producerUserId=getProducerUserId(orderAddressId,work.getProductid(),param.getSubmitUserId());
 					Integer orderindex=producerOrderMapper.getMaxOrderIndexByProducerIdAndUserId(producerUserId, param.getSubmitUserId());
 					if(orderindex==null){
 						orderindex=1;
@@ -319,7 +319,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 	@Autowired
 	private TiProductareasMapper productareasMapper;
 	
-	public long getProducerUserId(Long orderAddressId,Long productId){//String userOrderId,
+	public long getProducerUserId(Long orderAddressId,Long productId,Long userId){//String userOrderId,
 //		OUserorders order = userOrdersMapper.selectByPrimaryKey(userOrderId);
 //		if (order.getOrdertype() != null && (Integer.parseInt(OrderTypeEnum.ti_nomal.toString()) == order.getOrdertype() || Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()) == order.getOrdertype())) {
 //			if (order.getStatus() == Integer.parseInt(OrderStatusEnum.payed.toString()) || order.getStatus() == Integer.parseInt(OrderStatusEnum.waitFoSend.toString())) {
@@ -347,15 +347,18 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 //			}
 //		}
 		OOrderaddress addr = orderaddressMapper.selectByPrimaryKey(orderAddressId);
-		if (addr != null) {
-			UUseraddress useraddress = addressMapper.get_UUserAddressDefault(addr.getUserid());
+		if (userId!=null&&userId>0) {
+			if(addr!=null){
+				userId=addr.getUserid();
+			}
+			UUseraddress useraddress = addressMapper.get_UUserAddressDefault(userId);
 			if (useraddress != null) {
 				List<TiProductareas> list = productareasMapper.findProductAreaListByProductIdAndArea(productId, useraddress.getCity());
 				if (list != null && list.size() > 0) {
 					return list.get(0).getProduceruserid();
 				}
 			} else {
-				TiPromoters promoters = promotersMapper.selectByPrimaryKey(addr.getUserid());
+				TiPromoters promoters = promotersMapper.selectByPrimaryKey(userId);
 				if (promoters != null) {
 					List<TiProductareas> list = productareasMapper.findProductAreaListByProductIdAndArea(productId, promoters.getCity());
 					if (list != null && list.size() > 0) {
@@ -396,7 +399,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			rq.setStatusreson("收货地址有误");
 			return rq;
 		}
-		userOrder.setProduceruserid(getProducerUserId(userOrder.getOrderaddressid(),param.getOrderproducts().getProductid())); 
+		userOrder.setProduceruserid(getProducerUserId(userOrder.getOrderaddressid(),param.getOrderproducts().getProductid(),param.getUserId())); 
 		if (param.getOrderproducts() != null) {
 			// 实际需要付款的总价（包括邮费）
 			Double orderTotalPrice = 0d;

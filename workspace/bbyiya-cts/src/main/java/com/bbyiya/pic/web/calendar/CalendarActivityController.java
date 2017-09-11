@@ -75,7 +75,7 @@ public class CalendarActivityController extends SSOController {
 				rq.setStatusreson("邀请总数不能小于0!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			if(param.getExtCount()!=null&&param.getExtCount()<=5){
+			if(param.getExtCount()!=null&&param.getExtCount()<5){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("完成条件的分享数必须大于等于5个!");
 				return JsonUtil.objectToJsonStr(rq);
@@ -152,6 +152,51 @@ public class CalendarActivityController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	/**
+	 * 合成图片调的接口
+	 * @param actid
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/composeActImg")
+	public String composeActImg(Integer actid) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if (actid==null) {
+				rq.setStatu(ReturnStatus.ParamError_1);
+				rq.setStatusreson("actid不能为空");
+				return JsonUtil.objectToJsonStr(rq);
+			}	
+			rq=calendarActivityService.composeActImg(user.getUserId(), actid);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/savecomposeActImg")
+	public String savecomposeActImg(Integer actid,String actimg) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if (actid==null) {
+				rq.setStatu(ReturnStatus.ParamError_1);
+				rq.setStatusreson("actid不能为空");
+				return JsonUtil.objectToJsonStr(rq);
+			}	
+			rq=calendarActivityService.savecomposeActImg(actid,actimg);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	/**
 	 * ibs推广者得到活动列表
 	 * @param index

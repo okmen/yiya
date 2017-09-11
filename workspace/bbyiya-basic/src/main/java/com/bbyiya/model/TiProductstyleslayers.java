@@ -15,6 +15,10 @@ public class TiProductstyleslayers {
 
     private String layerimgpreview;
 
+    private Double widthhight;
+
+    private Integer isround;
+
     public Long getId() {
         return id;
     }
@@ -62,4 +66,20 @@ public class TiProductstyleslayers {
     public void setLayerimgpreview(String layerimgpreview) {
         this.layerimgpreview = layerimgpreview == null ? null : layerimgpreview.trim();
     }
+
+	public Double getWidthhight() {
+		return widthhight;
+	}
+
+	public void setWidthhight(Double widthhight) {
+		this.widthhight = widthhight;
+	}
+
+	public Integer getIsround() {
+		return isround;
+	}
+
+	public void setIsround(Integer isround) {
+		this.isround = isround;
+	}
 }

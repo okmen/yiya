@@ -10,6 +10,7 @@ import com.bbyiya.vo.RAreaVo;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.calendar.TiAgentApplyVo;
 import com.bbyiya.vo.calendar.TiAgentSearchParam;
+import com.bbyiya.vo.calendar.TiProducersApplyVo;
 import com.bbyiya.vo.calendar.TiPromoterApplyVo;
 
 public interface ITi_AgentMgtService {
@@ -169,5 +170,21 @@ public interface ITi_AgentMgtService {
 	 */
 	ReturnModel setProducerProductAera(Long producerUserId, Long productId,
 			List<RAreaVo> arealist);
+	/**
+	 * 得到生产商的信息
+	 * @param producerUserId
+	 * @return
+	 */
+	TiProducersApplyVo getTiProducerInfo(Long producerUserId);
+	/**
+	 * 修改生产的地址
+	 * @param produceruserid
+	 * @param streetdetail
+	 * @param name
+	 * @param phone
+	 * @return
+	 */
+	ReturnModel editTiProducerAddress(Long produceruserid, String streetdetail,
+			String name, String phone);
 	
 }

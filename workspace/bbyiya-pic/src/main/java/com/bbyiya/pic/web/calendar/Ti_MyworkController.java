@@ -16,6 +16,7 @@ import com.bbyiya.dao.EErrorsMapper;
 import com.bbyiya.dao.OOrderproductphotosMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OUserordersMapper;
+import com.bbyiya.dao.TiActivitysMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
 import com.bbyiya.dao.TiMyartsdetailsMapper;
 import com.bbyiya.dao.TiMyworksMapper;
@@ -27,6 +28,7 @@ import com.bbyiya.model.EErrors;
 import com.bbyiya.model.OOrderproductphotos;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OUserorders;
+import com.bbyiya.model.TiActivitys;
 import com.bbyiya.model.TiActivityworks;
 import com.bbyiya.model.TiMyartsdetails;
 import com.bbyiya.model.TiMyworks;
@@ -36,6 +38,7 @@ import com.bbyiya.pic.vo.calendar.MyworkDetailsParam;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.calendar.TiActivitysVo;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
 
@@ -220,7 +223,39 @@ public class Ti_MyworkController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	@Autowired
+	private TiActivityworksMapper activityworksMapper;
+	@Autowired
+	private TiActivitysMapper actMapper;
 	
+	@ResponseBody
+	@RequestMapping(value = "/myactInfo")
+	public String myactInfo(long workId)throws Exception {
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.ParamError);
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			TiMyworks myworks= workMapper.selectByPrimaryKey(workId);
+			if(myworks!=null&&myworks.getActid()!=null&&myworks.getActid()>0){
+				TiActivitysVo actInfo=actMapper.getResultByActId(myworks.getActid());
+				if(actInfo!=null){
+					TiActivityworks myactInfo=activityworkMapper.selectByPrimaryKey(workId);
+					if(actInfo!=null){
+						Map<String, Object> map=new HashMap<String, Object>();
+						map.put("needCount", actInfo.getExtcount());
+						map.put("extCount", myactInfo.getExtcount());
+						rq.setStatu(ReturnStatus.Success);
+						rq.setBasemodle(map); 
+					}
+				}
+			}
+		}else { 
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	
 	@Autowired
 	private EErrorsMapper logMapper;

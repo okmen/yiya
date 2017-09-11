@@ -11,6 +11,7 @@ public class TiActivitysVo extends TiActivitys{
 	private Integer yaoqingcount; //已邀请数量
 	private Long myworkId;
 	private TiProductResult product;
+	private String codeurl;//二维码地址
 	public String getProductName() {
 		return productName;
 	}
@@ -67,6 +68,14 @@ public class TiActivitysVo extends TiActivitys{
 		this.myworkId = myworkId;
 	}
 
+	public String getCodeurl() {
+		return codeurl;
+	}
+
+	public void setCodeurl(String codeurl) {
+		this.codeurl = codeurl;
+	}
+	
 	
 	
 	

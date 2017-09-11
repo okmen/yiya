@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import net.sf.json.JSONObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -86,6 +88,15 @@ public class TiAgentApplyMgtController extends SSOController {
 		if(user!=null){
 			if(!ObjectUtil.isEmpty(user.getMobilePhone())){
 				try {
+					JSONObject jb = JSONObject.fromObject(promoterJson);
+					if(jb.getString("agentuserid").equals("")){
+						promoterJson=promoterJson.replaceAll("\"agentuserid\":\"\"", "\"agentuserid\":null");
+					}
+					if(!ObjectUtil.IsNumber(jb.getString("agentuserid"))){
+						rq.setStatu(ReturnStatus.ParamError);
+						rq.setStatusreson("代理商咿呀号请输入数字！");
+						return JsonUtil.objectToJsonStr(rq);
+					}
 					TiPromotersapply applyInfo=(TiPromotersapply)JsonUtil.jsonStrToObject(promoterJson, TiPromotersapply.class);
 					if(applyInfo!=null){
 						applyInfo.setPromoteruserid(user.getUserId()); 
@@ -109,57 +120,6 @@ public class TiAgentApplyMgtController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	
-	/**
-	 *  IBS端推广者申请
-	 * @param agentJson
-	 * @return
-	 * @throws Exception
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/ibs_promoterApply")
-	public String ibs_promoterApply(String promoterUserId,String promoterJson) throws Exception {
-		ReturnModel rq=new ReturnModel();
-		LoginSuccessResult user= super.getLoginUser();
-		if(user!=null){
-			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_promoter)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_employees)){
-				UUsers promoterUsers= userMapper.getUUsersByUserID(ObjectUtil.parseLong(promoterUserId));
-				if(promoterUsers!=null){
-					if(!ObjectUtil.isEmpty(promoterUsers.getMobilephone())){
-						try {
-							
-							TiPromotersapply applyInfo=(TiPromotersapply)JsonUtil.jsonStrToObject(promoterJson, TiPromotersapply.class);
-							if(applyInfo!=null){
-								applyInfo.setPromoteruserid(user.getUserId()); 
-							}
-							rq =agentService.applyPromoter(user.getUserId(), applyInfo);
-						} catch (Exception e) {
-							rq.setStatu(ReturnStatus.ParamError);
-							rq.setStatusreson("参数有误101");
-							System.out.println(e); 
-							return JsonUtil.objectToJsonStr(rq);
-						}
-					}else {
-						rq.setStatu(ReturnStatus.ParamError);
-						rq.setStatusreson("用户未绑定手机号！");
-					}
-				}
-			}else {
-				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("无此权限");
-				return JsonUtil.objectToJsonStr(rq);
-			}
-		}else {
-			rq.setStatu(ReturnStatus.LoginError);
-			rq.setStatusreson("登录过期");
-			return JsonUtil.objectToJsonStr(rq);
-		}
-		
-		return JsonUtil.objectToJsonStr(rq);
-	}
-	
-	
-	
 	
 	
 	/**

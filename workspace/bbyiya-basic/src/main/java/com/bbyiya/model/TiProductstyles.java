@@ -21,6 +21,10 @@ public class TiProductstyles {
     
     private String imgjson;
 
+    private Double width;
+
+    private Double hight;
+
     public Long getStyleid() {
         return styleid;
     }
@@ -99,6 +103,22 @@ public class TiProductstyles {
 
 	public void setImgjson(String imgjson) {
 		this.imgjson = imgjson;
+	}
+
+	public Double getWidth() {
+		return width;
+	}
+
+	public void setWidth(Double width) {
+		this.width = width;
+	}
+
+	public Double getHight() {
+		return hight;
+	}
+
+	public void setHight(Double hight) {
+		this.hight = hight;
 	}
     
 }

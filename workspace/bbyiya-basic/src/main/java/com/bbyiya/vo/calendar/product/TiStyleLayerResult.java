@@ -8,6 +8,8 @@ public class TiStyleLayerResult extends TiProductstyleslayers{
 	private String workImgUrl;
 	private PStylecoordinateitem imgCoordMod;
 	private String printNo;
+	private Double widthDhight;
+	
 	public String getWorkImgUrl() {
 		return workImgUrl;
 	}
@@ -31,6 +33,16 @@ public class TiStyleLayerResult extends TiProductstyleslayers{
 	public void setPrintNo(String printNo) {
 		this.printNo = printNo;
 	}
+
+	public Double getWidthDhight() {
+		return widthDhight;
+	}
+
+	public void setWidthDhight(Double widthDhight) {
+		this.widthDhight = widthDhight;
+	}
+
+	
 
 	
 	

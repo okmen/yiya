@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import net.sf.json.JSONObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +30,7 @@ import com.bbyiya.vo.RAreaVo;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.calendar.TiAgentApplyVo;
 import com.bbyiya.vo.calendar.TiAgentSearchParam;
+import com.bbyiya.vo.calendar.TiProducersApplyVo;
 import com.bbyiya.vo.calendar.TiPromoterApplyVo;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
@@ -71,7 +74,6 @@ public class TiAgentMgtController extends SSOController {
 			rq.setStatusreson("登录过期");
 			return JsonUtil.objectToJsonStr(rq);
 		}
-		
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
@@ -102,7 +104,12 @@ public class TiAgentMgtController extends SSOController {
 					}else {
 						rq.setStatu(ReturnStatus.ParamError);
 						rq.setStatusreson("用户未绑定手机号！");
+						return JsonUtil.objectToJsonStr(rq);
 					}
+				}else{
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("用户咿呀号未注册！");
+					return JsonUtil.objectToJsonStr(rq);
 				}
 			}else {
 				rq.setStatu(ReturnStatus.ParamError);
@@ -133,6 +140,15 @@ public class TiAgentMgtController extends SSOController {
 		if(user!=null){
 			if(!ObjectUtil.isEmpty(user.getMobilePhone())){
 				try {
+					JSONObject jb = JSONObject.fromObject(promoterJson);
+					if(jb.getString("agentuserid").equals("")){
+						promoterJson=promoterJson.replaceAll("\"agentuserid\":\"\"", "\"agentuserid\":null");
+					}
+					if(!ObjectUtil.IsNumber(jb.getString("agentuserid"))){
+						rq.setStatu(ReturnStatus.ParamError);
+						rq.setStatusreson("代理商咿呀号请输入数字！");
+						return JsonUtil.objectToJsonStr(rq);
+					}
 					TiPromotersapply applyInfo=(TiPromotersapply)JsonUtil.jsonStrToObject(promoterJson, TiPromotersapply.class);
 					if(applyInfo!=null){
 						applyInfo.setPromoteruserid(user.getUserId()); 
@@ -174,7 +190,10 @@ public class TiAgentMgtController extends SSOController {
 				if(promoterUsers!=null){
 					if(!ObjectUtil.isEmpty(promoterUsers.getMobilephone())){
 						try {
-							
+							JSONObject jb = JSONObject.fromObject(promoterJson);
+							if(jb.getString("agentuserid").trim().equals("")){
+								promoterJson=promoterJson.replaceAll("\"agentuserid\":\"\"", "\"agentuserid\":null");
+							}
 							TiPromotersapply applyInfo=(TiPromotersapply)JsonUtil.jsonStrToObject(promoterJson, TiPromotersapply.class);
 							if(applyInfo!=null){
 								applyInfo.setPromoteruserid(user.getUserId()); 
@@ -189,7 +208,12 @@ public class TiAgentMgtController extends SSOController {
 					}else {
 						rq.setStatu(ReturnStatus.ParamError);
 						rq.setStatusreson("用户未绑定手机号！");
+						return JsonUtil.objectToJsonStr(rq);
 					}
+				}else {
+					rq.setStatu(ReturnStatus.LoginError_2);
+					rq.setStatusreson("用户未完成注册,请先绑定手机号！");
+					return JsonUtil.objectToJsonStr(rq);
 				}
 			}else {
 				rq.setStatu(ReturnStatus.ParamError);
@@ -504,7 +528,7 @@ public class TiAgentMgtController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/findPromoterApplylist")
-	public String findPromoterApplylist(String agentUserId, String status,String keywords,int index,int size) throws Exception {
+	public String findPromoterApplylist(String userId,String agentUserId, String status,String keywords,int index,int size) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
@@ -512,25 +536,24 @@ public class TiAgentMgtController extends SSOController {
 			Long agentuser=ObjectUtil.parseLong(agentUserId);
 			if(agentuser>0)
 				param.setAgentUserId(agentuser);
+			Long produceruserid=ObjectUtil.parseLong(userId);
+			if(produceruserid>0)
+				param.setUserId(produceruserid);
 			if(!ObjectUtil.isEmpty(status)){
 				param.setStatus(ObjectUtil.parseInt(status)); 
 			} 
 			if(!ObjectUtil.isEmpty(keywords)){
 				param.setCompanyName(keywords);
 			} 
+			rq = agentService.findTiPromoterApplyList(param,index,size);
 			
-			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){
-				rq = agentService.findTiPromoterApplyList(param,index,size);
-			}else {
-				rq.setStatu(ReturnStatus.SystemError);
-				rq.setStatusreson("无权限");
-			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
 	
 	/**
 	 * 登陆后得到代理商信息
@@ -583,6 +606,30 @@ public class TiAgentMgtController extends SSOController {
 	}
 	
 	/**
+	 * 登陆后得到生产商信息
+	 * @param type
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getTiProducerInfo")
+	public String getTiProducerInfo() throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			TiProducersApplyVo producer=agentService.getTiProducerInfo(user.getUserId());	
+			rq.setBasemodle(producer);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("获取生产商信息成功！");
+			
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	/**
 	 * 修改代理商收货地址
 	 * @return
 	 * @throws Exception
@@ -618,6 +665,29 @@ public class TiAgentMgtController extends SSOController {
 			rq=agentService.editTiPromotersAddress(user.getUserId(), streetdetail,name,phone);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("修改代理商信息成功！");
+			
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 修改生产商收货地址
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/editTiProducerAddress")
+	public String editTiProducerAddress(String streetdetail,String name,String phone ) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=agentService.editTiProducerAddress(user.getUserId(), streetdetail,name,phone);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("修改生产商信息成功！");
 			
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);

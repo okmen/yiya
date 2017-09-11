@@ -1,5 +1,6 @@
 package com.bbyiya.pic.web.calendar;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,12 +11,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bbyiya.common.vo.ImageInfo;
 import com.bbyiya.dao.OOrderproductphotosMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OProducerordercountMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PStylecoordinateitemMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
+import com.bbyiya.dao.TiAdvertimgsMapper;
 import com.bbyiya.dao.TiMyartsdetailsMapper;
 import com.bbyiya.dao.TiMyworksMapper;
 import com.bbyiya.dao.TiProductsMapper;
@@ -30,12 +33,14 @@ import com.bbyiya.model.OProducerordercount;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PStylecoordinateitem;
 import com.bbyiya.model.TiActivityworks;
+import com.bbyiya.model.TiAdvertimgs;
 import com.bbyiya.model.TiMyartsdetails;
 import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiStylecoordinate;
 import com.bbyiya.utils.JsonUtil;
+import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.calendar.product.TiStyleLayerResult;
 import com.bbyiya.vo.user.LoginSuccessResult;
@@ -100,7 +105,8 @@ public class TiCoordinateController  extends SSOController{
 	}
 	
 
-	
+	@Autowired
+	private TiAdvertimgsMapper advertMapper;
 	/**
 	 * 订单图片
 	 * @param userOrderId
@@ -115,7 +121,8 @@ public class TiCoordinateController  extends SSOController{
 		if(user!=null){
 			OUserorders userorders=userorderMapper.selectByPrimaryKey(userOrderId);
 			List<OOrderproducts> oproductlist=oproductMapper.findOProductsByOrderId(userOrderId);
-			if(oproductlist!=null&&oproductlist.size()>0&&userorders!=null&&userorders.getProduceruserid()!=null) { 
+			if(oproductlist!=null&&oproductlist.size()>0&&userorders!=null&&userorders.getProduceruserid()!=null) {
+				TiProducts products=productsMapper.selectByPrimaryKey(oproductlist.get(0).getProductid());
 				long workId=oproductlist.get(0).getCartid();
 				//订单生产商打印
 				OProducerordercount oproducerModel=oproducerOrderCountMapper.selectByPrimaryKey(userOrderId);
@@ -161,14 +168,47 @@ public class TiCoordinateController  extends SSOController{
 						for(int i=0;i<layerList.size();i++){
 							if(i==0){
 								layerList.get(i).setImgCoordMod(front_pic);
+								if(products.getCateid()==1||products.getCateid()==2||products.getCateid()==3){
+									layerList.get(i).setWidthhight(1d);
+									layerList.get(i).setIsround(1);
+								}else {
+									double widthhight= (style.getWidth()*front_pic.getPointwidth())/(style.getHight()*front_pic.getPointhight());
+									layerList.get(i).setWidthhight(widthhight); 
+								} 
 							}else {
 								layerList.get(i).setImgCoordMod(in_pic);
+								double widthhight= (style.getWidth()*in_pic.getPointwidth())/(style.getHight()*in_pic.getPointhight());
+								layerList.get(i).setWidthhight(widthhight); 
 							}
 							if(photoList.size()>i){
 								layerList.get(i).setWorkImgUrl(photoList.get(i).getImgurl()); 
 								//---打印号---
 								layerList.get(i).setPrintNo(workId+"-"+userorders.getUserid()+"-"+(i+1)+"-"+oproducerModel.getPrintindex()); 
 							}
+						}
+						//是否有广告位
+						if(products.getAdvertcount()!=null&&products.getAdvertcount().intValue()>0){
+							 List<Map<String, Object>> adverlist=new ArrayList<Map<String,Object>>();
+							 List<ImageInfo> imglist=null;
+							 if(userorders.getBranchuserid()!=null&&userorders.getBranchuserid()>0){
+								 TiAdvertimgs advertlist= advertMapper.getAdvertByProductIdAndPromoterId(products.getProductid(),userorders.getBranchuserid() );
+								 if(advertlist!=null&&!ObjectUtil.isEmpty(advertlist.getAdvertimgjson())){
+									 imglist=(List<ImageInfo>)JsonUtil.jsonToList(advertlist.getAdvertimgjson());
+								 }
+							 }
+							 for(int i=0;i<products.getAdvertcount();i++){
+								 Map<String, Object> advertMap=new HashMap<String, Object>();
+								 if(imglist==null||imglist.get(i)==null){
+									 advertMap.put("isAdvert", "0");
+									 advertMap.put("backImg", "http://document.bbyiya.com/tiadvert-p2401-0911.jpg"); 
+								 }else {
+									 advertMap.put("isAdvert", "1");
+									 advertMap.put("adImg", imglist.get(i).getUrl()); 
+									 advertMap.put("backImg", "http://document.bbyiya.com/tiadvert-back-p2401-0911.png"); 
+								 }
+								 adverlist.add(advertMap);
+							 }
+							 map.put("advertList", adverlist); 
 						}
 						map.put("imgLayList", layerList);
 						map.put("print_Mod", print_no);
@@ -216,8 +256,17 @@ public class TiCoordinateController  extends SSOController{
 			for(int i=0;i<layerList.size();i++){
 				if(i==0){
 					layerList.get(i).setImgCoordMod(front_pic);
+					if(products.getCateid()==1||products.getCateid()==2||products.getCateid()==3){
+						layerList.get(i).setWidthhight(1d);
+						layerList.get(i).setIsround(1);
+					}else {
+						double widthhight= (style.getWidth()*front_pic.getPointwidth())/(style.getHight()*front_pic.getPointhight());
+						layerList.get(i).setWidthhight(widthhight); 
+					} 
 				}else {
 					layerList.get(i).setImgCoordMod(in_pic);
+					double widthhight= (style.getWidth()*in_pic.getPointwidth())/(style.getHight()*in_pic.getPointhight());
+					layerList.get(i).setWidthhight(widthhight); 
 				}
 				if(details!=null&&details.size()>0&&details.size()>i){
 					layerList.get(i).setWorkImgUrl(details.get(i).getImageurl()); 

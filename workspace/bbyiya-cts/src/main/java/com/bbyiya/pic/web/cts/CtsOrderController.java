@@ -41,7 +41,7 @@ public class CtsOrderController extends SSOController {
 			if(jb.getString("status").equals("")){
 				myproductJson=myproductJson.replaceAll("\"status\":\"\"", "\"status\":null");
 			}
-			if(jb.getString("ordertype").equals("")){
+			if(jb.getString("ordertype").trim().equals("")){
 				myproductJson=myproductJson.replaceAll("\"ordertype\":\"\"", "\"ordertype\":null");
 			}
 			if(jb.getString("agentUserId").equals("")){

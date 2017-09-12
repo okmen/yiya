@@ -11,9 +11,11 @@
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="ExpiredTime" property="expiredtime" jdbcType="TIMESTAMP" />
     <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="UserOrderId" property="userorderid" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    Id, UserId, DiscountId, WorkId, ActId, PromoterUserId, CreateTime, ExpiredTime, Status
+    Id, UserId, DiscountId, WorkId, ActId, PromoterUserId, CreateTime, ExpiredTime, Status, 
+    UserOrderId
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -28,7 +30,12 @@
     where UserId= #{userId,jdbcType=BIGINT} and status=0 
     order by Id asc
   </select>
-  
+  <select id="getMyDiscountsByUserOrderId" resultMap="BaseResultMap"  ><!-- 通过订单号获取使用的优惠券 -->
+    select 
+    <include refid="Base_Column_List" />
+    from ti_userdiscounts
+    where UserOrderId= #{userorderId,jdbcType=VARCHAR} Limit 1
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from ti_userdiscounts
     where Id = #{id,jdbcType=BIGINT}
@@ -36,12 +43,12 @@
   <insert id="insert" parameterType="com.bbyiya.model.TiUserdiscounts" >
     insert into ti_userdiscounts (Id, UserId, DiscountId, 
       WorkId, ActId, PromoterUserId, 
-      CreateTime, ExpiredTime, Status
-      )
+      CreateTime, ExpiredTime, Status, 
+      UserOrderId)
     values (#{id,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{discountid,jdbcType=INTEGER}, 
       #{workid,jdbcType=BIGINT}, #{actid,jdbcType=INTEGER}, #{promoteruserid,jdbcType=BIGINT}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{expiredtime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}
-      )
+      #{createtime,jdbcType=TIMESTAMP}, #{expiredtime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, 
+      #{userorderid,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiUserdiscounts" >
     insert into ti_userdiscounts
@@ -73,6 +80,9 @@
       <if test="status != null" >
         Status,
       </if>
+      <if test="userorderid != null" >
+        UserOrderId,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -101,6 +111,9 @@
       </if>
       <if test="status != null" >
         #{status,jdbcType=INTEGER},
+      </if>
+      <if test="userorderid != null" >
+        #{userorderid,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -131,6 +144,9 @@
       <if test="status != null" >
         Status = #{status,jdbcType=INTEGER},
       </if>
+      <if test="userorderid != null" >
+        UserOrderId = #{userorderid,jdbcType=VARCHAR},
+      </if>
     </set>
     where Id = #{id,jdbcType=BIGINT}
   </update>
@@ -143,7 +159,8 @@
       PromoterUserId = #{promoteruserid,jdbcType=BIGINT},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
       ExpiredTime = #{expiredtime,jdbcType=TIMESTAMP},
-      Status = #{status,jdbcType=INTEGER}
+      Status = #{status,jdbcType=INTEGER},
+      UserOrderId = #{userorderid,jdbcType=VARCHAR}
     where Id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

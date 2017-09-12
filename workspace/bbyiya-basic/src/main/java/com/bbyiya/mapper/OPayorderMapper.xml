@@ -27,6 +27,12 @@
     from o_payorder
     where PayId = #{payid,jdbcType=VARCHAR}
   </select>
+  <select id="getpostPayorderByworkId" resultMap="BaseResultMap"  ><!-- 获取邮费订单 -->
+    select 
+    <include refid="Base_Column_List" />
+    from o_payorder
+    where UserOrderId = #{workId,jdbcType=VARCHAR} and OrderType=6  limit 1
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from o_payorder
     where PayId = #{payid,jdbcType=VARCHAR}

@@ -430,6 +430,12 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 								if (discountdetails.getStyleid().longValue() == style.getStyleid().longValue()) {
 									if (discountmodel.getType() == 1) {
 										orderProduct.setPrice(style.getPrice() * discountdetails.getDiscount());
+										TiUserdiscounts mydis= getMydiscount(param.getUserId());
+										if(mydis!=null){
+											mydis.setStatus(1);
+											mydis.setUserorderid(orderId);
+											mydiscountMapper.updateByPrimaryKeySelective(mydis);
+										}
 									}
 								}
 							}
@@ -505,7 +511,13 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					return model;
 				}
 			}
-
+		}
+		return null;
+	}
+	private TiUserdiscounts getMydiscount(Long userId){
+		List<TiUserdiscounts> discounts = mydiscountMapper.findMyDiscounts(userId);
+		if (discounts != null && discounts.size() > 0) {
+			return discounts.get(0);
 		}
 		return null;
 	}

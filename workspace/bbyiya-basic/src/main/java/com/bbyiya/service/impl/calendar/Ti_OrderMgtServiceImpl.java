@@ -353,14 +353,14 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			}
 			UUseraddress useraddress = addressMapper.get_UUserAddressDefault(userId);
 			if (useraddress != null) {
-				List<TiProductareas> list = productareasMapper.findProductAreaListByProductIdAndArea(productId, useraddress.getCity());
+				List<TiProductareas> list = productareasMapper.findProductAreaListByProductIdAndArea(productId, useraddress.getArea());
 				if (list != null && list.size() > 0) {
 					return list.get(0).getProduceruserid();
 				}
 			} else {
 				TiPromoters promoters = promotersMapper.selectByPrimaryKey(userId);
 				if (promoters != null) {
-					List<TiProductareas> list = productareasMapper.findProductAreaListByProductIdAndArea(productId, promoters.getCity());
+					List<TiProductareas> list = productareasMapper.findProductAreaListByProductIdAndArea(productId, promoters.getArea());
 					if (list != null && list.size() > 0) {
 						return list.get(0).getProduceruserid();
 					}

@@ -26,6 +26,7 @@ import com.bbyiya.dao.TiPromoteremployeesMapper;
 import com.bbyiya.dao.TiPromotersMapper;
 import com.bbyiya.dao.TiUserdiscountsMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.calendar.ActivityWorksStatusEnum;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.TiActivitys;
@@ -207,6 +208,8 @@ public class TiActivityMgtController extends SSOController {
 					activityworks.setUserid(user.getUserId());
 					activityworks.setCreatetime(new Date());
 					activityworks.setActid(actId);
+					activityworks.setStatus(Integer.parseInt(ActivityWorksStatusEnum.apply.toString()));
+					activityworks.setExtcount(0);
 					activityworksMapper.insert(activityworks);
 					
 					// 5更新参与人数
@@ -263,12 +266,14 @@ public class TiActivityMgtController extends SSOController {
 		TiActivitys actInfo=null;
 		if(workId>0){
 			myworks= myworkMapper.selectByPrimaryKey(workId);
-			if(myworks!=null){
+			if(myworks!=null&&myworks.getActid()!=null){
 				actId=myworks.getActid();
 				activityworks=activityworksMapper.selectByPrimaryKey(workId);
 			}
 		}
-		actInfo=actMapper.selectByPrimaryKey(actId);
+		if(actId>0){
+			actInfo=actMapper.selectByPrimaryKey(actId);
+		}
 		if(actInfo==null){
 			rq.setStatu(ReturnStatus.ParamError);
 			rq.setStatusreson("活动不存在！");

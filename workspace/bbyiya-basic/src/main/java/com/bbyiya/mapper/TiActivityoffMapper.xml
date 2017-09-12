@@ -15,7 +15,7 @@
     select 
     <include refid="Base_Column_List" />
     from ti_activityoff
-    where PromoterUserId = #{promoteruserid,jdbcType=BIGINT} and ActId=#{actid,jdbcType=INTEGER}
+    where PromoterUserId = #{promoteruserid,jdbcType=BIGINT} and ActId=#{actid,jdbcType=INTEGER} limit 1
   </select>
   
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >

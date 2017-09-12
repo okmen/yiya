@@ -65,6 +65,22 @@
     delete from ti_activitys
     where ActId = #{actid,jdbcType=INTEGER}
   </delete>
+  
+    <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="actid"  parameterType="com.bbyiya.model.TiActivitys" >
+    insert into ti_activitys (ActId, Title, ProducerUserId, 
+      ProductId, StyleId, FreeCount, 
+      ActType, ExtCount, ApplyCount, 
+      CompleteCount, Status, CreateTime, 
+      Remark, ActImg, Description
+      )
+    values (#{actid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{produceruserid,jdbcType=BIGINT}, 
+      #{productid,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, #{freecount,jdbcType=INTEGER}, 
+      #{acttype,jdbcType=INTEGER}, #{extcount,jdbcType=INTEGER}, #{applycount,jdbcType=INTEGER}, 
+      #{completecount,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{remark,jdbcType=VARCHAR}, #{actimg,jdbcType=VARCHAR}, #{description,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  
   <insert id="insert" parameterType="com.bbyiya.model.TiActivitys" >
     insert into ti_activitys (ActId, Title, ProducerUserId, 
       ProductId, StyleId, FreeCount, 

@@ -110,7 +110,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 		}
 		PageHelper.startPage(index, size);
 		List<PbsUserOrderResultVO> list=null;
-		
+		if(type==null)type=0;
 		if(type==0){
 			list=orderDao.findPbsUserOrders(param);
 		}else{

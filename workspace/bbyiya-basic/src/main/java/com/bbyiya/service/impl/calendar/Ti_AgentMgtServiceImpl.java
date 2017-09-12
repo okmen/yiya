@@ -848,14 +848,18 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 				tipromoter.setCityName(regionService.getCityName(tipromoter.getCity())) ;
 				tipromoter.setAreaName(regionService.getAresName(tipromoter.getArea())) ;	
 			}
-			TiAgents tiagent=agentsMapper.selectByPrimaryKey(tipromoter.getAgentuserid());
-			if(tiagent!=null){
-				tipromoter.setAgentName(tiagent.getCompanyname());
+			if(tipromoter!=null){
+				TiAgents tiagent=agentsMapper.selectByPrimaryKey(tipromoter.getAgentuserid());
+				if(tiagent!=null){
+					tipromoter.setAgentName(tiagent.getCompanyname());
+				}
 			}
 			RedisUtil.setObject(keyString, tipromoter, 1800);
 		}		
 		return tipromoter;		
 	}
+	
+	
 	
 	/**
 	 * 获取生产商代理信息
@@ -1025,6 +1029,12 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 		if(arealist==null||arealist.size()<=0){
 			rqModel.setStatu(ReturnStatus.ParamError);
 			rqModel.setStatusreson("请选择要设置的地区！");
+			return rqModel;
+		}
+		TiProducers producer=producersMapper.selectByPrimaryKey(producerUserId);
+		if(producer==null||(producer!=null&&producer.getStatus().intValue()!=Integer.parseInt(ProducersStatusEnum.ok.toString()))){
+			rqModel.setStatu(ReturnStatus.ParamError);
+			rqModel.setStatusreson("生产商还未审核通过，不能分配地区！");
 			return rqModel;
 		}
 		//得到原有的

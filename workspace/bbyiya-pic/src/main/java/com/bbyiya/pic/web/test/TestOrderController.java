@@ -96,10 +96,23 @@ public class TestOrderController  extends SSOController{
 			rq.setStatusreson("false!");
 		}
 		return JsonUtil.objectToJsonStr(rq);
-	
 	}
 	
-	
+	@ResponseBody 
+	@RequestMapping(value = "/orderAmountDistribute")
+	public String distributeOrderAmount(String orderId) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		rq.setStatu(ReturnStatus.ParamError);
+		String currentDomain=ConfigUtil.getSingleValue("currentDomain");
+		if(!ObjectUtil.isEmpty(currentDomain)&&currentDomain.contains("photo-net.")){
+			orderMgtService.distributeOrderAmount(orderId);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("ok!");
+		}else { 
+			rq.setStatusreson("false!");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	
 	
 }

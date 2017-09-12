@@ -12,10 +12,12 @@
     <result column="Status" property="status" jdbcType="INTEGER" />
     <result column="Description" property="description" jdbcType="VARCHAR" />
     <result column="ImgJson" property="imgjson" jdbcType="VARCHAR" />
+    <result column="Width" property="width" jdbcType="DOUBLE" />
+    <result column="Hight" property="hight" jdbcType="DOUBLE" />
   </resultMap>
   <sql id="Base_Column_List" >
     StyleId, ProductId, Price, PromoterPrice, ImgCount, ProductType, DefaultImg, Status, 
-    Description, ImgJson
+    Description, ImgJson, Width, Hight
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -37,11 +39,13 @@
     insert into ti_productstyles (StyleId, ProductId, Price, 
       PromoterPrice, ImgCount, ProductType, 
       DefaultImg, Status, Description, 
-      ImgJson)
+      ImgJson, Width, Hight
+      )
     values (#{styleid,jdbcType=BIGINT}, #{productid,jdbcType=BIGINT}, #{price,jdbcType=DOUBLE}, 
       #{promoterprice,jdbcType=DOUBLE}, #{imgcount,jdbcType=INTEGER}, #{producttype,jdbcType=INTEGER}, 
       #{defaultimg,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{description,jdbcType=VARCHAR}, 
-      #{imgjson,jdbcType=VARCHAR})
+      #{imgjson,jdbcType=VARCHAR}, #{width,jdbcType=DOUBLE}, #{hight,jdbcType=DOUBLE}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiProductstyles" >
     insert into ti_productstyles
@@ -76,6 +80,12 @@
       <if test="imgjson != null" >
         ImgJson,
       </if>
+      <if test="width != null" >
+        Width,
+      </if>
+      <if test="hight != null" >
+        Hight,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="styleid != null" >
@@ -107,6 +117,12 @@
       </if>
       <if test="imgjson != null" >
         #{imgjson,jdbcType=VARCHAR},
+      </if>
+      <if test="width != null" >
+        #{width,jdbcType=DOUBLE},
+      </if>
+      <if test="hight != null" >
+        #{hight,jdbcType=DOUBLE},
       </if>
     </trim>
   </insert>
@@ -140,6 +156,12 @@
       <if test="imgjson != null" >
         ImgJson = #{imgjson,jdbcType=VARCHAR},
       </if>
+      <if test="width != null" >
+        Width = #{width,jdbcType=DOUBLE},
+      </if>
+      <if test="hight != null" >
+        Hight = #{hight,jdbcType=DOUBLE},
+      </if>
     </set>
     where StyleId = #{styleid,jdbcType=BIGINT}
   </update>
@@ -153,7 +175,9 @@
       DefaultImg = #{defaultimg,jdbcType=VARCHAR},
       Status = #{status,jdbcType=INTEGER},
       Description = #{description,jdbcType=VARCHAR},
-      ImgJson = #{imgjson,jdbcType=VARCHAR}
+      ImgJson = #{imgjson,jdbcType=VARCHAR},
+      Width = #{width,jdbcType=DOUBLE},
+      Hight = #{hight,jdbcType=DOUBLE}
     where StyleId = #{styleid,jdbcType=BIGINT}
   </update>
 </mapper>

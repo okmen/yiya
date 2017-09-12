@@ -8,11 +8,13 @@
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="Sort" property="sort" jdbcType="INTEGER" />
     <result column="LayerImgPreview" property="layerimgpreview" jdbcType="VARCHAR" />
+    <result column="WidthHight" jdbcType="DOUBLE" property="widthhight" />
+    <result column="IsRound" jdbcType="INTEGER" property="isround" />
   </resultMap>
   <resultMap id="StyleLayerResultMap" type="com.bbyiya.vo.calendar.product.TiStyleLayerResult" ><!-- 款式模板图片 -->
   </resultMap>
   <sql id="Base_Column_List" >
-    Id, StyleId, LayerImg, CreateTime, Sort, LayerImgPreview
+    Id, StyleId, LayerImg, CreateTime, Sort, LayerImgPreview, WidthHight, IsRound
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 

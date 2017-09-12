@@ -167,6 +167,55 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 		return rq;
 	}
 	
+	
+	
+	/**
+	 * 保存合成活动图片
+	 * @param param
+	 * @return
+	 * @throws UnsupportedEncodingException 
+	 */
+	public ReturnModel savecomposeActImg(Integer actid,String actimg){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.SystemError);	
+		TiActivitysVo ti=activityMapper.getResultByActId(actid);
+		if(ti!=null){
+			ti.setActimg(actimg);
+			activityMapper.updateByPrimaryKey(ti);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("保存合成图片成功！");
+		}else{
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("活动不存在！");
+		}
+		
+		return rq;
+	}/**
+	 * 合成活动图片
+	 * @param param
+	 * @return
+	 * @throws UnsupportedEncodingException 
+	 */
+	public ReturnModel composeActImg(Long userid,Integer actid) throws UnsupportedEncodingException{
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.SystemError);	
+		TiActivitysVo ti=activityMapper.getResultByActId(actid);
+		if(ti!=null){
+			String redirct_url="feedbackAct?actId="+actid;	
+			String urlstr= ConfigUtil.getSingleValue("shareulr-base")+"uid="+URLEncoder.encode(userid.toString(),"utf-8")+"&redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
+			String url="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+URLEncoder.encode(urlstr,"utf-8");
+			ti.setCodeurl(url);
+			rq.setBasemodle(ti);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("成功！");
+		}else{
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("活动不存在！");
+		}
+		
+		return rq;
+	}
+	
 	/**
 	 * 活动列表
 	 * @param index

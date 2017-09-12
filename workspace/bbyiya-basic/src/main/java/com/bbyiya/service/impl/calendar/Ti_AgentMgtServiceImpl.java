@@ -885,6 +885,32 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 		return tiproducer;		
 	}
 	
+	/**
+	 * 获取生产商代理信息
+	 * @param agentUserId
+	 * @return
+	 */
+	public TiProducersApplyVo getTiProducerInfo(Long producerUserId){	
+		//加入缓存半个小时
+		String keyString="tiproducervo_"+producerUserId;
+		TiProducersApplyVo tiproducer=(TiProducersApplyVo) RedisUtil.getObject(keyString);
+		if(tiproducer==null){
+			tiproducer=producersapplyMapper.getTiProducersapplyVOById(producerUserId);	
+			if(tiproducer!=null){
+				tiproducer.setProvinceName(regionService.getProvinceName(tiproducer.getProvince())) ;
+				tiproducer.setCityName(regionService.getCityName(tiproducer.getCity())) ;
+				tiproducer.setAreaName(regionService.getAresName(tiproducer.getArea())) ;	
+			}
+			RedisUtil.setObject(keyString, tiproducer, 1800);
+		}
+		List<TiProducerapplymachines> machines=promachineMapper.findapplymachineslist(producerUserId);
+		if(tiproducer!=null){
+			tiproducer.setMachines(machines);
+		}
+		
+		return tiproducer;		
+	}
+	
 	
 	/**
 	 * 修改代理商收货地址

@@ -266,12 +266,14 @@ public class TiActivityMgtController extends SSOController {
 		TiActivitys actInfo=null;
 		if(workId>0){
 			myworks= myworkMapper.selectByPrimaryKey(workId);
-			if(myworks!=null){
+			if(myworks!=null&&myworks.getActid()!=null){
 				actId=myworks.getActid();
 				activityworks=activityworksMapper.selectByPrimaryKey(workId);
 			}
 		}
-		actInfo=actMapper.selectByPrimaryKey(actId);
+		if(actId>0){
+			actInfo=actMapper.selectByPrimaryKey(actId);
+		}
 		if(actInfo==null){
 			rq.setStatu(ReturnStatus.ParamError);
 			rq.setStatusreson("活动不存在！");

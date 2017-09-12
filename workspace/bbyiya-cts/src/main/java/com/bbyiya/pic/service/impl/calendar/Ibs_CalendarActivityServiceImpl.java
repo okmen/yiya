@@ -283,7 +283,7 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 				if(user!=null&&user.getMobilephone()!=null){
 					usertemp.setPhone(user.getMobilephone());
 				}
-				TiActivityoff actoff=actoffMapper.selectByPromoterUserIdAndActId(buser.getPromoteruserid(), actid);
+				TiActivityoff actoff=actoffMapper.selectByPromoterUserIdAndActId(buser.getUserid(), actid);
 				if(actoff!=null){
 					usertemp.setStatus(0);
 				}

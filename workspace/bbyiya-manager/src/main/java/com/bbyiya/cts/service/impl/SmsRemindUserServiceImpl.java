@@ -96,6 +96,7 @@ public class SmsRemindUserServiceImpl implements ISmsRemindUserService{
 				}
 				newcacheuserlist.add(uservo);
 			}
+			RedisUtil.delete(keyString);
 			RedisUtil.setObject(keyString, newcacheuserlist);
 		}
 	}

@@ -61,7 +61,7 @@
 	<bean id="smsRemindUserTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="smsRemindUserJobDetail" />
 		<!-- 每个5分钟触发 -->
-		<property name="cronExpression" value="0 0/1 * * * ?" />
+		<property name="cronExpression" value="0 0/32 9,12 * * ?" />
 	</bean>
 	
 	
@@ -72,8 +72,8 @@
 	    <property name="jobFactory" ref="jobFactory"></property>
 		<property name="triggers">
 			<list>
-				<!-- <ref bean="cornTrigger" />  
-				<ref bean="auotReceivingTrigger" />   -->
+				<ref bean="cornTrigger" />  
+				<ref bean="auotReceivingTrigger" /> 
 				<ref bean="smsRemindUserTrigger" />  
 			</list>
 		</property>

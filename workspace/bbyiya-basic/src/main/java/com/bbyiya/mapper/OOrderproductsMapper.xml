@@ -34,11 +34,12 @@
     from o_orderproducts
     where UserOrderId = #{userOrderId,jdbcType=VARCHAR}
   </select>
+  <!--得到客户购买记录 -->
   <select id="findOProductsByBuyerUserId" resultMap="BaseResultMap" >
     select 
-    <include refid="Base_Column_List" />
-    from o_orderproducts
-    where BuyerUserId = #{buyerUserId,jdbcType=BIGINT}
+    a.*
+    from o_orderproducts as a,o_userorders b 
+    where a.UserOrderId=b.UserOrderId and a.BuyerUserId = #{buyerUserId,jdbcType=BIGINT} and (b.OrderType!=2 and  b.OrderType!=3)
   </select>
   <select id="getOProductsByOrderId" resultMap="BaseResultMap" >
     select 

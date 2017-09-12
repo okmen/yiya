@@ -848,9 +848,11 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 				tipromoter.setCityName(regionService.getCityName(tipromoter.getCity())) ;
 				tipromoter.setAreaName(regionService.getAresName(tipromoter.getArea())) ;	
 			}
-			TiAgents tiagent=agentsMapper.selectByPrimaryKey(tipromoter.getAgentuserid());
-			if(tiagent!=null){
-				tipromoter.setAgentName(tiagent.getCompanyname());
+			if(tipromoter!=null){
+				TiAgents tiagent=agentsMapper.selectByPrimaryKey(tipromoter.getAgentuserid());
+				if(tiagent!=null){
+					tipromoter.setAgentName(tiagent.getCompanyname());
+				}
 			}
 			RedisUtil.setObject(keyString, tipromoter, 1800);
 		}		

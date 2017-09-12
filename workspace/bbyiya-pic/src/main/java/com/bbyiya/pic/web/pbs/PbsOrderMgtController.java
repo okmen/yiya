@@ -120,6 +120,13 @@ public class PbsOrderMgtController extends SSOController {
 	@RequestMapping(value="/orderExportExcel")
 	@ResponseBody
 	public String orderExportExcel(HttpServletRequest request, HttpServletResponse response,String myproductJson,Integer type) throws MapperException {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();		
+		if (user == null) {	
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
 		// 列头
 		String[] headers =new String[26];
 		headers[0]="订单号";
@@ -179,7 +186,10 @@ public class PbsOrderMgtController extends SSOController {
 		String format =".xlsx";
 		myproductJson=myproductJson.replaceAll("\"status\":\"\"", "\"status\":null");
 		SearchOrderParam param= (SearchOrderParam)JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
-		
+		if(type==null)type=0;
+		if(type.intValue()!=0){
+			param.setProducerUserId(user.getUserId());
+		}
 		PageInfo<PbsUserOrderResultVO> page = orderMgtService.find_pbsOrderList(param,type,0,0);
 		List<PbsUserOrderResultVO> list=page.getList();
 		ExportExcel<PbsUserOrderResultVO> ex = new ExportExcel<PbsUserOrderResultVO>();
@@ -199,7 +209,7 @@ public class PbsOrderMgtController extends SSOController {
 				ex.exportExcel("订单列表", headers, fields, list, out, "yyyy-MM-dd");
 			}
 			out.close();
-			ReturnModel rq = new ReturnModel();
+			
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(file.getPath());
 			return JsonUtil.objectToJsonStr(rq);

@@ -21,6 +21,8 @@ public class TiUserdiscounts {
 
     private Integer status;
 
+    private String userorderid;
+
     public Long getId() {
         return id;
     }
@@ -92,4 +94,14 @@ public class TiUserdiscounts {
     public void setStatus(Integer status) {
         this.status = status;
     }
+
+	public String getUserorderid() {
+		return userorderid;
+	}
+
+	public void setUserorderid(String userorderid) {
+		this.userorderid = userorderid;
+	}
+    
+    
 }

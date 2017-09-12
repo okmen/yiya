@@ -14,4 +14,11 @@ public interface IBasePayService {
 	 * @param userOrderId
 	 */
 	void addProductExt(String userOrderId);
+	
+	/**
+	 * 台历挂历 订单金额分配
+	 * ps :用户确认收货 后分利
+	 * @param userOrderId
+	 */
+	void distributeOrderAmount(String userOrderId);
 }

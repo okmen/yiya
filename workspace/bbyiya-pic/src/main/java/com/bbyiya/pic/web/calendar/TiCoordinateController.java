@@ -203,9 +203,11 @@ public class TiCoordinateController  extends SSOController{
 									 advertMap.put("backImg", "http://document.bbyiya.com/tiadvert-p2401-0911.jpg"); 
 								 }else {
 									 advertMap.put("isAdvert", "1");
-									 advertMap.put("adImg", imglist.get(i).getUrl()); 
+									 advertMap.put("adImg", imglist.get(i).getUrl());
+									 advertMap.put("imgCoordMod", styleCoordItemMapper.selectByPrimaryKey(29l));
 									 advertMap.put("backImg", "http://document.bbyiya.com/tiadvert-back-p2401-0911.png"); 
 								 }
+								 advertMap.put("printNo", workId+"-"+userorders.getUserid()+"-"+(layerList.size()+i+1)+"-"+oproducerModel.getPrintindex());
 								 adverlist.add(advertMap);
 							 }
 							 map.put("advertList", adverlist); 

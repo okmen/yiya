@@ -24,4 +24,10 @@ public interface TiUserdiscountsMapper {
      * @return
      */
     List<TiUserdiscounts> findMyDiscounts(@Param("userId")Long userId);
+    /**
+     * 获取订单使用的优惠券
+     * @param userorderId
+     * @return
+     */
+    TiUserdiscounts getMyDiscountsByUserOrderId(@Param("userorderId")String userorderId);
 }

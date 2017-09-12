@@ -112,8 +112,9 @@ public class Ti_MyworkController extends SSOController {
 										if(photoList==null||photoList.size()<=0){
 											for(int i=0;i<param.getDetails().size();i++){
 												OOrderproductphotos detail=new OOrderproductphotos();
+												detail.setOrderproductid(oproduct.getOrderproductid());
 												detail.setImgurl(param.getDetails().get(i).getImageurl());
-												detail.setSort(i);
+												detail.setSort(i); 
 												detail.setCreatetime(time); 
 												ophotoMapper.insert(detail);
 											}

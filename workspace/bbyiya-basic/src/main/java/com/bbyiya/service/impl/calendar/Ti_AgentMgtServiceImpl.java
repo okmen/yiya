@@ -1031,6 +1031,12 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 			rqModel.setStatusreson("请选择要设置的地区！");
 			return rqModel;
 		}
+		TiProducers producer=producersMapper.selectByPrimaryKey(producerUserId);
+		if(producer==null||(producer!=null&&producer.getStatus().intValue()!=Integer.parseInt(ProducersStatusEnum.ok.toString()))){
+			rqModel.setStatu(ReturnStatus.ParamError);
+			rqModel.setStatusreson("生产商还未审核通过，不能分配地区！");
+			return rqModel;
+		}
 		//得到原有的
 		List<TiProductareas> productareas=productareaMapper.findProductAreasByProducerUserId(productId, producerUserId);
 		if(productareas!=null&&productareas.size()>0){

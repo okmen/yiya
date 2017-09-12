@@ -30,6 +30,7 @@ import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.model.SysLogs;
 import com.bbyiya.model.UBranches;
+import com.bbyiya.service.IBasePayService;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
 import com.bbyiya.utils.JsonUtil;
@@ -71,6 +72,11 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 	
 	@Resource(name = "baseOrderMgtServiceImpl")
 	private IBaseOrderMgtService orderMgtService;
+	
+	@Resource(name = "basePayServiceImpl")
+	private IBasePayService basepayService;
+	
+	
 	/**
 	 * 自动下单的功能
 	 */
@@ -259,6 +265,9 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 								order.setStatus(Integer.parseInt(OrderStatusEnum.recived.toString()));
 								userorderMapper.updateByPrimaryKey(order);
 								Log.info("订单【"+order.getUserorderid()+"】自动签收成功！");
+								
+								//分配订单分成
+								basepayService.distributeOrderAmount(order.getUserorderid());
 							}
 						}
 					}

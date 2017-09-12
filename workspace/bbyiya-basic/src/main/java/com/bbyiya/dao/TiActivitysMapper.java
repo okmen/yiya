@@ -11,6 +11,8 @@ public interface TiActivitysMapper {
     int deleteByPrimaryKey(Integer actid);
 
     int insert(TiActivitys record);
+    
+    int insertReturnId(TiActivitys record);
 
     int insertSelective(TiActivitys record);
 

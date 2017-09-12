@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.catalina.User;
@@ -85,7 +86,10 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 		ti.setProductid(param.getProductid());
 		ti.setProduceruserid(userid);//推广者Id
 		ti.setStatus(1);//默认就是已开启的活动
-		activityMapper.insert(ti);
+		activityMapper.insertReturnId(ti);
+		HashMap<String, Object> map=new HashMap<String, Object>();
+		map.put("actid", ti.getActid());
+		rq.setBasemodle(map);
 		rq.setStatu(ReturnStatus.Success);
 		rq.setStatusreson("添加日历活动成功！");
 		return rq;

@@ -174,7 +174,7 @@ public class Ibs_TiOrderMgtServiceImpl implements IIbs_TiOrderMgtService{
 				orderAddress.setCityName(oaddr.getCity());
 				orderAddress.setProvinceName(oaddr.getProvince());
 				orderAddress.setDistrictName(oaddr.getDistrict());
-				orderAddress.setStreetdetail(oaddr.getDistrict());
+				orderAddress.setStreetdetail(oaddr.getStreetdetail());
 				orderAddress.setAddressType(1);
 			}
 		}else {

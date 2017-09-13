@@ -215,11 +215,12 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			}
 			if(isCompleteBoolean){
 				UUsers promoter= usersMapper.selectByPrimaryKey( param.getSubmitUserId());
-				if(promoter!=null&&ValidateUtils.isIdentity(promoter.getIdentity(), UserIdentityEnums.ti_promoter)){
+				if(promoter!=null&&promoter.getIdentity()!=null&&ValidateUtils.isIdentity(promoter.getIdentity(), UserIdentityEnums.ti_promoter)){
 					UAccounts accounts=accountsMapper.selectByPrimaryKey(param.getSubmitUserId());
 					double totalprice=style.getPromoterprice().doubleValue()*param.getCount(); 
 					if(accounts==null||accounts.getAvailableamount()==null||accounts.getAvailableamount().doubleValue()<totalprice){
 						rq.setStatusreson("您的账户余额不足！");
+						rq.setStatu(ReturnStatus.SystemError);
 						return rq;
 					}
 					//下单操作------------------
@@ -281,6 +282,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					orderProduct.setBuyeruserid(param.getSubmitUserId()); 
 					orderProduct.setProductid(work.getProductid());
 					orderProduct.setStyleid(style.getStyleid());
+					orderProduct.setPropertystr(style.getDescription());
 					orderProduct.setPrice(style.getPromoterprice());
 					orderProduct.setCount(param.getCount());
 					orderProduct.setProductimg(style.getDefaultimg());

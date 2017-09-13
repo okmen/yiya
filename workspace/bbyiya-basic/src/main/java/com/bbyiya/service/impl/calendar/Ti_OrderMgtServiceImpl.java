@@ -21,6 +21,7 @@ import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.OProducerordercountMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductsMapper;
+import com.bbyiya.dao.TiActivitysMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
 import com.bbyiya.dao.TiDiscountdetailsMapper;
 import com.bbyiya.dao.TiDiscountmodelMapper;
@@ -54,6 +55,7 @@ import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PPostmodel;
 import com.bbyiya.model.PProducts;
 import com.bbyiya.model.PProductstyles;
+import com.bbyiya.model.TiActivitys;
 import com.bbyiya.model.TiActivityworks;
 import com.bbyiya.model.TiDiscountdetails;
 import com.bbyiya.model.TiDiscountmodel;
@@ -124,6 +126,8 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 	//---------------------------作品、活动------------------------------------------------------
 	@Autowired
 	private TiMyworksMapper myworksMapper;
+	@Autowired
+	private TiActivitysMapper myactMapper;
 	@Autowired
 	private TiActivityworksMapper activityworksMapper;
 	@Autowired
@@ -300,6 +304,13 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					
 					//反写活动状态
 					if(actWork!=null&&actWork.getStatus()!=null){
+						TiActivitys act=myactMapper.selectByPrimaryKey(actWork.getActid());
+						if(act!=null){
+							//反写已下单人数
+							if(actWork.getStatus().intValue()!=Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString())){
+								act.setCompletecount(act.getCompletecount()==null?1:act.getCompletecount().intValue()+1);
+							}
+						}
 						actWork.setStatus(Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString()));
 						activityworksMapper.updateByPrimaryKey(actWork);
 					}

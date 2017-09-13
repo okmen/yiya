@@ -24,6 +24,7 @@ import com.bbyiya.dao.TiMyworksMapper;
 import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
 import com.bbyiya.dao.TiProductstyleslayersMapper;
+import com.bbyiya.dao.TiStyleadvertsMapper;
 import com.bbyiya.dao.TiStylecoordinateMapper;
 import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
@@ -38,6 +39,7 @@ import com.bbyiya.model.TiMyartsdetails;
 import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiProductstyles;
+import com.bbyiya.model.TiStyleadverts;
 import com.bbyiya.model.TiStylecoordinate;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
@@ -107,6 +109,8 @@ public class TiCoordinateController  extends SSOController{
 
 	@Autowired
 	private TiAdvertimgsMapper advertMapper;
+	@Autowired
+	private TiStyleadvertsMapper styleAdevertMapper;
 	/**
 	 * 订单图片
 	 * @param userOrderId
@@ -188,55 +192,58 @@ public class TiCoordinateController  extends SSOController{
 						}
 						//是否有广告位
 						if(products.getAdvertcount()!=null&&products.getAdvertcount().intValue()>0){
-							 List<TiStyleLayerResult> adverlist=new ArrayList<TiStyleLayerResult>();
-							 List<ImageInfo> imglist=null;
-							 if(userorders.getBranchuserid()!=null&&userorders.getBranchuserid()>0){
-								 TiAdvertimgs advertlist= advertMapper.getAdvertByProductIdAndPromoterId(products.getProductid(),userorders.getBranchuserid() );
-								 if(advertlist!=null&&!ObjectUtil.isEmpty(advertlist.getAdvertimgjson())){
-									 imglist=(List<ImageInfo>)JsonUtil.jsonToList(advertlist.getAdvertimgjson());
+							 TiStyleadverts styleadverts= styleAdevertMapper.selectByPrimaryKey(styleId);
+							 if(styleadverts!=null){
+								 List<TiStyleLayerResult> adverlist=new ArrayList<TiStyleLayerResult>();
+								 List<ImageInfo> imglist=null;
+								 if(userorders.getBranchuserid()!=null&&userorders.getBranchuserid()>0){
+									 TiAdvertimgs advertlist= advertMapper.getAdvertByProductIdAndPromoterId(products.getProductid(),userorders.getBranchuserid() );
+									 if(advertlist!=null&&!ObjectUtil.isEmpty(advertlist.getAdvertimgjson())){
+										 imglist=(List<ImageInfo>)JsonUtil.jsonToList(advertlist.getAdvertimgjson());
+									 }
 								 }
-							 }
-							 for(int i=0;i<products.getAdvertcount();i++){
-								 TiStyleLayerResult advertMap=new TiStyleLayerResult();
-								 advertMap.setIsAdvert(1);
-								 if(imglist==null||imglist.get(i)==null){
-									 advertMap.setHaveAdvert(0);
-									 advertMap.setBackImg("http://document.bbyiya.com/tiadvert-p2401-0911.jpg"); 
-								 }else {
-									 advertMap.setHaveAdvert(1); 
-									 advertMap.setAdImg(imglist.get(i).getUrl());
-									 advertMap.setImgCoordMod(styleCoordItemMapper.selectByPrimaryKey(29l));
-									 advertMap.setBackImg("http://document.bbyiya.com/tiadvert-back-p2401-0911.png"); 
+								 for(int i=0;i<products.getAdvertcount();i++){
+									 TiStyleLayerResult advertMap=new TiStyleLayerResult();
+									 advertMap.setIsAdvert(1);
+									 if(imglist==null||imglist.get(i)==null||ObjectUtil.isEmpty(imglist.get(i).getUrl())){ 
+										 advertMap.setHaveAdvert(0);
+										 advertMap.setBackImg(styleadverts.getBlankimg()); 
+									 }else{
+										 advertMap.setHaveAdvert(1); 
+										 advertMap.setAdImg(imglist.get(i).getUrl());
+										 advertMap.setImgCoordMod(styleCoordItemMapper.selectByPrimaryKey(styleadverts.getImgcoordid().longValue()));
+										 advertMap.setBackImg(styleadverts.getBackimg());  
+									 }
+									 adverlist.add(advertMap);
 								 }
-//								 advertMap.set("printNo", workId+"-"+userorders.getUserid()+"-"+(layerList.size()+i+1)+"-"+oproducerModel.getPrintindex());
-								 adverlist.add(advertMap);
-							 }
-//							 map.put("advertList", adverlist); 
-							 //最终打印图片列表
-							 List<TiStyleLayerResult> resultslist=new ArrayList<TiStyleLayerResult>();
-							 int index=1;
-							 for (TiStyleLayerResult layer : layerList) {
-								layer.setPrintNo(workId+"-"+userorders.getUserid()+"-"+(index)+"-"+oproducerModel.getPrintindex()); 
-								resultslist.add(layer);
-								if(index==1){
-									if(adverlist!=null&&adverlist.get(adverlist.size()-1)!=null){
-										index++;
-										adverlist.get(adverlist.size()-1).setPrintNo(workId+"-"+userorders.getUserid()+"-"+(index)+"-"+oproducerModel.getPrintindex());
-										resultslist.add(adverlist.get(adverlist.size()-1));  
+								 //最终打印图片列表
+								 List<TiStyleLayerResult> resultslist=new ArrayList<TiStyleLayerResult>();
+								 int index=1;
+								 for (TiStyleLayerResult layer : layerList) {
+									layer.setPrintNo(workId+"-"+userorders.getUserid()+"-"+(index)+"-"+oproducerModel.getPrintindex()); 
+									resultslist.add(layer);
+									if(index==1){
+										if(adverlist!=null&&adverlist.get(adverlist.size()-1)!=null){
+											index++;
+											adverlist.get(adverlist.size()-1).setPrintNo(workId+"-"+userorders.getUserid()+"-"+(index)+"-"+oproducerModel.getPrintindex());
+											resultslist.add(adverlist.get(adverlist.size()-1));  
+										}
 									}
-								}
-								index++;
+									index++;
+								 }
+								 for(int i=(adverlist.size()-2);i>=0;i--){ 
+									 adverlist.get(i).setPrintNo(workId+"-"+userorders.getUserid()+"-"+(index)+"-"+oproducerModel.getPrintindex());
+									 resultslist.add(adverlist.get(i));  
+									 index++;
+								 } 
+								 map.put("imgLayList", resultslist);
+							 }else {
+								 map.put("imgLayList", layerList);
 							 }
-							 for(int i=(adverlist.size()-2);i>=0;i--){ 
-								 adverlist.get(i).setPrintNo(workId+"-"+userorders.getUserid()+"-"+(index)+"-"+oproducerModel.getPrintindex());
-								 resultslist.add(adverlist.get(i));  
-								 index++;
-							 }
-							 map.put("imgLayList", resultslist);
+							
 						}else {
 							map.put("imgLayList", layerList);
 						}
-//						map.put("imgLayList", layerList);
 						map.put("print_Mod", print_no);
 						rq.setBasemodle(map);
 						rq.setStatu(ReturnStatus.Success);

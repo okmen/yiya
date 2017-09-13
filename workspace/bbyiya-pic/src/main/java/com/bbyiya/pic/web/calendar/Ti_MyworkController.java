@@ -173,7 +173,7 @@ public class Ti_MyworkController extends SSOController {
 		rq.setStatu(ReturnStatus.ParamError);
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			if(ObjectUtil.isEmpty(reciever)||ObjectUtil.isMobile(phone)){
+			if(ObjectUtil.isEmpty(reciever)||!ObjectUtil.isMobile(phone)){
 				rq.setStatusreson("姓名不能为空/手机号不正确");
 				return JsonUtil.objectToJsonStr(rq);
 			}

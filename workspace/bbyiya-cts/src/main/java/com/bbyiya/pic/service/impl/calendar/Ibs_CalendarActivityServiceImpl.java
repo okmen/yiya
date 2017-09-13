@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.TiActivityoffMapper;
 import com.bbyiya.dao.TiActivitysMapper;
@@ -26,6 +27,7 @@ import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.ActivityWorksStatusEnum;
 import com.bbyiya.enums.calendar.TiActivityTypeEnum;
+import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproducttempusers;
 import com.bbyiya.model.TiActivityoff;
@@ -65,6 +67,8 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 	private TiActivityoffMapper actoffMapper;
 	@Autowired
 	private OUserordersMapper orderMapper;
+	@Autowired
+	private OOrderaddressMapper orderaddressMapper;
 	
 	/*-------------------用户信息------------------------------------------------*/
 	@Autowired
@@ -198,6 +202,7 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 			//得到图片已提交未分享数量
 			Integer notsharecount=actworkMapper.getCountByActStatus(ti.getActid(), Integer.parseInt(ActivityWorksStatusEnum.imagesubmit.toString()));
 			ti.setNotsharecount(notsharecount==null?0:notsharecount);
+			ti.setNotsubmitcount(ti.getNotsubmitcount()+ti.getNotsharecount());
 			//得到已邀请数量
 			if(ti.getActtype()==Integer.parseInt(TiActivityTypeEnum.toAll.toString())){
 				ti.setYaoqingcount(ti.getFreecount());
@@ -228,6 +233,14 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 			for (TiActivitysWorkVo ti : pageresult.getList()) {
 				if(act!=null){
 					ti.setTargetextCount(act.getExtcount());
+				}
+				if(ti.getAddresstype()!=null&&ti.getAddresstype().intValue()==1){
+					OOrderaddress orderaddress=orderaddressMapper.selectByPrimaryKey(ti.getOrderaddressid());
+					if(orderaddress!=null){
+						ti.setReciever(orderaddress.getReciver());
+						ti.setMobiephone(orderaddress.getPhone());
+					}
+					
 				}
 				ti.setCreateTimestr(DateUtil.getTimeStr(ti.getCreatetime(), "yyyy-MM-dd"));
 				UUsers user=usersMapper.selectByPrimaryKey(ti.getUserid());

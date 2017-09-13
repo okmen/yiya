@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiStyleadvertsMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiStyleadverts" >
+    <id column="StyleId" property="styleid" jdbcType="BIGINT" />
+    <result column="ProductId" property="productid" jdbcType="BIGINT" />
+    <result column="BackImg" property="backimg" jdbcType="VARCHAR" />
+    <result column="BlankImg" property="blankimg" jdbcType="VARCHAR" />
+    <result column="ImgCoordId" property="imgcoordid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    StyleId, ProductId, BackImg, BlankImg, ImgCoordId
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_styleadverts
+    where StyleId = #{styleid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ti_styleadverts
+    where StyleId = #{styleid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiStyleadverts" >
+    insert into ti_styleadverts (StyleId, ProductId, BackImg, 
+      BlankImg, ImgCoordId)
+    values (#{styleid,jdbcType=BIGINT}, #{productid,jdbcType=BIGINT}, #{backimg,jdbcType=VARCHAR}, 
+      #{blankimg,jdbcType=VARCHAR}, #{imgcoordid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiStyleadverts" >
+    insert into ti_styleadverts
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="styleid != null" >
+        StyleId,
+      </if>
+      <if test="productid != null" >
+        ProductId,
+      </if>
+      <if test="backimg != null" >
+        BackImg,
+      </if>
+      <if test="blankimg != null" >
+        BlankImg,
+      </if>
+      <if test="imgcoordid != null" >
+        ImgCoordId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="styleid != null" >
+        #{styleid,jdbcType=BIGINT},
+      </if>
+      <if test="productid != null" >
+        #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="backimg != null" >
+        #{backimg,jdbcType=VARCHAR},
+      </if>
+      <if test="blankimg != null" >
+        #{blankimg,jdbcType=VARCHAR},
+      </if>
+      <if test="imgcoordid != null" >
+        #{imgcoordid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiStyleadverts" >
+    update ti_styleadverts
+    <set >
+      <if test="productid != null" >
+        ProductId = #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="backimg != null" >
+        BackImg = #{backimg,jdbcType=VARCHAR},
+      </if>
+      <if test="blankimg != null" >
+        BlankImg = #{blankimg,jdbcType=VARCHAR},
+      </if>
+      <if test="imgcoordid != null" >
+        ImgCoordId = #{imgcoordid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where StyleId = #{styleid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiStyleadverts" >
+    update ti_styleadverts
+    set ProductId = #{productid,jdbcType=BIGINT},
+      BackImg = #{backimg,jdbcType=VARCHAR},
+      BlankImg = #{blankimg,jdbcType=VARCHAR},
+      ImgCoordId = #{imgcoordid,jdbcType=INTEGER}
+    where StyleId = #{styleid,jdbcType=BIGINT}
+  </update>
+</mapper>

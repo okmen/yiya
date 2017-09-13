@@ -24,6 +24,7 @@ import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.calendar.ActivityWorksStatusEnum;
 import com.bbyiya.model.EErrors;
 import com.bbyiya.model.OOrderproductphotos;
 import com.bbyiya.model.OOrderproducts;
@@ -76,7 +77,7 @@ public class Ti_MyworkController extends SSOController {
 				TiMyworks myworks= workMapper.selectByPrimaryKey(param.getWorkId());
 				if(myworks!=null) {
 					if(myworks.getUserid()!=null&&myworks.getUserid().longValue()==user.getUserId().longValue()){
-						addlog(detailJson); 
+//						addlog(detailJson); 
 						TiProductstyles style=styleMapper.selectByPrimaryKey(myworks.getStyleid()==null?myworks.getProductid():myworks.getStyleid());
 						if(style!=null&&style.getImgcount().intValue()>=param.getDetails().size()) {
 							//清除旧的
@@ -100,6 +101,15 @@ public class Ti_MyworkController extends SSOController {
 							if(isOk>0&&style.getImgcount().intValue()==param.getDetails().size()){
 								myworks.setCompletetime(new Date());
 								workMapper.updateByPrimaryKeySelective(myworks);
+								//活动提交
+								if(myworks.getActid()!=null&&myworks.getActid().intValue()>0){
+									TiActivityworks activityworks= activityworkMapper.selectByPrimaryKey(myworks.getWorkid());
+									if(activityworks!=null){
+										activityworks.setStatus(Integer.parseInt(ActivityWorksStatusEnum.imagesubmit.toString()));
+										activityworkMapper.updateByPrimaryKeySelective(activityworks);
+									}
+								}
+								
 								//图片上传时间
 								OOrderproducts oproduct= oproductOrderMapper.getOProductsByWorkId(param.getWorkId());
 								if(oproduct!=null){
@@ -163,7 +173,7 @@ public class Ti_MyworkController extends SSOController {
 		rq.setStatu(ReturnStatus.ParamError);
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			if(ObjectUtil.isEmpty(reciever)||ObjectUtil.isMobile(phone)){
+			if(ObjectUtil.isEmpty(reciever)||!ObjectUtil.isMobile(phone)){
 				rq.setStatusreson("姓名不能为空/手机号不正确");
 				return JsonUtil.objectToJsonStr(rq);
 			}

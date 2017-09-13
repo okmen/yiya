@@ -440,7 +440,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 						TiDiscountmodel discountmodel = getDiscountList(param.getUserId());
 						if (discountmodel != null && discountmodel.getDetails() != null) {
 							for (TiDiscountdetails discountdetails : discountmodel.getDetails()) {
-								if (discountdetails.getStyleid().longValue() == style.getStyleid().longValue()) {
+								if (discountdetails.getProductid().longValue() == style.getProductid().longValue()) {
 									if (discountmodel.getType() == 1) {
 										orderProduct.setPrice(style.getPrice() * discountdetails.getDiscount());
 										TiUserdiscounts mydis= getMydiscount(param.getUserId());

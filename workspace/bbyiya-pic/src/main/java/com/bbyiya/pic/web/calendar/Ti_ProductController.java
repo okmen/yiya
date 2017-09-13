@@ -80,7 +80,7 @@ public class Ti_ProductController  extends SSOController {
 					pro.setDiscountName(disModel.getTitle()); 
 					for (TiDiscountdetails dd : disModel.getDetails()) {
 						// 商品表productId为默认款式styleId
-						if (pro.getProductid().longValue() == dd.getStyleid().longValue()) {
+						if (pro.getProductid().longValue() == dd.getProductid().longValue()) {
 							pro.setDiscount(dd.getDiscount());
 						}
 					}
@@ -189,7 +189,7 @@ public class Ti_ProductController  extends SSOController {
 					TiDiscountmodel disModel= getDiscountList(user.getUserId());
 					if(disModel!=null&&disModel.getDetails()!=null){
 						for (TiDiscountdetails dd : disModel.getDetails()) {
-							if(dd.getStyleid().longValue()==styleId){
+							if(dd.getProductid().longValue()==style.getProductid()){
 								map.put("discount", dd.getDiscount());
 								map.put("discountType", disModel.getType());
 								map.put("discountName", disModel.getTitle());

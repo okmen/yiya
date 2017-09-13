@@ -38,8 +38,10 @@ import com.bbyiya.model.TiPromoteremployees;
 import com.bbyiya.model.TiPromoters;
 import com.bbyiya.model.TiUserdiscounts;
 import com.bbyiya.service.IRegionService;
+import com.bbyiya.service.calendar.ITi_OrderMgtService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.calendar.TiActivityOrderSubmitParam;
 import com.bbyiya.vo.calendar.TiActivitysVo;
 import com.bbyiya.vo.calendar.product.TiProductResult;
 import com.bbyiya.vo.user.LoginSuccessResult;
@@ -253,6 +255,9 @@ public class TiActivityMgtController extends SSOController {
 		} 
 		return JsonUtil.objectToJsonStr(rq);
 	}
+
+	@Resource(name = "tiOrderMgtServiceImpl")
+	private ITi_OrderMgtService orderMgtService;
 	
 	/**
 	 * 领取优惠券（两处地方，活动结束时领取，二级用户通过朋友分享领取）
@@ -312,6 +317,16 @@ public class TiActivityMgtController extends SSOController {
 			if(workId>0&&activityworks!=null){
 				activityworks.setExtcount((activityworks.getExtcount()==null?0:activityworks.getExtcount().intValue())+1); 
 				activityworksMapper.updateByPrimaryKeySelective(activityworks);
+				
+				//如果活动目标达到，直接下单
+				int extcount=actInfo.getExtcount()==null?0:actInfo.getExtcount();
+				if(activityworks.getExtcount().intValue()>=extcount){
+					TiActivityOrderSubmitParam param=new TiActivityOrderSubmitParam();
+					param.setCount(1);
+					param.setSubmitUserId(actInfo.getProduceruserid());
+					param.setWorkId(workId);
+					orderMgtService.submitOrder_ibs(param); 
+				}
 			}
 			rq.setStatu(ReturnStatus.Success);
 			rq.setStatusreson("恭喜获得3张5折优惠券（下单时自动使用）");

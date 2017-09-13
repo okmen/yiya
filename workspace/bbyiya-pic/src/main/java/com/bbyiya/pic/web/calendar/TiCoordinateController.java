@@ -216,9 +216,12 @@ public class TiCoordinateController  extends SSOController{
 						map.put("print_Mod", print_no);
 						rq.setBasemodle(map);
 						rq.setStatu(ReturnStatus.Success);
+						return JsonUtil.objectToJsonStr(rq);
 					}
 				}
 			}
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("参数有误userorder:"+userOrderId);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

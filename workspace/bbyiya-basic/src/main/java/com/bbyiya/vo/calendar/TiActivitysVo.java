@@ -12,6 +12,7 @@ public class TiActivitysVo extends TiActivitys{
 	private Long myworkId;
 	private TiProductResult product;
 	private String codeurl;//二维码地址
+	private Integer applyStatus;
 	public String getProductName() {
 		return productName;
 	}
@@ -74,6 +75,14 @@ public class TiActivitysVo extends TiActivitys{
 
 	public void setCodeurl(String codeurl) {
 		this.codeurl = codeurl;
+	}
+
+	public Integer getApplyStatus() {
+		return applyStatus;
+	}
+
+	public void setApplyStatus(Integer applyStatus) {
+		this.applyStatus = applyStatus;
 	}
 	
 	

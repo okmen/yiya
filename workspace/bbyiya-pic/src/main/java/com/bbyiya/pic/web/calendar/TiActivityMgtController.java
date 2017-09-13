@@ -83,6 +83,7 @@ public class TiActivityMgtController extends SSOController {
 				TiActivityworks myActWork= activityworksMapper.getActWorkListByActIdAndUserId(actId, user.getUserId());
 				if(myActWork!=null){
 					actInfo.setMyworkId(myActWork.getWorkid()); 
+					actInfo.setApplyStatus(myActWork.getStatus()); 
 				}
 				actInfo.setYaoqingcount(singMapper.getYaoqingCountByActId(actId));
 				TiProductResult productResult= productMapper.getResultByProductId(actInfo.getProductid());
@@ -163,12 +164,13 @@ public class TiActivityMgtController extends SSOController {
 				if(actInfo.getActtype()!=null&&actInfo.getActtype().intValue()==1){
 					rq.setStatu(ReturnStatus.ParamError);
 					if(versionId<=0){
-						rq.setStatusreson("链接无效");
+						rq.setStatusreson("链接无效01");
 						return JsonUtil.objectToJsonStr(rq);
 					}
 					TiActivitysingles single= singMapper.selectByPrimaryKey(versionId);
-					if(single==null||single.getPromoteruserid().longValue()!=actInfo.getProduceruserid().longValue()||single.getStatus().intValue()==1){
-						rq.setStatusreson("链接无效");
+					TiPromoteremployees emp= employeeMapper.selectByPrimaryKey(eUid);
+					if(single==null||emp==null||emp.getPromoteruserid().longValue()!=actInfo.getProduceruserid().longValue()||single.getStatus().intValue()==1){
+						rq.setStatusreson("链接已失效002");
 						return JsonUtil.objectToJsonStr(rq);
 					}
 					if(eUid==user.getUserId()){

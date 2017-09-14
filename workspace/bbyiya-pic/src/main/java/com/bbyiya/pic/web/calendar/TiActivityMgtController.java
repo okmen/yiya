@@ -326,7 +326,7 @@ public class TiActivityMgtController extends SSOController {
 				
 				//如果活动目标达到，直接下单
 				int extcount=actInfo.getExtcount()==null?0:actInfo.getExtcount();
-				if(activityworks.getExtcount().intValue()>=extcount){
+				if(activityworks.getExtcount().intValue()>=extcount&&activityworks.getStatus().intValue()!=Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString())){
 					TiActivityOrderSubmitParam param=new TiActivityOrderSubmitParam();
 					param.setCount(1);
 					param.setSubmitUserId(actInfo.getProduceruserid());

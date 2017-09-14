@@ -238,9 +238,9 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					}else{
 						orderindex=orderindex.intValue()+1;
 					}
-					DecimalFormat df=new DecimalFormat("0000");
-					String printindex=df.format(orderindex);
-					
+//					DecimalFormat df=new DecimalFormat("0000");
+//					String printindex=df.format(orderindex);
+					String printindex=orderindex.toString();
 					//订单号
 					String payId = GenUtils.getOrderNo(param.getSubmitUserId());
 					String userOrderId=payId;

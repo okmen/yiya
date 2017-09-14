@@ -78,6 +78,11 @@ public class TiCoordinateController  extends SSOController{
 	private OUserordersMapper userorderMapper;
 	@Autowired
 	private OProducerordercountMapper oproducerOrderCountMapper;
+
+	@Autowired
+	private TiAdvertimgsMapper advertMapper;
+	@Autowired
+	private TiStyleadvertsMapper styleAdevertMapper;
 	/**
 	 * P12 款式坐标
 	 * @param styleId
@@ -106,11 +111,6 @@ public class TiCoordinateController  extends SSOController{
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-
-	@Autowired
-	private TiAdvertimgsMapper advertMapper;
-	@Autowired
-	private TiStyleadvertsMapper styleAdevertMapper;
 	/**
 	 * 订单图片
 	 * @param userOrderId
@@ -148,6 +148,7 @@ public class TiCoordinateController  extends SSOController{
 					}else {
 						oproducerModel.setPrintindex(orderIndex+"A");
 					}
+					oproducerOrderCountMapper.insert(oproducerModel);
 				}
 				List<OOrderproductphotos> photoList=ophotoMapper.findOrderProductPhotosByProductOrderId(oproductlist.get(0).getOrderproductid());
 				if(photoList!=null&&photoList.size()>0){
@@ -164,6 +165,15 @@ public class TiCoordinateController  extends SSOController{
 						Map<String, Object> map = new HashMap<String, Object>();
 						//打印号坐标
 						PStylecoordinateitem print_no = styleCoordItemMapper.selectByPrimaryKey(stylecoordinate.getPrintcoordid().longValue());
+						switch (products.getCateid()) {
+						case 1:
+						case 2:
+							print_no.setWordSize(8);
+							break;
+						default:
+							print_no.setWordSize(6);
+							break;
+						}
 						//内页图片坐标
 						PStylecoordinateitem in_pic = styleCoordItemMapper.selectByPrimaryKey(stylecoordinate.getImgcoordid().longValue());
 						//封面图片坐标

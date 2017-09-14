@@ -77,7 +77,12 @@ public class Ti_MyworkController extends SSOController {
 				TiMyworks myworks= workMapper.selectByPrimaryKey(param.getWorkId());
 				if(myworks!=null) {
 					if(myworks.getUserid()!=null&&myworks.getUserid().longValue()==user.getUserId().longValue()){
-//						addlog(detailJson); 
+						if(myworks.getCompletetime()!=null){
+							rq.setStatu(ReturnStatus.ParamError);
+							rq.setStatusreson("您已经提交了作品！");
+							return JsonUtil.objectToJsonStr(rq);
+						}
+						
 						TiProductstyles style=styleMapper.selectByPrimaryKey(myworks.getStyleid()==null?myworks.getProductid():myworks.getStyleid());
 						if(style!=null&&style.getImgcount().intValue()>=param.getDetails().size()) {
 							//清除旧的
@@ -255,6 +260,7 @@ public class Ti_MyworkController extends SSOController {
 						Map<String, Object> map=new HashMap<String, Object>();
 						map.put("needCount", actInfo.getExtcount());
 						map.put("extCount", myactInfo.getExtcount());
+						map.put("userId", myactInfo.getUserid());
 						rq.setStatu(ReturnStatus.Success);
 						rq.setBasemodle(map); 
 					}

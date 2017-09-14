@@ -26,6 +26,8 @@ public class PStylecoordinateitem  implements Serializable{
      * 宽度
      */
     private Double pointwidth;
+    
+    private Integer wordSize;
 
     public Long getCoordid() {
         return coordid;
@@ -65,6 +67,14 @@ public class PStylecoordinateitem  implements Serializable{
 
 	public void setPointwidth(Double pointwidth) {
 		this.pointwidth = pointwidth;
+	}
+
+	public Integer getWordSize() {
+		return wordSize;
+	}
+
+	public void setWordSize(Integer wordSize) {
+		this.wordSize = wordSize;
 	}
 
     

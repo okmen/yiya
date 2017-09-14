@@ -156,15 +156,21 @@ public class TiActivityMgtController extends SSOController {
 	@RequestMapping(value = "/inActivity")
 	public String inActivity(int actId,@RequestParam(required=false,defaultValue="0")long eUid, @RequestParam(required=false,defaultValue="0")long versionId)throws Exception {
 		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.ParamError);
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			Map<String, Object> map=new HashMap<String, Object>();
 			// 1活动信息
 			TiActivitys actInfo=actMapper.selectByPrimaryKey(actId);
 			if(actInfo!=null){
+				if(actInfo.getFreecount()!=null&&actInfo.getFreecount().intValue()>0){
+					if(actInfo.getApplycount()!=null&&actInfo.getApplycount().intValue()>=actInfo.getFreecount().intValue()){
+						rq.setStatusreson("不好意思，您来晚了，活动名额已满！");
+						return JsonUtil.objectToJsonStr(rq);
+					} 
+				}
 				//一对一活动
 				if(actInfo.getActtype()!=null&&actInfo.getActtype().intValue()==1) {
-					rq.setStatu(ReturnStatus.ParamError);
 					if(versionId<=0){
 						rq.setStatusreson("链接无效01");
 						return JsonUtil.objectToJsonStr(rq);

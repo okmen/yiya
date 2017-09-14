@@ -16,6 +16,7 @@ import com.bbyiya.baseUtils.GenUtils;
 import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.dao.EErrorsMapper;
 import com.bbyiya.dao.OOrderaddressMapper;
+import com.bbyiya.dao.OOrderproductphotosMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.OProducerordercountMapper;
@@ -47,6 +48,7 @@ import com.bbyiya.enums.calendar.ActivityWorksStatusEnum;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.EErrors;
 import com.bbyiya.model.OOrderaddress;
+import com.bbyiya.model.OOrderproductphotos;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.OProducerordercount;
@@ -118,6 +120,8 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 	private OUserordersMapper userOrdersMapper;
 	@Autowired
 	private OOrderproductsMapper oproductMapper;
+	@Autowired
+	private OOrderproductphotosMapper ophotoMapper;
 	@Autowired
 	private OOrderaddressMapper orderaddressMapper;
 	@Autowired
@@ -257,6 +261,17 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					producerorder.setOrderindex(orderindex);
 					producerorder.setPrintindex(printindex);
 					producerOrderMapper.insert(producerorder);
+					
+					if(detailsList!=null&&detailsList.size()>0){
+						for (TiMyartsdetails dd : detailsList) {
+							OOrderproductphotos op=new OOrderproductphotos();
+							op.setOrderproductid(orderProductId);
+							op.setImgurl(dd.getImageurl());
+							op.setSort(dd.getSort());
+							op.setCreatetime(new Date());
+							ophotoMapper.insert(op);
+						}
+					}
 					
 					OUserorders userOrder = new OUserorders();
 					Date ordertime = new Date();// 订单操作时间

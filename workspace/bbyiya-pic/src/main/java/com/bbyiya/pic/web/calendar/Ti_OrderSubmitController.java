@@ -167,6 +167,11 @@ public class Ti_OrderSubmitController extends SSOController {
 			TiMyworks myworks= workMapper.selectByPrimaryKey(workId);
 			TiActivityworks actWork=actworkMapper.selectByPrimaryKey(workId);
 			if(myworks!=null&&actWork!=null){
+				if(actWork.getOrderaddressid()!=null&&actWork.getOrderaddressid().longValue()>0){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("请不要重复操作！");
+					return JsonUtil.objectToJsonStr(rq);
+				}
 				TiProducts products= tiProductsMapper.selectByPrimaryKey(myworks.getProductid());
 				if(products!=null){
 					PPostmodel post = postmodelMapper.selectByPrimaryKey(products.getPostmodelid());

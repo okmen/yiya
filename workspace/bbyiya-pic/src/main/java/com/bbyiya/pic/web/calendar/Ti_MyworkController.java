@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bbyiya.dao.EErrorsMapper;
 import com.bbyiya.dao.OOrderproductphotosMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
+import com.bbyiya.dao.OProducerordercountMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.TiActivitysMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
@@ -23,11 +24,13 @@ import com.bbyiya.dao.TiMyworksMapper;
 import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
 import com.bbyiya.enums.OrderStatusEnum;
+import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.ActivityWorksStatusEnum;
 import com.bbyiya.model.EErrors;
 import com.bbyiya.model.OOrderproductphotos;
 import com.bbyiya.model.OOrderproducts;
+import com.bbyiya.model.OProducerordercount;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.TiActivitys;
 import com.bbyiya.model.TiActivityworks;
@@ -60,6 +63,10 @@ public class Ti_MyworkController extends SSOController {
 	private OUserordersMapper userOrderMapper;
 	@Autowired
 	private OOrderproductphotosMapper ophotoMapper;
+	
+
+	@Autowired
+	private OProducerordercountMapper oproducerOrderCountMapper;
 	/**
 	 * 参与活动 -图片上传
 	 * @param detailJson
@@ -133,6 +140,19 @@ public class Ti_MyworkController extends SSOController {
 												detail.setCreatetime(time); 
 												ophotoMapper.insert(detail);
 											}
+										}
+										//生成打印号
+										OProducerordercount oproducerModel=oproducerOrderCountMapper.selectByPrimaryKey(oproduct.getUserorderid());
+										if(oproducerModel==null){
+											oproducerModel= new OProducerordercount();
+											oproducerModel.setUserorderid(oproduct.getUserorderid());
+											oproducerModel.setUserid(userorders.getUserid());
+											oproducerModel.setProduceruserid(userorders.getProduceruserid());
+											Integer indexCount=oproducerOrderCountMapper.getMaxOrderIndexByProducerIdAndUserId(userorders.getProduceruserid(),userorders.getUserid());
+											int orderIndex=indexCount==null?1:(indexCount+1);
+											oproducerModel.setOrderindex(orderIndex);
+											oproducerModel.setPrintindex(orderIndex+"A");
+											oproducerOrderCountMapper.insert(oproducerModel);
 										}
 										mapResult.put("ordered", 1);
 										mapResult.put("userOrderId", userorders.getUserorderid());

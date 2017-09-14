@@ -311,6 +311,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 							//反写已下单人数
 							if(actWork.getStatus().intValue()!=Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString())){
 								act.setCompletecount(act.getCompletecount()==null?1:act.getCompletecount().intValue()+1);
+								myactMapper.updateByPrimaryKey(act);
 							}
 						}
 						actWork.setStatus(Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString()));

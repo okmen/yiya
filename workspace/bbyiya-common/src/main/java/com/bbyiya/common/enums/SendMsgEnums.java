@@ -41,7 +41,11 @@ public enum SendMsgEnums {
     /**
      * 提醒充值
      */
-    remind_chongzhi(9);
+    remind_chongzhi(9),
+    /**
+     * 绑定手机
+     */
+    bindPhone(10);
 
     private final int Type;
 

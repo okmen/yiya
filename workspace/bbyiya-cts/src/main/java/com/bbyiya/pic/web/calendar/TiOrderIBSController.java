@@ -96,12 +96,12 @@ public class TiOrderIBSController extends SSOController {
 					rq.setStatusreson("活动参数有误：workId为空");
 					return JsonUtil.objectToJsonStr(rq);
 				}
+				param.setSubmitUserId(user.getUserId());
 				if(ObjectUtil.isEmpty(param.getSubmitUserId())){
 					rq.setStatu(ReturnStatus.ParamError);
 					rq.setStatusreson("参数有误：submitUserId为空");
 					return JsonUtil.objectToJsonStr(rq);
 				}
-				
 				rq = basetiorderService.submitOrder_ibs(param);
 			} else {
 				rq.setStatu(ReturnStatus.ParamError);

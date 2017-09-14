@@ -163,7 +163,7 @@ public class TiActivityMgtController extends SSOController {
 			TiActivitys actInfo=actMapper.selectByPrimaryKey(actId);
 			if(actInfo!=null){
 				//一对一活动
-				if(actInfo.getActtype()!=null&&actInfo.getActtype().intValue()==1){
+				if(actInfo.getActtype()!=null&&actInfo.getActtype().intValue()==1) {
 					rq.setStatu(ReturnStatus.ParamError);
 					if(versionId<=0){
 						rq.setStatusreson("链接无效01");

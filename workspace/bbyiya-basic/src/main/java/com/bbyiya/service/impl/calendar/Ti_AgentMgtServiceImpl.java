@@ -118,6 +118,7 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 		TiAgentsapply apply= agentapplyMapper.selectByPrimaryKey(userId); 
 		if(apply!=null){
 			applyInfo.setStatus(apply.getStatus());
+			applyInfo.setAgentuserid(userId);
 		}
 		if(applyInfo==null){
 			rq.setStatusreson("参数有误");

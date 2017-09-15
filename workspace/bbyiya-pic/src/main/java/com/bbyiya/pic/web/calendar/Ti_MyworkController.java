@@ -203,10 +203,17 @@ public class Ti_MyworkController extends SSOController {
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			TiActivityworks work=activityworkMapper.selectByPrimaryKey(workId);
-			if(work!=null){
+			if(work!=null&&work.getUserid()!=null&&user.getUserId().longValue()==work.getUserid().longValue()){
 				work.setReciever(reciever);
 				work.setMobiephone(phone);
+				work.setStatus(Integer.parseInt(ActivityWorksStatusEnum.imagesubmit.toString()));
 				activityworkMapper.updateByPrimaryKey(work);
+				
+				TiMyworks myworks=workMapper.selectByPrimaryKey(workId);
+				if(myworks!=null){
+					myworks.setCompletetime(new Date());
+					workMapper.updateByPrimaryKeySelective(myworks);
+				}
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("成功！");
 			}else { 

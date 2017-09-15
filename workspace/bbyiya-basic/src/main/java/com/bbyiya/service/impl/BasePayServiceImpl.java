@@ -43,6 +43,7 @@ import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.PayOrderStatusEnums;
 import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.PayTypeEnum;
+import com.bbyiya.enums.calendar.ActivityWorksStatusEnum;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.EErrors;
 import com.bbyiya.model.OOrderproducts;
@@ -209,8 +210,9 @@ public class BasePayServiceImpl implements IBasePayService{
 						if(works!=null&&ObjectUtil.parseLong(payOrder.getExtobject())>0){
 							works.setAddresstype(1);
 							works.setOrderaddressid(ObjectUtil.parseLong(payOrder.getExtobject()));
+							works.setStatus(Integer.parseInt(ActivityWorksStatusEnum.imagesubmit.toString())); 
 							activityworksMapper.updateByPrimaryKeySelective(works);
-						}
+						} 
 						payOrderMapper.updateByPrimaryKeySelective(payOrder);
 						//TODO 分成
 						return true;

@@ -226,7 +226,7 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 			rq.setStatusreson("密码有风险，重新设置！");
 			return rq;
 		}
-		ResultMsg msgResult= SendSMSByMobile.validateCode(phone, vcode, SendMsgEnums.register);
+		ResultMsg msgResult= SendSMSByMobile.validateCode(phone, vcode, SendMsgEnums.bindPhone);
 		if(msgResult.getStatus()==1) {
 			UUsers userPhone=userDao.getUUsersByPhone(phone);
 			if(userPhone!=null&&userPhone.getUserid().longValue()!=userId){

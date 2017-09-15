@@ -229,7 +229,7 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 		userOrder.setBranchuserid(param.getBranchUserId());// 分销商userId
 		userOrder.setAgentuserid(param.getAgentUserId());
 		userOrder.setRemark(param.getRemark());
-		userOrder.setOrdertype(param.getOrderType());//订单类型
+		userOrder.setOrdertype(param.getOrderType()==null?0:param.getOrderType());//订单类型
 		userOrder.setOrdertime(ordertime);
 		userOrder.setPaytime(ordertime);
 		userOrder.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));

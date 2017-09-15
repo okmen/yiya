@@ -71,7 +71,7 @@
     from o_userorders
     where UserId = #{userId,jdbcType=BIGINT} 
 	<if test="typeArrs != null" >
-       and OrderType in <foreach collection="typeArrs" item="item" index="index" open="(" separator="," close=")">#{item}</foreach>
+       and  OrderType in <foreach collection="typeArrs" item="item" index="index" open="(" separator="," close=")">#{item}</foreach>
     </if>
     order by OrderTime desc
   </select>

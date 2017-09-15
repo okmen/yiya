@@ -314,6 +314,7 @@ public class TiActivityMgtController extends SSOController {
 				TiUserdiscounts model=new TiUserdiscounts();
 				model.setActid(actId);
 				model.setWorkid(workId);
+				model.setPromoteruserid(actInfo.getProduceruserid()); 
 				model.setCreatetime(new Date());
 				model.setDiscountid(modlist.get(0).getDiscountid());
 				model.setStatus(0);

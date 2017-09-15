@@ -141,11 +141,6 @@ public class SubmitOrderMgtController extends SSOController {
 				int type = ObjectUtil.parseInt(orderType);
 				if (type > 0) {
 					param.setOrderType(type);
-					// if(!istime()){
-					// rq.setStatu(ReturnStatus.ParamError);
-					// rq.setStatusreson("系统升级中，暂时关闭影楼下单功能，2017-07-03 21:00:00 开放使用！");
-					// return JsonUtil.objectToJsonStr(rq);
-					// }
 				}
 				if (productParam.getPostModelId() != null) {
 					param.setPostModelId(productParam.getPostModelId());

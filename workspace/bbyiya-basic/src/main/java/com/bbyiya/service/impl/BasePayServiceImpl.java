@@ -262,7 +262,10 @@ public class BasePayServiceImpl implements IBasePayService{
 							payOrderMapper.updateByPrimaryKeySelective(payOrder);
 							
 							//---销售分成--------------------------
-							addCommission(payOrder,userorders.getUserorderid());
+							//
+							if(userorders.getOrdertype()==null||userorders.getOrdertype()==Integer.parseInt(OrderTypeEnum.brachOrder.toString())||userorders.getOrdertype()==Integer.parseInt(OrderTypeEnum.nomal.toString())){
+								addCommission(payOrder,userorders.getUserorderid());
+							}
 							return true;
 						} else {//不在支付状态中
 							addlog("payId:"+payId+",方法paySuccessProcess。不在可支付的userOrder状态！");

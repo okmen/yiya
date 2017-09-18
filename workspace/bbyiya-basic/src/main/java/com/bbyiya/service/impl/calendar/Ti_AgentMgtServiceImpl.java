@@ -118,6 +118,7 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 		TiAgentsapply apply= agentapplyMapper.selectByPrimaryKey(userId); 
 		if(apply!=null){
 			applyInfo.setStatus(apply.getStatus());
+			applyInfo.setAgentuserid(userId);
 		}
 		if(applyInfo==null){
 			rq.setStatusreson("参数有误");
@@ -178,6 +179,8 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 					agentModel.setMobilephone(applyInfo.getMobilephone());
 					agentsMapper.updateByPrimaryKeySelective(agentModel);
 				}
+			}else{
+				applyInfo.setStatus(Integer.parseInt(TiAgentStatusEnum.applying.toString()));  
 			}
 			agentapplyMapper.updateByPrimaryKeySelective(applyInfo);
 		}else {
@@ -279,6 +282,8 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 					promoterModel.setRemark(applyInfo.getRemark());
 					promoterMapper.updateByPrimaryKeySelective(promoterModel);
 				}
+			}else{
+				applyInfo.setStatus(Integer.parseInt(PromoterStatusEnum.applying.toString()));  
 			}
 			promoterapplyMapper.updateByPrimaryKeySelective(applyInfo);
 		}else {
@@ -388,6 +393,8 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 						}
 					}
 				}
+			}else{
+				applyInfo.setStatus(Integer.parseInt(ProducersStatusEnum.applying.toString()));  
 			}
 			producersapplyMapper.updateByPrimaryKeySelective(applyInfo);
 		}else {

@@ -43,7 +43,7 @@ public class TiOrderIBSController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			if (ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.branch)) {
+			if (ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_promoter)) {
 				rq = ibstiorderService.findTiMyOrderlist(user.getUserId(),Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()), status,keywords,index,size);
 			} else {
 				rq.setStatu(ReturnStatus.SystemError_1);

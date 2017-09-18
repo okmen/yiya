@@ -78,6 +78,7 @@ import com.bbyiya.service.IBaseUserAccountService;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.service.calendar.ITi_OrderMgtService;
 import com.bbyiya.service.pic.IBasePostMgtService;
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.calendar.TiActivityOrderSubmitParam;
@@ -396,7 +397,10 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 				}
 			}
 		}
-		return 75l;
+		long defaultproducer = ObjectUtil.parseLong(ConfigUtil.getSingleValue("defaultproducer"));
+		if (defaultproducer <= 0)
+			defaultproducer = 65l;
+		return defaultproducer;
 	}
 
 	private ReturnModel submitOrder_common(UserOrderSubmitParam param) throws Exception {

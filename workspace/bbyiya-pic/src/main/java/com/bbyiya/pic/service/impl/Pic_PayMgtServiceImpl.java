@@ -15,6 +15,7 @@ import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.pay.WxAppPayUtils;
 import com.bbyiya.utils.pay.WxPayParam;
+import com.bbyiya.utils.pay.WxPaySubUtils;
 import com.bbyiya.utils.pay.WxPayUtils;
 import com.bbyiya.vo.ReturnModel;
 
@@ -82,6 +83,69 @@ public class Pic_PayMgtServiceImpl implements IPic_PayMgtService {
 			rq.setBasemodle(JsonUtil.objectToJsonStr(resultMap));
 		} catch (Exception e) {
 			// TODO: handle exception
+			rq.setStatu(ReturnStatus.SystemError);
+			rq.setStatusreson(e.getMessage());
+		}
+		return rq;
+	}
+	
+	/**
+	 * 服务商支付
+	 * @param orderNo
+	 * @param openid
+	 * @param ip
+	 * @return
+	 */
+	public ReturnModel getSubWxPayParam(String orderNo, String openid, String ip) {
+		ReturnModel rq = new ReturnModel();
+		if (ObjectUtil.isEmpty(orderNo) || ObjectUtil.isEmpty(ip)) {
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("参数错误");
+			return rq;
+		}
+		try {
+			String prepay_id = "";
+			double totalPrice = 0d;
+			OPayorder payorder = payMapper.selectByPrimaryKey(orderNo);
+			if (payorder != null) {
+				totalPrice = payorder.getTotalprice()-(payorder.getWalletamount()==null?0d:payorder.getWalletamount().doubleValue()); 
+				if (!ObjectUtil.isEmpty(payorder.getPrepayid())) {
+					prepay_id = payorder.getPrepayid();
+				}
+			}
+			// 随机字符串
+			String nonceStr = WxPayUtils.genNonceStr();
+			if (ObjectUtil.isEmpty(prepay_id)) {
+				Map<String, Object> map = WxPaySubUtils.doInBackground(ip, openid, totalPrice, orderNo, nonceStr);
+				if (map != null) {
+					if (map.get("return_code").equals("SUCCESS")) {
+						Object prepayID = map.get("prepay_id");
+						if (prepayID != null) {
+							prepay_id = map.get("prepay_id").toString();
+							payorder.setPrepayid(prepay_id);
+							payorder.setPrepaytime(new Date());
+							payMapper.updateByPrimaryKey(payorder);
+						} else {
+							rq.setStatu(ReturnStatus.ParamError);
+							rq.setStatusreson(map.get("err_code_des").toString());
+							return rq;
+						}
+					} else {
+						rq.setStatu(ReturnStatus.ParamError);
+						rq.setStatusreson(JsonUtil.objectToJsonStr(map));
+						return rq;
+					}
+				} else {
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("系统错误");
+					return rq;
+				}
+			}
+			String timeStamp = String.valueOf(WxPayUtils.genTimeStamp());
+			Map<String, String> resultMap = WxPayUtils.get_payParam(prepay_id, nonceStr, timeStamp);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(JsonUtil.objectToJsonStr(resultMap));
+		} catch (Exception e) {
 			rq.setStatu(ReturnStatus.SystemError);
 			rq.setStatusreson(e.getMessage());
 		}

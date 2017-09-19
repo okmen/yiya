@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 
+import java.util.Random;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -36,6 +37,27 @@ import com.bbyiya.utils.encrypt.MD5Encrypt;
 
 
 public class WxUtil {
+	
+
+	/**
+	 * 时间串
+	 * 
+	 * @return
+	 */
+	public static long genTimeStamp() {
+		return System.currentTimeMillis() / 1000;
+	}
+
+	/**
+	 * 随机字符串
+	 * 
+	 * @return
+	 */
+	public static String genNonceStr() {
+		Random random = new Random();
+		return MD5Encrypt.getMessageDigest(String.valueOf(random.nextInt(10000)).getBytes()).toUpperCase();
+	}
+	
 	/**
 	 * 向指定URL发送GET方法的请求
 	 * 
@@ -72,7 +94,7 @@ public class WxUtil {
 				result += line;
 			}
 		} catch (Exception e) {
-			System.out.println("发送GET请求出现异常！" + e);
+//			System.out.println("发送GET请求出现异常！" + e);
 			e.printStackTrace();
 		}
 		// 使用finally块来关闭输入流
@@ -152,9 +174,9 @@ public class WxUtil {
               conn.disconnect();  
               return buffer.toString();  
           } catch (ConnectException ce) {  
-              System.out.println("连接超时：{}"+ ce);  
+//              System.out.println("连接超时：{}"+ ce);  
           } catch (Exception e) {  
-              System.out.println("https请求异常：{}"+ e);  
+//              System.out.println("https请求异常：{}"+ e);  
           }  
           return null;  
     }  
@@ -337,27 +359,4 @@ public class WxUtil {
         return sign.equals(checkSign);     
 	}
 	
-//	public static boolean isWXsign(Map<String, Object> paramMap,String key){			
-//		StringBuffer sb = new StringBuffer();
-//		String checkSign="";
-//		Set es = paramMap.entrySet();
-//		Iterator it = es.iterator();
-//		while (it.hasNext()) {
-//			Map.Entry entry = (Map.Entry) it.next();
-//			String k = (String) entry.getKey();
-//			String v = (String) entry.getValue();
-//			if (null != v && !"".equals(v) && !"sign".equals(k)
-//					&& !"key".equals(k)) {
-//				sb.append(k + "=" + v + "&");
-//			}
-//			if("sign".equals(k))
-//			{
-//				checkSign = v;
-//			}
-//		}
-//		sb.append("key=" + key);		
-//		String sign = MD5Encrypt.encrypt(sb.toString()).toUpperCase();
-//
-//        return sign.equals(checkSign);     
-//	}
 }

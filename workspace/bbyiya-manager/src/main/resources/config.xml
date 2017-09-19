@@ -91,6 +91,7 @@
 		<!-- id：服务id ， title:服务描述， posturl:要请求的地址，timespan：请求频率(秒) ，seton:是否开启 1开启 -->
 		<items id="dotempAutoOrderSumbit" title="活动订单自动下单" ispost="0" posturl=""  timespan="1800"  seton="1" />
 		<items id="doAutoReceiving" title="订单自动签收" ispost="0" posturl=""  timespan="1800"  seton="1" />
+		<items id="smsReminUserToChongzhi" title="短信通知充值" ispost="0" posturl=""  timespan="1800"  seton="1" />
 	</jobs>
 	
 </appSettings>

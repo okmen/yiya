@@ -24,4 +24,13 @@ public interface IPic_PayMgtService {
 	ReturnModel getWxAppPayParam(String orderNo, String ip);
 	
 	ReturnModel getWxCode_url(String orderNo, String ip);
+	
+	/**
+	 * 微信支付到 幻想馆
+	 * @param orderNo
+	 * @param openid
+	 * @param ip
+	 * @return
+	 */
+	ReturnModel getSubWxPayParam(String orderNo, String openid, String ip);
 }

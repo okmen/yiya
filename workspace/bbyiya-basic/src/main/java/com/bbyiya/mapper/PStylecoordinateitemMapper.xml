@@ -22,7 +22,7 @@
     where CoordId = #{coordid,jdbcType=BIGINT}
   </delete>
   <!-- 新增返回主键Id -->
-  <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="CoordId"  parameterType="com.bbyiya.model.PStylecoordinateitem" >
+  <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="coordid"  parameterType="com.bbyiya.model.PStylecoordinateitem" >
     insert into p_stylecoordinateitem (CoordId, PointLeft, PointTop, 
       PointHight, PointWidth)
     values (#{coordid,jdbcType=BIGINT}, #{pointleft,jdbcType=DECIMAL}, #{pointtop,jdbcType=DECIMAL}, 

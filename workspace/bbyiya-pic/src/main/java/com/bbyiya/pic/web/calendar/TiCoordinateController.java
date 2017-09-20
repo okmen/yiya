@@ -41,6 +41,7 @@ import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiStyleadverts;
 import com.bbyiya.model.TiStylecoordinate;
+import com.bbyiya.pic.utils.Json2Objects;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -209,13 +210,17 @@ public class TiCoordinateController  extends SSOController{
 								 if(userorders.getBranchuserid()!=null&&userorders.getBranchuserid()>0){
 									 TiAdvertimgs advertlist= advertMapper.getAdvertByProductIdAndPromoterId(products.getProductid(),userorders.getBranchuserid() );
 									 if(advertlist!=null&&!ObjectUtil.isEmpty(advertlist.getAdvertimgjson())){
-										 imglist=(List<ImageInfo>)JsonUtil.jsonToList(advertlist.getAdvertimgjson());
+//										 imglist=(List<ImageInfo>)JsonUtil.jsonToList(advertlist.getAdvertimgjson());
+										 imglist=Json2Objects.getImageInfosList(advertlist.getAdvertimgjson());
 									 }
 								 }
 								 for(int i=0;i<products.getAdvertcount();i++){
 									 TiStyleLayerResult advertMap=new TiStyleLayerResult();
 									 advertMap.setIsAdvert(1);
-									 if(imglist==null||imglist.get(i)==null||ObjectUtil.isEmpty(imglist.get(i).getUrl())){ 
+//									 System.out.println(imglist.size());
+//									 System.out.println(imglist.get(0)); 
+//									 System.out.println(imglist.get(0).getUrl()); 
+									 if(imglist==null||imglist.size()<=(i)||imglist.get(i)==null||ObjectUtil.isEmpty(imglist.get(i).getUrl())){ 
 										 advertMap.setHaveAdvert(0);
 										 advertMap.setBackImg(styleadverts.getBlankimg()); 
 									 }else{

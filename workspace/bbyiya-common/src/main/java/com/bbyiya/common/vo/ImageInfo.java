@@ -1,11 +1,14 @@
 package com.bbyiya.common.vo;
 
+import java.io.Serializable;
+
 /**
  * 图片信息
  * @author Administrator
  *
  */
-public class ImageInfo {
+public class ImageInfo implements Serializable{
+	private static final long serialVersionUID = 1L;
 
 	private String url;
 

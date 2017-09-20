@@ -426,7 +426,10 @@ public class BasePayServiceImpl implements IBasePayService{
 					TiProductstyles style = tistyleMapper.selectByPrimaryKey(oproductlist.get(0).getStyleid());
 					if (style != null) {
 						// 全价
-						double totalprice = style.getPrice() * oproductlist.get(0).getCount();
+						double totalprice = style.getPrice() * oproductlist.get(0).getCount();//货款总金额
+						//实际的货款
+						double totalprice_hk=userorders.getOrdertotalprice().doubleValue()-(userorders.getPostage()==null?0d:userorders.getPostage().doubleValue());
+						
 						//分配的方式原则  1 影楼惊爆价下单  2 折扣价，3 全价
 						int type=0;
 						Long promoterUid = userorders.getBranchuserid();// 影楼
@@ -457,7 +460,7 @@ public class BasePayServiceImpl implements IBasePayService{
 						    }/*----------------------------------------------*/
 						} else {//普通订单（c端购买）
 							//优惠价购买
-							if(userorders.getOrdertotalprice().doubleValue()<totalprice){
+							if(totalprice_hk<totalprice){
 								type=2;
 								TiUserdiscounts discount= userdiscountsMapper.getMyDiscountsByUserOrderId(userOrderId);
 								if(discount!=null){
@@ -483,60 +486,68 @@ public class BasePayServiceImpl implements IBasePayService{
 								agentUid = promoters.getAgentuserid();
 							}
 						}
-						
+						//纯货款分配
 						switch (type) {//1 影楼惊爆价下单
 						case 1://
 							if (producerUid != null && producerUid > 0) {
 								//生产商分利
-								accountService.add_accountsLog(producerUid, Integer.parseInt(AccountLogType.get_Commission.toString()), userorders.getOrdertotalprice() * 0.7, userorders.getPayid(), "");
+								accountService.add_accountsLog(producerUid, Integer.parseInt(AccountLogType.get_Commission.toString()), totalprice_hk * 0.7, userorders.getPayid(), "");
 							}
 							if(agentUid!=null&&agentUid.longValue()>0){
 								//订单组织者分利
-								accountService.add_accountsLog(agentUid, Integer.parseInt(AccountLogType.get_Commission.toString()), userorders.getOrdertotalprice() * 0.2, userorders.getPayid(), "");								
+								accountService.add_accountsLog(agentUid, Integer.parseInt(AccountLogType.get_Commission.toString()), totalprice_hk * 0.2, userorders.getPayid(), "");								
 							}
 							//咿呀平台分利
-							accountService.add_accountsLog(yiyaUid, Integer.parseInt(AccountLogType.get_Commission.toString()), userorders.getOrdertotalprice() * 0.05, userorders.getPayid(), "");								
+							accountService.add_accountsLog(yiyaUid, Integer.parseInt(AccountLogType.get_Commission.toString()), totalprice_hk * 0.05, userorders.getPayid(), "");								
 							//幻想馆分利
-							accountService.add_accountsLog(hxgUid, Integer.parseInt(AccountLogType.get_Commission.toString()), userorders.getOrdertotalprice() * 0.05, userorders.getPayid(), "");														
+							accountService.add_accountsLog(hxgUid, Integer.parseInt(AccountLogType.get_Commission.toString()), totalprice_hk * 0.05, userorders.getPayid(), "");														
 							break;
 						case 2:// 2 折扣价
 							if (producerUid != null && producerUid > 0) {
 								//生产商分利
-								accountService.add_accountsLog(producerUid, Integer.parseInt(AccountLogType.get_Commission.toString()), userorders.getOrdertotalprice() * 0.4, userorders.getPayid(), "");
+								accountService.add_accountsLog(producerUid, Integer.parseInt(AccountLogType.get_Commission.toString()), totalprice_hk * 0.4, userorders.getPayid(), "");
 							}
 							if(agentUid!=null&&agentUid.longValue()>0){
 								//订单组织者分利
-								accountService.add_accountsLog(agentUid, Integer.parseInt(AccountLogType.get_Commission.toString()), userorders.getOrdertotalprice() * 0.1, userorders.getPayid(), "");								
+								accountService.add_accountsLog(agentUid, Integer.parseInt(AccountLogType.get_Commission.toString()), totalprice_hk * 0.1, userorders.getPayid(), "");								
 							}
 							if(promoterUid!=null&&promoterUid.longValue()>0){
 								//订单组织者分利
-								accountService.add_accountsLog(promoterUid, Integer.parseInt(AccountLogType.get_Commission.toString()), userorders.getOrdertotalprice() * 0.2, userorders.getPayid(), "");								
+								accountService.add_accountsLog(promoterUid, Integer.parseInt(AccountLogType.get_Commission.toString()), totalprice_hk * 0.2, userorders.getPayid(), "");								
 							}
 							//咿呀平台分利
-							accountService.add_accountsLog(yiyaUid, Integer.parseInt(AccountLogType.get_Commission.toString()), userorders.getOrdertotalprice() * 0.2, userorders.getPayid(), "");								
+							accountService.add_accountsLog(yiyaUid, Integer.parseInt(AccountLogType.get_Commission.toString()), totalprice_hk * 0.2, userorders.getPayid(), "");								
 							//幻想馆分利
-							accountService.add_accountsLog(hxgUid, Integer.parseInt(AccountLogType.get_Commission.toString()), userorders.getOrdertotalprice() * 0.1, userorders.getPayid(), "");														
+							accountService.add_accountsLog(hxgUid, Integer.parseInt(AccountLogType.get_Commission.toString()), totalprice_hk * 0.1, userorders.getPayid(), "");														
 							break;
 						case 3://3 全价
 							if (producerUid != null && producerUid > 0) {
 								//生产商分利
-								accountService.add_accountsLog(producerUid, Integer.parseInt(AccountLogType.get_Commission.toString()), userorders.getOrdertotalprice() * 0.3, userorders.getPayid(), "");
+								accountService.add_accountsLog(producerUid, Integer.parseInt(AccountLogType.get_Commission.toString()), totalprice_hk * 0.3, userorders.getPayid(), "");
 							}
 							if(agentUid!=null&&agentUid.longValue()>0){
 								//订单组织者分利
-								accountService.add_accountsLog(agentUid, Integer.parseInt(AccountLogType.get_Commission.toString()), userorders.getOrdertotalprice() * 0.05, userorders.getPayid(), "");								
+								accountService.add_accountsLog(agentUid, Integer.parseInt(AccountLogType.get_Commission.toString()), totalprice_hk * 0.05, userorders.getPayid(), "");								
 							}
 							if(promoterUid!=null&&promoterUid.longValue()>0){
 								//订单组织者分利
-								accountService.add_accountsLog(promoterUid, Integer.parseInt(AccountLogType.get_Commission.toString()), userorders.getOrdertotalprice() * 0.1, userorders.getPayid(), "");								
+								accountService.add_accountsLog(promoterUid, Integer.parseInt(AccountLogType.get_Commission.toString()), totalprice_hk * 0.1, userorders.getPayid(), "");								
 							}
 							//咿呀平台分利
-							accountService.add_accountsLog(yiyaUid, Integer.parseInt(AccountLogType.get_Commission.toString()), userorders.getOrdertotalprice() * 0.35, userorders.getPayid(), "");								
+							accountService.add_accountsLog(yiyaUid, Integer.parseInt(AccountLogType.get_Commission.toString()), totalprice_hk * 0.35, userorders.getPayid(), "");								
 							//幻想馆分利
-							accountService.add_accountsLog(hxgUid, Integer.parseInt(AccountLogType.get_Commission.toString()), userorders.getOrdertotalprice() * 0.20, userorders.getPayid(), "");														
+							accountService.add_accountsLog(hxgUid, Integer.parseInt(AccountLogType.get_Commission.toString()), totalprice_hk * 0.20, userorders.getPayid(), "");														
 							break;
 						default:
 							break;
+						}
+						//运费分配
+						if(userorders.getPostage()!=null&&userorders.getPostage().doubleValue()>0){
+							//生产商分利
+							accountService.add_accountsLog(producerUid, Integer.parseInt(AccountLogType.get_Commission.toString()), userorders.getPostage().doubleValue() * 0.9, userorders.getPayid(), "");
+							accountService.add_accountsLog(yiyaUid, Integer.parseInt(AccountLogType.get_Commission.toString()), userorders.getPostage().doubleValue() * 0.05, userorders.getPayid(), "");
+							accountService.add_accountsLog(hxgUid, Integer.parseInt(AccountLogType.get_Commission.toString()), userorders.getPostage().doubleValue() * 0.05, userorders.getPayid(), "");
+							
 						}
 					}
 				}

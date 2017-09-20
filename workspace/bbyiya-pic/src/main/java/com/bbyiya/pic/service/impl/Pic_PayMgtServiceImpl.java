@@ -142,7 +142,7 @@ public class Pic_PayMgtServiceImpl implements IPic_PayMgtService {
 				}
 			}
 			String timeStamp = String.valueOf(WxPayUtils.genTimeStamp());
-			Map<String, String> resultMap = WxPayUtils.get_payParam(prepay_id, nonceStr, timeStamp);
+			Map<String, String> resultMap = WxPaySubUtils.get_payParam(prepay_id, nonceStr, timeStamp);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(JsonUtil.objectToJsonStr(resultMap));
 		} catch (Exception e) {

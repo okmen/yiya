@@ -187,7 +187,7 @@ public class SendSMSByMobile {
 			batchSend(mobile, msg);
 		}
 		else if (msgType==Integer.parseInt(SendMsgEnums.jd_exchangCode.toString())) {
-			msg="【咿呀科技】"+param.getUserName()+"您好，感谢您在京东众筹上对咿呀彩时纪念册的支持，您所购买的"+param.getUserName()+"本纪念册兑换码为："+param.getYiye_title()+"，请您按照京东众筹页面上的指示，用微信扫描二维码后，输入对应的兑换码，上传照片订制纪念册，再次感谢您的支持，如有任何问题请联系客服微信号：yiyiyay2017";
+			msg="【咿呀科技】"+param.getUserName()+"您好，感谢您在京东众筹上对咿呀彩时纪念册的支持，您所购买的"+param.getTransNum()+"本纪念册兑换码为："+param.getYiye_title()+"，请您按照京东众筹页面上的指示，用微信扫描二维码后，输入对应的兑换码，上传照片订制纪念册，再次感谢您的支持，如有任何问题请联系客服微信号：yiyiyay2017";
 			batchSend(mobile, msg);
 		}
 		return true;

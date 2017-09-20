@@ -7,6 +7,7 @@ import java.util.List;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import com.bbyiya.common.vo.ImageInfo;
 import com.bbyiya.model.PCommentstemp;
 import com.bbyiya.model.PCommentstips;
 import com.bbyiya.model.PMyproductcomments;
@@ -69,6 +70,29 @@ public class Json2Objects {
 		return null;
 		
 	}
+	
+	public static List<ImageInfo> getImageInfosList(String jsonStr){
+		JSONArray details=null;
+		try {
+			List<ImageInfo> result=new ArrayList<ImageInfo>();
+			 details = new JSONArray().fromObject(jsonStr);
+			 if(details!=null&&details.size()>0){
+				for (int i = 0; i < details.size(); i++) {
+					JSONObject dd = details.getJSONObject(i);//
+					String url=dd.getString("url");
+					if(!ObjectUtil.isEmpty(url)){
+						ImageInfo info=new ImageInfo();
+						info.setUrl(url);
+						result.add(info);
+					}
+				}
+				return result;
+			 }
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
+	}  
 	
 	/**
 	 * 002

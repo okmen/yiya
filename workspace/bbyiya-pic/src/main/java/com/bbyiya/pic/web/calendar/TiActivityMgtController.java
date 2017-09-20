@@ -245,6 +245,7 @@ public class TiActivityMgtController extends SSOController {
 	@RequestMapping(value = "/singleActInfo")
 	public String singleActivityInfo(int actId,@RequestParam(required=false,defaultValue="0")long eUid, @RequestParam(required=false,defaultValue="0")long versionId)throws Exception {
 		ReturnModel rq=new ReturnModel();
+		Map<String, Object> map=new HashMap<String, Object>();
 		rq.setStatu(ReturnStatus.ParamError);
 		rq.setStatusreson("无效的链接！");
 		LoginSuccessResult user= super.getLoginUser();
@@ -255,15 +256,24 @@ public class TiActivityMgtController extends SSOController {
 				//一对一活动
 				if(actInfo.getActtype()!=null&&actInfo.getActtype().intValue()==1) {
 					if(versionId<=0){
+						map.put("vstatus", 2);//活动码不可用
+						rq.setStatu(ReturnStatus.Success);
+						rq.setBasemodle(map);
 						return JsonUtil.objectToJsonStr(rq);
 					}
 					TiActivitysingles single= singMapper.selectByPrimaryKey(versionId);
 					TiPromoteremployees emp= employeeMapper.selectByPrimaryKey(eUid);
 					if(single==null||emp==null||emp.getPromoteruserid().longValue()!=actInfo.getProduceruserid().longValue()||single.getStatus().intValue()==1){
 						rq.setStatusreson("链接已失效"); 
+						map.put("vstatus", 2);//活动码已使用
+						rq.setStatu(ReturnStatus.Success);
+						rq.setBasemodle(map);
 						return JsonUtil.objectToJsonStr(rq);
 					}
 					if(eUid==user.getUserId()){
+						map.put("vstatus", 3);//自己无法使用
+						rq.setStatu(ReturnStatus.Success);
+						rq.setBasemodle(map);
 						rq.setStatusreson("自己不能参与！");
 						return JsonUtil.objectToJsonStr(rq);
 					}
@@ -274,6 +284,8 @@ public class TiActivityMgtController extends SSOController {
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			rq.setStatu(ReturnStatus.Success);
+			map.put("vstatus", 1);//自己无法使用 
+			rq.setBasemodle(map);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

@@ -94,7 +94,7 @@ public class SendMsgController {
 	 */
 	@ResponseBody
     @RequestMapping(value = "/sendMsg2")
-    public String sendMsg2(String phone,String type,String amount) throws MapperException
+    public String sendMsg2(String phone,String type,String amount,String name,String count,String vcodes) throws MapperException
     {
 		ReturnModel rq=new ReturnModel();
 		SmsParam param=new SmsParam();
@@ -103,7 +103,12 @@ public class SendMsgController {
 		if(typeInt==6){
 			param.setTransName("天天快递");
 			param.setTransNum("9543321");
+		}else if (typeInt==Integer.parseInt(SendMsgEnums.jd_exchangCode.toString())) {
+			param.setUserName(name);
+			param.setTransNum(count);
+			param.setYiye_title(vcodes); 
 		} 
+		
 		boolean result=SendSMSByMobile.sendSmS(ObjectUtil.parseInt(type), phone,param);
 		if(!result){
 			rq.setStatusreson("参数有误");

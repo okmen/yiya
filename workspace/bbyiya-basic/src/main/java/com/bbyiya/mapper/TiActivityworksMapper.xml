@@ -34,16 +34,17 @@
    <!-- 根据活动ID得到活动参与情况列表 -->
   <select id="findActWorkListByActId" resultMap="TiActivityworksVOResult"  >
     select 
-    <include refid="Base_Column_List" />
-    from ti_activityworks
-    where ActId = #{actid,jdbcType=BIGINT}
+    a.*
+    from ti_activityworks as a left join o_orderaddress as b on a.OrderAddressId=b.OrderAddressId
+    where a.ActId = #{actid,jdbcType=BIGINT}
     <if test="status != null" >
-       and  Status = #{status,jdbcType=INTEGER}
+       and  a.Status = #{status,jdbcType=INTEGER}
     </if>
     <if test="keywords != null and keywords!=''" > 
-       and  (Mobiephone=#{keywords,jdbcType=VARCHAR} OR Reciever LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ))
+       and ((a.AddressType!=1 and (a.Mobiephone=#{keywords,jdbcType=VARCHAR} OR a.Reciever LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ))) or
+       (a.AddressType=1 and (b.Phone=#{keywords,jdbcType=VARCHAR} OR b.Reciver LIKE CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) )))
     </if>
-    order by CreateTime desc
+    order by a.CreateTime desc
   </select>
   <select id="getActWorkListByActIdAndUserId" resultMap="TiActivityworksVOResult"  ><!-- 获取用户参与的活动 -->
   	select <include refid="Base_Column_List" />

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import com.bbyiya.common.vo.ImageInfo;
 import com.bbyiya.model.PMyproducttempext;
 import com.bbyiya.model.TiMachinemodel;
 import com.bbyiya.utils.ObjectUtil;
@@ -149,6 +150,50 @@ public class Json2Objects {
 		}
 		
 		return arealist;
+	}
+	
+	/**
+	 * 得到图片list
+	 * @param imgJson
+	 * @return
+	 */
+	public static List<ImageInfo> getParam_ImageInfo(String imgJson) {
+		if(ObjectUtil.isEmpty(imgJson)){
+			return null;
+		}
+		JSONObject model = JSONObject.fromObject(imgJson);
+		List<ImageInfo> imglist=null;
+		if (model != null) {
+			String detailString=String.valueOf(model.get("imglist"));
+			if(ObjectUtil.isEmpty(detailString)||detailString.equals("null")){
+				return null;
+			}	
+			JSONArray codearr=null;
+			try {
+				codearr = new JSONArray().fromObject(detailString);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			
+			if(codearr!=null&&codearr.size()>0){
+				imglist=new ArrayList<ImageInfo>();
+				for (int i = 0; i < codearr.size(); i++) {
+					JSONObject dd = codearr.getJSONObject(i);
+					ImageInfo img=new ImageInfo();
+					String url=String.valueOf(dd.get("url"));
+					if(!ObjectUtil.isEmpty(url)){
+						img.setUrl(url);
+					}
+					
+					if(img.getUrl()!=null){
+						imglist.add(img);
+					}
+					
+				}
+			} 
+		}
+		
+		return imglist;
 	}
 	
 }

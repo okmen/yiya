@@ -8,7 +8,11 @@
 		<Folder Expanded="Yes" Name="台历挂历">
 			<Model ID="{EF6D0143-D6B7-482B-BA22-8859B64120DA}" Loaded="No" Name="台历业务逻辑" Type="{3D3C409C-B60D-430E-A1C4-B880653AC634}" URL="台历业务逻辑.bpm"/>
 			<Model ID="{8BADFD82-AE00-41D9-BDEC-F701F43AFD6F}" Loaded="No" Name="台历挂历 " Type="{18112060-1A4B-11D1-83D9-444553540000}" URL="台历挂历.oom"/>
+<<<<<<< HEAD
+			<Model Expanded="Yes" ID="{D0C60CBF-0792-41E4-AD5E-F36C96829075}" Loaded="No" Name="台历" Type="{CDE44E21-9669-11D1-9914-006097355D9B}" URL="台历.pdm"/>
+=======
 			<Model Expanded="Yes" ID="{D0C60CBF-0792-41E4-AD5E-F36C96829075}" Name="台历" Selected="Yes" Type="{CDE44E21-9669-11D1-9914-006097355D9B}" URL="台历.pdm"/>
+>>>>>>> branch 'dev/zy' of https://github.com/okmen/yiya.git
 		</Folder>
 	</Local>
 	<BrowserModule Name="Repository"/>

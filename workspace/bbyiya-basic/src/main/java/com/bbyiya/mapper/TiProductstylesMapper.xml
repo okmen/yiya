@@ -31,6 +31,12 @@
     from ti_productstyles
     where  Status=1 and ProductId = #{productId,jdbcType=BIGINT}
   </select>
+  <!-- 02 根据productid获取款式最大的ID-->
+  <select id="getMaxStyleIdByProductId" resultType="java.lang.Long"  parameterType="java.lang.Long" >
+    select max(StyleId)
+    from ti_productstyles
+    where  ProductId = #{productId,jdbcType=BIGINT}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from ti_productstyles
     where StyleId = #{styleid,jdbcType=BIGINT}

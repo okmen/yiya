@@ -187,6 +187,7 @@ public class TiActivityMgtController extends SSOController {
 					}
 					single.setUserid(user.getUserId());
 					single.setGetstime(new Date());
+					single.setStatus(1); 
 					singMapper.updateByPrimaryKeySelective(single);
 				}
 				TiActivityworks activityworks= activityworksMapper.getActWorkListByActIdAndUserId(actId, user.getUserId());
@@ -240,7 +241,45 @@ public class TiActivityMgtController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-	
+	@ResponseBody
+	@RequestMapping(value = "/singleActInfo")
+	public String singleActivityInfo(int actId,@RequestParam(required=false,defaultValue="0")long eUid, @RequestParam(required=false,defaultValue="0")long versionId)throws Exception {
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.ParamError);
+		rq.setStatusreson("无效的链接！");
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			// 1活动信息
+			TiActivitys actInfo = actMapper.selectByPrimaryKey(actId);
+			if (actInfo != null) {
+				//一对一活动
+				if(actInfo.getActtype()!=null&&actInfo.getActtype().intValue()==1) {
+					if(versionId<=0){
+						return JsonUtil.objectToJsonStr(rq);
+					}
+					TiActivitysingles single= singMapper.selectByPrimaryKey(versionId);
+					TiPromoteremployees emp= employeeMapper.selectByPrimaryKey(eUid);
+					if(single==null||emp==null||emp.getPromoteruserid().longValue()!=actInfo.getProduceruserid().longValue()||single.getStatus().intValue()==1){
+						rq.setStatusreson("链接已失效"); 
+						return JsonUtil.objectToJsonStr(rq);
+					}
+					if(eUid==user.getUserId()){
+						rq.setStatusreson("自己不能参与！");
+						return JsonUtil.objectToJsonStr(rq);
+					}
+				}else {
+					return JsonUtil.objectToJsonStr(rq);
+				}
+			}else {
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			rq.setStatu(ReturnStatus.Success);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	/**
 	 * 领取优惠券
 	 * @param workId

@@ -45,7 +45,12 @@ public enum SendMsgEnums {
     /**
      * 绑定手机
      */
-    bindPhone(10);
+    bindPhone(10),
+    /**
+     * 
+     */
+    jd_exchangCode(11)
+    ;
 
     private final int Type;
 

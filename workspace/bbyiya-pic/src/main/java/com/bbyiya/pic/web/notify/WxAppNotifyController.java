@@ -79,17 +79,17 @@ public class WxAppNotifyController {
 
 	private String queryWxOrder(String transaction_id, String payId) {
 		SortedMap<String, String> map =  WxAppPayUtils.queryWxOrder(transaction_id, payId);//WxUtil.xmlToMap(xmlResult);
-		if (WxUtil.isWXsign(map, WxPayAppConfig.AppSecret)) {
-			if (map != null && map.get("return_code").equals("SUCCESS") && map.get("result_code").equals("SUCCESS") && map.get("trade_state").equals("SUCCESS")) {
-				// 会写订单状态 TODO 回写订单状态
-				boolean paySuccess = orderMgtService.paySuccessProcess(payId);
-				if (paySuccess) {
-					return "success";
-				} else {
-					return "error";
-				}
+//		if (WxUtil.isWXsign(map, WxPayAppConfig.AppSecret)) {
+		if (map != null && map.get("return_code").equals("SUCCESS") && map.get("result_code").equals("SUCCESS") && map.get("trade_state").equals("SUCCESS")) {
+			// 会写订单状态 TODO 回写订单状态
+			boolean paySuccess = orderMgtService.paySuccessProcess(payId);
+			if (paySuccess) {
+				return "success";
+			} else {
+				return "error";
 			}
 		}
+//		}
 		return "success";
 	}
 	

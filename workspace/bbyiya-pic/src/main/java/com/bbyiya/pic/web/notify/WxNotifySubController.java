@@ -15,11 +15,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.dao.EErrorsMapper;
 import com.bbyiya.model.EErrors;
 import com.bbyiya.service.IBasePayService;
-import com.bbyiya.utils.pay.WxPayUtils;
+import com.bbyiya.utils.JsonUtil;
+import com.bbyiya.utils.pay.WxPaySubUtils;
 import com.bbyiya.utils.pay.WxUtil;
 import com.bbyiya.utils.pay.config.SubWxPayConfig;
 import com.sdicons.json.mapper.MapperException;
@@ -36,25 +38,25 @@ public class WxNotifySubController {
 	 * 订单主动查询
 	 * @param request
 	 * @return
+	 * @throws MapperException 
 	 */
-//	@ResponseBody
-//	@RequestMapping(value = "/wxPayQuery", method = { RequestMethod.POST, RequestMethod.GET })
-//	public String wxPayQuery(HttpServletRequest request){
-//		String result="1";
-//		String payId=request.getParameter("payId");
-//		SortedMap<String, String> mapResult=WxPayUtils.queryWxOrder("", payId);
-//		if (mapResult != null) {
-//			if (mapResult.get("return_code").equals("SUCCESS")) {
-//				if(mapResult.get("result_code").equals("SUCCESS")){//
-//					if(mapResult.get("trade_state ").equals("SUCCESS ")){//交易成功
-//						result+="ok!";
-//					}
-//				}
-//			}
-//		}
-//		
-//		return result; 	
-//	}
+	@ResponseBody
+	@RequestMapping(value = "/wxPayQuery", method = { RequestMethod.POST, RequestMethod.GET })
+	public String wxPayQuery(HttpServletRequest request) throws MapperException{
+		String payId=request.getParameter("payId"); 
+		String transaction_id=request.getParameter("transaction_id");
+		SortedMap<String, String> mapResult=WxPaySubUtils.queryWxOrder(transaction_id, payId);
+		if (mapResult != null) {
+			if (mapResult.get("return_code").equals("SUCCESS")) {
+				if(mapResult.get("result_code").equals("SUCCESS")){//
+					if(mapResult.get("trade_state").equals("SUCCESS")){//交易成功
+						orderMgtService.paySuccessProcess(payId);
+					}
+				}
+			}
+		}
+		return JsonUtil.objectToJsonStr(mapResult);  	
+	}
 	
 	/**
 	 * 微信公众号
@@ -67,39 +69,29 @@ public class WxNotifySubController {
 	 * @throws IOException
 	 * @throws MapperException
 	 */
-	@RequestMapping(value = "/WxPayNotify", method = { RequestMethod.POST, RequestMethod.GET })
+	@RequestMapping(value = "/WxPayNotifySub", method = { RequestMethod.POST, RequestMethod.GET })
 	public String wxpayNotify(HttpServletRequest request, HttpServletResponse response, Model model){
-		String msg="subpay:1";
+		String msg="subpay09192;";
 		try {
 			String xmlStr = readReqStr(request);
 			SortedMap<String, String> notifymap = WxUtil.xmlToMap(xmlStr);
 			if (notifymap == null || notifymap.size() < 1) {
-				msg+="2,xml="+xmlStr;
-				addlog(msg);
+				addlog(msg+="2,xml="+xmlStr);
 				return "error";
 			}
 			if (WxUtil.isWXsign(notifymap, SubWxPayConfig.AppSecret)) {
 				String result_code = notifymap.get("result_code");
 				if ("SUCCESS".equals(result_code)) {
-					String quReuslt = queryWxOrder(notifymap.get("transaction_id"), notifymap.get("out_trade_no"));
-					if (quReuslt.equals("success")) {
-						return "paysuccess";
-					}else {
-						msg+="3,xml="+xmlStr;
-						addlog(msg);
-					}
+					return queryWxOrder(notifymap.get("transaction_id"), notifymap.get("out_trade_no"));
 				} else {
-					msg+="4,xml="+xmlStr;
-					addlog(msg);
+					addlog(msg+="通知xml:"+xmlStr);
 					return "error";
 				}
 			}else {
-				msg+="5签名有误,xml="+xmlStr;
-				addlog(msg);
+				addlog(msg+"签名有误,xml="+xmlStr);
 			}
 		} catch (Exception e) {
-			msg+="error:"+e.getMessage();
-			addlog(msg);
+			addlog(msg+="error:"+e.getMessage());
 		}
 		return "error";
 	}
@@ -111,18 +103,19 @@ public class WxNotifySubController {
 	 * @return
 	 */
 	private String queryWxOrder(String transaction_id, String payId) {
-		SortedMap<String, String> map=WxPayUtils.queryWxOrder(transaction_id, payId);
-		if (WxUtil.isWXsign(map, SubWxPayConfig.AppSecret)) {
+		try {
+			SortedMap<String, String> map = WxPaySubUtils.queryWxOrder(transaction_id, payId);
 			if (map != null && map.get("return_code").equals("SUCCESS") && map.get("result_code").equals("SUCCESS") && map.get("trade_state").equals("SUCCESS")) {
-				// 会写订单状态 
-				boolean paySuccess = orderMgtService.paySuccessProcess(payId);
-				if (paySuccess) {
-					return "success";
-				} else {
-					return "error";
-				}
+				// 会写订单状态
+				orderMgtService.paySuccessProcess(payId);
+				return "success";
+			} else {
+				addlog("subPay:" + payId + "支付失败！json:" + JsonUtil.objectToJsonStr(map));
+				return "error";
 			}
+		} catch (Exception e) {
 		}
+
 		return "success";
 	}
 

@@ -183,9 +183,8 @@ public class TiCoordinateController  extends SSOController{
 						for(int i=0;i<layerList.size();i++){
 							if(i==0){
 								layerList.get(i).setImgCoordMod(front_pic);
-								if(products.getCateid()==1||products.getCateid()==2||products.getCateid()==3){
+								if(layerList.get(i).getIsround()!=null&&layerList.get(i).getIsround()==1){
 									layerList.get(i).setWidthhight(1d);
-									layerList.get(i).setIsround(1);
 								}else {
 									double widthhight= (style.getWidth()*front_pic.getPointwidth())/(style.getHight()*front_pic.getPointhight());
 									layerList.get(i).setWidthhight(widthhight); 
@@ -217,9 +216,6 @@ public class TiCoordinateController  extends SSOController{
 								 for(int i=0;i<products.getAdvertcount();i++){
 									 TiStyleLayerResult advertMap=new TiStyleLayerResult();
 									 advertMap.setIsAdvert(1);
-//									 System.out.println(imglist.size());
-//									 System.out.println(imglist.get(0)); 
-//									 System.out.println(imglist.get(0).getUrl()); 
 									 if(imglist==null||imglist.size()<=(i)||imglist.get(i)==null||ObjectUtil.isEmpty(imglist.get(i).getUrl())){ 
 										 advertMap.setHaveAdvert(0);
 										 advertMap.setBackImg(styleadverts.getBlankimg()); 
@@ -297,8 +293,6 @@ public class TiCoordinateController  extends SSOController{
 		if(style!=null&&stylecoordinate!=null&&layerList!=null&&layerList.size()>0){
 			
 			Map<String, Object> map = new HashMap<String, Object>();
-			//打印号坐标
-//			PStylecoordinateitem print_no = styleCoordItemMapper.selectByPrimaryKey(stylecoordinate.getPrintcoordid().longValue());
 			//内页图片坐标
 			PStylecoordinateitem in_pic = styleCoordItemMapper.selectByPrimaryKey(stylecoordinate.getImgcoordid().longValue());
 			//封面图片坐标
@@ -307,9 +301,8 @@ public class TiCoordinateController  extends SSOController{
 			for(int i=0;i<layerList.size();i++){
 				if(i==0){
 					layerList.get(i).setImgCoordMod(front_pic);
-					if(products.getCateid()==1||products.getCateid()==2||products.getCateid()==3){
+					if(layerList.get(i).getIsround()!=null&&layerList.get(i).getIsround()==1){
 						layerList.get(i).setWidthhight(1d);
-						layerList.get(i).setIsround(1);
 					}else {
 						double widthhight= (style.getWidth()*front_pic.getPointwidth())/(style.getHight()*front_pic.getPointhight());
 						layerList.get(i).setWidthhight(widthhight); 

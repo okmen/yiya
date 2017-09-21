@@ -41,7 +41,7 @@ public class WxPaySubUtils {
 			packageParams.add(new BasicNameValuePair("mch_id", SubWxPayConfig.MCH_ID));// 商户号
 			packageParams.add(new BasicNameValuePair("sub_mch_id", SubWxPayConfig.SUB_MCH_ID));// 商户号
 			packageParams.add(new BasicNameValuePair("nonce_str", nonceStr));
-			packageParams.add(new BasicNameValuePair("body", "yiya-12pic"));// "订单:"+orderNo
+			packageParams.add(new BasicNameValuePair("body", "台历/挂历/年历"));// "订单:"+orderNo
 			packageParams.add(new BasicNameValuePair("out_trade_no", orderNo));
 			packageParams.add(new BasicNameValuePair("total_fee", totalFee));
 			packageParams.add(new BasicNameValuePair("spbill_create_ip", ipStr));

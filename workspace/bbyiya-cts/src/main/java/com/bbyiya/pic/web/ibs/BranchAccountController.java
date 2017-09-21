@@ -34,11 +34,11 @@ public class BranchAccountController  extends SSOController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/accountLog")
-	public String findAcountsLogsPageResult(Integer type, int index, int size) throws MapperException {
+	public String findAcountsLogsPageResult(Integer type,String keywords, int index, int size) throws MapperException {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq= accountService.findAcountsLogsPageResult(user.getUserId(), type, index, size);
+			rq= accountService.findAcountsLogsPageResult(user.getUserId(),keywords, type, index, size);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

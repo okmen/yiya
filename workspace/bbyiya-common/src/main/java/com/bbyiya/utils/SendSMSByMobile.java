@@ -156,7 +156,7 @@ public class SendSMSByMobile {
 		//通知- 已发货
 		else if (msgType==Integer.parseInt(SendMsgEnums.delivery.toString())) {
 			if(!(param==null||ObjectUtil.isEmpty(param.getTransName())||ObjectUtil.isEmpty(param.getTransNum()))){
-				msg="【咿呀科技】尊敬的用户，您制作的相册已发货，快递单号："+param.getTransNum()+"["+param.getTransName()+"]"; 
+				msg="【咿呀科技】尊敬的用户，您制作的产品已发货，快递单号："+param.getTransNum()+"["+param.getTransName()+"]"; 
 				batchSend(mobile, msg); 
 			}
 		}

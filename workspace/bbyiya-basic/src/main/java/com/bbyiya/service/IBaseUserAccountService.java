@@ -44,7 +44,7 @@ public interface IBaseUserAccountService {
 	 * @param size
 	 * @return
 	 */
-	ReturnModel findAcountsLogsPageResult(Long userId, Integer type, int index, int size) ;
+	ReturnModel findAcountsLogsPageResult(Long userId,String keywords, Integer type, int index, int size) ;
 	/**
 	 * 账户变动 -新增账户流水
 	 * @param userId

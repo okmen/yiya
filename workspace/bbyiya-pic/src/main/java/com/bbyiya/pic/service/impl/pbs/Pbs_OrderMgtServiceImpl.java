@@ -19,9 +19,11 @@ import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OOrderproductdetailsMapper;
 import com.bbyiya.dao.OOrderproductphotosMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
+import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.OProducerordercountMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
+import com.bbyiya.dao.TiActivityworksMapper;
 import com.bbyiya.dao.TiPromotersMapper;
 import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.dao.UBranchtransaccountsMapper;
@@ -34,9 +36,11 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproductphotos;
+import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.OProducerordercount;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproductdetails;
+import com.bbyiya.model.TiActivityworks;
 import com.bbyiya.model.TiPromoters;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UBranchtransaccounts;
@@ -78,6 +82,8 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	private OOrderproductphotosMapper photoMapper;
 	@Autowired
 	private OOrderaddressMapper addressMapper;
+	@Autowired
+	private OPayorderMapper payoderMapper;
 	
 	@Autowired
 	private OProducerordercountMapper producerOrderMapper;
@@ -98,6 +104,8 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	
 	@Autowired
 	private TiPromotersMapper promoterMapper;
+	@Autowired
+	private TiActivityworksMapper tiworkMapper;
 	
 	@Resource(name = "baseUserAccountService")
 	private IBaseUserAccountService accountService;
@@ -129,6 +137,8 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 				
 				int orderType = order.getOrdertype() == null ? 0 : order.getOrdertype();
 				order.setOrdertype(orderType);
+				//默认到关联账户流水的关键字为订单号
+				product.setPostlogrelationid(order.getUserorderid());
 				//咿呀12的生产商
 				if(orderType==Integer.parseInt(OrderTypeEnum.nomal.toString())||orderType==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){
 					branch=branchesMapper.selectByPrimaryKey(order.getBranchuserid());
@@ -141,6 +151,16 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					if(promoters!=null){
 						product.setBranchesName(promoters.getCompanyname());
 					}
+					if(orderType==Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())&&product.getCartid()!=null){
+						TiActivityworks work=tiworkMapper.selectByPrimaryKey(product.getCartid());
+						if(work!=null&&work.getAddresstype()!=null&&work.getAddresstype().intValue()==1){
+							OPayorder postpayroder=payoderMapper.getpostPayorderByworkId(work.getWorkid().toString());
+							if(postpayroder!=null){
+								product.setPostlogrelationid(postpayroder.getPayid());
+							}
+						}
+					}
+					
 				}
 				
 				OProducerordercount producerorder=producerOrderMapper.selectByPrimaryKey(product.getUserorderid());
@@ -202,7 +222,10 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					order.setExpresscode(expressCode);
 					order.setDeliverytime(new Date()); 
 					//修改订单状态为已发货状态
-					order.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
+					if(order.getStatus()!=null&&order.getStatus().intValue()!=Integer.parseInt(OrderStatusEnum.recived.toString())){
+						order.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
+					}
+					
 					userOrdersMapper.updateByPrimaryKeySelective(order);
 				}
 			}
@@ -210,8 +233,9 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			if(userorders.getOrdertype()==null) userorders.setOrdertype(0);
 			
 			//修改订单状态为已发货状态
-			userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
-					
+			if(userorders.getStatus()!=null&&userorders.getStatus().intValue()!=Integer.parseInt(OrderStatusEnum.recived.toString())){
+				userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
+			}		
 			userorders.setExpresscom(expressCom);
 			userorders.setExpressorder(expressOrder);
 			userorders.setExpresscode(expressCode);
@@ -261,7 +285,9 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			
 			//修改订单状态为已发货状态
 			userorders.setPostage(postage);
-			userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
+			if(userorders.getStatus()!=null&&userorders.getStatus().intValue()!=Integer.parseInt(OrderStatusEnum.recived.toString())){
+				userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
+			}
 			userorders.setDeliverytime(new Date());
 			userOrdersMapper.updateByPrimaryKeySelective(userorders);
 			
@@ -416,7 +442,10 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					}
 					
 					//修改订单状态为已发货状态
-					userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
+					if(userorders.getStatus()!=null&&userorders.getStatus().intValue()!=Integer.parseInt(OrderStatusEnum.recived.toString())){
+						userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
+						
+					}
 					userorders.setDeliverytime(new Date());
 					userOrdersMapper.updateByPrimaryKeySelective(userorders);
 				}

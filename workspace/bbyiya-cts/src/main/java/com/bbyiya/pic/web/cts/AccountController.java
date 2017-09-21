@@ -203,12 +203,12 @@ public class AccountController  extends SSOController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/cts_accountLog")
-	public String cts_accountLog(Long userid,Integer type, int index, int size) throws MapperException {
+	public String cts_accountLog(Long userid,String keywords,Integer type, int index, int size) throws MapperException {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
-				rq= accountService.findAcountsLogsPageResult(userid, type, index, size);
+				rq= accountService.findAcountsLogsPageResult(userid,keywords, type, index, size);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError_1);
 				rq.setStatusreson("权限不足");

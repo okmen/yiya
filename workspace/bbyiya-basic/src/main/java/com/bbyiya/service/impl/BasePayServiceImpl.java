@@ -428,8 +428,12 @@ public class BasePayServiceImpl implements IBasePayService{
 						// 全价
 						double totalprice = style.getPrice() * oproductlist.get(0).getCount();//货款总金额
 						//实际的货款
-						double totalprice_hk=userorders.getOrdertotalprice().doubleValue()-(userorders.getPostage()==null?0d:userorders.getPostage().doubleValue());
-						
+						double totalprice_hk=0d;
+						if(userorders.getOrdertype().intValue()==Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())){
+							totalprice_hk=userorders.getOrdertotalprice();
+						}else {
+							totalprice_hk=userorders.getOrdertotalprice().doubleValue()-(userorders.getPostage()==null?0d:userorders.getPostage().doubleValue());							
+						}
 						//分配的方式原则  1 影楼惊爆价下单  2 折扣价，3 全价
 						int type=0;
 						Long promoterUid = userorders.getBranchuserid();// 影楼
@@ -441,7 +445,7 @@ public class BasePayServiceImpl implements IBasePayService{
 						if (userorders.getOrdertype().intValue() == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())) {
 							type=1;
 							//邮费分配-----------------------------
-						    OOrderproducts oproduct=	oproductMapper.getOProductsByOrderId(userOrderId);
+						    OOrderproducts oproduct=oproductMapper.getOProductsByOrderId(userOrderId);
 						    if(oproduct!=null){
 						    	TiActivityworks actwork= activityworksMapper.selectByPrimaryKey(oproduct.getCartid()) ;
 						    	if(actwork!=null&&actwork.getOrderaddressid()!=null&&actwork.getOrderaddressid().longValue()>0){
@@ -544,10 +548,14 @@ public class BasePayServiceImpl implements IBasePayService{
 						//运费分配
 						if(userorders.getPostage()!=null&&userorders.getPostage().doubleValue()>0){
 							//生产商分利
-							accountService.add_accountsLog(producerUid, Integer.parseInt(AccountLogType.get_Commission.toString()), userorders.getPostage().doubleValue() * 0.9, userorders.getPayid(), "");
-							accountService.add_accountsLog(yiyaUid, Integer.parseInt(AccountLogType.get_Commission.toString()), userorders.getPostage().doubleValue() * 0.05, userorders.getPayid(), "");
-							accountService.add_accountsLog(hxgUid, Integer.parseInt(AccountLogType.get_Commission.toString()), userorders.getPostage().doubleValue() * 0.05, userorders.getPayid(), "");
-							
+							if(userorders.getOrdertype().intValue()==Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())){
+								accountService.add_accountsLog(producerUid, Integer.parseInt(AccountLogType.get_Commission.toString()), userorders.getPostage().doubleValue() , userorders.getPayid(), "");							
+							}else {
+								//用户付邮费
+								accountService.add_accountsLog(producerUid, Integer.parseInt(AccountLogType.get_Commission.toString()), userorders.getPostage().doubleValue() * 0.9, userorders.getPayid(), "");
+								accountService.add_accountsLog(yiyaUid, Integer.parseInt(AccountLogType.get_Commission.toString()), userorders.getPostage().doubleValue() * 0.05, userorders.getPayid(), "");
+								accountService.add_accountsLog(hxgUid, Integer.parseInt(AccountLogType.get_Commission.toString()), userorders.getPostage().doubleValue() * 0.05, userorders.getPayid(), "");														
+							}	
 						}
 					}
 				}

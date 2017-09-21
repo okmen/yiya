@@ -420,7 +420,7 @@ public class BasePayServiceImpl implements IBasePayService{
 	public void distributeOrderAmount(String userOrderId){
 		try {
 			OUserorders userorders = userOrdersMapper.selectByPrimaryKey(userOrderId);
-			if (userorders != null && userorders.getOrdertype() != null && (userorders.getOrdertype() == Integer.parseInt(OrderTypeEnum.ti_nomal.toString()) || userorders.getOrdertype() == Integer.parseInt(OrderTypeEnum.ti_nomal.toString()))) {
+			if (userorders != null && userorders.getOrdertype() != null && (userorders.getOrdertype() == Integer.parseInt(OrderTypeEnum.ti_nomal.toString()) || userorders.getOrdertype() == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()))) {
 				List<OOrderproducts> oproductlist = oproductMapper.findOProductsByOrderId(userOrderId);
 				if (oproductlist != null && oproductlist.size() > 0) {
 					TiProductstyles style = tistyleMapper.selectByPrimaryKey(oproductlist.get(0).getStyleid());

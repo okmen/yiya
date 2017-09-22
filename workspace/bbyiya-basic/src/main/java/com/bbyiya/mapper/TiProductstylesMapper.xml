@@ -25,6 +25,12 @@
     from ti_productstyles
     where StyleId = #{styleid,jdbcType=BIGINT}
   </select>
+   <select id="findAllStylelistByProductId" resultMap="BaseResultMap" ><!-- 01 获取款式列表 -->
+    select 
+    <include refid="Base_Column_List" />
+    from ti_productstyles
+    where  ProductId = #{productId,jdbcType=BIGINT}
+  </select>
   <select id="findStylelistByProductId" resultMap="BaseResultMap" ><!-- 01 获取款式列表 -->
     select 
     <include refid="Base_Column_List" />

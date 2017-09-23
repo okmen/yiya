@@ -41,8 +41,8 @@
        and  a.Status = #{status,jdbcType=INTEGER}
     </if>
     <if test="keywords != null and keywords!=''" > 
-       and ((a.AddressType!=1 and (a.Mobiephone=#{keywords,jdbcType=VARCHAR} OR a.Reciever LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ))) or
-       (a.AddressType=1 and (b.Phone=#{keywords,jdbcType=VARCHAR} OR b.Reciver LIKE CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) )))
+       and ((a.AddressType!=1 and (a.Mobiephone LIKE CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) OR a.Reciever LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ))) or
+       (a.AddressType=1 and (b.Phone LIKE CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) OR b.Reciver LIKE CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) )))
     </if>
     order by a.CreateTime desc
   </select>

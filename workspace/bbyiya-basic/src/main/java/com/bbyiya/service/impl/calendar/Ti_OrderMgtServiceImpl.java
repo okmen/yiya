@@ -352,6 +352,13 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 						productextMapper.updateByPrimaryKeySelective(productsext);
 					}
 					
+					Map<String, Object> mapResult = new HashMap<String, Object>();
+					String orderId = payId;
+					mapResult.put("payId", payId);
+					mapResult.put("orderId", orderId);
+					mapResult.put("productId", product.getProductid());
+					mapResult.put("styleId", style.getStyleid());
+					mapResult.put("totalPrice", totalprice);
 					rq.setStatu(ReturnStatus.Success);
 					rq.setStatusreson("下单成功"); 
 				}

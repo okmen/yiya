@@ -57,7 +57,7 @@ public class AccountMgtController extends SSOController{
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
-			rq = accountService.findAcountsLogsPageResult(user.getUserId(), null, index, size);
+			rq = accountService.findAcountsLogsPageResult(user.getUserId(), null,null, index, size);
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

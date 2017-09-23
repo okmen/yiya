@@ -130,7 +130,7 @@ public class Cts_TiProductsServiceImpl implements ICts_TiProductsService{
 	public ReturnModel getproductStyleList(Long productid){
 		ReturnModel rqModel=new ReturnModel();
 		rqModel.setStatu(ReturnStatus.ParamError);
-		List<TiProductstyles> styleList=styleMapper.findStylelistByProductId(productid);
+		List<TiProductstyles> styleList=styleMapper.findAllStylelistByProductId(productid);
 		rqModel.setBasemodle(styleList);
 		rqModel.setStatu(ReturnStatus.Success); 		
 		rqModel.setStatusreson("操作成功！");
@@ -296,5 +296,19 @@ public class Cts_TiProductsServiceImpl implements ICts_TiProductsService{
 		rqModel.setStatusreson("设置成功！");
 		return rqModel;
 	}
-	
+
+	public ReturnModel setStyleStatus(Long styleid,Integer status) throws Exception{
+		ReturnModel rqModel=new ReturnModel();
+		rqModel.setStatu(ReturnStatus.ParamError);	
+		TiProductstyles style=styleMapper.selectByPrimaryKey(styleid);
+		if(style!=null){
+			if(status!=null&&status.intValue()==Integer.parseInt(ProductStatusEnum.ok.toString())){
+				style.setStatus(status);
+			}else{
+				style.setStatus(0);
+			}
+			styleMapper.updateByPrimaryKey(style);
+		}
+		return rqModel;
+	}
 }

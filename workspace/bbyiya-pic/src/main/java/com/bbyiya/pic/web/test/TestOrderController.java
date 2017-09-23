@@ -57,7 +57,7 @@ public class TestOrderController  extends SSOController{
 	@RequestMapping(value = "/accountlogs")
 	public String templateMessageSend(long  userId,int type, int index,int size) throws Exception {
 		ReturnModel rq = new ReturnModel();
-		rq=accountService.findAcountsLogsPageResult(userId, type, index, size);
+		rq=accountService.findAcountsLogsPageResult(userId,null, type, index, size);
 		
 		rq.setStatu(ReturnStatus.Success);
 		return JsonUtil.objectToJsonStr(rq);

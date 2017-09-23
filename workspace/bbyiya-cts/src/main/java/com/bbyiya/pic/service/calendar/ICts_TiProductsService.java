@@ -92,5 +92,14 @@ public interface ICts_TiProductsService {
 			PStylecoordinateitem printcoord, PStylecoordinateitem fontimgcoord)
 			throws Exception;
 	
+	/**
+	 * 设置款式状态
+	 * @param styleid
+	 * @param status
+	 * @return
+	 * @throws Exception
+	 */
+	ReturnModel setStyleStatus(Long styleid, Integer status) throws Exception;
+	
 	
 }

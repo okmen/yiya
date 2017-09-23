@@ -23,6 +23,9 @@
     <include refid="Base_Column_List" />
     from u_accountslogs
     where UserId = #{userId,jdbcType=BIGINT} 
+    <if test="keywords != null and keywords!=''" >
+       and OrderId like CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' )
+    </if>   
     <if test="accountLogType != null" >
        and Type= #{accountLogType,jdbcType=INTEGER}
     </if>

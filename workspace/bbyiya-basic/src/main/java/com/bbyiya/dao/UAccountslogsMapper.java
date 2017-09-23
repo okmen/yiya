@@ -24,7 +24,7 @@ public interface UAccountslogsMapper {
      * @param type
      * @return
      */
-    List<UAccountslogs> findAccountsLogs(@Param("userId")Long userId,@Param("accountLogType")Integer type);
+    List<UAccountslogs> findAccountsLogs(@Param("userId")Long userId,@Param("keywords")String keywords,@Param("accountLogType")Integer type);
     /**
      * 影楼推广流水
      * @param userId

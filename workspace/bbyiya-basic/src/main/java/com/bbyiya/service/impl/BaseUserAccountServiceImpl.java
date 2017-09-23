@@ -160,10 +160,10 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 	/**
 	 * 账户流水
 	 */
-	public ReturnModel findAcountsLogsPageResult(Long userId, Integer type, int index, int size) {
+	public ReturnModel findAcountsLogsPageResult(Long userId, String keywords,Integer type, int index, int size) {
 		ReturnModel rq = new ReturnModel();
 		PageHelper.startPage(index, size);
-		List<UAccountslogs> logs = accountslogsMapper.findAccountsLogs(userId, type);
+		List<UAccountslogs> logs = accountslogsMapper.findAccountsLogs(userId,keywords,type);
 		PageInfo<UAccountslogs> resultPage = new PageInfo<UAccountslogs>(logs);
 		if (resultPage.getList() != null && resultPage.getList().size() > 0) {
 			for (UAccountslogs log : resultPage.getList()) {

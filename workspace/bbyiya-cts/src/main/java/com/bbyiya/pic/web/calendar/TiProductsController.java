@@ -420,4 +420,24 @@ public class TiProductsController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/setStyleStatus")
+	public String setStyleStatus(String styleid,Integer status) throws Exception{
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(ObjectUtil.isEmpty(styleid)){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("参数有误:styleid不能为空");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			rq=productservice.setStyleStatus(ObjectUtil.parseLong(styleid),status);
+		}else { 
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 }

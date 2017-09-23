@@ -19,6 +19,7 @@ public interface TiProductstylesMapper {
 
     int updateByPrimaryKey(TiProductstyles record);
     
+    List<TiProductstyles> findAllStylelistByProductId(@Param("productId") Long productId);
     List<TiProductstyles> findStylelistByProductId(@Param("productId") Long productId);
     
     Long getMaxStyleIdByProductId(@Param("productId") Long productId);

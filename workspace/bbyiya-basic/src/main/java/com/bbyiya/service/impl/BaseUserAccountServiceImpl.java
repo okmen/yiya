@@ -328,7 +328,9 @@ public class BaseUserAccountServiceImpl implements IBaseUserAccountService {
 			log.setOrderid(PayId); 
 			accountslogsMapper.insert(log);
 		}else {
-			return false;
+			log.setAmount(amount); 
+			log.setOrderid(PayId); 
+			accountslogsMapper.insert(log);
 		}
 		//-----------账户金额修正--------------------------------------------------
 		if(accounts!=null){

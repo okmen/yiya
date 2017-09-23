@@ -359,6 +359,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					mapResult.put("productId", product.getProductid());
 					mapResult.put("styleId", style.getStyleid());
 					mapResult.put("totalPrice", totalprice);
+					rq.setBasemodle(mapResult);
 					rq.setStatu(ReturnStatus.Success);
 					rq.setStatusreson("下单成功"); 
 				}

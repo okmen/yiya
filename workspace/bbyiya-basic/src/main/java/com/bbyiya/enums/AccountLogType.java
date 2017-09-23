@@ -29,7 +29,20 @@ public enum AccountLogType {
 	/**
 	 * 推广 佣金
 	 */
-	get_Commission(5);
+	get_Commission(5),
+	/**
+	 * 台历 -货款收入
+	 */
+	get_ti_payment(9),
+	/**
+	 * 台历-运费收入
+	 */
+	get_ti_post(7),
+	/**
+	 * 佣金收入
+	 */
+	get_ti_commission(8)
+	;
 	
 
     private final int Type;

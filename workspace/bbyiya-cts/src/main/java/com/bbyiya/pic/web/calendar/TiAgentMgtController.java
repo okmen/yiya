@@ -360,7 +360,7 @@ public class TiAgentMgtController extends SSOController {
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
 			
-			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_agent)){
 				rq = agentService.audit_PromoterApply(user.getUserId(), promoterUserId, status, msg);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);

@@ -24,6 +24,7 @@ import com.bbyiya.dao.PProductstyleexpMapper;
 import com.bbyiya.dao.PProductstylesMapper;
 import com.bbyiya.dao.TiActivitysMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
+import com.bbyiya.dao.TiProductsextMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
 import com.bbyiya.dao.TiPromotersMapper;
 import com.bbyiya.dao.TiUserdiscountsMapper;
@@ -54,6 +55,7 @@ import com.bbyiya.model.PProductstyleexp;
 import com.bbyiya.model.PProductstyles;
 import com.bbyiya.model.TiActivitys;
 import com.bbyiya.model.TiActivityworks;
+import com.bbyiya.model.TiProductsext;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiPromoters;
 import com.bbyiya.model.TiUserdiscounts;
@@ -126,6 +128,8 @@ public class BasePayServiceImpl implements IBasePayService{
 	
 	@Autowired
 	private TiActivityworksMapper activityworksMapper;
+	@Autowired
+	private TiProductsextMapper tiProductsextMapper;
 	/**
 	 * 订单支付成功 回写
 	 */
@@ -266,6 +270,22 @@ public class BasePayServiceImpl implements IBasePayService{
 							//
 							if(userorders.getOrdertype()==null||userorders.getOrdertype()==Integer.parseInt(OrderTypeEnum.brachOrder.toString())||userorders.getOrdertype()==Integer.parseInt(OrderTypeEnum.nomal.toString())){
 								addCommission(payOrder,userorders.getUserorderid());
+							}else if (userorders.getOrdertype()!=null&&(userorders.getOrdertype()==Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())||userorders.getOrdertype()==Integer.parseInt(OrderTypeEnum.ti_nomal.toString()))) {
+								OOrderproducts oproduct= oproductMapper.getOProductsByOrderId(userorders.getUserorderid());
+								if(oproduct!=null){
+									TiProductsext productsext=tiProductsextMapper.selectByPrimaryKey(oproduct.getProductid());
+									if(productsext==null){
+										productsext=new TiProductsext();
+										productsext.setProductid(oproduct.getProductid());
+										productsext.setSales(oproduct.getCount()); 
+										productsext.setMonthssales(oproduct.getCount());
+										tiProductsextMapper.insert(productsext);
+									}else {
+										productsext.setSales((productsext.getSales()==null?0:productsext.getSales().intValue())+oproduct.getCount().intValue());
+										productsext.setMonthssales((productsext.getMonthssales()==null?0:productsext.getMonthssales().intValue())+oproduct.getCount().intValue());
+										tiProductsextMapper.updateByPrimaryKeySelective(productsext);
+									}
+								}
 							}
 							return true;
 						} else {//不在支付状态中

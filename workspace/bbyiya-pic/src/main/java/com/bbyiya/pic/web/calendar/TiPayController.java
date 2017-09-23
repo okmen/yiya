@@ -7,11 +7,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bbyiya.common.enums.WechatMsgEnums;
+import com.bbyiya.common.vo.WechatMsgVo;
 import com.bbyiya.dao.UOtherloginMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.UOtherlogin;
 import com.bbyiya.pic.service.IPic_PayMgtService;
+import com.bbyiya.pic.utils.WxPublicUtils;
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.JsonUtil;
+import com.bbyiya.utils.WechatMsgUtil;
+import com.bbyiya.utils.pay.WxPaySubUtils;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;

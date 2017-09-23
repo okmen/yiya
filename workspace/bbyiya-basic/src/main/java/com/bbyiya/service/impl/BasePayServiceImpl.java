@@ -214,7 +214,6 @@ public class BasePayServiceImpl implements IBasePayService{
 							activityworksMapper.updateByPrimaryKeySelective(works);
 						} 
 						payOrderMapper.updateByPrimaryKeySelective(payOrder);
-						//TODO 分成
 						return true;
 					}
 					else {//购物
@@ -277,7 +276,7 @@ public class BasePayServiceImpl implements IBasePayService{
 					
 				} else if(payOrder!=null){
 					addlog("payId:"+payId+",方法paySuccessProcess。OPayorder不在可支付的状态！");
-					return true;
+					return false;
 				}else {
 					addlog("payId:"+payId+",方法paySuccessProcess。OPayorder找不到此订单！");
 					return false;

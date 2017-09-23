@@ -17,10 +17,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bbyiya.common.enums.WechatMsgEnums;
+import com.bbyiya.common.vo.WechatMsgVo;
 import com.bbyiya.dao.EErrorsMapper;
+import com.bbyiya.dao.OOrderproductsMapper;
+import com.bbyiya.dao.OPayorderMapper;
+import com.bbyiya.dao.OUserordersMapper;
+import com.bbyiya.dao.UOtherloginMapper;
+import com.bbyiya.enums.OrderTypeEnum;
+import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.model.EErrors;
+import com.bbyiya.model.OOrderproducts;
+import com.bbyiya.model.OPayorder;
+import com.bbyiya.model.OUserorders;
+import com.bbyiya.model.UOtherlogin;
+import com.bbyiya.pic.utils.WxPublicUtils;
 import com.bbyiya.service.IBasePayService;
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.JsonUtil;
+import com.bbyiya.utils.WechatMsgUtil;
 import com.bbyiya.utils.pay.WxPaySubUtils;
 import com.bbyiya.utils.pay.WxUtil;
 import com.bbyiya.utils.pay.config.SubWxPayConfig;
@@ -96,6 +111,15 @@ public class WxNotifySubController {
 		return "error";
 	}
 
+	@Autowired
+	private OPayorderMapper payMapper;
+	@Autowired
+	private OUserordersMapper userordersMapper;
+
+	@Autowired
+	private UOtherloginMapper otherMapper;
+	@Autowired
+	private OOrderproductsMapper oproductMapper;
 	/**
 	 * 订单签名验证，支付回写处理
 	 * @param transaction_id
@@ -107,7 +131,28 @@ public class WxNotifySubController {
 			SortedMap<String, String> map = WxPaySubUtils.queryWxOrder(transaction_id, payId);
 			if (map != null && map.get("return_code").equals("SUCCESS") && map.get("result_code").equals("SUCCESS") && map.get("trade_state").equals("SUCCESS")) {
 				// 会写订单状态
-				orderMgtService.paySuccessProcess(payId);
+				boolean isok= orderMgtService.paySuccessProcess(payId);
+				if(isok){
+					OPayorder payorder= payMapper.selectByPrimaryKey(payId);
+					if(payorder!=null&&payorder.getOrdertype()!=null){
+						if(payorder.getOrdertype().intValue()==Integer.parseInt(PayOrderTypeEnum.ti_gouwu.toString())){
+							OUserorders userorders=userordersMapper.selectByPrimaryKey(payorder.getUserorderid());
+							if(userorders!=null&&(userorders.getOrdertype()!=null&&userorders.getOrdertype()==Integer.parseInt(OrderTypeEnum.ti_nomal.toString()))){
+								OOrderproducts oproduct= oproductMapper.getOProductsByOrderId(userorders.getUserorderid());
+								if(oproduct!=null){
+									UOtherlogin otherlogin = otherMapper.getWxloginByUserId(userorders.getUserid());
+									if(otherlogin!=null){
+										WechatMsgVo param=new WechatMsgVo();
+										param.setProductDes(oproduct.getProducttitle());
+										param.setRemark(oproduct.getPropertystr()); 
+										param.setLinkUrl(ConfigUtil.getSingleValue("currentDomain")+"index");
+										WechatMsgUtil.sendMsg(WechatMsgEnums.payed, WxPublicUtils.getAccessToken(), otherlogin.getOpenid(), param);
+									}
+								}
+							}
+						}
+					}
+				}
 				return "success";
 			} else {
 				addlog("subPay:" + payId + "支付失败！json:" + JsonUtil.objectToJsonStr(map));

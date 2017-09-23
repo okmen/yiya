@@ -421,6 +421,8 @@ public class TiActivityMgtController extends SSOController {
 					singMapper.insertReturnId(versionMod);
 					rq.setStatu(ReturnStatus.Success);
 					rq.setBasemodle(versionMod.getActsingleid()); 
+				}else {
+					rq.setStatu(ReturnStatus.Success);
 				}
 			}else {
 				rq.setStatu(ReturnStatus.ParamError);

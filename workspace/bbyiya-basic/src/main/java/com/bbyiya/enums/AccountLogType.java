@@ -33,7 +33,7 @@ public enum AccountLogType {
 	/**
 	 * 台历 -货款收入
 	 */
-	get_ti_payment(6),
+	get_ti_payment(9),
 	/**
 	 * 台历-运费收入
 	 */

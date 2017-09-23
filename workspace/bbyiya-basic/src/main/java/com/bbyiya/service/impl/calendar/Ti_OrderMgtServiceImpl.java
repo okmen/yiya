@@ -30,6 +30,7 @@ import com.bbyiya.dao.TiMyartsdetailsMapper;
 import com.bbyiya.dao.TiMyworksMapper;
 import com.bbyiya.dao.TiProductareasMapper;
 import com.bbyiya.dao.TiProductsMapper;
+import com.bbyiya.dao.TiProductsextMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
 import com.bbyiya.dao.TiPromoteremployeesMapper;
 import com.bbyiya.dao.TiPromotersMapper;
@@ -65,6 +66,7 @@ import com.bbyiya.model.TiMyartsdetails;
 import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiProductareas;
 import com.bbyiya.model.TiProducts;
+import com.bbyiya.model.TiProductsext;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiPromoteremployees;
 import com.bbyiya.model.TiPromoters;
@@ -91,6 +93,8 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 	private TiProductstylesMapper styleMapper;
 	@Autowired
 	private TiProductsMapper productMapper;
+	@Autowired
+	private TiProductsextMapper productextMapper;
 	//-------------------------用户模块-----------------------------------------------
 	@Autowired
 	private UUsersMapper usersMapper;
@@ -333,6 +337,21 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 						actWork.setStatus(Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString()));
 						activityworksMapper.updateByPrimaryKey(actWork);
 					}
+					
+					//销量
+					TiProductsext productsext = productextMapper.selectByPrimaryKey(work.getProductid());
+					if (productsext == null) {
+						productsext = new TiProductsext();
+						productsext.setProductid(work.getProductid());
+						productsext.setSales(param.getCount());
+						productsext.setMonthssales(param.getCount());
+						productextMapper.insert(productsext);
+					} else {
+						productsext.setSales((productsext.getSales() == null ? 0 : productsext.getSales().intValue()) + param.getCount());
+						productsext.setMonthssales((productsext.getMonthssales() == null ? 0 : productsext.getMonthssales().intValue()) + param.getCount());
+						productextMapper.updateByPrimaryKeySelective(productsext);
+					}
+					
 					rq.setStatu(ReturnStatus.Success);
 					rq.setStatusreson("下单成功"); 
 				}

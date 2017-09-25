@@ -11,7 +11,7 @@ import com.bbyiya.utils.RedisUtil;
 
 public class CookieUtils {
 
-	private static String COOKIE_NAME="photo_Cookie_token";
+	private static String COOKIE_NAME=ConfigUtil.getSingleValue("currentRedisKey-Base")+"photo_Cookie_token";
 //	private static Logger logger = Logger.getLogger(CookieUtils.class);
 	
 //	private static String PIC_COOKIE_NAME="Pic_Cookie_token";

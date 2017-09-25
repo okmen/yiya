@@ -46,7 +46,11 @@ public enum UserIdentityEnums {
     /**
      * 员工
      */
-    ti_employees(2048)
+    ti_employees(2048),
+    /**
+     * 财务管理员
+     */
+    ti_ctsAcountManager(4096)
     ;
 
     private final int Type;

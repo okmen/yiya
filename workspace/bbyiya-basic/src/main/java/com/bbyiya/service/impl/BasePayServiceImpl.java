@@ -458,8 +458,8 @@ public class BasePayServiceImpl implements IBasePayService{
 						Long promoterUid = userorders.getBranchuserid();// 影楼
 						Long agentUid = 0l;// 代理商
 						Long producerUid = userorders.getProduceruserid();// 生产商
-						Long yiyaUid = 75l;// 咿呀平台
-						Long hxgUid = 65l;// 幻想馆
+						Long yiyaUid = 1l;// 咿呀平台
+						Long hxgUid = 2l;// 幻想馆
 						// 如果是影楼自己下单
 						if (userorders.getOrdertype().intValue() == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())) {
 							type=1;
@@ -509,6 +509,10 @@ public class BasePayServiceImpl implements IBasePayService{
 								agentUid = promoters.getAgentuserid();
 							}
 						}
+						if(promoterUid==null||promoterUid<=0)
+							promoterUid=yiyaUid;
+						if(agentUid==null||agentUid<=0)
+							agentUid=yiyaUid;
 						//纯货款分配
 						switch (type) {//1 影楼惊爆价下单
 						case 1://
@@ -548,6 +552,7 @@ public class BasePayServiceImpl implements IBasePayService{
 								//生产商分利
 								accountService.add_accountsLog(producerUid, Integer.parseInt(AccountLogType.get_ti_payment.toString()), totalprice_hk * 0.3, userorders.getPayid(), "");
 							}
+							
 							if(agentUid!=null&&agentUid.longValue()>0){
 								//订单组织者分利
 								accountService.add_accountsLog(agentUid, Integer.parseInt(AccountLogType.get_ti_commission.toString()), totalprice_hk * 0.05, userorders.getPayid(), "");								

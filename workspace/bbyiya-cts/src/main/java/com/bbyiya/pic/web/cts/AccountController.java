@@ -69,6 +69,27 @@ public class AccountController  extends SSOController{
 	private IBaseUserAccountService accountService;
 	
 	/**
+	 * A11 账户信息
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/info")
+	public String getAccountInfo(long userid) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			UAccounts accounts= accountService.getUserAccount(userid);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(accounts);
+			
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	/**
 	 * cts 用户充值
 	 * @param branchuserid
 	 * @param amount
@@ -150,9 +171,9 @@ public class AccountController  extends SSOController{
 		LoginSuccessResult user=super.getLoginUser();
 		double amountPrice=ObjectUtil.parseDouble(amount);
 		if(user!=null) {
-			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_ctsAcountManager)){
 				UUsers branch= userMapper.getUUsersByUserID(branchuserid);
-				if(branch!=null&&(ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.branch)||ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.ti_promoter)||ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.ti_agent)||ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.ti_producer))) {
+				//if(branch!=null&&(ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.branch)||ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.ti_promoter)||ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.ti_agent)||ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.ti_producer))) {
 					String payId=GenUtils.getOrderNo(9999l); 
 					OPayorder payorder = new OPayorder();
 					payorder.setPayid(payId);
@@ -177,10 +198,10 @@ public class AccountController  extends SSOController{
 						rq.setStatu(ReturnStatus.SystemError);
 					}
 					
-				}else {
-					rq.setStatu(ReturnStatus.SystemError);
-					rq.setStatusreson("该用户不是影楼身份！"); 
-				}
+//				}else {
+//					rq.setStatu(ReturnStatus.SystemError);
+//					rq.setStatusreson("该用户不是影楼身份！"); 
+//				}
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
 				rq.setStatusreson("权限不足！");
@@ -207,7 +228,7 @@ public class AccountController  extends SSOController{
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_ctsAcountManager)){
 				rq= accountService.findAcountsLogsPageResult(userid,keywords, type, index, size);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError_1);

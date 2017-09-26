@@ -126,8 +126,10 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 					if(upUsers!=null){
 						userModel.setUpuserid(param.getUpUserId()); 
 						//如果推荐人是流量主
-						if(ValidateUtils.isIdentity(upUsers.getIdentity(), UserIdentityEnums.branch)||
-								ValidateUtils.isIdentity(upUsers.getIdentity(), UserIdentityEnums.wei)){
+						if(ValidateUtils.isIdentity(upUsers.getIdentity(), UserIdentityEnums.branch)
+							||ValidateUtils.isIdentity(upUsers.getIdentity(), UserIdentityEnums.wei)
+							||ValidateUtils.isIdentity(upUsers.getIdentity(), UserIdentityEnums.ti_promoter)
+						){
 							userModel.setSourseuserid(upUsers.getUserid());
 						}
 						//推荐人的顶级 付给自己的顶级

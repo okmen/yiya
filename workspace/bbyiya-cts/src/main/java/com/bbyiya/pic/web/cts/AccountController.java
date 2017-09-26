@@ -222,6 +222,13 @@ public class AccountController  extends SSOController{
 				payorder.setWalletamount(null);
 				payorder.setCreatetime(new Date());
 				payOrderMapper.insert(payorder);
+				
+				UAccounts useraccount=accountMapper.selectByPrimaryKey(branchuserid);
+				if(useraccount.getAvailableamount().doubleValue()<amountPrice){
+					rq.setStatusreson("账户余额不足，提现失败！"); 
+					rq.setStatu(ReturnStatus.SystemError);
+					return JsonUtil.objectToJsonStr(rq);
+				}
 				//台历交易记录
 				basePayService.add_tiAccountLog(payId,branchuserid, amountPrice,TiAmountLogType.out_dispenseCash);
 				

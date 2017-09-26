@@ -22,6 +22,7 @@ import com.bbyiya.dao.OPayorderwalletdetailsMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PProductstyleexpMapper;
 import com.bbyiya.dao.PProductstylesMapper;
+import com.bbyiya.dao.TiAccountlogMapper;
 import com.bbyiya.dao.TiActivitysMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
 import com.bbyiya.dao.TiProductsextMapper;
@@ -45,6 +46,7 @@ import com.bbyiya.enums.PayOrderStatusEnums;
 import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.PayTypeEnum;
 import com.bbyiya.enums.calendar.ActivityWorksStatusEnum;
+import com.bbyiya.enums.calendar.TiAmountLogType;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.EErrors;
 import com.bbyiya.model.OOrderproducts;
@@ -53,6 +55,7 @@ import com.bbyiya.model.OPayorderwalletdetails;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PProductstyleexp;
 import com.bbyiya.model.PProductstyles;
+import com.bbyiya.model.TiAccountlog;
 import com.bbyiya.model.TiActivitys;
 import com.bbyiya.model.TiActivityworks;
 import com.bbyiya.model.TiProductsext;
@@ -218,6 +221,8 @@ public class BasePayServiceImpl implements IBasePayService{
 							activityworksMapper.updateByPrimaryKeySelective(works);
 						} 
 						payOrderMapper.updateByPrimaryKeySelective(payOrder);
+						//台历交易记录
+						add_tiAccountLog(payId,payOrder.getUserid(), payOrder.getTotalprice(),TiAmountLogType.in_payment);
 						return true;
 					}
 					else {//购物
@@ -286,6 +291,8 @@ public class BasePayServiceImpl implements IBasePayService{
 										tiProductsextMapper.updateByPrimaryKeySelective(productsext);
 									}
 								}
+								//台历交易记录
+								add_tiAccountLog(payId,userorders.getUserid(), payOrder.getTotalprice(),TiAmountLogType.in_payment);
 							}
 							return true;
 						} else {//不在支付状态中
@@ -308,8 +315,33 @@ public class BasePayServiceImpl implements IBasePayService{
 		return false;
 	}
 
-	
+	@Autowired
+	private TiAccountlogMapper tiAccountlogMapper;
 
+	/**
+	 * 插入台历模块交易流水
+	 * @param payId
+	 * @param userid
+	 * @param amount
+	 * @param type
+	 */
+	public void add_tiAccountLog(String payId,long userid, double amount,TiAmountLogType type){
+		TiAccountlog lastLog= tiAccountlogMapper.getLastResult();
+		double totalamount=0d ,totalavailbelAmount=0d;
+		if(lastLog!=null){
+			totalamount=lastLog.getTotalamount().doubleValue();
+			totalavailbelAmount=lastLog.getAvailableamount();
+		}
+		TiAccountlog log=new TiAccountlog();
+		log.setAmount(amount);
+		log.setType(Integer.parseInt(type.toString()));
+		log.setTotalamount(totalamount+ Math.abs(amount));
+		log.setAvailableamount(totalavailbelAmount+amount);
+		log.setPayid(payId);
+		log.setCreatetime(new Date());
+		log.setUserid(userid);
+		tiAccountlogMapper.insert(log);
+	}
 	
 	/**
 	 * 新增销售分成

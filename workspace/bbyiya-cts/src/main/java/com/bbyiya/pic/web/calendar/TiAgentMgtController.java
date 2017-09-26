@@ -185,7 +185,7 @@ public class TiAgentMgtController extends SSOController {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_promoter)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_employees)){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_agent)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_promoter)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_employees)){
 				UUsers promoterUsers= userMapper.getUUsersByUserID(ObjectUtil.parseLong(promoterUserId));
 				if(promoterUsers!=null){
 					if(!ObjectUtil.isEmpty(promoterUsers.getMobilephone())){
@@ -198,7 +198,7 @@ public class TiAgentMgtController extends SSOController {
 							if(applyInfo!=null){
 								applyInfo.setPromoteruserid(user.getUserId()); 
 							}
-							rq =agentService.applyPromoter(user.getUserId(), applyInfo);
+							rq =agentService.applyPromoter(promoterUsers.getUserid(), applyInfo);
 						} catch (Exception e) {
 							rq.setStatu(ReturnStatus.ParamError);
 							rq.setStatusreson("参数有误101");
@@ -360,7 +360,7 @@ public class TiAgentMgtController extends SSOController {
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
 			
-			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_agent)){
 				rq = agentService.audit_PromoterApply(user.getUserId(), promoterUserId, status, msg);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);

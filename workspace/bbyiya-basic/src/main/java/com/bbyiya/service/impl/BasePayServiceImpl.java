@@ -335,7 +335,9 @@ public class BasePayServiceImpl implements IBasePayService{
 		TiAccountlog log=new TiAccountlog();
 		log.setAmount(amount);
 		log.setType(Integer.parseInt(type.toString()));
-		log.setTotalamount(totalamount+ Math.abs(amount));
+		if(type!=TiAmountLogType.out_dispenseCash){
+			log.setTotalamount(totalamount+ Math.abs(amount));
+		}
 		log.setAvailableamount(totalavailbelAmount+amount);
 		log.setPayid(payId);
 		log.setCreatetime(new Date());
@@ -529,6 +531,11 @@ public class BasePayServiceImpl implements IBasePayService{
 									if(upUser!=null){
 										if(ValidateUtils.isIdentity(upUser.getIdentity(), UserIdentityEnums.ti_promoter)){
 											promoterUid=upUser.getUserid();
+										}else if (buyerUsers.getSourseuserid()!=null) {
+											UUsers sourseUser= usersMapper.selectByPrimaryKey(buyerUsers.getSourseuserid());
+											if(sourseUser!=null&&ValidateUtils.isIdentity(sourseUser.getIdentity(), UserIdentityEnums.ti_promoter)){
+												promoterUid=buyerUsers.getSourseuserid();
+											}
 										}
 									}
 								}

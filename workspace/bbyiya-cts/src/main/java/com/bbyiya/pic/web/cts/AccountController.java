@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bbyiya.baseUtils.GenUtils;
 import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.dao.OPayorderMapper;
+import com.bbyiya.dao.TiAccountlogMapper;
 import com.bbyiya.dao.UAccountsMapper;
 import com.bbyiya.dao.UAdminMapper;
 import com.bbyiya.dao.UAdminactionlogsMapper;
@@ -28,6 +29,7 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.TiAmountLogType;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.OPayorder;
+import com.bbyiya.model.TiAccountlog;
 import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UAdmin;
 import com.bbyiya.model.UAdminactionlogs;
@@ -72,6 +74,9 @@ public class AccountController  extends SSOController{
 	@Resource(name = "basePayServiceImpl")
 	private IBasePayService basePayService;
 	
+	@Autowired
+	private TiAccountlogMapper tiAccountlogMapper;
+	
 	/**
 	 * A11 账户信息
 	 * @return
@@ -93,6 +98,29 @@ public class AccountController  extends SSOController{
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	/**
+	 * A11账务总金额
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getLastTiAccount")
+	public String getLastTiAccount() throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			TiAccountlog lastLog= tiAccountlogMapper.getLastResult();
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(lastLog);
+			
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 	/**
 	 * cts 用户充值
 	 * @param branchuserid

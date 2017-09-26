@@ -531,6 +531,11 @@ public class BasePayServiceImpl implements IBasePayService{
 									if(upUser!=null){
 										if(ValidateUtils.isIdentity(upUser.getIdentity(), UserIdentityEnums.ti_promoter)){
 											promoterUid=upUser.getUserid();
+										}else if (buyerUsers.getSourseuserid()!=null) {
+											UUsers sourseUser= usersMapper.selectByPrimaryKey(buyerUsers.getSourseuserid());
+											if(sourseUser!=null&&ValidateUtils.isIdentity(sourseUser.getIdentity(), UserIdentityEnums.ti_promoter)){
+												promoterUid=buyerUsers.getSourseuserid();
+											}
 										}
 									}
 								}

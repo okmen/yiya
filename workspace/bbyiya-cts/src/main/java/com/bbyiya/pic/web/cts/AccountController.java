@@ -25,6 +25,7 @@ import com.bbyiya.enums.AmountType;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.PayTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.calendar.TiAmountLogType;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.UAccounts;
@@ -34,6 +35,7 @@ import com.bbyiya.model.UBranchtransaccounts;
 import com.bbyiya.model.UBranchtransamountlog;
 import com.bbyiya.model.UCashlogs;
 import com.bbyiya.model.UUsers;
+import com.bbyiya.service.IBasePayService;
 import com.bbyiya.service.IBaseUserAccountService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
@@ -67,6 +69,8 @@ public class AccountController  extends SSOController{
 	
 	@Resource(name = "baseUserAccountService")
 	private IBaseUserAccountService accountService;
+	@Resource(name = "basePayServiceImpl")
+	private IBasePayService basePayService;
 	
 	/**
 	 * A11 账户信息
@@ -119,6 +123,9 @@ public class AccountController  extends SSOController{
 					payorder.setWalletamount(null);
 					payorder.setCreatetime(new Date());
 					payOrderMapper.insert(payorder);
+					//台历交易记录
+					basePayService.add_tiAccountLog(payId,branchuserid, amountPrice,TiAmountLogType.in_charge);
+					
 					boolean result=accountService.add_accountsLog(branchuserid, Integer.parseInt(AccountLogType.get_recharge.toString()), amountPrice, payId, "");
 					if(result){
 						UAccounts accounts=accountMapper.selectByPrimaryKey(branchuserid);
@@ -173,35 +180,34 @@ public class AccountController  extends SSOController{
 		if(user!=null) {
 			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_ctsAcountManager)){
 				UUsers branch= userMapper.getUUsersByUserID(branchuserid);
-				//if(branch!=null&&(ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.branch)||ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.ti_promoter)||ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.ti_agent)||ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.ti_producer))) {
-					String payId=GenUtils.getOrderNo(9999l); 
-					OPayorder payorder = new OPayorder();
-					payorder.setPayid(payId);
-					payorder.setUserorderid("");
-					payorder.setUserid(branchuserid);
-					payorder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
-					payorder.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString()));
-					payorder.setPaytime(new Date()); 					
-					payorder.setTotalprice(amountPrice);
-					payorder.setCashamount(amountPrice);
-					payorder.setWalletamount(null);
-					payorder.setCreatetime(new Date());
-					payOrderMapper.insert(payorder);
-					boolean result=accountService.add_accountsLog(branchuserid, Integer.parseInt(AccountLogType.use_cashout.toString()), amountPrice, payId, "");
-					if(result){
-						UAccounts accounts=accountMapper.selectByPrimaryKey(branchuserid);
-						addActionLog(user.getUserId(),"[账户提现]操作成功！提现金额："+amountPrice+"元！提现用户 userId:"+branchuserid);
-						rq.setStatusreson("提现成功！账户可用金额："+accounts.getAvailableamount()+"元!"); 
-						rq.setStatu(ReturnStatus.Success);
-					}else{
-						rq.setStatusreson("提现失败！"); 
-						rq.setStatu(ReturnStatus.SystemError);
-					}
+				
+				String payId=GenUtils.getOrderNo(9999l); 
+				OPayorder payorder = new OPayorder();
+				payorder.setPayid(payId);
+				payorder.setUserorderid("");
+				payorder.setUserid(branchuserid);
+				payorder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
+				payorder.setPaytype(Integer.parseInt(PayTypeEnum.weiXin.toString()));
+				payorder.setPaytime(new Date()); 					
+				payorder.setTotalprice(amountPrice);
+				payorder.setCashamount(amountPrice);
+				payorder.setWalletamount(null);
+				payorder.setCreatetime(new Date());
+				payOrderMapper.insert(payorder);
+				//台历交易记录
+				basePayService.add_tiAccountLog(payId,branchuserid, amountPrice,TiAmountLogType.out_dispenseCash);
+				
+				boolean result=accountService.add_accountsLog(branchuserid, Integer.parseInt(AccountLogType.use_cashout.toString()), amountPrice, payId, "");
+				if(result){
+					UAccounts accounts=accountMapper.selectByPrimaryKey(branchuserid);
+					addActionLog(user.getUserId(),"[账户提现]操作成功！提现金额："+amountPrice+"元！提现用户 userId:"+branchuserid);
+					rq.setStatusreson("提现成功！账户可用金额："+accounts.getAvailableamount()+"元!"); 
+					rq.setStatu(ReturnStatus.Success);
+				}else{
+					rq.setStatusreson("提现失败！"); 
+					rq.setStatu(ReturnStatus.SystemError);
+				}
 					
-//				}else {
-//					rq.setStatu(ReturnStatus.SystemError);
-//					rq.setStatusreson("该用户不是影楼身份！"); 
-//				}
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
 				rq.setStatusreson("权限不足！");

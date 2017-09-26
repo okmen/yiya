@@ -1,5 +1,7 @@
 package com.bbyiya.service;
 
+import com.bbyiya.enums.calendar.TiAmountLogType;
+
 public interface IBasePayService {
 
 	/**
@@ -21,4 +23,12 @@ public interface IBasePayService {
 	 * @param userOrderId
 	 */
 	void distributeOrderAmount(String userOrderId);
+	/**
+	 * 插入台历 交易流水
+	 * @param payId
+	 * @param userid
+	 * @param amount
+	 * @param type
+	 */
+	void add_tiAccountLog(String payId,long userid, double amount,TiAmountLogType type);
 }

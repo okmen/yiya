@@ -133,6 +133,19 @@ public class Ti_ProductController  extends SSOController {
 					product.setSaleCount(ext.getSales()==null?0:ext.getSales().intValue());
 					product.setCommentsCount(ext.getCommentcount()==null?0:ext.getCommentcount().intValue());
 				}
+				
+				TiDiscountmodel disModel= getDiscountList(user.getUserId());
+				if(disModel!=null&&disModel.getDetails()!=null) {
+					product.setDiscountType(disModel.getType());
+					product.setDiscountName(disModel.getTitle());
+					for (TiDiscountdetails dd : disModel.getDetails()) {
+						// 商品表productId为默认款式styleId
+						if (product.getProductid().longValue() == dd.getProductid().longValue()) {
+							product.setDiscount(dd.getDiscount());
+						}
+					}
+
+				}
 			}
 			rq.setBasemodle(product); 
 			rq.setStatu(ReturnStatus.Success);

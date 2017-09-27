@@ -376,33 +376,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 	@Autowired
 	private TiProductareasMapper productareasMapper;
 	
-	public long getProducerUserId(Long orderAddressId,Long productId,Long userId){//String userOrderId,
-//		OUserorders order = userOrdersMapper.selectByPrimaryKey(userOrderId);
-//		if (order.getOrdertype() != null && (Integer.parseInt(OrderTypeEnum.ti_nomal.toString()) == order.getOrdertype() || Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()) == order.getOrdertype())) {
-//			if (order.getStatus() == Integer.parseInt(OrderStatusEnum.payed.toString()) || order.getStatus() == Integer.parseInt(OrderStatusEnum.waitFoSend.toString())) {
-//				List<OOrderproducts> proList = oproductMapper.findOProductsByOrderId(userOrderId);
-//				if (proList != null && proList.size() > 0) {
-//					OOrderaddress addr = orderaddressMapper.selectByPrimaryKey(order.getOrderaddressid());
-//					if (addr != null) {
-//						UUseraddress useraddress = addressMapper.get_UUserAddressDefault(addr.getUserid());
-//						if (useraddress != null) {
-//							List<TiProductareas> list = productareasMapper.findProductAreaListByProductIdAndArea(proList.get(0).getProductid(), useraddress.getCity());
-//							if (list != null && list.size() > 0) {
-//								return list.get(0).getProduceruserid();
-//							}
-//						} else {
-//							TiPromoters promoters = promotersMapper.selectByPrimaryKey(addr.getUserid());
-//							if (promoters != null) {
-//								List<TiProductareas> list = productareasMapper.findProductAreaListByProductIdAndArea(proList.get(0).getProductid(), promoters.getCity());
-//								if (list != null && list.size() > 0) {
-//									return list.get(0).getProduceruserid();
-//								}
-//							}
-//						}
-//					}
-//				}
-//			}
-//		}
+	public long getProducerUserId(Long orderAddressId,Long productId,Long userId){
 		OOrderaddress addr = orderaddressMapper.selectByPrimaryKey(orderAddressId);
 		if (userId!=null&&userId>0) {
 			if(addr!=null){
@@ -537,6 +511,17 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			userOrdersMapper.insert(userOrder);
 			// 插入订单产品
 			oproductMapper.insert(orderProduct);
+			// 插入--订单打印号
+			OProducerordercount oproducerModel=new OProducerordercount();
+			oproducerModel.setUserorderid(orderId);
+			oproducerModel.setProduceruserid(userOrder.getProduceruserid());
+			oproducerModel.setUserid(userOrder.getUserid()); 
+			Integer indexCount=producerOrderMapper.getMaxOrderIndexByProducerIdAndUserId(userOrder.getProduceruserid(),userOrder.getUserid());
+			int orderIndex=indexCount==null?1:(indexCount+1);
+			oproducerModel.setOrderindex(orderIndex);
+			oproducerModel.setPrintindex(orderIndex+"A");
+			producerOrderMapper.insert(oproducerModel);
+			
 			mapResult.put("totalPrice", orderTotalPrice);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(mapResult);

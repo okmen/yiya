@@ -135,7 +135,7 @@ public class AccountController  extends SSOController{
 		LoginSuccessResult user=super.getLoginUser();
 		double amountPrice=ObjectUtil.parseDouble(amount);
 		if(user!=null) {
-			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_ctsAcountManager)){
 				UUsers branch= userMapper.getUUsersByUserID(branchuserid);
 				if(branch!=null&&(ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.branch)||ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.ti_promoter)||ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.ti_agent)||ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.ti_producer))) {
 					String payId=GenUtils.getOrderNo(9999l); 
@@ -230,7 +230,7 @@ public class AccountController  extends SSOController{
 					return JsonUtil.objectToJsonStr(rq);
 				}
 				//台历交易记录
-				basePayService.add_tiAccountLog(payId,branchuserid, amountPrice,TiAmountLogType.out_dispenseCash);
+				basePayService.add_tiAccountLog(payId,branchuserid, -1*amountPrice,TiAmountLogType.out_dispenseCash);
 				
 				boolean result=accountService.add_accountsLog(branchuserid, Integer.parseInt(AccountLogType.use_cashout.toString()), amountPrice, payId, "");
 				if(result){

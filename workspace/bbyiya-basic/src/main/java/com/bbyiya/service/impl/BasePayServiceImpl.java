@@ -329,8 +329,8 @@ public class BasePayServiceImpl implements IBasePayService{
 		TiAccountlog lastLog= tiAccountlogMapper.getLastResult();
 		double totalamount=0d ,totalavailbelAmount=0d;
 		if(lastLog!=null){
-			totalamount=lastLog.getTotalamount().doubleValue();
-			totalavailbelAmount=lastLog.getAvailableamount();
+			totalamount=(lastLog.getTotalamount()==null?0:lastLog.getTotalamount().doubleValue());
+			totalavailbelAmount=(lastLog.getAvailableamount()==null?0:lastLog.getAvailableamount().doubleValue());
 		}
 		TiAccountlog log=new TiAccountlog();
 		log.setAmount(amount);

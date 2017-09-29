@@ -1,5 +1,6 @@
 package com.bbyiya.pic.web.ibs;
 
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 
@@ -73,6 +74,27 @@ public class UserInfoController  extends SSOController{
 			}
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(resultPage);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 获取推广地址
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/info/getTishareUrl")
+	public String getTishareUrl() throws Exception {
+		ReturnModel rq=new ReturnModel(); 
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq.setStatu(ReturnStatus.Success);
+			String redirct_url=ConfigUtil.getSingleValue("currentDomain")+"index?uid="+user.getUserId();
+			rq.setBasemodle(ConfigUtil.getSingleValue("shareulr-base")+"uid="+user.getUserId()+"&redirct_url="+URLEncoder.encode(redirct_url.toString(),"utf-8")); 
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

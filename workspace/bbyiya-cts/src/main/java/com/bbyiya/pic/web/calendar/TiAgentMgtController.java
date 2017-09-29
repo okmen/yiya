@@ -476,7 +476,7 @@ public class TiAgentMgtController extends SSOController {
 				param.setCompanyName(keywords);
 			} 
 			
-			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_ctsAcountManager)){
 				rq = agentService.findTiAgentApplyList(param,index,size);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);
@@ -509,7 +509,7 @@ public class TiAgentMgtController extends SSOController {
 				param.setCompanyName(keywords);
 			} 
 			
-			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_ctsAcountManager)){
 				rq = agentService.findTiProducersApplyList(param,index,size);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);

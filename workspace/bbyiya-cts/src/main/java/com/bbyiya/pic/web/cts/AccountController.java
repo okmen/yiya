@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bbyiya.baseUtils.GenUtils;
 import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.dao.OPayorderMapper;
+import com.bbyiya.dao.TiAccountlogMapper;
 import com.bbyiya.dao.UAccountsMapper;
 import com.bbyiya.dao.UAdminMapper;
 import com.bbyiya.dao.UAdminactionlogsMapper;
@@ -28,6 +29,7 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.TiAmountLogType;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.OPayorder;
+import com.bbyiya.model.TiAccountlog;
 import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UAdmin;
 import com.bbyiya.model.UAdminactionlogs;
@@ -72,6 +74,9 @@ public class AccountController  extends SSOController{
 	@Resource(name = "basePayServiceImpl")
 	private IBasePayService basePayService;
 	
+	@Autowired
+	private TiAccountlogMapper tiAccountlogMapper;
+	
 	/**
 	 * A11 账户信息
 	 * @return
@@ -93,6 +98,29 @@ public class AccountController  extends SSOController{
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	/**
+	 * A11账务总金额
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getLastTiAccount")
+	public String getLastTiAccount() throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			TiAccountlog lastLog= tiAccountlogMapper.getLastResult();
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(lastLog);
+			
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 	/**
 	 * cts 用户充值
 	 * @param branchuserid
@@ -107,7 +135,7 @@ public class AccountController  extends SSOController{
 		LoginSuccessResult user=super.getLoginUser();
 		double amountPrice=ObjectUtil.parseDouble(amount);
 		if(user!=null) {
-			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_ctsAcountManager)){
 				UUsers branch= userMapper.getUUsersByUserID(branchuserid);
 				if(branch!=null&&(ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.branch)||ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.ti_promoter)||ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.ti_agent)||ValidateUtils.isIdentity(branch.getIdentity(), UserIdentityEnums.ti_producer))) {
 					String payId=GenUtils.getOrderNo(9999l); 
@@ -194,8 +222,15 @@ public class AccountController  extends SSOController{
 				payorder.setWalletamount(null);
 				payorder.setCreatetime(new Date());
 				payOrderMapper.insert(payorder);
+				
+				UAccounts useraccount=accountMapper.selectByPrimaryKey(branchuserid);
+				if(useraccount.getAvailableamount().doubleValue()<amountPrice){
+					rq.setStatusreson("账户余额不足，提现失败！"); 
+					rq.setStatu(ReturnStatus.SystemError);
+					return JsonUtil.objectToJsonStr(rq);
+				}
 				//台历交易记录
-				basePayService.add_tiAccountLog(payId,branchuserid, amountPrice,TiAmountLogType.out_dispenseCash);
+				basePayService.add_tiAccountLog(payId,branchuserid, -1*amountPrice,TiAmountLogType.out_dispenseCash);
 				
 				boolean result=accountService.add_accountsLog(branchuserid, Integer.parseInt(AccountLogType.use_cashout.toString()), amountPrice, payId, "");
 				if(result){

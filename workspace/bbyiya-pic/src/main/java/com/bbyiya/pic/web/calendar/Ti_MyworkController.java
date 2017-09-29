@@ -39,6 +39,7 @@ import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.pic.vo.calendar.MyworkDetailsParam;
+import com.bbyiya.utils.ImgDomainUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -102,12 +103,16 @@ public class Ti_MyworkController extends SSOController {
 							Map<String, Object> mapResult=new HashMap<String, Object>();
 							Date time=new Date();
 							for(int i=0;i<param.getDetails().size();i++){
-								TiMyartsdetails detail=new TiMyartsdetails();
-								detail.setWorkid(param.getWorkId());
-								detail.setImageurl(param.getDetails().get(i).getImageurl());
-								detail.setSort(i);
-								detail.setCreatetime(time); 
-								detailMapper.insert(detail);
+								String url=param.getDetails().get(i).getImageurl();
+								if(!ObjectUtil.isEmpty(url)){
+									url=ImgDomainUtil.getImageUrl_Full(url);
+									TiMyartsdetails detail=new TiMyartsdetails();
+									detail.setWorkid(param.getWorkId());
+									detail.setImageurl(url);
+									detail.setSort(i);
+									detail.setCreatetime(time); 
+									detailMapper.insert(detail);
+								}
 							}
 							//完成上传操作
 							if(isOk>0&&style.getImgcount().intValue()==param.getDetails().size()){
@@ -249,6 +254,11 @@ public class Ti_MyworkController extends SSOController {
 					TiProducts products=productMapper.selectByPrimaryKey(style.getProductid());
 					if(products!=null){
 						List<TiMyartsdetails> details= detailMapper.findDetailsByWorkId(workId);
+						if(details!=null&&details.size()>0){
+							for (TiMyartsdetails dd : details) {
+								dd.setImageurl(ImgDomainUtil.getImageUrl_Full(dd.getImageurl()));
+							} 
+						}
 						Map<String, Object> map=new HashMap<String, Object>();
 						map.put("details", details);
 						map.put("imgCount", style.getImgcount()); 

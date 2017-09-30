@@ -42,6 +42,7 @@ import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiStyleadverts;
 import com.bbyiya.model.TiStylecoordinate;
 import com.bbyiya.pic.utils.Json2Objects;
+import com.bbyiya.utils.ImgDomainUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -195,7 +196,7 @@ public class TiCoordinateController  extends SSOController{
 								layerList.get(i).setWidthhight(widthhight); 
 							}
 							if(photoList.size()>i){
-								layerList.get(i).setWorkImgUrl(photoList.get(i).getImgurl()); 
+								layerList.get(i).setWorkImgUrl(ImgDomainUtil.getImageUrl_Full(photoList.get(i).getImgurl()));  
 								//---打印号---
 								layerList.get(i).setPrintNo(workId+"-"+userorders.getUserid()+"-"+(i+1)+"-"+oproducerModel.getPrintindex()); 
 							}
@@ -313,7 +314,7 @@ public class TiCoordinateController  extends SSOController{
 					layerList.get(i).setWidthhight(widthhight); 
 				}
 				if(details!=null&&details.size()>0&&details.size()>i){
-					layerList.get(i).setWorkImgUrl(details.get(i).getImageurl()); 
+					layerList.get(i).setWorkImgUrl(ImgDomainUtil.getImageUrl_Full(details.get(i).getImageurl())); 
 				}
 			}
 			map.put("imgLayList", layerList);

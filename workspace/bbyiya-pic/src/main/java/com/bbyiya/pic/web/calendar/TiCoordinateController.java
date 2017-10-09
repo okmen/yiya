@@ -54,8 +54,6 @@ import com.bbyiya.web.base.SSOController;
 @RequestMapping(value = "/ti_style")
 public class TiCoordinateController  extends SSOController{
 
-//	@Autowired
-//	private PStylecoordinateMapper styleCoordMapper;
 	@Autowired
 	private TiStylecoordinateMapper styleCoordMapper;
 	@Autowired
@@ -180,7 +178,17 @@ public class TiCoordinateController  extends SSOController{
 						PStylecoordinateitem in_pic = styleCoordItemMapper.selectByPrimaryKey(stylecoordinate.getImgcoordid().longValue());
 						//封面图片坐标
 						PStylecoordinateitem front_pic = styleCoordItemMapper.selectByPrimaryKey(stylecoordinate.getFrontimgcoordid().longValue());
-						
+						//广告图
+						List<ImageInfo> advertImglist=null;
+						//是否有广告位
+						if(products.getAdvertcount()!=null&&products.getAdvertcount().intValue()>0){
+							 if(userorders.getBranchuserid()!=null&&userorders.getBranchuserid()>0){
+								 TiAdvertimgs advertlist= advertMapper.getAdvertByProductIdAndPromoterId(products.getProductid(),userorders.getBranchuserid() );
+								 if(advertlist!=null&&!ObjectUtil.isEmpty(advertlist.getAdvertimgjson())){
+									 advertImglist=Json2Objects.getImageInfosList(advertlist.getAdvertimgjson());
+								 }
+							 }
+						}
 						for(int i=0;i<layerList.size();i++){
 							if(i==0){
 								layerList.get(i).setImgCoordMod(front_pic);
@@ -195,34 +203,34 @@ public class TiCoordinateController  extends SSOController{
 								double widthhight= (style.getWidth()*in_pic.getPointwidth())/(style.getHight()*in_pic.getPointhight());
 								layerList.get(i).setWidthhight(widthhight); 
 							}
+							if(advertImglist!=null&&advertImglist.size()>0&&layerList.get(i).getAdvertcoordid()!=null&&layerList.get(i).getAdvertcoordid().intValue()>0){
+								PStylecoordinateitem advertMod = styleCoordItemMapper.selectByPrimaryKey(layerList.get(i).getAdvertcoordid().longValue());
+								layerList.get(i).setAdImg(advertImglist.get(0).getUrl()); 
+								layerList.get(i).setAdvertCoordMod(advertMod); 
+								layerList.get(i).setHaveAdvert(1); 
+							}
+							
 							if(photoList.size()>i){
 								layerList.get(i).setWorkImgUrl(ImgDomainUtil.getImageUrl_Full(photoList.get(i).getImgurl()));  
 								//---打印号---
 								layerList.get(i).setPrintNo(workId+"-"+userorders.getUserid()+"-"+(i+1)+"-"+oproducerModel.getPrintindex()); 
 							}
 						}
-						//是否有广告位
-						if(products.getAdvertcount()!=null&&products.getAdvertcount().intValue()>0){
+						
+						if(advertImglist!=null&&advertImglist.size()>0){
+							 //是否有广告位
 							 TiStyleadverts styleadverts= styleAdevertMapper.selectByPrimaryKey(styleId);
-							 if(styleadverts!=null){
+							 if(styleadverts!=null) {
 								 List<TiStyleLayerResult> adverlist=new ArrayList<TiStyleLayerResult>();
-								 List<ImageInfo> imglist=null;
-								 if(userorders.getBranchuserid()!=null&&userorders.getBranchuserid()>0){
-									 TiAdvertimgs advertlist= advertMapper.getAdvertByProductIdAndPromoterId(products.getProductid(),userorders.getBranchuserid() );
-									 if(advertlist!=null&&!ObjectUtil.isEmpty(advertlist.getAdvertimgjson())){
-//										 imglist=(List<ImageInfo>)JsonUtil.jsonToList(advertlist.getAdvertimgjson());
-										 imglist=Json2Objects.getImageInfosList(advertlist.getAdvertimgjson());
-									 }
-								 }
 								 for(int i=0;i<products.getAdvertcount();i++){
 									 TiStyleLayerResult advertMap=new TiStyleLayerResult();
 									 advertMap.setIsAdvert(1);
-									 if(imglist==null||imglist.size()<=(i)||imglist.get(i)==null||ObjectUtil.isEmpty(imglist.get(i).getUrl())){ 
+									 if(advertImglist==null||advertImglist.size()<=(i)||advertImglist.get(i)==null||ObjectUtil.isEmpty(advertImglist.get(i).getUrl())){ 
 										 advertMap.setHaveAdvert(0);
 										 advertMap.setBackImg(styleadverts.getBlankimg()); 
 									 }else{
 										 advertMap.setHaveAdvert(1); 
-										 advertMap.setAdImg(imglist.get(i).getUrl());
+										 advertMap.setAdImg(advertImglist.get(i).getUrl());
 										 advertMap.setImgCoordMod(styleCoordItemMapper.selectByPrimaryKey(styleadverts.getImgcoordid().longValue()));
 										 advertMap.setBackImg(styleadverts.getBackimg());  
 									 }

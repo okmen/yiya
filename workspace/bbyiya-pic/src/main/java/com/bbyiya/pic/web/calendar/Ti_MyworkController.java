@@ -262,6 +262,7 @@ public class Ti_MyworkController extends SSOController {
 						Map<String, Object> map=new HashMap<String, Object>();
 						map.put("details", details);
 						map.put("imgCount", style.getImgcount()); 
+						map.put("title", style.getDescription()); 
 						map.put("cateId", products.getCateid());
 						map.put("workInfo", myworks);
 						rq.setStatu(ReturnStatus.Success);

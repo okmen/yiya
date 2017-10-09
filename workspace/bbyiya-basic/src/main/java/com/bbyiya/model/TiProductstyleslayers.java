@@ -19,6 +19,9 @@ public class TiProductstyleslayers {
 
     private Integer isround;
 
+    private Integer advertcoordid;
+    
+
     public Long getId() {
         return id;
     }
@@ -31,7 +34,17 @@ public class TiProductstyleslayers {
         return styleid;
     }
 
-    public void setStyleid(Long styleid) {
+ 
+
+	public Integer getAdvertcoordid() {
+		return advertcoordid;
+	}
+
+	public void setAdvertcoordid(Integer advertcoordid) {
+		this.advertcoordid = advertcoordid;
+	}
+
+	public void setStyleid(Long styleid) {
         this.styleid = styleid;
     }
 

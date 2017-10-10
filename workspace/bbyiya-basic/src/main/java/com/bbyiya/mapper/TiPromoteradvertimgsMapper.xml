@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiPromoteradvertimgsMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiPromoteradvertimgs" >
+    <id column="Id" property="id" jdbcType="BIGINT" />
+    <result column="AdvertId" property="advertid" jdbcType="INTEGER" />
+    <result column="ImgUrl" property="imgurl" jdbcType="VARCHAR" />
+    <result column="LinkUrl" property="linkurl" jdbcType="VARCHAR" />
+    <result column="Sort" property="sort" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Id, AdvertId, ImgUrl, LinkUrl, Sort, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_promoteradvertimgs
+    where Id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ti_promoteradvertimgs
+    where Id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiPromoteradvertimgs" >
+    insert into ti_promoteradvertimgs (Id, AdvertId, ImgUrl, 
+      LinkUrl, Sort, CreateTime
+      )
+    values (#{id,jdbcType=BIGINT}, #{advertid,jdbcType=INTEGER}, #{imgurl,jdbcType=VARCHAR}, 
+      #{linkurl,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiPromoteradvertimgs" >
+    insert into ti_promoteradvertimgs
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        Id,
+      </if>
+      <if test="advertid != null" >
+        AdvertId,
+      </if>
+      <if test="imgurl != null" >
+        ImgUrl,
+      </if>
+      <if test="linkurl != null" >
+        LinkUrl,
+      </if>
+      <if test="sort != null" >
+        Sort,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="advertid != null" >
+        #{advertid,jdbcType=INTEGER},
+      </if>
+      <if test="imgurl != null" >
+        #{imgurl,jdbcType=VARCHAR},
+      </if>
+      <if test="linkurl != null" >
+        #{linkurl,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiPromoteradvertimgs" >
+    update ti_promoteradvertimgs
+    <set >
+      <if test="advertid != null" >
+        AdvertId = #{advertid,jdbcType=INTEGER},
+      </if>
+      <if test="imgurl != null" >
+        ImgUrl = #{imgurl,jdbcType=VARCHAR},
+      </if>
+      <if test="linkurl != null" >
+        LinkUrl = #{linkurl,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        Sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiPromoteradvertimgs" >
+    update ti_promoteradvertimgs
+    set AdvertId = #{advertid,jdbcType=INTEGER},
+      ImgUrl = #{imgurl,jdbcType=VARCHAR},
+      LinkUrl = #{linkurl,jdbcType=VARCHAR},
+      Sort = #{sort,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

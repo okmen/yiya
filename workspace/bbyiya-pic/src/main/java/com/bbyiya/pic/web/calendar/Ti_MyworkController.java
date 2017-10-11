@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,9 @@ import com.bbyiya.dao.TiMyartsdetailsMapper;
 import com.bbyiya.dao.TiMyworksMapper;
 import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
+import com.bbyiya.dao.TiPromoteradvertcoustomerMapper;
+import com.bbyiya.dao.TiPromoteradvertimgsMapper;
+import com.bbyiya.dao.TiPromoteradvertinfoMapper;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.ActivityWorksStatusEnum;
@@ -31,12 +36,17 @@ import com.bbyiya.model.OOrderproductphotos;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OProducerordercount;
 import com.bbyiya.model.OUserorders;
+import com.bbyiya.model.TiActivitys;
 import com.bbyiya.model.TiActivityworks;
 import com.bbyiya.model.TiMyartsdetails;
 import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiProductstyles;
+import com.bbyiya.model.TiPromoteradvertcoustomer;
+import com.bbyiya.model.TiPromoteradvertimgs;
+import com.bbyiya.model.TiPromoteradvertinfo;
 import com.bbyiya.pic.vo.calendar.MyworkDetailsParam;
+import com.bbyiya.service.IRegionService;
 import com.bbyiya.utils.ImgDomainUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
@@ -232,6 +242,8 @@ public class Ti_MyworkController extends SSOController {
 	}
 	@Autowired
 	private TiProductsMapper productMapper;
+	@Autowired
+	private TiPromoteradvertinfoMapper advertMapper;
 	/**
 	 * 作品详情
 	 * @param workId
@@ -263,6 +275,15 @@ public class Ti_MyworkController extends SSOController {
 						map.put("title", products.getTitle()); 
 						map.put("cateId", products.getCateid());
 						map.put("workInfo", myworks);
+						if(myworks.getActid()!=null&&myworks.getActid().intValue()>0){
+							TiActivitys activitys= actMapper.selectByPrimaryKey(myworks.getActid());
+							if(activitys!=null&&activitys.getProduceruserid()!=null){
+								TiPromoteradvertinfo advertMod= advertMapper.getModelByPromoterUserId(activitys.getProduceruserid());
+								if(advertMod!=null){
+									map.put("advert", advertMod);
+								}
+							}
+						}
 						rq.setStatu(ReturnStatus.Success);
 						rq.setBasemodle(map); 
 					}
@@ -309,6 +330,70 @@ public class Ti_MyworkController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	@Autowired
+	private TiPromoteradvertimgsMapper advertImgMapper;
+	@Autowired
+	private TiPromoteradvertcoustomerMapper advertCustomerMapper;
+	@Resource(name = "regionServiceImpl")
+	private IRegionService regionService;
+	/**
+	 * 获取广告信息详细
+	 * @param advertid
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/advertinfo")
+	public String advertinfo(int advertid)throws Exception {
+		ReturnModel rq=new ReturnModel();
+		TiPromoteradvertinfo advertInfo= advertMapper.selectByPrimaryKey(advertid);
+		if(advertInfo!=null){
+			List<TiPromoteradvertimgs> advertImgs= advertImgMapper.findImgsByAdvertId(advertid);
+			if(advertImgs!=null&&advertImgs.size()>0){
+				advertInfo.setImglist(advertImgs);
+			}
+			rq.setBasemodle(advertInfo);
+		}
+		rq.setStatu(ReturnStatus.Success);
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/addAdvertcustomer")
+	public String addAdvertcustomer(String name,String phone,int advertId, int province,int city,int district,String streetDetail)throws Exception {
+		ReturnModel rq=new ReturnModel();
+		if(advertId<=0){
+			rq.setStatusreson("参数有误");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		if(ObjectUtil.isEmpty(name)){
+			rq.setStatusreson("姓名不能为空！");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		if(!ObjectUtil.isMobile(phone)){
+			rq.setStatusreson("手机号不正确！");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		TiPromoteradvertcoustomer cus= advertCustomerMapper.getCustomerByPhone(advertId, phone);
+		if(cus!=null){
+			rq.setStatusreson("此手机号已经提交！");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		TiPromoteradvertcoustomer customer=new TiPromoteradvertcoustomer();
+		customer.setAdvertid(advertId);
+		customer.setName(name);
+		customer.setMobilephone(phone);
+		customer.setProvince(province);
+		customer.setCity(city);
+		customer.setDistrict(district);
+		customer.setStreetdetail(streetDetail);
+		customer.setAddress(regionService.getProvinceName(province)+regionService.getCityName(city)+regionService.getAresName(district)+streetDetail);
+		advertCustomerMapper.insert(customer); 
+		rq.setStatu(ReturnStatus.Success);
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 	
 	@Autowired
 	private EErrorsMapper logMapper;

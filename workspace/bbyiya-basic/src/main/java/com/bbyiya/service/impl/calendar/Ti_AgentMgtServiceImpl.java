@@ -541,6 +541,9 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 				employee.setUserid(apply.getPromoteruserid());
 				employee.setStatus(Integer.parseInt(PromoterStatusEnum.ok.toString()));
 				promoteremployeeMapper.insert(employee);
+				//更新代理身份标识 预留
+				userBasic.addUserIdentity(apply.getPromoteruserid(),UserIdentityEnums.ti_employees); 
+				
 			}else{
 				employee.setStatus(Integer.parseInt(PromoterStatusEnum.ok.toString()));
 				promoteremployeeMapper.updateByPrimaryKey(employee);

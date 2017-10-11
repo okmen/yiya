@@ -24,6 +24,12 @@
     from ti_promoteradvertcoustomer
     where Id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="getCustomerByPhone" resultMap="BaseResultMap"  ><!-- 2 根据手机号查询是否参与 -->
+    select 
+    <include refid="Base_Column_List" />
+    from ti_promoteradvertcoustomer
+    where AdvertId = #{advertId,jdbcType=INTEGER} and Mobilephone= #{phone,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from ti_promoteradvertcoustomer
     where Id = #{id,jdbcType=BIGINT}

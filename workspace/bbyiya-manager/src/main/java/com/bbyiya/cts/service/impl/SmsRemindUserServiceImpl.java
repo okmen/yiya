@@ -67,8 +67,8 @@ public class SmsRemindUserServiceImpl implements ISmsRemindUserService{
 	public void getSmsRemindUsers(){
 		
 		List<SmsRemindUserVo> cacheuserlist= (List<SmsRemindUserVo>) RedisUtil.getObject(keyString);
-		//查询最新余额小于100的所有用户
-		List<SmsRemindUserVo> newuserlist=accountMapper.findSmsRemindUserList(100.0);
+		//查询最新余额小于500的所有用户
+		List<SmsRemindUserVo> newuserlist=accountMapper.findSmsRemindUserList(500.0);
 		List<SmsRemindUserVo> newcacheuserlist=new ArrayList<SmsRemindUserVo>();
 		//初始的情况
 		if(cacheuserlist==null){

@@ -38,6 +38,14 @@
       #{description,jdbcType=VARCHAR}, #{openapplication,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
       #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP})
   </insert>
+  <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="advertid" parameterType="com.bbyiya.model.TiPromoteradvertinfo" >
+    insert into ti_promoteradvertinfo (AdvertId, PromoterUserId, DefaultImg, 
+      Description, OpenApplication, Status, 
+      CreateTime, UpdateTime)
+    values (#{advertid,jdbcType=INTEGER}, #{promoteruserid,jdbcType=BIGINT}, #{defaultimg,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR}, #{openapplication,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP})
+  </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiPromoteradvertinfo" >
     insert into ti_promoteradvertinfo
     <trim prefix="(" suffix=")" suffixOverrides="," >

@@ -1,5 +1,7 @@
 package com.bbyiya.dao;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.TiPromoteradvertcoustomer;
 
 public interface TiPromoteradvertcoustomerMapper {
@@ -14,4 +16,11 @@ public interface TiPromoteradvertcoustomerMapper {
     int updateByPrimaryKeySelective(TiPromoteradvertcoustomer record);
 
     int updateByPrimaryKey(TiPromoteradvertcoustomer record);
+    /**
+     * 通过手机号查询
+     * @param advertId
+     * @param phone
+     * @return
+     */
+    TiPromoteradvertcoustomer getCustomerByPhone(@Param("advertId")Integer advertId,@Param("phone")String phone);
 }

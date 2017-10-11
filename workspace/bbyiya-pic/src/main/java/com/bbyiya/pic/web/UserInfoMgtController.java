@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.baseUtils.CookieUtils;
 import com.bbyiya.dao.EErrorsMapper;
-import com.bbyiya.dao.UUseraddressMapper;
+//import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.UUseraddress;
 import com.bbyiya.pic.service.IPic_UserMgtService;
@@ -38,8 +38,8 @@ public class UserInfoMgtController extends SSOController {
 	
 	@Resource(name = "userInfoMgtService")
 	private IUserInfoMgtService userMgtService;
-	@Autowired
-	private UUseraddressMapper userAddressMapper;
+//	@Autowired
+//	private UUseraddressMapper userAddressMapper;
 	@Autowired
 	private EErrorsMapper logger;
 	/**

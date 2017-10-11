@@ -17,6 +17,10 @@ public class TiStyleLayerResult extends TiProductstyleslayers{
 	private String backImg;
 	//广告图
 	private String adImg;
+	/**
+	 * 广告位
+	 */
+	private PStylecoordinateitem advertCoordMod;
 	
 	public String getWorkImgUrl() {
 		return workImgUrl;
@@ -80,6 +84,14 @@ public class TiStyleLayerResult extends TiProductstyleslayers{
 
 	public void setAdImg(String adImg) {
 		this.adImg = adImg;
+	}
+
+	public PStylecoordinateitem getAdvertCoordMod() {
+		return advertCoordMod;
+	}
+
+	public void setAdvertCoordMod(PStylecoordinateitem advertCoordMod) {
+		this.advertCoordMod = advertCoordMod;
 	}
 
 	

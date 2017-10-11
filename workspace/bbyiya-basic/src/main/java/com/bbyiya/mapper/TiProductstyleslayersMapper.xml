@@ -10,11 +10,12 @@
     <result column="LayerImgPreview" property="layerimgpreview" jdbcType="VARCHAR" />
     <result column="WidthHight" jdbcType="DOUBLE" property="widthhight" />
     <result column="IsRound" jdbcType="INTEGER" property="isround" />
+    <result column="AdvertCoordId" property="advertcoordid" jdbcType="INTEGER" />
   </resultMap>
   <resultMap id="StyleLayerResultMap" type="com.bbyiya.vo.calendar.product.TiStyleLayerResult" ><!-- 款式模板图片 -->
   </resultMap>
   <sql id="Base_Column_List" >
-    Id, StyleId, LayerImg, CreateTime, Sort, LayerImgPreview, WidthHight, IsRound
+    Id, StyleId, LayerImg, CreateTime, Sort, LayerImgPreview, WidthHight, IsRound, AdvertCoordId
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -35,10 +36,12 @@
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.TiProductstyleslayers" >
     insert into ti_productstyleslayers (Id, StyleId, LayerImg, 
-      CreateTime, Sort, LayerImgPreview
+      CreateTime, Sort, LayerImgPreview, 
+      WidthHight, IsRound, AdvertCoordId
       )
     values (#{id,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, #{layerimg,jdbcType=VARCHAR}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{sort,jdbcType=INTEGER}, #{layerimgpreview,jdbcType=VARCHAR}
+      #{createtime,jdbcType=TIMESTAMP}, #{sort,jdbcType=INTEGER}, #{layerimgpreview,jdbcType=VARCHAR}, 
+      #{widthhight,jdbcType=DOUBLE}, #{isround,jdbcType=INTEGER}, #{advertcoordid,jdbcType=INTEGER}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiProductstyleslayers" >
@@ -62,6 +65,15 @@
       <if test="layerimgpreview != null" >
         LayerImgPreview,
       </if>
+      <if test="widthhight != null" >
+        WidthHight,
+      </if>
+      <if test="isround != null" >
+        IsRound,
+      </if>
+      <if test="advertcoordid != null" >
+        AdvertCoordId,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -81,6 +93,15 @@
       </if>
       <if test="layerimgpreview != null" >
         #{layerimgpreview,jdbcType=VARCHAR},
+      </if>
+      <if test="widthhight != null" >
+        #{widthhight,jdbcType=DOUBLE},
+      </if>
+      <if test="isround != null" >
+        #{isround,jdbcType=INTEGER},
+      </if>
+      <if test="advertcoordid != null" >
+        #{advertcoordid,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -102,6 +123,15 @@
       <if test="layerimgpreview != null" >
         LayerImgPreview = #{layerimgpreview,jdbcType=VARCHAR},
       </if>
+      <if test="widthhight != null" >
+        WidthHight = #{widthhight,jdbcType=DOUBLE},
+      </if>
+      <if test="isround != null" >
+        IsRound = #{isround,jdbcType=INTEGER},
+      </if>
+      <if test="advertcoordid != null" >
+        AdvertCoordId = #{advertcoordid,jdbcType=INTEGER},
+      </if>
     </set>
     where Id = #{id,jdbcType=BIGINT}
   </update>
@@ -111,7 +141,10 @@
       LayerImg = #{layerimg,jdbcType=VARCHAR},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
       Sort = #{sort,jdbcType=INTEGER},
-      LayerImgPreview = #{layerimgpreview,jdbcType=VARCHAR}
+      LayerImgPreview = #{layerimgpreview,jdbcType=VARCHAR},
+      WidthHight = #{widthhight,jdbcType=DOUBLE},
+      IsRound = #{isround,jdbcType=INTEGER},
+      AdvertCoordId = #{advertcoordid,jdbcType=INTEGER}
     where Id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -47,7 +47,7 @@ public class TiOrderIBSController extends SSOController {
 				rq = ibstiorderService.findTiMyOrderlist(user.getUserId(),Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()), status,keywords,index,size);
 			} else {
 				rq.setStatu(ReturnStatus.SystemError_1);
-				rq.setStatusreson("您还不是代理商，没有权限");
+				rq.setStatusreson("您还不是活动参与单位，没有权限");
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);

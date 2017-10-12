@@ -146,7 +146,7 @@ public class TiAgentMgtController extends SSOController {
 					}
 					if(!ObjectUtil.IsNumber(jb.getString("agentuserid"))){
 						rq.setStatu(ReturnStatus.ParamError);
-						rq.setStatusreson("代理商咿呀号请输入数字！");
+						rq.setStatusreson("推广代理商咿呀号请输入数字！");
 						return JsonUtil.objectToJsonStr(rq);
 					}
 					TiPromotersapply applyInfo=(TiPromotersapply)JsonUtil.jsonStrToObject(promoterJson, TiPromotersapply.class);
@@ -556,7 +556,7 @@ public class TiAgentMgtController extends SSOController {
 	
 	
 	/**
-	 * 登陆后得到代理商信息
+	 * 登陆后得到推广代理商信息
 	 * @param type
 	 * @return
 	 * @throws Exception
@@ -570,7 +570,7 @@ public class TiAgentMgtController extends SSOController {
 			TiAgentApplyVo branch=agentService.getTiAgentsInfo(user.getUserId());	
 			rq.setBasemodle(branch);
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("获取代理商信息成功！");
+			rq.setStatusreson("获取推广代理商信息成功！");
 			
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
@@ -595,7 +595,7 @@ public class TiAgentMgtController extends SSOController {
 			TiPromoterApplyVo branch=agentService.getTiPromoterInfo(user.getUserId());	
 			rq.setBasemodle(branch);
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("获取代理商信息成功！");
+			rq.setStatusreson("获取活动参与单位信息成功！");
 			
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
@@ -620,7 +620,7 @@ public class TiAgentMgtController extends SSOController {
 			TiProducersApplyVo producer=agentService.getTiProducerInfo(user.getUserId());	
 			rq.setBasemodle(producer);
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("获取生产商信息成功！");
+			rq.setStatusreson("获取授权生产商信息成功！");
 			
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
@@ -642,7 +642,7 @@ public class TiAgentMgtController extends SSOController {
 		if(user!=null){
 			rq=agentService.editTiAgentsAddress(user.getUserId(), streetdetail,name,phone);
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("修改代理商信息成功！");
+			rq.setStatusreson("修改推广代理商信息成功！");
 			
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
@@ -664,7 +664,7 @@ public class TiAgentMgtController extends SSOController {
 		if(user!=null){
 			rq=agentService.editTiPromotersAddress(user.getUserId(), streetdetail,name,phone);
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("修改代理商信息成功！");
+			rq.setStatusreson("修改活动参与单位信息成功！");
 			
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
@@ -687,7 +687,7 @@ public class TiAgentMgtController extends SSOController {
 		if(user!=null){
 			rq=agentService.editTiProducerAddress(user.getUserId(), streetdetail,name,phone);
 			rq.setStatu(ReturnStatus.Success);
-			rq.setStatusreson("修改生产商信息成功！");
+			rq.setStatusreson("修改授权生产商信息成功！");
 			
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);

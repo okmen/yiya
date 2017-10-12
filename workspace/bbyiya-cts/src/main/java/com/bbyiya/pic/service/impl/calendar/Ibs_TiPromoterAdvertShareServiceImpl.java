@@ -17,6 +17,7 @@ import com.bbyiya.model.TiPromoteradvertcoustomer;
 import com.bbyiya.model.TiPromoteradvertimgs;
 import com.bbyiya.model.TiPromoteradvertinfo;
 import com.bbyiya.pic.service.calendar.IIbs_TiPromoterAdvertShareService;
+import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.github.pagehelper.PageHelper;
@@ -66,7 +67,14 @@ public class Ibs_TiPromoterAdvertShareServiceImpl implements IIbs_TiPromoterAdve
 		rqModel.setStatu(ReturnStatus.Success);
 
 		TiPromoteradvertinfo advertinfo=advertinfoMapper.getModelByPromoterUserId(promoterUserId);
+		
 		if(advertinfo!=null){
+			if(advertinfo.getUpdatetime()!=null){
+				advertinfo.setUpdatetimestr(DateUtil.getTimeStr(advertinfo.getUpdatetime(), "yyyy-MM-dd HH:mm:ss"));
+			}else{
+				advertinfo.setUpdatetimestr(DateUtil.getTimeStr(advertinfo.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
+				
+			}
 			List<TiPromoteradvertimgs> advertimgslist=advertimgsMapper.findImgsByAdvertId(advertinfo.getAdvertid());
 			advertinfo.setImglist(advertimgslist);
 		}

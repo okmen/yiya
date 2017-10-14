@@ -48,7 +48,7 @@ public class Ibs_TiPromoterAdvertShareServiceImpl implements IIbs_TiPromoterAdve
 	public ReturnModel getPromoteradvertCoustomer(Long promoterUserId,int index,int size){
 		ReturnModel rqModel=new ReturnModel();
 		rqModel.setStatu(ReturnStatus.Success);
-		TiPromoteradvertinfo advertinfo=advertinfoMapper.getModelByPromoterUserId(promoterUserId);
+		TiPromoteradvertinfo advertinfo=advertinfoMapper.getAdvertByPromoterUserId(promoterUserId);
 		if(advertinfo!=null){
 			PageHelper.startPage(index, size);
 			List<TiPromoteradvertcoustomer> coustomerlist=coustomerMapper.selectListByAdvertId(advertinfo.getAdvertid());
@@ -66,7 +66,7 @@ public class Ibs_TiPromoterAdvertShareServiceImpl implements IIbs_TiPromoterAdve
 		ReturnModel rqModel=new ReturnModel();
 		rqModel.setStatu(ReturnStatus.Success);
 
-		TiPromoteradvertinfo advertinfo=advertinfoMapper.getModelByPromoterUserId(promoterUserId);
+		TiPromoteradvertinfo advertinfo=advertinfoMapper.getAdvertByPromoterUserId(promoterUserId);
 		
 		if(advertinfo!=null){
 			if(advertinfo.getUpdatetime()!=null){
@@ -107,7 +107,7 @@ public class Ibs_TiPromoterAdvertShareServiceImpl implements IIbs_TiPromoterAdve
 		boolean isadd=false;
 		TiPromoteradvertinfo advert=null;
 		if(!ObjectUtil.isEmpty(promoterUserId)){
-			advert=advertinfoMapper.getModelByPromoterUserId(promoterUserId);
+			advert=advertinfoMapper.getAdvertByPromoterUserId(promoterUserId);
 		}
 		if(advert==null){
 			advert=new TiPromoteradvertinfo();
@@ -155,7 +155,7 @@ public class Ibs_TiPromoterAdvertShareServiceImpl implements IIbs_TiPromoterAdve
 	public ReturnModel resetAdvertInfo(Long promoterUserId){
 		ReturnModel rqModel=new ReturnModel();
 		rqModel.setStatu(ReturnStatus.ParamError);
-		TiPromoteradvertinfo advertinfo=advertinfoMapper.getModelByPromoterUserId(promoterUserId);
+		TiPromoteradvertinfo advertinfo=advertinfoMapper.getAdvertByPromoterUserId(promoterUserId);
 		if(advertinfo!=null){
 			//advertinfoMapper.deleteByPrimaryKey(advertinfo.getAdvertid());
 			advertinfo.setDefaultimg("");

@@ -28,4 +28,7 @@ public interface TiPromoteradvertinfoMapper {
      * @return
      */
     TiPromoteradvertinfo getModelByPromoterUserId(@Param("userId")Long userId);
+    
+    TiPromoteradvertinfo getAdvertByPromoterUserId(@Param("userId")Long userId);
+
 }

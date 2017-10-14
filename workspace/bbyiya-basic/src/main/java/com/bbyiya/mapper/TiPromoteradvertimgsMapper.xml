@@ -18,6 +18,7 @@
     from ti_promoteradvertimgs
     where Id = #{id,jdbcType=BIGINT}
   </select>
+  
   <select id="findImgsByAdvertId" resultMap="BaseResultMap"  ><!-- 2 获取广告图集 -->
     select 
     <include refid="Base_Column_List" />

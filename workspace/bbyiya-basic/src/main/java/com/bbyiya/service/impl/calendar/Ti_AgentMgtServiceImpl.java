@@ -110,7 +110,7 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 	private IRegionService regionService;
 	
 	/**
-	 * 代理商申请
+	 * 推广代理商申请
 	 */
 	public ReturnModel tiagentApply(Long userId,TiAgentsapply applyInfo){
 		ReturnModel rq=new ReturnModel();
@@ -164,7 +164,7 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 		TiPromoters promoters=promoterMapper.selectByPrimaryKey(userId);		
 		if(promoters!=null&&promoters.getStatus()!=null&&promoters.getStatus().intValue()==Integer.parseInt(PromoterStatusEnum.ok.toString())){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("你已经为推广者身份，不能再申请代理商！");
+			rq.setStatusreson("你已经为活动参与单位，不能再申请推广代理商！");
 			return rq;
 		}
 		
@@ -189,7 +189,7 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 			
 		}
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("代理商资质提交成功！"); 
+		rq.setStatusreson("推广代理商资质提交成功！"); 
 		return rq;
 	}
 	
@@ -251,18 +251,18 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 		TiAgentsapply belongagents=agentapplyMapper.selectByPrimaryKey(applyInfo.getAgentuserid());
 		if(belongagents==null){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("代理商咿呀号不存在！");
+			rq.setStatusreson("推广代理商咿呀号不存在！");
 			return rq;
 		}
 		if(belongagents.getStatus()!=Integer.parseInt(TiAgentStatusEnum.ok.toString())){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("代理商咿呀号未通过审核或还在审核中！");
+			rq.setStatusreson("推广代理商咿呀号未通过审核或还在审核中！");
 			return rq;
 		}
 		TiAgents agents=agentsMapper.selectByPrimaryKey(userId);		
 		if(agents!=null&&agents.getStatus()!=null&&agents.getStatus().intValue()==Integer.parseInt(TiAgentStatusEnum.ok.toString())){
 			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("你已经为代理商身份，不能再申请为推广者！");
+			rq.setStatusreson("你已经为推广代理商身份，不能再申请为活动参与单位！");
 			return rq;
 		}
 		
@@ -291,7 +291,7 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 			promoterapplyMapper.insert(applyInfo);
 		}
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("推广者资质提交成功！"); 
+		rq.setStatusreson("活动参与单位资质提交成功！"); 
 		return rq;
 	}
 	
@@ -402,7 +402,7 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 			producersapplyMapper.insert(applyInfo);		
 		}
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("生产商资质提交成功！"); 
+		rq.setStatusreson("授权生产商资质提交成功！"); 
 		return rq;
 	}
 	
@@ -645,7 +645,7 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 			
 			if(agentapply.getStatus()!=null){
 				if(agentapply.getStatus().intValue()==Integer.parseInt(TiAgentStatusEnum.ok.toString())){
-					map.put("msg", "已经成为代理商");
+					map.put("msg", "审核已通过，已成为推广代理商");
 				}else if (agentapply.getStatus().intValue()==Integer.parseInt(TiAgentStatusEnum.applying.toString())) {
 					map.put("msg", "申请中");
 				}else if (agentapply.getStatus().intValue()==Integer.parseInt(TiAgentStatusEnum.no.toString())) {
@@ -676,7 +676,7 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 			
 			if(promoterapply.getStatus()!=null){
 				if(promoterapply.getStatus().intValue()==Integer.parseInt(PromoterStatusEnum.ok.toString())){
-					map.put("msg", "已经成为推广者");
+					map.put("msg", "审核已通过，已成为活动参与单位");
 				}else if (promoterapply.getStatus().intValue()==Integer.parseInt(PromoterStatusEnum.applying.toString())) {
 					map.put("msg", "申请中");
 				}else if (promoterapply.getStatus().intValue()==Integer.parseInt(PromoterStatusEnum.no.toString())) {
@@ -711,14 +711,14 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 			}
 			if(producersapply.getStatus()!=null){
 				if(producersapply.getStatus().intValue()==Integer.parseInt(ProducersStatusEnum.ok.toString())){
-					map.put("msg", "已经成为生产商");
+					map.put("msg", "审核已通过，已成为授权生产商");
 				}else if (producersapply.getStatus().intValue()==Integer.parseInt(ProducersStatusEnum.applying.toString())) {
-					map.put("msg", "申请中");
+					map.put("msg", "审核中");
 				}else if (producersapply.getStatus().intValue()==Integer.parseInt(ProducersStatusEnum.no.toString())) {
-					map.put("msg", "申请不通过");
+					map.put("msg", "审核未通过");
 				}
 			}else {
-				map.put("msg", "申请中");
+				map.put("msg", "审核中");
 			}
 			map.put("applyInfo", producersapply);
 		}else {
@@ -1044,7 +1044,7 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 		TiProducers producer=producersMapper.selectByPrimaryKey(producerUserId);
 		if(producer==null||(producer!=null&&producer.getStatus().intValue()!=Integer.parseInt(ProducersStatusEnum.ok.toString()))){
 			rqModel.setStatu(ReturnStatus.ParamError);
-			rqModel.setStatusreson("生产商还未审核通过，不能分配地区！");
+			rqModel.setStatusreson("授权生产商还未审核通过，不能分配地区！");
 			return rqModel;
 		}
 		//得到原有的

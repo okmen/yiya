@@ -17,9 +17,18 @@ public interface TiPromoteradvertinfoMapper {
 
     int updateByPrimaryKey(TiPromoteradvertinfo record);
     /**
+     * 新增并返回主键Id
+     * @param record
+     * @return
+     */
+    int insertReturnId(TiPromoteradvertinfo record);
+    /**
      * 获取 广告信息
      * @param userId
      * @return
      */
     TiPromoteradvertinfo getModelByPromoterUserId(@Param("userId")Long userId);
+    
+    TiPromoteradvertinfo getAdvertByPromoterUserId(@Param("userId")Long userId);
+
 }

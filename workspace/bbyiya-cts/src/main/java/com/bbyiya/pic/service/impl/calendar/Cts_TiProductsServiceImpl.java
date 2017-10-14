@@ -3,6 +3,7 @@ package com.bbyiya.pic.service.impl.calendar;
 
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -192,8 +193,20 @@ public class Cts_TiProductsServiceImpl implements ICts_TiProductsService{
 	public ReturnModel getTiStylesLayersList(Long styleid){
 		ReturnModel rqModel=new ReturnModel();
 		rqModel.setStatu(ReturnStatus.ParamError);
+		HashMap<String, Object> mapresult=new HashMap<String, Object>();
+		//得到坐标
+		TiStylecoordinate stylecoord=stylecoordMapper.selectByPrimaryKey(styleid);
+		if(stylecoord!=null){
+			PStylecoordinateitem imgcoorddata=pstylecoorditemMapper.selectByPrimaryKey(stylecoord.getImgcoordid().longValue());
+			PStylecoordinateitem printcoorddata=pstylecoorditemMapper.selectByPrimaryKey(stylecoord.getPrintcoordid().longValue());
+			PStylecoordinateitem fontimgcoorddata=pstylecoorditemMapper.selectByPrimaryKey(stylecoord.getFrontimgcoordid().longValue());
+			mapresult.put("imgcoorddata", imgcoorddata);
+			mapresult.put("printcoorddata", printcoorddata);
+			mapresult.put("fontimgcoorddata", fontimgcoorddata);
+		}
 		List<TiStyleLayerResult> styleList=styleslayersMapper.findLayerlistByStyleId(styleid);
-		rqModel.setBasemodle(styleList);
+		mapresult.put("styleList", styleList);
+		rqModel.setBasemodle(mapresult);
 		rqModel.setStatu(ReturnStatus.Success); 		
 		rqModel.setStatusreson("操作成功！");
 		return rqModel;

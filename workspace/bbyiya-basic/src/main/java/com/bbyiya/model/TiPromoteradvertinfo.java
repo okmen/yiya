@@ -21,6 +21,8 @@ public class TiPromoteradvertinfo {
     private Date updatetime;
     
     private List<TiPromoteradvertimgs> imglist;
+    
+    private String updatetimestr;
 
     public Integer getAdvertid() {
         return advertid;
@@ -92,6 +94,14 @@ public class TiPromoteradvertinfo {
 
 	public void setImglist(List<TiPromoteradvertimgs> imglist) {
 		this.imglist = imglist;
+	}
+
+	public String getUpdatetimestr() {
+		return updatetimestr;
+	}
+
+	public void setUpdatetimestr(String updatetimestr) {
+		this.updatetimestr = updatetimestr;
 	}
     
     

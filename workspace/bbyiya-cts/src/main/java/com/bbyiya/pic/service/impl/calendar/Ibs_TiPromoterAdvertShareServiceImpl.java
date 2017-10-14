@@ -89,6 +89,21 @@ public class Ibs_TiPromoterAdvertShareServiceImpl implements IIbs_TiPromoterAdve
 	public ReturnModel addOrEditShareAdvert(Long promoterUserId,TiPromoteradvertinfo advertinfo,List<TiPromoteradvertimgs> advertimgs ){
 		ReturnModel rqModel=new ReturnModel();
 		rqModel.setStatu(ReturnStatus.ParamError);
+		if(ObjectUtil.isEmpty(advertinfo.getDescription())){
+			rqModel.setStatu(ReturnStatus.ParamError);
+			rqModel.setStatusreson("广告主题不能为空，请填写广告主题！");
+			return rqModel;
+		}
+		if(ObjectUtil.isEmpty(advertinfo.getDefaultimg())){
+			rqModel.setStatu(ReturnStatus.ParamError);
+			rqModel.setStatusreson("顶部广告图不能为空，请上传顶部广告图！");
+			return rqModel;
+		}
+		if(advertimgs==null||advertimgs.size()<=0){
+			rqModel.setStatu(ReturnStatus.ParamError);
+			rqModel.setStatusreson("详情图不能为空，请至少上传一张详情图！");
+			return rqModel;
+		}
 		boolean isadd=false;
 		TiPromoteradvertinfo advert=null;
 		if(!ObjectUtil.isEmpty(promoterUserId)){

@@ -375,11 +375,12 @@ public class Ti_MyworkController extends SSOController {
 			rq.setStatusreson("手机号不正确！");
 			return JsonUtil.objectToJsonStr(rq);
 		}
-		TiPromoteradvertcoustomer cus= advertCustomerMapper.getCustomerByPhone(advertId, phone);
-		if(cus!=null){
-			rq.setStatusreson("此手机号已经提交！");
-			return JsonUtil.objectToJsonStr(rq);
-		}
+//		TiPromoteradvertcoustomer cus= advertCustomerMapper.getCustomerByPhone(advertId, phone);
+//		if(cus!=null){
+//			rq.setStatusreson("此手机号已经提交！");
+//			rq.setStatu(ReturnStatus.ParamError);
+//			return JsonUtil.objectToJsonStr(rq);
+//		}
 		TiPromoteradvertcoustomer customer=new TiPromoteradvertcoustomer();
 		customer.setAdvertid(advertId);
 		customer.setName(name);
@@ -388,6 +389,7 @@ public class Ti_MyworkController extends SSOController {
 		customer.setCity(city);
 		customer.setDistrict(district);
 		customer.setStreetdetail(streetDetail);
+		customer.setCreatetime(new Date()); 
 		customer.setAddress(regionService.getProvinceName(province)+regionService.getCityName(city)+regionService.getAresName(district)+streetDetail);
 		advertCustomerMapper.insert(customer); 
 		rq.setStatu(ReturnStatus.Success);

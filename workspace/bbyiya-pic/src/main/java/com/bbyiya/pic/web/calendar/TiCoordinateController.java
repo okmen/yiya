@@ -217,7 +217,7 @@ public class TiCoordinateController  extends SSOController{
 							}
 						}
 						
-						if(advertImglist!=null&&advertImglist.size()>0){
+						if(products.getAdvertcount()!=null&&products.getCateid()!=null&&products.getCateid().intValue()==3){
 							 //是否有广告位
 							 TiStyleadverts styleadverts= styleAdevertMapper.selectByPrimaryKey(styleId);
 							 if(styleadverts!=null) {

@@ -645,7 +645,7 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 			
 			if(agentapply.getStatus()!=null){
 				if(agentapply.getStatus().intValue()==Integer.parseInt(TiAgentStatusEnum.ok.toString())){
-					map.put("msg", "已经成为推广代理商");
+					map.put("msg", "审核已通过，已成为推广代理商");
 				}else if (agentapply.getStatus().intValue()==Integer.parseInt(TiAgentStatusEnum.applying.toString())) {
 					map.put("msg", "申请中");
 				}else if (agentapply.getStatus().intValue()==Integer.parseInt(TiAgentStatusEnum.no.toString())) {
@@ -676,7 +676,7 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 			
 			if(promoterapply.getStatus()!=null){
 				if(promoterapply.getStatus().intValue()==Integer.parseInt(PromoterStatusEnum.ok.toString())){
-					map.put("msg", "已经成为活动参与单位");
+					map.put("msg", "审核已通过，已成为活动参与单位");
 				}else if (promoterapply.getStatus().intValue()==Integer.parseInt(PromoterStatusEnum.applying.toString())) {
 					map.put("msg", "申请中");
 				}else if (promoterapply.getStatus().intValue()==Integer.parseInt(PromoterStatusEnum.no.toString())) {
@@ -711,14 +711,14 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 			}
 			if(producersapply.getStatus()!=null){
 				if(producersapply.getStatus().intValue()==Integer.parseInt(ProducersStatusEnum.ok.toString())){
-					map.put("msg", "已经成为授权生产商");
+					map.put("msg", "审核已通过，已成为授权生产商");
 				}else if (producersapply.getStatus().intValue()==Integer.parseInt(ProducersStatusEnum.applying.toString())) {
-					map.put("msg", "申请中");
+					map.put("msg", "审核中");
 				}else if (producersapply.getStatus().intValue()==Integer.parseInt(ProducersStatusEnum.no.toString())) {
-					map.put("msg", "申请不通过");
+					map.put("msg", "审核未通过");
 				}
 			}else {
-				map.put("msg", "申请中");
+				map.put("msg", "审核中");
 			}
 			map.put("applyInfo", producersapply);
 		}else {

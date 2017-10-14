@@ -147,6 +147,7 @@ public class Ibs_TiPromoterAdvertShareServiceImpl implements IIbs_TiPromoterAdve
 			advertinfo.setDescription("");
 			advertinfo.setImglist(null);
 			advertinfo.setOpenapplication(0);
+			advertinfo.setStatus(0);
 			advertinfoMapper.updateByPrimaryKey(advertinfo);
 			List<TiPromoteradvertimgs> advertimgslist=advertimgsMapper.findImgsByAdvertId(advertinfo.getAdvertid());
 			if(advertimgslist!=null&&advertimgslist.size()>0){

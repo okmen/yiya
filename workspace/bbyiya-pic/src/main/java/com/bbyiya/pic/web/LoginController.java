@@ -57,7 +57,7 @@ public class LoginController extends SSOController {
 	@Autowired
 	private EErrorsMapper errorMapper;
 	
-
+	private static String LOGIN_TEMP="LoginTemp";
 	
 	/**
 	 * 登录 中转页
@@ -66,7 +66,17 @@ public class LoginController extends SSOController {
 	 */
 	@RequestMapping(value = "/transfer")
 	public String transferPage(String m,String uid,String redirct_url) throws Exception {
-		String keyId= request.getSession().getId();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null&&user.getUserId()!=null){
+			if(ObjectUtil.parseInt(m)!=1&&!ObjectUtil.isEmpty(redirct_url)){
+				if(redirct_url.contains("http")){
+					return "redirect:"+redirct_url; 
+				}else {
+					return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+redirct_url; 	
+				}
+			}
+		}
+		String keyId= LOGIN_TEMP+request.getSession().getId();
 		long branch_userid=ObjectUtil.parseLong(uid);
 		if(branch_userid>0||!ObjectUtil.isEmpty(m)||!ObjectUtil.isEmpty(redirct_url)){  
 			LoginTempVo loginTemp=new LoginTempVo();
@@ -164,7 +174,7 @@ public class LoginController extends SSOController {
 		JSONObject model = JSONObject.fromObject(result);
 		ReturnModel rqModel = new ReturnModel();
 		//中转信息
-		LoginTempVo logintemp= (LoginTempVo)RedisUtil.getObject(request.getSession().getId());
+		LoginTempVo logintemp= (LoginTempVo)RedisUtil.getObject(LOGIN_TEMP+request.getSession().getId());
 		if (model != null) {
 			String openid = String.valueOf(model.get("openid"));
 //			String access_token = String.valueOf(model.get("access_token"));

@@ -36,9 +36,9 @@ public class WxPublicUtils {
 	//微信config
 	public static String JSAPI_TOKEN=ConfigUtil.getSingleValue("currentRedisKey-Base")+"_wx_jsapi_token";
 	//微信access_token 缓存有效时间
-	public static int ACCESS_TOKEN_TIMEVAL=7200;
+	public static int ACCESS_TOKEN_TIMEVAL=7000;
 	//微信分享 jsapi_token 有效期10分钟
-	public static int JSAPI_TOKEN_TIME=7200;
+	public static int JSAPI_TOKEN_TIME=7000;
 	
 
 	/**

@@ -185,41 +185,36 @@ public class TiAgentMgtController extends SSOController {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_agent)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_promoter)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_employees)){
-				UUsers promoterUsers= userMapper.getUUsersByUserID(ObjectUtil.parseLong(promoterUserId));
-				if(promoterUsers!=null){
-					if(!ObjectUtil.isEmpty(promoterUsers.getMobilephone())){
-						try {
-							JSONObject jb = JSONObject.fromObject(promoterJson);
-							if(jb.getString("agentuserid").trim().equals("")){
-								promoterJson=promoterJson.replaceAll("\"agentuserid\":\"\"", "\"agentuserid\":null");
-							}
-							TiPromotersapply applyInfo=(TiPromotersapply)JsonUtil.jsonStrToObject(promoterJson, TiPromotersapply.class);
-							if(applyInfo!=null){
-								applyInfo.setPromoteruserid(user.getUserId()); 
-							}
-							rq =agentService.applyPromoter(promoterUsers.getUserid(), applyInfo);
-						} catch (Exception e) {
-							rq.setStatu(ReturnStatus.ParamError);
-							rq.setStatusreson("参数有误101");
-							System.out.println(e); 
-							return JsonUtil.objectToJsonStr(rq);
+			UUsers promoterUsers= userMapper.getUUsersByUserID(ObjectUtil.parseLong(promoterUserId));
+			if(promoterUsers!=null){
+				if(!ObjectUtil.isEmpty(promoterUsers.getMobilephone())){
+					try {
+						JSONObject jb = JSONObject.fromObject(promoterJson);
+						if(jb.getString("agentuserid").trim().equals("")){
+							promoterJson=promoterJson.replaceAll("\"agentuserid\":\"\"", "\"agentuserid\":null");
 						}
-					}else {
+						TiPromotersapply applyInfo=(TiPromotersapply)JsonUtil.jsonStrToObject(promoterJson, TiPromotersapply.class);
+						if(applyInfo!=null){
+							applyInfo.setPromoteruserid(user.getUserId()); 
+						}
+						rq =agentService.applyPromoter(promoterUsers.getUserid(), applyInfo);
+					} catch (Exception e) {
 						rq.setStatu(ReturnStatus.ParamError);
-						rq.setStatusreson("用户未绑定手机号！");
+						rq.setStatusreson("参数有误101");
+						System.out.println(e); 
 						return JsonUtil.objectToJsonStr(rq);
 					}
 				}else {
-					rq.setStatu(ReturnStatus.LoginError_2);
-					rq.setStatusreson("用户未完成注册,请先绑定手机号！");
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("用户未绑定手机号！");
 					return JsonUtil.objectToJsonStr(rq);
 				}
 			}else {
-				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("无此权限");
+				rq.setStatu(ReturnStatus.LoginError_2);
+				rq.setStatusreson("用户未完成注册,请先绑定手机号！");
 				return JsonUtil.objectToJsonStr(rq);
 			}
+			
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

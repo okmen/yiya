@@ -20,6 +20,13 @@
     from ti_myworkredpacketlogs
     where PayId = #{payid,jdbcType=VARCHAR}
   </select>
+  <select id="findredpacketLogs" resultMap="BaseResultMap"  ><!-- 01 作品的红包记录 -->
+    select 
+    <include refid="Base_Column_List" />
+    from ti_myworkredpacketlogs
+    where UserId = #{userId,jdbcType=BIGINT} and WorkId= #{workId,jdbcType=BIGINT} and  Status= #{status,jdbcType=INTEGER} order by CreateTime desc
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from ti_myworkredpacketlogs
     where PayId = #{payid,jdbcType=VARCHAR}

@@ -37,6 +37,8 @@ public class TiMyworkcustomers {
 
     private String address;
 
+    private Integer addresstype;
+
     public Long getWorkid() {
         return workid;
     }
@@ -171,5 +173,13 @@ public class TiMyworkcustomers {
 
     public void setAddress(String address) {
         this.address = address == null ? null : address.trim();
+    }
+
+    public Integer getAddresstype() {
+        return addresstype;
+    }
+
+    public void setAddresstype(Integer addresstype) {
+        this.addresstype = addresstype;
     }
 }

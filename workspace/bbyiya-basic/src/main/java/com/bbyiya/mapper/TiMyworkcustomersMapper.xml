@@ -19,11 +19,12 @@
     <result column="Reciever" property="reciever" jdbcType="VARCHAR" />
     <result column="RecieverPhone" property="recieverphone" jdbcType="VARCHAR" />
     <result column="Address" property="address" jdbcType="VARCHAR" />
+    <result column="AddressType" property="addresstype" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     WorkId, PromoterUserId, CustomerName, MobilePhone, NeedShareCount, SharedCount, NeedRedpacketTotal, 
     RedpacketAmount, CreateTime, Status, Province, City, District, Streetdetails, Reciever, 
-    RecieverPhone, Address
+    RecieverPhone, Address, AddressType
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -41,13 +42,15 @@
       NeedRedpacketTotal, RedpacketAmount, CreateTime, 
       Status, Province, City, 
       District, Streetdetails, Reciever, 
-      RecieverPhone, Address)
+      RecieverPhone, Address, AddressType
+      )
     values (#{workid,jdbcType=BIGINT}, #{promoteruserid,jdbcType=BIGINT}, #{customername,jdbcType=VARCHAR}, 
       #{mobilephone,jdbcType=VARCHAR}, #{needsharecount,jdbcType=INTEGER}, #{sharedcount,jdbcType=INTEGER}, 
       #{needredpackettotal,jdbcType=DOUBLE}, #{redpacketamount,jdbcType=DOUBLE}, #{createtime,jdbcType=TIMESTAMP}, 
       #{status,jdbcType=INTEGER}, #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, 
       #{district,jdbcType=INTEGER}, #{streetdetails,jdbcType=VARCHAR}, #{reciever,jdbcType=VARCHAR}, 
-      #{recieverphone,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR})
+      #{recieverphone,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{addresstype,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiMyworkcustomers" >
     insert into ti_myworkcustomers
@@ -103,6 +106,9 @@
       <if test="address != null" >
         Address,
       </if>
+      <if test="addresstype != null" >
+        AddressType,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="workid != null" >
@@ -155,6 +161,9 @@
       </if>
       <if test="address != null" >
         #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="addresstype != null" >
+        #{addresstype,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -209,6 +218,9 @@
       <if test="address != null" >
         Address = #{address,jdbcType=VARCHAR},
       </if>
+      <if test="addresstype != null" >
+        AddressType = #{addresstype,jdbcType=INTEGER},
+      </if>
     </set>
     where WorkId = #{workid,jdbcType=BIGINT}
   </update>
@@ -229,7 +241,8 @@
       Streetdetails = #{streetdetails,jdbcType=VARCHAR},
       Reciever = #{reciever,jdbcType=VARCHAR},
       RecieverPhone = #{recieverphone,jdbcType=VARCHAR},
-      Address = #{address,jdbcType=VARCHAR}
+      Address = #{address,jdbcType=VARCHAR},
+      AddressType = #{addresstype,jdbcType=INTEGER}
     where WorkId = #{workid,jdbcType=BIGINT}
   </update>
 </mapper>

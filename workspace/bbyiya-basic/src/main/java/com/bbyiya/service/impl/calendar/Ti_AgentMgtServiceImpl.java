@@ -1036,11 +1036,11 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 	 */
 	public ReturnModel setProducerProductAera(Long producerUserId,Long productId,List<RAreaVo> arealist){
 		ReturnModel rqModel=new ReturnModel();
-		if(arealist==null||arealist.size()<=0){
-			rqModel.setStatu(ReturnStatus.ParamError);
-			rqModel.setStatusreson("请选择要设置的地区！");
-			return rqModel;
-		}
+//		if(arealist==null||arealist.size()<=0){
+//			rqModel.setStatu(ReturnStatus.ParamError);
+//			rqModel.setStatusreson("请选择要设置的地区！");
+//			return rqModel;
+//		}
 		TiProducers producer=producersMapper.selectByPrimaryKey(producerUserId);
 		if(producer==null||(producer!=null&&producer.getStatus().intValue()!=Integer.parseInt(ProducersStatusEnum.ok.toString()))){
 			rqModel.setStatu(ReturnStatus.ParamError);
@@ -1052,35 +1052,40 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 		if(productareas!=null&&productareas.size()>0){
 			for (TiProductareas area : productareas) {
 				boolean ishave=false;
-				for (RAreaVo rvo : arealist) {
-					if(area.getAreacode().intValue()==rvo.getAreacode().intValue()){
-						ishave=true;
-						break;
+				if(arealist!=null&&arealist.size()>0){
+					for (RAreaVo rvo : arealist) {
+						if(area.getAreacode().intValue()==rvo.getAreacode().intValue()){
+							ishave=true;
+							break;
+						}
 					}
 				}
+				
 				if(!ishave){
 					productareaMapper.deleteByPrimaryKey(area.getId());
 				}
 				
 			}
 		}
-		for (RAreaVo rvo : arealist) {
-			TiProductareas existproductarea=productareaMapper.getIfExistProductAreaByOtherIds(productId, producerUserId,rvo.getAreacode());
-			if(existproductarea!=null){
-				rqModel.setStatu(ReturnStatus.ParamError);
-				rqModel.setStatusreson("地区["+regionService.getAresName(rvo.getAreacode())+"]已被其它生产商代理！");
-				return rqModel;
-			}
-			
-			TiProductareas productarea=productareaMapper.getProductAreaByIds(productId, producerUserId,rvo.getAreacode());
-			if(productarea==null){
-				productarea=new TiProductareas();
-				productarea.setAreacode(rvo.getAreacode());
-				productarea.setCitycode(rvo.getCitycode());
-				productarea.setProvincecode(rvo.getProvincecode());
-				productarea.setProduceruserid(producerUserId);
-				productarea.setProductid(productId);
-				productareaMapper.insert(productarea);
+		if(arealist!=null&&arealist.size()>0){
+			for (RAreaVo rvo : arealist) {
+				TiProductareas existproductarea=productareaMapper.getIfExistProductAreaByOtherIds(productId, producerUserId,rvo.getAreacode());
+				if(existproductarea!=null){
+					rqModel.setStatu(ReturnStatus.ParamError);
+					rqModel.setStatusreson("地区["+regionService.getAresName(rvo.getAreacode())+"]已被其它生产商代理！");
+					return rqModel;
+				}
+				
+				TiProductareas productarea=productareaMapper.getProductAreaByIds(productId, producerUserId,rvo.getAreacode());
+				if(productarea==null){
+					productarea=new TiProductareas();
+					productarea.setAreacode(rvo.getAreacode());
+					productarea.setCitycode(rvo.getCitycode());
+					productarea.setProvincecode(rvo.getProvincecode());
+					productarea.setProduceruserid(producerUserId);
+					productarea.setProductid(productId);
+					productareaMapper.insert(productarea);
+				}
 			}
 		}
 		rqModel.setStatu(ReturnStatus.Success);

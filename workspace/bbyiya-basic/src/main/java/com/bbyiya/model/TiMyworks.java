@@ -19,6 +19,8 @@ public class TiMyworks {
 
     private Integer actid;
 
+    private Integer isinstead;
+
     public Long getWorkid() {
         return workid;
     }
@@ -82,4 +84,14 @@ public class TiMyworks {
     public void setActid(Integer actid) {
         this.actid = actid;
     }
+
+	public Integer getIsinstead() {
+		return isinstead;
+	}
+
+	public void setIsinstead(Integer isinstead) {
+		this.isinstead = isinstead;
+	}
+    
+    
 }

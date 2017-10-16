@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiMyworkcustomersMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiMyworkcustomers" >
+    <id column="WorkId" property="workid" jdbcType="BIGINT" />
+    <result column="PromoterUserId" property="promoteruserid" jdbcType="BIGINT" />
+    <result column="CustomerName" property="customername" jdbcType="VARCHAR" />
+    <result column="MobilePhone" property="mobilephone" jdbcType="VARCHAR" />
+    <result column="NeedShareCount" property="needsharecount" jdbcType="INTEGER" />
+    <result column="SharedCount" property="sharedcount" jdbcType="INTEGER" />
+    <result column="NeedRedpacketTotal" property="needredpackettotal" jdbcType="DOUBLE" />
+    <result column="RedpacketAmount" property="redpacketamount" jdbcType="DOUBLE" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="Province" property="province" jdbcType="INTEGER" />
+    <result column="City" property="city" jdbcType="INTEGER" />
+    <result column="District" property="district" jdbcType="INTEGER" />
+    <result column="Streetdetails" property="streetdetails" jdbcType="VARCHAR" />
+    <result column="Reciever" property="reciever" jdbcType="VARCHAR" />
+    <result column="RecieverPhone" property="recieverphone" jdbcType="VARCHAR" />
+    <result column="Address" property="address" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    WorkId, PromoterUserId, CustomerName, MobilePhone, NeedShareCount, SharedCount, NeedRedpacketTotal, 
+    RedpacketAmount, CreateTime, Status, Province, City, District, Streetdetails, Reciever, 
+    RecieverPhone, Address
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_myworkcustomers
+    where WorkId = #{workid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ti_myworkcustomers
+    where WorkId = #{workid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiMyworkcustomers" >
+    insert into ti_myworkcustomers (WorkId, PromoterUserId, CustomerName, 
+      MobilePhone, NeedShareCount, SharedCount, 
+      NeedRedpacketTotal, RedpacketAmount, CreateTime, 
+      Status, Province, City, 
+      District, Streetdetails, Reciever, 
+      RecieverPhone, Address)
+    values (#{workid,jdbcType=BIGINT}, #{promoteruserid,jdbcType=BIGINT}, #{customername,jdbcType=VARCHAR}, 
+      #{mobilephone,jdbcType=VARCHAR}, #{needsharecount,jdbcType=INTEGER}, #{sharedcount,jdbcType=INTEGER}, 
+      #{needredpackettotal,jdbcType=DOUBLE}, #{redpacketamount,jdbcType=DOUBLE}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=INTEGER}, #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, 
+      #{district,jdbcType=INTEGER}, #{streetdetails,jdbcType=VARCHAR}, #{reciever,jdbcType=VARCHAR}, 
+      #{recieverphone,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiMyworkcustomers" >
+    insert into ti_myworkcustomers
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="workid != null" >
+        WorkId,
+      </if>
+      <if test="promoteruserid != null" >
+        PromoterUserId,
+      </if>
+      <if test="customername != null" >
+        CustomerName,
+      </if>
+      <if test="mobilephone != null" >
+        MobilePhone,
+      </if>
+      <if test="needsharecount != null" >
+        NeedShareCount,
+      </if>
+      <if test="sharedcount != null" >
+        SharedCount,
+      </if>
+      <if test="needredpackettotal != null" >
+        NeedRedpacketTotal,
+      </if>
+      <if test="redpacketamount != null" >
+        RedpacketAmount,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="province != null" >
+        Province,
+      </if>
+      <if test="city != null" >
+        City,
+      </if>
+      <if test="district != null" >
+        District,
+      </if>
+      <if test="streetdetails != null" >
+        Streetdetails,
+      </if>
+      <if test="reciever != null" >
+        Reciever,
+      </if>
+      <if test="recieverphone != null" >
+        RecieverPhone,
+      </if>
+      <if test="address != null" >
+        Address,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="workid != null" >
+        #{workid,jdbcType=BIGINT},
+      </if>
+      <if test="promoteruserid != null" >
+        #{promoteruserid,jdbcType=BIGINT},
+      </if>
+      <if test="customername != null" >
+        #{customername,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilephone != null" >
+        #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="needsharecount != null" >
+        #{needsharecount,jdbcType=INTEGER},
+      </if>
+      <if test="sharedcount != null" >
+        #{sharedcount,jdbcType=INTEGER},
+      </if>
+      <if test="needredpackettotal != null" >
+        #{needredpackettotal,jdbcType=DOUBLE},
+      </if>
+      <if test="redpacketamount != null" >
+        #{redpacketamount,jdbcType=DOUBLE},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=INTEGER},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=INTEGER},
+      </if>
+      <if test="district != null" >
+        #{district,jdbcType=INTEGER},
+      </if>
+      <if test="streetdetails != null" >
+        #{streetdetails,jdbcType=VARCHAR},
+      </if>
+      <if test="reciever != null" >
+        #{reciever,jdbcType=VARCHAR},
+      </if>
+      <if test="recieverphone != null" >
+        #{recieverphone,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiMyworkcustomers" >
+    update ti_myworkcustomers
+    <set >
+      <if test="promoteruserid != null" >
+        PromoterUserId = #{promoteruserid,jdbcType=BIGINT},
+      </if>
+      <if test="customername != null" >
+        CustomerName = #{customername,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilephone != null" >
+        MobilePhone = #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="needsharecount != null" >
+        NeedShareCount = #{needsharecount,jdbcType=INTEGER},
+      </if>
+      <if test="sharedcount != null" >
+        SharedCount = #{sharedcount,jdbcType=INTEGER},
+      </if>
+      <if test="needredpackettotal != null" >
+        NeedRedpacketTotal = #{needredpackettotal,jdbcType=DOUBLE},
+      </if>
+      <if test="redpacketamount != null" >
+        RedpacketAmount = #{redpacketamount,jdbcType=DOUBLE},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="province != null" >
+        Province = #{province,jdbcType=INTEGER},
+      </if>
+      <if test="city != null" >
+        City = #{city,jdbcType=INTEGER},
+      </if>
+      <if test="district != null" >
+        District = #{district,jdbcType=INTEGER},
+      </if>
+      <if test="streetdetails != null" >
+        Streetdetails = #{streetdetails,jdbcType=VARCHAR},
+      </if>
+      <if test="reciever != null" >
+        Reciever = #{reciever,jdbcType=VARCHAR},
+      </if>
+      <if test="recieverphone != null" >
+        RecieverPhone = #{recieverphone,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        Address = #{address,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where WorkId = #{workid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiMyworkcustomers" >
+    update ti_myworkcustomers
+    set PromoterUserId = #{promoteruserid,jdbcType=BIGINT},
+      CustomerName = #{customername,jdbcType=VARCHAR},
+      MobilePhone = #{mobilephone,jdbcType=VARCHAR},
+      NeedShareCount = #{needsharecount,jdbcType=INTEGER},
+      SharedCount = #{sharedcount,jdbcType=INTEGER},
+      NeedRedpacketTotal = #{needredpackettotal,jdbcType=DOUBLE},
+      RedpacketAmount = #{redpacketamount,jdbcType=DOUBLE},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      Status = #{status,jdbcType=INTEGER},
+      Province = #{province,jdbcType=INTEGER},
+      City = #{city,jdbcType=INTEGER},
+      District = #{district,jdbcType=INTEGER},
+      Streetdetails = #{streetdetails,jdbcType=VARCHAR},
+      Reciever = #{reciever,jdbcType=VARCHAR},
+      RecieverPhone = #{recieverphone,jdbcType=VARCHAR},
+      Address = #{address,jdbcType=VARCHAR}
+    where WorkId = #{workid,jdbcType=BIGINT}
+  </update>
+</mapper>

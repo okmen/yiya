@@ -213,7 +213,7 @@ public class TiCoordinateController  extends SSOController{
 							if(photoList.size()>i){
 								layerList.get(i).setWorkImgUrl(ImgDomainUtil.getImageUrl_Full(photoList.get(i).getImgurl()));  
 								//---打印号---
-								layerList.get(i).setPrintNo(workId+"-"+userorders.getUserid()+"-"+(i+1)+"-"+oproducerModel.getPrintindex()); 
+								layerList.get(i).setPrintNo(workId+"-"+(i+1)+"-"+userorders.getUserid()+"-"+oproducerModel.getPrintindex()); 
 							}
 						}
 						
@@ -240,19 +240,19 @@ public class TiCoordinateController  extends SSOController{
 								 List<TiStyleLayerResult> resultslist=new ArrayList<TiStyleLayerResult>();
 								 int index=1;
 								 for (TiStyleLayerResult layer : layerList) {
-									layer.setPrintNo(workId+"-"+userorders.getUserid()+"-"+(index)+"-"+oproducerModel.getPrintindex()); 
+									layer.setPrintNo(workId+"-"+(index)+"-"+userorders.getUserid()+"-"+oproducerModel.getPrintindex()); 
 									resultslist.add(layer);
 									if(index==1){
 										if(adverlist!=null&&adverlist.get(adverlist.size()-1)!=null){
 											index++;
-											adverlist.get(adverlist.size()-1).setPrintNo(workId+"-"+userorders.getUserid()+"-"+(index)+"-"+oproducerModel.getPrintindex());
+											adverlist.get(adverlist.size()-1).setPrintNo(workId+"-"+(index)+"-"+userorders.getUserid()+"-"+oproducerModel.getPrintindex());
 											resultslist.add(adverlist.get(adverlist.size()-1));  
 										}
 									}
 									index++;
 								 }
 								 for(int i=(adverlist.size()-2);i>=0;i--){ 
-									 adverlist.get(i).setPrintNo(workId+"-"+userorders.getUserid()+"-"+(index)+"-"+oproducerModel.getPrintindex());
+									 adverlist.get(i).setPrintNo(workId+"-"+(index)+"-"+userorders.getUserid()+"-"+oproducerModel.getPrintindex());
 									 resultslist.add(adverlist.get(i));  
 									 index++;
 								 } 

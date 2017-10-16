@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiMyworkredpacketlogsMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiMyworkredpacketlogs" >
+    <id column="PayId" property="payid" jdbcType="VARCHAR" />
+    <result column="WorkId" property="workid" jdbcType="BIGINT" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="HeadImg" property="headimg" jdbcType="VARCHAR" />
+    <result column="Nickname" property="nickname" jdbcType="VARCHAR" />
+    <result column="Amount" property="amount" jdbcType="DOUBLE" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    PayId, WorkId, UserId, HeadImg, Nickname, Amount, Status, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_myworkredpacketlogs
+    where PayId = #{payid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ti_myworkredpacketlogs
+    where PayId = #{payid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiMyworkredpacketlogs" >
+    insert into ti_myworkredpacketlogs (PayId, WorkId, UserId, 
+      HeadImg, Nickname, Amount, 
+      Status, CreateTime)
+    values (#{payid,jdbcType=VARCHAR}, #{workid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, 
+      #{headimg,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{amount,jdbcType=DOUBLE}, 
+      #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiMyworkredpacketlogs" >
+    insert into ti_myworkredpacketlogs
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="payid != null" >
+        PayId,
+      </if>
+      <if test="workid != null" >
+        WorkId,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="headimg != null" >
+        HeadImg,
+      </if>
+      <if test="nickname != null" >
+        Nickname,
+      </if>
+      <if test="amount != null" >
+        Amount,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="payid != null" >
+        #{payid,jdbcType=VARCHAR},
+      </if>
+      <if test="workid != null" >
+        #{workid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="headimg != null" >
+        #{headimg,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null" >
+        #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=DOUBLE},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiMyworkredpacketlogs" >
+    update ti_myworkredpacketlogs
+    <set >
+      <if test="workid != null" >
+        WorkId = #{workid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="headimg != null" >
+        HeadImg = #{headimg,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null" >
+        Nickname = #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null" >
+        Amount = #{amount,jdbcType=DOUBLE},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where PayId = #{payid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiMyworkredpacketlogs" >
+    update ti_myworkredpacketlogs
+    set WorkId = #{workid,jdbcType=BIGINT},
+      UserId = #{userid,jdbcType=BIGINT},
+      HeadImg = #{headimg,jdbcType=VARCHAR},
+      Nickname = #{nickname,jdbcType=VARCHAR},
+      Amount = #{amount,jdbcType=DOUBLE},
+      Status = #{status,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where PayId = #{payid,jdbcType=VARCHAR}
+  </update>
+</mapper>

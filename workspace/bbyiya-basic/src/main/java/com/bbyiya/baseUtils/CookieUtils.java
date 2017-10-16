@@ -92,8 +92,6 @@ public class CookieUtils {
 		}
 		
 		String token=  RedisUtil.getString(request.getSession().getId());
-//		logger.error("getSession="+request.getSession().getId()+",value="+token);
-//		System.out.println("getSession="+request.getSession().getId()+",value="+token);
 		return token;
 		
 	}

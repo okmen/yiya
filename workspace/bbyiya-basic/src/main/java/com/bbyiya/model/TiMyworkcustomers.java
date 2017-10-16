@@ -39,8 +39,6 @@ public class TiMyworkcustomers {
 
     private Integer addresstype;
 
-    private Integer ispromoteraddr;
-
     public Long getWorkid() {
         return workid;
     }
@@ -183,13 +181,5 @@ public class TiMyworkcustomers {
 
     public void setAddresstype(Integer addresstype) {
         this.addresstype = addresstype;
-    }
-
-    public Integer getIspromoteraddr() {
-        return ispromoteraddr;
-    }
-
-    public void setIspromoteraddr(Integer ispromoteraddr) {
-        this.ispromoteraddr = ispromoteraddr;
     }
 }

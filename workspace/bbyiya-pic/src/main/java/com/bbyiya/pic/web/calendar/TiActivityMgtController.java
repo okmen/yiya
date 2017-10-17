@@ -27,6 +27,7 @@ import com.bbyiya.dao.TiPromotersMapper;
 import com.bbyiya.dao.TiUserdiscountsMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.ActivityWorksStatusEnum;
+import com.bbyiya.enums.calendar.TiActivityTypeEnum;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.TiActivitys;
@@ -374,16 +375,21 @@ public class TiActivityMgtController extends SSOController {
 			}
 			if(workId>0&&activityworks!=null){
 				activityworks.setExtcount((activityworks.getExtcount()==null?0:activityworks.getExtcount().intValue())+1); 
-				activityworksMapper.updateByPrimaryKeySelective(activityworks);
 				
 				//如果活动目标达到，直接下单
 				int extcount=actInfo.getExtcount()==null?0:actInfo.getExtcount();
 				if(activityworks.getExtcount().intValue()>=extcount&&activityworks.getStatus().intValue()!=Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString())){
+					//更新参与活动状态
+					activityworks.setStatus(Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString())); 
+					activityworksMapper.updateByPrimaryKeySelective(activityworks);
+					//自动下单
 					TiActivityOrderSubmitParam param=new TiActivityOrderSubmitParam();
 					param.setCount(1);
 					param.setSubmitUserId(actInfo.getProduceruserid());
 					param.setWorkId(workId);
 					orderMgtService.submitOrder_ibs(param); 
+				}else {
+					activityworksMapper.updateByPrimaryKeySelective(activityworks);
 				}
 			}
 			rq.setStatu(ReturnStatus.Success);

@@ -313,11 +313,12 @@ public class Ti_MyworkController extends SSOController {
 				TiActivitysVo actInfo=actMapper.getResultByActId(myworks.getActid());
 				if(actInfo!=null){
 					TiActivityworks myactInfo=activityworkMapper.selectByPrimaryKey(workId);
-					if(actInfo!=null){
+					if(myactInfo!=null){
 						Map<String, Object> map=new HashMap<String, Object>();
 						map.put("needCount", actInfo.getExtcount());
 						map.put("extCount", myactInfo.getExtcount());
 						map.put("userId", myactInfo.getUserid());
+						map.put("actStatus", myactInfo.getStatus());
 						rq.setStatu(ReturnStatus.Success);
 						rq.setBasemodle(map); 
 					}

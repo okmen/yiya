@@ -25,4 +25,6 @@ public interface TiMyworkredpacketlogsMapper {
      * @return
      */
     List<TiMyworkredpacketlogs> findredpacketLogs(@Param("userId")Long userId,@Param("workId")Long workId,@Param("status")Integer status);
+    
+
 }

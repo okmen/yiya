@@ -14,6 +14,7 @@ import com.bbyiya.pic.utils.WxPublicUtils;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
 
 @Controller
@@ -30,13 +31,6 @@ public class WxController extends SSOController {
 	@RequestMapping(value = "/getWXconfig")
 	public String getWXconfig(String webUrl) throws Exception {
 		ReturnModel rq = new ReturnModel();
-//		String accessToken = WxPublicUtils.getAccessToken();
-//		if (!ObjectUtil.isEmpty(accessToken)) {// 获取
-//			rq = WxPublicUtils.getWxConfig(accessToken, webUrl);
-//		} else {
-//			rq.setStatu(ReturnStatus.LoginError_3);
-//			rq.setStatusreson("微信accessToken过期！");
-//		}
 		
 		String jsapiString=WxPublicUtils.getWxApiToken();
 		if(!ObjectUtil.isEmpty(jsapiString)){
@@ -47,6 +41,19 @@ public class WxController extends SSOController {
 		}
 		if(!ReturnStatus.Success.equals(rq.getStatu())){
 			addlog(rq.getStatusreson()); 
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/getAccessToken")
+	public String getWXconfig() throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			String accessToken=WxPublicUtils.getWxApiToken();
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(accessToken);
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}

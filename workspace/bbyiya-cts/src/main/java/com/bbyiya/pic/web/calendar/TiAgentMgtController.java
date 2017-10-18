@@ -761,7 +761,7 @@ public class TiAgentMgtController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user=super.getLoginUser();
 		if(user!=null) {
-			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)){
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
 				rq=agentService.transtopromoter(userid);
 			}else {
 				rq.setStatu(ReturnStatus.SystemError);

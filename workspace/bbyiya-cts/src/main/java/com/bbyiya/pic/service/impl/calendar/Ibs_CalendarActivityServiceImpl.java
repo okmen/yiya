@@ -507,7 +507,7 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 		ImageIO.write(bufImg, "jpg", file);
 		rq.setBasemodle(file.getPath());
 		rq.setStatu(ReturnStatus.Success);
-		rq.setStatusreson("获图片成功！");
+		rq.setStatusreson("获取图片成功！");
 		return rq;
 	}
 }

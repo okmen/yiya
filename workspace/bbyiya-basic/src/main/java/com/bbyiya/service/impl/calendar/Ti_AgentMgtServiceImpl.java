@@ -26,6 +26,7 @@ import com.bbyiya.dao.TiPromoteremployeesMapper;
 import com.bbyiya.dao.TiPromotersMapper;
 import com.bbyiya.dao.TiPromotersapplyMapper;
 import com.bbyiya.dao.UAccountsMapper;
+import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.ProducersStatusEnum;
@@ -46,6 +47,7 @@ import com.bbyiya.model.TiPromoteremployees;
 import com.bbyiya.model.TiPromoters;
 import com.bbyiya.model.TiPromotersapply;
 import com.bbyiya.model.UAccounts;
+import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IBaseUserCommonService;
 import com.bbyiya.service.IRegionService;
@@ -77,7 +79,8 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 	private TiPromotersMapper promoterMapper;
 	@Autowired
 	private TiPromoteremployeesMapper promoteremployeeMapper;
-	
+	@Autowired
+	private UBranchesMapper branchMapper;
 	@Autowired
 	private TiProducersapplyMapper producersapplyMapper;
 	@Autowired
@@ -1092,4 +1095,100 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 		rqModel.setStatusreson("设置成功！");
 		return rqModel;
 	}
+	
+	
+	/**
+	 * 将相册影楼身份换为活动参与者身份
+	 */
+	public ReturnModel transtopromoter(Long userId){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.SystemError);
+		
+		UBranches branch=branchMapper.selectByPrimaryKey(userId);
+		if(branch==null){
+			rq.setStatusreson("咿呀号"+userId.toString()+"不是影楼身份,不能转为活动参与者");
+			return rq;
+		}
+		TiAgentsapply belongagents=agentapplyMapper.selectByPrimaryKey(102L);
+		if(belongagents==null){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("推广代理商咿呀号【"+102+"】不存在！");
+			return rq;
+		}
+		if(belongagents.getStatus()!=Integer.parseInt(TiAgentStatusEnum.ok.toString())){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("推广代理商咿呀号【"+102+"】未通过审核或还在审核中！");
+			return rq;
+		}
+		TiAgents agents=agentsMapper.selectByPrimaryKey(userId);		
+		if(agents!=null&&agents.getStatus()!=null&&agents.getStatus().intValue()==Integer.parseInt(TiAgentStatusEnum.ok.toString())){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("你已经为推广代理商身份，不能再申请为活动参与单位！");
+			return rq;
+		}
+		
+		boolean isadd=false;
+		TiPromotersapply applyInfo= promoterapplyMapper.selectByPrimaryKey(userId); 
+		if(applyInfo==null){
+			applyInfo=new TiPromotersapply();
+			isadd=true;
+		}
+		applyInfo.setPromoteruserid(userId);
+		applyInfo.setAgentuserid(102L);
+		applyInfo.setArea(branch.getArea());
+		applyInfo.setCity(branch.getCity());
+		applyInfo.setCompanyname(branch.getBranchcompanyname());
+		applyInfo.setContacts(branch.getContactname());
+		applyInfo.setMobilephone(branch.getPhone());
+		applyInfo.setProcesstime(new Date());
+		applyInfo.setProvince(branch.getProvince());
+		applyInfo.setStatus(Integer.parseInt(PromoterStatusEnum.ok.toString()));
+		applyInfo.setStreetdetails(branch.getStreetdetail());
+		applyInfo.setCreattime(new Date());
+		if(isadd){
+			promoterapplyMapper.insert(applyInfo);
+		}else{
+			promoterapplyMapper.updateByPrimaryKey(applyInfo);
+		}
+		
+		//如是是正式推广者，同步更新
+		TiPromoters promoterModel=promoterMapper.selectByPrimaryKey(userId);
+		if(promoterModel==null){
+			promoterModel=new TiPromoters();
+			promoterModel.setCompanyname(applyInfo.getCompanyname());
+			promoterModel.setContacts(applyInfo.getContacts());
+			promoterModel.setMobilephone(applyInfo.getMobilephone());
+			promoterModel.setArea(applyInfo.getArea());
+			promoterModel.setCity(applyInfo.getCity());
+			promoterModel.setProvince(applyInfo.getProvince());
+			promoterModel.setStreetdetails(applyInfo.getStreetdetails());
+			promoterModel.setAgentuserid(102L);
+			promoterModel.setPromoteruserid(userId);
+			promoterModel.setStatus(Integer.parseInt(PromoterStatusEnum.ok.toString()));
+			promoterMapper.insert(promoterModel);
+		}
+		
+		//更新代理身份标识 预留
+		userBasic.addUserIdentity(userId,UserIdentityEnums.ti_promoter); 
+		
+		TiPromoteremployees employee=promoteremployeeMapper.selectByPrimaryKey(userId);
+		if(employee==null){
+			employee=new TiPromoteremployees();
+			employee.setCreatetime(new Date());
+			employee.setName(applyInfo.getContacts());
+			employee.setPromoteruserid(applyInfo.getPromoteruserid());
+			employee.setUserid(applyInfo.getPromoteruserid());
+			employee.setStatus(Integer.parseInt(PromoterStatusEnum.ok.toString()));
+			promoteremployeeMapper.insert(employee);
+			//更新代理身份标识 预留
+			userBasic.addUserIdentity(userId,UserIdentityEnums.ti_employees); 
+		}else{
+			employee.setStatus(Integer.parseInt(PromoterStatusEnum.ok.toString()));
+			promoteremployeeMapper.updateByPrimaryKey(employee);
+		}
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("提交成功！"); 
+		return rq;
+	}
+	
 }

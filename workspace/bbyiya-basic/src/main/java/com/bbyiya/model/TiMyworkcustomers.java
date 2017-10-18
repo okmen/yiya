@@ -38,8 +38,39 @@ public class TiMyworkcustomers {
     private String address;
 
     private Integer addresstype;
+    
+    /*******************VO*****************************/
+    private Integer condition;//条件： 0分享,1收集红包
+    private String codeUrl;//二维码链接
+    private String createtimestr;//制作时间
+    
+    
+    
+    public String getCreatetimestr() {
+		return createtimestr;
+	}
 
-    public Long getWorkid() {
+	public void setCreatetimestr(String createtimestr) {
+		this.createtimestr = createtimestr;
+	}
+
+	public Integer getCondition() {
+		return condition;
+	}
+
+	public String getCodeUrl() {
+		return codeUrl;
+	}
+
+	public void setCondition(Integer condition) {
+		this.condition = condition;
+	}
+
+	public void setCodeUrl(String codeUrl) {
+		this.codeUrl = codeUrl;
+	}
+
+	public Long getWorkid() {
         return workid;
     }
 

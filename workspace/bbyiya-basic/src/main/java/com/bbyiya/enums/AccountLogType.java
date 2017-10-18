@@ -46,7 +46,7 @@ public enum AccountLogType {
 	/**
 	 * 台历红包收入
 	 */
-	get_ti_redpaket(9)
+	get_ti_redpaket(10)
 	;
 	
 

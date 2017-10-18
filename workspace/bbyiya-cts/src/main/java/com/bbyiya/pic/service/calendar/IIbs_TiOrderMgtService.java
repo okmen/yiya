@@ -21,6 +21,13 @@ public interface IIbs_TiOrderMgtService {
 	 * @return
 	 */
 	ReturnModel getIbsTiSubmitAddressList(Long submitUserId, Long workId);
+	/**
+	 * ibs代客户制下单自动选择地址列表
+	 * @param submitUserId
+	 * @param workId
+	 * @return
+	 */
+	ReturnModel getTiCustomerSubmitAddressList(Long submitUserId, Long workId);
 	
 	
 }

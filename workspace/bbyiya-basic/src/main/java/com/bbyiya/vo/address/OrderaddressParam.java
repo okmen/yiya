@@ -16,6 +16,17 @@ public class OrderaddressParam {
     
     private String streetdetail;
     
+    private Integer addresstype;
+    
+    
+	public Integer getAddresstype() {
+		return addresstype;
+	}
+
+	public void setAddresstype(Integer addresstype) {
+		this.addresstype = addresstype;
+	}
+
 	public Long getUserid() {
 		return userid;
 	}

@@ -26,6 +26,17 @@
     RedpacketAmount, CreateTime, Status, Province, City, District, Streetdetails, Reciever, 
     RecieverPhone, Address, AddressType
   </sql>
+  
+  <select id="selectListByPromoterUserId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_myworkcustomers
+    where PromoterUserId = #{promoteruserid,jdbcType=BIGINT}
+     <if test="keywords != null and keywords!=''" >
+        and  (CustomerName  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) or MobilePhone  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) )
+    </if>
+  </select>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />

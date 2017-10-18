@@ -78,6 +78,10 @@ public class Cts_TiProductsServiceImpl implements ICts_TiProductsService{
 						product.setDescriptionImglist(imList); 
 					}
 				}
+				//产品的款式列表
+				List<TiProductstyles> styleList=styleMapper.findStylelistByProductId(product.getProductid());
+				product.setStylelist(styleList);  
+
 			}
 		}
 		rqModel.setBasemodle(proList); 

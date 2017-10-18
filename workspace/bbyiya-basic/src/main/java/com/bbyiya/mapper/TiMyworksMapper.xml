@@ -34,7 +34,7 @@
       #{styleid,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
       #{completetime,jdbcType=TIMESTAMP}, #{actid,jdbcType=INTEGER}, #{isinstead,jdbcType=INTEGER}
       )
-  </insert>
+  </insert> 
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiMyworks" >
     insert into ti_myworks
     <trim prefix="(" suffix=")" suffixOverrides="," >

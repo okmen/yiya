@@ -1147,8 +1147,6 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 		applyInfo.setCreattime(new Date());
 		if(isadd){
 			promoterapplyMapper.insert(applyInfo);
-		}else{
-			promoterapplyMapper.updateByPrimaryKey(applyInfo);
 		}
 		
 		//如是是正式推广者，同步更新
@@ -1184,7 +1182,7 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 			userBasic.addUserIdentity(userId,UserIdentityEnums.ti_employees); 
 		}else{
 			employee.setStatus(Integer.parseInt(PromoterStatusEnum.ok.toString()));
-			promoteremployeeMapper.updateByPrimaryKey(employee);
+			//promoteremployeeMapper.updateByPrimaryKey(employee);
 		}
 		rq.setStatu(ReturnStatus.Success);
 		rq.setStatusreson("提交成功！"); 

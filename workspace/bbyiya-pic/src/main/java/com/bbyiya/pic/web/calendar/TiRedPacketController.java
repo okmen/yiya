@@ -12,18 +12,23 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.baseUtils.GenUtils;
 import com.bbyiya.dao.OPayorderMapper;
+import com.bbyiya.dao.TiDiscountmodelMapper;
 import com.bbyiya.dao.TiMyartsdetailsMapper;
 import com.bbyiya.dao.TiMyworkcustomersMapper;
 import com.bbyiya.dao.TiMyworkredpacketlogsMapper;
 import com.bbyiya.dao.TiMyworksMapper;
+import com.bbyiya.dao.TiUserdiscountsMapper;
 import com.bbyiya.enums.PayOrderStatusEnums;
 import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.calendar.ActivityWorksStatusEnum;
 import com.bbyiya.enums.calendar.RedpacketStatus;
 import com.bbyiya.model.OPayorder;
+import com.bbyiya.model.TiDiscountmodel;
 import com.bbyiya.model.TiMyartsdetails;
 import com.bbyiya.model.TiMyworkcustomers;
 import com.bbyiya.model.TiMyworkredpacketlogs;
+import com.bbyiya.model.TiUserdiscounts;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -181,6 +186,68 @@ public class TiRedPacketController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+//	@Autowired
+//	private TiUserdiscountsMapper userDisMapper;
+//	@Autowired
+//	private TiDiscountmodelMapper dismodelMapper;
+//	
+//	/**
+//	 * 领取优惠券--代客制作优惠券
+//	 * @param workId
+//	 * @return
+//	 * @throws MapperException
+//	 */
+//	@ResponseBody
+//	@RequestMapping(value = "/getDiscount")
+//	public String getDiscount(Long workId) throws MapperException {
+//		ReturnModel rq = new ReturnModel();
+//		LoginSuccessResult user = super.getLoginUser();
+//		if (user != null) {
+//			List<TiUserdiscounts> mydislist= userDisMapper.findMyDiscountsByWorkId(user.getUserId(),workId);
+//			if(mydislist!=null&&mydislist.size()>0){
+//				rq.setStatu(ReturnStatus.ParamError);
+//				rq.setStatusreson("您已经领取过优惠券！");
+//				return JsonUtil.objectToJsonStr(rq);
+//			}else {
+//				TiMyworkcustomers actMyworkcustomers= workcustomerMapper.selectByPrimaryKey(workId);
+//				if(actMyworkcustomers!=null){
+//					//获取优惠券
+//					List<TiDiscountmodel> modlist= dismodelMapper.findDiscountList();
+//					if(modlist!=null&&modlist.size()>0){
+//						for(int i=0;i<3;i++){
+//							TiUserdiscounts model=new TiUserdiscounts();
+//							model.setWorkid(workId);
+//							model.setPromoteruserid(actMyworkcustomers.getPromoteruserid()); 
+//							model.setCreatetime(new Date());
+//							model.setDiscountid(modlist.get(0).getDiscountid());
+//							model.setStatus(0);
+//							model.setUserid(user.getUserId());
+//							userDisMapper.insert(model);
+//						}
+//					}
+//					int shareCount=actMyworkcustomers.getSharedcount()==null?1:(actMyworkcustomers.getSharedcount().intValue()+1);
+//					actMyworkcustomers.setSharedcount(shareCount);
+//					if(actMyworkcustomers.getNeedsharecount()!=null&&actMyworkcustomers.getNeedsharecount().intValue()>0){
+//						if(shareCount>=actMyworkcustomers.getNeedsharecount().intValue()){
+//							actMyworkcustomers.setStatus(Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString()));
+//							workcustomerMapper.updateByPrimaryKeySelective(actMyworkcustomers);
+//							//TODO 自动下单操作
+//							
+//						}
+//					}else {
+//						workcustomerMapper.updateByPrimaryKeySelective(actMyworkcustomers);
+//					}
+//					rq.setStatu(ReturnStatus.Success);
+//					rq.setStatusreson("恭喜获得3张5折优惠券（下单时自动使用）");
+//				}
+//			}
+//		}else {
+//			rq.setStatu(ReturnStatus.LoginError);
+//			rq.setStatusreson("登录过期");
+//		}
+//		return JsonUtil.objectToJsonStr(rq);
+//	}
 	
 	
 }

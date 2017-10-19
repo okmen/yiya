@@ -23,18 +23,32 @@
     from ti_userdiscounts
     where Id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="findMyDiscounts" resultMap="BaseResultMap"  ><!-- 我的优惠券 -->
+  <select id="findMyDiscounts" resultMap="BaseResultMap"  ><!-- 01 我的优惠券 -->
     select 
     <include refid="Base_Column_List" />
     from ti_userdiscounts
     where UserId= #{userId,jdbcType=BIGINT} and status=0 
     order by Id asc
   </select>
-  <select id="getMyDiscountsByUserOrderId" resultMap="BaseResultMap"  ><!-- 通过订单号获取使用的优惠券 -->
+  <select id="getMyDiscountsByUserOrderId" resultMap="BaseResultMap"  ><!--02 通过订单号获取使用的优惠券 -->
     select 
     <include refid="Base_Column_List" />
     from ti_userdiscounts
     where UserOrderId= #{userorderId,jdbcType=VARCHAR} Limit 1
+  </select>
+  <select id="findMyDiscountsByWorkId" resultMap="BaseResultMap"  ><!-- 03 我的优惠券 针对某个作品获取的 -->
+    select 
+    <include refid="Base_Column_List" />
+    from ti_userdiscounts
+    where UserId= #{userId,jdbcType=BIGINT} and WorkId=#{workId,jdbcType=BIGINT} 
+    order by Id asc
+  </select>
+   <select id="findMyDiscountsByActId" resultMap="BaseResultMap"  ><!-- 04 我的优惠券 针对某个作品获取的 -->
+    select 
+    <include refid="Base_Column_List" />
+    from ti_userdiscounts
+    where UserId= #{userId,jdbcType=BIGINT} and ActId=#{actId,jdbcType=INTEGER} 
+    order by Id asc
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from ti_userdiscounts

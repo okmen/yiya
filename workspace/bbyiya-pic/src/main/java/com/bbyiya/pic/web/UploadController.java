@@ -8,11 +8,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.pic.utils.WxPublicUtils;
+import com.bbyiya.utils.ImgDomainUtil;
 import com.bbyiya.utils.JsonUtil;
+import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.upload.FileUploadUtils_qiniu;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
+import com.qiniu.common.QiniuException;
+import com.qiniu.storage.model.DefaultPutRet;
+import com.qiniu.storage.model.FetchRet;
 
 @Controller
 @RequestMapping(value = "/upload")
@@ -66,4 +72,35 @@ public class UploadController extends SSOController {
 	}
 	
 	
+	@ResponseBody
+	@RequestMapping(value = "/downImgToQiniu")
+	public String downWxImgToQiniu(String media_id,String remoteUrl) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			try {
+				FetchRet result=null;
+				if(!ObjectUtil.isEmpty(remoteUrl)){
+					result= FileUploadUtils_qiniu.fetch(remoteUrl);
+				}else if (!ObjectUtil.isEmpty(media_id)) {
+					remoteUrl="https://api.weixin.qq.com/cgi-bin/media/get?access_token="+WxPublicUtils.getAccessToken()+"&media_id="+media_id;
+					result= FileUploadUtils_qiniu.fetch(remoteUrl);
+				}
+				if(result!=null){
+					rq.setStatu(ReturnStatus.Success);
+					Map<String, Object> map=new HashMap<String, Object>();
+					map.put("url", ImgDomainUtil.getImageUrl_Full(result.key));
+					map.put("fsize", result.fsize);
+					rq.setBasemodle(map); 
+				}
+			} catch (QiniuException e) {
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson(e.getMessage());
+			}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("Ticket失效！");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 }

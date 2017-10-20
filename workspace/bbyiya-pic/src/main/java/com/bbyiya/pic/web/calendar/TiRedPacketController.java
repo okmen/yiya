@@ -164,6 +164,7 @@ public class TiRedPacketController extends SSOController {
 				//作品详情
 				List<TiMyartsdetails> details= detailMapper.findDetailsByWorkId(workId);
 				map.put("details", details);
+				map.put("workInfo", workMapper.selectByPrimaryKey(workId));
 				//需要凑多少钱
 				if(actMyworkcustomers.getNeedredpackettotal()!=null&&actMyworkcustomers.getNeedredpackettotal().doubleValue()>0){
 					double amount=actMyworkcustomers.getRedpacketamount()==null?0:actMyworkcustomers.getRedpacketamount().doubleValue();				

@@ -16,6 +16,7 @@ import com.bbyiya.service.calendar.ITi_OrderMgtService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.address.OrderaddressParam;
 import com.bbyiya.vo.calendar.TiActivityOrderSubmitParam;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
@@ -115,5 +116,139 @@ public class TiOrderIBSController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	/**
+	 * ibs代客制作手动下单前的地址列表
+	 * @param cartid
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getTiCustomerSubmitAddressList")
+	public String getTiCustomerSubmitAddressList(Long workId) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=ibstiorderService.getTiCustomerSubmitAddressList(user.getUserId(), workId);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * ibs代客制作下单
+	 * @param productJsonStr
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/ibsSubmitTiCustomerAutoOrder")
+	public String ibsSubmitTiCustomerAutoOrder(String productJsonStr) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			TiActivityOrderSubmitParam param = (TiActivityOrderSubmitParam) JsonUtil.jsonStrToObject(productJsonStr, TiActivityOrderSubmitParam.class);
+			if (param != null) {
+				if(ObjectUtil.isEmpty(param.getWorkId())){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("活动参数有误：workId为空");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				param.setSubmitUserId(user.getUserId());
+				if(ObjectUtil.isEmpty(param.getSubmitUserId())){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("参数有误：submitUserId为空");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				rq = basetiorderService.submitTiCustomerOrder_ibs(param,null);
+			} else {
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("参数有误");
+			}
+
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	
+	/**
+	 * ibs代客制作手动下单
+	 * @param productJsonStr
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/ibsSubmitTiCustomerHandOrder")
+	public String ibsSubmitTiCustomerHandOrder(String productJsonStr,String addressJsonStr) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			TiActivityOrderSubmitParam param = (TiActivityOrderSubmitParam) JsonUtil.jsonStrToObject(productJsonStr, TiActivityOrderSubmitParam.class);
+			OrderaddressParam addressParam = (OrderaddressParam) JsonUtil.jsonStrToObject(addressJsonStr, OrderaddressParam.class);
+			
+			if (param != null&&addressParam!=null) {
+				if(ObjectUtil.isEmpty(param.getWorkId())){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("活动参数有误：workId为空");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				param.setSubmitUserId(user.getUserId());
+				if(ObjectUtil.isEmpty(param.getSubmitUserId())){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("参数有误：submitUserId为空");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				if (addressParam.getCity() == null) {
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("地址参数有误：city为空");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				if (addressParam.getProvince() == null) {
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("地址参数有误：province为空");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				if (addressParam.getDistrict() == null) {
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("地址参数有误：district为空");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				if (addressParam.getStreetdetail() == null) {
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("地址参数有误：streetdetail为空");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				if (addressParam.getPhone() == null) {
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("参数有误,手机号为空");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				if (!ObjectUtil.isEmpty(addressParam.getPhone()) && !ObjectUtil.isMobile(addressParam.getPhone())) {
+					rq.setStatu(ReturnStatus.ParamError_2);
+					rq.setStatusreson("手机号格式不对！");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				if (addressParam.getReciver() == null) {
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("参数有误,联系人为空");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				rq = basetiorderService.submitTiCustomerOrder_ibs(param,addressParam);
+			} else {
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("参数有误");
+			}
+
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	
 }

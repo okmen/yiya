@@ -186,5 +186,11 @@ public interface ITi_AgentMgtService {
 	 */
 	ReturnModel editTiProducerAddress(Long produceruserid, String streetdetail,
 			String name, String phone);
+	/**
+	 * 将相册影楼身份换为活动参与者身份
+	 * @param userId
+	 * @return
+	 */
+	ReturnModel transtopromoter(Long userId);
 	
 }

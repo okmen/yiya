@@ -137,7 +137,7 @@
   <select id="findPbsTiUserOrdersByProducerUserId" resultMap="PbsUserOrderResult" parameterType="com.bbyiya.vo.order.SearchOrderParam"  >
     select 
     a.OrderProductId, a.UserOrderId, a.ProductId, a.StyleId, a.BuyerUserId, a.ProductTitle, a.Price, 
-    a.BranchUserId, a.SalesUserId, a.PropertyStr, a.Count,a.ProductImg,a.CartId
+    b.BranchUserId, a.SalesUserId, a.PropertyStr, a.Count,a.ProductImg,a.CartId
     from o_orderproducts a inner join o_userorders b on a.UserOrderId=b.UserOrderId  
     inner join o_orderaddress c on b.OrderAddressId=c.OrderAddressId 
     where 1=1 and OrderType!=0 and OrderType!=1
@@ -157,7 +157,7 @@
         AND b.Status = #{status,jdbcType=INTEGER}
     </if>
     <if test="agentUserId != null" >
-        AND b.AgentUserId = #{agentUserId,jdbcType=BIGINT}
+        AND a.BuyerUserId = #{agentUserId,jdbcType=BIGINT}
     </if>
     
     <if test="userId != null" >

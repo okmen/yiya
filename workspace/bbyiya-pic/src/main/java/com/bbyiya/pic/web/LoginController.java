@@ -69,31 +69,19 @@ public class LoginController extends SSOController {
 	 */
 	@RequestMapping(value = "/transfer")
 	public String transferPage(String m,String uid,String redirct_url) throws Exception {
-		LoginSuccessResult user= super.getLoginUser();
+//		LoginSuccessResult user= super.getLoginUser();
 		//是否测试地址
 		int loginTo=ObjectUtil.parseInt(m);
 		//如果已经登录
-		if(user!=null&&user.getUserId()!=null){
-			if(loginTo<=0&&!ObjectUtil.isEmpty(redirct_url)){
-				if(redirct_url.contains("http")){
-					return "redirect:"+redirct_url; 
-				}else {
-					return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+redirct_url; 	
-				}
-			}else if(loginTo==1){ //photo测试地址
-//				UOtherlogin otherlogin=otherloginMapper.getWxloginByUserId(user.getUserId());
-//				if(otherlogin!=null){
-//					String paramtest="?headImg="+user.getHeadImg()+"&loginType="+Integer.parseInt(LoginTypeEnum.weixin.toString())+"&nickName="+user.getNickName()+"&openId="+otherlogin.getOpenid()+"&upUid="+user.getUpUserId();
-//					if(!ObjectUtil.isEmpty(redirct_url)){
-//						paramtest+="&redirect_url="+redirct_url; 
-//					}else if (!ObjectUtil.isEmpty(uid)) {//测试店铺页
-//						paramtest+="&redirect_url="+URLEncoder.encode(ConfigUtil.getSingleValue("photo-net-url")+"?uid="+uid, "gb2312"); 
-//					}
-//					//跳转mpic测试接口地址中转
-//					return "redirect:" + ConfigUtil.getSingleValue("mpic-net-url")+paramtest;
+//		if(user!=null&&user.getUserId()!=null){
+//			if(loginTo<=0&&!ObjectUtil.isEmpty(redirct_url)){
+//				if(redirct_url.contains("http")){
+//					return "redirect:"+redirct_url; 
+//				}else {
+//					return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+redirct_url; 	
 //				}
-			}
-		}
+//			}
+//		}
 		String keyId= LOGIN_TEMP+request.getSession().getId();
 		long branch_userid=ObjectUtil.parseLong(uid);
 		if(branch_userid>0||!ObjectUtil.isEmpty(m)||!ObjectUtil.isEmpty(redirct_url)){  

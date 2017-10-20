@@ -748,4 +748,29 @@ public class TiAgentMgtController extends SSOController {
 	}
 	
  	
+	/**
+	 * cts 将咿呀影楼身份转为活动参与者102
+	 * @param branchuserid
+	 * @param amount
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/transtopromoter")
+	public String transtopromoter(Long userid) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user=super.getLoginUser();
+		if(user!=null) {
+			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_admin)||ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.cts_member)){
+				rq=agentService.transtopromoter(userid);
+			}else {
+				rq.setStatu(ReturnStatus.SystemError);
+				rq.setStatusreson("不是cts管理员，权限不足！");
+			}
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 }

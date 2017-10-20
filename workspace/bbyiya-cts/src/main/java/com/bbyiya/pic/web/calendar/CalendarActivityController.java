@@ -1,5 +1,7 @@
 package com.bbyiya.pic.web.calendar;
 
+import java.net.URLEncoder;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
@@ -8,12 +10,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.calendar.AddressTypeEnum;
+import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.pic.service.calendar.IIbs_CalendarActivityService;
 import com.bbyiya.pic.utils.Json2Objects;
 import com.bbyiya.pic.vo.calendar.CalendarActivityAddParam;
+import com.bbyiya.pic.vo.calendar.WorkForCustomerParam;
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.address.OrderaddressVo;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
 
@@ -309,5 +316,129 @@ public class CalendarActivityController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	
+	/**
+	 * 新增代客制作
+	 * @param myproductTempJson
+	 * @param productstyleJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/addWorkForCustomer")
+	public String addWorkForCustomer(String activityJson,String addressJson) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			WorkForCustomerParam workparam = (WorkForCustomerParam)JsonUtil.jsonStrToObject(activityJson,WorkForCustomerParam.class);
+			OrderaddressVo addressparam=(OrderaddressVo)JsonUtil.jsonStrToObject(addressJson,OrderaddressVo.class);
+			
+			if (workparam == null||addressparam==null) {
+				rq.setStatu(ReturnStatus.ParamError_1);
+				rq.setStatusreson("参数不全");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			if(ObjectUtil.isEmpty(workparam.getProductId())){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("请选择产品!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			if(ObjectUtil.isEmpty(workparam.getStyleId())){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("请选择款式!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			
+			if(workparam.getDetails()==null||workparam.getDetails().size()<=0){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("请上传图片!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			if((workparam.getNeedShareCount()==null||workparam.getNeedShareCount().intValue()==0)&&(workparam.getNeedRedpacketTotal()==null||workparam.getNeedRedpacketTotal().doubleValue()<=0)){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("请选择完成条件!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			//如果是选择是客户地址
+			if(addressparam.getAddressType()==Integer.parseInt(AddressTypeEnum.cusaddr.toString())){
+				if(ObjectUtil.isEmpty(addressparam.getProvince())||ObjectUtil.isEmpty(addressparam.getCity())||ObjectUtil.isEmpty(addressparam.getDistrict())){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("请选择省市区!");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				if(ObjectUtil.isEmpty(addressparam.getReciver())){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("请填写客户名称!");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				if(ObjectUtil.isEmpty(addressparam.getPhone())){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("请填写客户联系方式!");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				if(ObjectUtil.isEmpty(addressparam.getStreetdetail())){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("请填写详细地址!");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+			}	
+			rq=calendarActivityService.addWorkForCustomer(user.getUserId(),workparam,addressparam);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 代客制作列表
+	 * @param myproductTempJson
+	 * @param productstyleJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/workForCustomerList")
+	public String workForCustomerList(@RequestParam(required = false, defaultValue = "1") Integer index,@RequestParam(required = false, defaultValue = "10") Integer size,@RequestParam(required = false, defaultValue = "1") String keywords) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(index==null)index=1;
+			if(size==null)size=10;
+			rq=calendarActivityService.workForCustomerList(user.getUserId(),index,size,keywords);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 保存模板的二维码图片
+	 * @param cartId
+	 * @param companyUserid 员工ID
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/downWorkForCusRQcode")
+	public String downWorkForCusRQcode(String workId) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			String redirct_url="assistant?workId="+workId;	
+			String urlstr= ConfigUtil.getSingleValue("shareulr-base")+"uid="+URLEncoder.encode(user.getUserId().toString(),"utf-8")+"&redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
+			rq=calendarActivityService.saveRQcode(urlstr);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 	
 }

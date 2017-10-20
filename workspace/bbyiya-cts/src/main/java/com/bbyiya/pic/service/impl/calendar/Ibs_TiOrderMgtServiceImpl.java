@@ -18,6 +18,7 @@ import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
 import com.bbyiya.dao.TiMyartsdetailsMapper;
+import com.bbyiya.dao.TiMyworkcustomersMapper;
 import com.bbyiya.dao.TiMyworksMapper;
 import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
@@ -26,6 +27,7 @@ import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.MyProductTempType;
 import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.calendar.AddressTypeEnum;
 import com.bbyiya.enums.pic.InviteStatus;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproducts;
@@ -33,6 +35,7 @@ import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.TiActivityworks;
+import com.bbyiya.model.TiMyworkcustomers;
 import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiPromoters;
@@ -72,7 +75,8 @@ public class Ibs_TiOrderMgtServiceImpl implements IIbs_TiOrderMgtService{
 	@Autowired
 	private TiActivityworksMapper actworkMapper;
 	@Autowired
-	private TiMyartsdetailsMapper detailsMapper;
+	private TiMyworkcustomersMapper workcusMapper;
+	
 	
 	/*-------------------用户信息------------------------------------------------*/
 	@Autowired
@@ -81,11 +85,6 @@ public class Ibs_TiOrderMgtServiceImpl implements IIbs_TiOrderMgtService{
 	private UUsersMapper usersMapper;
 	@Autowired
 	private OOrderaddressMapper addressMapper;
-	@Resource(name = "baseUserAddressServiceImpl")
-	private IBaseUserAddressService baseAddressService;
-	
-	@Resource(name = "tiOrderMgtServiceImpl")
-	private  ITi_OrderMgtService basetiorderService;
 	
 	@Resource(name = "regionServiceImpl")
 	private IRegionService regionService;
@@ -197,6 +196,65 @@ public class Ibs_TiOrderMgtServiceImpl implements IIbs_TiOrderMgtService{
 		HashMap<String, Object> map=new HashMap<String, Object>();
 		map.put("style", style);
 		map.put("address", orderAddress);
+		rq.setBasemodle(map);
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("成功");
+		return rq;
+	}
+	
+	public ReturnModel getTiCustomerSubmitAddressList(Long submitUserId,Long workId) {
+		ReturnModel rq = new ReturnModel();
+		List<OrderaddressVo> addressList=new ArrayList<OrderaddressVo>();	
+		//用户作品
+		TiMyworks work= myworksMapper.selectByPrimaryKey(workId);
+		if(work==null){
+			rq.setStatusreson("作品不存在！");
+			return rq;
+		}
+		//用户作品对应的产品款式
+		TiProductstyles style=styleMapper.selectByPrimaryKey(work.getStyleid()==null?work.getProductid():work.getStyleid());
+		if(style==null){
+			rq.setStatusreson("作品信息不全！");
+			return rq;
+		}
+		TiMyworkcustomers workcus=workcusMapper.selectByPrimaryKey(workId);
+		//如果选择了用户地址
+		if(workcus.getAddresstype()!=null&&workcus.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.cusaddr.toString())){
+			if(!ObjectUtil.isEmpty(workcus.getStreetdetails())){
+				OrderaddressVo orderAddress = new OrderaddressVo();	
+				orderAddress.setPhone(workcus.getRecieverphone());
+				orderAddress.setReciver(workcus.getReciever());
+				orderAddress.setCity(workcus.getCity());
+				orderAddress.setCityName(regionService.getCityName(workcus.getCity()));
+				orderAddress.setProvince(workcus.getProvince());
+				orderAddress.setProvinceName(regionService.getProvinceName(workcus.getProvince()));
+				orderAddress.setDistrict(workcus.getDistrict());
+				orderAddress.setDistrictName(regionService.getAresName(workcus.getDistrict()));
+				orderAddress.setStreetdetail(workcus.getStreetdetails());
+				orderAddress.setAddressType(1);
+				addressList.add(orderAddress);
+			}
+		}
+		//B端影楼地址
+		TiPromoters promoters = promotersMapper.selectByPrimaryKey(submitUserId);
+		if (promoters != null) {
+			OrderaddressVo orderAddress = new OrderaddressVo();
+			orderAddress.setUserid(promoters.getPromoteruserid());
+			orderAddress.setPhone(promoters.getMobilephone());
+			orderAddress.setReciver(promoters.getContacts());
+			orderAddress.setCity(promoters.getCity());
+			orderAddress.setCityName(regionService.getCityName(promoters.getCity()));
+			orderAddress.setProvince(promoters.getProvince());
+			orderAddress.setProvinceName(regionService.getProvinceName(promoters.getProvince()));
+			orderAddress.setDistrict(promoters.getArea());
+			orderAddress.setDistrictName(regionService.getAresName(promoters.getArea()));
+			orderAddress.setStreetdetail(promoters.getStreetdetails());
+			orderAddress.setAddressType(0);
+			addressList.add(orderAddress);
+		}				
+		HashMap<String, Object> map=new HashMap<String, Object>();
+		map.put("style", style);
+		map.put("address", addressList);
 		rq.setBasemodle(map);
 		rq.setStatu(ReturnStatus.Success);
 		rq.setStatusreson("成功");

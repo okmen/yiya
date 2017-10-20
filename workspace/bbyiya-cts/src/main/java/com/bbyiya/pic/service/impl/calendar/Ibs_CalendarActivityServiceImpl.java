@@ -1,12 +1,16 @@
 package com.bbyiya.pic.service.impl.calendar;
 
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +19,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OUserordersMapper;
+import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.TiActivityoffMapper;
 import com.bbyiya.dao.TiActivitysMapper;
 import com.bbyiya.dao.TiActivitysinglesMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
+import com.bbyiya.dao.TiMyartsdetailsMapper;
+import com.bbyiya.dao.TiMyworkcustomersMapper;
+import com.bbyiya.dao.TiMyworksMapper;
 import com.bbyiya.dao.TiProductsMapper;
+import com.bbyiya.dao.TiProductstylesMapper;
 import com.bbyiya.dao.TiPromoteremployeesMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
@@ -29,18 +38,29 @@ import com.bbyiya.enums.calendar.ActivityWorksStatusEnum;
 import com.bbyiya.enums.calendar.TiActivityTypeEnum;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OUserorders;
+import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttempusers;
 import com.bbyiya.model.TiActivityoff;
 import com.bbyiya.model.TiActivitys;
+import com.bbyiya.model.TiMyartsdetails;
+import com.bbyiya.model.TiMyworkcustomers;
+import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiProducts;
+import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiPromoteremployees;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.service.calendar.IIbs_CalendarActivityService;
 import com.bbyiya.pic.vo.calendar.CalendarActivityAddParam;
+import com.bbyiya.pic.vo.calendar.WorkForCustomerParam;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.DateUtil;
+import com.bbyiya.utils.FileUtils;
+import com.bbyiya.utils.ImgDomainUtil;
+import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.PageInfoUtil;
+import com.bbyiya.utils.QRCodeUtil;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.address.OrderaddressVo;
 import com.bbyiya.vo.calendar.TiActivitysVo;
 import com.bbyiya.vo.calendar.TiActivitysWorkVo;
 import com.bbyiya.vo.calendar.TiEmployeeActOffVo;
@@ -69,6 +89,17 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 	private OUserordersMapper orderMapper;
 	@Autowired
 	private OOrderaddressMapper orderaddressMapper;
+	
+	@Autowired
+	private TiMyworksMapper timyworkMapper;
+	@Autowired
+	private TiMyworkcustomersMapper workcusMapper;
+	@Autowired
+	private TiProductstylesMapper tistyleMapper;
+	@Autowired
+	private TiMyartsdetailsMapper detailMapper;
+	@Autowired
+	private PMyproductsMapper myproductMapper;
 	
 	/*-------------------用户信息------------------------------------------------*/
 	@Autowired
@@ -356,6 +387,127 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 		rq.setStatusreson("设置成功！");
 		return rq;
 	}
-	
-	
+	/**
+	 * 添加客户代客制作
+	 * 
+	 * */
+	public ReturnModel addWorkForCustomer(Long userid,WorkForCustomerParam workparam,OrderaddressVo addressparam){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.SystemError);	
+		
+		TiProductstyles style=tistyleMapper.selectByPrimaryKey(workparam.getStyleId());
+		if(style!=null&&workparam.getDetails().size()<style.getImgcount().intValue()) {
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("请上传完"+style.getImgcount()+"张图片,才能提交!");
+			return rq;
+		}
+		
+		
+		// 2 生成 作品id(cartId=workId)
+		PMyproducts cart=new PMyproducts();
+		cart.setCreatetime(new Date());
+		cart.setUserid(0l);
+		myproductMapper.insertReturnId(cart);
+		TiMyworks mywork=new TiMyworks();
+		mywork.setWorkid(cart.getCartid());
+		mywork.setCreatetime(new Date());
+		mywork.setIsinstead(1);
+		mywork.setProductid(workparam.getProductId());
+		mywork.setStyleid(workparam.getStyleId());
+		timyworkMapper.insert(mywork);
+		myproductMapper.deleteByPrimaryKey(cart.getCartid());
+		HashMap<String, Object> map=new HashMap<String, Object>();
+		map.put("workId", mywork.getWorkid());
+		map.put("productId", mywork.getProductid());
+		
+		TiMyworkcustomers workcus=new TiMyworkcustomers();
+		workcus.setAddresstype(addressparam.getAddressType());
+		workcus.setCity(addressparam.getCity());
+		workcus.setDistrict(addressparam.getDistrict());
+		workcus.setProvince(addressparam.getProvince());
+		workcus.setCreatetime(new Date());
+		workcus.setCustomername(addressparam.getReciver());
+		workcus.setMobilephone(addressparam.getPhone());
+		workcus.setNeedredpackettotal(workparam.getNeedRedpacketTotal());
+		workcus.setNeedsharecount(workparam.getNeedShareCount());
+		workcus.setPromoteruserid(userid);
+		workcus.setReciever(addressparam.getReciver());
+		workcus.setRecieverphone(addressparam.getPhone());
+		workcus.setStreetdetails(addressparam.getStreetdetail());
+		workcus.setStatus(Integer.parseInt(ActivityWorksStatusEnum.imagesubmit.toString()));
+		workcus.setWorkid(mywork.getWorkid());
+		workcusMapper.insert(workcus);
+		Date time=new Date();
+		for(int i=0;i<workparam.getDetails().size();i++){
+			String url=workparam.getDetails().get(i).getImageurl();
+			if(!ObjectUtil.isEmpty(url)){
+				url=ImgDomainUtil.getImageUrl_Full(url);
+				TiMyartsdetails detail=new TiMyartsdetails();
+				detail.setWorkid(workcus.getWorkid());
+				detail.setImageurl(url);
+				detail.setSort(i);
+				detail.setCreatetime(time); 
+				detailMapper.insert(detail);
+			}
+		}
+		
+		rq.setBasemodle(map);
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("添加成功！");
+		return rq;
+	}
+	/**
+	 * 代客制作列表
+	 * @throws UnsupportedEncodingException 
+	 */
+	public ReturnModel workForCustomerList(Long userid,int index,int size,String keywords) throws UnsupportedEncodingException{
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.SystemError);
+		PageHelper.startPage(index, size);
+		List<TiMyworkcustomers> cuslist=workcusMapper.selectListByPromoterUserId(userid,keywords);
+		PageInfo<TiMyworkcustomers> pageresult=new PageInfo<TiMyworkcustomers>(cuslist);
+		
+		if(pageresult!=null&& pageresult.getList()!=null&&pageresult.getList().size()>0){
+			for (TiMyworkcustomers cus :  pageresult.getList()) {
+				cus.setCreatetimestr(DateUtil.getTimeStr(cus.getCreatetime(), "yyyy-MM-dd HH:mm:ss"));
+				//条件： 0分享,1收集红包
+				if(cus.getNeedsharecount()!=null&&cus.getNeedsharecount().intValue()>0){
+					cus.setCondition(0);
+				}else{
+					cus.setCondition(1);
+				}
+				String redirct_url="assistant?workId="+cus.getWorkid();	
+				String urlstr= ConfigUtil.getSingleValue("shareulr-base")+"uid="+URLEncoder.encode(userid.toString(),"utf-8")+"&redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
+				String url="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+URLEncoder.encode(urlstr,"utf-8");
+				cus.setCodeUrl(url);
+			}
+		}
+		rq.setBasemodle(pageresult);
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("添加成功！");
+		return rq;
+	}
+		
+
+	/**
+	 * 保存模板二维码图片
+	 * @return
+	 * @throws Exception 
+	 */
+	public ReturnModel saveRQcode(String url) throws Exception{
+		ReturnModel rq=new ReturnModel();
+		// 获取用户的当前工作主目录 
+		String sep=System.getProperty("file.separator");
+		String currentWorkDir = System.getProperty("user.home") +sep+ "imagedownloadtemp"+sep;
+		FileUtils.isDirExists(currentWorkDir);
+		String filename = "RQcode.jpg";
+		File file = new File(currentWorkDir + filename);
+		BufferedImage bufImg = QRCodeUtil.createImage(url, "", true);
+		// 生成二维码QRCode图片
+		ImageIO.write(bufImg, "jpg", file);
+		rq.setBasemodle(file.getPath());
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("获取图片成功！");
+		return rq;
+	}
 }

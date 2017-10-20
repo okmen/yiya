@@ -17,7 +17,6 @@ import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
 import com.qiniu.common.QiniuException;
-import com.qiniu.storage.model.DefaultPutRet;
 import com.qiniu.storage.model.FetchRet;
 
 @Controller
@@ -71,9 +70,15 @@ public class UploadController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-	
+	/**
+	 * 图片下载
+	 * @param media_id
+	 * @param remoteUrl
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
-	@RequestMapping(value = "/downImgToQiniu")
+	@RequestMapping(value = "/filedownload")
 	public String downWxImgToQiniu(String media_id,String remoteUrl) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();

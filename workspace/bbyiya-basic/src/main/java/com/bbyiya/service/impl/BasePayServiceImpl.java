@@ -25,6 +25,8 @@ import com.bbyiya.dao.PProductstylesMapper;
 import com.bbyiya.dao.TiAccountlogMapper;
 import com.bbyiya.dao.TiActivitysMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
+import com.bbyiya.dao.TiMyworkcustomersMapper;
+import com.bbyiya.dao.TiMyworkredpacketlogsMapper;
 import com.bbyiya.dao.TiProductsextMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
 import com.bbyiya.dao.TiPromotersMapper;
@@ -45,7 +47,9 @@ import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.PayOrderStatusEnums;
 import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.PayTypeEnum;
+import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.ActivityWorksStatusEnum;
+import com.bbyiya.enums.calendar.RedpacketStatus;
 import com.bbyiya.enums.calendar.TiAmountLogType;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.EErrors;
@@ -58,6 +62,8 @@ import com.bbyiya.model.PProductstyles;
 import com.bbyiya.model.TiAccountlog;
 import com.bbyiya.model.TiActivitys;
 import com.bbyiya.model.TiActivityworks;
+import com.bbyiya.model.TiMyworkcustomers;
+import com.bbyiya.model.TiMyworkredpacketlogs;
 import com.bbyiya.model.TiProductsext;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiPromoters;
@@ -133,6 +139,10 @@ public class BasePayServiceImpl implements IBasePayService{
 	private TiActivityworksMapper activityworksMapper;
 	@Autowired
 	private TiProductsextMapper tiProductsextMapper;
+	@Autowired
+	private TiMyworkredpacketlogsMapper tiredpacketMapper;
+	@Autowired
+	private TiMyworkcustomersMapper tiredpacketCustomerMapper;
 	/**
 	 * 订单支付成功 回写
 	 */
@@ -208,9 +218,7 @@ public class BasePayServiceImpl implements IBasePayService{
 						}
 					}
 					/************************------------普通购物------------------********************************/
-//					else if(orderType==Integer.parseInt(PayOrderTypeEnum.ti_gouwu.toString())){
-//						
-//					}
+
 					else if (orderType==Integer.parseInt(PayOrderTypeEnum.ti_postage.toString())) {
 						//用户付邮费
 						TiActivityworks works= activityworksMapper.selectByPrimaryKey(ObjectUtil.parseLong(payOrder.getUserorderid()));
@@ -224,6 +232,28 @@ public class BasePayServiceImpl implements IBasePayService{
 						//台历交易记录
 						add_tiAccountLog(payId,payOrder.getUserid(), payOrder.getTotalprice(),TiAmountLogType.in_payment);
 						return true;
+					}
+					//台历红包 --付款到平台
+					else if (orderType==Integer.parseInt(PayOrderTypeEnum.ti_redpaket.toString())) {
+						//红包投递记录信息
+						TiMyworkredpacketlogs redpacketLog= tiredpacketMapper.selectByPrimaryKey(payId);
+						if(redpacketLog!=null){
+							redpacketLog.setStatus(Integer.parseInt(RedpacketStatus.payed.toString()));
+							tiredpacketMapper.updateByPrimaryKeySelective(redpacketLog);
+							//代客制作红包金额
+							TiMyworkcustomers myworkcustomers= tiredpacketCustomerMapper.selectByPrimaryKey(redpacketLog.getWorkid());
+							if(myworkcustomers!=null){
+								double amountRed=myworkcustomers.getRedpacketamount()==null?0d:myworkcustomers.getRedpacketamount().doubleValue();
+								myworkcustomers.setRedpacketamount(amountRed+payOrder.getTotalprice().doubleValue());
+								tiredpacketCustomerMapper.updateByPrimaryKeySelective(myworkcustomers);
+								return true;
+							}
+						
+						}else {
+							addlog("payId:"+payId+",台历红包找不到红包记录TiMyworkredpacketlogs！");
+							return false;
+						}
+						
 					}
 					else {//购物
 						OUserorders userorders = userOrdersMapper.selectByPrimaryKey(payOrder.getUserorderid());
@@ -513,7 +543,12 @@ public class BasePayServiceImpl implements IBasePayService{
 										//幻想馆分利
 										accountService.add_accountsLog(hxgUid, Integer.parseInt(AccountLogType.get_ti_commission.toString()), postPayorder.getTotalprice() * 0.05, postPayorder.getPayid(), "");																								
 						    		}
-						    	}
+						    	}else if (userorders.getPostage()!=null&&userorders.getPostage().doubleValue()>0) {
+						    		//生产商直接扣运费
+					    			if (producerUid != null && producerUid > 0) {
+										accountService.add_accountsLog(producerUid, Integer.parseInt(AccountLogType.get_ti_post.toString()), userorders.getPostage() , userorders.getPayid(), ""); 
+									}
+								}
 						    }/*----------------------------------------------*/
 						} else {//普通订单（c端购买）
 							//优惠价购买

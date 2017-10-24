@@ -16,14 +16,17 @@ import com.bbyiya.dao.TiMyartsdetailsMapper;
 import com.bbyiya.dao.TiMyworkcustomersMapper;
 import com.bbyiya.dao.TiMyworkredpacketlogsMapper;
 import com.bbyiya.dao.TiMyworksMapper;
+import com.bbyiya.dao.TiPromoteradvertinfoMapper;
 import com.bbyiya.enums.PayOrderStatusEnums;
 import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.calendar.ActivityWorksStatusEnum;
 import com.bbyiya.enums.calendar.RedpacketStatus;
 import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.TiMyartsdetails;
 import com.bbyiya.model.TiMyworkcustomers;
 import com.bbyiya.model.TiMyworkredpacketlogs;
+import com.bbyiya.model.TiPromoteradvertinfo;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -141,7 +144,8 @@ public class TiRedPacketController extends SSOController {
 	private TiMyworksMapper workMapper;
 	@Autowired
 	private TiMyartsdetailsMapper detailMapper;
-	
+	@Autowired
+	private TiPromoteradvertinfoMapper advertMapper;
 	/**
 	 * 代客制作详情
 	 * @param workId
@@ -160,16 +164,29 @@ public class TiRedPacketController extends SSOController {
 				//作品详情
 				List<TiMyartsdetails> details= detailMapper.findDetailsByWorkId(workId);
 				map.put("details", details);
+				map.put("actStatus", actMyworkcustomers.getStatus());
 				map.put("workInfo", workMapper.selectByPrimaryKey(workId));
 				//需要凑多少钱
 				if(actMyworkcustomers.getNeedredpackettotal()!=null&&actMyworkcustomers.getNeedredpackettotal().doubleValue()>0){
 					double amount=actMyworkcustomers.getRedpacketamount()==null?0:actMyworkcustomers.getRedpacketamount().doubleValue();				
-					map.put("amountNeed", actMyworkcustomers.getNeedredpackettotal().doubleValue()-amount);
+					double amountNeed=actMyworkcustomers.getNeedredpackettotal().doubleValue()-amount;
+					map.put("amountNeed", amountNeed);
 					if(amount>0){
 						map.put("amountLog", redlogsMapper.findredpacketLogs(null, workId, Integer.parseInt(RedpacketStatus.payed.toString())));
 					}
+					//已完成红包/已经下单
+					if(amountNeed<=0||actMyworkcustomers.getStatus()!=null&&actMyworkcustomers.getStatus().intValue()==Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString())){
+						TiPromoteradvertinfo advertMod= advertMapper.getModelByPromoterUserId(actMyworkcustomers.getPromoteruserid());
+						if(advertMod!=null){
+							map.put("advert", advertMod);
+						}
+					}
 				}else {
 					map.put("amountNeed",0); 
+					TiPromoteradvertinfo advertMod= advertMapper.getModelByPromoterUserId(actMyworkcustomers.getPromoteruserid());
+					if(advertMod!=null){
+						map.put("advert", advertMod);
+					}
 				}
 				rq.setStatu(ReturnStatus.Success);
 				rq.setBasemodle(map);

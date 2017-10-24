@@ -252,7 +252,7 @@ public class Ti_MyworkController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/workInfo")
-	public String workInfo(long workId)throws Exception {
+	public String workInfo(@RequestParam(required = false, defaultValue = "0")long workId)throws Exception {
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.ParamError);
 		LoginSuccessResult user= super.getLoginUser();

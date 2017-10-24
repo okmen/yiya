@@ -3,8 +3,12 @@ package com.bbyiya.pic.utils;
 import java.security.DigestException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+
+
 
 
 
@@ -23,6 +27,7 @@ import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.utils.encrypt.Sha1Encrypt;
 import com.bbyiya.utils.pay.WxPayConfig;
 import com.bbyiya.utils.pay.WxPayUtils;
+import com.bbyiya.utils.pay.WxUtil;
 import com.bbyiya.vo.ReturnModel;
 /**
  * 微信公众号 全局文件
@@ -32,7 +37,7 @@ import com.bbyiya.vo.ReturnModel;
 public class WxPublicUtils {
 
 	//微信access_token
-	public static String ACCESS_TOKEN= ConfigUtil.getSingleValue("currentRedisKey-Base")+"_wx_access_token";
+	public static String ACCESS_TOKEN= "wx_access_token"; //ConfigUtil.getSingleValue("currentRedisKey-Base")+
 	//微信config
 	public static String JSAPI_TOKEN=ConfigUtil.getSingleValue("currentRedisKey-Base")+"_wx_jsapi_token";
 	//微信access_token 缓存有效时间
@@ -52,6 +57,24 @@ public class WxPublicUtils {
 			tokens=getAccessTokenPost();
 			if(!ObjectUtil.isEmpty(tokens)){
 				RedisUtil.setString(ACCESS_TOKEN , tokens, ACCESS_TOKEN_TIMEVAL);
+				try {
+					//redis同步参数
+					String postParam="key=" + ACCESS_TOKEN + "&value=" + tokens + "&seconds=" + ACCESS_TOKEN_TIMEVAL;
+					List<NameValuePair> packageParams = new LinkedList<NameValuePair>();
+					packageParams.add(new BasicNameValuePair("key", ACCESS_TOKEN));
+					packageParams.add(new BasicNameValuePair("value", tokens));// 商户号
+					packageParams.add(new BasicNameValuePair("seconds", String.valueOf(ACCESS_TOKEN_TIMEVAL)));
+					//生成签名
+					String sign= WxPayUtils.genPackageSign(packageParams);
+					postParam+="&sign="+sign;
+					String currentDomain = ConfigUtil.getSingleValue("currentDomain");
+					if (!ObjectUtil.isEmpty(currentDomain) && currentDomain.contains("photo-net.")) {
+						HttpRequestHelper.sendPost("https://mpic.bbyiya.com/wx/SynRedist", postParam);
+					} else {
+						HttpRequestHelper.sendPost("https://mpic.bbyiya.net/wx/SynRedist", postParam);
+					}
+				} catch (Exception e) {
+				}
 			}
 			return tokens;
 		}else {

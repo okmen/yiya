@@ -25,6 +25,15 @@ public interface TiUserdiscountsMapper {
      */
     List<TiUserdiscounts> findMyDiscounts(@Param("userId")Long userId);
     /**
+     * 针对某个作品获取的优惠券
+     * @param userId
+     * @param workId
+     * @return
+     */
+    List<TiUserdiscounts> findMyDiscountsByWorkId(@Param("userId")Long userId,@Param("workId")Long workId);
+    
+    List<TiUserdiscounts> findMyDiscountsByActId(@Param("userId")Long userId,@Param("actId")Integer actId);
+    /**
      * 获取订单使用的优惠券
      * @param userorderId
      * @return

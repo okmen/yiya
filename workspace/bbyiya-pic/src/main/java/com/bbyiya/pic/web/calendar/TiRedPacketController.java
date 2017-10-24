@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.baseUtils.GenUtils;
 import com.bbyiya.dao.OPayorderMapper;
-import com.bbyiya.dao.TiActivityworksMapper;
 import com.bbyiya.dao.TiMyartsdetailsMapper;
 import com.bbyiya.dao.TiMyworkcustomersMapper;
 import com.bbyiya.dao.TiMyworkredpacketlogsMapper;
@@ -25,7 +24,6 @@ import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.TiMyartsdetails;
 import com.bbyiya.model.TiMyworkcustomers;
 import com.bbyiya.model.TiMyworkredpacketlogs;
-import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -87,6 +85,7 @@ public class TiRedPacketController extends SSOController {
 								TiMyworkredpacketlogs log=new TiMyworkredpacketlogs();
 								log.setAmount(ObjectUtil.parseDouble(amount));
 								log.setUserid(user.getUserId());
+								log.setWorkid(workId); 
 								log.setCreatetime(new Date());
 								log.setHeadimg(user.getHeadImg());
 								log.setNickname(user.getNickName());
@@ -161,6 +160,7 @@ public class TiRedPacketController extends SSOController {
 				//作品详情
 				List<TiMyartsdetails> details= detailMapper.findDetailsByWorkId(workId);
 				map.put("details", details);
+				map.put("workInfo", workMapper.selectByPrimaryKey(workId));
 				//需要凑多少钱
 				if(actMyworkcustomers.getNeedredpackettotal()!=null&&actMyworkcustomers.getNeedredpackettotal().doubleValue()>0){
 					double amount=actMyworkcustomers.getRedpacketamount()==null?0:actMyworkcustomers.getRedpacketamount().doubleValue();				
@@ -183,6 +183,6 @@ public class TiRedPacketController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	
+
 	
 }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.bbyiya.baseUtils.CookieUtils;
 import com.bbyiya.dao.EErrorsMapper;
 import com.bbyiya.dao.ULoginlogsMapper;
+import com.bbyiya.dao.UOtherloginMapper;
 import com.bbyiya.enums.LoginTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.EErrors;
@@ -54,9 +55,11 @@ public class LoginController extends SSOController {
 
 	@Autowired
 	private ULoginlogsMapper loginLogMapper;
+
 	@Autowired
 	private EErrorsMapper errorMapper;
-	
+	@Autowired
+	private UOtherloginMapper otherloginMapper;
 	private static String LOGIN_TEMP="LoginTemp";
 	
 	/**
@@ -66,22 +69,24 @@ public class LoginController extends SSOController {
 	 */
 	@RequestMapping(value = "/transfer")
 	public String transferPage(String m,String uid,String redirct_url) throws Exception {
-		LoginSuccessResult user= super.getLoginUser();
-		if(user!=null&&user.getUserId()!=null){
-			if(ObjectUtil.parseInt(m)!=1&&!ObjectUtil.isEmpty(redirct_url)){
-				if(redirct_url.contains("http")){
-					return "redirect:"+redirct_url; 
-				}else {
-					return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+redirct_url; 	
-				}
-			}
-		}
+//		LoginSuccessResult user= super.getLoginUser();
+		//是否测试地址
+		int loginTo=ObjectUtil.parseInt(m);
+		//如果已经登录
+//		if(user!=null&&user.getUserId()!=null){
+//			if(loginTo<=0&&!ObjectUtil.isEmpty(redirct_url)){
+//				if(redirct_url.contains("http")){
+//					return "redirect:"+redirct_url; 
+//				}else {
+//					return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+redirct_url; 	
+//				}
+//			}
+//		}
 		String keyId= LOGIN_TEMP+request.getSession().getId();
 		long branch_userid=ObjectUtil.parseLong(uid);
 		if(branch_userid>0||!ObjectUtil.isEmpty(m)||!ObjectUtil.isEmpty(redirct_url)){  
 			LoginTempVo loginTemp=new LoginTempVo();
 			loginTemp.setUpUserId(branch_userid);
-			int loginTo=ObjectUtil.parseInt(m);
 			loginTemp.setLoginTo(loginTo);
 			if(!ObjectUtil.isEmpty(redirct_url)&&!"null".equals(redirct_url)){
 				loginTemp.setRedirect_url(redirct_url); 
@@ -129,7 +134,7 @@ public class LoginController extends SSOController {
 		param.setLoginType(loginType);
 		if(!ObjectUtil.isEmpty(nickName)){
 			nickName=java.net.URLDecoder.decode(nickName,"utf-8");
-			nickName=ObjectUtil.filterUtf8Mb4(nickName);
+			nickName=ObjectUtil.filterEmojiNew(nickName);
 			param.setNickName(nickName); 
 			addlog("nickname:"+nickName); 
 		}
@@ -199,7 +204,8 @@ public class LoginController extends SSOController {
 						return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WxPayConfig.APPID+"&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLoginInfo&response_type=code&scope=snsapi_userinfo#wechat_redirect" ;		
 					}
 					if(!ObjectUtil.isEmpty(nickName)&&!"null".equals(nickName)){
-						nickName=ObjectUtil.filterEmoji(nickName);
+//						nickName=ObjectUtil.filterEmoji(nickName);
+						nickName=ObjectUtil.filterEmojiNew(nickName);
 						param.setNickName(nickName);
 					}
 					if(!ObjectUtil.isEmpty(headimg)&&!"null".equals(headimg)){
@@ -224,6 +230,8 @@ public class LoginController extends SSOController {
 					rqModel = loginService.otherLogin(param);
 					if (ReturnStatus.Success.equals(rqModel.getStatu()) && !ObjectUtil.isEmpty(rqModel.getBasemodle())) {
 						addLoginLogAndCookie(rqModel.getBasemodle(),Integer.parseInt(LoginTypeEnum.weixin.toString())); 
+					}else {
+						addlog("LoginError:" +rqModel.getBasemodle()+"param:"+JsonUtil.objectToJsonStr(param) );
 					}
 					
 				} else {
@@ -278,7 +286,7 @@ public class LoginController extends SSOController {
 		JSONObject model = JSONObject.fromObject(result);
 		ReturnModel rqModel = new ReturnModel();
 		//中转信息
-		LoginTempVo logintemp= (LoginTempVo)RedisUtil.getObject(request.getSession().getId());
+		LoginTempVo logintemp= (LoginTempVo)RedisUtil.getObject(LOGIN_TEMP+request.getSession().getId());
 		if (model != null) {
 			String openid = String.valueOf(model.get("openid"));
 			String access_token = String.valueOf(model.get("access_token"));
@@ -295,7 +303,8 @@ public class LoginController extends SSOController {
 					String nickName=String.valueOf(userJson.get("nickname"));
 					String headimg=String.valueOf(userJson.get("headimgurl"));
 					if(!ObjectUtil.isEmpty(nickName)&&!"null".equals(nickName)){
-						nickName=ObjectUtil.filterEmoji(nickName);
+//						nickName=ObjectUtil.filterEmoji(nickName);
+						nickName=ObjectUtil.filterEmojiNew(nickName);
 						param.setNickName(nickName);
 					}
 					if(!ObjectUtil.isEmpty(headimg)&&!"null".equals(headimg)){
@@ -318,6 +327,8 @@ public class LoginController extends SSOController {
 					rqModel = loginService.otherLogin(param);
 					if (ReturnStatus.Success.equals(rqModel.getStatu()) && !ObjectUtil.isEmpty(rqModel.getBasemodle())) {
 						addLoginLogAndCookie(rqModel.getBasemodle(),Integer.parseInt(LoginTypeEnum.weixin.toString())); 
+					}else {
+						addlog("LoginError:" +rqModel.getBasemodle()+"param:"+JsonUtil.objectToJsonStr(param) ); 
 					}
 				} else {
 					rqModel.setStatu(ReturnStatus.SystemError);
@@ -339,7 +350,6 @@ public class LoginController extends SSOController {
 				}else {
 					return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+logintemp.getRedirect_url();
 				}
-//				
 			}else if (logintemp!=null&&!ObjectUtil.isEmpty(logintemp.getUpUserId())) {//店铺页
 				return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+"?uid="+logintemp.getUpUserId(); 
 			} 

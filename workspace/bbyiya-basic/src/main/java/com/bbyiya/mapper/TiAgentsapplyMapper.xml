@@ -51,6 +51,7 @@
        OR  Contacts LIKE  CONCAT('%', #{companyName,jdbcType=VARCHAR},'%' )  
        OR  Mobilephone LIKE  CONCAT('%', #{companyName,jdbcType=VARCHAR},'%' ))
     </if>
+    order by CreateTime desc
   </select>
   
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >

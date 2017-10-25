@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.OUserorderextMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.OUserorderext" >
+    <id column="UserOrderId" property="userorderid" jdbcType="VARCHAR" />
+    <result column="ContactName" property="contactname" jdbcType="VARCHAR" />
+    <result column="Phone" property="phone" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    UserOrderId, ContactName, Phone
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from o_userorderext
+    where UserOrderId = #{userorderid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from o_userorderext
+    where UserOrderId = #{userorderid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.OUserorderext" >
+    insert into o_userorderext (UserOrderId, ContactName, Phone
+      )
+    values (#{userorderid,jdbcType=VARCHAR}, #{contactname,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.OUserorderext" >
+    insert into o_userorderext
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userorderid != null" >
+        UserOrderId,
+      </if>
+      <if test="contactname != null" >
+        ContactName,
+      </if>
+      <if test="phone != null" >
+        Phone,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userorderid != null" >
+        #{userorderid,jdbcType=VARCHAR},
+      </if>
+      <if test="contactname != null" >
+        #{contactname,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.OUserorderext" >
+    update o_userorderext
+    <set >
+      <if test="contactname != null" >
+        ContactName = #{contactname,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        Phone = #{phone,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where UserOrderId = #{userorderid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.OUserorderext" >
+    update o_userorderext
+    set ContactName = #{contactname,jdbcType=VARCHAR},
+      Phone = #{phone,jdbcType=VARCHAR}
+    where UserOrderId = #{userorderid,jdbcType=VARCHAR}
+  </update>
+</mapper>

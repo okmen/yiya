@@ -21,15 +21,17 @@
     from o_orderproductphotos
     where OdetailId = #{odetailid,jdbcType=BIGINT}
   </select>
-  
-  
   <select id="findOrderProductPhotosByProductOrderId" resultMap="BaseResultMap"  >
     select  <include refid="Base_Column_List" />
     from o_orderproductphotos where OrderProductId=#{orderProductId,jdbcType=VARCHAR}  
     order by Sort asc
   </select>
   
-  
+   <select id="findImgNotGood" resultMap="BaseResultMap"  >
+    select  <include refid="Base_Column_List" />
+     FROM o_orderproductphotos  WHERE OrderProductId in(
+	 SELECT UserOrderId from o_userorders WHERE `Status`>0 and OrderType in(2,3)  ) and ImgUrl not LIKE '%.jp%'
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from o_orderproductphotos
     where OdetailId = #{odetailid,jdbcType=BIGINT}

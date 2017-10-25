@@ -24,4 +24,6 @@ public interface OOrderproductphotosMapper {
      * @return
      */
     List<OOrderproductphotos> findOrderProductPhotosByProductOrderId(@Param("orderProductId") String orderproductId);
+    
+    List<OOrderproductphotos> findImgNotGood();
 }

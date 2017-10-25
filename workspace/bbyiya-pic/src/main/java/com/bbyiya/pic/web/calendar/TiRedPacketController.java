@@ -169,7 +169,7 @@ public class TiRedPacketController extends SSOController {
 				//需要凑多少钱
 				if(actMyworkcustomers.getNeedredpackettotal()!=null&&actMyworkcustomers.getNeedredpackettotal().doubleValue()>0){
 					double amount=actMyworkcustomers.getRedpacketamount()==null?0:actMyworkcustomers.getRedpacketamount().doubleValue();				
-					double amountNeed=actMyworkcustomers.getNeedredpackettotal().doubleValue()-amount;
+					double amountNeed=ObjectUtil.doubleSub(actMyworkcustomers.getNeedredpackettotal(), amount);//actMyworkcustomers.getNeedredpackettotal().doubleValue()-amount;
 					map.put("amountNeed", amountNeed);
 					if(amount>0){
 						map.put("amountLog", redlogsMapper.findredpacketLogs(null, workId, Integer.parseInt(RedpacketStatus.payed.toString())));
@@ -181,8 +181,9 @@ public class TiRedPacketController extends SSOController {
 							map.put("advert", advertMod);
 						}
 					}
+//					System.out.println(amount+";"+ObjectUtil.doubleSub(actMyworkcustomers.getNeedredpackettotal(), amount)+"。"+actMyworkcustomers.getNeedredpackettotal().doubleValue());
 				}else {
-					map.put("amountNeed",0); 
+					map.put("amountNeed",0);  
 					TiPromoteradvertinfo advertMod= advertMapper.getModelByPromoterUserId(actMyworkcustomers.getPromoteruserid());
 					if(advertMod!=null){
 						map.put("advert", advertMod);

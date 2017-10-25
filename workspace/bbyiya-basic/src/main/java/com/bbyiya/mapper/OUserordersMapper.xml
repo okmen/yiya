@@ -25,11 +25,12 @@
     <result column="PostModelId" property="postmodelid" jdbcType="INTEGER" />
     <result column="DeliveryTime" property="deliverytime" jdbcType="TIMESTAMP" />
     <result column="ProducerUserId" property="produceruserid" jdbcType="BIGINT" />
+    <result column="IsPromoterAddress" jdbcType="INTEGER" property="ispromoteraddress" />
   </resultMap>
   <sql id="Base_Column_List" >
      UserOrderId, UserId, TotalPrice, Status, BranchUserId, OrderAddressId, PayId, Remark, 
     OrderTime, PayTime, OrderTotalPrice, PayType, AgentUserId, IsBranch, ExpressCom, 
-    ExpressCode, ExpressOrder, OrderType, Postage, UploadTime, PostModelId, DeliveryTime,ProducerUserId
+    ExpressCode, ExpressOrder, OrderType, Postage, UploadTime, PostModelId, DeliveryTime,ProducerUserId, IsPromoterAddress
   </sql>
   <!-- 用户订单结果类Result -->
   <resultMap id="UserBuyerOrderResultMap" type="com.bbyiya.vo.order.UserBuyerOrderResult" extends="BaseResultMap">  
@@ -117,7 +118,7 @@
     delete from o_userorders
     where UserOrderId = #{userorderid,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.bbyiya.model.OUserorders" >
+   <insert id="insert" parameterType="com.bbyiya.model.OUserorders" >
     insert into o_userorders (UserOrderId, UserId, TotalPrice, 
       Status, BranchUserId, OrderAddressId, 
       PayId, Remark, OrderTime, 
@@ -125,7 +126,8 @@
       AgentUserId, IsBranch, ExpressCom, 
       ExpressCode, ExpressOrder, OrderType, 
       Postage, UploadTime, PostModelId, 
-      DeliveryTime, ProducerUserId)
+      DeliveryTime, ProducerUserId, IsPromoterAddress
+      )
     values (#{userorderid,jdbcType=VARCHAR}, #{userid,jdbcType=BIGINT}, #{totalprice,jdbcType=DECIMAL}, 
       #{status,jdbcType=INTEGER}, #{branchuserid,jdbcType=BIGINT}, #{orderaddressid,jdbcType=BIGINT}, 
       #{payid,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{ordertime,jdbcType=TIMESTAMP}, 
@@ -133,7 +135,8 @@
       #{agentuserid,jdbcType=BIGINT}, #{isbranch,jdbcType=INTEGER}, #{expresscom,jdbcType=VARCHAR}, 
       #{expresscode,jdbcType=VARCHAR}, #{expressorder,jdbcType=VARCHAR}, #{ordertype,jdbcType=INTEGER}, 
       #{postage,jdbcType=DECIMAL}, #{uploadtime,jdbcType=TIMESTAMP}, #{postmodelid,jdbcType=INTEGER}, 
-      #{deliverytime,jdbcType=TIMESTAMP}, #{produceruserid,jdbcType=BIGINT})
+      #{deliverytime,jdbcType=TIMESTAMP}, #{produceruserid,jdbcType=BIGINT}, #{ispromoteraddress,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.OUserorders" >
     insert into o_userorders
@@ -207,6 +210,9 @@
       <if test="produceruserid != null" >
         ProducerUserId,
       </if>
+      <if test="ispromoteraddress != null" >
+        IsPromoterAddress,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="userorderid != null" >
@@ -277,6 +283,9 @@
       </if>
       <if test="produceruserid != null" >
         #{produceruserid,jdbcType=BIGINT},
+      </if>
+      <if test="ispromoteraddress != null" >
+        #{ispromoteraddress,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -349,6 +358,9 @@
       <if test="produceruserid != null" >
         ProducerUserId = #{produceruserid,jdbcType=BIGINT},
       </if>
+      <if test="ispromoteraddress != null" >
+        IsPromoterAddress = #{ispromoteraddress,jdbcType=INTEGER},
+      </if>
     </set>
     where UserOrderId = #{userorderid,jdbcType=VARCHAR}
   </update>
@@ -375,7 +387,8 @@
       UploadTime = #{uploadtime,jdbcType=TIMESTAMP},
       PostModelId = #{postmodelid,jdbcType=INTEGER},
       DeliveryTime = #{deliverytime,jdbcType=TIMESTAMP},
-      ProducerUserId = #{produceruserid,jdbcType=BIGINT}
+      ProducerUserId = #{produceruserid,jdbcType=BIGINT},
+      IsPromoterAddress = #{ispromoteraddress,jdbcType=INTEGER}
     where UserOrderId = #{userorderid,jdbcType=VARCHAR}
   </update>
 </mapper>

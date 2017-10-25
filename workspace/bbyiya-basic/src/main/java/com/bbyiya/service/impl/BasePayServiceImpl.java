@@ -75,9 +75,11 @@ import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IBasePayService;
 import com.bbyiya.service.IBaseUserAccountService;
+import com.bbyiya.service.calendar.ITi_OrderMgtService;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.SendSMSByMobile;
+import com.bbyiya.vo.calendar.TiActivityOrderSubmitParam;
 
 @Service("basePayServiceImpl")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
@@ -143,6 +145,9 @@ public class BasePayServiceImpl implements IBasePayService{
 	private TiMyworkredpacketlogsMapper tiredpacketMapper;
 	@Autowired
 	private TiMyworkcustomersMapper tiredpacketCustomerMapper;
+
+	@Resource(name = "tiOrderMgtServiceImpl")
+	private  ITi_OrderMgtService basetiorderService;
 	/**
 	 * 订单支付成功 回写
 	 */
@@ -235,6 +240,8 @@ public class BasePayServiceImpl implements IBasePayService{
 					}
 					//台历红包 --付款到平台
 					else if (orderType==Integer.parseInt(PayOrderTypeEnum.ti_redpaket.toString())) {
+						//更新支付状态
+						payOrderMapper.updateByPrimaryKeySelective(payOrder);
 						//红包投递记录信息
 						TiMyworkredpacketlogs redpacketLog= tiredpacketMapper.selectByPrimaryKey(payId);
 						if(redpacketLog!=null){
@@ -246,6 +253,14 @@ public class BasePayServiceImpl implements IBasePayService{
 								double amountRed=myworkcustomers.getRedpacketamount()==null?0d:myworkcustomers.getRedpacketamount().doubleValue();
 								myworkcustomers.setRedpacketamount(amountRed+payOrder.getTotalprice().doubleValue());
 								tiredpacketCustomerMapper.updateByPrimaryKeySelective(myworkcustomers);
+								//红包金额满足条件，直接下单
+								if(myworkcustomers.getNeedredpackettotal()!=null&&myworkcustomers.getNeedredpackettotal().doubleValue()<=myworkcustomers.getRedpacketamount().doubleValue()){
+									TiActivityOrderSubmitParam orderParam=new TiActivityOrderSubmitParam();
+									orderParam.setSubmitUserId(myworkcustomers.getPromoteruserid());
+									orderParam.setWorkId(myworkcustomers.getWorkid());
+									orderParam.setCount(1); 
+									basetiorderService.submitTiCustomerOrder_ibs(orderParam, null);
+								}
 								return true;
 							}
 						
@@ -253,7 +268,6 @@ public class BasePayServiceImpl implements IBasePayService{
 							addlog("payId:"+payId+",台历红包找不到红包记录TiMyworkredpacketlogs！");
 							return false;
 						}
-						
 					}
 					else {//购物
 						OUserorders userorders = userOrdersMapper.selectByPrimaryKey(payOrder.getUserorderid());

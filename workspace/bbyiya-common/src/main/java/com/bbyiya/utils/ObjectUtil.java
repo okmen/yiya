@@ -7,6 +7,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.nio.ByteBuffer;
 import java.util.Collection;
@@ -137,7 +138,42 @@ public class ObjectUtil {
 		}
 		return !s.isEmpty();
 	}
+	
+	/**
+	 * double 加运算
+	 * @param first
+	 * @param second
+	 * @return
+	 */
+	public static double doubleAdd(Double first,Double second){
+		  BigDecimal b1 = new BigDecimal(Double.toString(first));
+		  BigDecimal b2 = new BigDecimal(Double.toString(second));
+		  return b1.add(b2).doubleValue();
+	}
 
+
+	/**
+	 * double 减运算
+	 * @param first
+	 * @param second
+	 * @return
+	 */
+	public static double doubleSub(Double first,Double second){
+		  BigDecimal b1 = new BigDecimal(Double.toString(first));
+		  BigDecimal b2 = new BigDecimal(Double.toString(second));
+		  return b1.subtract(b2).doubleValue();
+	}
+	/**
+	 * double 乘运算
+	 * @param first
+	 * @param second
+	 * @return
+	 */
+	public static double doubleMul(Double first, Double second) {
+		BigDecimal b1 = new BigDecimal(Double.toString(first));
+		BigDecimal b2 = new BigDecimal(Double.toString(second));
+		return b1.multiply(b2).doubleValue();
+	}
 	/**
 	 * 字符串不为空 ***********************************
 	 * 

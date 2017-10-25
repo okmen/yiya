@@ -54,6 +54,8 @@ public class TiDiscountController extends SSOController {
 	
 	@Resource(name = "tiOrderMgtServiceImpl")
 	private ITi_OrderMgtService orderMgtService;
+	@Resource(name = "tiOrderMgtServiceImpl")
+	private  ITi_OrderMgtService basetiorderService;
 	/**
 	 * 领取优惠券--代客制作优惠券
 	 * @param workId
@@ -62,7 +64,7 @@ public class TiDiscountController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getDiscount")
-	public String getDiscount(String paramJson, Long workId) throws MapperException {
+	public String getDiscount(String paramJson) throws MapperException {
 		ReturnModel rq = new ReturnModel();
 		rq.setStatu(ReturnStatus.ParamError);
 		if(ObjectUtil.isEmpty(paramJson)){
@@ -79,12 +81,12 @@ public class TiDiscountController extends SSOController {
 		if (user != null) {
 			//代客制作作品 分享 领取优惠券
 			if (param.getSourceType() == 2) {
-				List<TiUserdiscounts> mydislist= userDisMapper.findMyDiscountsByWorkId(user.getUserId(),workId);
+				List<TiUserdiscounts> mydislist= userDisMapper.findMyDiscountsByWorkId(user.getUserId(),param.getSourceWorkId());
 				if(mydislist!=null&&mydislist.size()>0){
 					rq.setStatusreson("您已经领取过优惠券！");
 					return JsonUtil.objectToJsonStr(rq);
 				}
-				TiMyworkcustomers actMyworkcustomers = workcustomerMapper.selectByPrimaryKey(workId);
+				TiMyworkcustomers actMyworkcustomers = workcustomerMapper.selectByPrimaryKey(param.getSourceWorkId());
 				if (actMyworkcustomers != null) {
 					// 获取优惠券
 					getMyDiscounts(param, actMyworkcustomers.getPromoteruserid(), user.getUserId());
@@ -94,8 +96,12 @@ public class TiDiscountController extends SSOController {
 						if (shareCount >= actMyworkcustomers.getNeedsharecount().intValue()) {
 							actMyworkcustomers.setStatus(Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString()));
 							workcustomerMapper.updateByPrimaryKeySelective(actMyworkcustomers);
-							// TODO 自动下单操作
-
+							//  自动下单操作
+							TiActivityOrderSubmitParam orderParam=new TiActivityOrderSubmitParam();
+							orderParam.setSubmitUserId(actMyworkcustomers.getPromoteruserid());
+							orderParam.setWorkId(actMyworkcustomers.getWorkid());
+							orderParam.setCount(1); 
+							basetiorderService.submitTiCustomerOrder_ibs(orderParam, null);
 						}
 					} else {
 						workcustomerMapper.updateByPrimaryKeySelective(actMyworkcustomers);
@@ -145,7 +151,7 @@ public class TiDiscountController extends SSOController {
 								TiActivityOrderSubmitParam OrderParam=new TiActivityOrderSubmitParam();
 								OrderParam.setCount(1);
 								OrderParam.setSubmitUserId(actInfo.getProduceruserid());
-								OrderParam.setWorkId(workId);
+								OrderParam.setWorkId(param.getSourceWorkId());
 								orderMgtService.submitOrder_ibs(OrderParam); 
 							}else {
 								activityworksMapper.updateByPrimaryKeySelective(activityworks);

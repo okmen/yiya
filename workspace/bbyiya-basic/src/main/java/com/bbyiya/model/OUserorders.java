@@ -3,69 +3,77 @@ package com.bbyiya.model;
 import java.io.Serializable;
 import java.util.Date;
 
-public class OUserorders implements Serializable{
+public class OUserorders implements Serializable {
 	private static final long serialVersionUID = 1L;
-    private String userorderid;
+	private String userorderid;
 
-    private Long userid;
+	private Long userid;
 
-    private Double totalprice;
+	private Double totalprice;
 
-    private Integer status;
+	private Integer status;
 
-    private Long branchuserid;
+	private Long branchuserid;
 
-    private Long orderaddressid;
+	private Long orderaddressid;
 
-    private String payid;
+	private String payid;
 
-    private String remark;
+	private String remark;
 
-    private Date ordertime;
+	private Date ordertime;
 
-    private Date paytime;
-    
-    private Double ordertotalprice;
+	private Date paytime;
 
-    private Integer paytype;
+	private Double ordertotalprice;
 
-    private Integer ordertype;
+	private Integer paytype;
 
-    private Long agentuserid;
+	private Integer ordertype;
 
-    private Integer isbranch;
+	private Long agentuserid;
 
-    private String expresscom;
-    
-    private String expresscode;
+	private Integer isbranch;
 
-    private String expressorder;
+	private String expresscom;
 
-    private Double postage;
-    private Date uploadtime;
-    private Integer postmodelid;
-    private Date deliverytime;
-    private Long produceruserid;
-    
-    public String getUserorderid() {
-        return userorderid;
-    }
+	private String expresscode;
 
-    public void setUserorderid(String userorderid) {
-        this.userorderid = userorderid == null ? null : userorderid.trim();
-    }
+	private String expressorder;
 
-    public Long getUserid() {
-        return userid;
-    }
+	private Double postage;
+	private Date uploadtime;
+	private Integer postmodelid;
+	private Date deliverytime;
+	private Long produceruserid;
 
-    public void setUserid(Long userid) {
-        this.userid = userid;
-    }
+	private Integer ispromoteraddress;
 
-  
+	public Integer getIspromoteraddress() {
+		return ispromoteraddress;
+	}
 
-    public Double getTotalprice() {
+	public void setIspromoteraddress(Integer ispromoteraddress) {
+		this.ispromoteraddress = ispromoteraddress;
+	}
+
+	public String getUserorderid() {
+		return userorderid;
+	}
+
+	public void setUserorderid(String userorderid) {
+		this.userorderid = userorderid == null ? null : userorderid.trim();
+	}
+
+	public Long getUserid() {
+		return userid;
+	}
+
+	public void setUserid(Long userid) {
+		this.userid = userid;
+	}
+
+	public Double getTotalprice() {
 		return totalprice;
 	}
 
@@ -74,60 +82,60 @@ public class OUserorders implements Serializable{
 	}
 
 	public Integer getStatus() {
-        return status;
-    }
+		return status;
+	}
 
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
 
-    public Long getBranchuserid() {
-        return branchuserid;
-    }
+	public Long getBranchuserid() {
+		return branchuserid;
+	}
 
-    public void setBranchuserid(Long branchuserid) {
-        this.branchuserid = branchuserid;
-    }
+	public void setBranchuserid(Long branchuserid) {
+		this.branchuserid = branchuserid;
+	}
 
-    public Long getOrderaddressid() {
-        return orderaddressid;
-    }
+	public Long getOrderaddressid() {
+		return orderaddressid;
+	}
 
-    public void setOrderaddressid(Long orderaddressid) {
-        this.orderaddressid = orderaddressid;
-    }
+	public void setOrderaddressid(Long orderaddressid) {
+		this.orderaddressid = orderaddressid;
+	}
 
-    public String getPayid() {
-        return payid;
-    }
+	public String getPayid() {
+		return payid;
+	}
 
-    public void setPayid(String payid) {
-        this.payid = payid == null ? null : payid.trim();
-    }
+	public void setPayid(String payid) {
+		this.payid = payid == null ? null : payid.trim();
+	}
 
-    public String getRemark() {
-        return remark;
-    }
+	public String getRemark() {
+		return remark;
+	}
 
-    public void setRemark(String remark) {
-        this.remark = remark == null ? null : remark.trim();
-    }
+	public void setRemark(String remark) {
+		this.remark = remark == null ? null : remark.trim();
+	}
 
-    public Date getOrdertime() {
-        return ordertime;
-    }
+	public Date getOrdertime() {
+		return ordertime;
+	}
 
-    public void setOrdertime(Date ordertime) {
-        this.ordertime = ordertime;
-    }
+	public void setOrdertime(Date ordertime) {
+		this.ordertime = ordertime;
+	}
 
-    public Date getPaytime() {
-        return paytime;
-    }
+	public Date getPaytime() {
+		return paytime;
+	}
 
-    public void setPaytime(Date paytime) {
-        this.paytime = paytime;
-    }
+	public void setPaytime(Date paytime) {
+		this.paytime = paytime;
+	}
 
 	public Double getOrdertotalprice() {
 		return ordertotalprice;
@@ -224,12 +232,13 @@ public class OUserorders implements Serializable{
 	public void setExpresscode(String expresscode) {
 		this.expresscode = expresscode;
 	}
-	public Long getProduceruserid() {
-        return produceruserid;
-    }
 
-    public void setProduceruserid(Long produceruserid) {
-        this.produceruserid = produceruserid;
-    }
-    
+	public Long getProduceruserid() {
+		return produceruserid;
+	}
+
+	public void setProduceruserid(Long produceruserid) {
+		this.produceruserid = produceruserid;
+	}
+
 }

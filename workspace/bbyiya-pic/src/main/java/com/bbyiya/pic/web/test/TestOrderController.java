@@ -1,22 +1,31 @@
 package com.bbyiya.pic.web.test;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.baseUtils.GenUtils;
+import com.bbyiya.dao.OOrderproductphotosMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.model.OOrderproductphotos;
 import com.bbyiya.service.IBasePayService;
 import com.bbyiya.service.IBaseUserAccountService;
 import com.bbyiya.utils.ConfigUtil;
+import com.bbyiya.utils.ImgDomainUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.utils.upload.FileUploadUtils_qiniu;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.web.base.SSOController;
+import com.qiniu.storage.model.FetchRet;
 
 @Controller
 @RequestMapping(value = "/test")
@@ -41,13 +50,13 @@ public class TestOrderController  extends SSOController{
 	
 	@ResponseBody 
 	@RequestMapping(value = "/ss")
-	public String templateMessageSend(String key) throws Exception {
+	public String templateMessageSend(String value1,String value2) throws Exception {
 		ReturnModel rq = new ReturnModel();
-		for(int i=0;i<10;i++){
-			String idString= GenUtils.generateUuid_Char8();
-			System.out.println(idString);
-		}
-		rq.setBasemodle(key);
+		Double a1=ObjectUtil.parseDouble(value1);
+		Double a2=ObjectUtil.parseDouble(value2);
+		double B1=a2.doubleValue()-a1.doubleValue();
+		double b2=ObjectUtil.doubleSub(a2, a1);
+		rq.setBasemodle("b1:"+B1+"。b2:"+b2);
 		rq.setStatu(ReturnStatus.Success);
 		return JsonUtil.objectToJsonStr(rq);
 	}
@@ -113,6 +122,47 @@ public class TestOrderController  extends SSOController{
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	@Autowired
+	private OOrderproductphotosMapper ophotoMapper;
+	
+	@ResponseBody 
+	@RequestMapping(value = "/orderImgs")
+	public String orderImgs(String orderId) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		rq.setStatu(ReturnStatus.ParamError);
+		List<OOrderproductphotos> list=	ophotoMapper.findImgNotGood();
+		if(list!=null&&list.size()>0){
+			for (OOrderproductphotos oo : list) {
+				FetchRet result= FileUploadUtils_qiniu.fetch(oo.getImgurl());
+				if(result!=null){
+					String imgnew=ImgDomainUtil.getImageUrl_Full(result.key) ;
+					oo.setImgurl(imgnew);
+					ophotoMapper.updateByPrimaryKeySelective(oo);
+				}
+			}
+			rq.setBasemodle(list.size());
+		}
+//		List<OOrderproductphotos> photos= ophotoMapper.findOrderProductPhotosByProductOrderId(orderId);
+//		if(photos!=null&&photos.size()>0){
+//			List<Map<String, String>> maplistList=new ArrayList<Map<String,String>>();
+//			for (OOrderproductphotos oo : photos) {
+//				FetchRet result= FileUploadUtils_qiniu.fetch(oo.getImgurl());
+//				if(result!=null){
+//					Map<String, String> map=new HashMap<String, String>();
+//					String imgnew=ImgDomainUtil.getImageUrl_Full(result.key) ;
+//					map.put("imgNew", imgnew);
+//					map.put("imgOld", oo.getImgurl());
+//					maplistList.add(map);
+//					oo.setImgurl(imgnew);
+//					ophotoMapper.updateByPrimaryKeySelective(oo);
+//				}
+//				rq.setBasemodle(maplistList); 
+//			}
+//		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 	
 	
 }

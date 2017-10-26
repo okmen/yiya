@@ -21,6 +21,7 @@ import com.bbyiya.dao.OOrderproductphotosMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.OProducerordercountMapper;
+import com.bbyiya.dao.OUserorderextMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
@@ -36,8 +37,10 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproductphotos;
+import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.OProducerordercount;
+import com.bbyiya.model.OUserorderext;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.TiActivityworks;
@@ -71,6 +74,8 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	/*------------------订单模块--------------------------------------*/
 	@Autowired
 	private OUserordersMapper userOrdersMapper;
+	@Autowired
+	private OUserorderextMapper userOrderextMapper;
 	@Autowired 
 	private IPic_OrderMgtDao orderDao;
 	@Autowired
@@ -134,7 +139,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					product.setPayTimeStr(DateUtil.getTimeStr(order.getPaytime(), "yyyy-MM-dd HH:mm:ss"));
 				OOrderaddress address= addressMapper.selectByPrimaryKey(order.getOrderaddressid());
 				UBranches branch=null;
-				
+				TiActivityworks work=null;
 				int orderType = order.getOrdertype() == null ? 0 : order.getOrdertype();
 				order.setOrdertype(orderType);
 				//默认到关联账户流水的关键字为订单号
@@ -146,19 +151,34 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 						product.setBranchesName(branch.getBranchcompanyname());
 					}
 				}else{
+					
 					//台历挂历的订单
 					TiPromoters promoters=promoterMapper.selectByPrimaryKey(order.getBranchuserid());
 					if(promoters!=null){
 						product.setBranchesName(promoters.getCompanyname());
 					}
-					if(orderType==Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())&&product.getCartid()!=null){
-						TiActivityworks work=tiworkMapper.selectByPrimaryKey(product.getCartid());
-						if(work!=null&&work.getAddresstype()!=null&&work.getAddresstype().intValue()==1){
-							OPayorder postpayroder=payoderMapper.getpostPayorderByworkId(work.getWorkid().toString());
-							if(postpayroder!=null){
-								product.setPostlogrelationid(postpayroder.getPayid());
-							}
+					//普通用户订单
+					if(orderType==Integer.parseInt(OrderTypeEnum.ti_nomal.toString())){
+						product.setTiNeedPayPost(0);;//默认都省邮费
+						//如果是邮寄到推广者地址自提，则需要付邮费
+						if(order.getIspromoteraddress()!=null&&order.getIspromoteraddress().intValue()==1){
+							product.setTiNeedPayPost(1);
 						}
+					}
+					//推广者下单
+					else if(orderType==Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())){
+						product.setTiNeedPayPost(1);//默认都需付邮费
+						if(product.getCartid()!=null){
+							work=tiworkMapper.selectByPrimaryKey(product.getCartid());
+							//如果是邮寄到客户地址，则不需要再付邮费
+							if(work!=null&&work.getAddresstype()!=null&&work.getAddresstype().intValue()==1){
+								product.setTiNeedPayPost(0);
+								OPayorder postpayroder=payoderMapper.getpostPayorderByworkId(work.getWorkid().toString());
+								if(postpayroder!=null){
+									product.setPostlogrelationid(postpayroder.getPayid());
+								}
+							}
+						}	
 					}
 					
 				}
@@ -167,15 +187,58 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 				if(producerorder!=null){
 					product.setPrintIndex(producerorder.getPrintindex());
 				}
-				
 				//影楼直接下单
-				if (orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())||orderType == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())) {
+				if (orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
 					product.setBranchesprovince(address.getProvince());
 					product.setBranchesrcity(address.getCity());
 					product.setBranchesdistrict(address.getDistrict());
 					product.setBranchesAddress(address.getStreetdetail());
 					product.setBranchesPhone(address.getPhone());
 					product.setBranchesUserName(address.getReciver());
+				}else if (orderType == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())) {
+					//如果是邮寄到客户地址
+					if(work!=null&&work.getAddresstype()!=null&&work.getAddresstype().intValue()==1){
+						product.setReciver(address.getReciver());
+						product.setBuyerPhone(address.getPhone());
+						product.setBuyerprovince(address.getProvince());
+						product.setBuyercity(address.getCity());
+						product.setBuyerdistrict(address.getDistrict());
+						product.setBuyerstreetdetail(address.getStreetdetail());
+					}else{
+						product.setBranchesprovince(address.getProvince());
+						product.setBranchesrcity(address.getCity());
+						product.setBranchesdistrict(address.getDistrict());
+						product.setBranchesAddress(address.getStreetdetail());
+						product.setBranchesPhone(address.getPhone());
+						product.setBranchesUserName(address.getReciver());
+						if(work!=null){
+							product.setReciver(work.getReciever());
+							product.setBuyerPhone(work.getMobiephone());
+						}
+						
+					}
+				}else if (orderType == Integer.parseInt(OrderTypeEnum.ti_nomal.toString())) {
+					if(order.getIspromoteraddress()!=null&&order.getIspromoteraddress().intValue()==1){
+						product.setBranchesprovince(address.getProvince());
+						product.setBranchesrcity(address.getCity());
+						product.setBranchesdistrict(address.getDistrict());
+						product.setBranchesAddress(address.getStreetdetail());
+						product.setBranchesPhone(address.getPhone());
+						product.setBranchesUserName(address.getReciver());
+						OUserorderext orderext=userOrderextMapper.selectByPrimaryKey(order.getUserorderid());
+						if(orderext!=null){
+							product.setReciver(orderext.getContactname());
+							product.setBuyerPhone(orderext.getPhone());
+						}			
+					}else{
+						product.setReciver(address.getReciver());
+						product.setBuyerPhone(address.getPhone());
+						product.setBuyerprovince(address.getProvince());
+						product.setBuyercity(address.getCity());
+						product.setBuyerdistrict(address.getDistrict());
+						product.setBuyerstreetdetail(address.getStreetdetail());
+					}
+					
 				}else{
 					//普通用户下单如果是影楼抢单
 					if(orderType==Integer.parseInt(OrderTypeEnum.nomal.toString())&&order.getIsbranch()!=null&&order.getIsbranch()==1){
@@ -274,17 +337,22 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			}
 			
 			if(postage==null)postage=0.0;
-			//首次填写运单号，则执行自动扣运费款操作
-			if(userorders.getPostage()==null||userorders.getPostage().doubleValue()<=0){
-				accountService.add_accountsLog(userorders.getBranchuserid(), Integer.parseInt(AccountLogType.use_freight.toString()), postage, userorders.getPayid(), userorders.getUserorderid());
-			}else if(userorders.getPostage()!=null&&userorders.getPostage().doubleValue()>0){
-				rq.setStatu(ReturnStatus.OrderError);
-				rq.setStatusreson("已完成运费自动扣款操作，不能修改！");
-				return rq;
+			//是否需要付邮费
+			boolean isNeedPayPost=this.getIsNeedPayPost(userorders);
+			
+			if(isNeedPayPost){
+				//首次填写运单号，则执行自动扣运费款操作
+				if(userorders.getPostage()==null||userorders.getPostage().doubleValue()<=0){
+					accountService.add_accountsLog(userorders.getBranchuserid(), Integer.parseInt(AccountLogType.use_freight.toString()), postage, userorders.getPayid(), userorders.getUserorderid());
+				}else if(userorders.getPostage()!=null&&userorders.getPostage().doubleValue()>0){
+					rq.setStatu(ReturnStatus.OrderError);
+					rq.setStatusreson("已完成运费自动扣款操作，不能修改！");
+					return rq;
+				}
+				userorders.setPostage(postage);
 			}
 			
 			//修改订单状态为已发货状态
-			userorders.setPostage(postage);
 			if(userorders.getStatus()!=null&&userorders.getStatus().intValue()!=Integer.parseInt(OrderStatusEnum.recived.toString())){
 				userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
 			}
@@ -302,6 +370,37 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 		
 		return rq;
 	}  
+	
+	
+	public boolean getIsNeedPayPost(OUserorders userorders){
+		//是否需要付邮费
+		boolean isNeedPayPost=false;
+		int ordertype=(userorders.getOrdertype()==null?0:userorders.getOrdertype());
+		//咿呀12的生产商
+		if(ordertype==Integer.parseInt(OrderTypeEnum.nomal.toString())){
+			isNeedPayPost=false;
+		}else if(ordertype==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){
+			isNeedPayPost=true;
+		}else if(ordertype==Integer.parseInt(OrderTypeEnum.ti_nomal.toString())){
+			isNeedPayPost=false;
+			//如果是邮寄到推广者地址自提，则需要付邮费
+			if(userorders.getIspromoteraddress()!=null&&userorders.getIspromoteraddress().intValue()==1){
+				isNeedPayPost=true;
+			}
+		}else if(ordertype==Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())){
+			isNeedPayPost=true;//默认都需付邮费
+			OOrderproducts product=orderProductMapper.getOProductsByOrderId(userorders.getUserorderid());
+			
+			if(product.getCartid()!=null){
+				TiActivityworks work=tiworkMapper.selectByPrimaryKey(product.getCartid());
+				//如果是邮寄到客户地址，则不需要再付邮费
+				if(work!=null&&work.getAddresstype()!=null&&work.getAddresstype().intValue()==1){
+					isNeedPayPost=false;
+				}
+			}
+		}	
+		return isNeedPayPost;
+	}
 	/**
 	 * 多个订单是否可以运单合并
 	 * 条件： 1：如果有多个订单有不同运单信息，则不能合并
@@ -336,6 +435,12 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					rq.setStatusreson("存在未支付的订单，不能进行运单合单操作！");
 					return rq;
 				}
+				boolean isNeedPayPost=this.getIsNeedPayPost(order);
+				if(!isNeedPayPost){
+					rq.setStatu(ReturnStatus.ParamError);		
+					rq.setStatusreson("存在不需要付邮费的订单，不能进行运单合单操作！");
+					return rq;
+				}
 				if(order!=null){
 					int type=order.getOrdertype()==null?0:order.getOrdertype();
 					if(!typeHash.containsKey(type)){
@@ -355,7 +460,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 				OUserorders order=userOrdersMapper.selectByPrimaryKey(orderid);
 				if(order!=null){
 					//如果是代理商订单合单
-					if(ordertypeLast==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){
+					if(ordertypeLast==Integer.parseInt(OrderTypeEnum.brachOrder.toString())||ordertypeLast==Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())){
 						if(!userIdHash.containsKey(order.getBranchuserid())){
 							userIdHash.put(order.getBranchuserid(), order.getUserorderid());
 						}
@@ -431,8 +536,18 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					userorders.setExpressorder(expressOrder);
 					userorders.setExpresscode(expressCode);
 					
-					//只能第一张单且ordertype=1才会自动扣款
+					//影楼订单只能第一张单且ordertype=1才会自动扣款
 					if(i==0&&ordertype==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){
+						ReturnModel rqmodel=addPostage(orderArr[i], postage);
+						if(rqmodel.getStatu()!=ReturnStatus.Success){
+							return rqmodel;
+						}	
+					}else if(i==0&&ordertype==Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())){
+						ReturnModel rqmodel=addPostage(orderArr[i], postage);
+						if(rqmodel.getStatu()!=ReturnStatus.Success){
+							return rqmodel;
+						}	
+					}else if(i==0&&ordertype==Integer.parseInt(OrderTypeEnum.ti_nomal.toString())){
 						ReturnModel rqmodel=addPostage(orderArr[i], postage);
 						if(rqmodel.getStatu()!=ReturnStatus.Success){
 							return rqmodel;

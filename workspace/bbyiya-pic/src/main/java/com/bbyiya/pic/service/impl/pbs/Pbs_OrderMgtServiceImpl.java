@@ -144,11 +144,15 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 				order.setOrdertype(orderType);
 				//默认到关联账户流水的关键字为订单号
 				product.setPostlogrelationid(order.getUserorderid());
+				product.setTiNeedPayPost(0);//默认都需付邮费
 				//咿呀12的生产商
 				if(orderType==Integer.parseInt(OrderTypeEnum.nomal.toString())||orderType==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){
 					branch=branchesMapper.selectByPrimaryKey(order.getBranchuserid());
 					if(branch!=null){
 						product.setBranchesName(branch.getBranchcompanyname());
+					}
+					if(orderType==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){
+						product.setTiNeedPayPost(1);
 					}
 				}else{
 					

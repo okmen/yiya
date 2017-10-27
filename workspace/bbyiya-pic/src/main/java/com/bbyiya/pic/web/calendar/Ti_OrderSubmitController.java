@@ -42,6 +42,7 @@ import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.service.calendar.ITi_OrderMgtService;
 import com.bbyiya.service.pic.IBasePostMgtService;
+import com.bbyiya.service.pic.IBaseUserAddressService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -60,6 +61,7 @@ public class Ti_OrderSubmitController extends SSOController {
 	private IBasePostMgtService postMgtService;
 	@Resource(name = "tiOrderMgtServiceImpl")
 	private ITi_OrderMgtService orderMgtService;
+	
 	@Autowired
 	private OPayorderMapper payMapper;
 	@Autowired
@@ -71,9 +73,26 @@ public class Ti_OrderSubmitController extends SSOController {
 	@Autowired
 	private UUseraddressMapper addressMapper;
 	@Autowired
+	private UUsersMapper userMapper;
+	@Autowired
 	private PPostmodelareasMapper postmodelareasMapper;
 	@Autowired
 	private TiActivityworksMapper actworkMapper;
+
+	@Autowired
+	private TiPromotersMapper tipromoterMapper;
+	/**
+	 * 用户地址
+	 */
+	@Resource(name = "baseUserAddressServiceImpl")
+	private IBaseUserAddressService addressService;
+
+
+	/**
+	 * 省市区
+	 */
+	@Resource(name = "regionServiceImpl")
+	private IRegionService regionService;
 	
 	/**
 	 * 运费情况
@@ -103,12 +122,6 @@ public class Ti_OrderSubmitController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-	@Autowired
-	private UUsersMapper userMapper;
-	@Autowired
-	private TiPromotersMapper tipromoterMapper;
-	@Resource(name = "regionServiceImpl")
-	private IRegionService regionService;
 	
 	/**
 	 * 获取用户影楼地址
@@ -117,7 +130,7 @@ public class Ti_OrderSubmitController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getPromoterAddress")
-	public String getPromoterAddress() throws Exception {
+	public String getPromoterAddress(@RequestParam(required = false, defaultValue = "0") long addrid) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
@@ -127,9 +140,12 @@ public class Ti_OrderSubmitController extends SSOController {
 			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_promoter)){
 				promoterUserId=user.getUserId();
 			}else {
-				UUsers upUsers= userMapper.selectByPrimaryKey( user.getUpUserId());
+				UUsers upUsers=null;
+				if(!ObjectUtil.isEmpty(user.getUpUserId())){
+					upUsers= userMapper.selectByPrimaryKey(user.getUpUserId());
+				}
 				//如果上级推荐人是影楼
-				if(ValidateUtils.isIdentity(upUsers.getIdentity(), UserIdentityEnums.ti_promoter)){
+				if(upUsers!=null&&ValidateUtils.isIdentity(upUsers.getIdentity(), UserIdentityEnums.ti_promoter)){
 					promoterUserId=upUsers.getUserid();
 				}
 				//如果祖宗是影楼
@@ -140,10 +156,11 @@ public class Ti_OrderSubmitController extends SSOController {
 					}
 				}
 			}
+			Map<String, Object> mapResult = new HashMap<String, Object>();
+			mapResult.put("myAddress", addressService.getUserAddressResult(user.getUserId(),addrid));
 			if (promoterUserId > 0) {
 				TiPromoters promoters = tipromoterMapper.selectByPrimaryKey(promoterUserId);
 				if (promoters != null) {
-					Map<String, Object> mapResult = new HashMap<String, Object>();
 					mapResult.put("promoterName", promoters.getCompanyname());
 					mapResult.put("promoterUserId", promoterUserId);
 					UUserAddressResult userAddressResult = new UUserAddressResult();
@@ -155,11 +172,11 @@ public class Ti_OrderSubmitController extends SSOController {
 					userAddressResult.setAreaName(regionService.getAresName(promoters.getArea()));
 					userAddressResult.setStreetdetail(promoters.getStreetdetails());
 					userAddressResult.setPhone(promoters.getMobilephone()); 
-					mapResult.put("address", userAddressResult);
-					rq.setBasemodle(mapResult);
+					mapResult.put("promoterAddress", userAddressResult);
+					
 				}
 			}
-
+			rq.setBasemodle(mapResult);
 		}
 		rq.setStatu(ReturnStatus.Success);
 		return JsonUtil.objectToJsonStr(rq);

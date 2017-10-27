@@ -20,6 +20,7 @@ import com.bbyiya.dao.OOrderproductphotosMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.OProducerordercountMapper;
+import com.bbyiya.dao.OUserorderextMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.TiActivitysMapper;
@@ -55,6 +56,7 @@ import com.bbyiya.model.OOrderproductphotos;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.OProducerordercount;
+import com.bbyiya.model.OUserorderext;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PPostmodel;
@@ -138,6 +140,8 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 	
 	@Autowired
 	private TiProductareasMapper productareasMapper;
+	@Autowired
+	private OUserorderextMapper userorderExtMapper;
 
 	//---------------------------作品、活动------------------------------------------------------
 	@Autowired
@@ -178,7 +182,12 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			if (orderType == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())) {// 影楼订单
 				orderAddressId = getOrderAddressIdByBUserId(param.getBranchUserId(), orderType);
 			} else {// 普通购买
-				orderAddressId = addOrderAddressReturnId(param.getAddrId());
+				//通过用户下单，地址寄到影楼
+				if(param.getBranchUserId()!=null&&param.getOrderExt()!=null&&!ObjectUtil.isEmpty(param.getOrderExt().getPhone())){
+					orderAddressId = getOrderAddressIdByBUserId(param.getBranchUserId(), orderType);
+				}else {
+					orderAddressId = addOrderAddressReturnId(param.getAddrId());
+				}
 			}
 			if (orderAddressId > 0) {
 				param.setOrderAddressId(orderAddressId);
@@ -515,9 +524,18 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			myworks.setProductid(orderProduct.getProductid());
 			myworks.setStyleid(orderProduct.getStyleid()); 
 			myworksMapper.insert(myworks);
-			orderProduct.setCartid(myworks.getWorkid());
+
 			// 插入订单
+			orderProduct.setCartid(myworks.getWorkid());
+			//邮寄到影楼地址（用户收货联系方式 备注信息）
+			if(param.getOrderExt()!=null&&!ObjectUtil.isEmpty(param.getOrderExt().getPhone())){
+				userOrder.setIspromoteraddress(1); 
+				OUserorderext userorderext=param.getOrderExt();
+				userorderext.setUserorderid(userOrder.getUserorderid());
+				userorderExtMapper.insert(userorderext);
+			}
 			userOrdersMapper.insert(userOrder);
+			
 			// 插入订单产品
 			oproductMapper.insert(orderProduct);
 			// 插入--订单打印号
@@ -708,18 +726,23 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 //				}
 			}
 		} else if (orderType == Integer.parseInt(OrderTypeEnum.ti_nomal.toString())) {
-			UUseraddress addr = addressMapper.get_UUserAddressByKeyId(param.getAddrId());// 用户收货地址
-			if (addr != null) {
-				if (param.getPostModelId() == null || param.getPostModelId() <= 0) {
-					rq.setStatusreson("快递方式未填写！");
-					return rq;
-				} else {
-					PPostmodel postmodel = postMgtService.getPostmodel(param.getPostModelId(), addr.getArea());
-					if (postmodel != null) {
-						param.setPostPrice(postmodel.getAmount());
-					} else {
-						rq.setStatusreson("快递方式不存在！");
+			if(param.getBranchUserId()!=null&&param.getOrderExt()!=null&&!ObjectUtil.isEmpty(param.getOrderExt().getPhone())){
+				//普通用户下单，寄到影楼
+				
+			}else {
+				UUseraddress addr = addressMapper.get_UUserAddressByKeyId(param.getAddrId());// 用户收货地址
+				if (addr != null) {
+					if (param.getPostModelId() == null || param.getPostModelId() <= 0) {
+						rq.setStatusreson("快递方式未填写！");
 						return rq;
+					} else {
+						PPostmodel postmodel = postMgtService.getPostmodel(param.getPostModelId(), addr.getArea());
+						if (postmodel != null) {
+							param.setPostPrice(postmodel.getAmount());
+						} else {
+							rq.setStatusreson("快递方式不存在！");
+							return rq;
+						}
 					}
 				}
 			}

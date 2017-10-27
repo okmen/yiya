@@ -911,8 +911,8 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					payorder.setUserorderid(userOrderId);
 					payorder.setUserid(param.getSubmitUserId());
 					payorder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
-					payorder.setTotalprice(needpayprice);
-					payorder.setWalletamount(needpayprice);
+					payorder.setTotalprice(totalprice);
+					payorder.setWalletamount(totalprice);
 					payorder.setCashamount(0d);
 					payorder.setCreatetime(new Date());
 					payorder.setOrdertype(Integer.parseInt(PayOrderTypeEnum.ti_gouwu.toString()));
@@ -923,7 +923,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					}
 					
 					//账户结算
-					accountService.add_accountsLog(param.getSubmitUserId(), Integer.parseInt(AccountLogType.use_payment.toString()), needpayprice, payId, "");
+					accountService.add_accountsLog(param.getSubmitUserId(), Integer.parseInt(AccountLogType.use_payment.toString()), totalprice, payId, "");
 					
 					//反写活动状态
 					if(workcus!=null&&workcus.getStatus()!=null){

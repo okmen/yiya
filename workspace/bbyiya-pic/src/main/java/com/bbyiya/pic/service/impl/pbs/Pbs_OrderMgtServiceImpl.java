@@ -25,6 +25,8 @@ import com.bbyiya.dao.OUserorderextMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
+import com.bbyiya.dao.TiMyworkcustomersMapper;
+import com.bbyiya.dao.TiMyworksMapper;
 import com.bbyiya.dao.TiPromotersMapper;
 import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.dao.UBranchtransaccountsMapper;
@@ -34,6 +36,7 @@ import com.bbyiya.enums.AmountType;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.calendar.AddressTypeEnum;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproductdetails;
 import com.bbyiya.model.OOrderproductphotos;
@@ -44,6 +47,8 @@ import com.bbyiya.model.OUserorderext;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.TiActivityworks;
+import com.bbyiya.model.TiMyworkcustomers;
+import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiPromoters;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UBranchtransaccounts;
@@ -111,7 +116,10 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	private TiPromotersMapper promoterMapper;
 	@Autowired
 	private TiActivityworksMapper tiworkMapper;
-	
+	@Autowired
+	private TiMyworksMapper timyworkMapper;
+	@Autowired
+	private TiMyworkcustomersMapper timyworkcusMapper;
 	@Resource(name = "baseUserAccountService")
 	private IBaseUserAccountService accountService;
 	
@@ -139,6 +147,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					product.setPayTimeStr(DateUtil.getTimeStr(order.getPaytime(), "yyyy-MM-dd HH:mm:ss"));
 				OOrderaddress address= addressMapper.selectByPrimaryKey(order.getOrderaddressid());
 				UBranches branch=null;
+				TiMyworks mywork=null;
 				TiActivityworks work=null;
 				int orderType = order.getOrdertype() == null ? 0 : order.getOrdertype();
 				order.setOrdertype(orderType);
@@ -173,15 +182,22 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					else if(orderType==Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())){
 						product.setTiNeedPayPost(1);//默认都需付邮费
 						if(product.getCartid()!=null){
-							work=tiworkMapper.selectByPrimaryKey(product.getCartid());
-							//如果是邮寄到客户地址，则不需要再付邮费
-							if(work!=null&&work.getAddresstype()!=null&&work.getAddresstype().intValue()==1){
-								product.setTiNeedPayPost(0);
-								OPayorder postpayroder=payoderMapper.getpostPayorderByworkId(work.getWorkid().toString());
-								if(postpayroder!=null){
-									product.setPostlogrelationid(postpayroder.getPayid());
+							mywork=timyworkMapper.selectByPrimaryKey(product.getCartid());
+							//如果是代客制作
+							if(mywork!=null&&mywork.getIsinstead()!=null&&mywork.getIsinstead().intValue()==1){
+								product.setTiNeedPayPost(1);
+							}else{
+								work=tiworkMapper.selectByPrimaryKey(product.getCartid());
+								//如果是邮寄到客户地址，则不需要再付邮费
+								if(work!=null&&work.getAddresstype()!=null&&work.getAddresstype().intValue()==1){
+									product.setTiNeedPayPost(0);
+									OPayorder postpayroder=payoderMapper.getpostPayorderByworkId(work.getWorkid().toString());
+									if(postpayroder!=null){
+										product.setPostlogrelationid(postpayroder.getPayid());
+									}
 								}
 							}
+							
 						}	
 					}
 					
@@ -200,7 +216,31 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					product.setBranchesPhone(address.getPhone());
 					product.setBranchesUserName(address.getReciver());
 				}else if (orderType == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())) {
-					//如果是邮寄到客户地址
+					//如果是代客制作
+					if(mywork!=null&&mywork.getIsinstead()!=null&&mywork.getIsinstead().intValue()==1){
+						TiMyworkcustomers mycus=timyworkcusMapper.selectByPrimaryKey(mywork.getWorkid());
+						if(mycus!=null&&mycus.getAddresstype()!=null&&mycus.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.cusaddr.toString())){
+							product.setReciver(address.getReciver());
+							product.setBuyerPhone(address.getPhone());
+							product.setBuyerprovince(address.getProvince());
+							product.setBuyercity(address.getCity());
+							product.setBuyerdistrict(address.getDistrict());
+							product.setBuyerstreetdetail(address.getStreetdetail());
+						}else{
+							product.setBranchesprovince(address.getProvince());
+							product.setBranchesrcity(address.getCity());
+							product.setBranchesdistrict(address.getDistrict());
+							product.setBranchesAddress(address.getStreetdetail());
+							product.setBranchesPhone(address.getPhone());
+							product.setBranchesUserName(address.getReciver());
+							if(mycus!=null){
+								product.setReciver(mycus.getReciever());
+								product.setBuyerPhone(mycus.getRecieverphone());
+							}
+						}
+					}
+					
+					//如果是老客户回顾活动订单-邮寄到客户地址
 					if(work!=null&&work.getAddresstype()!=null&&work.getAddresstype().intValue()==1){
 						product.setReciver(address.getReciver());
 						product.setBuyerPhone(address.getPhone());
@@ -396,11 +436,20 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			OOrderproducts product=orderProductMapper.getOProductsByOrderId(userorders.getUserorderid());
 			
 			if(product.getCartid()!=null){
-				TiActivityworks work=tiworkMapper.selectByPrimaryKey(product.getCartid());
-				//如果是邮寄到客户地址，则不需要再付邮费
-				if(work!=null&&work.getAddresstype()!=null&&work.getAddresstype().intValue()==1){
-					isNeedPayPost=false;
+				TiMyworks mywork=timyworkMapper.selectByPrimaryKey(product.getCartid());
+				//如果是代客制作,都需要扣影楼邮费
+				if(mywork!=null&&mywork.getIsinstead()!=null&&mywork.getIsinstead().intValue()==1){
+					isNeedPayPost=true;
+				}else{
+					TiActivityworks work=tiworkMapper.selectByPrimaryKey(product.getCartid());
+					//如果是邮寄到客户地址，则不需要再付邮费
+					if(work!=null&&work.getAddresstype()!=null&&work.getAddresstype().intValue()==1){
+						isNeedPayPost=false;
+					}else{
+						isNeedPayPost=true;
+					}
 				}
+				
 			}
 		}	
 		return isNeedPayPost;

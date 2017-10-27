@@ -35,6 +35,7 @@
      <if test="keywords != null and keywords!=''" >
         and  (CustomerName  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) or MobilePhone  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) )
     </if>
+    order by CreateTime desc
   </select>
   
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >

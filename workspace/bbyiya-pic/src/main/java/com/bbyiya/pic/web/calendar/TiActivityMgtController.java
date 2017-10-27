@@ -352,7 +352,7 @@ public class TiActivityMgtController extends SSOController {
 					rq.setStatusreson("您已经领取过优惠券！");
 					return rq;
 				}
-				else if(dd.getActid().intValue()==actId){
+				else if(dd.getActid()!=null&& dd.getActid().intValue()==actId){
 					rq.setStatu(ReturnStatus.ParamError);
 					rq.setStatusreson("您已经领取过优惠券！");
 					return rq;

@@ -10,6 +10,10 @@ public class SubmitOrderProductParam implements Serializable{
 	private Integer  count;
 	private Long cartId;
 	private Integer postModelId;
+	
+	private Long promoterUserId;
+	private String contactName;
+	private String phone;
 	public Long getProductId() {
 		return productId;
 	}
@@ -39,6 +43,24 @@ public class SubmitOrderProductParam implements Serializable{
 	}
 	public void setPostModelId(Integer postModelId) {
 		this.postModelId = postModelId;
+	}
+	public Long getPromoterUserId() {
+		return promoterUserId;
+	}
+	public void setPromoterUserId(Long promoterUserId) {
+		this.promoterUserId = promoterUserId;
+	}
+	public String getContactName() {
+		return contactName;
+	}
+	public void setContactName(String contactName) {
+		this.contactName = contactName;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 	
 	

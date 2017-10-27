@@ -268,7 +268,12 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 			rq.setStatusreson("你已经为推广代理商身份，不能再申请为活动参与单位！");
 			return rq;
 		}
-		
+		TiPromoteremployees promoteremployee=promoteremployeeMapper.selectByPrimaryKey(userId);
+		if(promoteremployee!=null){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("你已经成为其它活动参与单位的员工，活动参与单位ID为["+promoteremployee.getPromoteruserid()+"]，不能再申请为活动参与单位！");
+			return rq;
+		}
 		if(apply!=null){
 			//如果是已通过审核的推广者
 			if(applyInfo.getStatus()!=null&&applyInfo.getStatus()==Integer.parseInt(PromoterStatusEnum.ok.toString())){

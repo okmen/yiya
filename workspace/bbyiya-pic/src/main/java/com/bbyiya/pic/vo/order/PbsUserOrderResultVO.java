@@ -22,6 +22,7 @@ public class PbsUserOrderResultVO extends OOrderproducts{
     private String buyerstreetdetail;
     private String printIndex;
     private String postlogrelationid;//关联到账户流水的关键字
+    private Integer tiNeedPayPost;//是否需要显示邮费选项
 
 	public OUserorders getOrder() {
 		return order;
@@ -159,8 +160,18 @@ public class PbsUserOrderResultVO extends OOrderproducts{
 		this.postlogrelationid = postlogrelationid;
 	}
 
+	public Integer getTiNeedPayPost() {
+		return tiNeedPayPost;
+	}
+
+	public void setTiNeedPayPost(Integer tiNeedPayPost) {
+		this.tiNeedPayPost = tiNeedPayPost;
+	}
+
 	
 
+	
+	
 	
 	
 	

@@ -414,6 +414,7 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 		mywork.setIsinstead(1);
 		mywork.setProductid(workparam.getProductId());
 		mywork.setStyleid(workparam.getStyleId());
+		mywork.setUserid(userid);
 		timyworkMapper.insert(mywork);
 		myproductMapper.deleteByPrimaryKey(cart.getCartid());
 		HashMap<String, Object> map=new HashMap<String, Object>();

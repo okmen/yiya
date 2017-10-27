@@ -168,24 +168,22 @@ public class TiRedPacketController extends SSOController {
 				map.put("workInfo", workMapper.selectByPrimaryKey(workId));
 				//需要凑多少钱
 				if(actMyworkcustomers.getNeedredpackettotal()!=null&&actMyworkcustomers.getNeedredpackettotal().doubleValue()>0){
-					double amount=actMyworkcustomers.getRedpacketamount()==null?0:actMyworkcustomers.getRedpacketamount().doubleValue();				
-					double amountNeed=ObjectUtil.doubleSub(actMyworkcustomers.getNeedredpackettotal(), amount);//actMyworkcustomers.getNeedredpackettotal().doubleValue()-amount;
+					double amount = actMyworkcustomers.getRedpacketamount() == null ? 0 : actMyworkcustomers.getRedpacketamount().doubleValue();
+					double amountNeed = ObjectUtil.doubleSub(actMyworkcustomers.getNeedredpackettotal(), amount);// actMyworkcustomers.getNeedredpackettotal().doubleValue()-amount;
+					map.put("isAmountNeed", 1);
 					map.put("amountNeed", amountNeed);
-					if(amount>0){
+					if (amount > 0) {
 						map.put("amountLog", redlogsMapper.findredpacketLogs(null, workId, Integer.parseInt(RedpacketStatus.payed.toString())));
 					}
-					//已完成红包/已经下单
-//					if(amountNeed<=0||actMyworkcustomers.getStatus()!=null&&actMyworkcustomers.getStatus().intValue()==Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString())){
-						TiPromoteradvertinfo advertMod= advertMapper.getModelByPromoterUserId(actMyworkcustomers.getPromoteruserid());
-						if(advertMod!=null){
-							map.put("advert", advertMod);
-						}
-//					}
-//					System.out.println(amount+";"+ObjectUtil.doubleSub(actMyworkcustomers.getNeedredpackettotal(), amount)+"。"+actMyworkcustomers.getNeedredpackettotal().doubleValue());
-				}else {
-					map.put("amountNeed",0);  
-					TiPromoteradvertinfo advertMod= advertMapper.getModelByPromoterUserId(actMyworkcustomers.getPromoteruserid());
-					if(advertMod!=null){
+					TiPromoteradvertinfo advertMod = advertMapper.getModelByPromoterUserId(actMyworkcustomers.getPromoteruserid());
+					if (advertMod != null) {
+						map.put("advert", advertMod);
+					}
+				} else {
+					map.put("isAmountNeed", 0);
+					map.put("amountNeed", 0);
+					TiPromoteradvertinfo advertMod = advertMapper.getModelByPromoterUserId(actMyworkcustomers.getPromoteruserid());
+					if (advertMod != null) {
 						map.put("advert", advertMod);
 					}
 				}

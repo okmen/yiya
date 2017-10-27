@@ -95,17 +95,15 @@ public class TiDiscountController extends SSOController {
 					if (actMyworkcustomers.getNeedsharecount() != null && actMyworkcustomers.getNeedsharecount().intValue() > 0) {
 						if (shareCount >= actMyworkcustomers.getNeedsharecount().intValue()) {
 							actMyworkcustomers.setStatus(Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString()));
-							workcustomerMapper.updateByPrimaryKeySelective(actMyworkcustomers);
-							//  自动下单操作
-							TiActivityOrderSubmitParam orderParam=new TiActivityOrderSubmitParam();
+							// 自动下单操作
+							TiActivityOrderSubmitParam orderParam = new TiActivityOrderSubmitParam();
 							orderParam.setSubmitUserId(actMyworkcustomers.getPromoteruserid());
 							orderParam.setWorkId(actMyworkcustomers.getWorkid());
-							orderParam.setCount(1); 
+							orderParam.setCount(1);
 							basetiorderService.submitTiCustomerOrder_ibs(orderParam, null);
 						}
-					} else {
-						workcustomerMapper.updateByPrimaryKeySelective(actMyworkcustomers);
 					}
+					workcustomerMapper.updateByPrimaryKeySelective(actMyworkcustomers);
 					rq.setStatu(ReturnStatus.Success);
 					rq.setStatusreson("恭喜获得3张5折优惠券（下单时自动使用）");
 				}

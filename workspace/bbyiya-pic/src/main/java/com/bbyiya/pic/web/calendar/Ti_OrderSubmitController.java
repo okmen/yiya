@@ -223,7 +223,7 @@ public class Ti_OrderSubmitController extends SSOController {
 				}
 				//邮寄到影楼地址
 				if(productParam.getPromoterUserId()!=null&&!ObjectUtil.isEmpty(productParam.getPhone())&&!ObjectUtil.isEmpty(productParam.getContactName()) ){
-					param.setBranchUserId(productParam.getPromoterUserId());
+					param.setBranchUserId(ObjectUtil.parseLong(productParam.getPromoterUserId()));
 					OUserorderext orderext=new OUserorderext();
 					orderext.setContactname(productParam.getContactName());
 					orderext.setPhone(productParam.getPhone());

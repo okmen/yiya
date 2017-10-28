@@ -522,14 +522,18 @@ public class BasePayServiceImpl implements IBasePayService{
 				if (oproductlist != null && oproductlist.size() > 0) {
 					TiProductstyles style = tistyleMapper.selectByPrimaryKey(oproductlist.get(0).getStyleid());
 					if (style != null) {
-						// 全价
+						// 全价（商品全价）
 						double totalprice = style.getPrice() * oproductlist.get(0).getCount();//货款总金额
 						//实际的货款
 						double totalprice_hk=0d;
 						if(userorders.getOrdertype().intValue()==Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())){
 							totalprice_hk=userorders.getOrdertotalprice();
+						}
+						//如果收货地址寄到影楼（影楼付邮费）
+						else if(userorders.getIspromoteraddress()!=null&&userorders.getIspromoteraddress().intValue()==1){
+							totalprice_hk=userorders.getOrdertotalprice().doubleValue();	
 						}else {
-							totalprice_hk=userorders.getOrdertotalprice().doubleValue()-(userorders.getPostage()==null?0d:userorders.getPostage().doubleValue());							
+							totalprice_hk=userorders.getOrdertotalprice().doubleValue()-(userorders.getPostage()==null?0d:userorders.getPostage().doubleValue());																
 						}
 						//分配的方式原则  1 影楼惊爆价下单  2 折扣价，3 全价
 						int type=0;
@@ -662,7 +666,11 @@ public class BasePayServiceImpl implements IBasePayService{
 							//生产商分利
 							if(userorders.getOrdertype().intValue()==Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())){
 								accountService.add_accountsLog(producerUid, Integer.parseInt(AccountLogType.get_ti_post.toString()), userorders.getPostage().doubleValue() , userorders.getPayid(), "");							
-							}else {
+							}
+							//如果寄到影楼
+							else if(userorders.getIspromoteraddress()!=null&&userorders.getIspromoteraddress().intValue()==1){
+								accountService.add_accountsLog(producerUid, Integer.parseInt(AccountLogType.get_ti_post.toString()), userorders.getPostage().doubleValue() , userorders.getPayid(), "");							
+							}else{
 								//用户付邮费
 								accountService.add_accountsLog(producerUid, Integer.parseInt(AccountLogType.get_ti_post.toString()), userorders.getPostage().doubleValue() * 0.9, userorders.getPayid(), "");
 								accountService.add_accountsLog(yiyaUid, Integer.parseInt(AccountLogType.get_ti_post.toString()), userorders.getPostage().doubleValue() * 0.05, userorders.getPayid(), "");

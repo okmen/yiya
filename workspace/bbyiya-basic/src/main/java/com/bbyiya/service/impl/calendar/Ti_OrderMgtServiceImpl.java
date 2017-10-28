@@ -184,7 +184,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			} else {// 普通购买
 				//通过用户下单，地址寄到影楼
 				if(param.getBranchUserId()!=null&&param.getOrderExt()!=null&&!ObjectUtil.isEmpty(param.getOrderExt().getPhone())){
-					orderAddressId = getOrderAddressIdByBUserId(param.getBranchUserId(), orderType);
+					orderAddressId = getOrderAddressIdByBUserId(param.getBranchUserId(), Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));
 				}else {
 					orderAddressId = addOrderAddressReturnId(param.getAddrId());
 				}
@@ -728,7 +728,8 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 		} else if (orderType == Integer.parseInt(OrderTypeEnum.ti_nomal.toString())) {
 			if(param.getBranchUserId()!=null&&param.getOrderExt()!=null&&!ObjectUtil.isEmpty(param.getOrderExt().getPhone())){
 				//普通用户下单，寄到影楼
-				
+				param.setPostModelId(0);
+				param.setPostPrice(0d); 
 			}else {
 				UUseraddress addr = addressMapper.get_UUserAddressByKeyId(param.getAddrId());// 用户收货地址
 				if (addr != null) {

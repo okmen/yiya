@@ -238,28 +238,27 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 								product.setBuyerPhone(mycus.getRecieverphone());
 							}
 						}
-					}
-					
-					//如果是老客户回顾活动订单-邮寄到客户地址
-					if(work!=null&&work.getAddresstype()!=null&&work.getAddresstype().intValue()==1){
-						product.setReciver(address.getReciver());
-						product.setBuyerPhone(address.getPhone());
-						product.setBuyerprovince(address.getProvince());
-						product.setBuyercity(address.getCity());
-						product.setBuyerdistrict(address.getDistrict());
-						product.setBuyerstreetdetail(address.getStreetdetail());
 					}else{
-						product.setBranchesprovince(address.getProvince());
-						product.setBranchesrcity(address.getCity());
-						product.setBranchesdistrict(address.getDistrict());
-						product.setBranchesAddress(address.getStreetdetail());
-						product.setBranchesPhone(address.getPhone());
-						product.setBranchesUserName(address.getReciver());
-						if(work!=null){
-							product.setReciver(work.getReciever());
-							product.setBuyerPhone(work.getMobiephone());
+						//如果是老客户回顾活动订单-邮寄到客户地址
+						if(work!=null&&work.getAddresstype()!=null&&work.getAddresstype().intValue()==1){
+							product.setReciver(address.getReciver());
+							product.setBuyerPhone(address.getPhone());
+							product.setBuyerprovince(address.getProvince());
+							product.setBuyercity(address.getCity());
+							product.setBuyerdistrict(address.getDistrict());
+							product.setBuyerstreetdetail(address.getStreetdetail());
+						}else{
+							product.setBranchesprovince(address.getProvince());
+							product.setBranchesrcity(address.getCity());
+							product.setBranchesdistrict(address.getDistrict());
+							product.setBranchesAddress(address.getStreetdetail());
+							product.setBranchesPhone(address.getPhone());
+							product.setBranchesUserName(address.getReciver());
+							if(work!=null){
+								product.setReciver(work.getReciever());
+								product.setBuyerPhone(work.getMobiephone());
+							}
 						}
-						
 					}
 				}else if (orderType == Integer.parseInt(OrderTypeEnum.ti_nomal.toString())) {
 					if(order.getIspromoteraddress()!=null&&order.getIspromoteraddress().intValue()==1){

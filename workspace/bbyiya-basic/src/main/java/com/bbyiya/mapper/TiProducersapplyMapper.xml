@@ -60,7 +60,7 @@
        OR  Contacts LIKE  CONCAT('%', #{companyName,jdbcType=VARCHAR},'%' )  
        OR  Mobilephone LIKE  CONCAT('%', #{companyName,jdbcType=VARCHAR},'%' ))
     </if>
-    order by CreatTime desc
+    order by CreateTime desc
   </select>
   
   <insert id="insert" parameterType="com.bbyiya.model.TiProducersapply" >

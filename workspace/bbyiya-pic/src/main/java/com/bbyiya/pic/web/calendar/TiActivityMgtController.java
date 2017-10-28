@@ -344,19 +344,34 @@ public class TiActivityMgtController extends SSOController {
 			rq.setStatusreson("活动不存在！");
 			return rq;
 		}
-		List<TiUserdiscounts> mydislist= userDisMapper.findMyDiscounts(userId);
-		if(mydislist!=null&&mydislist.size()>0){
-			for (TiUserdiscounts dd : mydislist) {
-				if(dd.getWorkid()!=null&&dd.getWorkid().longValue()==workId){
-					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("您已经领取过优惠券！");
-					return rq;
-				}
-				else if(dd.getActid()!=null&& dd.getActid().intValue()==actId){
-					rq.setStatu(ReturnStatus.ParamError);
-					rq.setStatusreson("您已经领取过优惠券！");
-					return rq;
-				}
+//		List<TiUserdiscounts> mydislist= userDisMapper.findMyDiscounts(userId);
+//		if(mydislist!=null&&mydislist.size()>0){
+//			for (TiUserdiscounts dd : mydislist) {
+//				if(dd.getWorkid()!=null&&dd.getWorkid().longValue()==workId){
+//					rq.setStatu(ReturnStatus.ParamError);
+//					rq.setStatusreson("您已经领取过优惠券！");
+//					return rq;
+//				}
+//				else if(dd.getActid()!=null&& dd.getActid().intValue()==actId){
+//					rq.setStatu(ReturnStatus.ParamError);
+//					rq.setStatusreson("您已经领取过优惠券！");
+//					return rq;
+//				}
+//			}
+//		}
+		if(workId>0){
+			List<TiUserdiscounts> mydislist=userDisMapper.findMyDiscountsByWorkId(userId, workId);
+			if(mydislist!=null&&mydislist.size()>0){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("您已经领取过优惠券！");
+				return rq;
+			}
+		}else if (actId>0) {
+			List<TiUserdiscounts> mydislist=userDisMapper.findMyDiscountsByActId(userId, actId);
+			if(mydislist!=null&&mydislist.size()>0){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("您已经领取过优惠券！");
+				return rq;
 			}
 		}
 		//获取优惠券

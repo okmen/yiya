@@ -82,7 +82,7 @@ public class TiRedPacketController extends SSOController {
 						}
 						if(actMyworkcustomers.getNeedredpackettotal().doubleValue()>(amountPayed+amountTemp)){
 							//可以投递的红包金额
-							double limitamount=actMyworkcustomers.getNeedredpackettotal().doubleValue()-amountPayed-amountTemp;
+							double limitamount= ObjectUtil.doubleSub(actMyworkcustomers.getNeedredpackettotal(), (amountPayed-amountTemp)) ;
 							if(limitamount>=ObjectUtil.parseDouble(amount)){
 								//有效红包生成
 								TiMyworkredpacketlogs log=new TiMyworkredpacketlogs();

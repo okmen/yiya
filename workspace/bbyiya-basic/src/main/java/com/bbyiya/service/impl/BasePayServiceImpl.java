@@ -561,12 +561,7 @@ public class BasePayServiceImpl implements IBasePayService{
 										//幻想馆分利
 										accountService.add_accountsLog(hxgUid, Integer.parseInt(AccountLogType.get_ti_commission.toString()), postPayorder.getTotalprice() * 0.05, postPayorder.getPayid(), "");																								
 						    		}
-						    	}else if (userorders.getPostage()!=null&&userorders.getPostage().doubleValue()>0) {
-						    		//生产商直接扣运费
-					    			if (producerUid != null && producerUid > 0) {
-										accountService.add_accountsLog(producerUid, Integer.parseInt(AccountLogType.get_ti_post.toString()), userorders.getPostage() , userorders.getPayid(), ""); 
-									}
-								}
+						    	}
 						    }/*----------------------------------------------*/
 						} else {//普通订单（c端购买）
 							//优惠价购买

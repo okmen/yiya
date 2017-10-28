@@ -2,6 +2,7 @@ package com.bbyiya.pic.web.calendar;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -22,6 +23,7 @@ import com.bbyiya.dao.TiMyworksMapper;
 import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
 import com.bbyiya.dao.TiPromotersMapper;
+import com.bbyiya.dao.TiUserdiscountsMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.OrderStatusEnum;
@@ -37,6 +39,7 @@ import com.bbyiya.model.TiActivityworks;
 import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiPromoters;
+import com.bbyiya.model.TiUserdiscounts;
 import com.bbyiya.model.UUseraddress;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IRegionService;
@@ -135,27 +138,7 @@ public class Ti_OrderSubmitController extends SSOController {
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
 			//影楼userId
-			long promoterUserId=0l;
-			//如果自己就是影楼
-			if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_promoter)){
-				promoterUserId=user.getUserId();
-			}else {
-				UUsers upUsers=null;
-				if(!ObjectUtil.isEmpty(user.getUpUserId())){
-					upUsers= userMapper.selectByPrimaryKey(user.getUpUserId());
-				}
-				//如果上级推荐人是影楼
-				if(upUsers!=null&&ValidateUtils.isIdentity(upUsers.getIdentity(), UserIdentityEnums.ti_promoter)){
-					promoterUserId=upUsers.getUserid();
-				}
-				//如果祖宗是影楼
-				else if(!ObjectUtil.isEmpty(user.getSourseUserId())){
-					UUsers souUsers= userMapper.selectByPrimaryKey( user.getSourseUserId());
-					if(souUsers!=null&&ValidateUtils.isIdentity(souUsers.getIdentity(), UserIdentityEnums.ti_promoter)){
-						promoterUserId=user.getSourseUserId();
-					}
-				}
-			}
+			long promoterUserId=getPromoterUserid(user);
 			Map<String, Object> mapResult = new HashMap<String, Object>();
 			mapResult.put("myAddress", addressService.getUserAddressResult(user.getUserId(),addrid));
 			if (promoterUserId > 0) {
@@ -181,6 +164,35 @@ public class Ti_OrderSubmitController extends SSOController {
 		rq.setStatu(ReturnStatus.Success);
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	@Autowired
+	private TiUserdiscountsMapper userDisMapper;
+	public long getPromoterUserid(LoginSuccessResult user){
+		List<TiUserdiscounts> discountList= userDisMapper.findMyDiscounts(user.getUserId());
+		if(discountList!=null&&discountList.size()>0){
+			for (TiUserdiscounts dd : discountList) {
+				if(dd.getPromoteruserid()!=null&&dd.getPromoteruserid().longValue()>0)
+					return dd.getPromoteruserid().longValue();
+			}
+		}
+		long promoterUserId=0l;
+		UUsers upUsers=null;
+		if(!ObjectUtil.isEmpty(user.getUpUserId())){
+			upUsers= userMapper.selectByPrimaryKey(user.getUpUserId());
+		}
+		//如果上级推荐人是影楼
+		if(upUsers!=null&&ValidateUtils.isIdentity(upUsers.getIdentity(), UserIdentityEnums.ti_promoter)){
+			promoterUserId=upUsers.getUserid();
+		}
+		//如果祖宗是影楼
+		else if(!ObjectUtil.isEmpty(user.getSourseUserId())){
+			UUsers souUsers= userMapper.selectByPrimaryKey( user.getSourseUserId());
+			if(souUsers!=null&&ValidateUtils.isIdentity(souUsers.getIdentity(), UserIdentityEnums.ti_promoter)){
+				promoterUserId=user.getSourseUserId();
+			}
+		}
+		return promoterUserId;
+	}
+	
 	
 	/**
 	 * c端用户下单

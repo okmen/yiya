@@ -1,6 +1,7 @@
 package com.bbyiya.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class TiMyworkcustomers {
     private Long workid;
@@ -43,7 +44,7 @@ public class TiMyworkcustomers {
     private Integer condition;//条件： 0分享,1收集红包
     private String codeUrl;//二维码链接
     private String createtimestr;//制作时间
-    
+    private List<String> ordernolist;//订单号集合
     
     
     public String getCreatetimestr() {
@@ -213,4 +214,13 @@ public class TiMyworkcustomers {
     public void setAddresstype(Integer addresstype) {
         this.addresstype = addresstype;
     }
+
+	public List<String> getOrdernolist() {
+		return ordernolist;
+	}
+
+	public void setOrdernolist(List<String> ordernolist) {
+		this.ordernolist = ordernolist;
+	}
+    
 }

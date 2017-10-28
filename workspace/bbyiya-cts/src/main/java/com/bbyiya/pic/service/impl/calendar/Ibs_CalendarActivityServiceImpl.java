@@ -481,6 +481,15 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 				String urlstr= ConfigUtil.getSingleValue("shareulr-base")+"uid="+URLEncoder.encode(userid.toString(),"utf-8")+"&redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
 				String url="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+URLEncoder.encode(urlstr,"utf-8");
 				cus.setCodeUrl(url);
+				
+				// 得到作品订单集合
+				List<OUserorders> orderList = orderMapper.findOrderListByCartId(cus.getWorkid(),Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));
+				List<String> orderNoList = new ArrayList<String>();
+				for (OUserorders order : orderList) {
+					orderNoList.add(order.getUserorderid());
+				}
+				cus.setOrdernolist(orderNoList);
+				
 			}
 		}
 		rq.setBasemodle(pageresult);

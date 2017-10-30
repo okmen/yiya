@@ -146,7 +146,7 @@ public class WxNotifySubController {
 										param.setProductDes(oproduct.getProducttitle());
 										param.setRemark(oproduct.getPropertystr()); 
 										param.setLinkUrl(ConfigUtil.getSingleValue("currentDomain")+"index");
-										WechatMsgUtil.sendMsg(WechatMsgEnums.payed, WxPublicUtils.getAccessToken(), otherlogin.getOpenid(), param);
+										WechatMsgUtil.sendMsg_Payed(otherlogin.getOpenid(), param);
 									}
 								}
 							}

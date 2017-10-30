@@ -4,7 +4,12 @@ public enum WechatMsgEnums {
 	/**
      * 购物消费
      */
-    payed("mrkX2mBIwQHgsaxeavpn_FFNzei1xHJvptAV7EQoO-E")
+    payed("mrkX2mBIwQHgsaxeavpn_FFNzei1xHJvptAV7EQoO-E"),
+    
+    /**
+     * 已发货
+     */
+    send("GtyopaD5uOp43814DXKyFRAdYe95EfIkenxACyz-FFI")
     ;
 
     private final String templateId;

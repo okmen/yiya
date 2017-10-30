@@ -43,7 +43,7 @@
     where UserId= #{userId,jdbcType=BIGINT} and WorkId=#{workId,jdbcType=BIGINT} 
     order by Id asc
   </select>
-   <select id="findMyDiscountsByActId" resultMap="BaseResultMap"  ><!-- 04 我的优惠券 针对某个作品获取的 -->
+  <select id="findMyDiscountsByActId" resultMap="BaseResultMap"  ><!-- 04 我的优惠券 针对某个作品获取的 -->
     select 
     <include refid="Base_Column_List" />
     from ti_userdiscounts

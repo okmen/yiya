@@ -77,7 +77,11 @@
   <select id="getUserCountByUpUserid" resultType="java.lang.Integer" parameterType="java.lang.Long" >
     select count(UserID) from u_users where UpUserId = #{upid,jdbcType=BIGINT}   
   </select>
-  
+  <select id="findUsersByActId" resultMap="BaseResultMap"  ><!-- 05 活动领取优惠券的人 -->
+    select userId,NickName,UserImg from u_users where userId in( select userId  from ti_userdiscounts
+    where  ActId=#{actId,jdbcType=INTEGER} 
+    GROUP BY UserId  ORDER BY Id asc)
+  </select>
   
   <insert id="insertReturnKeyId" useGeneratedKeys="true" keyProperty="userid" parameterType="com.bbyiya.model.UUsers" >
     insert into u_users (UserID, PassWord, MobilePhone, 

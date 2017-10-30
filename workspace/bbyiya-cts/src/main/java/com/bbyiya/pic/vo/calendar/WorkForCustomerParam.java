@@ -5,6 +5,7 @@ import java.util.List;
 import com.bbyiya.model.TiMyartsdetails;
 
 public class WorkForCustomerParam {
+	private String workId;
 	private Long productId;
 	private Long styleId;
 	private Integer needShareCount;
@@ -42,6 +43,12 @@ public class WorkForCustomerParam {
 	}
 	public void setDetails(List<TiMyartsdetails> details) {
 		this.details = details;
+	}
+	public String getWorkId() {
+		return workId;
+	}
+	public void setWorkId(String workId) {
+		this.workId = workId;
 	}
 	
 	

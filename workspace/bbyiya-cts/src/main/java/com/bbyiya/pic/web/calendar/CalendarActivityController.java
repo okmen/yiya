@@ -317,6 +317,49 @@ public class CalendarActivityController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	/**
+	 * 代客制作预览
+	 * @param myproductTempJson
+	 * @param productstyleJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/reviewWorkForCustomer")
+	public String reviewWorkForCustomer(String activityJson) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			WorkForCustomerParam workparam = (WorkForCustomerParam)JsonUtil.jsonStrToObject(activityJson,WorkForCustomerParam.class);
+			if (workparam == null) {
+				rq.setStatu(ReturnStatus.ParamError_1);
+				rq.setStatusreson("参数不全");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			if(ObjectUtil.isEmpty(workparam.getProductId())){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("请选择产品!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			if(ObjectUtil.isEmpty(workparam.getStyleId())){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("请选择款式!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			
+			if(workparam.getDetails()==null||workparam.getDetails().size()<=0){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("请上传图片!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			rq=calendarActivityService.reviewWorkForCustomer(user.getUserId(),workparam);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	
 	/**
 	 * 新增代客制作

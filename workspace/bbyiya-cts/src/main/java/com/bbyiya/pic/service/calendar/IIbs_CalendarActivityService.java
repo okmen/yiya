@@ -109,6 +109,14 @@ public interface IIbs_CalendarActivityService {
 	 * @throws Exception
 	 */
 	ReturnModel saveRQcode(String url) throws Exception;
+	/**
+	 * 添加代客制作预览
+	 * @param userid
+	 * @param workparam
+	 * @return
+	 */
+	ReturnModel reviewWorkForCustomer(Long userid,
+			WorkForCustomerParam workparam);
 	
 	
 }

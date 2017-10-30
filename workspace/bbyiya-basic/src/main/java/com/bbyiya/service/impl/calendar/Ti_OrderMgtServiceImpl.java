@@ -546,7 +546,12 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			Integer indexCount=producerOrderMapper.getMaxOrderIndexByProducerIdAndUserId(userOrder.getProduceruserid(),userOrder.getUserid());
 			int orderIndex=indexCount==null?1:(indexCount+1);
 			oproducerModel.setOrderindex(orderIndex);
-			oproducerModel.setPrintindex(orderIndex+"A");
+			//寄到影楼
+			if(userOrder.getIspromoteraddress()!=null&&userOrder.getIspromoteraddress().intValue()>0){
+				oproducerModel.setPrintindex(String.valueOf(orderIndex));
+			}else {//寄到用户自己
+				oproducerModel.setPrintindex(orderIndex+"A");
+			}
 			producerOrderMapper.insert(oproducerModel);
 			
 			mapResult.put("totalPrice", orderTotalPrice);

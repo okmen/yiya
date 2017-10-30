@@ -84,4 +84,11 @@ public interface UUsersMapper {
 	 * @return
 	 */
 	Integer getUserCountByUpUserid(@Param("upid") Long upUserid);
+	
+	/**
+	 * 获取台历活动积攒用户
+	 * @param actId
+	 * @return
+	 */
+	List<UUsers> findUsersByActId(@Param("actId")Integer actId);
 }

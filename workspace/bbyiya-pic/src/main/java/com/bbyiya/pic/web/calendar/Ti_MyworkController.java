@@ -28,6 +28,7 @@ import com.bbyiya.dao.TiProductstylesMapper;
 import com.bbyiya.dao.TiPromoteradvertcoustomerMapper;
 import com.bbyiya.dao.TiPromoteradvertimgsMapper;
 import com.bbyiya.dao.TiPromoteradvertinfoMapper;
+import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.ActivityWorksStatusEnum;
@@ -45,6 +46,7 @@ import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiPromoteradvertcoustomer;
 import com.bbyiya.model.TiPromoteradvertimgs;
 import com.bbyiya.model.TiPromoteradvertinfo;
+import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.vo.calendar.MyworkDetailsParam;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.utils.ImgDomainUtil;
@@ -72,10 +74,16 @@ public class Ti_MyworkController extends SSOController {
 	private OUserordersMapper userOrderMapper;
 	@Autowired
 	private OOrderproductphotosMapper ophotoMapper;
-	
 
 	@Autowired
 	private OProducerordercountMapper oproducerOrderCountMapper;
+	
+	@Autowired
+	private TiProductsMapper productMapper;
+	@Autowired
+	private TiPromoteradvertinfoMapper advertMapper;
+	@Autowired
+	private UUsersMapper userMapper;
 	/**
 	 * 参与活动 -图片上传
 	 * @param detailJson
@@ -240,10 +248,7 @@ public class Ti_MyworkController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	@Autowired
-	private TiProductsMapper productMapper;
-	@Autowired
-	private TiPromoteradvertinfoMapper advertMapper;
+
 	/**
 	 * 作品详情
 	 * @param workId
@@ -283,6 +288,8 @@ public class Ti_MyworkController extends SSOController {
 									map.put("advert", advertMod);
 								}
 							}
+							List<UUsers> userList= userMapper.findUsersByActId(myworks.getActid());
+							map.put("users", userList);
 						}
 						rq.setStatu(ReturnStatus.Success);
 						rq.setBasemodle(map); 

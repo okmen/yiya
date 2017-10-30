@@ -84,6 +84,8 @@ public class Ti_OrderSubmitController extends SSOController {
 
 	@Autowired
 	private TiPromotersMapper tipromoterMapper;
+	@Autowired
+	private TiUserdiscountsMapper userDisMapper;
 	/**
 	 * 用户地址
 	 */
@@ -164,8 +166,7 @@ public class Ti_OrderSubmitController extends SSOController {
 		rq.setStatu(ReturnStatus.Success);
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	@Autowired
-	private TiUserdiscountsMapper userDisMapper;
+	
 	public long getPromoterUserid(LoginSuccessResult user){
 		List<TiUserdiscounts> discountList= userDisMapper.findMyDiscounts(user.getUserId());
 		if(discountList!=null&&discountList.size()>0){

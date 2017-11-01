@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.PFetchlogsMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.PFetchlogs" >
+    <id column="Url" property="url" jdbcType="VARCHAR" />
+    <result column="RemoteUrl" property="remoteurl" jdbcType="VARCHAR" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Url, RemoteUrl, Status, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from p_fetchlogs
+    where Url = #{url,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from p_fetchlogs
+    where Url = #{url,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.PFetchlogs" >
+    insert into p_fetchlogs (Url, RemoteUrl, Status, 
+      CreateTime)
+    values (#{url,jdbcType=VARCHAR}, #{remoteurl,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.PFetchlogs" >
+    insert into p_fetchlogs
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="url != null" >
+        Url,
+      </if>
+      <if test="remoteurl != null" >
+        RemoteUrl,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="remoteurl != null" >
+        #{remoteurl,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.PFetchlogs" >
+    update p_fetchlogs
+    <set >
+      <if test="remoteurl != null" >
+        RemoteUrl = #{remoteurl,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where Url = #{url,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.PFetchlogs" >
+    update p_fetchlogs
+    set RemoteUrl = #{remoteurl,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where Url = #{url,jdbcType=VARCHAR}
+  </update>
+</mapper>

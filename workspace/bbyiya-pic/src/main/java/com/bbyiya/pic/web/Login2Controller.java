@@ -171,12 +171,7 @@ public class Login2Controller extends SSOController{
 		
 		if (model != null) {
 			String openid = String.valueOf(model.get("openid"));
-//			String access_token = String.valueOf(model.get("access_token"));
 			if (!ObjectUtil.isEmpty(openid) && !"null".equals(openid) ) {
-
-//				String userInfoUrl = "https://api.weixin.qq.com/sns/userinfo";
-//				String data2 = "access_token=" + access_token + "&openid=" + openid;//+"&lang=zh_CN";
-//				String userInfoJson = HttpRequestHelper.sendPost(userInfoUrl, data2);
 				/*------------获取用户信息----------------------------------------------------*/
 				String userInfoUrl = "https://api.weixin.qq.com/cgi-bin/user/info";
 				String data2 = "access_token=" + WxPublicUtils.getAccessToken() + "&openid=" + openid;

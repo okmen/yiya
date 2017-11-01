@@ -9,6 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.HashMap;
@@ -640,20 +641,6 @@ public class ObjectUtil {
 		return false;
 	}
 	
-	/**
-	 * URL参数解码
-	 * @param paramStr
-	 * @param enc 解码方式 默认 utf-8
-	 * @return
-	 */
-	public static String urlDecoder_decode(String paramStr ,String enc){
-		try {
-			return URLDecoder.decode(paramStr,isEmpty(enc)?"UTF-8":enc); 
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			return paramStr;
-		}
-	}
 	
 	
 	/**

@@ -19,6 +19,7 @@ import com.bbyiya.pic.service.IPic_UserMgtService;
 import com.bbyiya.service.IUserLoginService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.utils.encrypt.UrlEncodeUtils;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.vo.user.OtherLoginParam;
@@ -105,9 +106,8 @@ public class LoginMgtController extends SSOController {
 	@ResponseBody
 	@RequestMapping(value = "/otherLogin")
 	public String otherLogin(String headImg, @RequestParam(required = false, defaultValue = "2") int loginType, String nickName, String openId,String upUid) throws Exception {
-		headImg = ObjectUtil.urlDecoder_decode(headImg, "");
-		nickName = ObjectUtil.urlDecoder_decode(nickName, "");
-		openId = ObjectUtil.urlDecoder_decode(openId, "");
+		headImg = UrlEncodeUtils.urlDecode(headImg, "");
+		nickName = UrlEncodeUtils.urlDecode(nickName, "");
 		if (!ObjectUtil.validSqlStr(headImg) || !ObjectUtil.validSqlStr(nickName) || !ObjectUtil.validSqlStr(openId)) {
 			ReturnModel rqModel = new ReturnModel();
 			rqModel.setStatu(ReturnStatus.ParamError_2);

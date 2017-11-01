@@ -1,5 +1,6 @@
 package com.bbyiya.utils.upload;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,13 +8,18 @@ import java.util.Random;
 import java.util.UUID;
 
 
+
+
+
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
 import com.qiniu.common.QiniuException;
 import com.qiniu.common.Zone;
+import com.qiniu.http.Response;
 import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.Configuration;
+import com.qiniu.storage.model.BatchStatus;
 import com.qiniu.storage.model.FetchRet;
 import com.qiniu.util.Auth;
 
@@ -88,12 +94,47 @@ public class FileUploadUtils_qiniu {
 		BucketManager bucketManager = new BucketManager(auth,cfg);
 		// 图片key
 		String key = UUID.randomUUID().toString().replace("-", "") + ".jpg";
-
 		FetchRet fetchRet = bucketManager.fetch(remoteUrl, BUCKETNAME_DEFULT, key);
-
 		return fetchRet;
-
 	}
 	
+	/**
+	 * 获取文件状态
+	 * @param keysList
+	 * @return
+	 * @throws QiniuException
+	 */
+	public static List<Map<String, Object>> getBatchStatus(String[] keysList) throws QiniuException {
+		Configuration cfg = new Configuration(Zone.autoZone()); 
+		BucketManager bucketManager = new BucketManager(auth,cfg);
+		try {
+			BucketManager.BatchOperations batchOperations = new BucketManager.BatchOperations();
+		    batchOperations.addStatOps(BUCKETNAME_DEFULT, keysList);
+		    Response response = bucketManager.batch(batchOperations);
+		    BatchStatus[] batchStatusList = response.jsonToObject(BatchStatus[].class);
+		    List<Map<String, Object>> result=new ArrayList<Map<String, Object>>();
+		    for (int i = 0; i < keysList.length; i++) {
+		        BatchStatus status = batchStatusList[i];
+		        String key = keysList[i];
+		        Map<String, Object> map=new HashMap<String, Object>();
+		        map.put("key", key);
+		        map.put("status", status.code);
+		        if(status.code==200){
+		        	 map.put("hash", status.data.hash);
+		        	 map.put("mimeType", status.data.mimeType);
+		        	 map.put("fsize", status.data.fsize);
+		        	 map.put("putTime", status.data.putTime);
+		        }else {
+		        	 map.put("error", status.data.error);
+				}
+		        result.add(map);
+		    }
+		    return result;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
+
+	}
 	
 }

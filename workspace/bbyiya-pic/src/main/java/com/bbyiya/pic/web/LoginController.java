@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bbyiya.baseUtils.CookieUtils;
+import com.bbyiya.common.vo.wechatmsg.WxUserInfo;
 import com.bbyiya.dao.EErrorsMapper;
 import com.bbyiya.dao.ULoginlogsMapper;
 import com.bbyiya.dao.UOtherloginMapper;
@@ -24,8 +25,6 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.EErrors;
 import com.bbyiya.model.ULoginlogs;
 import com.bbyiya.pic.service.IPic_UserMgtService;
-import com.bbyiya.pic.utils.WxPublicUtils;
-//import com.bbyiya.pic.utils.Json2Objects;
 import com.bbyiya.pic.vo.LoginTempVo;
 import com.bbyiya.service.IUserLoginService;
 import com.bbyiya.utils.ConfigUtil;
@@ -33,6 +32,8 @@ import com.bbyiya.utils.HttpRequestHelper;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
+import com.bbyiya.utils.WechatUtils;
+import com.bbyiya.utils.encrypt.UrlEncodeUtils;
 import com.bbyiya.utils.pay.WxPayConfig;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
@@ -69,19 +70,8 @@ public class LoginController extends SSOController {
 	 */
 	@RequestMapping(value = "/transfer")
 	public String transferPage(String m,String uid,String redirct_url) throws Exception {
-//		LoginSuccessResult user= super.getLoginUser();
 		//是否测试地址
 		int loginTo=ObjectUtil.parseInt(m);
-		//如果已经登录
-//		if(user!=null&&user.getUserId()!=null){
-//			if(loginTo<=0&&!ObjectUtil.isEmpty(redirct_url)){
-//				if(redirct_url.contains("http")){
-//					return "redirect:"+redirct_url; 
-//				}else {
-//					return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+redirct_url; 	
-//				}
-//			}
-//		}
 		String keyId= LOGIN_TEMP+request.getSession().getId();
 		long branch_userid=ObjectUtil.parseLong(uid);
 		if(branch_userid>0||!ObjectUtil.isEmpty(m)||!ObjectUtil.isEmpty(redirct_url)){  
@@ -103,8 +93,6 @@ public class LoginController extends SSOController {
 				RedisUtil.delete(keyId);
 			}
 		}
-//		return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcc101e7b17ed868e&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin&response_type=code&scope=snsapi_userinfo#wechat_redirect" ;		
-		
 		return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WxPayConfig.APPID+"&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLogin&response_type=code&scope=snsapi_base#wechat_redirect" ;		
 	}
 	
@@ -120,9 +108,9 @@ public class LoginController extends SSOController {
 	 */
 	@RequestMapping(value = "/wxLoginTest")
 	public String wxLoginTest(String headImg, @RequestParam(required = false, defaultValue = "2") int loginType, String nickName, String openId,String upUid,String redirect_url) throws Exception {
-		headImg = ObjectUtil.urlDecoder_decode(headImg, "");
-		nickName = ObjectUtil.urlDecoder_decode(nickName, "");
-		openId = ObjectUtil.urlDecoder_decode(openId, "");
+		headImg = UrlEncodeUtils.urlDecode(headImg, "");
+		nickName = UrlEncodeUtils.urlDecode(nickName, "");
+		openId = UrlEncodeUtils.urlDecode(openId, "");
 		if (!ObjectUtil.validSqlStr(headImg) || !ObjectUtil.validSqlStr(nickName) || !ObjectUtil.validSqlStr(openId)) {
 			ReturnModel rqModel = new ReturnModel();
 			rqModel.setStatu(ReturnStatus.ParamError_2);
@@ -133,7 +121,6 @@ public class LoginController extends SSOController {
 		param.setOpenId(openId);
 		param.setLoginType(loginType);
 		if(!ObjectUtil.isEmpty(nickName)){
-			nickName=java.net.URLDecoder.decode(nickName,"utf-8");
 			nickName=ObjectUtil.filterEmojiNew(nickName);
 			param.setNickName(nickName); 
 			addlog("nickname:"+nickName); 
@@ -167,87 +154,169 @@ public class LoginController extends SSOController {
 	 * @return
 	 * @throws Exception
 	 */
+//	@RequestMapping(value = "/wxLogin")
+//	public String wxLogin(String code, String state) throws Exception {
+//		if (ObjectUtil.isEmpty(code)) {
+//			code = request.getParameter("code");
+//		}
+//		String urlGetAccess = "https://api.weixin.qq.com/sns/oauth2/access_token";
+//		String paramAccess = "appid=" + WxPayConfig.APPID + "&secret=" + WxPayConfig.AppSecret + "&code=" + code + "&grant_type=authorization_code";
+//		String resultAccessJson = HttpRequestHelper.sendPost(urlGetAccess, paramAccess);
+//
+//		JSONObject model = JSONObject.fromObject(resultAccessJson);
+//		ReturnModel rqModel = new ReturnModel();
+//		//中转信息
+//		LoginTempVo logintemp= (LoginTempVo)RedisUtil.getObject(LOGIN_TEMP+request.getSession().getId());
+//		if (model != null) {
+//			if (!ObjectUtil.isEmpty(model.get("openid")) ) {
+//				String openid = model.getString("openid");
+//				/*------------获取用户信息----------------------------------------------------*/
+//				String userInfoUrl = "https://api.weixin.qq.com/cgi-bin/user/info";
+//				String data2 = "access_token=" + WxPublicUtils.getAccessToken() + "&openid=" + openid;
+//				String userInfoJson = HttpRequestHelper.sendPost(userInfoUrl, data2);
+//				JSONObject userJson = JSONObject.fromObject(userInfoJson);
+//				if (userInfoJson != null&&userJson!=null) {
+//					OtherLoginParam param = new OtherLoginParam();
+//					param.setOpenId(openid);
+//					param.setLoginType(Integer.parseInt(LoginTypeEnum.weixin.toString()));
+//					String nickName=String.valueOf(userJson.get("nickname"));
+//					String headimg=String.valueOf(userJson.get("headimgurl"));
+////					//没有用户信息
+//					if((ObjectUtil.isEmpty(nickName)||"null".equals(nickName))&&(ObjectUtil.isEmpty(headimg)||"null".equals(headimg))){
+//						return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WxPayConfig.APPID+"&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLoginInfo&response_type=code&scope=snsapi_userinfo#wechat_redirect" ;		
+//					}
+//					if(!ObjectUtil.isEmpty(nickName)&&!"null".equals(nickName)){
+//						nickName=ObjectUtil.filterEmojiNew(nickName);
+//						param.setNickName(nickName);
+//					}
+//					if(!ObjectUtil.isEmpty(headimg)&&!"null".equals(headimg)){
+//						param.setHeadImg(headimg);
+//					}
+//					if(logintemp!=null){
+//						if(logintemp.getUpUserId()!=null&&logintemp.getUpUserId()>0){
+//							param.setUpUserId(logintemp.getUpUserId()); 
+//						}
+//						int m=logintemp.getLoginTo()==null?0:logintemp.getLoginTo();
+//						if(m==1){ //photo测试地址
+//							String paramtest="?headImg="+param.getHeadImg()+"&loginType="+param.getLoginType()+"&nickName="+ URLEncoder.encode(param.getNickName(),"utf-8")+"&openId="+param.getOpenId()+"&upUid="+param.getUpUserId();
+//							if(!ObjectUtil.isEmpty(logintemp.getRedirect_url())&&!"null".equals(logintemp.getRedirect_url())){
+//								paramtest+="&redirect_url="+URLEncoder.encode(logintemp.getRedirect_url(), "gb2312"); 
+//							}else if (!ObjectUtil.isEmpty(logintemp.getUpUserId())) {//测试店铺页
+//								paramtest+="&redirect_url="+URLEncoder.encode(ConfigUtil.getSingleValue("photo-net-url")+"?uid="+logintemp.getUpUserId(), "gb2312"); 
+//							}
+//							//跳转mpic测试接口地址中转
+//							return "redirect:" + ConfigUtil.getSingleValue("mpic-net-url")+paramtest;
+//						}
+//					}
+//					rqModel = loginService.otherLogin(param);
+//					if (ReturnStatus.Success.equals(rqModel.getStatu()) && !ObjectUtil.isEmpty(rqModel.getBasemodle())) {
+//						addLoginLogAndCookie(rqModel.getBasemodle(),Integer.parseInt(LoginTypeEnum.weixin.toString())); 
+//					}else {
+//						addlog("LoginError:" +rqModel.getBasemodle()+"param:"+JsonUtil.objectToJsonStr(param) );
+//					}
+//					
+//				} else {
+//					rqModel.setStatu(ReturnStatus.SystemError);
+//					rqModel.setStatusreson("获取用户信息失败");
+//					addlog(resultAccessJson); 	
+//				}
+//			} else {
+//				rqModel.setStatu(ReturnStatus.ParamError);
+//				rqModel.setStatusreson(String.valueOf(model.get("errmsg")));
+//				addlog(resultAccessJson); 
+//			}
+//		} else {
+//			rqModel.setStatu(ReturnStatus.SystemError);
+//			rqModel.setStatusreson("获取微信登录权限失败");
+//			addlog(resultAccessJson); 
+//		}
+//		if (rqModel.getStatu().equals(ReturnStatus.Success)) {
+//			//用户跳转
+//			if(logintemp!=null&&!ObjectUtil.isEmpty(logintemp.getRedirect_url())){
+//				if(logintemp.getRedirect_url().contains("http")){
+//					return "redirect:"+logintemp.getRedirect_url(); 
+//				}else {
+//					return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+logintemp.getRedirect_url(); 	
+//				}
+//			}else if (logintemp!=null&&!ObjectUtil.isEmpty(logintemp.getUpUserId())) {//店铺页
+//				return "redirect:" +ConfigUtil.getSingleValue("currentDomain")+"?uid="+logintemp.getUpUserId(); 
+//			} 
+//			return "redirect:" + ConfigUtil.getSingleValue("loginbackurl") ;
+//		} else {
+//			return "redirect:" + ConfigUtil.getSingleValue("loginbackurl") ;
+//		}
+//	}
+	
+	
+	/**
+	 * 17-11-01
+	 * max
+	 * @param code
+	 * @param state
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/wxLogin")
 	public String wxLogin(String code, String state) throws Exception {
 		if (ObjectUtil.isEmpty(code)) {
 			code = request.getParameter("code");
 		}
-		String urlString = "https://api.weixin.qq.com/sns/oauth2/access_token";
-		String dataString = "appid=" + WxPayConfig.APPID + "&secret=" + WxPayConfig.AppSecret + "&code=" + code + "&grant_type=authorization_code";
-		String result = HttpRequestHelper.sendPost(urlString, dataString);
+		//获取微信授权
+		String urlGetAccess = "https://api.weixin.qq.com/sns/oauth2/access_token";
+		String paramAccess = "appid=" + WxPayConfig.APPID + "&secret=" + WxPayConfig.AppSecret + "&code=" + code + "&grant_type=authorization_code";
+		String resultAccessJson = HttpRequestHelper.sendPost(urlGetAccess, paramAccess);
 
-		JSONObject model = JSONObject.fromObject(result);
+		JSONObject model = JSONObject.fromObject(resultAccessJson);
 		ReturnModel rqModel = new ReturnModel();
 		//中转信息
 		LoginTempVo logintemp= (LoginTempVo)RedisUtil.getObject(LOGIN_TEMP+request.getSession().getId());
 		if (model != null) {
-			String openid = String.valueOf(model.get("openid"));
-//			String access_token = String.valueOf(model.get("access_token"));
-			if (!ObjectUtil.isEmpty(openid) && !"null".equals(openid) ) {
-
-//				String userInfoUrl = "https://api.weixin.qq.com/sns/userinfo";
-//				String data2 = "access_token=" + access_token + "&openid=" + openid;//+"&lang=zh_CN";
-//				String userInfoJson = HttpRequestHelper.sendPost(userInfoUrl, data2);
+			if (!ObjectUtil.isEmpty(model.get("openid")) ) {
+				String openid = model.getString("openid");
+				OtherLoginParam loginparam = new OtherLoginParam();
+				loginparam.setOpenId(openid);
+				loginparam.setLoginType(Integer.parseInt(LoginTypeEnum.weixin.toString()));
 				/*------------获取用户信息----------------------------------------------------*/
-				String userInfoUrl = "https://api.weixin.qq.com/cgi-bin/user/info";
-				String data2 = "access_token=" + WxPublicUtils.getAccessToken() + "&openid=" + openid;
-				String userInfoJson = HttpRequestHelper.sendPost(userInfoUrl, data2);
-				JSONObject userJson = JSONObject.fromObject(userInfoJson);
-				if (userInfoJson != null&&userJson!=null) {
-					OtherLoginParam param = new OtherLoginParam();
-					param.setOpenId(openid);
-					param.setLoginType(Integer.parseInt(LoginTypeEnum.weixin.toString()));
-					String nickName=String.valueOf(userJson.get("nickname"));
-					String headimg=String.valueOf(userJson.get("headimgurl"));
-//					//没有用户信息
-					if((ObjectUtil.isEmpty(nickName)||"null".equals(nickName))&&(ObjectUtil.isEmpty(headimg)||"null".equals(headimg))){
-						return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WxPayConfig.APPID+"&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLoginInfo&response_type=code&scope=snsapi_userinfo#wechat_redirect" ;		
-					}
-					if(!ObjectUtil.isEmpty(nickName)&&!"null".equals(nickName)){
-//						nickName=ObjectUtil.filterEmoji(nickName);
-						nickName=ObjectUtil.filterEmojiNew(nickName);
-						param.setNickName(nickName);
-					}
-					if(!ObjectUtil.isEmpty(headimg)&&!"null".equals(headimg)){
-						param.setHeadImg(headimg);
-					}
-					if(logintemp!=null){
-						if(logintemp.getUpUserId()!=null&&logintemp.getUpUserId()>0){
-							param.setUpUserId(logintemp.getUpUserId()); 
-						}
-						int m=logintemp.getLoginTo()==null?0:logintemp.getLoginTo();
-						if(m==1){ //photo测试地址
-							String paramtest="?headImg="+param.getHeadImg()+"&loginType="+param.getLoginType()+"&nickName="+ URLEncoder.encode(param.getNickName(),"utf-8")+"&openId="+param.getOpenId()+"&upUid="+param.getUpUserId();
-							if(!ObjectUtil.isEmpty(logintemp.getRedirect_url())&&!"null".equals(logintemp.getRedirect_url())){
-								paramtest+="&redirect_url="+URLEncoder.encode(logintemp.getRedirect_url(), "gb2312"); 
-							}else if (!ObjectUtil.isEmpty(logintemp.getUpUserId())) {//测试店铺页
-								paramtest+="&redirect_url="+URLEncoder.encode(ConfigUtil.getSingleValue("photo-net-url")+"?uid="+logintemp.getUpUserId(), "gb2312"); 
-							}
-							//跳转mpic测试接口地址中转
-							return "redirect:" + ConfigUtil.getSingleValue("mpic-net-url")+paramtest;
-						}
-					}
-					rqModel = loginService.otherLogin(param);
-					if (ReturnStatus.Success.equals(rqModel.getStatu()) && !ObjectUtil.isEmpty(rqModel.getBasemodle())) {
-						addLoginLogAndCookie(rqModel.getBasemodle(),Integer.parseInt(LoginTypeEnum.weixin.toString())); 
-					}else {
-						addlog("LoginError:" +rqModel.getBasemodle()+"param:"+JsonUtil.objectToJsonStr(param) );
-					}
-					
-				} else {
-					rqModel.setStatu(ReturnStatus.SystemError);
-					rqModel.setStatusreson("获取用户信息失败");
-					addlog(result); 	
+				//获取 用户微信信息
+				WxUserInfo userInfo= WechatUtils.getUserInfo(openid);
+				if(userInfo!=null&&userInfo.getSubscribe()==1){
+					 loginparam.setNickName(userInfo.getNickname());
+					 loginparam.setHeadImg(userInfo.getHeadimgurl()); 
+				}else {
+					return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WxPayConfig.APPID+"&redirect_uri=https%3A%2F%2Fmpic.bbyiya.com%2Flogin%2FwxLoginInfo&response_type=code&scope=snsapi_userinfo#wechat_redirect" ;		
 				}
+				if (logintemp != null) {
+					if (logintemp.getUpUserId() != null && logintemp.getUpUserId() > 0) {
+						loginparam.setUpUserId(logintemp.getUpUserId());
+					}
+					int m = logintemp.getLoginTo() == null ? 0 : logintemp.getLoginTo();
+					if (m == 1) { // photo测试地址
+						String paramtest = "?headImg=" + loginparam.getHeadImg() + "&loginType=" + loginparam.getLoginType() + "&nickName=" + URLEncoder.encode(loginparam.getNickName(), "utf-8") + "&openId=" + loginparam.getOpenId() + "&upUid=" + loginparam.getUpUserId();
+						if (!ObjectUtil.isEmpty(logintemp.getRedirect_url()) && !"null".equals(logintemp.getRedirect_url())) {
+							paramtest += "&redirect_url=" + URLEncoder.encode(logintemp.getRedirect_url(), "gb2312");
+						} else if (!ObjectUtil.isEmpty(logintemp.getUpUserId())) {// 测试店铺页
+							paramtest += "&redirect_url=" + URLEncoder.encode(ConfigUtil.getSingleValue("photo-net-url") + "?uid=" + logintemp.getUpUserId(), "gb2312");
+						}
+						// 跳转mpic测试接口地址中转
+						return "redirect:" + ConfigUtil.getSingleValue("mpic-net-url") + paramtest;
+					}
+				}
+				rqModel = loginService.otherLogin(loginparam);
+				if (ReturnStatus.Success.equals(rqModel.getStatu()) && !ObjectUtil.isEmpty(rqModel.getBasemodle())) {
+					addLoginLogAndCookie(rqModel.getBasemodle(), Integer.parseInt(LoginTypeEnum.weixin.toString()));
+				} else {
+					addlog("LoginError:" + rqModel.getBasemodle() + "param:" + JsonUtil.objectToJsonStr(loginparam));
+				}
+				
 			} else {
 				rqModel.setStatu(ReturnStatus.ParamError);
 				rqModel.setStatusreson(String.valueOf(model.get("errmsg")));
-				addlog(result); 
+				addlog(resultAccessJson); 
 			}
 		} else {
 			rqModel.setStatu(ReturnStatus.SystemError);
 			rqModel.setStatusreson("获取微信登录权限失败");
-			addlog(result); 
+			addlog(resultAccessJson); 
 		}
 		if (rqModel.getStatu().equals(ReturnStatus.Success)) {
 			//用户跳转
@@ -268,7 +337,7 @@ public class LoginController extends SSOController {
 	
 	
 	/**
-	 * 需要授权登录
+	 * 需要授权登录（未关注公众号时）
 	 * @param code
 	 * @param state
 	 * @return
@@ -287,28 +356,25 @@ public class LoginController extends SSOController {
 		ReturnModel rqModel = new ReturnModel();
 		//中转信息
 		LoginTempVo logintemp= (LoginTempVo)RedisUtil.getObject(LOGIN_TEMP+request.getSession().getId());
-		if (model != null) {
-			String openid = String.valueOf(model.get("openid"));
-			String access_token = String.valueOf(model.get("access_token"));
-			if (!ObjectUtil.isEmpty(openid) && !ObjectUtil.isEmpty(access_token) && !"null".equals(openid) && !"null".equals(access_token)) {
-				String userInfoUrl = "https://api.weixin.qq.com/sns/userinfo";
-				String data2 = "access_token=" + access_token + "&openid=" + openid;//+"&lang=zh_CN";
-				String userInfoJson = HttpRequestHelper.sendPost(userInfoUrl, data2);
+		if (model != null&&!ObjectUtil.isEmpty(model.get("openid"))&&!ObjectUtil.isEmpty(model.get("access_token"))) {
+			String openid = model.getString("openid");
+			String access_token =model.getString("access_token");
+			if (true) {
+				String userInfoUrl = "https://api.weixin.qq.com/sns/userinfo"; 
+				String dataParam = "access_token=" + access_token + "&openid=" + openid;
+				String userInfoJson = HttpRequestHelper.sendPost(userInfoUrl, dataParam);
 				/*------------获取用户信息----------------------------------------------------*/
 				JSONObject userJson = JSONObject.fromObject(userInfoJson);
 				if (userInfoJson != null) {
 					OtherLoginParam param = new OtherLoginParam();
 					param.setOpenId(openid);
 					param.setLoginType(Integer.parseInt(LoginTypeEnum.weixin.toString()));
-					String nickName=String.valueOf(userJson.get("nickname"));
-					String headimg=String.valueOf(userJson.get("headimgurl"));
-					if(!ObjectUtil.isEmpty(nickName)&&!"null".equals(nickName)){
-//						nickName=ObjectUtil.filterEmoji(nickName);
-						nickName=ObjectUtil.filterEmojiNew(nickName);
+					if(!ObjectUtil.isEmpty(userJson.get("nickname"))){
+						String nickName=ObjectUtil.filterEmojiNew(userJson.getString("nickname"));
 						param.setNickName(nickName);
 					}
-					if(!ObjectUtil.isEmpty(headimg)&&!"null".equals(headimg)){
-						param.setHeadImg(headimg);
+					if(!ObjectUtil.isEmpty(userJson.get("headimgurl"))){
+						param.setHeadImg(ObjectUtil.filterEmojiNew(userJson.getString("headimgurl")));
 					}
 					if(logintemp!=null){
 						if(logintemp.getUpUserId()!=null&&logintemp.getUpUserId()>0){
@@ -334,10 +400,7 @@ public class LoginController extends SSOController {
 					rqModel.setStatu(ReturnStatus.SystemError);
 					rqModel.setStatusreson("获取用户信息失败");
 				}
-			} else {
-				rqModel.setStatu(ReturnStatus.ParamError);
-				rqModel.setStatusreson(String.valueOf(model.get("errmsg")));
-			}
+			} 
 		} else {
 			rqModel.setStatu(ReturnStatus.SystemError);
 			rqModel.setStatusreson("获取微信登录权限失败");
@@ -363,7 +426,7 @@ public class LoginController extends SSOController {
 
 
 	/**
-	 * 
+	 * 登录日志
 	 * @param obj
 	 * @param type
 	 */

@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bbyiya.common.enums.WechatMsgEnums;
 import com.bbyiya.common.vo.WechatMsgVo;
 import com.bbyiya.dao.EErrorsMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
@@ -31,7 +30,6 @@ import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.UOtherlogin;
-import com.bbyiya.pic.utils.WxPublicUtils;
 import com.bbyiya.service.IBasePayService;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.JsonUtil;

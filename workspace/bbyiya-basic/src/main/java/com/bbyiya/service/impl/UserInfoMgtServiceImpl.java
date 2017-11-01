@@ -125,7 +125,7 @@ public class UserInfoMgtServiceImpl implements IUserInfoMgtService {
 			}
 			childModel.setSex(param.getSex());
 			if (!ObjectUtil.isEmpty(param.getNickName())) {
-				if(!ObjectUtil.validSqlStr(ObjectUtil.urlDecoder_decode(param.getNickName(), ""))){ 
+				if(!ObjectUtil.validSqlStr(param.getNickName())){ 
 					rq.setStatu(ReturnStatus.ParamError_2);
 					rq.setStatusreson("宝宝昵称有非法字符");
 					return rq;
@@ -167,7 +167,7 @@ public class UserInfoMgtServiceImpl implements IUserInfoMgtService {
 				user.setUserimg(param.getHeadImg());
 			}
 			if (!ObjectUtil.isEmpty(param.getNickName())) {
-				param.setNickName(ObjectUtil.urlDecoder_decode(param.getNickName(), ""));
+				param.setNickName(param.getNickName());
 				
 				if(!ObjectUtil.validSqlStr(param.getNickName())){
 					rq.setStatu(ReturnStatus.ParamError_2);
@@ -177,7 +177,7 @@ public class UserInfoMgtServiceImpl implements IUserInfoMgtService {
 				user.setNickname(param.getNickName());
 			}
 			if (!ObjectUtil.isEmpty(param.getSign())) {
-				param.setSign(ObjectUtil.urlDecoder_decode(param.getSign(), ""));
+				param.setSign(param.getSign());
 				if(!ObjectUtil.validSqlStr(param.getSign())){
 					rq.setStatu(ReturnStatus.ParamError_2);
 					rq.setStatusreson("有危险参数,请重新设置！");

@@ -10,24 +10,6 @@ import com.bbyiya.common.vo.wechatmsg.ShippingParam;
 public class WechatMsgUtil {
 
 	
-//	public static void sendMsg(WechatMsgEnums templateId,String accessToken, String openId,WechatMsgVo param){
-//		try {
-//			// 参与台历活动
-//			if (templateId.toString().equals(WechatMsgEnums.payed.toString())) {
-//				if (param == null) {
-//					param = new WechatMsgVo();
-//				}
-//				Map<String, Object> postParam = postParamCommon(templateId, openId, param.getLinkUrl());
-//				// postParam.put("topcolor", "#FF0000");
-//				Map<String, Object> dataMap = new HashMap<String, Object>();
-//				dataMap.put("name", getParamValue(param.getProductDes()));
-//				dataMap.put("remark", getParamValue(param.getRemark()));
-//				postParam.put("data", dataMap);
-//				String result = HttpRequestHelper.postJson("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + accessToken, JsonUtil.objectToJsonStr(postParam));
-//			}
-//		} catch (Exception e) {
-//		}
-//	}
 	
 	/**
 	 * 微信消息提醒 (订单已支付)

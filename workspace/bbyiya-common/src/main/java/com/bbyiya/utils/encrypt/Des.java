@@ -12,11 +12,8 @@ import javax.crypto.spec.IvParameterSpec;
 
 /**
  * 
- *
  * 
  * 使用DES加密与解密,可对byte[],String类型进行加密与解密 密文可使用String,byte[]存储.
- * 
- *
  * 
  * 方法: void getKey(String strKey)从strKey的字条生成一个Key
  * 
@@ -25,8 +22,6 @@ import javax.crypto.spec.IvParameterSpec;
  * String getEncString(String strMing)对strMing进行加密,返回String密文 String
  * 
  * getDesString(String strMi)对strMin进行解密,返回String明文
- * 
- *
  * 
  * byte[] getEncCode(byte[] byteS)byte[]型的加密 byte[] getDesCode(byte[]
  * 
@@ -38,13 +33,11 @@ public class Des {
 	/**
 	 * 加密秘钥
 	 */
-	private static final String desKey="@ai8!lk5";
+	private static final String desKey = "@ai8!lk5";
 
 	/**
 	 * 
-	 * 根据参数生成KEY
-	 * 
-	 *String strKey
+	 * 根据参数生成KEY String strKey
 	 * 
 	 * @param strKey
 	 */
@@ -54,9 +47,7 @@ public class Des {
 		try {
 
 			KeyGenerator _generator = KeyGenerator.getInstance("DES");
-
 			_generator.init(new SecureRandom(strKeyString.getBytes()));
-
 			Key key = _generator.generateKey();
 
 			_generator = null;
@@ -70,78 +61,57 @@ public class Des {
 
 	}
 
-	
-
 	/**
 	 * 
 	 * 二行制转字符串
 	 * @param b
-	 * 
 	 * @return
 	 */
 
 	public static String byte2hex(byte[] b) { // 一个字节的数，
 
 		// 转成16进制字符串
-
 		String hs = "";
-
 		String stmp = "";
-
 		for (int n = 0; n < b.length; n++) {
-
 			// 整数转成十六进制表示
-
 			stmp = (java.lang.Integer.toHexString(b[n] & 0XFF));
-
 			if (stmp.length() == 1)
-
 				hs = hs + "0" + stmp;
-
 			else
-
 				hs = hs + stmp;
 
 		}
-
 		return hs.toUpperCase(); // 转成大写
-
 	}
 
 	public static byte[] hex2byte(byte[] b) {
-
 		if ((b.length % 2) != 0)
-
 			throw new IllegalArgumentException("长度不是偶数");
-
 		byte[] b2 = new byte[b.length / 2];
-
 		for (int n = 0; n < b.length; n += 2) {
-
 			String item = new String(b, n, 2);
-
 			// 两位一组，表示一个字节,把这样表示的16进制字符串，还原成一个进制字节
-
 			b2[n / 2] = (byte) Integer.parseInt(item, 16);
 
 		}
-
 		return b2;
-
 	}
-	
-	
+
 	/**
 	 * 解密 (可用)
-	 * @param message 需要加密的字符串
-	 * @param key 加密秘钥，为空时用默认秘钥
+	 * 
+	 * @param message
+	 *            需要加密的字符串
+	 * @param key
+	 *            加密秘钥，为空时用默认秘钥
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public static String decrypt(String message, String key) {
-		if("".equals(key))
-			key=desKey;
-		try{
+		if ("".equals(key))
+			key = desKey;
+		try {
 			String encoding = "utf-8";
 			byte[] bytesrc = convertHexString(message);
 			Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
@@ -152,28 +122,28 @@ public class Des {
 
 			cipher.init(Cipher.DECRYPT_MODE, secretKey, iv);
 			byte[] retByte = cipher.doFinal(bytesrc);
-			return new String(retByte,encoding);
-			
-		}catch(Exception e)
-		{
+			return new String(retByte, encoding);
+
+		} catch (Exception e) {
 			e.printStackTrace();
 			return "";
 		}
-		
+
 	}
 
 	/**
 	 * 加密 (可用)
-	 * @param message 需要加密的字符串
+	 * 
+	 * @param message  需要加密的字符串
 	 * @param key 加密秘钥，为空时用默认秘钥
 	 * @return
 	 * @throws Exception
 	 */
 	public static String encrypt(String message, String key) {
-		if("".equals(key))
-			key=desKey;
+		if ("".equals(key))
+			key = desKey;
 		String encoding = "utf-8";
-		try{
+		try {
 			Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
 			DESKeySpec desKeySpec = new DESKeySpec(key.getBytes(encoding));
 			SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
@@ -184,14 +154,13 @@ public class Des {
 			byte[] buf = cipher.doFinal(message.getBytes(encoding));
 			String a = toHexString(buf).toUpperCase();
 			return a;
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 			return "";
 		}
-		
+
 	}
+
 	/**
 	 * 字符串转换为16进制数组
 	 * @param ss
@@ -207,7 +176,6 @@ public class Des {
 
 		return digest;
 	}
-	
 
 	/**
 	 * 16进制数组转换为字符串
@@ -224,5 +192,5 @@ public class Des {
 		}
 		return hexString.toString();
 	}
-	
+
 }

@@ -29,6 +29,7 @@ import com.bbyiya.utils.HttpRequestHelper;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
+import com.bbyiya.utils.encrypt.UrlEncodeUtils;
 import com.bbyiya.utils.pay.WxPayConfig;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
@@ -103,9 +104,9 @@ public class Login2Controller extends SSOController{
 	 */
 	@RequestMapping(value = "/wxLoginTest")
 	public String wxLoginTest(String headImg, @RequestParam(required = false, defaultValue = "2") int loginType, String nickName, String openId,String upUid,String redirect_url) throws Exception {
-		headImg = ObjectUtil.urlDecoder_decode(headImg, "");
-		nickName = ObjectUtil.urlDecoder_decode(nickName, "");
-		openId = ObjectUtil.urlDecoder_decode(openId, "");
+		headImg = UrlEncodeUtils.urlDecode(headImg, "");
+		nickName = UrlEncodeUtils.urlDecode(nickName, "");
+		openId = UrlEncodeUtils.urlDecode(openId, "");
 		if (!ObjectUtil.validSqlStr(headImg) || !ObjectUtil.validSqlStr(nickName) || !ObjectUtil.validSqlStr(openId)) {
 			ReturnModel rqModel = new ReturnModel();
 			rqModel.setStatu(ReturnStatus.ParamError_2);
@@ -116,7 +117,6 @@ public class Login2Controller extends SSOController{
 		param.setOpenId(openId);
 		param.setLoginType(loginType);
 		if(!ObjectUtil.isEmpty(nickName)){
-			nickName=java.net.URLDecoder.decode(nickName,"utf-8");
 			nickName=ObjectUtil.filterUtf8Mb4(nickName);
 			param.setNickName(nickName); 
 			addlog("nickname:"+nickName); 

@@ -458,7 +458,7 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 		}
 		for(int i=0;i<workparam.getDetails().size();i++){
 			String url=workparam.getDetails().get(i).getImageurl();
-			if(!ObjectUtil.isEmpty(url)){
+			//if(!ObjectUtil.isEmpty(url)){
 				url=ImgDomainUtil.getImageUrl_Full(url);
 				TiMyartsdetails detail=new TiMyartsdetails();
 				detail.setWorkid(mywork.getWorkid());
@@ -466,7 +466,7 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 				detail.setSort(i);
 				detail.setCreatetime(time); 
 				detailMapper.insert(detail);
-			}
+			//}
 		}
 		
 		rq.setBasemodle(map);

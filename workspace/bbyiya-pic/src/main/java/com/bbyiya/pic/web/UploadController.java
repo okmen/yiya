@@ -100,13 +100,17 @@ public class UploadController extends SSOController {
 				if(result!=null){
 					rq.setStatu(ReturnStatus.Success);
 					Map<String, Object> map=new HashMap<String, Object>();
-					String urlString=ImgDomainUtil.getImageUrl_Full(result.key);
-					map.put("url", urlString);
+					String urlNew=ImgDomainUtil.getImageUrl_Full(result.key);
+					map.put("url", urlNew);
 					map.put("fsize", result.fsize);
 					/*-----------------插入log记录-----------------------*/
 					PFetchlogs log=new PFetchlogs();
-					log.setUrl(urlString);
-					log.setRemoteurl(remoteUrl); 
+					log.setUrl(urlNew);
+					if(!ObjectUtil.isEmpty(media_id)){
+						log.setRemoteurl(media_id);
+					}else {
+						log.setRemoteurl(remoteUrl); 
+					}
 					log.setStatus(0);
 					log.setCreatetime(new Date()); 
 					fetchMapper.insert(log);

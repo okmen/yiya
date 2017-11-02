@@ -49,10 +49,12 @@ import com.bbyiya.model.TiPromoteradvertinfo;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.vo.calendar.MyworkDetailsParam;
 import com.bbyiya.service.IRegionService;
+import com.bbyiya.service.calendar.ITi_OrderMgtService;
 import com.bbyiya.utils.ImgDomainUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.calendar.TiActivityOrderSubmitParam;
 import com.bbyiya.vo.calendar.TiActivitysVo;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
@@ -204,7 +206,8 @@ public class Ti_MyworkController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	
+	@Resource(name = "tiOrderMgtServiceImpl")
+	private ITi_OrderMgtService orderMgtService;
 	
 	/**
 	 * 门店自提
@@ -227,13 +230,23 @@ public class Ti_MyworkController extends SSOController {
 			if(work!=null&&work.getUserid()!=null&&user.getUserId().longValue()==work.getUserid().longValue()){
 				work.setReciever(reciever);
 				work.setMobiephone(phone);
-				work.setStatus(Integer.parseInt(ActivityWorksStatusEnum.imagesubmit.toString()));
 				activityworkMapper.updateByPrimaryKey(work);
 				
-				TiMyworks myworks=workMapper.selectByPrimaryKey(workId);
-				if(myworks!=null){
-					myworks.setCompletetime(new Date());
-					workMapper.updateByPrimaryKeySelective(myworks);
+				//达到完成条件 自动下单
+				if(work.getStatus()!=null&&work.getStatus().intValue()==Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString())){
+					TiActivitys activitys=actMapper.selectByPrimaryKey(work.getActid());
+					if(activitys!=null&&activitys.getProduceruserid()!=null){
+						TiActivityOrderSubmitParam OrderParam=new TiActivityOrderSubmitParam();
+						OrderParam.setCount(1);
+						OrderParam.setSubmitUserId(activitys.getProduceruserid());
+						OrderParam.setWorkId(workId);
+						ReturnModel orderResult= orderMgtService.submitOrder_ibs(OrderParam);
+						if(ReturnStatus.Success.equals(orderResult.getStatu())){
+							rq.setStatu(ReturnStatus.Success);
+							rq.setStatusreson("下单成功！");
+							return JsonUtil.objectToJsonStr(rq);
+						}
+					}
 				}
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("成功！");

@@ -51,9 +51,9 @@ public class TiDiscountController extends SSOController {
 	private TiActivityworksMapper activityworksMapper;
 	@Autowired
 	private TiMyworksMapper myworkMapper;
-	
-	@Resource(name = "tiOrderMgtServiceImpl")
-	private ITi_OrderMgtService orderMgtService;
+//	
+//	@Resource(name = "tiOrderMgtServiceImpl")
+//	private ITi_OrderMgtService orderMgtService;
 	@Resource(name = "tiOrderMgtServiceImpl")
 	private  ITi_OrderMgtService basetiorderService;
 	/**
@@ -127,7 +127,9 @@ public class TiDiscountController extends SSOController {
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("恭喜获得3张5折优惠券（下单时自动使用）");
 
-			} else {// 活动作品分享后领取
+			}
+			//普通作品分享领取
+			else if (param.getSourceType() == 3) {
 				List<TiUserdiscounts> mydislist= userDisMapper.findMyDiscountsByWorkId(user.getUserId(),param.getSourceWorkId());
 				if(mydislist!=null&&mydislist.size()>0){
 					rq.setStatusreson("您已经领取过优惠券！");
@@ -135,7 +137,20 @@ public class TiDiscountController extends SSOController {
 				}
 				TiMyworks myworks=myworkMapper.selectByPrimaryKey(param.getSourceWorkId());
 				if(myworks!=null){
-					if(myworks.getActid()!=null){
+					getMyDiscounts(param, null, user.getUserId());
+					rq.setStatu(ReturnStatus.Success);
+					rq.setStatusreson("恭喜获得3张5折优惠券（下单时自动使用）");
+				}
+			} 
+			else {// 活动作品分享后领取
+				List<TiUserdiscounts> mydislist= userDisMapper.findMyDiscountsByWorkId(user.getUserId(),param.getSourceWorkId());
+				if(mydislist!=null&&mydislist.size()>0){
+					rq.setStatusreson("您已经领取过优惠券！");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				TiMyworks myworks=myworkMapper.selectByPrimaryKey(param.getSourceWorkId());
+				if(myworks!=null){
+					if(myworks.getActid()!=null) {
 						param.setActityId(myworks.getActid()); 
 						TiActivityworks activityworks=activityworksMapper.selectByPrimaryKey(param.getSourceWorkId());
 						TiActivitys actInfo = actMapper.selectByPrimaryKey(param.getActityId());
@@ -148,14 +163,14 @@ public class TiDiscountController extends SSOController {
 							int extcount=actInfo.getExtcount()==null?0:actInfo.getExtcount();
 							if(activityworks.getExtcount().intValue()>=extcount&&activityworks.getStatus().intValue()!=Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString())){
 								//更新参与活动状态
-								activityworks.setStatus(Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString())); 
+								activityworks.setStatus(Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString()));
 								activityworksMapper.updateByPrimaryKeySelective(activityworks);
 								//自动下单
-								TiActivityOrderSubmitParam OrderParam=new TiActivityOrderSubmitParam();
-								OrderParam.setCount(1);
-								OrderParam.setSubmitUserId(actInfo.getProduceruserid());
-								OrderParam.setWorkId(param.getSourceWorkId());
-								orderMgtService.submitOrder_ibs(OrderParam); 
+//								TiActivityOrderSubmitParam OrderParam=new TiActivityOrderSubmitParam();
+//								OrderParam.setCount(1);
+//								OrderParam.setSubmitUserId(actInfo.getProduceruserid());
+//								OrderParam.setWorkId(param.getSourceWorkId());
+//								orderMgtService.submitOrder_ibs(OrderParam); 
 							}else {
 								activityworksMapper.updateByPrimaryKeySelective(activityworks);
 							}
@@ -164,7 +179,6 @@ public class TiDiscountController extends SSOController {
 							rq.setStatusreson("恭喜获得3张5折优惠券（下单时自动使用）");
 						}
 					}else {
-//						getMyDiscounts( param, 75L,user.getUserId());
 						rq.setStatu(ReturnStatus.SystemError);
 						rq.setStatusreson("不好意思， 非活动作品无法领取优惠券！");
 					}
@@ -187,7 +201,7 @@ public class TiDiscountController extends SSOController {
 				TiUserdiscounts model=new TiUserdiscounts();
 				model.setWorkid(param.getSourceWorkId());
 				model.setActid(param.getActityId()); 
-				model.setPromoteruserid(promoterUserId); 
+				model.setPromoteruserid(promoterUserId==null?1l:promoterUserId);  
 				model.setCreatetime(new Date());
 				model.setDiscountid(modlist.get(0).getDiscountid());
 				model.setStatus(0);

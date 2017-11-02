@@ -6,6 +6,7 @@ import com.bbyiya.common.vo.wechatmsg.WxUserInfo;
 
 public class WechatUtils {
 
+	
 	/**
 	 * 获取用户微信信息
 	 * @param openId

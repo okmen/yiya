@@ -41,6 +41,7 @@ import com.bbyiya.model.TiUserdiscounts;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.service.calendar.ITi_OrderMgtService;
 import com.bbyiya.utils.JsonUtil;
+import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.calendar.TiActivityOrderSubmitParam;
 import com.bbyiya.vo.calendar.TiActivitysVo;
@@ -85,27 +86,32 @@ public class TiActivityMgtController extends SSOController {
 			if(actInfo!=null){
 				TiActivityworks myActWork= activityworksMapper.getActWorkListByActIdAndUserId(actId, user.getUserId());
 				if(myActWork!=null){
+					actInfo.setMyactInfo(myActWork); 
 					actInfo.setMyworkId(myActWork.getWorkid()); 
 					actInfo.setApplyStatus(myActWork.getStatus()); 
+				}
+				TiMyworks workMyworks= myworkMapper.selectByPrimaryKey(actInfo.getMyworkId());
+				if(workMyworks!=null&&!ObjectUtil.isEmpty(workMyworks.getCompletetime())){
+					actInfo.setCompleteTime(workMyworks.getCompletetime()); 
 				}
 				actInfo.setYaoqingcount(singMapper.getYaoqingCountByActId(actId));
 				TiProductResult productResult= productMapper.getResultByProductId(actInfo.getProductid());
 				productResult.setDescriptionImglist((List<ImageInfo>)JsonUtil.jsonToList(productResult.getDescriptionimgjson())) ;
-				if(productResult!=null){
-					switch (productResult.getCateid()) {
-					case 1:
-						productResult.setImgActivity("http://pic.bbyiya.com/20170509Figure-1001.jpg");
-						break;
-					case 2:
-						productResult.setImgActivity("http://pic.bbyiya.com/20170509Figure-1001.jpg");
-						break;
-					case 3:
-						productResult.setImgActivity("http://pic.bbyiya.com/20170509Figure-1001.jpg");
-						break;
-					default:
-						break;
-					}
-				}
+//				if(productResult!=null){
+//					switch (productResult.getCateid()) {
+//					case 1:
+//						productResult.setImgActivity("http://pic.bbyiya.com/20170509Figure-1001.jpg");
+//						break;
+//					case 2:
+//						productResult.setImgActivity("http://pic.bbyiya.com/20170509Figure-1001.jpg");
+//						break;
+//					case 3:
+//						productResult.setImgActivity("http://pic.bbyiya.com/20170509Figure-1001.jpg");
+//						break;
+//					default:
+//						break;
+//					}
+//				}
 				actInfo.setProduct(productResult); 
 				rq.setBasemodle(actInfo); 
 			}

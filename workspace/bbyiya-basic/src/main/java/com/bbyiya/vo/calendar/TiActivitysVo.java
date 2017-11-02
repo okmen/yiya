@@ -1,5 +1,8 @@
 package com.bbyiya.vo.calendar;
+import java.util.Date;
+
 import com.bbyiya.model.TiActivitys;
+import com.bbyiya.model.TiActivityworks;
 import com.bbyiya.vo.calendar.product.TiProductResult;
 
 
@@ -13,6 +16,8 @@ public class TiActivitysVo extends TiActivitys{
 	private TiProductResult product;
 	private String codeurl;//二维码地址
 	private Integer applyStatus;
+	private Date completeTime;
+	private TiActivityworks myactInfo;
 	public String getProductName() {
 		return productName;
 	}
@@ -83,6 +88,23 @@ public class TiActivitysVo extends TiActivitys{
 
 	public void setApplyStatus(Integer applyStatus) {
 		this.applyStatus = applyStatus;
+	}
+
+	
+	public Date getCompleteTime() {
+		return completeTime;
+	}
+
+	public void setCompleteTime(Date completeTime) {
+		this.completeTime = completeTime;
+	}
+
+	public TiActivityworks getMyactInfo() {
+		return myactInfo;
+	}
+
+	public void setMyactInfo(TiActivityworks myactInfo) {
+		this.myactInfo = myactInfo;
 	}
 	
 	

@@ -156,15 +156,15 @@ public class TiDiscountController extends SSOController {
 						TiActivitys actInfo = actMapper.selectByPrimaryKey(param.getActityId());
 						if(activityworks!=null&&actInfo!=null){
 							getMyDiscounts( param, actInfo.getProduceruserid(),user.getUserId());
-							
 							activityworks.setExtcount((activityworks.getExtcount()==null?0:activityworks.getExtcount().intValue())+1); 
-							
+							 
 							//如果活动目标达到，直接下单
 							int extcount=actInfo.getExtcount()==null?0:actInfo.getExtcount();
 							if(activityworks.getExtcount().intValue()>=extcount&&activityworks.getStatus().intValue()!=Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString())){
 								//更新参与活动状态
 								activityworks.setStatus(Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString()));
 								activityworksMapper.updateByPrimaryKeySelective(activityworks);
+							
 								//自动下单
 //								TiActivityOrderSubmitParam OrderParam=new TiActivityOrderSubmitParam();
 //								OrderParam.setCount(1);

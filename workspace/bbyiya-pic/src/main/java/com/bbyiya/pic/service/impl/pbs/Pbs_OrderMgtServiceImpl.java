@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.annotation.Resource;
 
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bbyiya.common.enums.SendMsgEnums;
 import com.bbyiya.common.vo.SmsParam;
 import com.bbyiya.common.vo.wechatmsg.ShippingParam;
+import com.bbyiya.common.vo.wechatmsg.ShippingParamNew;
 import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OOrderproductdetailsMapper;
 import com.bbyiya.dao.OOrderproductphotosMapper;
@@ -27,6 +29,7 @@ import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductactivitycodeMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
 import com.bbyiya.dao.PMyproductsMapper;
+import com.bbyiya.dao.PMyproductsinvitesMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
@@ -38,9 +41,8 @@ import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.dao.UBranchtransaccountsMapper;
 import com.bbyiya.dao.UBranchtransamountlogMapper;
 import com.bbyiya.dao.UOtherloginMapper;
+import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.AccountLogType;
-import com.bbyiya.enums.AmountType;
-import com.bbyiya.enums.MyProductTempType;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
@@ -53,20 +55,16 @@ import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.OProducerordercount;
 import com.bbyiya.model.OUserorderext;
 import com.bbyiya.model.OUserorders;
-import com.bbyiya.model.PMyproductactivitycode;
 import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
-import com.bbyiya.model.PMyproducttemp;
-import com.bbyiya.model.PMyproducttempapply;
+import com.bbyiya.model.PMyproductsinvites;
 import com.bbyiya.model.TiActivityworks;
 import com.bbyiya.model.TiMyworkcustomers;
 import com.bbyiya.model.TiMyworks;
-import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiPromoters;
 import com.bbyiya.model.UBranches;
-import com.bbyiya.model.UBranchtransaccounts;
-import com.bbyiya.model.UBranchtransamountlog;
 import com.bbyiya.model.UOtherlogin;
+import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.dao.IPic_OrderMgtDao;
 import com.bbyiya.pic.service.IPic_MemberMgtService;
 import com.bbyiya.pic.service.pbs.IPbs_OrderMgtService;
@@ -82,7 +80,6 @@ import com.bbyiya.utils.WechatMsgUtil;
 import com.bbyiya.utils.upload.FileDownloadUtils;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.order.SearchOrderParam;
-import com.bbyiya.vo.user.UUserInfoVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
@@ -141,13 +138,11 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	@Autowired
 	private UOtherloginMapper otherloginMapper;
 	@Autowired
-	private PMyproducttempapplyMapper mytempapplyMapper;
-	@Autowired
-	private PMyproductactivitycodeMapper activitycodeMapper;
-	@Autowired
 	private PMyproductsMapper myproductsMapper;
 	@Autowired
-	private TiProductstylesMapper tistyleMapper;
+	private PMyproductsinvitesMapper myinvitesMapper;
+	@Autowired
+	private UUsersMapper userMapper;
 	
 	public PageInfo<PbsUserOrderResultVO> find_pbsOrderList(SearchOrderParam param,Integer type,int index,int size){
 		if(param==null)
@@ -770,72 +765,87 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	 */
 	public void deliverSendMsg(OUserorders userorders){
 		int ordertype=(userorders.getOrdertype()==null?0:userorders.getOrdertype());
-		ShippingParam param=new ShippingParam();
+		ShippingParamNew param=new ShippingParamNew();
 		param.setOrderId(userorders.getUserorderid());
 		param.setTransCompany(userorders.getExpresscom());
 		param.setTransOrderId(userorders.getExpressorder());
 		param.setRemark(userorders.getRemark());
+		 // 获取域名
+        ResourceBundle bundle = ResourceBundle.getBundle("commons");
+        String logisticsUrl = bundle.getObject("logisticsUrl").toString();
+		param.setLinkUrl(logisticsUrl+"?orderId="+userorders.getUserorderid());
 		OOrderaddress addr=addressMapper.selectByPrimaryKey(userorders.getOrderaddressid());
-		if(addr==null) return;
 		if(addr!=null){
 			SmsParam sendparam=new SmsParam();
 			sendparam.setTransName(userorders.getExpresscom());
 			sendparam.setTransNum(userorders.getExpressorder());
 			SendSMSByMobile.sendSmS(Integer.parseInt(SendMsgEnums.delivery.toString()), addr.getPhone(), sendparam);
-			param.setAddress(addr.getStreetdetail());
 		}
 		UOtherlogin user=null;
 		//咿呀12的生产商普通用户下单
 		if(ordertype==Integer.parseInt(OrderTypeEnum.nomal.toString())){
 			user=otherloginMapper.getWxloginByUserId(userorders.getUserid());
-			param.setTotalPrice(userorders.getOrdertotalprice());
-			WechatMsgUtil.sendMsg_Shipping(user.getOpenid(), param);
-			return;
-			
 		}else if(ordertype==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){
 			//咿呀12的影楼的订单
 			OOrderproducts product= orderProductMapper.getOProductsByOrderId(userorders.getUserorderid());
 			if(product!=null){
 				PMyproducts cart= myproductsMapper.selectByPrimaryKey(product.getCartid());
 				if(cart!=null){
-					user=otherloginMapper.getWxloginByUserId(cart.getUserid());
-					param.setTotalPrice(userorders.getOrdertotalprice());
-					WechatMsgUtil.sendMsg_Shipping(user.getOpenid(), param);
-					return;
+					List<PMyproductsinvites> invites = myinvitesMapper.findListByCartId(cart.getCartid());
+					if (invites != null && invites.size() > 0) {
+						if(invites.get(0).getInviteuserid()==null){
+							UUsers branchuser=userMapper.getUUsersByPhone(invites.get(0).getInvitephone());
+							if(branchuser!=null){
+								invites.get(0).setInviteuserid(branchuser.getUserid());
+							}
+						}
+						user=otherloginMapper.getWxloginByUserId(invites.get(0).getInviteuserid());
+						
+					}else{
+						user=otherloginMapper.getWxloginByUserId(cart.getUserid());
+					}
 				}
 			}
 		}else if(ordertype==Integer.parseInt(OrderTypeEnum.ti_nomal.toString())){
 			user=otherloginMapper.getWxloginByUserId(userorders.getUserid());
-			param.setTotalPrice(userorders.getOrdertotalprice());
-			WechatMsgUtil.sendMsg_Shipping(user.getOpenid(), param);
-			return;	
+			
 		}else if(ordertype==Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())){
 			OOrderproducts product=orderProductMapper.getOProductsByOrderId(userorders.getUserorderid());
 			if(product.getCartid()!=null){
 				TiMyworks mywork=timyworkMapper.selectByPrimaryKey(product.getCartid());
-				TiProductstyles style=tistyleMapper.selectByPrimaryKey(product.getStyleid());
 				//如果是活动订单：
 				if(mywork!=null&&mywork.getIsinstead()!=null&&mywork.getIsinstead().intValue()==1){
 					//代客制作
 					user=otherloginMapper.getWxloginByUserId(mywork.getUserid());
-					param.setTotalPrice(style.getPromoterprice()*product.getCount()+(userorders.getPostage()==null?0:userorders.getPostage()));
-					WechatMsgUtil.sendMsg_Shipping(user.getOpenid(), param);
-					return;
 				}else if(mywork!=null&&(mywork.getIsinstead()==null||mywork.getIsinstead().intValue()!=1)){
 					//老客户回顾
 					user=otherloginMapper.getWxloginByUserId(mywork.getUserid());
-					param.setTotalPrice(style.getPrice()*product.getCount()+(userorders.getPostage()==null?0:userorders.getPostage()));
-					WechatMsgUtil.sendMsg_Shipping(user.getOpenid(), param);
-					return;
 				}else{
 					user=otherloginMapper.getWxloginByUserId(userorders.getUserid());
-					param.setTotalPrice(userorders.getOrdertotalprice());
-					WechatMsgUtil.sendMsg_Shipping(user.getOpenid(), param);
-					return;
 				}
 				
 			}
 		}	
+		
+		//最后发送微消息
+		if(user!=null&&param!=null){
+			WechatMsgUtil.sendMsg_Shipping(user.getOpenid(), param);
+		}
 	}
-	
+
+	public ReturnModel testdeliverSendMsg(String orderId){
+		ReturnModel rq = new ReturnModel();
+		if(orderId==null||orderId.equals("")){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("订单号不能为空！");
+			return rq;
+		}
+		OUserorders order=userOrdersMapper.selectByPrimaryKey(orderId);
+		if(order!=null){
+			deliverSendMsg(order);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("发送成功");
+		}
+		return rq;
+	}
 }

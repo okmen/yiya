@@ -68,7 +68,7 @@ public class WechatMsgUtil {
 			if (param == null) {
 				param = new ShippingParamNew();
 			}
-			Map<String, Object> postParam = postParamCommon(WechatMsgEnums.sendNew, openId, param.getLinkUrl());
+			Map<String, Object> postParam = postParamCommon(WechatMsgEnums.sendSimple, openId, param.getLinkUrl());
 			Map<String, Object> dataMap = new HashMap<String, Object>();
 			dataMap.put("first", getParamValue("亲，您的订单已发货啦，等待是为了最美的相遇!"));
 			dataMap.put("keyword1", getParamValue(param.getOrderId()));

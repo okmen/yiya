@@ -13,7 +13,7 @@ public enum WechatMsgEnums {
     /**
      * 
      */
-    sendNew("YBdS4leiXpT7_sawc7tHpO_wwOKadP741GvJbo1IK0o")
+    sendSimple("YBdS4leiXpT7_sawc7tHpO_wwOKadP741GvJbo1IK0o")
     ;
 
     private final String templateId;

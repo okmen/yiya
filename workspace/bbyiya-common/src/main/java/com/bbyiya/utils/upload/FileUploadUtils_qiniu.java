@@ -1,6 +1,7 @@
 package com.bbyiya.utils.upload;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,10 @@ import java.util.UUID;
 
 
 
+
+
 import com.bbyiya.utils.ConfigUtil;
+import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
 import com.qiniu.common.QiniuException;
@@ -93,9 +97,9 @@ public class FileUploadUtils_qiniu {
 		Configuration cfg = new Configuration(Zone.autoZone()); 
 		BucketManager bucketManager = new BucketManager(auth,cfg);
 		// 图片key
-		String key = UUID.randomUUID().toString().replace("-", "") + ".jpg";
+		String key = DateUtil.getTimeStr(new Date(), "yyyyMMdd")+"/"+UUID.randomUUID().toString().replace("-", "") + ".jpg";
 		FetchRet fetchRet = bucketManager.fetch(remoteUrl, BUCKETNAME_DEFULT, key);
-		return fetchRet;
+		return fetchRet; 
 	}
 	
 	/**

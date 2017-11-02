@@ -17,7 +17,7 @@ public class GenUtils {
 	public static String getOrderNo(Long userId){
 		if(userId==null)
 			userId=1l;
-		long temp=userId%100000;
+		long temp=userId%10000;
 		DecimalFormat df=new DecimalFormat("0000");
 	    String str2=df.format(temp);
 		String timeStr=DateUtil.getTimeStr(new Date(), "yyyyMMdd"+str2+"HHmmSSS");

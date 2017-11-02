@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -29,13 +30,27 @@ public class ConfigUtil {
 	}
 
 	/**
-	 * 获取appSetting.xml的某个元素的值（默认为属性value的值）
+	 * 获取配置文件 commons.property 参数值
+	 * @param key
+	 * @return
+	 */
+	public static String getPropertyVal(String key) {
+		ResourceBundle bundle = ResourceBundle.getBundle("commons");// 获取当前的域名
+		if (bundle.containsKey(key))
+			return bundle.getString(key);
+		return null;
+	}
+	
+	/**
+	 * 获取config.xml的某个元素的值（默认为属性value的值）
 	 * 
 	 * @param arg
 	 * @return
 	 */
 	public static String getSingleValue(String arg) {
-		String result = "";
+		String result = getPropertyVal(arg); 
+		if(!ObjectUtil.isEmpty(result))
+			return result;
 		try {
 			URL url = Configuration.class.getClassLoader().getResource(FILE_NAME);
 			String str = url.getFile();
@@ -50,7 +65,6 @@ public class ConfigUtil {
 				result = chird.attributeValue("value");
 		} catch (Exception e) {
 			// TODO: handle exception
-
 		}
 		return result;
 	}

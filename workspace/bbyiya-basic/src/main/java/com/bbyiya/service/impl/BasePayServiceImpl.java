@@ -571,7 +571,7 @@ public class BasePayServiceImpl implements IBasePayService{
 							if(totalprice_hk<totalprice){
 								type=2;
 								TiUserdiscounts discount= userdiscountsMapper.getMyDiscountsByUserOrderId(userOrderId);
-								if(discount!=null){
+								if(discount!=null&&ObjectUtil.isEmpty(discount.getPromoteruserid())){ 
 									promoterUid=discount.getPromoteruserid();
 								}
 							}else {//全价购买

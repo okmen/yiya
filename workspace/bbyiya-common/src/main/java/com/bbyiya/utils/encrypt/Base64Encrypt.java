@@ -7,10 +7,10 @@ import java.io.OutputStream;
 /**
  * Base64编码
  * 
- * @author tan
+ * @author 
  * @date 2015-02-16
  */
-public class Base64 {
+public class Base64Encrypt {
 
 	private static final char[] legalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".toCharArray();
 

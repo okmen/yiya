@@ -77,7 +77,7 @@ public class WechatMsgUtil {
 			dataMap.put("remark", getParamValue(param.getRemark()));
 			postParam.put("data", dataMap);
 			String result = HttpRequestHelper.postJson("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + AccessTokenUtils.getAccessToken(), JsonUtil.objectToJsonStr(postParam));
-			System.out.println(result);
+//			System.out.println(result);
 		} catch (Exception e) {
 		}
 	}

@@ -1,5 +1,9 @@
 package com.bbyiya.web.base;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -146,5 +150,34 @@ public class SSOController {
 			}
 		}
 		return ipAddres;
+	}
+	
+	
+	/**
+	 * 接受xml参数 
+	 * @param request
+	 * @return
+	 */
+	public static String readReqStr(HttpServletRequest request) {
+		BufferedReader reader = null;
+		StringBuilder sb = new StringBuilder();
+		try {
+			reader = new BufferedReader(new InputStreamReader(request.getInputStream(), "utf-8"));
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				sb.append(line);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (null != reader) {
+					reader.close();
+				}
+			} catch (IOException e) {
+
+			}
+		}
+		return sb.toString();
 	}
 }

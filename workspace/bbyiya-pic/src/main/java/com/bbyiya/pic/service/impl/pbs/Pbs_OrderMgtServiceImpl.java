@@ -413,7 +413,6 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			//修改订单状态为已发货状态
 			if(userorders.getStatus()!=null&&userorders.getStatus().intValue()!=Integer.parseInt(OrderStatusEnum.recived.toString())){
 				userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
-				deliverSendMsg(userorders);
 			}
 			userorders.setDeliverytime(new Date());
 			userOrdersMapper.updateByPrimaryKeySelective(userorders);

@@ -4,8 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -37,8 +39,8 @@ public class HttpRequestHelper {
 	/**
 	 * 向指定URL发送GET方法的请求
 	 * 
-	 * @param url 发送请求的URL
-	 * @param param   请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
+	 * @param url  发送请求的URL
+	 * @param param 请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
 	 * @return URL 所代表远程资源的响应结果
 	 */
 	public static String sendGet(String url, String param) {
@@ -58,11 +60,11 @@ public class HttpRequestHelper {
 			// 建立实际的连接
 			connection.connect();
 			// 获取所有响应头字段
-//			Map<String, List<String>> map = connection.getHeaderFields();
-//			// 遍历所有的响应头字段
-//			for (String key : map.keySet()) {
-//				System.out.println(key + "--->" + map.get(key));
-//			}
+			// Map<String, List<String>> map = connection.getHeaderFields();
+			// // 遍历所有的响应头字段
+			// for (String key : map.keySet()) {
+			// System.out.println(key + "--->" + map.get(key));
+			// }
 			// 定义 BufferedReader输入流来读取URL的响应
 			in = new BufferedReader(new InputStreamReader(connection.getInputStream(), encodeDefault));
 			String line;
@@ -70,7 +72,7 @@ public class HttpRequestHelper {
 				result += line;
 			}
 		} catch (Exception e) {
-//			System.out.println("发送GET请求出现异常！" + e);
+			// System.out.println("发送GET请求出现异常！" + e);
 			e.printStackTrace();
 		}
 		// 使用finally块来关闭输入流
@@ -89,8 +91,10 @@ public class HttpRequestHelper {
 	/**
 	 * 向指定 URL 发送POST方法的请求
 	 * 
-	 * @param url  发送请求的 URL
-	 * @param param  请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
+	 * @param url
+	 *            发送请求的 URL
+	 * @param param
+	 *            请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
 	 * @return 所代表远程资源的响应结果
 	 */
 	public static String sendPost(String url, String param) {
@@ -121,7 +125,7 @@ public class HttpRequestHelper {
 				result += line;
 			}
 		} catch (Exception e) {
-//			System.out.println("发送 POST 请求出现异常！" + e);
+			// System.out.println("发送 POST 请求出现异常！" + e);
 			e.printStackTrace();
 		}
 		// 使用finally块来关闭输出流、输入流
@@ -140,49 +144,60 @@ public class HttpRequestHelper {
 		return result;
 	}
 
-	public static String doGetMethod(String url, Map<String, String> keyValueMap) {
-		HttpClient client = new HttpClient();
-		StringBuffer sb = new StringBuffer(url);
-		PostMethod postMethod = null;
-		try {
-			// 设置请求参数
-			if (keyValueMap != null) {
-				Iterator it = keyValueMap.entrySet().iterator();
-				if (keyValueMap.size() > 0) {
-					sb.append("?");
-					while (it.hasNext()) {
-						Map.Entry<String, String> entry = (Map.Entry<String, String>) it.next();
-						sb.append(entry.getKey() + "=" + entry.getValue() + "&");
-					}
-					sb.deleteCharAt(sb.length() - 1);
-				}
+//	public static String doGetMethod(String url, Map<String, String> keyValueMap) {
+//		HttpClient client = new HttpClient();
+//		StringBuffer sb = new StringBuffer(url);
+//		PostMethod postMethod = null;
+//		try {
+//			// 设置请求参数
+//			if (keyValueMap != null) {
+//				Iterator it = keyValueMap.entrySet().iterator();
+//				if (keyValueMap.size() > 0) {
+//					sb.append("?");
+//					while (it.hasNext()) {
+//						Map.Entry<String, String> entry = (Map.Entry<String, String>) it.next();
+//						sb.append(entry.getKey() + "=" + entry.getValue() + "&");
+//					}
+//					sb.deleteCharAt(sb.length() - 1);
+//				}
+//
+//			}
+//			postMethod = new PostMethod(sb.toString());
+//			postMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
+//			postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET, "UTF-8");
+//			// todo:设置超时时间
+//			postMethod.getParams().setParameter(HttpMethodParams.SO_TIMEOUT, 200000);
+//			int statusCode = client.executeMethod(postMethod);
+//			if (statusCode != HttpStatus.SC_OK) {
+//				return "调用外部链接异常！";
+//			}
+//			String responseBody = postMethod.getResponseBodyAsString();
+//			return responseBody;
+//		} catch (Exception e) {
+//			return e.getMessage();
+//		} finally {
+//			if (postMethod != null) {
+//				postMethod.releaseConnection();
+//			}
+//		}
+//	}
 
-			}
-			postMethod = new PostMethod(sb.toString());
-			postMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
-			postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET, "UTF-8");
-			// todo:设置超时时间
-			postMethod.getParams().setParameter(HttpMethodParams.SO_TIMEOUT, 200000);
-			int statusCode = client.executeMethod(postMethod);
-			if (statusCode != HttpStatus.SC_OK) {
-				return "调用外部链接异常！";
-			}
-			String responseBody = postMethod.getResponseBodyAsString();
-			return responseBody;
-		} catch (Exception e) {
-			return e.getMessage();
-		} finally {
-			if (postMethod != null) {
-				postMethod.releaseConnection();
-			}
-		}
+	/**
+	 * post 请求
+	 * @param url
+	 * @param paramsMap
+	 * @return
+	 */
+	public static String postMap(String url, Map<String, String> paramsMap){
+		return post_httpClient(url,paramsMap); 
 	}
-
 	/**
 	 * 基于HttpClient 4.3的通用POST方法
 	 *
-	 * @param url 提交的URL
-	 * @param paramsMap  提交<参数，值>Map
+	 * @param url
+	 *            提交的URL
+	 * @param paramsMap
+	 *            提交<参数，值>Map
 	 * @return 提交响应
 	 */
 	public static String post_httpClient(String url, Map<String, String> paramsMap) {
@@ -219,6 +234,7 @@ public class HttpRequestHelper {
 
 	/**
 	 * post Json参数
+	 * 
 	 * @param strURL
 	 * @param params
 	 * @return
@@ -259,6 +275,53 @@ public class HttpRequestHelper {
 			e.printStackTrace();
 		}
 		return "error"; // 自定义错误信息
+	}
+
+	/**
+	 * post 请求
+	 * @param xmlStr 字符串
+	 * @return
+	 */
+	public static String postXml(String requestUrl, String xmlStr) {
+		try {
+			URL url = new URL(requestUrl);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+			conn.setDoOutput(true);
+			conn.setDoInput(true);
+			conn.setUseCaches(false);
+			// 设置请求方式（GET/POST）
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("content-type", "application/x-www-form-urlencoded");
+			// 当outputStr不为null时向输出流写数据
+			if (null != xmlStr) {
+				OutputStream outputStream = conn.getOutputStream();
+				// 注意编码格式
+				outputStream.write(xmlStr.getBytes("UTF-8"));
+				outputStream.close();
+			}
+			// 从输入流读取返回内容
+			InputStream inputStream = conn.getInputStream();
+			InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "utf-8");
+			BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+			String str = null;
+			StringBuffer buffer = new StringBuffer();
+			while ((str = bufferedReader.readLine()) != null) {
+				buffer.append(str);
+			}
+			// 释放资源
+			bufferedReader.close();
+			inputStreamReader.close();
+			inputStream.close();
+			inputStream = null;
+			conn.disconnect();
+			return buffer.toString();
+		} catch (ConnectException ce) {
+			// System.out.println("连接超时：{}"+ ce);
+		} catch (Exception e) {
+			// System.out.println("https请求异常：{}"+ e);
+		}
+		return null;
 	}
 
 }

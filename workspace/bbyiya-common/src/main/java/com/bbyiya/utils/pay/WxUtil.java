@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import java.util.Random;
 import java.util.Set;
 import java.util.SortedMap;
@@ -274,6 +273,33 @@ public class WxUtil {
 		String sign = MD5Encrypt.encrypt(sb.toString()).toUpperCase();
 
 		return sign.equals(checkSign);
+	}
+	
+	
+	/**
+	 * 生成签名(公共)
+	 * params 签名参数
+	 * appSecret 签名商户AppSecret
+	 */
+	public static String genPackageSign(List<NameValuePair> params,String appSecret) {
+		Collections.sort(params, new Comparator<NameValuePair>() {
+			// 重写排序规则
+			public int compare(NameValuePair list1, NameValuePair list2) {
+				return list1.getName().compareTo(list2.getName());
+			}
+		});
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < params.size(); i++) {
+			sb.append(params.get(i).getName());
+			sb.append('=');
+			sb.append(params.get(i).getValue());
+			sb.append('&');
+		}
+		sb.append("key=");
+		sb.append(appSecret);
+		String packageSign = MD5Encrypt.getMessageDigest(sb.toString().getBytes()).toUpperCase();
+		return packageSign;
 	}
 
 }

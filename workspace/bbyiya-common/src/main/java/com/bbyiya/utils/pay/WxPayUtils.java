@@ -112,7 +112,6 @@ public class WxPayUtils {
 		String entityString = genProductArgs(ipStr,openId, totalPrice, orderNo, nonceStr);
 		String msgString = WxUtil.httpsRequest(urlString, entityString);
 		Map<String, Object> map = WxUtil.xml2Map(msgString);
-//		System.out.println(map.toString()); 
 		return map;
 	}
 

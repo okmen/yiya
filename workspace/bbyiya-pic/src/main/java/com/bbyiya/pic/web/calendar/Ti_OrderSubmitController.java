@@ -191,6 +191,9 @@ public class Ti_OrderSubmitController extends SSOController {
 				promoterUserId=user.getSourseUserId();
 			}
 		}
+		//排除咿呀十二
+		if(promoterUserId==75l||promoterUserId==1l)
+			return 0l;
 		return promoterUserId;
 	}
 	

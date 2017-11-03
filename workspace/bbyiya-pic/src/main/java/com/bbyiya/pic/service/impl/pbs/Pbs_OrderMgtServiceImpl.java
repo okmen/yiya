@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.annotation.Resource;
 
@@ -15,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.common.enums.SendMsgEnums;
 import com.bbyiya.common.vo.SmsParam;
+import com.bbyiya.common.vo.wechatmsg.ShippingParam;
+import com.bbyiya.common.vo.wechatmsg.ShippingParamNew;
 import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OOrderproductdetailsMapper;
 import com.bbyiya.dao.OOrderproductphotosMapper;
@@ -23,16 +26,23 @@ import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.OProducerordercountMapper;
 import com.bbyiya.dao.OUserorderextMapper;
 import com.bbyiya.dao.OUserordersMapper;
+import com.bbyiya.dao.PMyproductactivitycodeMapper;
 import com.bbyiya.dao.PMyproductdetailsMapper;
+import com.bbyiya.dao.PMyproductsMapper;
+import com.bbyiya.dao.PMyproductsinvitesMapper;
+import com.bbyiya.dao.PMyproducttempMapper;
+import com.bbyiya.dao.PMyproducttempapplyMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
 import com.bbyiya.dao.TiMyworkcustomersMapper;
 import com.bbyiya.dao.TiMyworksMapper;
+import com.bbyiya.dao.TiProductstylesMapper;
 import com.bbyiya.dao.TiPromotersMapper;
 import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.dao.UBranchtransaccountsMapper;
 import com.bbyiya.dao.UBranchtransamountlogMapper;
+import com.bbyiya.dao.UOtherloginMapper;
+import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.AccountLogType;
-import com.bbyiya.enums.AmountType;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
@@ -46,13 +56,15 @@ import com.bbyiya.model.OProducerordercount;
 import com.bbyiya.model.OUserorderext;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproductdetails;
+import com.bbyiya.model.PMyproducts;
+import com.bbyiya.model.PMyproductsinvites;
 import com.bbyiya.model.TiActivityworks;
 import com.bbyiya.model.TiMyworkcustomers;
 import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiPromoters;
 import com.bbyiya.model.UBranches;
-import com.bbyiya.model.UBranchtransaccounts;
-import com.bbyiya.model.UBranchtransamountlog;
+import com.bbyiya.model.UOtherlogin;
+import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.dao.IPic_OrderMgtDao;
 import com.bbyiya.pic.service.IPic_MemberMgtService;
 import com.bbyiya.pic.service.pbs.IPbs_OrderMgtService;
@@ -64,6 +76,7 @@ import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.FileUtils;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.SendSMSByMobile;
+import com.bbyiya.utils.WechatMsgUtil;
 import com.bbyiya.utils.upload.FileDownloadUtils;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.order.SearchOrderParam;
@@ -122,6 +135,14 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	private TiMyworkcustomersMapper timyworkcusMapper;
 	@Resource(name = "baseUserAccountService")
 	private IBaseUserAccountService accountService;
+	@Autowired
+	private UOtherloginMapper otherloginMapper;
+	@Autowired
+	private PMyproductsMapper myproductsMapper;
+	@Autowired
+	private PMyproductsinvitesMapper myinvitesMapper;
+	@Autowired
+	private UUsersMapper userMapper;
 	
 	public PageInfo<PbsUserOrderResultVO> find_pbsOrderList(SearchOrderParam param,Integer type,int index,int size){
 		if(param==null)
@@ -330,8 +351,10 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					//修改订单状态为已发货状态
 					if(order.getStatus()!=null&&order.getStatus().intValue()!=Integer.parseInt(OrderStatusEnum.recived.toString())){
 						order.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
+						if(!order.getUserorderid().equalsIgnoreCase(userorders.getUserorderid())){
+							deliverSendMsg(order);
+						}
 					}
-					
 					userOrdersMapper.updateByPrimaryKeySelective(order);
 				}
 			}
@@ -341,22 +364,14 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			//修改订单状态为已发货状态
 			if(userorders.getStatus()!=null&&userorders.getStatus().intValue()!=Integer.parseInt(OrderStatusEnum.recived.toString())){
 				userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
+				deliverSendMsg(userorders);
 			}		
 			userorders.setExpresscom(expressCom);
 			userorders.setExpressorder(expressOrder);
 			userorders.setExpresscode(expressCode);
 			userorders.setDeliverytime(new Date());
 			userOrdersMapper.updateByPrimaryKeySelective(userorders);
-			
-			//发送短信--已发货
-			OOrderaddress addr=addressMapper.selectByPrimaryKey(userorders.getOrderaddressid());
-			if(addr!=null){
-				SmsParam sendparam=new SmsParam();
-				sendparam.setTransName(expressCom);
-				sendparam.setTransNum(expressOrder);
-				SendSMSByMobile.sendSmS(Integer.parseInt(SendMsgEnums.delivery.toString()), addr.getPhone(), sendparam);
-			}
-			
+
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(userorders);
 			rq.setStatusreson("修改运单号成功!");
@@ -398,6 +413,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			//修改订单状态为已发货状态
 			if(userorders.getStatus()!=null&&userorders.getStatus().intValue()!=Integer.parseInt(OrderStatusEnum.recived.toString())){
 				userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
+				deliverSendMsg(userorders);
 			}
 			userorders.setDeliverytime(new Date());
 			userOrdersMapper.updateByPrimaryKeySelective(userorders);
@@ -611,7 +627,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					//修改订单状态为已发货状态
 					if(userorders.getStatus()!=null&&userorders.getStatus().intValue()!=Integer.parseInt(OrderStatusEnum.recived.toString())){
 						userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
-						
+						deliverSendMsg(userorders);
 					}
 					userorders.setDeliverytime(new Date());
 					userOrdersMapper.updateByPrimaryKeySelective(userorders);
@@ -743,5 +759,93 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 		return file.getPath();
 	}
 	
-	
+	/**
+	 * 发货发送微消息
+	 * @param order
+	 */
+	public void deliverSendMsg(OUserorders userorders){
+		int ordertype=(userorders.getOrdertype()==null?0:userorders.getOrdertype());
+		ShippingParamNew param=new ShippingParamNew();
+		param.setOrderId(userorders.getUserorderid());
+		param.setTransCompany(userorders.getExpresscom());
+		param.setTransOrderId(userorders.getExpressorder());
+		param.setRemark(userorders.getRemark());
+		 // 获取域名
+        ResourceBundle bundle = ResourceBundle.getBundle("commons");
+        String logisticsUrl = bundle.getObject("logisticsUrl").toString();
+		param.setLinkUrl(logisticsUrl+"?orderId="+userorders.getUserorderid());
+		OOrderaddress addr=addressMapper.selectByPrimaryKey(userorders.getOrderaddressid());
+		if(addr!=null){
+			SmsParam sendparam=new SmsParam();
+			sendparam.setTransName(userorders.getExpresscom());
+			sendparam.setTransNum(userorders.getExpressorder());
+			SendSMSByMobile.sendSmS(Integer.parseInt(SendMsgEnums.delivery.toString()), addr.getPhone(), sendparam);
+		}
+		UOtherlogin user=null;
+		//咿呀12的生产商普通用户下单
+		if(ordertype==Integer.parseInt(OrderTypeEnum.nomal.toString())){
+			user=otherloginMapper.getWxloginByUserId(userorders.getUserid());
+		}else if(ordertype==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){
+			//咿呀12的影楼的订单
+			OOrderproducts product= orderProductMapper.getOProductsByOrderId(userorders.getUserorderid());
+			if(product!=null){
+				PMyproducts cart= myproductsMapper.selectByPrimaryKey(product.getCartid());
+				if(cart!=null){
+					List<PMyproductsinvites> invites = myinvitesMapper.findListByCartId(cart.getCartid());
+					if (invites != null && invites.size() > 0) {
+						if(invites.get(0).getInviteuserid()==null){
+							UUsers branchuser=userMapper.getUUsersByPhone(invites.get(0).getInvitephone());
+							if(branchuser!=null){
+								invites.get(0).setInviteuserid(branchuser.getUserid());
+							}
+						}
+						user=otherloginMapper.getWxloginByUserId(invites.get(0).getInviteuserid());
+						
+					}else{
+						user=otherloginMapper.getWxloginByUserId(cart.getUserid());
+					}
+				}
+			}
+		}else if(ordertype==Integer.parseInt(OrderTypeEnum.ti_nomal.toString())){
+			user=otherloginMapper.getWxloginByUserId(userorders.getUserid());
+			
+		}else if(ordertype==Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())){
+			OOrderproducts product=orderProductMapper.getOProductsByOrderId(userorders.getUserorderid());
+			if(product.getCartid()!=null){
+				TiMyworks mywork=timyworkMapper.selectByPrimaryKey(product.getCartid());
+				//如果是活动订单：
+				if(mywork!=null&&mywork.getIsinstead()!=null&&mywork.getIsinstead().intValue()==1){
+					//代客制作
+					user=otherloginMapper.getWxloginByUserId(mywork.getUserid());
+				}else if(mywork!=null&&(mywork.getIsinstead()==null||mywork.getIsinstead().intValue()!=1)){
+					//老客户回顾
+					user=otherloginMapper.getWxloginByUserId(mywork.getUserid());
+				}else{
+					user=otherloginMapper.getWxloginByUserId(userorders.getUserid());
+				}
+				
+			}
+		}	
+		
+		//最后发送微消息
+		if(user!=null&&param!=null){
+			WechatMsgUtil.sendMsg_Shipping(user.getOpenid(), param);
+		}
+	}
+
+	public ReturnModel testdeliverSendMsg(String orderId){
+		ReturnModel rq = new ReturnModel();
+		if(orderId==null||orderId.equals("")){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("订单号不能为空！");
+			return rq;
+		}
+		OUserorders order=userOrdersMapper.selectByPrimaryKey(orderId);
+		if(order!=null){
+			deliverSendMsg(order);
+			rq.setStatu(ReturnStatus.Success);
+			rq.setStatusreson("发送成功");
+		}
+		return rq;
+	}
 }

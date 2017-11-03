@@ -48,4 +48,6 @@ public interface IPbs_OrderMgtService {
 	 */
 	String pbsdownloadOriginalImage(List<PbsUserOrderResultVO> orderlist);
 	
+	ReturnModel testdeliverSendMsg(String orderId);
+	
 }

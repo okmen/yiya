@@ -19,6 +19,7 @@ import net.sf.json.JSONObject;
 
 
 
+
 //import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.model.OUserorders;
 import com.bbyiya.pic.service.IPic_OrderMgtService;
 import com.bbyiya.pic.service.pbs.IPbs_OrderMgtService;
 import com.bbyiya.pic.utils.ExportExcel;
@@ -482,6 +484,21 @@ public class PbsOrderMgtController extends SSOController {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("你的登录已过期");
 		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/testSendMsg")
+	public String testSendMsg(String orderId) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			rq=orderMgtService.testdeliverSendMsg(orderId);
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+
 		return JsonUtil.objectToJsonStr(rq);
 	}
 }

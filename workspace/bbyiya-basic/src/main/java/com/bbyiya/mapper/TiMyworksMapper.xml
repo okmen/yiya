@@ -21,6 +21,10 @@
     from ti_myworks
     where WorkId = #{workid,jdbcType=BIGINT}
   </select>
+  
+  <select id="selectDirtyDataByUserId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select a.* from ti_myworks a where a.UserId = #{userid,jdbcType=BIGINT} and a.IsInstead=1 and not EXISTS (select b.workId from ti_myworkcustomers b where b.WorkId=a.WorkId )
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from ti_myworks
     where WorkId = #{workid,jdbcType=BIGINT}

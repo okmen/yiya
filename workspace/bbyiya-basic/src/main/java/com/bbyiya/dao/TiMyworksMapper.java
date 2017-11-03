@@ -1,5 +1,9 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.TiMyworks;
 
 public interface TiMyworksMapper {
@@ -14,5 +18,7 @@ public interface TiMyworksMapper {
     int updateByPrimaryKeySelective(TiMyworks record);
 
     int updateByPrimaryKey(TiMyworks record);
+    
+    List<TiMyworks>selectDirtyDataByUserId(@Param("userid") Long userid);
 
 }

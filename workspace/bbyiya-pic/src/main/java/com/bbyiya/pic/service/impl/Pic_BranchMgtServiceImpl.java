@@ -876,11 +876,11 @@ public class Pic_BranchMgtServiceImpl implements IPic_BranchMgtService{
 					transaccountsMapper.updateByPrimaryKey(branchTransAccount);
 				}
 				//3.2. 清除代理商账户可用余额
-				UAccounts count=accountsMapper.selectByPrimaryKey(branch.getBranchuserid());
-				if(count!=null){
-					count.setAvailableamount(0.0);
-					accountsMapper.updateByPrimaryKey(count);
-				}	
+//				UAccounts count=accountsMapper.selectByPrimaryKey(branch.getBranchuserid());
+//				if(count!=null){
+//					count.setAvailableamount(0.0);
+//					accountsMapper.updateByPrimaryKey(count);
+//				}	
 				//3.3修改影楼状态
 				branch.setStatus(Integer.parseInt(BranchStatusEnum.tuizhu.toString()));
 				//3.4修改影楼用户身份

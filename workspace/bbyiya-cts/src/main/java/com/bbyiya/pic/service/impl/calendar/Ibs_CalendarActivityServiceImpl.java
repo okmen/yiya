@@ -387,6 +387,95 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 		rq.setStatusreson("设置成功！");
 		return rq;
 	}
+	
+	/**
+	 * 删除预览垃圾数据
+	 * @param userid
+	 */
+	public void deleteWorkForCustomer(Long userid){
+		List<TiMyworks> worklist=timyworkMapper.selectDirtyDataByUserId(userid);
+		if(worklist!=null&&worklist.size()>0){
+			for (TiMyworks tiMyworks : worklist) {
+				timyworkMapper.deleteByPrimaryKey(tiMyworks.getWorkid());
+			}
+		}
+	}
+	/**
+	 * 代客制作预览
+	 */
+	public ReturnModel reviewWorkForCustomer(Long userid,WorkForCustomerParam workparam){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.SystemError);	
+		TiMyworks mywork=null;
+		if(!ObjectUtil.isEmpty(workparam.getWorkId())){
+			mywork=timyworkMapper.selectByPrimaryKey(ObjectUtil.parseLong(workparam.getWorkId()));
+		}
+		if(mywork==null){
+			// 2 生成作品id(cartId=workId)
+			PMyproducts cart=new PMyproducts();
+			cart.setCreatetime(new Date());
+			cart.setUserid(0l);
+			myproductMapper.insertReturnId(cart);
+			mywork=new TiMyworks();
+			mywork.setWorkid(cart.getCartid());
+			mywork.setCreatetime(new Date());
+			mywork.setIsinstead(1);
+			mywork.setProductid(workparam.getProductId());
+			mywork.setStyleid(workparam.getStyleId());
+			mywork.setUserid(userid);
+			timyworkMapper.insert(mywork);
+			myproductMapper.deleteByPrimaryKey(cart.getCartid());
+		}else{
+			mywork.setIsinstead(1);
+			mywork.setProductid(workparam.getProductId());
+			mywork.setStyleid(workparam.getStyleId());
+			mywork.setUserid(userid);
+			timyworkMapper.updateByPrimaryKey(mywork);
+		}
+		
+		HashMap<String, Object> map=new HashMap<String, Object>();
+		map.put("workId", mywork.getWorkid());
+		map.put("styleId", mywork.getStyleid());
+		String redirct_url="assistantpreview?workId="+mywork.getWorkid()+"&styleId="+workparam.getStyleId();	
+
+		try {
+			String urlstr = ConfigUtil.getSingleValue("shareulr-base")+"uid="+URLEncoder.encode(userid.toString(),"utf-8")+"&redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
+			String codeurl="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+URLEncoder.encode(urlstr,"utf-8");
+			map.put("codeurl", codeurl);
+
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Date time=new Date();
+		//先删除后插入
+		List<TiMyartsdetails> detailslist=detailMapper.findDetailsByWorkId(mywork.getWorkid());
+		if(detailslist!=null&&detailslist.size()>0){
+			for (TiMyartsdetails dd : detailslist) {
+				detailMapper.deleteByPrimaryKey(dd.getDetailid());
+			}
+		}
+		for(int i=0;i<workparam.getDetails().size();i++){
+			String url=workparam.getDetails().get(i).getImageurl();
+			//if(!ObjectUtil.isEmpty(url)){
+				url=ImgDomainUtil.getImageUrl_Full(url);
+				TiMyartsdetails detail=new TiMyartsdetails();
+				detail.setWorkid(mywork.getWorkid());
+				detail.setImageurl(url);
+				detail.setSort(i);
+				detail.setCreatetime(time); 
+				detailMapper.insert(detail);
+			//}
+		}
+		
+		rq.setBasemodle(map);
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("添加预览成功！");
+		return rq;
+		
+	}
+		
 	/**
 	 * 添加客户代客制作
 	 * 
@@ -401,22 +490,34 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 			rq.setStatusreson("请上传完"+style.getImgcount()+"张图片,才能提交!");
 			return rq;
 		}
+		TiMyworks mywork=null;
+		if(!ObjectUtil.isEmpty(workparam.getWorkId())){
+			mywork=timyworkMapper.selectByPrimaryKey(ObjectUtil.parseLong(workparam.getWorkId()));
+		}
+		if(mywork==null){
+			// 2 生成 作品id(cartId=workId)
+			PMyproducts cart=new PMyproducts();
+			cart.setCreatetime(new Date());
+			cart.setUserid(0l);
+			myproductMapper.insertReturnId(cart);
+			mywork=new TiMyworks();
+			mywork.setWorkid(cart.getCartid());
+			mywork.setCreatetime(new Date());
+			mywork.setIsinstead(1);
+			mywork.setProductid(workparam.getProductId());
+			mywork.setStyleid(workparam.getStyleId());
+			mywork.setUserid(userid);
+			timyworkMapper.insert(mywork);
+			myproductMapper.deleteByPrimaryKey(cart.getCartid());
+		}else{
+			mywork.setIsinstead(1);
+			mywork.setProductid(workparam.getProductId());
+			mywork.setStyleid(workparam.getStyleId());
+			mywork.setUserid(userid);
+			timyworkMapper.updateByPrimaryKey(mywork);
+		}
 		
 		
-		// 2 生成 作品id(cartId=workId)
-		PMyproducts cart=new PMyproducts();
-		cart.setCreatetime(new Date());
-		cart.setUserid(0l);
-		myproductMapper.insertReturnId(cart);
-		TiMyworks mywork=new TiMyworks();
-		mywork.setWorkid(cart.getCartid());
-		mywork.setCreatetime(new Date());
-		mywork.setIsinstead(1);
-		mywork.setProductid(workparam.getProductId());
-		mywork.setStyleid(workparam.getStyleId());
-		mywork.setUserid(userid);
-		timyworkMapper.insert(mywork);
-		myproductMapper.deleteByPrimaryKey(cart.getCartid());
 		HashMap<String, Object> map=new HashMap<String, Object>();
 		map.put("workId", mywork.getWorkid());
 		map.put("productId", mywork.getProductid());
@@ -439,6 +540,13 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 		workcus.setWorkid(mywork.getWorkid());
 		workcusMapper.insert(workcus);
 		Date time=new Date();
+		//先删除后插入
+		List<TiMyartsdetails> detailslist=detailMapper.findDetailsByWorkId(mywork.getWorkid());
+		if(detailslist!=null&&detailslist.size()>0){
+			for (TiMyartsdetails dd : detailslist) {
+				detailMapper.deleteByPrimaryKey(dd.getDetailid());
+			}
+		}
 		for(int i=0;i<workparam.getDetails().size();i++){
 			String url=workparam.getDetails().get(i).getImageurl();
 			if(!ObjectUtil.isEmpty(url)){
@@ -492,6 +600,8 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 				
 			}
 		}
+		//清除预览垃圾数据
+		this.deleteWorkForCustomer(userid);
 		rq.setBasemodle(pageresult);
 		rq.setStatu(ReturnStatus.Success);
 		rq.setStatusreson("添加成功！");

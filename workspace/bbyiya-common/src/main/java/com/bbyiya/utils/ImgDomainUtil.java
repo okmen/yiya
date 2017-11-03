@@ -33,21 +33,21 @@ public class ImgDomainUtil {
 	 * @param imageUrl
 	 * @return
 	 */
-	public static String getImageUrl_Sourse(String imageUrl){
-		if(ObjectUtil.isEmpty(imageUrl))
-			return imageUrl;
-		if(imageUrl.contains("http://")||imageUrl.contains("https://")){
-			for (Map<String, String> map : imgdomainDefault) {
-				if(imageUrl.contains(map.get("domain"))){
-					imageUrl= imageUrl.replace(map.get("domain"), map.get("source"));
-					return imageUrl;
-				}
-			}
-			return imageUrl;
-		}
-		int index = new Random().nextInt(imgdomainDefault.size());
-		String imgdomain=imgdomainDefault.get(index).get("domain");
-		return imgdomain+"/"+imageUrl;
-	}
+//	public static String getImageUrl_Sourse(String imageUrl){
+//		if(ObjectUtil.isEmpty(imageUrl))
+//			return imageUrl;
+//		if(imageUrl.contains("http://")||imageUrl.contains("https://")){
+//			for (Map<String, String> map : imgdomainDefault) {
+//				if(imageUrl.contains(map.get("domain"))){
+//					imageUrl= imageUrl.replace(map.get("domain"), map.get("source"));
+//					return imageUrl;
+//				}
+//			}
+//			return imageUrl;
+//		}
+//		int index = new Random().nextInt(imgdomainDefault.size());
+//		String imgdomain=imgdomainDefault.get(index).get("domain");
+//		return imgdomain+"/"+imageUrl;
+//	}
 	
 }

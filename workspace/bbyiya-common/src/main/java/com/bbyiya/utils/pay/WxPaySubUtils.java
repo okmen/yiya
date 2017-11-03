@@ -97,7 +97,6 @@ public class WxPaySubUtils {
 		String sign = genPackageSign(paramlist);
 		paramlist.add(new BasicNameValuePair("sign", sign));
 		String xmlstring = WxUtil.toXml(paramlist);
-//		System.out.println(xmlstring); 
 		String xmlResult = WxUtil.httpsRequest("https://api.mch.weixin.qq.com/pay/orderquery", xmlstring);
 		SortedMap<String, String> map = WxUtil.xmlToMap(xmlResult);
 		return map;

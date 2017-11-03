@@ -11,7 +11,7 @@ public enum WechatMsgEnums {
      */
     send("GtyopaD5uOp43814DXKyFRAdYe95EfIkenxACyz-FFI"),
     /**
-     * 
+     * 发货通知
      */
     sendSimple("YBdS4leiXpT7_sawc7tHpO_wwOKadP741GvJbo1IK0o")
     ;

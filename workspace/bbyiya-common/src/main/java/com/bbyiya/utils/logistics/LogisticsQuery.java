@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import com.bbyiya.utils.HttpRequestHelper;
 import com.bbyiya.utils.encrypt.MD5Encrypt;
 public class LogisticsQuery {
 	
@@ -25,7 +27,8 @@ public class LogisticsQuery {
 		params.put("customer",customer);
 		String resp="";
 		try {
-			resp = new HttpRequest().postData("http://poll.kuaidi100.com/poll/query.do", params, "utf-8").toString();
+//			resp = new HttpRequest().postData("http://poll.kuaidi100.com/poll/query.do", params, "utf-8").toString();
+			resp=HttpRequestHelper.post_httpClient("http://poll.kuaidi100.com/poll/query.do", params);
 			//System.out.println(resp);			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -47,7 +50,8 @@ public class LogisticsQuery {
 		params.put("customer",customer);
 		String resp;
 		try {
-			resp = new HttpRequest().postData("http://poll.kuaidi100.com/poll/query.do", params, "utf-8").toString();
+//			resp = new HttpRequest().postData("http://poll.kuaidi100.com/poll/query.do", params, "utf-8").toString();
+			resp=HttpRequestHelper.post_httpClient("http://poll.kuaidi100.com/poll/query.do", params);
 			System.out.println(resp);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

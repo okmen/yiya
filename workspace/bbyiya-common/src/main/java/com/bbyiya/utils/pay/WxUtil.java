@@ -20,8 +20,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-
 import java.util.Random;
 import java.util.Set;
 import java.util.SortedMap;
@@ -35,9 +33,7 @@ import org.dom4j.Element;
 
 import com.bbyiya.utils.encrypt.MD5Encrypt;
 
-
 public class WxUtil {
-	
 
 	/**
 	 * 时间串
@@ -57,135 +53,56 @@ public class WxUtil {
 		Random random = new Random();
 		return MD5Encrypt.getMessageDigest(String.valueOf(random.nextInt(10000)).getBytes()).toUpperCase();
 	}
-	
-	/**
-	 * 向指定URL发送GET方法的请求
-	 * 
-	 * @param url
-	 *            发送请求的URL
-	 * @param param
-	 *            请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
-	 * @return URL 所代表远程资源的响应结果
-	 */
-	public static String sendGet(String url, String param) {
-		String result = "";
-		BufferedReader in = null;
+
+	// 请求方法
+	public static String httpsRequest(String requestUrl, String outputStr) {
 		try {
-			String urlNameString = url + "?" + param;
-			URL realUrl = new URL(urlNameString);
-			// 打开和URL之间的连接
-			URLConnection connection = realUrl.openConnection();
-			// 设置通用的请求属性
-			connection.setRequestProperty("accept", "*/*");
-			connection.setRequestProperty("connection", "Keep-Alive");
-			connection.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
-			// 建立实际的连接
-			connection.connect();
-			// 获取所有响应头字段
-			Map<String, List<String>> map = connection.getHeaderFields();
-			// 遍历所有的响应头字段
-			for (String key : map.keySet()) {
-				System.out.println(key + "--->" + map.get(key));
+			URL url = new URL(requestUrl);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+			conn.setDoOutput(true);
+			conn.setDoInput(true);
+			conn.setUseCaches(false);
+			// 设置请求方式（GET/POST）
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("content-type", "application/x-www-form-urlencoded");
+			// 当outputStr不为null时向输出流写数据
+			if (null != outputStr) {
+				OutputStream outputStream = conn.getOutputStream();
+				// 注意编码格式
+				outputStream.write(outputStr.getBytes("UTF-8"));
+				outputStream.close();
 			}
-			// 定义 BufferedReader输入流来读取URL的响应
-			in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			String line;
-			while ((line = in.readLine()) != null) {
-				result += line;
+			// 从输入流读取返回内容
+			InputStream inputStream = conn.getInputStream();
+			InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "utf-8");
+			BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+			String str = null;
+			StringBuffer buffer = new StringBuffer();
+			while ((str = bufferedReader.readLine()) != null) {
+				buffer.append(str);
 			}
+			// 释放资源
+			bufferedReader.close();
+			inputStreamReader.close();
+			inputStream.close();
+			inputStream = null;
+			conn.disconnect();
+			return buffer.toString();
+		} catch (ConnectException ce) {
+			// System.out.println("连接超时：{}"+ ce);
 		} catch (Exception e) {
-//			System.out.println("发送GET请求出现异常！" + e);
-			e.printStackTrace();
+			// System.out.println("https请求异常：{}"+ e);
 		}
-		// 使用finally块来关闭输入流
-		finally {
-			try {
-				if (in != null) {
-					in.close();
-				}
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-		}
-		return result;
+		return null;
 	}
 
-	public static String httpPost(String urlStr, String param) {
-		String result = "";
-		try {
-			URL url = new URL(urlStr);
-			URLConnection con = url.openConnection();
-			con.setDoOutput(true);
-			con.setRequestProperty("Pragma:", "no-cache");
-			con.setRequestProperty("Cache-Control", "no-cache");
-			con.setRequestProperty("Content-Type", "text/xml");
-
-			OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream());
-			out.write(new String(param.getBytes("ISO-8859-1"))); // param.getBytes(),"ISO-8859-1"
-			out.flush();
-			out.close();
-			BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-			String line = "";
-			for (line = br.readLine(); line != null; line = br.readLine()) {
-				result += line;
-			}
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
-	
-	//请求方法  
-    public static String httpsRequest(String requestUrl, String outputStr) {  
-          try {  
-               
-              URL url = new URL(requestUrl);  
-              HttpURLConnection conn = (HttpURLConnection) url.openConnection();  
-              
-              conn.setDoOutput(true);  
-              conn.setDoInput(true);  
-              conn.setUseCaches(false);  
-              // 设置请求方式（GET/POST）  
-              conn.setRequestMethod("POST");  
-              conn.setRequestProperty("content-type", "application/x-www-form-urlencoded");  
-              // 当outputStr不为null时向输出流写数据  
-              if (null != outputStr) {  
-                  OutputStream outputStream = conn.getOutputStream();  
-                  // 注意编码格式  
-                  outputStream.write(outputStr.getBytes("UTF-8"));  
-                  outputStream.close();  
-              }  
-              // 从输入流读取返回内容  
-              InputStream inputStream = conn.getInputStream();  
-              InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "utf-8");  
-              BufferedReader bufferedReader = new BufferedReader(inputStreamReader);  
-              String str = null;  
-              StringBuffer buffer = new StringBuffer();  
-              while ((str = bufferedReader.readLine()) != null) {  
-                  buffer.append(str);  
-              }  
-              // 释放资源  
-              bufferedReader.close();  
-              inputStreamReader.close();  
-              inputStream.close();  
-              inputStream = null;  
-              conn.disconnect();  
-              return buffer.toString();  
-          } catch (ConnectException ce) {  
-//              System.out.println("连接超时：{}"+ ce);  
-          } catch (Exception e) {  
-//              System.out.println("https请求异常：{}"+ e);  
-          }  
-          return null;  
-    }  
-
-    /**
-     * xmlStr 转化成map
-     * @param xml
-     * @return
-     */
+	/**
+	 * xmlStr 转化成map
+	 * 
+	 * @param xml
+	 * @return
+	 */
 	public static Map<String, Object> xml2Map(String xml) {
 		try {
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -205,18 +122,17 @@ public class WxUtil {
 		}
 		return null;
 	}
-	
+
 	public static SortedMap<String, String> xmlToMap(String xml) {
 		try {
-			SortedMap<String, String> sortedMap= new TreeMap<String, String>();
+			SortedMap<String, String> sortedMap = new TreeMap<String, String>();
 			Document document = DocumentHelper.parseText(xml);
-			Element root=	document.getRootElement();
-			
-			List<Element> list=root.elements();
-			if(list!=null&&list.size()>0)
-			{
+			Element root = document.getRootElement();
+
+			List<Element> list = root.elements();
+			if (list != null && list.size() > 0) {
 				for (Element element : list) {
-					sortedMap.put(element.getName(), element.getText());	
+					sortedMap.put(element.getName(), element.getText());
 				}
 			}
 			return sortedMap;
@@ -314,6 +230,7 @@ public class WxUtil {
 
 	/**
 	 * 获取xml String
+	 * 
 	 * @param params
 	 * @return
 	 */
@@ -328,35 +245,61 @@ public class WxUtil {
 		sb.append("</xml>");
 		return sb.toString();
 	}
-	
+
 	/**
 	 * 验证签名
+	 * 
 	 * @param paramMap
 	 * @param key
 	 * @return
 	 */
-	public static boolean isWXsign(SortedMap<String, String> paramMap,String key){			
+	public static boolean isWXsign(SortedMap<String, String> paramMap, String key) {
 		StringBuffer sb = new StringBuffer();
-		String checkSign="";
+		String checkSign = "";
 		Set es = paramMap.entrySet();
 		Iterator it = es.iterator();
 		while (it.hasNext()) {
 			Map.Entry entry = (Map.Entry) it.next();
 			String k = (String) entry.getKey();
 			String v = (String) entry.getValue();
-			if (null != v && !"".equals(v) && !"sign".equals(k)
-					&& !"key".equals(k)) {
+			if (null != v && !"".equals(v) && !"sign".equals(k) && !"key".equals(k)) {
 				sb.append(k + "=" + v + "&");
 			}
-			if("sign".equals(k))
-			{
+			if ("sign".equals(k)) {
 				checkSign = v;
 			}
 		}
-		sb.append("key=" + key);		
+		sb.append("key=" + key);
 		String sign = MD5Encrypt.encrypt(sb.toString()).toUpperCase();
 
-        return sign.equals(checkSign);     
+		return sign.equals(checkSign);
 	}
 	
+	
+	/**
+	 * 生成签名(公共)
+	 * params 签名参数
+	 * appSecret 签名商户AppSecret
+	 */
+	public static String genPackageSign(List<NameValuePair> params,String appSecret) {
+		Collections.sort(params, new Comparator<NameValuePair>() {
+			// 重写排序规则
+			public int compare(NameValuePair list1, NameValuePair list2) {
+				return list1.getName().compareTo(list2.getName());
+			}
+		});
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < params.size(); i++) {
+			sb.append(params.get(i).getName());
+			sb.append('=');
+			sb.append(params.get(i).getValue());
+			sb.append('&');
+		}
+		sb.append("key=");
+		sb.append(appSecret);
+		String packageSign = MD5Encrypt.getMessageDigest(sb.toString().getBytes()).toUpperCase();
+		return packageSign;
+	}
+
 }

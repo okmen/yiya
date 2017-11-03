@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.common.vo.ImageInfo;
+import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.TiActivitysMapper;
 import com.bbyiya.dao.TiActivitysinglesMapper;
@@ -29,6 +30,7 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.ActivityWorksStatusEnum;
 import com.bbyiya.enums.calendar.TiActivityTypeEnum;
 import com.bbyiya.enums.user.UserIdentityEnums;
+import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.TiActivitys;
 import com.bbyiya.model.TiActivitysingles;
@@ -136,7 +138,6 @@ public class TiActivityMgtController extends SSOController {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-//			TiActivityworks activityworks= activityworksMapper.selectByPrimaryKey(workId);
 			TiMyworks myworks=myworkMapper.selectByPrimaryKey(workId);
 			if(myworks!=null&&myworks.getActid()!=null){
 				myworks.setStyleid(styleId);
@@ -350,21 +351,6 @@ public class TiActivityMgtController extends SSOController {
 			rq.setStatusreson("活动不存在！");
 			return rq;
 		}
-//		List<TiUserdiscounts> mydislist= userDisMapper.findMyDiscounts(userId);
-//		if(mydislist!=null&&mydislist.size()>0){
-//			for (TiUserdiscounts dd : mydislist) {
-//				if(dd.getWorkid()!=null&&dd.getWorkid().longValue()==workId){
-//					rq.setStatu(ReturnStatus.ParamError);
-//					rq.setStatusreson("您已经领取过优惠券！");
-//					return rq;
-//				}
-//				else if(dd.getActid()!=null&& dd.getActid().intValue()==actId){
-//					rq.setStatu(ReturnStatus.ParamError);
-//					rq.setStatusreson("您已经领取过优惠券！");
-//					return rq;
-//				}
-//			}
-//		}
 		if(workId>0){
 			List<TiUserdiscounts> mydislist=userDisMapper.findMyDiscountsByWorkId(userId, workId);
 			if(mydislist!=null&&mydislist.size()>0){
@@ -519,6 +505,61 @@ public class TiActivityMgtController extends SSOController {
 					map.put("company", promoters.getCompanyname());
 					rq.setBasemodle(map); 
 				}
+			}
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	@Autowired
+	private OOrderaddressMapper oaddressMapper;
+	
+	/**
+	 * 活动分享页 --查看详情（用户的收货地址）
+	 * @param workId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getActAddress")
+	public String getActAddress(long  workId) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if (user != null) {
+			TiActivityworks activityworks=activityworksMapper.selectByPrimaryKey(workId);
+			if(activityworks!=null&&activityworks.getUserid().longValue()==user.getUserId().longValue()){
+				Map<String, Object> map=new HashMap<String, Object>();
+				if(activityworks.getOrderaddressid()!=null){
+					OOrderaddress address= oaddressMapper.selectByPrimaryKey(activityworks.getOrderaddressid());
+					if(address!=null){
+						UUserAddressResult userAddressResult = new UUserAddressResult();
+						userAddressResult.setProvinceName(address.getProvince());
+						userAddressResult.setCityName(address.getCity());
+						userAddressResult.setAreaName(address.getDistrict());
+						userAddressResult.setStreetdetail(address.getStreetdetail());
+						map.put("address", userAddressResult);
+						map.put("addressType", 1);
+					}
+				}else {
+					TiActivitys activitys=actMapper.selectByPrimaryKey(activityworks.getActid());
+					if(activitys!=null){
+						TiPromoters promoters = promoterMapper.selectByPrimaryKey(activitys.getProduceruserid());
+						if (promoters != null) {
+							UUserAddressResult userAddressResult = new UUserAddressResult();
+							userAddressResult.setProvinceName(regionService.getProvinceName(promoters.getProvince()));
+							userAddressResult.setCityName(regionService.getCityName(promoters.getCity()));
+							userAddressResult.setAreaName(regionService.getAresName(promoters.getArea()));
+							userAddressResult.setStreetdetail(promoters.getStreetdetails());
+							rq.setStatu(ReturnStatus.Success);
+							map.put("address", userAddressResult);
+							map.put("addressType", 2);
+						}
+					}
+				}
+				rq.setStatu(ReturnStatus.Success);
+				rq.setBasemodle(map); 
 			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);

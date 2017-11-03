@@ -2,21 +2,31 @@ package com.bbyiya.utils;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.http.NameValuePair;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+
+import com.bbyiya.utils.encrypt.MD5Encrypt;
+import com.bbyiya.utils.pay.WxPayConfig;
 
 
 public class ObjectUtil {
@@ -741,8 +751,7 @@ public class ObjectUtil {
 	/**
 	 * 检测是否有emoji字符
 	 * 
-	 * @param source
-	 *            需要判断的字符串
+	 * @param source  需要判断的字符串
 	 * @return 一旦含有就抛出
 	 */
 	public static boolean containsEmoji(String source) {
@@ -837,8 +846,72 @@ public class ObjectUtil {
 				}
 			}
 		}
-
 		return strAllParam;
 	}
+	
+	
+	/**
+	 * xmlStr 转化成map
+	 * 
+	 * @param xml
+	 * @return
+	 */
+	public static Map<String, Object> xml2Map(String xml) {
+		try {
+			Map<String, Object> map = new HashMap<String, Object>();
+			Document document = DocumentHelper.parseText(xml);
+			Element root = document.getRootElement();
+			List<Element> list = root.elements();
+			if (list != null && list.size() > 0) {
+				for (Element element : list) {
+					map.put(element.getName(), element.getText());
+				}
+			}
+			return map;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	/**
+	 * 将 xmlStr 转成 hashMap 
+	 * @param xml
+	 * @return
+	 */
+	public static Map<String, String> xmlToMap(String xml) {
+		try {
+			Map<String, String> map = new TreeMap<String, String>();
+			Document document = DocumentHelper.parseText(xml);
+			Element root = document.getRootElement();
 
+			List<Element> list = root.elements();
+			if (list != null && list.size() > 0) {
+				for (Element element : list) {
+					map.put(element.getName(), element.getText());
+				}
+			}
+			return map;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static SortedMap<String, String> xmlToStoedMap(String xml) {
+		try {
+			SortedMap<String, String> sortedMap = new TreeMap<String, String>();
+			Document document = DocumentHelper.parseText(xml);
+			Element root = document.getRootElement();
+			List<Element> list = root.elements();
+			if (list != null && list.size() > 0) {
+				for (Element element : list) {
+					sortedMap.put(element.getName(), element.getText());
+				}
+			}
+			return sortedMap;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

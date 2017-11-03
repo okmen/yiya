@@ -360,16 +360,15 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			}
 			//  修改本张订单 
 			if(userorders.getOrdertype()==null) userorders.setOrdertype(0);
-			
-			//修改订单状态为已发货状态
-			if(userorders.getStatus()!=null&&userorders.getStatus().intValue()!=Integer.parseInt(OrderStatusEnum.recived.toString())){
-				userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
-				deliverSendMsg(userorders);
-			}		
 			userorders.setExpresscom(expressCom);
 			userorders.setExpressorder(expressOrder);
 			userorders.setExpresscode(expressCode);
 			userorders.setDeliverytime(new Date());
+			//修改订单状态为已发货状态
+			if(userorders.getStatus()!=null&&userorders.getStatus().intValue()!=Integer.parseInt(OrderStatusEnum.recived.toString())){
+				userorders.setStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
+				deliverSendMsg(userorders);
+			}	
 			userOrdersMapper.updateByPrimaryKeySelective(userorders);
 
 			rq.setStatu(ReturnStatus.Success);

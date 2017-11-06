@@ -36,6 +36,8 @@ public class TiOrderVo implements Serializable {
 	private String propertystr;
 	private Long cartid;
 	private Integer actid;//活动ID
+	private String actkhmc;//活动客户名称
+	private String actkhphone;//活动客户联系方式 
 	public OOrderaddress getAddress() {
 		return address;
 	}
@@ -131,6 +133,18 @@ public class TiOrderVo implements Serializable {
 	}
 	public void setActid(Integer actid) {
 		this.actid = actid;
+	}
+	public String getActkhmc() {
+		return actkhmc;
+	}
+	public String getActkhphone() {
+		return actkhphone;
+	}
+	public void setActkhmc(String actkhmc) {
+		this.actkhmc = actkhmc;
+	}
+	public void setActkhphone(String actkhphone) {
+		this.actkhphone = actkhphone;
 	}
 	
 	

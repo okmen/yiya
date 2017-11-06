@@ -233,7 +233,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					product.setBranchesprovince(address.getProvince());
 					product.setBranchesrcity(address.getCity());
 					product.setBranchesdistrict(address.getDistrict());
-					product.setBranchesAddress(address.getStreetdetail());
+					product.setBranchesAddress(address.getProvince()+address.getCity()+address.getDistrict()+address.getStreetdetail());
 					product.setBranchesPhone(address.getPhone());
 					product.setBranchesUserName(address.getReciver());
 				}else if (orderType == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())) {
@@ -246,12 +246,12 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 							product.setBuyerprovince(address.getProvince());
 							product.setBuyercity(address.getCity());
 							product.setBuyerdistrict(address.getDistrict());
-							product.setBuyerstreetdetail(address.getStreetdetail());
+							product.setBuyerstreetdetail(address.getProvince()+address.getCity()+address.getDistrict()+address.getStreetdetail());
 						}else{
 							product.setBranchesprovince(address.getProvince());
 							product.setBranchesrcity(address.getCity());
 							product.setBranchesdistrict(address.getDistrict());
-							product.setBranchesAddress(address.getStreetdetail());
+							product.setBranchesAddress(address.getProvince()+address.getCity()+address.getDistrict()+address.getStreetdetail());
 							product.setBranchesPhone(address.getPhone());
 							product.setBranchesUserName(address.getReciver());
 							if(mycus!=null){
@@ -267,12 +267,12 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 							product.setBuyerprovince(address.getProvince());
 							product.setBuyercity(address.getCity());
 							product.setBuyerdistrict(address.getDistrict());
-							product.setBuyerstreetdetail(address.getStreetdetail());
+							product.setBuyerstreetdetail(address.getProvince()+address.getCity()+address.getDistrict()+address.getStreetdetail());
 						}else{
 							product.setBranchesprovince(address.getProvince());
 							product.setBranchesrcity(address.getCity());
 							product.setBranchesdistrict(address.getDistrict());
-							product.setBranchesAddress(address.getStreetdetail());
+							product.setBranchesAddress(address.getProvince()+address.getCity()+address.getDistrict()+address.getStreetdetail());
 							product.setBranchesPhone(address.getPhone());
 							product.setBranchesUserName(address.getReciver());
 							if(work!=null){
@@ -286,7 +286,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 						product.setBranchesprovince(address.getProvince());
 						product.setBranchesrcity(address.getCity());
 						product.setBranchesdistrict(address.getDistrict());
-						product.setBranchesAddress(address.getStreetdetail());
+						product.setBranchesAddress(address.getProvince()+address.getCity()+address.getDistrict()+address.getStreetdetail());
 						product.setBranchesPhone(address.getPhone());
 						product.setBranchesUserName(address.getReciver());
 						OUserorderext orderext=userOrderextMapper.selectByPrimaryKey(order.getUserorderid());
@@ -300,7 +300,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 						product.setBuyerprovince(address.getProvince());
 						product.setBuyercity(address.getCity());
 						product.setBuyerdistrict(address.getDistrict());
-						product.setBuyerstreetdetail(address.getStreetdetail());
+						product.setBuyerstreetdetail(address.getProvince()+address.getCity()+address.getDistrict()+address.getStreetdetail());
 					}
 					
 				}else{
@@ -310,7 +310,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 							product.setBranchesprovince(regionService.getProvinceName(branch.getProvince()));
 							product.setBranchesrcity(regionService.getCityName(branch.getCity()));
 							product.setBranchesdistrict(regionService.getAresName(branch.getArea()));
-							product.setBranchesAddress(branch.getStreetdetail());
+							product.setBranchesAddress(product.getBranchesprovince()+product.getBranchesrcity()+product.getBranchesdistrict()+branch.getStreetdetail());
 						}
 					}
 					product.setReciver(address.getReciver());
@@ -318,7 +318,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					product.setBuyerprovince(address.getProvince());
 					product.setBuyercity(address.getCity());
 					product.setBuyerdistrict(address.getDistrict());
-					product.setBuyerstreetdetail(address.getStreetdetail());
+					product.setBuyerstreetdetail(address.getProvince()+address.getCity()+address.getDistrict()+address.getStreetdetail());
 				}
 				
 				

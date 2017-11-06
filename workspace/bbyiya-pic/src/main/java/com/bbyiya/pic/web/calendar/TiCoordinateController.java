@@ -213,7 +213,8 @@ public class TiCoordinateController  extends SSOController{
 							if(photoList.size()>i){
 								layerList.get(i).setWorkImgUrl(ImgDomainUtil.getImageUrl_Full(photoList.get(i).getImgurl()));  
 								//---打印号---
-								layerList.get(i).setPrintNo(workId+"-"+(i+1)+"-"+userorders.getUserid()+"-"+oproducerModel.getPrintindex()); 
+								layerList.get(i).setPrintNo(getPrintNu(workId, userorders.getUserid(), oproducerModel.getPrintindex(), i+1));
+//								layerList.get(i).setPrintNo(workId+"-"+(i+1)+"-"+userorders.getUserid()+"-"+oproducerModel.getPrintindex()); 
 							}
 						}
 						
@@ -240,19 +241,22 @@ public class TiCoordinateController  extends SSOController{
 								 List<TiStyleLayerResult> resultslist=new ArrayList<TiStyleLayerResult>();
 								 int index=1;
 								 for (TiStyleLayerResult layer : layerList) {
-									layer.setPrintNo(workId+"-"+(index)+"-"+userorders.getUserid()+"-"+oproducerModel.getPrintindex()); 
+									layer.setPrintNo( getPrintNu(workId, userorders.getUserid(), oproducerModel.getPrintindex(), index));
+//									layer.setPrintNo(workId+"-"+(index)+"-"+userorders.getUserid()+"-"+oproducerModel.getPrintindex()); 
 									resultslist.add(layer);
 									if(index==1){
 										if(adverlist!=null&&adverlist.get(adverlist.size()-1)!=null){
 											index++;
-											adverlist.get(adverlist.size()-1).setPrintNo(workId+"-"+(index)+"-"+userorders.getUserid()+"-"+oproducerModel.getPrintindex());
+											adverlist.get(adverlist.size()-1).setPrintNo( getPrintNu(workId, userorders.getUserid(), oproducerModel.getPrintindex(), index));
+//											adverlist.get(adverlist.size()-1).setPrintNo(workId+"-"+(index)+"-"+userorders.getUserid()+"-"+oproducerModel.getPrintindex());
 											resultslist.add(adverlist.get(adverlist.size()-1));  
 										}
 									}
 									index++;
 								 }
 								 for(int i=(adverlist.size()-2);i>=0;i--){ 
-									 adverlist.get(i).setPrintNo(workId+"-"+(index)+"-"+userorders.getUserid()+"-"+oproducerModel.getPrintindex());
+									 adverlist.get(i).setPrintNo( getPrintNu(workId, userorders.getUserid(), oproducerModel.getPrintindex(), index));
+//									 adverlist.get(i).setPrintNo(workId+"-"+(index)+"-"+userorders.getUserid()+"-"+oproducerModel.getPrintindex());
 									 resultslist.add(adverlist.get(i));  
 									 index++;
 								 } 
@@ -279,6 +283,19 @@ public class TiCoordinateController  extends SSOController{
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	/**
+	 * 打印号
+	 * @param workId
+	 * @param userId
+	 * @param orderIndex
+	 * @param index
+	 * @return
+	 */
+	private String getPrintNu(long workId,long userId,String orderIndex,int index){
+		return workId+"-"+userId+"-"+orderIndex+"-"+index; 
+	}
+	
 	
 	@Autowired
 	private TiProductsMapper productsMapper;

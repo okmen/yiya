@@ -79,6 +79,7 @@ import com.bbyiya.service.calendar.ITi_OrderMgtService;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.SendSMSByMobile;
+import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.calendar.TiActivityOrderSubmitParam;
 import com.bbyiya.vo.calendar.TiAmountProportion;
 
@@ -231,12 +232,30 @@ public class BasePayServiceImpl implements IBasePayService{
 						if(works!=null&&ObjectUtil.parseLong(payOrder.getExtobject())>0){
 							works.setAddresstype(1);
 							works.setOrderaddressid(ObjectUtil.parseLong(payOrder.getExtobject()));
-							works.setStatus(Integer.parseInt(ActivityWorksStatusEnum.imagesubmit.toString())); 
+//							works.setStatus(Integer.parseInt(ActivityWorksStatusEnum.imagesubmit.toString())); 
 							activityworksMapper.updateByPrimaryKeySelective(works);
 						} 
 						payOrderMapper.updateByPrimaryKeySelective(payOrder);
 						//台历交易记录
 						add_tiAccountLog(payId,payOrder.getUserid(), payOrder.getTotalprice(),TiAmountLogType.in_payment);
+						
+						//影楼自动下单（活动作品）
+						if(works!=null){
+							TiActivitys acts= activitysMapper.selectByPrimaryKey(works.getActid());
+							if(acts!=null){
+								// 自动下单操作
+								TiActivityOrderSubmitParam orderParam = new TiActivityOrderSubmitParam();
+								orderParam.setSubmitUserId(acts.getProduceruserid());
+								orderParam.setWorkId(works.getWorkid());
+								orderParam.setCount(1);
+								ReturnModel oReturnModel=basetiorderService.submitTiCustomerOrder_ibs(orderParam, null);
+								addlog("付邮费参与活动"+oReturnModel.getStatusreson());
+							}else {
+								addlog("找不到活动。payid:"+payId);
+							}
+						}else {
+							addlog("找不到活动2。payid:"+payId);
+						}
 						return true;
 					}
 					//台历红包 --付款到平台
@@ -371,23 +390,28 @@ public class BasePayServiceImpl implements IBasePayService{
 	 * @param type
 	 */
 	public void add_tiAccountLog(String payId,long userid, double amount,TiAmountLogType type){
-		TiAccountlog lastLog= tiAccountlogMapper.getLastResult();
-		double totalamount=0d ,totalavailbelAmount=0d;
-		if(lastLog!=null){
-			totalamount=(lastLog.getTotalamount()==null?0:lastLog.getTotalamount().doubleValue());
-			totalavailbelAmount=(lastLog.getAvailableamount()==null?0:lastLog.getAvailableamount().doubleValue());
+		try {
+			TiAccountlog lastLog= tiAccountlogMapper.getLastResult();
+			double totalamount=0d ,totalavailbelAmount=0d;
+			if(lastLog!=null){
+				totalamount=(lastLog.getTotalamount()==null?0:lastLog.getTotalamount().doubleValue());
+				totalavailbelAmount=(lastLog.getAvailableamount()==null?0:lastLog.getAvailableamount().doubleValue());
+			}
+			TiAccountlog log=new TiAccountlog();
+			log.setAmount(amount);
+			log.setType(Integer.parseInt(type.toString()));
+			if(type!=TiAmountLogType.out_dispenseCash){
+				log.setTotalamount(totalamount+ Math.abs(amount));
+			}
+			log.setAvailableamount(totalavailbelAmount+amount);
+			log.setPayid(payId);
+			log.setCreatetime(new Date());
+			log.setUserid(userid);
+			tiAccountlogMapper.insert(log);
+		} catch (Exception e) {
+			// TODO: handle exception
+			addlog("台历记录:orderId"+payId+e.getMessage());
 		}
-		TiAccountlog log=new TiAccountlog();
-		log.setAmount(amount);
-		log.setType(Integer.parseInt(type.toString()));
-		if(type!=TiAmountLogType.out_dispenseCash){
-			log.setTotalamount(totalamount+ Math.abs(amount));
-		}
-		log.setAvailableamount(totalavailbelAmount+amount);
-		log.setPayid(payId);
-		log.setCreatetime(new Date());
-		log.setUserid(userid);
-		tiAccountlogMapper.insert(log);
 	}
 	
 	/**

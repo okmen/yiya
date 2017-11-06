@@ -390,11 +390,11 @@ public class TiActivityMgtController extends SSOController {
 					activityworks.setStatus(Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString())); 
 					activityworksMapper.updateByPrimaryKeySelective(activityworks);
 					//自动下单
-					TiActivityOrderSubmitParam param=new TiActivityOrderSubmitParam();
-					param.setCount(1);
-					param.setSubmitUserId(actInfo.getProduceruserid());
-					param.setWorkId(workId);
-					orderMgtService.submitOrder_ibs(param); 
+//					TiActivityOrderSubmitParam param=new TiActivityOrderSubmitParam();
+//					param.setCount(1);
+//					param.setSubmitUserId(actInfo.getProduceruserid());
+//					param.setWorkId(workId);
+//					orderMgtService.submitOrder_ibs(param); 
 				}else {
 					activityworksMapper.updateByPrimaryKeySelective(activityworks);
 				}

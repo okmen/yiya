@@ -82,7 +82,11 @@
     where  ActId=#{actId,jdbcType=INTEGER} 
     GROUP BY UserId  ORDER BY Id asc)
   </select>
-  
+  <select id="findUsersByWorkId" resultMap="BaseResultMap"  ><!-- 06 活动为我点赞的人 -->
+    select userId,NickName,UserImg from u_users where userId in( select userId  from ti_userdiscounts
+    where  WorkId=#{workId,jdbcType=BIGINT} 
+    GROUP BY UserId  ORDER BY Id asc)
+  </select>
   <insert id="insertReturnKeyId" useGeneratedKeys="true" keyProperty="userid" parameterType="com.bbyiya.model.UUsers" >
     insert into u_users (UserID, PassWord, MobilePhone, 
       MobileBind, Status, Identity, 

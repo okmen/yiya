@@ -301,7 +301,7 @@ public class Ti_MyworkController extends SSOController {
 									map.put("advert", advertMod);
 								}
 							}
-							List<UUsers> userList= userMapper.findUsersByActId(myworks.getActid());
+							List<UUsers> userList= userMapper.findUsersByWorkId(workId);
 							map.put("users", userList);
 						}
 						rq.setStatu(ReturnStatus.Success);

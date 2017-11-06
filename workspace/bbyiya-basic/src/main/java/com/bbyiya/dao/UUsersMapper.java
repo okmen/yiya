@@ -91,4 +91,10 @@ public interface UUsersMapper {
 	 * @return
 	 */
 	List<UUsers> findUsersByActId(@Param("actId")Integer actId);
+	/**
+	 * 为我点赞的人
+	 * @param workId
+	 * @return
+	 */
+	List<UUsers> findUsersByWorkId(@Param("workId")Long workId);
 }

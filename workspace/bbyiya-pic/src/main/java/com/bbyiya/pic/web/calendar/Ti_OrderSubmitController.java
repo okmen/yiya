@@ -299,6 +299,7 @@ public class Ti_OrderSubmitController extends SSOController {
 						if(post.getAmount()!=null&&post.getAmount().doubleValue()>0){
 							long orderAddressId=orderMgtService.addOrderAddressReturnId(addressId);
 							OPayorder payorder=new OPayorder();
+							payorder.setUserid(user.getUserId()); 
 							payorder.setPayid(GenUtils.getOrderNo(user.getUserId()));
 							payorder.setCreatetime(new Date());
 							payorder.setOrdertype(Integer.parseInt(PayOrderTypeEnum.ti_postage.toString()));

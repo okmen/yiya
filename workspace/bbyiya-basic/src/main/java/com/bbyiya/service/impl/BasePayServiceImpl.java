@@ -237,10 +237,10 @@ public class BasePayServiceImpl implements IBasePayService{
 						} 
 						payOrderMapper.updateByPrimaryKeySelective(payOrder);
 						//台历交易记录
-						add_tiAccountLog(payId,payOrder.getUserid(), payOrder.getTotalprice(),TiAmountLogType.in_payment);
+						add_tiAccountLog(payId,payOrder.getUserid()==null?works.getUserid():payOrder.getUserid(), payOrder.getTotalprice(),TiAmountLogType.in_payment);
 						
 						//影楼自动下单（活动作品）
-						if(works!=null){
+						if(works!=null) {
 							TiActivitys acts= activitysMapper.selectByPrimaryKey(works.getActid());
 							if(acts!=null){
 								// 自动下单操作
@@ -249,7 +249,9 @@ public class BasePayServiceImpl implements IBasePayService{
 								orderParam.setWorkId(works.getWorkid());
 								orderParam.setCount(1);
 								ReturnModel oReturnModel=basetiorderService.submitTiCustomerOrder_ibs(orderParam, null);
-								addlog("付邮费参与活动"+oReturnModel.getStatusreson());
+								if(!oReturnModel.getStatu().equals(ReturnStatus.Success)){
+									addlog("付邮费参与活动"+oReturnModel.getStatusreson());
+								}
 							}else {
 								addlog("找不到活动。payid:"+payId);
 							}

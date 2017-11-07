@@ -171,8 +171,11 @@ public class Ti_OrderSubmitController extends SSOController {
 		List<TiUserdiscounts> discountList= userDisMapper.findMyDiscounts(user.getUserId());
 		if(discountList!=null&&discountList.size()>0){
 			for (TiUserdiscounts dd : discountList) {
-				if(dd.getPromoteruserid()!=null&&dd.getPromoteruserid().longValue()>0)
+				if(dd.getPromoteruserid()!=null&&dd.getPromoteruserid().longValue()>0){
+					if(dd.getPromoteruserid().longValue()==75||dd.getPromoteruserid().longValue()==1)
+						return 0;
 					return dd.getPromoteruserid().longValue();
+				}	
 			}
 		}
 		long promoterUserId=0l;
@@ -182,17 +185,17 @@ public class Ti_OrderSubmitController extends SSOController {
 		}
 		//如果上级推荐人是影楼
 		if(upUsers!=null&&ValidateUtils.isIdentity(upUsers.getIdentity(), UserIdentityEnums.ti_promoter)){
-			promoterUserId=upUsers.getUserid();
+			promoterUserId=upUsers.getUserid().longValue();
 		}
 		//如果祖宗是影楼
 		else if(!ObjectUtil.isEmpty(user.getSourseUserId())){
 			UUsers souUsers= userMapper.selectByPrimaryKey( user.getSourseUserId());
 			if(souUsers!=null&&ValidateUtils.isIdentity(souUsers.getIdentity(), UserIdentityEnums.ti_promoter)){
-				promoterUserId=user.getSourseUserId();
+				promoterUserId=user.getSourseUserId().longValue();
 			}
 		}
 		//排除咿呀十二
-		if(promoterUserId==75l||promoterUserId==1l)
+		if(promoterUserId==75||promoterUserId==1)
 			return 0l;
 		return promoterUserId;
 	}

@@ -17,10 +17,11 @@
     <result column="Remark" property="remark" jdbcType="VARCHAR" />
     <result column="ActImg" property="actimg" jdbcType="VARCHAR" />
     <result column="Description" property="description" jdbcType="LONGVARCHAR" />
+    <result column="AdvertId" property="advertid" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     ActId, Title, ProducerUserId, ProductId, StyleId, FreeCount, ActType, ExtCount, ApplyCount, 
-    CompleteCount, Status, CreateTime, Remark, ActImg, Description
+    CompleteCount, Status, CreateTime, Remark, ActImg, Description, AdvertId
   </sql>
 
   <resultMap id="TiActivitysVOResult" type="com.bbyiya.vo.calendar.TiActivitysVo" extends="BaseResultMap">  
@@ -86,14 +87,14 @@
       ProductId, StyleId, FreeCount, 
       ActType, ExtCount, ApplyCount, 
       CompleteCount, Status, CreateTime, 
-      Remark, ActImg, Description
-      )
+      Remark, ActImg, AdvertId, 
+      Description)
     values (#{actid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{produceruserid,jdbcType=BIGINT}, 
       #{productid,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, #{freecount,jdbcType=INTEGER}, 
       #{acttype,jdbcType=INTEGER}, #{extcount,jdbcType=INTEGER}, #{applycount,jdbcType=INTEGER}, 
       #{completecount,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
-      #{remark,jdbcType=VARCHAR}, #{actimg,jdbcType=VARCHAR}, #{description,jdbcType=LONGVARCHAR}
-      )
+      #{remark,jdbcType=VARCHAR}, #{actimg,jdbcType=VARCHAR}, #{advertid,jdbcType=INTEGER}, 
+      #{description,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiActivitys" >
     insert into ti_activitys
@@ -139,6 +140,9 @@
       </if>
       <if test="actimg != null" >
         ActImg,
+      </if>
+      <if test="advertid != null" >
+        AdvertId,
       </if>
       <if test="description != null" >
         Description,
@@ -187,6 +191,9 @@
       <if test="actimg != null" >
         #{actimg,jdbcType=VARCHAR},
       </if>
+      <if test="advertid != null" >
+        #{advertid,jdbcType=INTEGER},
+      </if>
       <if test="description != null" >
         #{description,jdbcType=LONGVARCHAR},
       </if>
@@ -234,6 +241,9 @@
       <if test="actimg != null" >
         ActImg = #{actimg,jdbcType=VARCHAR},
       </if>
+      <if test="advertid != null" >
+        AdvertId = #{advertid,jdbcType=INTEGER},
+      </if>
       <if test="description != null" >
         Description = #{description,jdbcType=LONGVARCHAR},
       </if>
@@ -241,7 +251,7 @@
     where ActId = #{actid,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.bbyiya.model.TiActivitys" >
-   update ti_activitys
+    update ti_activitys
     set Title = #{title,jdbcType=VARCHAR},
       ProducerUserId = #{produceruserid,jdbcType=BIGINT},
       ProductId = #{productid,jdbcType=BIGINT},
@@ -255,6 +265,7 @@
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
       Remark = #{remark,jdbcType=VARCHAR},
       ActImg = #{actimg,jdbcType=VARCHAR},
+      AdvertId = #{advertid,jdbcType=INTEGER},
       Description = #{description,jdbcType=LONGVARCHAR}
     where ActId = #{actid,jdbcType=INTEGER}
   </update>
@@ -272,7 +283,8 @@
       Status = #{status,jdbcType=INTEGER},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
       Remark = #{remark,jdbcType=VARCHAR},
-      ActImg = #{actimg,jdbcType=VARCHAR}
+      ActImg = #{actimg,jdbcType=VARCHAR},
+      AdvertId = #{advertid,jdbcType=INTEGER}
     where ActId = #{actid,jdbcType=INTEGER}
   </update>
 </mapper>

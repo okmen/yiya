@@ -79,6 +79,7 @@ public class LoginController extends SSOController {
 			loginTemp.setUpUserId(branch_userid);
 			loginTemp.setLoginTo(loginTo);
 			if(!ObjectUtil.isEmpty(redirct_url)&&!"null".equals(redirct_url)){
+				redirct_url=UrlEncodeUtils.urlDecode(redirct_url, "");
 				loginTemp.setRedirect_url(redirct_url); 
 				if(branch_userid<=0){
 					Map<String, String> paramUrl=ObjectUtil.getUrlParam(redirct_url);
@@ -135,6 +136,7 @@ public class LoginController extends SSOController {
 			addLoginLogAndCookie(rqModel.getBasemodle(),0);
 		}
 		if(!ObjectUtil.isEmpty(redirect_url)&&!"null".equals(redirect_url)){
+			redirect_url=UrlEncodeUtils.urlDecode(redirect_url, "");
 			addlog("url:"+ConfigUtil.getSingleValue("currentDomain")+redirect_url); 
 			if(redirect_url.contains("http")){
 				return "redirect:" + redirect_url;
@@ -291,11 +293,11 @@ public class LoginController extends SSOController {
 					}
 					int m = logintemp.getLoginTo() == null ? 0 : logintemp.getLoginTo();
 					if (m == 1) { // photo测试地址
-						String paramtest = "?headImg=" + loginparam.getHeadImg() + "&loginType=" + loginparam.getLoginType() + "&nickName=" + URLEncoder.encode(loginparam.getNickName(), "utf-8") + "&openId=" + loginparam.getOpenId() + "&upUid=" + loginparam.getUpUserId();
+						String paramtest = "?headImg=" + loginparam.getHeadImg() + "&loginType=" + loginparam.getLoginType() + "&nickName=" + UrlEncodeUtils.urlEncode(loginparam.getNickName(), "") + "&openId=" + loginparam.getOpenId() + "&upUid=" + loginparam.getUpUserId();
 						if (!ObjectUtil.isEmpty(logintemp.getRedirect_url()) && !"null".equals(logintemp.getRedirect_url())) {
-							paramtest += "&redirect_url=" + URLEncoder.encode(logintemp.getRedirect_url(), "gb2312");
+							paramtest += "&redirect_url=" + UrlEncodeUtils.urlEncode(logintemp.getRedirect_url(), "");
 						} else if (!ObjectUtil.isEmpty(logintemp.getUpUserId())) {// 测试店铺页
-							paramtest += "&redirect_url=" + URLEncoder.encode(ConfigUtil.getSingleValue("photo-net-url") + "?uid=" + logintemp.getUpUserId(), "gb2312");
+							paramtest += "&redirect_url=" + UrlEncodeUtils.urlEncode(ConfigUtil.getSingleValue("photo-net-url") + "?uid=" + logintemp.getUpUserId(), "");
 						}
 						// 跳转mpic测试接口地址中转
 						return "redirect:" + ConfigUtil.getSingleValue("mpic-net-url") + paramtest;

@@ -128,15 +128,37 @@ public class Ibs_TiOrderMgtServiceImpl implements IIbs_TiOrderMgtService{
 				OOrderproducts product= orderProductMapper.getOProductsByOrderId(order.getUserorderid());
 				if(product!=null){
 					vo.setProducttitle(product.getProducttitle());
-					vo.setPropertystr(product.getProducttitle());
+					vo.setPropertystr(product.getPropertystr());
 					vo.setPrice(product.getPrice());
 					vo.setCartid(product.getCartid());
-					TiActivityworks cart=actworkMapper.selectByPrimaryKey(product.getCartid());
-					if(cart!=null){
-						if(!ObjectUtil.isEmpty(cart.getActid())){
-							vo.setActid(cart.getActid());
+					TiMyworks mywork=myworksMapper.selectByPrimaryKey(product.getCartid());
+					//代客制作
+					if(mywork!=null&&mywork.getIsinstead()!=null&&mywork.getIsinstead().intValue()==1){
+						TiMyworkcustomers myworkcus=workcusMapper.selectByPrimaryKey(mywork.getWorkid());
+						if(myworkcus!=null){
+							vo.setActkhmc(myworkcus.getCustomername());
+							vo.setActkhphone(myworkcus.getMobilephone());
+						}
+					}else{
+						//老客户回顾
+						TiActivityworks cart=actworkMapper.selectByPrimaryKey(product.getCartid());
+						if(cart!=null){
+							if(!ObjectUtil.isEmpty(cart.getActid())){
+								vo.setActid(cart.getActid());
+							}
+							if(cart.getAddresstype()!=null&&cart.getAddresstype().intValue()==1){
+								OOrderaddress orderaddress=orderaddressMapper.selectByPrimaryKey(cart.getOrderaddressid());
+								if(orderaddress!=null){
+									vo.setActkhmc(orderaddress.getReciver());
+									vo.setActkhphone(orderaddress.getPhone());
+								}
+							}else{
+								vo.setActkhmc(cart.getReciever());
+								vo.setActkhphone(cart.getMobiephone());
+							}
 						}
 					}
+					
 				}
 				resultlist.add(vo);
 			}	

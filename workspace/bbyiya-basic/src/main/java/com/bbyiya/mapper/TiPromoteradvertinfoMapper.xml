@@ -10,10 +10,11 @@
     <result column="Status" property="status" jdbcType="INTEGER" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="UpdateTime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="IsDefault" property="isdefault" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     AdvertId, PromoterUserId, DefaultImg, Description, OpenApplication, Status, CreateTime, 
-    UpdateTime
+    UpdateTime, IsDefault
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -35,14 +36,6 @@
     delete from ti_promoteradvertinfo
     where AdvertId = #{advertid,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.bbyiya.model.TiPromoteradvertinfo" >
-    insert into ti_promoteradvertinfo (AdvertId, PromoterUserId, DefaultImg, 
-      Description, OpenApplication, Status, 
-      CreateTime, UpdateTime)
-    values (#{advertid,jdbcType=INTEGER}, #{promoteruserid,jdbcType=BIGINT}, #{defaultimg,jdbcType=VARCHAR}, 
-      #{description,jdbcType=VARCHAR}, #{openapplication,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP})
-  </insert>
   <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="advertid" parameterType="com.bbyiya.model.TiPromoteradvertinfo" >
     insert into ti_promoteradvertinfo (AdvertId, PromoterUserId, DefaultImg, 
       Description, OpenApplication, Status, 
@@ -50,6 +43,17 @@
     values (#{advertid,jdbcType=INTEGER}, #{promoteruserid,jdbcType=BIGINT}, #{defaultimg,jdbcType=VARCHAR}, 
       #{description,jdbcType=VARCHAR}, #{openapplication,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
       #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP})
+  </insert>
+  
+  <insert id="insert" parameterType="com.bbyiya.model.TiPromoteradvertinfo" >
+    insert into ti_promoteradvertinfo (AdvertId, PromoterUserId, DefaultImg, 
+      Description, OpenApplication, Status, 
+      CreateTime, UpdateTime, IsDefault
+      )
+    values (#{advertid,jdbcType=INTEGER}, #{promoteruserid,jdbcType=BIGINT}, #{defaultimg,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR}, #{openapplication,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{isdefault,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiPromoteradvertinfo" >
     insert into ti_promoteradvertinfo
@@ -78,6 +82,9 @@
       <if test="updatetime != null" >
         UpdateTime,
       </if>
+      <if test="isdefault != null" >
+        IsDefault,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="advertid != null" >
@@ -103,6 +110,9 @@
       </if>
       <if test="updatetime != null" >
         #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isdefault != null" >
+        #{isdefault,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -130,6 +140,9 @@
       <if test="updatetime != null" >
         UpdateTime = #{updatetime,jdbcType=TIMESTAMP},
       </if>
+      <if test="isdefault != null" >
+        IsDefault = #{isdefault,jdbcType=INTEGER},
+      </if>
     </set>
     where AdvertId = #{advertid,jdbcType=INTEGER}
   </update>
@@ -141,7 +154,8 @@
       OpenApplication = #{openapplication,jdbcType=INTEGER},
       Status = #{status,jdbcType=INTEGER},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
-      UpdateTime = #{updatetime,jdbcType=TIMESTAMP}
+      UpdateTime = #{updatetime,jdbcType=TIMESTAMP},
+      IsDefault = #{isdefault,jdbcType=INTEGER}
     where AdvertId = #{advertid,jdbcType=INTEGER}
   </update>
 </mapper>

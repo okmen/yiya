@@ -248,7 +248,7 @@ public class BasePayServiceImpl implements IBasePayService{
 								orderParam.setSubmitUserId(acts.getProduceruserid());
 								orderParam.setWorkId(works.getWorkid());
 								orderParam.setCount(1);
-								ReturnModel oReturnModel=basetiorderService.submitTiCustomerOrder_ibs(orderParam, null);
+								ReturnModel oReturnModel=basetiorderService.submitOrder_ibs(orderParam);
 								if(!oReturnModel.getStatu().equals(ReturnStatus.Success)){
 									addlog("付邮费参与活动"+oReturnModel.getStatusreson());
 								}

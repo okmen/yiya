@@ -4,89 +4,91 @@ import java.util.Date;
 import java.util.List;
 
 public class TiPromoteradvertinfo {
-    private Integer advertid;
+	private Integer advertid;
 
-    private Long promoteruserid;
+	private Long promoteruserid;
 
-    private String defaultimg;
+	private String defaultimg;
 
-    private String description;
+	private String description;
 
-    private Integer openapplication;
+	private Integer openapplication;
 
-    private Integer status;
+	private Integer status;
 
-    private Date createtime;
+	private Date createtime;
 
-    private Date updatetime;
-    
-    private List<TiPromoteradvertimgs> imglist;
-    
-    private String updatetimestr;
+	private Date updatetime;
 
-    public Integer getAdvertid() {
-        return advertid;
-    }
+	private Integer isdefault;
 
-    public void setAdvertid(Integer advertid) {
-        this.advertid = advertid;
-    }
+	private List<TiPromoteradvertimgs> imglist;
 
-    public Long getPromoteruserid() {
-        return promoteruserid;
-    }
+	private String updatetimestr;
 
-    public void setPromoteruserid(Long promoteruserid) {
-        this.promoteruserid = promoteruserid;
-    }
+	public Integer getAdvertid() {
+		return advertid;
+	}
 
-    public String getDefaultimg() {
-        return defaultimg;
-    }
+	public void setAdvertid(Integer advertid) {
+		this.advertid = advertid;
+	}
 
-    public void setDefaultimg(String defaultimg) {
-        this.defaultimg = defaultimg == null ? null : defaultimg.trim();
-    }
+	public Long getPromoteruserid() {
+		return promoteruserid;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public void setPromoteruserid(Long promoteruserid) {
+		this.promoteruserid = promoteruserid;
+	}
 
-    public void setDescription(String description) {
-        this.description = description == null ? null : description.trim();
-    }
+	public String getDefaultimg() {
+		return defaultimg;
+	}
 
-    public Integer getOpenapplication() {
-        return openapplication;
-    }
+	public void setDefaultimg(String defaultimg) {
+		this.defaultimg = defaultimg == null ? null : defaultimg.trim();
+	}
 
-    public void setOpenapplication(Integer openapplication) {
-        this.openapplication = openapplication;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public Integer getStatus() {
-        return status;
-    }
+	public void setDescription(String description) {
+		this.description = description == null ? null : description.trim();
+	}
 
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
+	public Integer getOpenapplication() {
+		return openapplication;
+	}
 
-    public Date getCreatetime() {
-        return createtime;
-    }
+	public void setOpenapplication(Integer openapplication) {
+		this.openapplication = openapplication;
+	}
 
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
-    }
+	public Integer getStatus() {
+		return status;
+	}
 
-    public Date getUpdatetime() {
-        return updatetime;
-    }
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
 
-    public void setUpdatetime(Date updatetime) {
-        this.updatetime = updatetime;
-    }
+	public Date getCreatetime() {
+		return createtime;
+	}
+
+	public void setCreatetime(Date createtime) {
+		this.createtime = createtime;
+	}
+
+	public Date getUpdatetime() {
+		return updatetime;
+	}
+
+	public void setUpdatetime(Date updatetime) {
+		this.updatetime = updatetime;
+	}
 
 	public List<TiPromoteradvertimgs> getImglist() {
 		return imglist;
@@ -103,6 +105,13 @@ public class TiPromoteradvertinfo {
 	public void setUpdatetimestr(String updatetimestr) {
 		this.updatetimestr = updatetimestr;
 	}
-    
-    
+
+	public Integer getIsdefault() {
+		return isdefault;
+	}
+
+	public void setIsdefault(Integer isdefault) {
+		this.isdefault = isdefault;
+	}
+
 }

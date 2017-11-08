@@ -33,6 +33,8 @@ public class TiActivitys {
     
     private String actimg;
 
+    private Integer advertid;
+
     public Integer getActid() {
         return actid;
     }
@@ -151,6 +153,14 @@ public class TiActivitys {
 
 	public void setActimg(String actimg) {
 		this.actimg = actimg;
+	}
+
+	public Integer getAdvertid() {
+		return advertid;
+	}
+
+	public void setAdvertid(Integer advertid) {
+		this.advertid = advertid;
 	}
     
     

@@ -30,7 +30,7 @@
   <select id="getAdvertByPromoterUserId" resultMap="BaseResultMap"  ><!--2 根据 promoterUserId 获取全局广告信息 -->
     select <include refid="Base_Column_List" />
     from ti_promoteradvertinfo
-    where PromoterUserId = #{userId,jdbcType=BIGINT} and IsDefault=1 and  Limit 1
+    where PromoterUserId = #{userId,jdbcType=BIGINT} and IsDefault=1   Limit 1
   </select>
   <!--3 根据 promoterUserId 重置默认广告 -->
   <update id="setDefaultByPromoterUserId"  >

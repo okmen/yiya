@@ -26,6 +26,7 @@ public class TiPromoteradvertinfo {
 
 	private String updatetimestr;
 
+
 	public Integer getAdvertid() {
 		return advertid;
 	}
@@ -113,5 +114,6 @@ public class TiPromoteradvertinfo {
 	public void setIsdefault(Integer isdefault) {
 		this.isdefault = isdefault;
 	}
+
 
 }

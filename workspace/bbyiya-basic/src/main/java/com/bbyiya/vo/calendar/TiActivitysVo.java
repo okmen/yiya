@@ -17,6 +17,7 @@ public class TiActivitysVo extends TiActivitys{
 	private String codeurl;//二维码地址
 	private Integer applyStatus;
 	private Date completeTime;
+	private String adverttitle;//广告名称
 	private TiActivityworks myactInfo;
 	public String getProductName() {
 		return productName;
@@ -106,6 +107,15 @@ public class TiActivitysVo extends TiActivitys{
 	public void setMyactInfo(TiActivityworks myactInfo) {
 		this.myactInfo = myactInfo;
 	}
+
+	public String getAdverttitle() {
+		return adverttitle;
+	}
+
+	public void setAdverttitle(String adverttitle) {
+		this.adverttitle = adverttitle;
+	}
+
 	
 	
 	

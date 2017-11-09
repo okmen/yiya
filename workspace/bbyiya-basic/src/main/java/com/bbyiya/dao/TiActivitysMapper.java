@@ -33,4 +33,11 @@ public interface TiActivitysMapper {
     TiActivitysVo getResultByActId(@Param("actid")Integer actId);
     
     List<TiActivitysVo> findActivityList(@Param("promoterUserId")Long promoterUserId,@Param("userId")Long userId);
+    
+    /**
+     * 清除活动广告设置
+     * @param advertid
+     * @return
+     */
+    int clearAdvertByAdvertid(@Param("advertid")Integer advertid);
 }

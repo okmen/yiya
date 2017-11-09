@@ -67,7 +67,28 @@ public class TiPromoterAdvertShareController extends SSOController {
 	}
 	
 	/**
-	 * 得到分享广告信息
+	 * 设置默认广告
+	 * @param advertinfoJson
+	 * @param advertImgsJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/setDefaultAdvert")
+	public String setDefaultAdvert(Integer advertid) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=advertshareService.setDefaultAdvert(user.getUserId(), advertid);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 得到全局分享广告信息
 	 * @param memberJson
 	 * @return
 	 * @throws Exception
@@ -87,7 +108,27 @@ public class TiPromoterAdvertShareController extends SSOController {
 	}
 	
 	/**
-	 * 清除分享广告信息
+	 * 活动分享广告详情信息
+	 * @param memberJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getPromoterShareAdvertById")
+	public String getPromoterShareAdvertById(Integer advertid) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=advertshareService.getPromoterShareAdvertById(user.getUserId(),advertid);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 清除分享全局广告信息
 	 * @param memberJson
 	 * @return
 	 * @throws Exception
@@ -107,20 +148,18 @@ public class TiPromoterAdvertShareController extends SSOController {
 	}
 	
 	/**
-	 * 得到客户报名信息
+	 * 删除分享广告信息
 	 * @param memberJson
 	 * @return
 	 * @throws Exception
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/getcoustomerlist")
-	public String getPromoteradvertCoustomer(Integer index,Integer size) throws Exception {
+	@RequestMapping(value = "/deleteAdvertInfo")
+	public String deleteAdvertInfo(Integer advertid) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			if(index==null) index=1;
-			if(size==null) size=10;
-			rq=advertshareService.getPromoteradvertCoustomer(user.getUserId(),index,size);
+			rq=advertshareService.deleteAdvertInfo(user.getUserId(),advertid);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
@@ -128,4 +167,69 @@ public class TiPromoterAdvertShareController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	/**
+	 * 得到广告配置列表
+	 * @param memberJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getShareAdvertList")
+	public String getShareAdvertList(String keywords,Integer index,Integer size) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(index==null) index=1;
+			if(size==null) size=20;
+			rq=advertshareService.getShareAdvertList(user.getUserId(),keywords,index,size);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	/**
+	 * 得到客户报名信息
+	 * @param memberJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getcoustomerlist")
+	public String getPromoteradvertCoustomer(Integer advertid,Integer index,Integer size) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(index==null) index=1;
+			if(size==null) size=10;
+			rq=advertshareService.getPromoteradvertCoustomer(user.getUserId(),advertid,index,size);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	
+	/**
+	 * 设置活动分享广告
+	 * @param advertinfoJson
+	 * @param advertImgsJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/setActsShareAdvert")
+	public String setActsShareAdvert(Integer actid,Integer advertid) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+
+			rq=advertshareService.setActsShareAdvert(user.getUserId(), actid,advertid);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 }

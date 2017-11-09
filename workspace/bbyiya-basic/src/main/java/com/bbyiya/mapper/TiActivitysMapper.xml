@@ -62,6 +62,13 @@
     from ti_activitys
     where ActId = #{actid,jdbcType=INTEGER}
   </select>
+  <!-- 清除活动广告设置-->
+  <update id="clearAdvertByAdvertid" parameterType="java.lang.Integer" >
+    update  ti_activitys set AdvertId=null 
+    where AdvertId = #{advertid,jdbcType=INTEGER}
+  </update>
+  
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from ti_activitys
     where ActId = #{actid,jdbcType=INTEGER}

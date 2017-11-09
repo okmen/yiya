@@ -24,7 +24,7 @@ public interface IIbs_TiPromoterAdvertShareService {
 	 */
 	ReturnModel resetAdvertInfo(Long promoterUserId);
 	/**
-	 * 加载推广商分享广告信息
+	 * 加载推广商全局分享广告信息
 	 * @param promoterUserId
 	 * @return
 	 */
@@ -36,8 +36,48 @@ public interface IIbs_TiPromoterAdvertShareService {
 	 * @param size
 	 * @return
 	 */
-	ReturnModel getPromoteradvertCoustomer(Long promoterUserId, int index,
+	ReturnModel getPromoteradvertCoustomer(Long promoterUserId,Integer advetid, int index,
 			int size);
+	/**
+	 * 加载推广商活动分享广告信息
+	 * @param promoterUserId
+	 * @param advertid
+	 * @return
+	 */
+	ReturnModel getPromoterShareAdvertById(Long promoterUserId, Integer advertid);
+	/**
+	 * 设置默认广告
+	 * @param promoterUserId
+	 * @param advertid
+	 * @return
+	 */
+	ReturnModel setDefaultAdvert(Long promoterUserId, Integer advertid);
+	/**
+	 * 删除广告记录
+	 * @param promoterUserId
+	 * @param advertid
+	 * @return
+	 */
+	ReturnModel deleteAdvertInfo(Long promoterUserId, Integer advertid);
+	/**
+	 * 得到分享广告列表
+	 * @param promoterUserId
+	 * @param keywords
+	 * @param index
+	 * @param size
+	 * @return
+	 */
+	ReturnModel getShareAdvertList(Long promoterUserId, String keywords,int index,int size);
+	
+	/**
+	 * 配置活动分享广告
+	 * @param promoterUserId
+	 * @param actid
+	 * @param advertid
+	 * @return
+	 */
+	ReturnModel setActsShareAdvert(Long promoterUserId, Integer actid,
+			Integer advertid);
 	
 	
 	

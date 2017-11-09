@@ -29,6 +29,7 @@ import com.bbyiya.dao.TiMyworkcustomersMapper;
 import com.bbyiya.dao.TiMyworksMapper;
 import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
+import com.bbyiya.dao.TiPromoteradvertinfoMapper;
 import com.bbyiya.dao.TiPromoteremployeesMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
@@ -47,6 +48,7 @@ import com.bbyiya.model.TiMyworkcustomers;
 import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiProductstyles;
+import com.bbyiya.model.TiPromoteradvertinfo;
 import com.bbyiya.model.TiPromoteremployees;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.service.calendar.IIbs_CalendarActivityService;
@@ -100,6 +102,8 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 	private TiMyartsdetailsMapper detailMapper;
 	@Autowired
 	private PMyproductsMapper myproductMapper;
+	@Autowired
+	private TiPromoteradvertinfoMapper advertinfoMapper;
 	
 	/*-------------------用户信息------------------------------------------------*/
 	@Autowired
@@ -240,6 +244,14 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 			}else{
 				Integer yaoqingcount=actworksingleMapper.getYaoqingCountByActId(ti.getActid());
 				ti.setYaoqingcount(yaoqingcount==null?0:yaoqingcount);
+			}
+			if(ti.getAdvertid()!=null){
+				TiPromoteradvertinfo advertinfo=advertinfoMapper.selectByPrimaryKey(ti.getAdvertid());
+				if(advertinfo!=null){
+					ti.setAdverttitle(advertinfo.getDescription());
+				}
+			}else{
+				ti.setAdverttitle("无配置");
 			}
 		}
 		rq.setBasemodle(pageresult);

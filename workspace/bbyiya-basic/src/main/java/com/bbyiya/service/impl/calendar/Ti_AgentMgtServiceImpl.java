@@ -269,7 +269,7 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 			return rq;
 		}
 		TiPromoteremployees promoteremployee=promoteremployeeMapper.selectByPrimaryKey(userId);
-		if(promoteremployee!=null){
+		if(promoteremployee!=null&&promoteremployee.getUserid().longValue()!=promoteremployee.getPromoteruserid().longValue()){
 			rq.setStatu(ReturnStatus.ParamError);
 			rq.setStatusreson("你已经成为其它活动参与单位的员工，活动参与单位ID为["+promoteremployee.getPromoteruserid()+"]，不能再申请为活动参与单位！");
 			return rq;

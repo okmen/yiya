@@ -175,7 +175,7 @@ public class TiRedPacketController extends SSOController {
 					if (amount > 0) {
 						map.put("amountLog", redlogsMapper.findredpacketLogs(null, workId, Integer.parseInt(RedpacketStatus.payed.toString())));
 					}
-					TiPromoteradvertinfo advertMod = advertMapper.getModelByPromoterUserId(actMyworkcustomers.getPromoteruserid());
+					TiPromoteradvertinfo advertMod = advertMapper.getAdvertByPromoterUserId(actMyworkcustomers.getPromoteruserid());
 					if (advertMod != null) {
 						map.put("advert", advertMod);
 					}

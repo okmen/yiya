@@ -16,6 +16,12 @@ import com.bbyiya.utils.ObjectUtil;
 public class Sha1Encrypt {
 
 	
+	/**
+	 * SHA1加密  讲 map各个属性进行字典排序后 加密
+	 * @param maps
+	 * @return
+	 * @throws DigestException
+	 */
 	public static String SHA1(Map<String, Object> maps) throws DigestException {
 		// 获取信息摘要 - 参数字典排序后字符串
 		String decrypt = getOrderByLexicographic(maps);
@@ -43,6 +49,12 @@ public class Sha1Encrypt {
 		}
 	}
 	
+	
+	/**
+	 * 对字符串进行sha1加密
+	 * @param decrypt
+	 * @return
+	 */
 	public static String SHA1(String decrypt){
 		try {
 			// 指定sha1算法
@@ -67,7 +79,12 @@ public class Sha1Encrypt {
 		}
 		return "";
 	}
-	
+	/**
+	 * 按字典排序 后加密
+	 * @param maps
+	 * @return
+	 * @throws DigestException
+	 */
 	public static String SHA1(List<NameValuePair> maps) throws DigestException {
 		// 获取信息摘要 - 参数字典排序后字符串
 		String decrypt = getPackage(maps);
@@ -95,6 +112,11 @@ public class Sha1Encrypt {
 		}
 	}
 
+	/**
+	 * 讲List个参数  转成 字符串 如 a=aval&b=bval 
+	 * @param params
+	 * @return
+	 */
 	private static String getPackage(List<NameValuePair> params) {
 
 		Collections.sort(params, new Comparator<NameValuePair>() {
@@ -104,7 +126,6 @@ public class Sha1Encrypt {
 			}
 		});
 		StringBuilder sb = new StringBuilder();
-
 		for (int i = 0; i < params.size(); i++) {
 			sb.append(params.get(i).getName());
 			sb.append('=');
@@ -114,11 +135,11 @@ public class Sha1Encrypt {
 		}
 		return sb.toString();
 	}
+	
 	/**
 	 * 获取参数的字典排序
 	 * 
-	 * @param maps
-	 *            参数key-value map集合
+	 * @param maps  参数key-value map集合
 	 * @return String 排序后的字符串
 	 */
 	private static String getOrderByLexicographic(Map<String, Object> maps) {
@@ -127,9 +148,7 @@ public class Sha1Encrypt {
 
 	/**
 	 * 获取参数名称 key
-	 * 
-	 * @param maps
-	 *            参数key-value map集合
+	 * @param maps  参数key-value map集合
 	 * @return
 	 */
 	private static List<String> getParamsName(Map<String, Object> maps) {
@@ -143,8 +162,7 @@ public class Sha1Encrypt {
 	/**
 	 * 参数名称按字典排序
 	 * 
-	 * @param paramNames
-	 *            参数名称List集合
+	 * @param paramNames  参数名称List集合
 	 * @return 排序后的参数名称List集合
 	 */
 	private static List<String> lexicographicOrder(List<String> paramNames) {

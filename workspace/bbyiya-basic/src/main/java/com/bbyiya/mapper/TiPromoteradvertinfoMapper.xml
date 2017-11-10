@@ -22,15 +22,33 @@
     from ti_promoteradvertinfo
     where AdvertId = #{advertid,jdbcType=INTEGER}
   </select>
-  <select id="getModelByPromoterUserId" resultMap="BaseResultMap"  ><!--2 根据 promoterUserId 获取广告信息 -->
+  <select id="getModelByPromoterUserId" resultMap="BaseResultMap"  ><!--2 根据 promoterUserId 获取全局广告信息 -->
     select <include refid="Base_Column_List" />
     from ti_promoteradvertinfo
-    where PromoterUserId = #{userId,jdbcType=BIGINT} and Status=1 Limit 1
+    where PromoterUserId = #{userId,jdbcType=BIGINT} and IsDefault=1 and Status=1 Limit 1
   </select>
-  <select id="getAdvertByPromoterUserId" resultMap="BaseResultMap"  ><!--2 根据 promoterUserId 获取广告信息 -->
+  <select id="getAdvertByPromoterUserId" resultMap="BaseResultMap"  ><!--2 根据 promoterUserId 获取全局广告信息 -->
     select <include refid="Base_Column_List" />
     from ti_promoteradvertinfo
-    where PromoterUserId = #{userId,jdbcType=BIGINT}  Limit 1
+    where PromoterUserId = #{userId,jdbcType=BIGINT} and IsDefault=1   Limit 1
+  </select>
+  <!--3 根据 promoterUserId 重置默认广告 -->
+  <update id="setDefaultByPromoterUserId"  >
+    update ti_promoteradvertinfo set IsDefault=#{isdefault,jdbcType=INTEGER} 
+    where PromoterUserId = #{promoteruserid,jdbcType=BIGINT} 
+    <if test="advertid != null" >
+       and  AdvertId=#{advertid,jdbcType=INTEGER}
+    </if>
+  </update>
+  <!--3 根据 promoterUserId 查询广告列表 -->
+   <select id="selectListByPromoterUserId" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_promoteradvertinfo
+    where  PromoterUserId = #{promoteruserid,jdbcType=BIGINT} 
+    <if test="keywords != null" >
+       and  Description like  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) 
+    </if>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from ti_promoteradvertinfo

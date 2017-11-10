@@ -92,7 +92,7 @@ public class TiDiscountController extends SSOController {
 					getMyDiscounts(param, actMyworkcustomers.getPromoteruserid(), user.getUserId());
 					int shareCount = actMyworkcustomers.getSharedcount() == null ? 1 : (actMyworkcustomers.getSharedcount().intValue() + 1);
 					actMyworkcustomers.setSharedcount(shareCount);
-					
+					boolean isOrdered=false;
 					if (actMyworkcustomers.getNeedsharecount() != null && actMyworkcustomers.getNeedsharecount().intValue() > 0) {
 						if (shareCount >= actMyworkcustomers.getNeedsharecount().intValue()) {
 							if(actMyworkcustomers.getStatus()!=null&&actMyworkcustomers.getStatus()!=Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString())){
@@ -104,11 +104,11 @@ public class TiDiscountController extends SSOController {
 								orderParam.setWorkId(actMyworkcustomers.getWorkid());
 								orderParam.setCount(1);
 								basetiorderService.submitTiCustomerOrder_ibs(orderParam, null);
+								isOrdered=true;
 							}
-						}else {
-							workcustomerMapper.updateByPrimaryKeySelective(actMyworkcustomers);
 						}
-					}else {
+					}
+					if(!isOrdered){
 						workcustomerMapper.updateByPrimaryKeySelective(actMyworkcustomers);
 					}
 					rq.setStatu(ReturnStatus.Success);

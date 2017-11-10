@@ -871,6 +871,17 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 						//客户地址
 						if(addressParam.getAddresstype()!=null&&addressParam.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.cusaddr.toString())){
 							printindex=printindex+"A";
+							//这种情况是自定义地址
+							if(workcus.getAddresstype()==null||workcus.getAddresstype().intValue()==0){
+								workcus.setAddresstype(Integer.parseInt(AddressTypeEnum.cusaddr.toString()));
+								workcus.setStreetdetails(addressParam.getStreetdetail());
+								workcus.setProvince(addressParam.getProvince());
+								workcus.setCity(addressParam.getCity());
+								workcus.setDistrict(addressParam.getDistrict());
+								workcus.setReciever(addressParam.getReciver());
+								workcus.setMobilephone(addressParam.getPhone());
+								workcusMapper.updateByPrimaryKey(workcus);
+							}
 						}
 					}
 					//邮寄到客户地址

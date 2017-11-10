@@ -232,9 +232,19 @@ public class Ti_MyworkController extends SSOController {
 				work.setMobiephone(phone);
 				activityworkMapper.updateByPrimaryKey(work);
 				
+				//是否可以直接下单
+				boolean canOrder=false;
+				TiActivitys activitys=null;
+				if(work.getStatus()!=null&&work.getStatus().intValue()==Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString()))
+					canOrder=true;
+				else {
+					activitys=actMapper.selectByPrimaryKey(work.getActid());
+					if(activitys!=null&&activitys.getExtcount()==null||activitys.getExtcount().intValue()==0){
+						canOrder=true;
+					}
+				}
 				//达到完成条件 自动下单
-				if(work.getStatus()!=null&&work.getStatus().intValue()==Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString())){
-					TiActivitys activitys=actMapper.selectByPrimaryKey(work.getActid());
+				if(canOrder){
 					if(activitys!=null&&activitys.getProduceruserid()!=null){
 						TiActivityOrderSubmitParam OrderParam=new TiActivityOrderSubmitParam();
 						OrderParam.setCount(1);
@@ -262,6 +272,8 @@ public class Ti_MyworkController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
+	@Autowired
+	private TiPromoteradvertinfoMapper advertInfoMapper;
 	/**
 	 * 作品详情
 	 * @param workId
@@ -296,9 +308,14 @@ public class Ti_MyworkController extends SSOController {
 						if(myworks.getActid()!=null&&myworks.getActid().intValue()>0){
 							TiActivitys activitys= actMapper.selectByPrimaryKey(myworks.getActid());
 							if(activitys!=null&&activitys.getProduceruserid()!=null){
-								TiPromoteradvertinfo advertMod= advertMapper.getModelByPromoterUserId(activitys.getProduceruserid());
-								if(advertMod!=null){
+								if(activitys.getAdvertid()!=null&&activitys.getAdvertid().intValue()>0){
+									TiPromoteradvertinfo advertMod=advertInfoMapper.selectByPrimaryKey(activitys.getAdvertid());
 									map.put("advert", advertMod);
+								}else { 
+									TiPromoteradvertinfo advertMod= advertMapper.getAdvertByPromoterUserId(activitys.getProduceruserid());
+									if(advertMod!=null){
+										map.put("advert", advertMod);
+									}
 								}
 							}
 							List<UUsers> userList= userMapper.findUsersByWorkId(workId);

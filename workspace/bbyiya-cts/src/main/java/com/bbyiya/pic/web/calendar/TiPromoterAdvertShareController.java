@@ -67,7 +67,7 @@ public class TiPromoterAdvertShareController extends SSOController {
 	}
 	
 	/**
-	 * 设置默认广告
+	 * 设置默认或取消默认广告
 	 * @param advertinfoJson
 	 * @param advertImgsJson
 	 * @return
@@ -75,11 +75,11 @@ public class TiPromoterAdvertShareController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/setDefaultAdvert")
-	public String setDefaultAdvert(Integer advertid) throws Exception {
+	public String setDefaultAdvert(Integer advertid,Integer isdefault) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq=advertshareService.setDefaultAdvert(user.getUserId(), advertid);
+			rq=advertshareService.setDefaultAdvert(user.getUserId(), advertid,isdefault);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

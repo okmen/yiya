@@ -133,14 +133,19 @@ public class Ibs_TiPromoterAdvertShareServiceImpl implements IIbs_TiPromoterAdve
 	/**
 	 * 设置默认分享广告
 	 */
-	public ReturnModel setDefaultAdvert(Long promoterUserId,Integer advertid ){
+	public ReturnModel setDefaultAdvert(Long promoterUserId,Integer advertid,Integer isdefault ){
 		ReturnModel rqModel=new ReturnModel();
 		rqModel.setStatu(ReturnStatus.ParamError);
 		
 		TiPromoteradvertinfo advert=advertinfoMapper.selectByPrimaryKey(advertid);
-		if(advert!=null){
-			advertinfoMapper.setDefaultByPromoterUserId(promoterUserId, null, 0);
-			advert.setIsdefault(1);
+		if(advert!=null){ 
+			
+			if(isdefault!=null&&isdefault.intValue()==1){
+				advertinfoMapper.setDefaultByPromoterUserId(promoterUserId, null, 0);
+				advert.setIsdefault(1);
+			}else{
+				advert.setIsdefault(0);
+			}
 			advertinfoMapper.updateByPrimaryKey(advert);
 			rqModel.setStatu(ReturnStatus.Success);
 			rqModel.setStatusreson("操作成功！");

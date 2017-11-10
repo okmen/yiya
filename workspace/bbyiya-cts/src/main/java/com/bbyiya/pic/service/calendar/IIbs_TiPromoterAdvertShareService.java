@@ -51,7 +51,7 @@ public interface IIbs_TiPromoterAdvertShareService {
 	 * @param advertid
 	 * @return
 	 */
-	ReturnModel setDefaultAdvert(Long promoterUserId, Integer advertid);
+	ReturnModel setDefaultAdvert(Long promoterUserId, Integer advertid,Integer isdefault);
 	/**
 	 * 删除广告记录
 	 * @param promoterUserId

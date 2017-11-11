@@ -256,7 +256,7 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 					ti.setAdverttitle(advertinfo.getDescription());
 				}
 			}else{
-				ti.setAdverttitle("无配置");
+				ti.setAdverttitle("无广告");
 			}
 		}
 		rq.setBasemodle(pageresult);

@@ -125,6 +125,11 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 		ti.setProductid(param.getProductid());
 		ti.setProduceruserid(userid);//推广者Id
 		ti.setStatus(1);//默认就是已开启的活动
+		//得到影楼默认分享广告
+		TiPromoteradvertinfo advertinfo=advertinfoMapper.getAdvertByPromoterUserId(userid);
+		if(advertinfo!=null){
+			ti.setAdvertid(advertinfo.getAdvertid());
+		}
 		activityMapper.insertReturnId(ti);
 		HashMap<String, Object> map=new HashMap<String, Object>();
 		map.put("actid", ti.getActid());

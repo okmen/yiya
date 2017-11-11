@@ -49,6 +49,7 @@
     <if test="keywords != null" >
        and  Description like  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) 
     </if>
+    order by CreateTime desc 
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from ti_promoteradvertinfo

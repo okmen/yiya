@@ -224,7 +224,6 @@ public class TiPromoterAdvertShareController extends SSOController {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-
 			rq=advertshareService.setActsShareAdvert(user.getUserId(), actid,advertid);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);

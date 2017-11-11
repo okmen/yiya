@@ -5,48 +5,18 @@ import java.security.NoSuchAlgorithmException;
 
 public class MD5Encrypt {
 	
-	/**
-	 * MD5 加密 PS 与Num001结果一致
-	 * @param plainText
-	 * @return
-	 */
-	/*
-	public static String encryption(String plainText) {
-		String re_md5 = new String();
-		try {
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			md.update(plainText.getBytes());
-			byte b[] = md.digest();
+	private static char hexChar[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9','A', 'B', 'C', 'D', 'E', 'F' };
 
-			int i;
-			StringBuffer buf = new StringBuffer("");
-			for (int offset = 0; offset < b.length; offset++) {
-				i = b[offset];
-				if (i < 0)
-					i += 256;
-				if (i < 16)
-					buf.append("0");
-				buf.append(Integer.toHexString(i));
-			}
-			re_md5 = buf.toString().toUpperCase();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return re_md5;
-	}
-	 */
-	 
 	/**
-	 * Num001
+	 * 将字符串 加密
 	 * MD5 加密
 	 * @param source
 	 * @return
 	 */
 	public static String encrypt(String source) {
 		String s = null;
-		char hexChar[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-				'A', 'B', 'C', 'D', 'E', 'F' };
+//		char hexChar[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+//				'A', 'B', 'C', 'D', 'E', 'F' };
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");
 			md.update(source.getBytes());// 使用指定的byte数组更新摘要
@@ -64,14 +34,21 @@ public class MD5Encrypt {
 		}
 		return s;
 	}
-	
+	/**
+	 * 将 byte[] md5加密
+	 * @param buffer （byte[]）
+	 * @return
+	 */
+	public static String encrypt(byte[] buffer) {
+		return getMessageDigest(buffer);
+	}
 	/**
 	 * 加密（ 对 byte[]进行加密）
 	 * @param buffer
 	 * @return
 	 */
 	public final static String getMessageDigest(byte[] buffer) {
-		char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+//		char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 		try {
 			MessageDigest mdTemp = MessageDigest.getInstance("MD5");
 			mdTemp.update(buffer);
@@ -81,8 +58,8 @@ public class MD5Encrypt {
 			int k = 0;
 			for (int i = 0; i < j; i++) {
 				byte byte0 = md[i];
-				str[k++] = hexDigits[byte0 >>> 4 & 0xf];
-				str[k++] = hexDigits[byte0 & 0xf];
+				str[k++] = hexChar[byte0 >>> 4 & 0xf];
+				str[k++] = hexChar[byte0 & 0xf];
 			}
 			return new String(str);
 		} catch (Exception e) {

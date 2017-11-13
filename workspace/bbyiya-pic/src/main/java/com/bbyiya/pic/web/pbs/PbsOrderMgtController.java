@@ -129,24 +129,85 @@ public class PbsOrderMgtController extends SSOController {
 			rq.setStatusreson("登录过期");
 			return JsonUtil.objectToJsonStr(rq);
 		}
-		// 列头
+		if(type==null)type=0;
 		String[] headers =new String[16];
-		headers[0]="作品ID号";
-		headers[1]="用户ID号";
-		headers[2]="编号";
-		headers[3]="产品标题";
-		headers[4]="产品型号";
-		headers[5]="代理商公司名称";
-		headers[6]="代理商联系人";
-		headers[7]="代理商电话";
-		headers[8]="代理商地址";
-		headers[9]="收货人姓名";
-		headers[10]="收货人电话";
-		headers[11]="收货地址";
-		headers[12]="订购份数";
-		headers[13]="物流公司";
-		headers[14]="运单号";
-		headers[15]="备注";
+		String[] fields = new String[16];
+		if(type.intValue()!=0){
+			headers =new String[16];
+			headers[0]="作品ID号";
+			headers[1]="用户ID号";
+			headers[2]="编号";
+			headers[3]="产品标题";
+			headers[4]="产品型号";
+			headers[5]="代理商公司名称";
+			headers[6]="代理商联系人";
+			headers[7]="代理商电话";
+			headers[8]="代理商地址";
+			headers[9]="收货人姓名";
+			headers[10]="收货人电话";
+			headers[11]="收货地址";
+			headers[12]="订购份数";
+			headers[13]="物流公司";
+			headers[14]="运单号";
+			headers[15]="备注";
+			fields = new String[16];
+			fields[0]="cartid";
+			fields[1]="order.userid";
+			fields[2]="printIndex";
+			fields[3]="producttitle";
+			fields[4]="propertystr";
+			fields[5]="branchesName";
+			fields[6]="branchesUserName";
+			fields[7]="branchesPhone";	
+			fields[8]="branchesAddress";
+			fields[9]="reciver";
+			fields[10]="buyerPhone";
+			fields[11]="buyerstreetdetail";
+			fields[12]="count";
+			fields[13]="order.expresscom";
+			fields[14]="order.expressorder";
+			fields[15]="order.remark";
+		}else{
+			//相册导出
+			headers =new String[17];
+			headers[0]="订单号";
+			headers[1]="作品ID号";
+			headers[2]="用户ID号";
+			headers[3]="编号";
+			headers[4]="产品标题";
+			headers[5]="产品型号";
+			headers[6]="代理商公司名称";
+			headers[7]="代理商联系人";
+			headers[8]="代理商电话";
+			headers[9]="代理商地址";
+			headers[10]="收货人姓名";
+			headers[11]="收货人电话";
+			headers[12]="收货地址";
+			headers[13]="订购份数";
+			headers[14]="物流公司";
+			headers[15]="运单号";
+			headers[16]="备注";
+			fields = new String[17];
+			fields[0]="userorderid";
+			fields[1]="cartid";
+			fields[2]="order.userid";
+			fields[3]="printIndex";
+			fields[4]="producttitle";
+			fields[5]="propertystr";
+			fields[6]="branchesName";
+			fields[7]="branchesUserName";
+			fields[8]="branchesPhone";	
+			fields[9]="branchesAddress";
+			fields[10]="reciver";
+			fields[11]="buyerPhone";
+			fields[12]="buyerstreetdetail";
+			fields[13]="count";
+			fields[14]="order.expresscom";
+			fields[15]="order.expressorder";
+			fields[16]="order.remark";
+		}
+		// 列头
+		//String[] headers =new String[16];
 //		headers[0]="订单号";
 //		headers[1]="用户ID号";
 //		headers[2]="编号";
@@ -173,25 +234,8 @@ public class PbsOrderMgtController extends SSOController {
 //		headers[23]="物流公司";
 //		headers[24]="运单号";
 //		headers[25]="备注";
-		String[] fields = new String[16];
-		fields[0]="cartid";
-		fields[1]="order.userid";
-		fields[2]="printIndex";
-		fields[3]="producttitle";
-		fields[4]="propertystr";
-		fields[5]="branchesName";
-		fields[6]="branchesUserName";
-		fields[7]="branchesPhone";	
-		fields[8]="branchesAddress";
-		fields[9]="reciver";
-		fields[10]="buyerPhone";
-		fields[11]="buyerstreetdetail";
-		fields[12]="count";
-		fields[13]="order.expresscom";
-		fields[14]="order.expressorder";
-		fields[15]="order.remark";
 		
-//		
+	
 //		fields[0]="userorderid";
 //		fields[1]="order.userid";
 //		fields[2]="printIndex";
@@ -222,7 +266,7 @@ public class PbsOrderMgtController extends SSOController {
 		String format =".xlsx";
 		myproductJson=myproductJson.replaceAll("\"status\":\"\"", "\"status\":null");
 		SearchOrderParam param= (SearchOrderParam)JsonUtil.jsonStrToObject(myproductJson, SearchOrderParam.class);
-		if(type==null)type=0;
+		
 		if(type.intValue()!=0){
 			param.setProducerUserId(user.getUserId());
 		}

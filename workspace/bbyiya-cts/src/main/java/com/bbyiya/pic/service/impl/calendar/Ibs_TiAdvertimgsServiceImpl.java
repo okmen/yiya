@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.common.vo.ImageInfo;
 import com.bbyiya.dao.TiAdvertimgsMapper;
 import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiPromoteremployeesMapper;
@@ -29,6 +30,7 @@ import com.bbyiya.pic.service.calendar.IIbs_TiAdvertimgsService;
 import com.bbyiya.pic.service.calendar.IIbs_TiPromoterEmployeeService;
 import com.bbyiya.service.IBaseUserCommonService;
 import com.bbyiya.utils.ConfigUtil;
+import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.calendar.TiEmployeeActOffVo;
@@ -87,7 +89,9 @@ public class Ibs_TiAdvertimgsServiceImpl implements IIbs_TiAdvertimgsService{
 		HashMap<String,Object> map=new HashMap<String, Object>();
 		TiAdvertimgs advert=advertimgMapper.getAdvertByProductIdAndPromoterId(productid, promoterUserId);
 		if(advert!=null){
+			List<ImageInfo> imList= (List<ImageInfo>)JsonUtil.jsonToList(advert.getAdvertimgjson());
 			map.put("advert", advert);
+			map.put("imglist",imList);
 		}
 		//得到预览图
 		TiProducts products=productMapper.selectByPrimaryKey(productid);

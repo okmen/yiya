@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.jsqlparser.statement.select.Select;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -198,19 +200,21 @@ public class TiCoordinateController  extends SSOController{
 						}
 						//
 						for(int i=0;i<layerList.size();i++){
-							//图片的坐标位置model
-							layerList.get(i).setImgCoordMod(front_pic);
-							if(layerList.get(i).getIsround()!=null&&layerList.get(i).getIsround()==1){//如果是圆形图（宽高比为 1:1）
+							if (layerList.get(i).getIsround() != null && layerList.get(i).getIsround() == 1) {// 如果是圆形图（宽高比为																											// 1:1）
 								layerList.get(i).setWidthhight(1d);
-							}else {//非圆形图
-								if(i==0){//封面 -宽高比
-									double widthhight= (style.getWidth()*front_pic.getPointwidth())/(style.getHight()*front_pic.getPointhight());
-									layerList.get(i).setWidthhight(widthhight);  
-								}else {//  内页 -宽高比 
-									double widthhight= (style.getWidth()*in_pic.getPointwidth())/(style.getHight()*in_pic.getPointhight());
-									layerList.get(i).setWidthhight(widthhight); 
-								}
 							}
+							// 图片的坐标位置model
+							if (i == 0) {
+								layerList.get(i).setImgCoordMod(front_pic);
+								double widthhight = (style.getWidth() * front_pic.getPointwidth()) / (style.getHight() * front_pic.getPointhight());
+								layerList.get(i).setWidthhight(widthhight);
+							} else {
+								layerList.get(i).setImgCoordMod(in_pic);
+								double widthhight = (style.getWidth() * in_pic.getPointwidth()) / (style.getHight() * in_pic.getPointhight());
+								layerList.get(i).setWidthhight(widthhight);
+							}
+							
+							
 							//是否当前页面上有嵌套广告
 							if(advertImglist!=null&&advertImglist.size()>0&&layerList.get(i).getAdvertcoordid()!=null&&layerList.get(i).getAdvertcoordid().intValue()>0){
 								PStylecoordinateitem advertMod = styleCoordItemMapper.selectByPrimaryKey(layerList.get(i).getAdvertcoordid().longValue());
@@ -366,17 +370,18 @@ public class TiCoordinateController  extends SSOController{
 			PStylecoordinateitem front_pic = styleCoordItemMapper.selectByPrimaryKey(stylecoordinate.getFrontimgcoordid().longValue());
 			
 			for(int i=0;i<layerList.size();i++){
-				layerList.get(i).setImgCoordMod(front_pic);
-				if(layerList.get(i).getIsround()!=null&&layerList.get(i).getIsround()==1){
+				if (layerList.get(i).getIsround() != null && layerList.get(i).getIsround() == 1) {// 如果是圆形图（宽高比为																											// 1:1）
 					layerList.get(i).setWidthhight(1d);
-				}else {
-					if(i==0){
-						double widthhight= (style.getWidth()*front_pic.getPointwidth())/(style.getHight()*front_pic.getPointhight());
-						layerList.get(i).setWidthhight(widthhight); 
-					}else {
-						double widthhight= (style.getWidth()*in_pic.getPointwidth())/(style.getHight()*in_pic.getPointhight());
-						layerList.get(i).setWidthhight(widthhight); 
-					}
+				}
+				// 图片的坐标位置model
+				if (i == 0) {
+					layerList.get(i).setImgCoordMod(front_pic);
+					double widthhight = (style.getWidth() * front_pic.getPointwidth()) / (style.getHight() * front_pic.getPointhight());
+					layerList.get(i).setWidthhight(widthhight);
+				} else {
+					layerList.get(i).setImgCoordMod(in_pic);
+					double widthhight = (style.getWidth() * in_pic.getPointwidth()) / (style.getHight() * in_pic.getPointhight());
+					layerList.get(i).setWidthhight(widthhight);
 				}
 				if(details!=null&&details.size()>0&&details.size()>i){
 					layerList.get(i).setWorkImgUrl(ImgDomainUtil.getImageUrl_Full(details.get(i).getImageurl())); 

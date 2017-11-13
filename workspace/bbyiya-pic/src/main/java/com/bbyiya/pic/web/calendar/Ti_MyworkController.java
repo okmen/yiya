@@ -217,7 +217,7 @@ public class Ti_MyworkController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/submitReciverInfo")
-	public String submitReciverInfo(long workId, String reciever,String phone) throws Exception {
+	public String submitReciverInfo(long workId, String reciever,String phone ,@RequestParam(required = false, defaultValue = "-1") int addressType) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.ParamError);
 		LoginSuccessResult user= super.getLoginUser();
@@ -230,6 +230,8 @@ public class Ti_MyworkController extends SSOController {
 			if(work!=null&&work.getUserid()!=null&&user.getUserId().longValue()==work.getUserid().longValue()){
 				work.setReciever(reciever);
 				work.setMobiephone(phone);
+				if(addressType>=0)
+					work.setAddresstype(addressType); 
 				activityworkMapper.updateByPrimaryKey(work);
 				
 				//是否可以直接下单

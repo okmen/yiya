@@ -234,29 +234,27 @@ public class Ti_MyworkController extends SSOController {
 				
 				//是否可以直接下单
 				boolean canOrder=false;
-				TiActivitys activitys=null;
-				if(work.getStatus()!=null&&work.getStatus().intValue()==Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString()))
+				TiActivitys activitys=actMapper.selectByPrimaryKey(work.getActid());
+				if(activitys!=null&&work.getStatus()!=null&&work.getStatus().intValue()==Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString()))
 					canOrder=true;
 				else {
-					activitys=actMapper.selectByPrimaryKey(work.getActid());
 					if(activitys!=null&&activitys.getExtcount()==null||activitys.getExtcount().intValue()==0){
 						canOrder=true;
 					}
 				}
 				//达到完成条件 自动下单
 				if(canOrder){
-					if(activitys!=null&&activitys.getProduceruserid()!=null){
-						TiActivityOrderSubmitParam OrderParam=new TiActivityOrderSubmitParam();
-						OrderParam.setCount(1);
-						OrderParam.setSubmitUserId(activitys.getProduceruserid());
-						OrderParam.setWorkId(workId);
-						ReturnModel orderResult= orderMgtService.submitOrder_ibs(OrderParam);
-						if(ReturnStatus.Success.equals(orderResult.getStatu())){
-							rq.setStatu(ReturnStatus.Success);
-							rq.setStatusreson("下单成功！");
-							return JsonUtil.objectToJsonStr(rq);
-						}
+					TiActivityOrderSubmitParam OrderParam = new TiActivityOrderSubmitParam();
+					OrderParam.setCount(1);
+					OrderParam.setSubmitUserId(activitys.getProduceruserid());
+					OrderParam.setWorkId(workId);
+					ReturnModel orderResult = orderMgtService.submitOrder_ibs(OrderParam);
+					if (ReturnStatus.Success.equals(orderResult.getStatu())) {
+						rq.setStatu(ReturnStatus.Success);
+						rq.setStatusreson("下单成功！");
+						return JsonUtil.objectToJsonStr(rq);
 					}
+//					System.out.println(orderResult);
 				}
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("成功！");
@@ -311,12 +309,13 @@ public class Ti_MyworkController extends SSOController {
 								if(activitys.getAdvertid()!=null&&activitys.getAdvertid().intValue()>0){
 									TiPromoteradvertinfo advertMod=advertInfoMapper.selectByPrimaryKey(activitys.getAdvertid());
 									map.put("advert", advertMod);
-								}else { 
-									TiPromoteradvertinfo advertMod= advertMapper.getAdvertByPromoterUserId(activitys.getProduceruserid());
-									if(advertMod!=null){
-										map.put("advert", advertMod);
-									}
 								}
+//								else { 
+//									TiPromoteradvertinfo advertMod= advertMapper.getAdvertByPromoterUserId(activitys.getProduceruserid());
+//									if(advertMod!=null){
+//										map.put("advert", advertMod);
+//									}
+//								}
 							}
 							List<UUsers> userList= userMapper.findUsersByWorkId(workId);
 							map.put("users", userList);

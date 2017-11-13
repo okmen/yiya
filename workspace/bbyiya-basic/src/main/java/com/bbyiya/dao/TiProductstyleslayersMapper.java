@@ -20,7 +20,7 @@ public interface TiProductstyleslayersMapper {
 
     int updateByPrimaryKey(TiProductstyleslayers record);
     /**
-     * 款式
+     * 获取款式图层列表
      * @param styleId
      * @return
      */

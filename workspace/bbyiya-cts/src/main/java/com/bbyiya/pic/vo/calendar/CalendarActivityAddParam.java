@@ -10,6 +10,7 @@ public class CalendarActivityAddParam {
 	private Integer freecount;	//最大参与人数
 	private Integer extCount;//目标分享人数
 	private String actimg;	//活动图片
+	private Integer addresstype;//0影楼地址 1客户地址
 	
 	public Integer getActivityid() {
 		return activityid;
@@ -64,6 +65,12 @@ public class CalendarActivityAddParam {
 	}
 	public void setActimg(String actimg) {
 		this.actimg = actimg;
+	}
+	public Integer getAddresstype() {
+		return addresstype;
+	}
+	public void setAddresstype(Integer addresstype) {
+		this.addresstype = addresstype;
 	}
 	
 	

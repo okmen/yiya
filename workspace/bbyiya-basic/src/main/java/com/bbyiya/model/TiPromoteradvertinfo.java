@@ -22,6 +22,8 @@ public class TiPromoteradvertinfo {
 
 	private Integer isdefault;
 
+    private Integer readcount;
+
 	private List<TiPromoteradvertimgs> imglist;
 
 	private String updatetimestr;
@@ -113,6 +115,14 @@ public class TiPromoteradvertinfo {
 
 	public void setIsdefault(Integer isdefault) {
 		this.isdefault = isdefault;
+	}
+
+	public Integer getReadcount() {
+		return readcount;
+	}
+
+	public void setReadcount(Integer readcount) {
+		this.readcount = readcount;
 	}
 
 

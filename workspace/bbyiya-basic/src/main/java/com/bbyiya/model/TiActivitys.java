@@ -35,6 +35,8 @@ public class TiActivitys {
 
     private Integer advertid;
 
+    private Integer autoaddress;
+
     public Integer getActid() {
         return actid;
     }
@@ -161,6 +163,14 @@ public class TiActivitys {
 
 	public void setAdvertid(Integer advertid) {
 		this.advertid = advertid;
+	}
+
+	public Integer getAutoaddress() {
+		return autoaddress;
+	}
+
+	public void setAutoaddress(Integer autoaddress) {
+		this.autoaddress = autoaddress;
 	}
     
     

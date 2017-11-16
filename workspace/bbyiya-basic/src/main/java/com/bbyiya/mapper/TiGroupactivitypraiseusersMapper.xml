@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiGroupactivitypraiseusersMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiGroupactivitypraiseusers" >
+    <id column="Id" property="id" jdbcType="BIGINT" />
+    <result column="WorkId" property="workid" jdbcType="BIGINT" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="HeadImg" property="headimg" jdbcType="VARCHAR" />
+    <result column="NickName" property="nickname" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Id, WorkId, UserId, HeadImg, NickName, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_groupactivitypraiseusers
+    where Id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ti_groupactivitypraiseusers
+    where Id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiGroupactivitypraiseusers" >
+    insert into ti_groupactivitypraiseusers (Id, WorkId, UserId, 
+      HeadImg, NickName, CreateTime
+      )
+    values (#{id,jdbcType=BIGINT}, #{workid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, 
+      #{headimg,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiGroupactivitypraiseusers" >
+    insert into ti_groupactivitypraiseusers
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        Id,
+      </if>
+      <if test="workid != null" >
+        WorkId,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="headimg != null" >
+        HeadImg,
+      </if>
+      <if test="nickname != null" >
+        NickName,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="workid != null" >
+        #{workid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="headimg != null" >
+        #{headimg,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null" >
+        #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiGroupactivitypraiseusers" >
+    update ti_groupactivitypraiseusers
+    <set >
+      <if test="workid != null" >
+        WorkId = #{workid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="headimg != null" >
+        HeadImg = #{headimg,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null" >
+        NickName = #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiGroupactivitypraiseusers" >
+    update ti_groupactivitypraiseusers
+    set WorkId = #{workid,jdbcType=BIGINT},
+      UserId = #{userid,jdbcType=BIGINT},
+      HeadImg = #{headimg,jdbcType=VARCHAR},
+      NickName = #{nickname,jdbcType=VARCHAR},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

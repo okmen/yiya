@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiGroupactivityproductsMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiGroupactivityproducts" >
+    <id column="Id" property="id" jdbcType="BIGINT" />
+    <result column="GactId" property="gactid" jdbcType="INTEGER" />
+    <result column="ProductId" property="productid" jdbcType="BIGINT" />
+    <result column="Price" property="price" jdbcType="DECIMAL" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Id, GactId, ProductId, Price, Status
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_groupactivityproducts
+    where Id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ti_groupactivityproducts
+    where Id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiGroupactivityproducts" >
+    insert into ti_groupactivityproducts (Id, GactId, ProductId, 
+      Price, Status)
+    values (#{id,jdbcType=BIGINT}, #{gactid,jdbcType=INTEGER}, #{productid,jdbcType=BIGINT}, 
+      #{price,jdbcType=DECIMAL}, #{status,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiGroupactivityproducts" >
+    insert into ti_groupactivityproducts
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        Id,
+      </if>
+      <if test="gactid != null" >
+        GactId,
+      </if>
+      <if test="productid != null" >
+        ProductId,
+      </if>
+      <if test="price != null" >
+        Price,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="gactid != null" >
+        #{gactid,jdbcType=INTEGER},
+      </if>
+      <if test="productid != null" >
+        #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiGroupactivityproducts" >
+    update ti_groupactivityproducts
+    <set >
+      <if test="gactid != null" >
+        GactId = #{gactid,jdbcType=INTEGER},
+      </if>
+      <if test="productid != null" >
+        ProductId = #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="price != null" >
+        Price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiGroupactivityproducts" >
+    update ti_groupactivityproducts
+    set GactId = #{gactid,jdbcType=INTEGER},
+      ProductId = #{productid,jdbcType=BIGINT},
+      Price = #{price,jdbcType=DECIMAL},
+      Status = #{status,jdbcType=INTEGER}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

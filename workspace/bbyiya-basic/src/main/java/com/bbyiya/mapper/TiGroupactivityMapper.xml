@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiGroupactivityMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiGroupactivity" >
+    <id column="GactId" property="gactid" jdbcType="INTEGER" />
+    <result column="PromoterUserId" property="promoteruserid" jdbcType="CHAR" />
+    <result column="LinkUrl" property="linkurl" jdbcType="VARCHAR" />
+    <result column="AdvertId" property="advertid" jdbcType="INTEGER" />
+    <result column="Title" property="title" jdbcType="VARCHAR" />
+    <result column="Description" property="description" jdbcType="VARCHAR" />
+    <result column="CompanyName" property="companyname" jdbcType="VARCHAR" />
+    <result column="Logo" property="logo" jdbcType="VARCHAR" />
+    <result column="Reciver" property="reciver" jdbcType="VARCHAR" />
+    <result column="Mobilephone" property="mobilephone" jdbcType="VARCHAR" />
+    <result column="Province" property="province" jdbcType="INTEGER" />
+    <result column="City" property="city" jdbcType="INTEGER" />
+    <result column="Area" property="area" jdbcType="INTEGER" />
+    <result column="StreetDetails" property="streetdetails" jdbcType="VARCHAR" />
+    <result column="Address" property="address" jdbcType="VARCHAR" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="PraiseCount" property="praisecount" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.bbyiya.model.TiGroupactivity" extends="BaseResultMap" >
+    <result column="Timespare" property="timespare" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    GactId, PromoterUserId, LinkUrl, AdvertId, Title, Description, CompanyName, Logo, 
+    Reciver, Mobilephone, Province, City, Area, StreetDetails, Address, Status, CreateTime, 
+    PraiseCount
+  </sql>
+  <sql id="Blob_Column_List" >
+    Timespare
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from ti_groupactivity
+    where GactId = #{gactid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ti_groupactivity
+    where GactId = #{gactid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiGroupactivity" >
+    insert into ti_groupactivity (GactId, PromoterUserId, LinkUrl, 
+      AdvertId, Title, Description, 
+      CompanyName, Logo, Reciver, 
+      Mobilephone, Province, City, 
+      Area, StreetDetails, Address, 
+      Status, CreateTime, PraiseCount, 
+      Timespare)
+    values (#{gactid,jdbcType=INTEGER}, #{promoteruserid,jdbcType=CHAR}, #{linkurl,jdbcType=VARCHAR}, 
+      #{advertid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{companyname,jdbcType=VARCHAR}, #{logo,jdbcType=VARCHAR}, #{reciver,jdbcType=VARCHAR}, 
+      #{mobilephone,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, 
+      #{area,jdbcType=INTEGER}, #{streetdetails,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{praisecount,jdbcType=INTEGER}, 
+      #{timespare,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiGroupactivity" >
+    insert into ti_groupactivity
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="gactid != null" >
+        GactId,
+      </if>
+      <if test="promoteruserid != null" >
+        PromoterUserId,
+      </if>
+      <if test="linkurl != null" >
+        LinkUrl,
+      </if>
+      <if test="advertid != null" >
+        AdvertId,
+      </if>
+      <if test="title != null" >
+        Title,
+      </if>
+      <if test="description != null" >
+        Description,
+      </if>
+      <if test="companyname != null" >
+        CompanyName,
+      </if>
+      <if test="logo != null" >
+        Logo,
+      </if>
+      <if test="reciver != null" >
+        Reciver,
+      </if>
+      <if test="mobilephone != null" >
+        Mobilephone,
+      </if>
+      <if test="province != null" >
+        Province,
+      </if>
+      <if test="city != null" >
+        City,
+      </if>
+      <if test="area != null" >
+        Area,
+      </if>
+      <if test="streetdetails != null" >
+        StreetDetails,
+      </if>
+      <if test="address != null" >
+        Address,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+      <if test="praisecount != null" >
+        PraiseCount,
+      </if>
+      <if test="timespare != null" >
+        Timespare,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="gactid != null" >
+        #{gactid,jdbcType=INTEGER},
+      </if>
+      <if test="promoteruserid != null" >
+        #{promoteruserid,jdbcType=CHAR},
+      </if>
+      <if test="linkurl != null" >
+        #{linkurl,jdbcType=VARCHAR},
+      </if>
+      <if test="advertid != null" >
+        #{advertid,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="companyname != null" >
+        #{companyname,jdbcType=VARCHAR},
+      </if>
+      <if test="logo != null" >
+        #{logo,jdbcType=VARCHAR},
+      </if>
+      <if test="reciver != null" >
+        #{reciver,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilephone != null" >
+        #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=INTEGER},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=INTEGER},
+      </if>
+      <if test="area != null" >
+        #{area,jdbcType=INTEGER},
+      </if>
+      <if test="streetdetails != null" >
+        #{streetdetails,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="praisecount != null" >
+        #{praisecount,jdbcType=INTEGER},
+      </if>
+      <if test="timespare != null" >
+        #{timespare,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiGroupactivity" >
+    update ti_groupactivity
+    <set >
+      <if test="promoteruserid != null" >
+        PromoterUserId = #{promoteruserid,jdbcType=CHAR},
+      </if>
+      <if test="linkurl != null" >
+        LinkUrl = #{linkurl,jdbcType=VARCHAR},
+      </if>
+      <if test="advertid != null" >
+        AdvertId = #{advertid,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        Title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        Description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="companyname != null" >
+        CompanyName = #{companyname,jdbcType=VARCHAR},
+      </if>
+      <if test="logo != null" >
+        Logo = #{logo,jdbcType=VARCHAR},
+      </if>
+      <if test="reciver != null" >
+        Reciver = #{reciver,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilephone != null" >
+        Mobilephone = #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        Province = #{province,jdbcType=INTEGER},
+      </if>
+      <if test="city != null" >
+        City = #{city,jdbcType=INTEGER},
+      </if>
+      <if test="area != null" >
+        Area = #{area,jdbcType=INTEGER},
+      </if>
+      <if test="streetdetails != null" >
+        StreetDetails = #{streetdetails,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        Address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="praisecount != null" >
+        PraiseCount = #{praisecount,jdbcType=INTEGER},
+      </if>
+      <if test="timespare != null" >
+        Timespare = #{timespare,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where GactId = #{gactid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.bbyiya.model.TiGroupactivity" >
+    update ti_groupactivity
+    set PromoterUserId = #{promoteruserid,jdbcType=CHAR},
+      LinkUrl = #{linkurl,jdbcType=VARCHAR},
+      AdvertId = #{advertid,jdbcType=INTEGER},
+      Title = #{title,jdbcType=VARCHAR},
+      Description = #{description,jdbcType=VARCHAR},
+      CompanyName = #{companyname,jdbcType=VARCHAR},
+      Logo = #{logo,jdbcType=VARCHAR},
+      Reciver = #{reciver,jdbcType=VARCHAR},
+      Mobilephone = #{mobilephone,jdbcType=VARCHAR},
+      Province = #{province,jdbcType=INTEGER},
+      City = #{city,jdbcType=INTEGER},
+      Area = #{area,jdbcType=INTEGER},
+      StreetDetails = #{streetdetails,jdbcType=VARCHAR},
+      Address = #{address,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      PraiseCount = #{praisecount,jdbcType=INTEGER},
+      Timespare = #{timespare,jdbcType=LONGVARCHAR}
+    where GactId = #{gactid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiGroupactivity" >
+    update ti_groupactivity
+    set PromoterUserId = #{promoteruserid,jdbcType=CHAR},
+      LinkUrl = #{linkurl,jdbcType=VARCHAR},
+      AdvertId = #{advertid,jdbcType=INTEGER},
+      Title = #{title,jdbcType=VARCHAR},
+      Description = #{description,jdbcType=VARCHAR},
+      CompanyName = #{companyname,jdbcType=VARCHAR},
+      Logo = #{logo,jdbcType=VARCHAR},
+      Reciver = #{reciver,jdbcType=VARCHAR},
+      Mobilephone = #{mobilephone,jdbcType=VARCHAR},
+      Province = #{province,jdbcType=INTEGER},
+      City = #{city,jdbcType=INTEGER},
+      Area = #{area,jdbcType=INTEGER},
+      StreetDetails = #{streetdetails,jdbcType=VARCHAR},
+      Address = #{address,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      PraiseCount = #{praisecount,jdbcType=INTEGER}
+    where GactId = #{gactid,jdbcType=INTEGER}
+  </update>
+</mapper>

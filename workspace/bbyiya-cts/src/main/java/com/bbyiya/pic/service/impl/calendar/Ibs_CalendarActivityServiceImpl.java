@@ -124,7 +124,9 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 		ti.setFreecount(param.getFreecount());//目标参与总数量
 		ti.setProductid(param.getProductid());
 		ti.setProduceruserid(userid);//推广者Id
-		ti.setStatus(1);//默认就是已开启的活动
+		ti.setStatus(1);//默认就是已开启的活动	
+		ti.setAutoaddress(param.getAutoaddress()==null?0:param.getAutoaddress());
+
 		//得到影楼默认分享广告
 		TiPromoteradvertinfo advertinfo=advertinfoMapper.getAdvertByPromoterUserId(userid);
 		if(advertinfo!=null){
@@ -151,6 +153,7 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 			ti.setTitle(param.getTitle());
 			ti.setDescription(param.getDescription());
 			ti.setFreecount(param.getFreecount());//目标参与总数量
+			ti.setAutoaddress(param.getAutoaddress()==null?0:param.getAutoaddress());
 			Integer freecount=(param.getFreecount()==null)?0:param.getFreecount();
 			//得到总报名人数
 			int applycount=(ti.getApplycount()==null?0:ti.getApplycount());

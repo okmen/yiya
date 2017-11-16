@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiGroupactivityworksMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiGroupactivityworks" >
+    <id column="WorkId" property="workid" jdbcType="BIGINT" />
+    <result column="GactId" property="gactid" jdbcType="INTEGER" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="Name" property="name" jdbcType="VARCHAR" />
+    <result column="Mobilephone" property="mobilephone" jdbcType="VARCHAR" />
+    <result column="ProductId" property="productid" jdbcType="BIGINT" />
+    <result column="SttyleId" property="sttyleid" jdbcType="BIGINT" />
+    <result column="Price" property="price" jdbcType="DECIMAL" />
+    <result column="ActPrice" property="actprice" jdbcType="DECIMAL" />
+    <result column="Count" property="count" jdbcType="INTEGER" />
+    <result column="AddressType" property="addresstype" jdbcType="INTEGER" />
+    <result column="UserOrderId" property="userorderid" jdbcType="VARCHAR" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="Totalprice" property="totalprice" jdbcType="DECIMAL" />
+    <result column="PraiseCount" property="praisecount" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="SubmitTime" property="submittime" jdbcType="TIMESTAMP" />
+    <result column="PayTime" property="paytime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    WorkId, GactId, UserId, Name, Mobilephone, ProductId, SttyleId, Price, ActPrice, 
+    Count, AddressType, UserOrderId, Status, Totalprice, PraiseCount, CreateTime, SubmitTime, 
+    PayTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_groupactivityworks
+    where WorkId = #{workid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ti_groupactivityworks
+    where WorkId = #{workid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiGroupactivityworks" >
+    insert into ti_groupactivityworks (WorkId, GactId, UserId, 
+      Name, Mobilephone, ProductId, 
+      SttyleId, Price, ActPrice, 
+      Count, AddressType, UserOrderId, 
+      Status, Totalprice, PraiseCount, 
+      CreateTime, SubmitTime, PayTime
+      )
+    values (#{workid,jdbcType=BIGINT}, #{gactid,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, 
+      #{name,jdbcType=VARCHAR}, #{mobilephone,jdbcType=VARCHAR}, #{productid,jdbcType=BIGINT}, 
+      #{sttyleid,jdbcType=BIGINT}, #{price,jdbcType=DECIMAL}, #{actprice,jdbcType=DECIMAL}, 
+      #{count,jdbcType=INTEGER}, #{addresstype,jdbcType=INTEGER}, #{userorderid,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{totalprice,jdbcType=DECIMAL}, #{praisecount,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{submittime,jdbcType=TIMESTAMP}, #{paytime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiGroupactivityworks" >
+    insert into ti_groupactivityworks
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="workid != null" >
+        WorkId,
+      </if>
+      <if test="gactid != null" >
+        GactId,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="name != null" >
+        Name,
+      </if>
+      <if test="mobilephone != null" >
+        Mobilephone,
+      </if>
+      <if test="productid != null" >
+        ProductId,
+      </if>
+      <if test="sttyleid != null" >
+        SttyleId,
+      </if>
+      <if test="price != null" >
+        Price,
+      </if>
+      <if test="actprice != null" >
+        ActPrice,
+      </if>
+      <if test="count != null" >
+        Count,
+      </if>
+      <if test="addresstype != null" >
+        AddressType,
+      </if>
+      <if test="userorderid != null" >
+        UserOrderId,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="totalprice != null" >
+        Totalprice,
+      </if>
+      <if test="praisecount != null" >
+        PraiseCount,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+      <if test="submittime != null" >
+        SubmitTime,
+      </if>
+      <if test="paytime != null" >
+        PayTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="workid != null" >
+        #{workid,jdbcType=BIGINT},
+      </if>
+      <if test="gactid != null" >
+        #{gactid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilephone != null" >
+        #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="productid != null" >
+        #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="sttyleid != null" >
+        #{sttyleid,jdbcType=BIGINT},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="actprice != null" >
+        #{actprice,jdbcType=DECIMAL},
+      </if>
+      <if test="count != null" >
+        #{count,jdbcType=INTEGER},
+      </if>
+      <if test="addresstype != null" >
+        #{addresstype,jdbcType=INTEGER},
+      </if>
+      <if test="userorderid != null" >
+        #{userorderid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="totalprice != null" >
+        #{totalprice,jdbcType=DECIMAL},
+      </if>
+      <if test="praisecount != null" >
+        #{praisecount,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="submittime != null" >
+        #{submittime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paytime != null" >
+        #{paytime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiGroupactivityworks" >
+    update ti_groupactivityworks
+    <set >
+      <if test="gactid != null" >
+        GactId = #{gactid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        Name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilephone != null" >
+        Mobilephone = #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="productid != null" >
+        ProductId = #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="sttyleid != null" >
+        SttyleId = #{sttyleid,jdbcType=BIGINT},
+      </if>
+      <if test="price != null" >
+        Price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="actprice != null" >
+        ActPrice = #{actprice,jdbcType=DECIMAL},
+      </if>
+      <if test="count != null" >
+        Count = #{count,jdbcType=INTEGER},
+      </if>
+      <if test="addresstype != null" >
+        AddressType = #{addresstype,jdbcType=INTEGER},
+      </if>
+      <if test="userorderid != null" >
+        UserOrderId = #{userorderid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="totalprice != null" >
+        Totalprice = #{totalprice,jdbcType=DECIMAL},
+      </if>
+      <if test="praisecount != null" >
+        PraiseCount = #{praisecount,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="submittime != null" >
+        SubmitTime = #{submittime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paytime != null" >
+        PayTime = #{paytime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where WorkId = #{workid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiGroupactivityworks" >
+    update ti_groupactivityworks
+    set GactId = #{gactid,jdbcType=INTEGER},
+      UserId = #{userid,jdbcType=BIGINT},
+      Name = #{name,jdbcType=VARCHAR},
+      Mobilephone = #{mobilephone,jdbcType=VARCHAR},
+      ProductId = #{productid,jdbcType=BIGINT},
+      SttyleId = #{sttyleid,jdbcType=BIGINT},
+      Price = #{price,jdbcType=DECIMAL},
+      ActPrice = #{actprice,jdbcType=DECIMAL},
+      Count = #{count,jdbcType=INTEGER},
+      AddressType = #{addresstype,jdbcType=INTEGER},
+      UserOrderId = #{userorderid,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=INTEGER},
+      Totalprice = #{totalprice,jdbcType=DECIMAL},
+      PraiseCount = #{praisecount,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      SubmitTime = #{submittime,jdbcType=TIMESTAMP},
+      PayTime = #{paytime,jdbcType=TIMESTAMP}
+    where WorkId = #{workid,jdbcType=BIGINT}
+  </update>
+</mapper>

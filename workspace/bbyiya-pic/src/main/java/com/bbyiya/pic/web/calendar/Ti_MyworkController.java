@@ -256,7 +256,6 @@ public class Ti_MyworkController extends SSOController {
 						rq.setStatusreson("下单成功！");
 						return JsonUtil.objectToJsonStr(rq);
 					}
-//					System.out.println(orderResult);
 				}
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("成功！");
@@ -392,6 +391,9 @@ public class Ti_MyworkController extends SSOController {
 			if(advertImgs!=null&&advertImgs.size()>0){
 				advertInfo.setImglist(advertImgs);
 			}
+			int readcount=advertInfo.getReadcount()==null?1:(advertInfo.getReadcount().intValue()+1);
+			advertInfo.setReadcount(readcount);
+			advertMapper.updateByPrimaryKeySelective(advertInfo);
 			rq.setBasemodle(advertInfo);
 		}
 		rq.setStatu(ReturnStatus.Success);

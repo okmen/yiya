@@ -13,6 +13,11 @@ public class TiGroupactivityproducts {
 
     private Integer status;
 
+    //--------------非数据库字段-------------------------
+    private String title;
+    private Double originPrice;
+    private String defaultimg;
+
     public Long getId() {
         return id;
     }
@@ -52,4 +57,30 @@ public class TiGroupactivityproducts {
     public void setStatus(Integer status) {
         this.status = status;
     }
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public Double getOriginPrice() {
+		return originPrice;
+	}
+
+	public void setOriginPrice(Double originPrice) {
+		this.originPrice = originPrice;
+	}
+
+	public String getDefaultimg() {
+		return defaultimg;
+	}
+
+	public void setDefaultimg(String defaultimg) {
+		this.defaultimg = defaultimg;
+	}
+    
+    
 }

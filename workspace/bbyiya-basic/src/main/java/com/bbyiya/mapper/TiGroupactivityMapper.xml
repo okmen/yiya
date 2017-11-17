@@ -3,7 +3,7 @@
 <mapper namespace="com.bbyiya.dao.TiGroupactivityMapper" >
   <resultMap id="BaseResultMap" type="com.bbyiya.model.TiGroupactivity" >
     <id column="GactId" property="gactid" jdbcType="INTEGER" />
-    <result column="PromoterUserId" property="promoteruserid" jdbcType="CHAR" />
+    <result column="PromoterUserId" property="promoteruserid" jdbcType="BIGINT" />
     <result column="LinkUrl" property="linkurl" jdbcType="VARCHAR" />
     <result column="AdvertId" property="advertid" jdbcType="INTEGER" />
     <result column="Title" property="title" jdbcType="VARCHAR" />
@@ -20,23 +20,17 @@
     <result column="Status" property="status" jdbcType="INTEGER" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="PraiseCount" property="praisecount" jdbcType="INTEGER" />
-  </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="com.bbyiya.model.TiGroupactivity" extends="BaseResultMap" >
-    <result column="Timespare" property="timespare" jdbcType="LONGVARCHAR" />
+    <result column="Timespare" property="timespare" jdbcType="BIGINT" />
+    <result column="BrowseCount" property="browsecount" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    GactId, PromoterUserId, LinkUrl, AdvertId, Title, Description, CompanyName, Logo, 
+     GactId, PromoterUserId, LinkUrl, AdvertId, Title, Description, CompanyName, Logo, 
     Reciver, Mobilephone, Province, City, Area, StreetDetails, Address, Status, CreateTime, 
-    PraiseCount
+    PraiseCount, Timespare, BrowseCount
   </sql>
-  <sql id="Blob_Column_List" >
-    Timespare
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
     from ti_groupactivity
     where GactId = #{gactid,jdbcType=INTEGER}
   </select>
@@ -44,6 +38,22 @@
     delete from ti_groupactivity
     where GactId = #{gactid,jdbcType=INTEGER}
   </delete>
+  <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="gactid"   parameterType="com.bbyiya.model.TiGroupactivity" >
+     insert into ti_groupactivity (GactId, PromoterUserId, LinkUrl, 
+      AdvertId, Title, Description, 
+      CompanyName, Logo, Reciver, 
+      Mobilephone, Province, City, 
+      Area, StreetDetails, Address, 
+      Status, CreateTime, PraiseCount, 
+      Timespare, BrowseCount)
+    values (#{gactid,jdbcType=INTEGER}, #{promoteruserid,jdbcType=BIGINT}, #{linkurl,jdbcType=VARCHAR}, 
+      #{advertid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{companyname,jdbcType=VARCHAR}, #{logo,jdbcType=VARCHAR}, #{reciver,jdbcType=VARCHAR}, 
+      #{mobilephone,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, 
+      #{area,jdbcType=INTEGER}, #{streetdetails,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{praisecount,jdbcType=INTEGER}, 
+      #{timespare,jdbcType=BIGINT}, #{browsecount,jdbcType=INTEGER})
+  </insert>
   <insert id="insert" parameterType="com.bbyiya.model.TiGroupactivity" >
     insert into ti_groupactivity (GactId, PromoterUserId, LinkUrl, 
       AdvertId, Title, Description, 
@@ -51,14 +61,14 @@
       Mobilephone, Province, City, 
       Area, StreetDetails, Address, 
       Status, CreateTime, PraiseCount, 
-      Timespare)
-    values (#{gactid,jdbcType=INTEGER}, #{promoteruserid,jdbcType=CHAR}, #{linkurl,jdbcType=VARCHAR}, 
+      Timespare, BrowseCount)
+    values (#{gactid,jdbcType=INTEGER}, #{promoteruserid,jdbcType=BIGINT}, #{linkurl,jdbcType=VARCHAR}, 
       #{advertid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
       #{companyname,jdbcType=VARCHAR}, #{logo,jdbcType=VARCHAR}, #{reciver,jdbcType=VARCHAR}, 
       #{mobilephone,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, 
       #{area,jdbcType=INTEGER}, #{streetdetails,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
       #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{praisecount,jdbcType=INTEGER}, 
-      #{timespare,jdbcType=LONGVARCHAR})
+      #{timespare,jdbcType=BIGINT}, #{browsecount,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiGroupactivity" >
     insert into ti_groupactivity
@@ -120,13 +130,16 @@
       <if test="timespare != null" >
         Timespare,
       </if>
+      <if test="browsecount != null" >
+        BrowseCount,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="gactid != null" >
         #{gactid,jdbcType=INTEGER},
       </if>
       <if test="promoteruserid != null" >
-        #{promoteruserid,jdbcType=CHAR},
+        #{promoteruserid,jdbcType=BIGINT},
       </if>
       <if test="linkurl != null" >
         #{linkurl,jdbcType=VARCHAR},
@@ -177,7 +190,10 @@
         #{praisecount,jdbcType=INTEGER},
       </if>
       <if test="timespare != null" >
-        #{timespare,jdbcType=LONGVARCHAR},
+        #{timespare,jdbcType=BIGINT},
+      </if>
+      <if test="browsecount != null" >
+        #{browsecount,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -185,7 +201,7 @@
     update ti_groupactivity
     <set >
       <if test="promoteruserid != null" >
-        PromoterUserId = #{promoteruserid,jdbcType=CHAR},
+        PromoterUserId = #{promoteruserid,jdbcType=BIGINT},
       </if>
       <if test="linkurl != null" >
         LinkUrl = #{linkurl,jdbcType=VARCHAR},
@@ -236,14 +252,17 @@
         PraiseCount = #{praisecount,jdbcType=INTEGER},
       </if>
       <if test="timespare != null" >
-        Timespare = #{timespare,jdbcType=LONGVARCHAR},
+        Timespare = #{timespare,jdbcType=BIGINT},
+      </if>
+      <if test="browsecount != null" >
+        BrowseCount = #{browsecount,jdbcType=INTEGER},
       </if>
     </set>
     where GactId = #{gactid,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.bbyiya.model.TiGroupactivity" >
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiGroupactivity" >
     update ti_groupactivity
-    set PromoterUserId = #{promoteruserid,jdbcType=CHAR},
+    set PromoterUserId = #{promoteruserid,jdbcType=BIGINT},
       LinkUrl = #{linkurl,jdbcType=VARCHAR},
       AdvertId = #{advertid,jdbcType=INTEGER},
       Title = #{title,jdbcType=VARCHAR},
@@ -260,28 +279,8 @@
       Status = #{status,jdbcType=INTEGER},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
       PraiseCount = #{praisecount,jdbcType=INTEGER},
-      Timespare = #{timespare,jdbcType=LONGVARCHAR}
-    where GactId = #{gactid,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiGroupactivity" >
-    update ti_groupactivity
-    set PromoterUserId = #{promoteruserid,jdbcType=CHAR},
-      LinkUrl = #{linkurl,jdbcType=VARCHAR},
-      AdvertId = #{advertid,jdbcType=INTEGER},
-      Title = #{title,jdbcType=VARCHAR},
-      Description = #{description,jdbcType=VARCHAR},
-      CompanyName = #{companyname,jdbcType=VARCHAR},
-      Logo = #{logo,jdbcType=VARCHAR},
-      Reciver = #{reciver,jdbcType=VARCHAR},
-      Mobilephone = #{mobilephone,jdbcType=VARCHAR},
-      Province = #{province,jdbcType=INTEGER},
-      City = #{city,jdbcType=INTEGER},
-      Area = #{area,jdbcType=INTEGER},
-      StreetDetails = #{streetdetails,jdbcType=VARCHAR},
-      Address = #{address,jdbcType=VARCHAR},
-      Status = #{status,jdbcType=INTEGER},
-      CreateTime = #{createtime,jdbcType=TIMESTAMP},
-      PraiseCount = #{praisecount,jdbcType=INTEGER}
+      Timespare = #{timespare,jdbcType=BIGINT},
+      BrowseCount = #{browsecount,jdbcType=INTEGER}
     where GactId = #{gactid,jdbcType=INTEGER}
   </update>
 </mapper>

@@ -3,9 +3,9 @@ package com.bbyiya.model;
 import java.util.Date;
 
 public class TiGroupactivity {
-    private Integer gactid;
+	private Integer gactid;
 
-    private String promoteruserid;
+    private Long promoteruserid;
 
     private String linkurl;
 
@@ -39,7 +39,15 @@ public class TiGroupactivity {
 
     private Integer praisecount;
 
-    private String timespare;
+    private Long timespare;
+
+    private Integer browsecount;
+    
+    /*****************************VO*************************/
+    private Integer sellercount;//销售量
+    private Integer actclickcount;//活动点击量
+    private Integer advertcount;//广告浏览量
+    
 
     public Integer getGactid() {
         return gactid;
@@ -49,12 +57,12 @@ public class TiGroupactivity {
         this.gactid = gactid;
     }
 
-    public String getPromoteruserid() {
+    public Long getPromoteruserid() {
         return promoteruserid;
     }
 
-    public void setPromoteruserid(String promoteruserid) {
-        this.promoteruserid = promoteruserid == null ? null : promoteruserid.trim();
+    public void setPromoteruserid(Long promoteruserid) {
+        this.promoteruserid = promoteruserid;
     }
 
     public String getLinkurl() {
@@ -185,11 +193,48 @@ public class TiGroupactivity {
         this.praisecount = praisecount;
     }
 
-    public String getTimespare() {
-        return timespare;
-    }
+   
 
-    public void setTimespare(String timespare) {
-        this.timespare = timespare == null ? null : timespare.trim();
-    }
+	public Integer getSellercount() {
+		return sellercount;
+	}
+
+	public Integer getActclickcount() {
+		return actclickcount;
+	}
+
+	public Integer getAdvertcount() {
+		return advertcount;
+	}
+
+	public void setSellercount(Integer sellercount) {
+		this.sellercount = sellercount;
+	}
+
+	public void setActclickcount(Integer actclickcount) {
+		this.actclickcount = actclickcount;
+	}
+
+	public void setAdvertcount(Integer advertcount) {
+		this.advertcount = advertcount;
+	}
+
+	public Long getTimespare() {
+		return timespare;
+	}
+
+	public void setTimespare(Long timespare) {
+		this.timespare = timespare;
+	}
+
+	public Integer getBrowsecount() {
+		return browsecount;
+	}
+
+	public void setBrowsecount(Integer browsecount) {
+		this.browsecount = browsecount;
+	}
+    
+    
+    
 }

@@ -32,6 +32,12 @@
     from ti_groupactivityworks
     where WorkId = #{workid,jdbcType=BIGINT}
   </select>
+  <select id="getTiGroupactivityworksByActIdAndUserId" ><!-- 获取 某团购用户参与信息 -->
+  	select  <include refid="Base_Column_List" />
+    from ti_groupactivityworks
+    where UserId = #{userId,jdbcType=BIGINT} and GactId=#{gactId,jdbcType=INTEGER} Limit 1
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from ti_groupactivityworks
     where WorkId = #{workid,jdbcType=BIGINT}

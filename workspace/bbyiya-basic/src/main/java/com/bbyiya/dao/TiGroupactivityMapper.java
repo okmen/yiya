@@ -1,5 +1,12 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
+
+
+
+import org.apache.ibatis.annotations.Param;
+
 import com.bbyiya.model.TiGroupactivity;
 
 public interface TiGroupactivityMapper {
@@ -18,4 +25,6 @@ public interface TiGroupactivityMapper {
     int updateByPrimaryKeyWithBLOBs(TiGroupactivity record);
 
     int updateByPrimaryKey(TiGroupactivity record);
+    
+    List<TiGroupactivity> findGroupActivityList(@Param("promoteruserid") Long promoteruserid,@Param("status") Integer status,@Param("keywords") String keywords);
 }

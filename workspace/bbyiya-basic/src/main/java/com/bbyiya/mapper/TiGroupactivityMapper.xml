@@ -20,13 +20,29 @@
     <result column="Status" property="status" jdbcType="INTEGER" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="PraiseCount" property="praisecount" jdbcType="INTEGER" />
-    <result column="Timespare" property="timespare" jdbcType="DOUBLE" />
+    <result column="Timespare" property="timespare" jdbcType="BIGINT" />
+    <result column="BrowseCount" property="browsecount" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    GactId, PromoterUserId, LinkUrl, AdvertId, Title, Description, CompanyName, Logo, 
+     GactId, PromoterUserId, LinkUrl, AdvertId, Title, Description, CompanyName, Logo, 
     Reciver, Mobilephone, Province, City, Area, StreetDetails, Address, Status, CreateTime, 
-    PraiseCount, Timespare
+    PraiseCount, Timespare, BrowseCount
   </sql>
+  
+    <select id="findGroupActivityList" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_groupactivity
+    where PromoterUserId = #{promoteruserid,jdbcType=BIGINT}
+    <if test="status != null" >
+       and  Status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="keywords != null and keywords!=''" > 
+       and  (GactId=#{keywords,jdbcType=VARCHAR} OR Title LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) OR Reciver LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) OR Mobilephone LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ))
+    </if>
+    order by CreateTime desc
+  </select>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
@@ -38,20 +54,20 @@
     where GactId = #{gactid,jdbcType=INTEGER}
   </delete>
   <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="gactid"   parameterType="com.bbyiya.model.TiGroupactivity" >
-    insert into ti_groupactivity (GactId, PromoterUserId, LinkUrl, 
+     insert into ti_groupactivity (GactId, PromoterUserId, LinkUrl, 
       AdvertId, Title, Description, 
       CompanyName, Logo, Reciver, 
       Mobilephone, Province, City, 
       Area, StreetDetails, Address, 
       Status, CreateTime, PraiseCount, 
-      Timespare)
+      Timespare, BrowseCount)
     values (#{gactid,jdbcType=INTEGER}, #{promoteruserid,jdbcType=BIGINT}, #{linkurl,jdbcType=VARCHAR}, 
       #{advertid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
       #{companyname,jdbcType=VARCHAR}, #{logo,jdbcType=VARCHAR}, #{reciver,jdbcType=VARCHAR}, 
       #{mobilephone,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, 
       #{area,jdbcType=INTEGER}, #{streetdetails,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
       #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{praisecount,jdbcType=INTEGER}, 
-      #{timespare,jdbcType=DOUBLE})
+      #{timespare,jdbcType=BIGINT}, #{browsecount,jdbcType=INTEGER})
   </insert>
   <insert id="insert" parameterType="com.bbyiya.model.TiGroupactivity" >
     insert into ti_groupactivity (GactId, PromoterUserId, LinkUrl, 
@@ -60,14 +76,14 @@
       Mobilephone, Province, City, 
       Area, StreetDetails, Address, 
       Status, CreateTime, PraiseCount, 
-      Timespare)
+      Timespare, BrowseCount)
     values (#{gactid,jdbcType=INTEGER}, #{promoteruserid,jdbcType=BIGINT}, #{linkurl,jdbcType=VARCHAR}, 
       #{advertid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
       #{companyname,jdbcType=VARCHAR}, #{logo,jdbcType=VARCHAR}, #{reciver,jdbcType=VARCHAR}, 
       #{mobilephone,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, 
       #{area,jdbcType=INTEGER}, #{streetdetails,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
       #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{praisecount,jdbcType=INTEGER}, 
-      #{timespare,jdbcType=DOUBLE})
+      #{timespare,jdbcType=BIGINT}, #{browsecount,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiGroupactivity" >
     insert into ti_groupactivity
@@ -129,6 +145,9 @@
       <if test="timespare != null" >
         Timespare,
       </if>
+      <if test="browsecount != null" >
+        BrowseCount,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="gactid != null" >
@@ -186,7 +205,10 @@
         #{praisecount,jdbcType=INTEGER},
       </if>
       <if test="timespare != null" >
-        #{timespare,jdbcType=DOUBLE},
+        #{timespare,jdbcType=BIGINT},
+      </if>
+      <if test="browsecount != null" >
+        #{browsecount,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -245,7 +267,10 @@
         PraiseCount = #{praisecount,jdbcType=INTEGER},
       </if>
       <if test="timespare != null" >
-        Timespare = #{timespare,jdbcType=DOUBLE},
+        Timespare = #{timespare,jdbcType=BIGINT},
+      </if>
+      <if test="browsecount != null" >
+        BrowseCount = #{browsecount,jdbcType=INTEGER},
       </if>
     </set>
     where GactId = #{gactid,jdbcType=INTEGER}
@@ -269,7 +294,8 @@
       Status = #{status,jdbcType=INTEGER},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
       PraiseCount = #{praisecount,jdbcType=INTEGER},
-      Timespare = #{timespare,jdbcType=DOUBLE}
+      Timespare = #{timespare,jdbcType=BIGINT},
+      BrowseCount = #{browsecount,jdbcType=INTEGER}
     where GactId = #{gactid,jdbcType=INTEGER}
   </update>
 </mapper>

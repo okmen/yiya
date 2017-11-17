@@ -40,6 +40,8 @@ public class TiGroupactivityworks {
 
     private Date paytime;
 
+    private Long addressid;
+
     public Long getWorkid() {
         return workid;
     }
@@ -183,4 +185,13 @@ public class TiGroupactivityworks {
     public void setPaytime(Date paytime) {
         this.paytime = paytime;
     }
+
+	public Long getAddressid() {
+		return addressid;
+	}
+
+	public void setAddressid(Long addressid) {
+		this.addressid = addressid;
+	}
+    
 }

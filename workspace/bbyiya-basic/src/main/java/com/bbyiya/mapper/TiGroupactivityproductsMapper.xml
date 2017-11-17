@@ -11,6 +11,14 @@
   <sql id="Base_Column_List" >
     Id, GactId, ProductId, Price, Status
   </sql>
+  <!-- 根据活动ID得到产品集合 -->
+  <select id="findProductsByGActid" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_groupactivityproducts
+    where GactId = #{gactid,jdbcType=INTEGER}
+  </select>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />

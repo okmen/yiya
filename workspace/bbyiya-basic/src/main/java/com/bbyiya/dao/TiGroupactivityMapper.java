@@ -5,6 +5,8 @@ import com.bbyiya.model.TiGroupactivity;
 public interface TiGroupactivityMapper {
     int deleteByPrimaryKey(Integer gactid);
 
+    
+    int insertReturnId(TiGroupactivity record);
     int insert(TiGroupactivity record);
 
     int insertSelective(TiGroupactivity record);

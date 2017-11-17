@@ -43,5 +43,12 @@ public interface TiGroupactivityworksMapper {
      * @return
      */
     List<TiGroupActivitysWorksVo>findGroupActWorkListByActId(@Param("gactid") Integer gactid,@Param("addresstype") Integer addresstype,@Param("keywords") String keywords);
+    
+    /**
+     * 得到可自动下单的分销作品
+     * @param ordertime
+     * @return
+     */
+    List<TiGroupactivityworks> findCanOrderGroupActWork(@Param("ordertime") Integer ordertime);
 
 }

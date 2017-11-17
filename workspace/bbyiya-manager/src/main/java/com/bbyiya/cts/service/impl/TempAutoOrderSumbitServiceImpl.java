@@ -18,6 +18,8 @@ import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
 import com.bbyiya.dao.SysLogsMapper;
+import com.bbyiya.dao.TiGroupactivityMapper;
+import com.bbyiya.dao.TiGroupactivityworksMapper;
 import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.enums.MyProductTempStatusEnum;
 import com.bbyiya.enums.OrderStatusEnum;
@@ -29,9 +31,12 @@ import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.model.SysLogs;
+import com.bbyiya.model.TiGroupactivity;
+import com.bbyiya.model.TiGroupactivityworks;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.service.IBasePayService;
 import com.bbyiya.service.IRegionService;
+import com.bbyiya.service.calendar.ITi_OrderMgtService;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
@@ -39,6 +44,7 @@ import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.utils.logistics.LogisticsQuery;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.address.OrderaddressParam;
+import com.bbyiya.vo.calendar.TiGroupActivityOrderSubmitParam;
 import com.bbyiya.vo.order.SubmitOrderProductParam;
 import com.bbyiya.vo.order.UserOrderSubmitParam;
 
@@ -66,12 +72,21 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 	@Autowired
 	private OUserordersMapper userorderMapper;
 	
+	@Autowired
+	private TiGroupactivityworksMapper groupactworkMapper;
+	
+	@Autowired
+	private TiGroupactivityMapper groupactMapper;
+	
 	@Resource(name = "regionServiceImpl")
 	private IRegionService regionService;
 
 	
 	@Resource(name = "baseOrderMgtServiceImpl")
 	private IBaseOrderMgtService orderMgtService;
+	
+	@Resource(name = "tiOrderMgtServiceImpl")
+	private  ITi_OrderMgtService basetiorderService;
 	
 	@Resource(name = "basePayServiceImpl")
 	private IBasePayService basepayService;
@@ -277,6 +292,54 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 		}else{
 			Log.info("暂无待签收的订单！");
 		}
+	}
+	
+	
+	
+	/**
+	 * 分销自动下单的功能
+	 */
+	public ReturnModel doGroupActivityAutoOrderSumbit(){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.Success);
+		
+		//3个小时后自动下单
+		List<TiGroupactivityworks> groupactworklist=groupactworkMapper.findCanOrderGroupActWork(3);
+		if(groupactworklist!=null&&groupactworklist.size()>0){
+			for (TiGroupactivityworks groupactwork : groupactworklist) {
+				TiGroupactivity act=groupactMapper.selectByPrimaryKey(groupactwork.getGactid());
+				TiGroupActivityOrderSubmitParam param=new TiGroupActivityOrderSubmitParam();
+				
+				param.setCount(groupactwork.getCount());
+				//param.setOrderAddressId(groupact.get);
+				param.setSubmitUserId(act.getPromoteruserid());
+				param.setWorkId(groupactwork.getWorkid());
+				param.setRemark("分销作品自动下单");
+				
+				//避免重复下单操作
+				String key="workid"+groupactwork.getWorkid();
+				String workid=(String)RedisUtil.getObject(key);
+				if(workid!=null){
+					//已下过单
+					continue;
+				}else{
+					RedisUtil.setObject(key, workid, 3600);
+				}
+				rq = basetiorderService.submitTiGroupActivityOrder_ibs(param);
+				
+				if(!rq.getStatu().equals(ReturnStatus.Success))//未通过参数验证
+				{	
+					RedisUtil.delete(key);
+					addSysLog("作品"+param.getWorkId()+"自动下单失败！原因："+rq.getStatusreson(),"doGroupActivityAutoOrderSumbit","下单失败");
+					Log.error("作品"+param.getWorkId()+"自动下单失败！原因："+rq.getStatusreson());
+				}else{
+					Log.info("作品"+param.getWorkId()+"自动下单成功！");
+					addSysLog("作品"+param.getWorkId()+"自动下单成功！","doGroupActivityAutoOrderSumbit","下单成功");
+				}
+				
+			}
+		}
+		return rq;
 	}
 	
 	

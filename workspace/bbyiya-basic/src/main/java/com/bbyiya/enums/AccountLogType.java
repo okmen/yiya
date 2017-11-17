@@ -46,7 +46,11 @@ public enum AccountLogType {
 	/**
 	 * 台历红包收入
 	 */
-	get_ti_redpaket(10)
+	get_ti_redpaket(10),
+	/**
+	 * 台历分销业务收入
+	 */
+	get_ti_groupActInCome(11)
 	;
 	
 

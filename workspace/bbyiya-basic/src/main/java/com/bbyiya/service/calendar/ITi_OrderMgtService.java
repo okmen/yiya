@@ -3,6 +3,7 @@ package com.bbyiya.service.calendar;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.address.OrderaddressParam;
 import com.bbyiya.vo.calendar.TiActivityOrderSubmitParam;
+import com.bbyiya.vo.calendar.TiGroupActivityOrderSubmitParam;
 import com.bbyiya.vo.order.UserOrderSubmitParam;
 
 public interface ITi_OrderMgtService {
@@ -39,4 +40,11 @@ public interface ITi_OrderMgtService {
 	 * @return
 	 */
 	ReturnModel submitTiCustomerOrder_ibs(TiActivityOrderSubmitParam param,OrderaddressParam addressParam);
+	/**
+	 * 分销下单
+	 * @param param
+	 * @return
+	 */
+	ReturnModel submitTiGroupActivityOrder_ibs(
+			TiGroupActivityOrderSubmitParam param);
 }

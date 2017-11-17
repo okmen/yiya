@@ -61,6 +61,15 @@
     select count(WorkId) from ti_groupactivityworks where GactId = #{gactid,jdbcType=INTEGER} and Status=#{status,jdbcType=INTEGER}
   </select>
   
+  <!-- 获取可自动下单的活动作品 -->
+  <select id="findCanOrderGroupActWork" resultMap="BaseResultMap" >
+	  select a.* from ti_groupactivityworks a  
+	and TIMESTAMPDIFF(HOUR, b.SubmitTime, now())>=#{ordertime,jdbcType=INTEGER}  
+	and a.Status=1
+  </select>
+  
+  
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from ti_groupactivityworks
     where WorkId = #{workid,jdbcType=BIGINT}

@@ -1047,7 +1047,8 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 		}
 		try {
 			TiGroupactivityworks work= groupactworkMapper.selectByPrimaryKey(param.getWorkId());
-			if(work==null){
+			TiGroupactivity act=groupactMapper.selectByPrimaryKey(work.getGactid());
+			if(work==null||act==null){
 				rq.setStatusreson("作品不存在！");
 				return rq;
 			}
@@ -1068,7 +1069,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			if(work.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.payed.toString())){
 				isCompleteBoolean=true;
 				//检查是否完成集赞，如果完成，下单数量+1
-				TiGroupactivity act=groupactMapper.selectByPrimaryKey(work.getGactid());
+				
 				if(act!=null&&act.getPraisecount()<=work.getPraisecount()){
 					param.setCount(param.getCount()+1);
 				}
@@ -1091,7 +1092,20 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					}
 				
 					//下单操作------------------
-					
+					if(work.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.promoteraddr.toString())){
+						OOrderaddress orderAddress = new OOrderaddress();
+						orderAddress.setUserid(act.getPromoteruserid());
+						orderAddress.setPhone(act.getMobilephone());
+						orderAddress.setReciver(act.getReciver());
+						orderAddress.setCity(regionService.getCityName(act.getCity()));
+						orderAddress.setProvince(regionService.getProvinceName(act.getProvince()));
+						orderAddress.setDistrict(regionService.getAresName(act.getArea()));
+						orderAddress.setStreetdetail(act.getStreetdetails());
+						orderAddress.setCreatetime(new Date());
+						orderaddressMapper.insertReturnId(orderAddress);						
+						Long orderAddressId=orderAddress.getOrderaddressid();
+						param.setOrderAddressId(orderAddressId);
+					}
 					//订单收货地址
 					Long producerUserId=getProducerUserId(param.getOrderAddressId(),work.getProductid(),param.getSubmitUserId());
 					Integer orderindex=producerOrderMapper.getMaxOrderIndexByProducerIdAndUserId(producerUserId, param.getSubmitUserId());
@@ -1114,9 +1128,6 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					//邮寄到客户地址
 					if(work.getAddresstype()!=null&&work.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.cusaddr.toString())){
 						printindex=printindex+"A";
-					}else {
-						//寄到B端地址
-						
 					}
 					producerorder.setOrderindex(orderindex);
 					producerorder.setPrintindex(printindex);

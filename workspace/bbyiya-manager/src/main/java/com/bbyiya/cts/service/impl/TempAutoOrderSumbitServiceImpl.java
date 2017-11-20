@@ -311,7 +311,7 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 				TiGroupActivityOrderSubmitParam param=new TiGroupActivityOrderSubmitParam();
 				
 				param.setCount(groupactwork.getCount());
-				//param.setOrderAddressId(groupact.get);
+				param.setOrderAddressId(groupactwork.getAddressid());
 				param.setSubmitUserId(act.getPromoteruserid());
 				param.setWorkId(groupactwork.getWorkid());
 				param.setRemark("分销作品自动下单");

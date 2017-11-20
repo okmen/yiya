@@ -127,11 +127,11 @@ public class GroupActivityController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/downWorkForGroupRQcode")
-	public String downWorkForCusRQcode(String groupId) throws Exception {
+	public String downWorkForCusRQcode(String workId) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			String redirct_url="groupBuy?groupId="+groupId;	
+			String redirct_url="groupBuy?groupId="+workId;	
 			String urlstr= ConfigUtil.getSingleValue("shareulr-base")+"uid="+URLEncoder.encode(user.getUserId().toString(),"utf-8")+"&redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
 			rq=calendarActivityService.saveRQcode(urlstr);
 		}else {

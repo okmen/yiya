@@ -138,7 +138,9 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 		return rq;
 	}
 	
-
+	/**
+	 * 分销活动列表
+	 */
 	public ReturnModel findGroupActivityList(int index,int size,Long userid,Integer status,String keywords){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);

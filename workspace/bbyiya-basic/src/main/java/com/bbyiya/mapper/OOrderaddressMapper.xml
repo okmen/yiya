@@ -12,10 +12,13 @@
     <result column="District" property="district" jdbcType="VARCHAR" />
     <result column="StreetDetail" property="streetdetail" jdbcType="VARCHAR" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="ProvinceCode" property="provincecode" jdbcType="INTEGER" />
+    <result column="CityCode" property="citycode" jdbcType="INTEGER" />
+    <result column="DistrictCode" property="districtcode" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     OrderAddressId, UserId, Reciver, Phone, PostCode, Province, City, District, StreetDetail, 
-    CreateTime
+    CreateTime, ProvinceCode, CityCode, DistrictCode
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -35,25 +38,29 @@
     delete from o_orderaddress
     where OrderAddressId = #{orderaddressid,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.bbyiya.model.OOrderaddress" >
-    insert into o_orderaddress (OrderAddressId, UserId, Reciver, 
-      Phone, PostCode, Province, 
-      City, District, StreetDetail, 
-      CreateTime)
-    values (#{orderaddressid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{reciver,jdbcType=VARCHAR}, 
-      #{phone,jdbcType=VARCHAR}, #{postcode,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
-      #{city,jdbcType=VARCHAR}, #{district,jdbcType=VARCHAR}, #{streetdetail,jdbcType=VARCHAR}, 
-      #{createtime,jdbcType=TIMESTAMP})
-  </insert>
   <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="orderaddressid" parameterType="com.bbyiya.model.OOrderaddress" >
     insert into o_orderaddress (OrderAddressId, UserId, Reciver, 
       Phone, PostCode, Province, 
       City, District, StreetDetail, 
-      CreateTime)
+      CreateTime, ProvinceCode, CityCode, 
+      DistrictCode)
     values (#{orderaddressid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{reciver,jdbcType=VARCHAR}, 
       #{phone,jdbcType=VARCHAR}, #{postcode,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
       #{city,jdbcType=VARCHAR}, #{district,jdbcType=VARCHAR}, #{streetdetail,jdbcType=VARCHAR}, 
-      #{createtime,jdbcType=TIMESTAMP})
+      #{createtime,jdbcType=TIMESTAMP}, #{provincecode,jdbcType=INTEGER}, #{citycode,jdbcType=INTEGER}, 
+      #{districtcode,jdbcType=INTEGER})
+  </insert>
+ <insert id="insert" parameterType="com.bbyiya.model.OOrderaddress" >
+    insert into o_orderaddress (OrderAddressId, UserId, Reciver, 
+      Phone, PostCode, Province, 
+      City, District, StreetDetail, 
+      CreateTime, ProvinceCode, CityCode, 
+      DistrictCode)
+    values (#{orderaddressid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{reciver,jdbcType=VARCHAR}, 
+      #{phone,jdbcType=VARCHAR}, #{postcode,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
+      #{city,jdbcType=VARCHAR}, #{district,jdbcType=VARCHAR}, #{streetdetail,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{provincecode,jdbcType=INTEGER}, #{citycode,jdbcType=INTEGER}, 
+      #{districtcode,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.OOrderaddress" >
     insert into o_orderaddress
@@ -88,6 +95,15 @@
       <if test="createtime != null" >
         CreateTime,
       </if>
+      <if test="provincecode != null" >
+        ProvinceCode,
+      </if>
+      <if test="citycode != null" >
+        CityCode,
+      </if>
+      <if test="districtcode != null" >
+        DistrictCode,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="orderaddressid != null" >
@@ -119,6 +135,15 @@
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="provincecode != null" >
+        #{provincecode,jdbcType=INTEGER},
+      </if>
+      <if test="citycode != null" >
+        #{citycode,jdbcType=INTEGER},
+      </if>
+      <if test="districtcode != null" >
+        #{districtcode,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -152,6 +177,15 @@
       <if test="createtime != null" >
         CreateTime = #{createtime,jdbcType=TIMESTAMP},
       </if>
+      <if test="provincecode != null" >
+        ProvinceCode = #{provincecode,jdbcType=INTEGER},
+      </if>
+      <if test="citycode != null" >
+        CityCode = #{citycode,jdbcType=INTEGER},
+      </if>
+      <if test="districtcode != null" >
+        DistrictCode = #{districtcode,jdbcType=INTEGER},
+      </if>
     </set>
     where OrderAddressId = #{orderaddressid,jdbcType=BIGINT}
   </update>
@@ -165,7 +199,10 @@
       City = #{city,jdbcType=VARCHAR},
       District = #{district,jdbcType=VARCHAR},
       StreetDetail = #{streetdetail,jdbcType=VARCHAR},
-      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      ProvinceCode = #{provincecode,jdbcType=INTEGER},
+      CityCode = #{citycode,jdbcType=INTEGER},
+      DistrictCode = #{districtcode,jdbcType=INTEGER}
     where OrderAddressId = #{orderaddressid,jdbcType=BIGINT}
   </update>
 </mapper>

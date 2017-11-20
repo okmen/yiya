@@ -23,6 +23,12 @@ public class OOrderaddress {
 
     private Date createtime;
 
+    private Integer provincecode;
+
+    private Integer citycode;
+
+    private Integer districtcode;
+
     public Long getOrderaddressid() {
         return orderaddressid;
     }
@@ -102,4 +108,30 @@ public class OOrderaddress {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+
+	public Integer getProvincecode() {
+		return provincecode;
+	}
+
+	public void setProvincecode(Integer provincecode) {
+		this.provincecode = provincecode;
+	}
+
+	public Integer getCitycode() {
+		return citycode;
+	}
+
+	public void setCitycode(Integer citycode) {
+		this.citycode = citycode;
+	}
+
+	public Integer getDistrictcode() {
+		return districtcode;
+	}
+
+	public void setDistrictcode(Integer districtcode) {
+		this.districtcode = districtcode;
+	}
+    
+    
 }

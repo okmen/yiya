@@ -25,6 +25,7 @@ import com.bbyiya.dao.PProductstylesMapper;
 import com.bbyiya.dao.TiAccountlogMapper;
 import com.bbyiya.dao.TiActivitysMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
+import com.bbyiya.dao.TiGroupactivityworksMapper;
 import com.bbyiya.dao.TiMyworkcustomersMapper;
 import com.bbyiya.dao.TiMyworkredpacketlogsMapper;
 import com.bbyiya.dao.TiProductsextMapper;
@@ -62,6 +63,7 @@ import com.bbyiya.model.PProductstyles;
 import com.bbyiya.model.TiAccountlog;
 import com.bbyiya.model.TiActivitys;
 import com.bbyiya.model.TiActivityworks;
+import com.bbyiya.model.TiGroupactivityworks;
 import com.bbyiya.model.TiMyworkcustomers;
 import com.bbyiya.model.TiMyworkredpacketlogs;
 import com.bbyiya.model.TiProductsext;
@@ -150,6 +152,11 @@ public class BasePayServiceImpl implements IBasePayService{
 
 	@Resource(name = "tiOrderMgtServiceImpl")
 	private  ITi_OrderMgtService basetiorderService;
+	
+	
+
+	@Autowired
+	private TiGroupactivityworksMapper gworkMapper;
 	/**
 	 * 订单支付成功 回写
 	 */
@@ -224,7 +231,7 @@ public class BasePayServiceImpl implements IBasePayService{
 							return false;
 						}
 					}
-					/************************------------普通购物------------------********************************/
+					/************************------------单独运费支付------------------********************************/
 
 					else if (orderType==Integer.parseInt(PayOrderTypeEnum.ti_postage.toString())) {
 						//用户付邮费
@@ -260,7 +267,7 @@ public class BasePayServiceImpl implements IBasePayService{
 						}
 						return true;
 					}
-					//台历红包 --付款到平台
+					/**-----台历红包 --付款到平台------------------------------------------------------------------*/
 					else if (orderType==Integer.parseInt(PayOrderTypeEnum.ti_redpaket.toString())) {
 						//更新支付状态
 						payOrderMapper.updateByPrimaryKeySelective(payOrder);
@@ -290,6 +297,18 @@ public class BasePayServiceImpl implements IBasePayService{
 							addlog("payId:"+payId+",台历红包找不到红包记录TiMyworkredpacketlogs！");
 							return false;
 						}
+					}
+					/**--------------------------------台历、挂历  团购业务支付-------------------------------------------------*/
+					else if (orderType==Integer.parseInt(PayOrderTypeEnum.ti_groupAct.toString())) {
+						//更新支付状态
+						payOrderMapper.updateByPrimaryKeySelective(payOrder);
+						//红包投递记录信息
+						TiGroupactivityworks gwork= gworkMapper.selectByPrimaryKey(ObjectUtil.parseLong(payOrder.getUserorderid()));
+						if(gwork!=null){
+							gwork.setPaytime(new Date());
+							gworkMapper.updateByPrimaryKeySelective(gwork);
+						}
+						return true;
 					}
 					else {//购物
 						OUserorders userorders = userOrdersMapper.selectByPrimaryKey(payOrder.getUserorderid());

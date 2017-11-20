@@ -28,7 +28,11 @@ public enum PayOrderTypeEnum {
     /**
      * 台历红包
      */
-    ti_redpaket(7)
+    ti_redpaket(7),
+    /**
+     * 台历团购业务
+     */
+    ti_groupAct(8)
     ;
 
     private final int Type;

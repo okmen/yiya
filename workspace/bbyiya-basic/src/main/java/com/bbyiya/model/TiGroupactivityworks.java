@@ -1,10 +1,9 @@
 package com.bbyiya.model;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 public class TiGroupactivityworks {
-    private Long workid;
+	private Long workid;
 
     private Integer gactid;
 
@@ -18,9 +17,9 @@ public class TiGroupactivityworks {
 
     private Long sttyleid;
 
-    private BigDecimal price;
+    private Double price;
 
-    private BigDecimal actprice;
+    private Double actprice;
 
     private Integer count;
 
@@ -30,7 +29,7 @@ public class TiGroupactivityworks {
 
     private Integer status;
 
-    private BigDecimal totalprice;
+    private Double totalprice;
 
     private Integer praisecount;
 
@@ -98,21 +97,7 @@ public class TiGroupactivityworks {
         this.sttyleid = sttyleid;
     }
 
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public BigDecimal getActprice() {
-        return actprice;
-    }
-
-    public void setActprice(BigDecimal actprice) {
-        this.actprice = actprice;
-    }
+  
 
     public Integer getCount() {
         return count;
@@ -146,15 +131,35 @@ public class TiGroupactivityworks {
         this.status = status;
     }
 
-    public BigDecimal getTotalprice() {
-        return totalprice;
-    }
+  
 
-    public void setTotalprice(BigDecimal totalprice) {
-        this.totalprice = totalprice;
-    }
+  
 
-    public Integer getPraisecount() {
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
+	public Double getActprice() {
+		return actprice;
+	}
+
+	public void setActprice(Double actprice) {
+		this.actprice = actprice;
+	}
+
+	public Double getTotalprice() {
+		return totalprice;
+	}
+
+	public void setTotalprice(Double totalprice) {
+		this.totalprice = totalprice;
+	}
+
+	public Integer getPraisecount() {
         return praisecount;
     }
 

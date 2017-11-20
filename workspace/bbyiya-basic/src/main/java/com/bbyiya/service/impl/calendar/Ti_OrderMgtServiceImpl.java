@@ -265,6 +265,21 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					
 					//订单收货地址
 					long orderAddressId=0l;
+					
+					//订单号
+					String payId = GenUtils.getOrderNo(param.getSubmitUserId());
+					String userOrderId=payId;
+					String orderProductId=userOrderId;
+					
+					
+					//得到订单编号
+					//用户自己付邮费
+					if(actWork.getOrderaddressid()!=null&&actWork.getOrderaddressid().longValue()>0){
+						orderAddressId=actWork.getOrderaddressid();
+					}else {//寄到B端地址
+						orderAddressId= getOrderAddressIdByBUserId(param.getSubmitUserId(), Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));
+					}
+					
 					Long producerUserId=getProducerUserId(orderAddressId,work.getProductid(),param.getSubmitUserId());
 					Integer orderindex=producerOrderMapper.getMaxOrderIndexByProducerIdAndUserId(producerUserId, param.getSubmitUserId());
 					if(orderindex==null){
@@ -272,29 +287,20 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					}else{
 						orderindex=orderindex.intValue()+1;
 					}
-//					DecimalFormat df=new DecimalFormat("0000");
-//					String printindex=df.format(orderindex);
+
 					String printindex=orderindex.toString();
-					//订单号
-					String payId = GenUtils.getOrderNo(param.getSubmitUserId());
-					String userOrderId=payId;
-					String orderProductId=userOrderId;
-					
+					//邮寄到客户地址
+					if(actWork.getOrderaddressid()!=null&&actWork.getOrderaddressid().longValue()>0){
+						printindex=printindex+"A";
+					}
 					OProducerordercount producerorder=new OProducerordercount();
 					producerorder.setProduceruserid(producerUserId);
 					producerorder.setUserid(param.getSubmitUserId());
 					producerorder.setUserorderid(userOrderId);
-					//得到订单编号
-					//用户自己付邮费
-					if(actWork.getOrderaddressid()!=null&&actWork.getOrderaddressid().longValue()>0){
-						orderAddressId=actWork.getOrderaddressid();
-						printindex=printindex+"A";
-					}else {//寄到B端地址
-						orderAddressId= getOrderAddressIdByBUserId(param.getSubmitUserId(), Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));
-					}
 					producerorder.setOrderindex(orderindex);
 					producerorder.setPrintindex(printindex);
 					producerOrderMapper.insert(producerorder);
+					
 					
 					if(detailsList!=null&&detailsList.size()>0){
 						for (TiMyartsdetails dd : detailsList) {
@@ -1159,7 +1165,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					userOrder.setStatus(Integer.parseInt(OrderStatusEnum.waitFoSend.toString()));
 					userOrder.setTotalprice(totalprice);
 					userOrder.setOrdertotalprice(totalprice); 
-					userOrder.setOrderaddressid(param.getOrderAddressId()); 
+					userOrder.setOrderaddressid(work.getAddressid()); 
 					userOrder.setProduceruserid(producerUserId); 
 					userOrdersMapper.insert(userOrder);
 					//订单产品

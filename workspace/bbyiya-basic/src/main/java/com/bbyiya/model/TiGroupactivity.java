@@ -45,7 +45,7 @@ public class TiGroupactivity {
     
     /*****************************VO*************************/
     private Integer sellercount;//销售量
-    private Integer actclickcount;//活动点击量
+    private Integer advertbrowsecount;//广告浏览量
     private String createtimestr;
     
     public Integer getGactid() {
@@ -198,16 +198,18 @@ public class TiGroupactivity {
 		return sellercount;
 	}
 
-	public Integer getActclickcount() {
-		return actclickcount;
-	}
-
+	
 	public void setSellercount(Integer sellercount) {
 		this.sellercount = sellercount;
 	}
 
-	public void setActclickcount(Integer actclickcount) {
-		this.actclickcount = actclickcount;
+	
+	public Integer getAdvertbrowsecount() {
+		return advertbrowsecount;
+	}
+
+	public void setAdvertbrowsecount(Integer advertbrowsecount) {
+		this.advertbrowsecount = advertbrowsecount;
 	}
 
 	public Long getTimespare() {

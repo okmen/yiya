@@ -24,10 +24,10 @@ import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
 
 @Controller
-@RequestMapping(value = "/ti_groupact/")
+@RequestMapping(value = "/ti_groupact")
 public class GroupActivityController extends SSOController {
 	
-	@Resource(name = "ibs_CalendarActivityService")
+	@Resource(name = "ibs_GroupActivityService")
 	private IIbs_GroupActivityService groupActService;
 	@Resource(name = "ibs_CalendarActivityService")
 	private IIbs_CalendarActivityService calendarActivityService;
@@ -158,6 +158,25 @@ public class GroupActivityController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-	
+	/**
+	 * 设置活动分享广告
+	 * @param advertinfoJson
+	 * @param advertImgsJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/setGActsShareAdvert")
+	public String setGActsShareAdvert(Integer gactid,Integer advertid) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=groupActService.setActsShareAdvert(user.getUserId(), gactid,advertid);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	
 }

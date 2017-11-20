@@ -43,11 +43,9 @@
   </resultMap>
   <!-- 根据活动ID得到活动参与情况列表 -->
   <select id="findGroupActWorkListByActId" resultMap="TiGroupActivityworksVOResult"  >
-    select a.*  from ti_groupactivityworks
+    select a.*  from ti_groupactivityworks as a
     where a.GactId = #{gactid,jdbcType=BIGINT}
-    <if test="status != null" >
-       and  a.Status = #{status,jdbcType=INTEGER}
-    </if>
+   
     <if test="addresstype != null" >
        and  a.AddressType = #{addresstype,jdbcType=INTEGER}
     </if>
@@ -64,8 +62,8 @@
   
   <!-- 获取可自动下单的活动作品 -->
   <select id="findCanOrderGroupActWork" resultMap="BaseResultMap" >
-	  select a.* from ti_groupactivityworks a  
-	and TIMESTAMPDIFF(HOUR, b.SubmitTime, now())>=#{ordertime,jdbcType=INTEGER}  
+	select a.* from ti_groupactivityworks a  
+	where TIMESTAMPDIFF(HOUR, a.PayTime, now())>=#{ordertime,jdbcType=INTEGER}  
 	and a.Status=1
   </select>
   

@@ -41,6 +41,11 @@ public class HeartbeatJob extends QuartzJobBean {
 						autoOrderService.dotempAutoOrderSumbit();
 						Log.info("dotempAutoOrderSumbit执行自动下单操作完成！");
 					}
+					if(ObjectUtil.parseInt(job.get("seton"))==1&&job.get("id").equalsIgnoreCase("doGroupActivityAutoOrderSumbit")){
+						autoOrderService.doGroupActivityAutoOrderSumbit();
+						Log.info("doGroupActivityAutoOrderSumbit执行自动下单操作完成！");
+					}
+					
 				}	
 				
 			}

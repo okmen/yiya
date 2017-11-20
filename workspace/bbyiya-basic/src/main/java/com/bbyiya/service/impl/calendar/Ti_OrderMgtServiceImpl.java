@@ -1037,7 +1037,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 	public ReturnModel submitTiGroupActivityOrder_ibs(TiGroupActivityOrderSubmitParam param) {
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);
-		if(param==null||ObjectUtil.isEmpty(param.getSubmitUserId())||ObjectUtil.isEmpty(param.getWorkId())||ObjectUtil.isEmpty(param.getOrderAddressId())){
+		if(param==null||ObjectUtil.isEmpty(param.getSubmitUserId())||ObjectUtil.isEmpty(param.getWorkId())){
 			rq.setStatusreson("参数不能为空！");
 			return rq;
 		}
@@ -1047,11 +1047,12 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 		}
 		try {
 			TiGroupactivityworks work= groupactworkMapper.selectByPrimaryKey(param.getWorkId());
-			TiGroupactivity act=groupactMapper.selectByPrimaryKey(work.getGactid());
-			if(work==null||act==null){
+			if(work==null){
 				rq.setStatusreson("作品不存在！");
 				return rq;
 			}
+			TiGroupactivity act=groupactMapper.selectByPrimaryKey(work.getGactid());
+			
 			//用户作品对应的产品款式
 			TiProductstyles style=styleMapper.selectByPrimaryKey(work.getSttyleid()==null?work.getProductid():work.getSttyleid());
 			if(style==null){
@@ -1105,9 +1106,10 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 						orderaddressMapper.insertReturnId(orderAddress);						
 						Long orderAddressId=orderAddress.getOrderaddressid();
 						param.setOrderAddressId(orderAddressId);
+						work.setAddressid(orderAddressId);
 					}
 					//订单收货地址
-					Long producerUserId=getProducerUserId(param.getOrderAddressId(),work.getProductid(),param.getSubmitUserId());
+					Long producerUserId=getProducerUserId(work.getAddressid(),work.getProductid(),param.getSubmitUserId());
 					Integer orderindex=producerOrderMapper.getMaxOrderIndexByProducerIdAndUserId(producerUserId, param.getSubmitUserId());
 					if(orderindex==null){
 						orderindex=1;

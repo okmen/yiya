@@ -34,5 +34,14 @@ public interface IIbs_GroupActivityService {
 	 */
 	ReturnModel getGroupActWorkListByGactid(int index, int size,
 			Integer gactid, Integer addresstype, String keywords);
+	/**
+	 * 设置活动的分享广告
+	 * @param promoterUserId
+	 * @param gactid
+	 * @param advertid
+	 * @return
+	 */
+	ReturnModel setActsShareAdvert(Long promoterUserId, Integer gactid,
+			Integer advertid);
 	
 }

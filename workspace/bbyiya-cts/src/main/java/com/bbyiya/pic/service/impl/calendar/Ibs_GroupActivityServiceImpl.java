@@ -21,11 +21,13 @@ import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.TiGroupactivityMapper;
 import com.bbyiya.dao.TiGroupactivityproductsMapper;
 import com.bbyiya.dao.TiGroupactivityworksMapper;
+import com.bbyiya.dao.TiPromoteradvertinfoMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.ActivityWorksStatusEnum;
 import com.bbyiya.enums.calendar.TiActivityTypeEnum;
 import com.bbyiya.model.OUserorders;
+import com.bbyiya.model.TiActivitys;
 import com.bbyiya.model.TiGroupactivity;
 import com.bbyiya.model.TiGroupactivityproducts;
 import com.bbyiya.model.TiGroupactivityworks;
@@ -47,7 +49,7 @@ import com.github.pagehelper.PageInfo;
 
 
 
-@Service("ibs_CalendarActivityService")
+@Service("ibs_GroupActivityService")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
 public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 	
@@ -59,6 +61,8 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 	private TiGroupactivityworksMapper groupactworkMapper;
 	@Autowired
 	private OUserordersMapper orderMapper;
+	@Autowired
+	private TiPromoteradvertinfoMapper advertinfoMapper;
 	
 	/*-------------------用户信息------------------------------------------------*/
 	@Autowired
@@ -98,21 +102,24 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 		ti.setStatus(1);
 		ti.setPraisecount(5);
 		ti.setTimespare(3L);
-		String redirct_url="groupBuy?groupId="+ti.getGactid();	
-		try {
-			String urlstr = ConfigUtil.getSingleValue("shareulr-base")+"uid="+URLEncoder.encode(userid.toString(),"utf-8")+"&redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
-			String codeurl="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+URLEncoder.encode(urlstr,"utf-8");
-			ti.setLinkurl(codeurl);
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		ti.setStatus(1);//默认就是已开启的活动	
 		if(isadd){
 			groupactMapper.insertReturnId(ti);
 		}else{
 			groupactMapper.updateByPrimaryKey(ti);
 		}
+		
+		String redirct_url="groupBuy?groupId="+ti.getGactid();	
+		try {
+			String urlstr = ConfigUtil.getSingleValue("shareulr-base")+"uid="+URLEncoder.encode(userid.toString(),"utf-8")+"&redirct_url="+URLEncoder.encode(redirct_url,"utf-8");
+			String codeurl="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+URLEncoder.encode(urlstr,"utf-8");
+			ti.setLinkurl(codeurl);
+			groupactMapper.updateByPrimaryKey(ti);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		//先删除
 		List<TiGroupactivityproducts> productList=groupproductMapper.findProductsByGActid(ti.getGactid());
 		if(productList!=null&&productList.size()>0){
@@ -152,7 +159,16 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 			ti.setCreatetimestr(DateUtil.getTimeStr(ti.getCreatetime(), "yyyy-MM-dd"));
 			Integer sellcount=groupactworkMapper.getCountByGActStatus(ti.getGactid(), 1);
 			ti.setSellercount(sellcount);
-			ti.setActclickcount(0);
+			if(ti.getAdvertid()!=null){
+				TiPromoteradvertinfo advertinfo=advertinfoMapper.selectByPrimaryKey(ti.getAdvertid());
+				if(advertinfo!=null){
+					//广告分享页的浏览数x2倍
+					Integer readcount=(advertinfo.getReadcount()==null?0:advertinfo.getReadcount().intValue())*2;
+					advertinfo.setReadcount(readcount);
+					ti.setAdvertbrowsecount(readcount);
+				}
+			}
+			
 		}
 		rq.setBasemodle(pageresult);
 		rq.setStatu(ReturnStatus.Success);
@@ -173,8 +189,9 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 		PageInfo<TiGroupActivitysWorksVo> pageresult=new PageInfo<TiGroupActivitysWorksVo>(activitylist);
 		if(pageresult!=null&&pageresult.getList()!=null){
 			for (TiGroupActivitysWorksVo ti : pageresult.getList()) {
-				
-				ti.setSubmittimestr(DateUtil.getTimeStr(ti.getSubmittime(), "yyyy-MM-dd"));
+				if(!ObjectUtil.isEmpty(ti.getPaytime())){
+					ti.setSubmittimestr(DateUtil.getTimeStr(ti.getPaytime(), "yyyy-MM-dd"));
+				}
 				if(!ObjectUtil.isEmpty(ti.getUserorderid())){
 					OUserorders order=orderMapper.selectByPrimaryKey(ti.getUserorderid());
 					ti.setPostage(order.getPostage());
@@ -187,6 +204,23 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 		rq.setStatusreson("获取列表成功！");
 		return rq;
 	}
-	
+	/**
+	 * 设置活动的分享广告
+	 */
+	public ReturnModel setActsShareAdvert(Long promoterUserId,Integer gactid,Integer advertid){
+		ReturnModel rqModel=new ReturnModel();
+		rqModel.setStatu(ReturnStatus.ParamError);
+		TiGroupactivity act=groupactMapper.selectByPrimaryKey(gactid);
+		if(act!=null){
+			act.setAdvertid(advertid);
+			groupactMapper.updateByPrimaryKey(act);
+			rqModel.setStatu(ReturnStatus.Success);
+			rqModel.setStatusreson("配置成功！");
+		}else{
+			rqModel.setStatu(ReturnStatus.ParamError);
+			rqModel.setStatusreson("活动ID["+gactid+"]不存在!");
+		}
+		return rqModel;
+	}
 	
 }

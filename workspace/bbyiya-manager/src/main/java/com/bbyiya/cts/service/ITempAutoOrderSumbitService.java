@@ -16,5 +16,10 @@ public interface ITempAutoOrderSumbitService {
 	 * @return
 	 */
 	void doAutoReceiving();
+	/**
+	 * 分销自动下单的功能
+	 * @return
+	 */
+	ReturnModel doGroupActivityAutoOrderSumbit();
 	
 }

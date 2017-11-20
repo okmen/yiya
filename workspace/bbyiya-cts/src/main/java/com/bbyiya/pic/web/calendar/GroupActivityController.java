@@ -93,7 +93,7 @@ public class GroupActivityController extends SSOController {
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("请至少选择一种产品!");
 				return JsonUtil.objectToJsonStr(rq);
-			}
+			}			
 			rq=groupActService.addorEditGroupActivity(user.getUserId(),param);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);

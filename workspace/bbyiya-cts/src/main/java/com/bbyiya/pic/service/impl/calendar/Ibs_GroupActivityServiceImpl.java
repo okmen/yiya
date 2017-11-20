@@ -21,6 +21,8 @@ import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.TiGroupactivityMapper;
 import com.bbyiya.dao.TiGroupactivityproductsMapper;
 import com.bbyiya.dao.TiGroupactivityworksMapper;
+import com.bbyiya.dao.TiProductsMapper;
+import com.bbyiya.dao.TiProductstylesMapper;
 import com.bbyiya.dao.TiPromoteradvertinfoMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
@@ -32,6 +34,7 @@ import com.bbyiya.model.TiGroupactivity;
 import com.bbyiya.model.TiGroupactivityproducts;
 import com.bbyiya.model.TiGroupactivityworks;
 import com.bbyiya.model.TiProducts;
+import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiPromoteradvertinfo;
 import com.bbyiya.pic.service.calendar.IIbs_GroupActivityService;
 import com.bbyiya.pic.vo.calendar.GroupActivityAddParam;
@@ -63,6 +66,11 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 	private OUserordersMapper orderMapper;
 	@Autowired
 	private TiPromoteradvertinfoMapper advertinfoMapper;
+	@Autowired
+	private TiProductsMapper productMapper;
+	@Autowired
+	private TiProductstylesMapper styleMapper;
+	
 	
 	/*-------------------用户信息------------------------------------------------*/
 	@Autowired
@@ -76,7 +84,20 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 	public ReturnModel addorEditGroupActivity(Long userid,GroupActivityAddParam param){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);	
-		
+		for (TiGroupactivityproducts pp : param.getProductlist()) {
+			TiProductstyles style=styleMapper.selectByPrimaryKey(pp.getProductid());
+//			//所有产品只能输入高于惊爆价的2倍，低于全价
+//			if(pp.getPrice().doubleValue()>=style.getPrice()){
+//				rq.setStatu(ReturnStatus.ParamError);
+//				rq.setStatusreson("产品价格必须低于全价！");
+//				return rq;
+//			}
+//			if(pp.getPrice().doubleValue()<=style.getPromoterprice().doubleValue()*2){
+//				rq.setStatu(ReturnStatus.ParamError);
+//				rq.setStatusreson("产品价格必须高于惊爆价的2倍！");
+//				return rq;
+//			}
+		}
 		boolean isadd=false;
 		TiGroupactivity ti=null;
 		if(!ObjectUtil.isEmpty(param.getGactid())){

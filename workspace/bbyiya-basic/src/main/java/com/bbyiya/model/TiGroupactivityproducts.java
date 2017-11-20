@@ -1,62 +1,61 @@
 package com.bbyiya.model;
 
-import java.math.BigDecimal;
 
 public class TiGroupactivityproducts {
-    private Long id;
+	private Long id;
 
-    private Integer gactid;
+	private Integer gactid;
 
-    private Long productid;
+	private Long productid;
 
-    private BigDecimal price;
+	private Double price;
 
-    private Integer status;
+	private Integer status;
 
-    //--------------非数据库字段-------------------------
-    private String title;
-    private Double originPrice;
-    private String defaultimg;
+	// --------------非数据库字段-------------------------
+	private String title;
+	private Double originPrice;
+	private String defaultimg;
 
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public Integer getGactid() {
-        return gactid;
-    }
+	public Integer getGactid() {
+		return gactid;
+	}
 
-    public void setGactid(Integer gactid) {
-        this.gactid = gactid;
-    }
+	public void setGactid(Integer gactid) {
+		this.gactid = gactid;
+	}
 
-    public Long getProductid() {
-        return productid;
-    }
+	public Long getProductid() {
+		return productid;
+	}
 
-    public void setProductid(Long productid) {
-        this.productid = productid;
-    }
+	public void setProductid(Long productid) {
+		this.productid = productid;
+	}
 
-    public BigDecimal getPrice() {
-        return price;
-    }
+	public Double getPrice() {
+		return price;
+	}
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
+	public void setPrice(Double price) {
+		this.price = price;
+	}
 
-    public Integer getStatus() {
-        return status;
-    }
+	public Integer getStatus() {
+		return status;
+	}
 
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
 
 	public String getTitle() {
 		return title;
@@ -81,6 +80,5 @@ public class TiGroupactivityproducts {
 	public void setDefaultimg(String defaultimg) {
 		this.defaultimg = defaultimg;
 	}
-    
-    
+
 }

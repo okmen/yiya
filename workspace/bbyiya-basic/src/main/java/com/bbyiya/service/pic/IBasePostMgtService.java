@@ -124,4 +124,6 @@ public interface IBasePostMgtService {
 	 * @return
 	 */
 	ReturnModel getPostInfo();
+	
+	Double getPostAge_ti(Long addressId,Long productId);
 }

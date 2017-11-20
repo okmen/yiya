@@ -182,6 +182,24 @@ public class BasePostMgtServiceImpl implements IBasePostMgtService{
 		return rq;
 		
 	}
+	
+	public Double getPostAge_ti(Long addressId,Long productId){
+		TiProducts products= tiProductsMapper.selectByPrimaryKey(productId);
+		if(products!=null){
+			PPostmodel post = postmodelMapper.selectByPrimaryKey(products.getPostmodelid());
+			if (post != null) {
+				UUseraddress addr= addressMapper.get_UUserAddressByKeyId(addressId);
+				if(addr!=null){
+					PPostmodelareas areamod = postmodelareasMapper.getPostAreaModel(post.getPostmodelid(), addr.getArea());
+					if (areamod != null) {
+						return areamod.getAmount();
+					}
+				}
+			}
+		}
+		return 0d;
+	}
+	
 	public PPostmodel getPostmodel(Integer postModelId,Integer areaId){
 		PPostmodel model=postmodelMapper.selectByPrimaryKey(postModelId);
 		if(model!=null){

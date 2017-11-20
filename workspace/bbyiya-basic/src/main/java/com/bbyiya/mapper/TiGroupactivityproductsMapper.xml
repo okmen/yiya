@@ -5,7 +5,7 @@
     <id column="Id" property="id" jdbcType="BIGINT" />
     <result column="GactId" property="gactid" jdbcType="INTEGER" />
     <result column="ProductId" property="productid" jdbcType="BIGINT" />
-    <result column="Price" property="price" jdbcType="DECIMAL" />
+    <result column="Price" property="price" jdbcType="DOUBLE" />
     <result column="Status" property="status" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
@@ -29,11 +29,11 @@
     delete from ti_groupactivityproducts
     where Id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.bbyiya.model.TiGroupactivityproducts" >
+ <insert id="insert" parameterType="com.bbyiya.model.TiGroupactivityproducts" >
     insert into ti_groupactivityproducts (Id, GactId, ProductId, 
       Price, Status)
     values (#{id,jdbcType=BIGINT}, #{gactid,jdbcType=INTEGER}, #{productid,jdbcType=BIGINT}, 
-      #{price,jdbcType=DECIMAL}, #{status,jdbcType=INTEGER})
+      #{price,jdbcType=DOUBLE}, #{status,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiGroupactivityproducts" >
     insert into ti_groupactivityproducts
@@ -65,7 +65,7 @@
         #{productid,jdbcType=BIGINT},
       </if>
       <if test="price != null" >
-        #{price,jdbcType=DECIMAL},
+        #{price,jdbcType=DOUBLE},
       </if>
       <if test="status != null" >
         #{status,jdbcType=INTEGER},
@@ -82,7 +82,7 @@
         ProductId = #{productid,jdbcType=BIGINT},
       </if>
       <if test="price != null" >
-        Price = #{price,jdbcType=DECIMAL},
+        Price = #{price,jdbcType=DOUBLE},
       </if>
       <if test="status != null" >
         Status = #{status,jdbcType=INTEGER},
@@ -94,7 +94,7 @@
     update ti_groupactivityproducts
     set GactId = #{gactid,jdbcType=INTEGER},
       ProductId = #{productid,jdbcType=BIGINT},
-      Price = #{price,jdbcType=DECIMAL},
+      Price = #{price,jdbcType=DOUBLE},
       Status = #{status,jdbcType=INTEGER}
     where Id = #{id,jdbcType=BIGINT}
   </update>

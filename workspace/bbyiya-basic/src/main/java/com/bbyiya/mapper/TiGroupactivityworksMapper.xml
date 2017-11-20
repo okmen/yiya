@@ -9,13 +9,13 @@
     <result column="Mobilephone" property="mobilephone" jdbcType="VARCHAR" />
     <result column="ProductId" property="productid" jdbcType="BIGINT" />
     <result column="SttyleId" property="sttyleid" jdbcType="BIGINT" />
-    <result column="Price" property="price" jdbcType="DECIMAL" />
-    <result column="ActPrice" property="actprice" jdbcType="DECIMAL" />
+    <result column="Price" property="price" jdbcType="DOUBLE" />
+    <result column="ActPrice" property="actprice" jdbcType="DOUBLE" />
     <result column="Count" property="count" jdbcType="INTEGER" />
     <result column="AddressType" property="addresstype" jdbcType="INTEGER" />
     <result column="UserOrderId" property="userorderid" jdbcType="VARCHAR" />
     <result column="Status" property="status" jdbcType="INTEGER" />
-    <result column="Totalprice" property="totalprice" jdbcType="DECIMAL" />
+    <result column="Totalprice" property="totalprice" jdbcType="DOUBLE" />
     <result column="PraiseCount" property="praisecount" jdbcType="INTEGER" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="SubmitTime" property="submittime" jdbcType="TIMESTAMP" />
@@ -73,7 +73,7 @@
     delete from ti_groupactivityworks
     where WorkId = #{workid,jdbcType=BIGINT}
   </delete>
-   <insert id="insert" parameterType="com.bbyiya.model.TiGroupactivityworks" >
+  <insert id="insert" parameterType="com.bbyiya.model.TiGroupactivityworks" >
     insert into ti_groupactivityworks (WorkId, GactId, UserId, 
       Name, Mobilephone, ProductId, 
       SttyleId, Price, ActPrice, 
@@ -83,9 +83,9 @@
       AddressId)
     values (#{workid,jdbcType=BIGINT}, #{gactid,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, 
       #{name,jdbcType=VARCHAR}, #{mobilephone,jdbcType=VARCHAR}, #{productid,jdbcType=BIGINT}, 
-      #{sttyleid,jdbcType=BIGINT}, #{price,jdbcType=DECIMAL}, #{actprice,jdbcType=DECIMAL}, 
+      #{sttyleid,jdbcType=BIGINT}, #{price,jdbcType=DOUBLE}, #{actprice,jdbcType=DOUBLE}, 
       #{count,jdbcType=INTEGER}, #{addresstype,jdbcType=INTEGER}, #{userorderid,jdbcType=VARCHAR}, 
-      #{status,jdbcType=INTEGER}, #{totalprice,jdbcType=DECIMAL}, #{praisecount,jdbcType=INTEGER}, 
+      #{status,jdbcType=INTEGER}, #{totalprice,jdbcType=DOUBLE}, #{praisecount,jdbcType=INTEGER}, 
       #{createtime,jdbcType=TIMESTAMP}, #{submittime,jdbcType=TIMESTAMP}, #{paytime,jdbcType=TIMESTAMP}, 
       #{addressid,jdbcType=BIGINT})
   </insert>
@@ -173,10 +173,10 @@
         #{sttyleid,jdbcType=BIGINT},
       </if>
       <if test="price != null" >
-        #{price,jdbcType=DECIMAL},
+        #{price,jdbcType=DOUBLE},
       </if>
       <if test="actprice != null" >
-        #{actprice,jdbcType=DECIMAL},
+        #{actprice,jdbcType=DOUBLE},
       </if>
       <if test="count != null" >
         #{count,jdbcType=INTEGER},
@@ -191,7 +191,7 @@
         #{status,jdbcType=INTEGER},
       </if>
       <if test="totalprice != null" >
-        #{totalprice,jdbcType=DECIMAL},
+        #{totalprice,jdbcType=DOUBLE},
       </if>
       <if test="praisecount != null" >
         #{praisecount,jdbcType=INTEGER},
@@ -232,10 +232,10 @@
         SttyleId = #{sttyleid,jdbcType=BIGINT},
       </if>
       <if test="price != null" >
-        Price = #{price,jdbcType=DECIMAL},
+        Price = #{price,jdbcType=DOUBLE},
       </if>
       <if test="actprice != null" >
-        ActPrice = #{actprice,jdbcType=DECIMAL},
+        ActPrice = #{actprice,jdbcType=DOUBLE},
       </if>
       <if test="count != null" >
         Count = #{count,jdbcType=INTEGER},
@@ -250,7 +250,7 @@
         Status = #{status,jdbcType=INTEGER},
       </if>
       <if test="totalprice != null" >
-        Totalprice = #{totalprice,jdbcType=DECIMAL},
+        Totalprice = #{totalprice,jdbcType=DOUBLE},
       </if>
       <if test="praisecount != null" >
         PraiseCount = #{praisecount,jdbcType=INTEGER},
@@ -278,13 +278,13 @@
       Mobilephone = #{mobilephone,jdbcType=VARCHAR},
       ProductId = #{productid,jdbcType=BIGINT},
       SttyleId = #{sttyleid,jdbcType=BIGINT},
-      Price = #{price,jdbcType=DECIMAL},
-      ActPrice = #{actprice,jdbcType=DECIMAL},
+      Price = #{price,jdbcType=DOUBLE},
+      ActPrice = #{actprice,jdbcType=DOUBLE},
       Count = #{count,jdbcType=INTEGER},
       AddressType = #{addresstype,jdbcType=INTEGER},
       UserOrderId = #{userorderid,jdbcType=VARCHAR},
       Status = #{status,jdbcType=INTEGER},
-      Totalprice = #{totalprice,jdbcType=DECIMAL},
+      Totalprice = #{totalprice,jdbcType=DOUBLE},
       PraiseCount = #{praisecount,jdbcType=INTEGER},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
       SubmitTime = #{submittime,jdbcType=TIMESTAMP},

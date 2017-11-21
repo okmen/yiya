@@ -25,6 +25,7 @@ import com.bbyiya.dao.PProductstylesMapper;
 import com.bbyiya.dao.TiAccountlogMapper;
 import com.bbyiya.dao.TiActivitysMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
+import com.bbyiya.dao.TiGroupactivityMapper;
 import com.bbyiya.dao.TiGroupactivityworksMapper;
 import com.bbyiya.dao.TiMyworkcustomersMapper;
 import com.bbyiya.dao.TiMyworkredpacketlogsMapper;
@@ -63,6 +64,7 @@ import com.bbyiya.model.PProductstyles;
 import com.bbyiya.model.TiAccountlog;
 import com.bbyiya.model.TiActivitys;
 import com.bbyiya.model.TiActivityworks;
+import com.bbyiya.model.TiGroupactivity;
 import com.bbyiya.model.TiGroupactivityworks;
 import com.bbyiya.model.TiMyworkcustomers;
 import com.bbyiya.model.TiMyworkredpacketlogs;
@@ -157,6 +159,8 @@ public class BasePayServiceImpl implements IBasePayService{
 
 	@Autowired
 	private TiGroupactivityworksMapper gworkMapper;
+	@Autowired
+	private TiGroupactivityMapper gActMapper;
 	/**
 	 * 订单支付成功 回写
 	 */
@@ -307,6 +311,10 @@ public class BasePayServiceImpl implements IBasePayService{
 						if(gwork!=null){
 							gwork.setPaytime(new Date());
 							gworkMapper.updateByPrimaryKeySelective(gwork);
+							TiGroupactivity gact= gActMapper.selectByPrimaryKey(gwork.getGactid());
+							if(gact!=null){
+								accountService.add_accountsLog(gact.getPromoteruserid(), Integer.parseInt(AccountLogType.get_ti_payment.toString()), payOrder.getTotalprice(), payId, "");
+							}
 						}
 						return true;
 					}
@@ -430,7 +438,6 @@ public class BasePayServiceImpl implements IBasePayService{
 			log.setUserid(userid);
 			tiAccountlogMapper.insert(log);
 		} catch (Exception e) {
-			// TODO: handle exception
 			addlog("台历记录:orderId"+payId+e.getMessage());
 		}
 	}

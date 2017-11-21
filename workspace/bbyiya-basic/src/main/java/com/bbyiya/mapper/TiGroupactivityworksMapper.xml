@@ -21,11 +21,12 @@
     <result column="SubmitTime" property="submittime" jdbcType="TIMESTAMP" />
     <result column="PayTime" property="paytime" jdbcType="TIMESTAMP" />
     <result column="AddressId" property="addressid" jdbcType="BIGINT" />
+    <result column="PostAge" property="postage" jdbcType="DOUBLE" />
   </resultMap>
   <sql id="Base_Column_List" >
-    WorkId, GactId, UserId, Name, Mobilephone, ProductId, SttyleId, Price, ActPrice, 
+     WorkId, GactId, UserId, Name, Mobilephone, ProductId, SttyleId, Price, ActPrice, 
     Count, AddressType, UserOrderId, Status, Totalprice, PraiseCount, CreateTime, SubmitTime, 
-    PayTime, AddressId
+    PayTime, AddressId, PostAge
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -43,21 +44,21 @@
     delete from ti_groupactivityworks
     where WorkId = #{workid,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.bbyiya.model.TiGroupactivityworks" >
+   <insert id="insert" parameterType="com.bbyiya.model.TiGroupactivityworks" >
     insert into ti_groupactivityworks (WorkId, GactId, UserId, 
       Name, Mobilephone, ProductId, 
       SttyleId, Price, ActPrice, 
       Count, AddressType, UserOrderId, 
       Status, Totalprice, PraiseCount, 
       CreateTime, SubmitTime, PayTime, 
-      AddressId)
+      AddressId, PostAge)
     values (#{workid,jdbcType=BIGINT}, #{gactid,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, 
       #{name,jdbcType=VARCHAR}, #{mobilephone,jdbcType=VARCHAR}, #{productid,jdbcType=BIGINT}, 
       #{sttyleid,jdbcType=BIGINT}, #{price,jdbcType=DOUBLE}, #{actprice,jdbcType=DOUBLE}, 
       #{count,jdbcType=INTEGER}, #{addresstype,jdbcType=INTEGER}, #{userorderid,jdbcType=VARCHAR}, 
       #{status,jdbcType=INTEGER}, #{totalprice,jdbcType=DOUBLE}, #{praisecount,jdbcType=INTEGER}, 
       #{createtime,jdbcType=TIMESTAMP}, #{submittime,jdbcType=TIMESTAMP}, #{paytime,jdbcType=TIMESTAMP}, 
-      #{addressid,jdbcType=BIGINT})
+      #{addressid,jdbcType=BIGINT}, #{postage,jdbcType=DOUBLE})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiGroupactivityworks" >
     insert into ti_groupactivityworks
@@ -119,6 +120,9 @@
       <if test="addressid != null" >
         AddressId,
       </if>
+      <if test="postage != null" >
+        PostAge,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="workid != null" >
@@ -177,6 +181,9 @@
       </if>
       <if test="addressid != null" >
         #{addressid,jdbcType=BIGINT},
+      </if>
+      <if test="postage != null" >
+        #{postage,jdbcType=DOUBLE},
       </if>
     </trim>
   </insert>
@@ -237,6 +244,9 @@
       <if test="addressid != null" >
         AddressId = #{addressid,jdbcType=BIGINT},
       </if>
+      <if test="postage != null" >
+        PostAge = #{postage,jdbcType=DOUBLE},
+      </if>
     </set>
     where WorkId = #{workid,jdbcType=BIGINT}
   </update>
@@ -259,7 +269,8 @@
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
       SubmitTime = #{submittime,jdbcType=TIMESTAMP},
       PayTime = #{paytime,jdbcType=TIMESTAMP},
-      AddressId = #{addressid,jdbcType=BIGINT}
+      AddressId = #{addressid,jdbcType=BIGINT},
+      PostAge = #{postage,jdbcType=DOUBLE}
     where WorkId = #{workid,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -41,6 +41,8 @@ public class TiGroupactivityworks {
 
     private Long addressid;
 
+    private Double postage;
+
     public Long getWorkid() {
         return workid;
     }
@@ -197,6 +199,14 @@ public class TiGroupactivityworks {
 
 	public void setAddressid(Long addressid) {
 		this.addressid = addressid;
+	}
+
+	public Double getPostage() {
+		return postage;
+	}
+
+	public void setPostage(Double postage) {
+		this.postage = postage;
 	}
     
 }

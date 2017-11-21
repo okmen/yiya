@@ -33,6 +33,7 @@ import com.bbyiya.dao.PMyproductsinvitesMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
+import com.bbyiya.dao.TiGroupactivityworksMapper;
 import com.bbyiya.dao.TiMyworkcustomersMapper;
 import com.bbyiya.dao.TiMyworksMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
@@ -59,6 +60,7 @@ import com.bbyiya.model.PMyproductdetails;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproductsinvites;
 import com.bbyiya.model.TiActivityworks;
+import com.bbyiya.model.TiGroupactivityworks;
 import com.bbyiya.model.TiMyworkcustomers;
 import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiPromoters;
@@ -130,6 +132,8 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 	@Autowired
 	private TiActivityworksMapper tiworkMapper;
 	@Autowired
+	private TiGroupactivityworksMapper tigroupworkMapper;
+	@Autowired
 	private TiMyworksMapper timyworkMapper;
 	@Autowired
 	private TiMyworkcustomersMapper timyworkcusMapper;
@@ -174,7 +178,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 				order.setOrdertype(orderType);
 				//默认到关联账户流水的关键字为订单号
 				product.setPostlogrelationid(order.getUserorderid());
-				product.setTiNeedPayPost(0);//默认都需付邮费
+				product.setTiNeedPayPost(1);//默认都需付邮费
 				//咿呀12的生产商
 				if(orderType==Integer.parseInt(OrderTypeEnum.nomal.toString())||orderType==Integer.parseInt(OrderTypeEnum.brachOrder.toString())){
 					branch=branchesMapper.selectByPrimaryKey(order.getBranchuserid());
@@ -193,7 +197,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					}
 					//普通用户订单
 					if(orderType==Integer.parseInt(OrderTypeEnum.ti_nomal.toString())){
-						product.setTiNeedPayPost(0);;//默认都省邮费
+						product.setTiNeedPayPost(0);//默认都省邮费
 						//如果是邮寄到推广者地址自提，则需要付邮费
 						if(order.getIspromoteraddress()!=null&&order.getIspromoteraddress().intValue()==1){
 							product.setTiNeedPayPost(1);
@@ -208,9 +212,16 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 							if(mywork!=null&&mywork.getIsinstead()!=null&&mywork.getIsinstead().intValue()==1){
 								product.setTiNeedPayPost(1);
 							}else{
+								product.setTiNeedPayPost(1);//默认都需付邮费
 								work=tiworkMapper.selectByPrimaryKey(product.getCartid());
+								if(work==null){
+									TiGroupactivityworks groupwork=tigroupworkMapper.selectByPrimaryKey(product.getCartid());
+									if(groupwork!=null&&groupwork.getAddresstype()!=null&&groupwork.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.cusaddr.toString())){
+										product.setTiNeedPayPost(0);
+									}
+								}
 								//如果是邮寄到客户地址，则不需要再付邮费
-								if(work!=null&&work.getAddresstype()!=null&&work.getAddresstype().intValue()==1){
+								if(work!=null&&work.getAddresstype()!=null&&work.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.cusaddr.toString())){
 									product.setTiNeedPayPost(0);
 									OPayorder postpayroder=payoderMapper.getpostPayorderByworkId(work.getWorkid().toString());
 									if(postpayroder!=null){
@@ -455,8 +466,17 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					isNeedPayPost=true;
 				}else{
 					TiActivityworks work=tiworkMapper.selectByPrimaryKey(product.getCartid());
-					//如果是邮寄到客户地址，则不需要再付邮费
-					if(work!=null&&work.getAddresstype()!=null&&work.getAddresstype().intValue()==1){
+					if(work==null){
+						TiGroupactivityworks groupwork=tigroupworkMapper.selectByPrimaryKey(product.getCartid());
+						if(groupwork!=null){
+							if(groupwork.getAddresstype()!=null&&groupwork.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.cusaddr.toString())){
+								isNeedPayPost=false;
+							}else{
+								isNeedPayPost=true;
+							}
+						}
+					}//如果是邮寄到客户地址，则不需要再付邮费
+					else if(work!=null&&work.getAddresstype()!=null&&work.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.cusaddr.toString())){
 						isNeedPayPost=false;
 					}else{
 						isNeedPayPost=true;

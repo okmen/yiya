@@ -27,6 +27,7 @@ import com.bbyiya.dao.TiPromoteradvertinfoMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.ActivityWorksStatusEnum;
+import com.bbyiya.enums.calendar.AddressTypeEnum;
 import com.bbyiya.enums.calendar.TiActivityTypeEnum;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.TiActivitys;
@@ -213,11 +214,13 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 				if(!ObjectUtil.isEmpty(ti.getPaytime())){
 					ti.setSubmittimestr(DateUtil.getTimeStr(ti.getPaytime(), "yyyy-MM-dd"));
 				}
-				if(!ObjectUtil.isEmpty(ti.getUserorderid())){
-					OUserorders order=orderMapper.selectByPrimaryKey(ti.getUserorderid());
-					ti.setPostage(order.getPostage());
-
-				}	
+				//如果是上门自提
+				if(ti.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.promoteraddr.toString())){
+					if(!ObjectUtil.isEmpty(ti.getUserorderid())){
+						OUserorders order=orderMapper.selectByPrimaryKey(ti.getUserorderid());
+						ti.setPostage(order.getPostage());
+					}	
+				}
 			}
 		}
 		rq.setBasemodle(pageresult);

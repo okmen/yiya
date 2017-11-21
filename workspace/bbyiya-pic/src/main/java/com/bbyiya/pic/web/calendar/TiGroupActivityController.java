@@ -18,6 +18,7 @@ import com.bbyiya.baseUtils.GenUtils;
 import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.TiGroupactivityMapper;
+import com.bbyiya.dao.TiGroupactivitypraiseusersMapper;
 import com.bbyiya.dao.TiGroupactivityproductsMapper;
 import com.bbyiya.dao.TiGroupactivityworksMapper;
 import com.bbyiya.dao.TiMyartsdetailsMapper;
@@ -32,6 +33,7 @@ import com.bbyiya.enums.calendar.GroupActWorkStatus;
 import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.TiGroupactivity;
+import com.bbyiya.model.TiGroupactivitypraiseusers;
 import com.bbyiya.model.TiGroupactivityproducts;
 import com.bbyiya.model.TiGroupactivityworks;
 import com.bbyiya.model.TiMyartsdetails;
@@ -97,7 +99,7 @@ public class TiGroupActivityController  extends SSOController {
 				proIds.add(tt.getProductid());
 			}
 			List<TiProducts> proList=productMapper.findProductlistByProductIds(proIds);
-			if(proList!=null&&proList.size()>0){
+			if(proList!=null&&proList.size()>0){ 
 				for (TiGroupactivityproducts pro : gprolist) {
 					for (TiProducts pp : proList) {
 						if(pro.getProductid().longValue()==pp.getProductid().longValue()){
@@ -151,7 +153,8 @@ public class TiGroupActivityController  extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq); 
 	}
-	
+	@Autowired
+	private TiGroupactivitypraiseusersMapper gpraiseMapper;
 	/**
 	 * 团购作品详情
 	 * @param workId
@@ -191,6 +194,9 @@ public class TiGroupActivityController  extends SSOController {
 								map.put("workInfo", myworks);
 							}
 						}
+						if(gwork.getStatus()!=null&&gwork.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.payed.toString())){
+							map.put("praiseUsers", gpraiseMapper.findlistByWorkId(workId));
+						}
 						rq.setBasemodle(map);
 					}
 					
@@ -201,6 +207,33 @@ public class TiGroupActivityController  extends SSOController {
 			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
+		}
+		return JsonUtil.objectToJsonStr(rq); 
+	}
+	
+	/**
+	 * 作品点赞
+	 * @param workId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/addGworkPraise")
+	public String addGworkPraise(long workId)throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			TiGroupactivitypraiseusers model=gpraiseMapper.existsByWorkIdAndUserId(workId, user.getUserId());
+			if(model==null){
+				model=new TiGroupactivitypraiseusers();
+				model.setUserid(user.getUserId());
+				model.setHeadimg(user.getHeadImg());
+				model.setWorkid(workId);
+				model.setNickname(user.getNickName());
+				model.setCreatetime(new Date());
+				gpraiseMapper.insert(model);
+			}
+			rq.setStatu(ReturnStatus.Success); 
 		}
 		return JsonUtil.objectToJsonStr(rq); 
 	}

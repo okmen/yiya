@@ -34,12 +34,11 @@
     from ti_groupactivityworks
     where WorkId = #{workid,jdbcType=BIGINT}
   </select>
-  <select id="getTiGroupactivityworksByActIdAndUserId" ><!-- 获取 某团购用户参与信息 -->
+  <select id="getTiGroupactivityworksByActIdAndUserId" resultMap="BaseResultMap"><!-- 获取 某团购用户参与信息 -->
   	select  <include refid="Base_Column_List" />
     from ti_groupactivityworks
-    where UserId = #{userId,jdbcType=BIGINT} and GactId=#{gactId,jdbcType=INTEGER} Limit 1
+    where UserId = #{userId,jdbcType=BIGINT} and GactId=#{gactId,jdbcType=INTEGER} order by CreateTime desc Limit 1
   </select>
-  
   <resultMap id="TiGroupActivityworksVOResult" type="com.bbyiya.vo.calendar.TiGroupActivitysWorksVo" extends="BaseResultMap">  
   </resultMap>
   <!-- 根据活动ID得到活动参与情况列表 -->

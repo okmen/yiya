@@ -84,33 +84,43 @@ public class TiGroupActivityController  extends SSOController {
 	@RequestMapping(value = "/gActInfo")
 	public String actInfo(int groupId)throws Exception {
 		ReturnModel rq=new ReturnModel();
-		Map<String, Object> result=new HashMap<String, Object>();
-		TiGroupactivity actInfo= gactMapper.selectByPrimaryKey(groupId);
-		if(actInfo!=null){
-			int browsecount=actInfo.getBrowsecount()==null?1:(actInfo.getBrowsecount().intValue()+1);
-			actInfo.setBrowsecount(browsecount);
-			gactMapper.updateByPrimaryKeySelective(actInfo);
-		}
-		result.put("gActInfo", actInfo);
-		List<TiGroupactivityproducts> gprolist=gactProMapper.findProductsByGActid(groupId);
-		if(gprolist!=null&&gprolist.size()>0){
-			List<Long> proIds=new ArrayList<Long>();
-			for (TiGroupactivityproducts tt : gprolist) {
-				proIds.add(tt.getProductid());
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			Map<String, Object> result = new HashMap<String, Object>();
+			TiGroupactivity actInfo = gactMapper.selectByPrimaryKey(groupId);
+			if (actInfo != null) {
+				int browsecount = actInfo.getBrowsecount() == null ? 1 : (actInfo.getBrowsecount().intValue() + 1);
+				actInfo.setBrowsecount(browsecount);
+				gactMapper.updateByPrimaryKeySelective(actInfo);
 			}
-			List<TiProducts> proList=productMapper.findProductlistByProductIds(proIds);
-			if(proList!=null&&proList.size()>0){ 
-				for (TiGroupactivityproducts pro : gprolist) {
-					for (TiProducts pp : proList) {
-						if(pro.getProductid().longValue()==pp.getProductid().longValue()){
-							pro.setTitle(pp.getTitle());
-							pro.setOriginPrice(pp.getPrice());
-							pro.setDefaultimg(pp.getDefaultimg());
+			result.put("gActInfo", actInfo);
+			TiGroupactivityworks gwork= gworkMapper.getTiGroupactivityworksByActIdAndUserId(user.getUserId(), groupId);
+			if(gwork!=null&&gwork.getStatus()!=null&&gwork.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.payed.toString())){
+				result.put("gwork", gwork);
+				result.put("exists", 1);//已经参与活动
+			}else {
+				result.put("exists", 0);
+				List<TiGroupactivityproducts> gprolist = gactProMapper.findProductsByGActid(groupId);
+				if (gprolist != null && gprolist.size() > 0) {
+					List<Long> proIds = new ArrayList<Long>();
+					for (TiGroupactivityproducts tt : gprolist) {
+						proIds.add(tt.getProductid());
+					}
+					List<TiProducts> proList = productMapper.findProductlistByProductIds(proIds);
+					if (proList != null && proList.size() > 0) {
+						for (TiGroupactivityproducts pro : gprolist) {
+							for (TiProducts pp : proList) {
+								if (pro.getProductid().longValue() == pp.getProductid().longValue()) {
+									pro.setTitle(pp.getTitle());
+									pro.setOriginPrice(pp.getPrice());
+									pro.setDefaultimg(pp.getDefaultimg());
+								}
+							}
 						}
 					}
+					result.put("prolist", gprolist);
 				}
 			}
-			result.put("prolist", gprolist);
 			rq.setBasemodle(result);
 			rq.setStatu(ReturnStatus.Success);
 		}
@@ -131,6 +141,12 @@ public class TiGroupActivityController  extends SSOController {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
+			TiGroupactivityworks gworkOld= gworkMapper.getTiGroupactivityworksByActIdAndUserId(user.getUserId(), groupId);
+			if(gworkOld!=null&&gworkOld.getStatus()!=null&&gworkOld.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.payed.toString())){
+				rq.setBasemodle(gworkOld);
+				rq.setStatu(ReturnStatus.Success);
+				return JsonUtil.objectToJsonStr(rq); 
+			}
 			long workId = getNewWorkId();
 			TiGroupactivityworks gwork = new TiGroupactivityworks();
 			gwork.setWorkid(workId);

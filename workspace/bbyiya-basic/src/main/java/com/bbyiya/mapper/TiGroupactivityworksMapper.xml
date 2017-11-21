@@ -40,6 +40,36 @@
     where UserId = #{userId,jdbcType=BIGINT} and GactId=#{gactId,jdbcType=INTEGER} Limit 1
   </select>
   
+  <resultMap id="TiGroupActivityworksVOResult" type="com.bbyiya.vo.calendar.TiGroupActivitysWorksVo" extends="BaseResultMap">  
+  </resultMap>
+  <!-- 根据活动ID得到活动参与情况列表 -->
+  <select id="findGroupActWorkListByActId" resultMap="TiGroupActivityworksVOResult"  >
+    select a.*  from ti_groupactivityworks as a
+    where a.GactId = #{gactid,jdbcType=BIGINT}
+   
+    <if test="addresstype != null" >
+       and  a.AddressType = #{addresstype,jdbcType=INTEGER}
+    </if>
+    <if test="keywords != null and keywords!=''" > 
+       and (a.Name LIKE CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) OR a.Mobilephone LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) )
+    </if>
+    order by a.CreateTime desc
+  </select>
+  
+   <!-- 根据活动ID及状态得到各状态的总数 -->
+  <select id="getCountByGActStatus" resultType="java.lang.Integer"  parameterType="java.lang.Integer" >
+    select count(WorkId) from ti_groupactivityworks where GactId = #{gactid,jdbcType=INTEGER} and Status=#{status,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 获取可自动下单的活动作品 -->
+  <select id="findCanOrderGroupActWork" resultMap="BaseResultMap" >
+	select a.* from ti_groupactivityworks a  
+	where TIMESTAMPDIFF(HOUR, a.PayTime, now())>=#{ordertime,jdbcType=INTEGER}  
+	and a.Status=1
+  </select>
+  
+  
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from ti_groupactivityworks
     where WorkId = #{workid,jdbcType=BIGINT}

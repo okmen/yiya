@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.bbyiya.common.vo.ImageInfo;
 import com.bbyiya.model.PMyproducttempext;
+import com.bbyiya.model.TiGroupactivityproducts;
 import com.bbyiya.model.TiMachinemodel;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.RAreaVo;
@@ -195,5 +196,6 @@ public class Json2Objects {
 		
 		return imglist;
 	}
+	
 	
 }

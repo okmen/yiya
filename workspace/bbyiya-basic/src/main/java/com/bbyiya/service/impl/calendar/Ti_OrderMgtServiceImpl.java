@@ -27,6 +27,8 @@ import com.bbyiya.dao.TiActivitysMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
 import com.bbyiya.dao.TiDiscountdetailsMapper;
 import com.bbyiya.dao.TiDiscountmodelMapper;
+import com.bbyiya.dao.TiGroupactivityMapper;
+import com.bbyiya.dao.TiGroupactivityworksMapper;
 import com.bbyiya.dao.TiMyartsdetailsMapper;
 import com.bbyiya.dao.TiMyworkcustomersMapper;
 import com.bbyiya.dao.TiMyworksMapper;
@@ -49,6 +51,7 @@ import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.ActivityWorksStatusEnum;
 import com.bbyiya.enums.calendar.AddressTypeEnum;
+import com.bbyiya.enums.calendar.GroupActWorkStatus;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.EErrors;
 import com.bbyiya.model.OOrderaddress;
@@ -66,6 +69,8 @@ import com.bbyiya.model.TiActivitys;
 import com.bbyiya.model.TiActivityworks;
 import com.bbyiya.model.TiDiscountdetails;
 import com.bbyiya.model.TiDiscountmodel;
+import com.bbyiya.model.TiGroupactivity;
+import com.bbyiya.model.TiGroupactivityworks;
 import com.bbyiya.model.TiMyartsdetails;
 import com.bbyiya.model.TiMyworkcustomers;
 import com.bbyiya.model.TiMyworks;
@@ -90,6 +95,7 @@ import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.address.OrderaddressParam;
 import com.bbyiya.vo.calendar.TiActivityOrderSubmitParam;
+import com.bbyiya.vo.calendar.TiGroupActivityOrderSubmitParam;
 import com.bbyiya.vo.order.UserOrderSubmitParam;
 @Service("tiOrderMgtServiceImpl")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
@@ -157,6 +163,10 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 	
 	@Autowired
 	private TiMyworkcustomersMapper workcusMapper;
+	@Autowired
+	private TiGroupactivityworksMapper groupactworkMapper;
+	@Autowired
+	private TiGroupactivityMapper groupactMapper;
 	//------------------------优惠信息-------------------------------------------
 	@Autowired
 	private TiUserdiscountsMapper mydiscountMapper;
@@ -255,6 +265,21 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					
 					//订单收货地址
 					long orderAddressId=0l;
+					
+					//订单号
+					String payId = GenUtils.getOrderNo(param.getSubmitUserId());
+					String userOrderId=payId;
+					String orderProductId=userOrderId;
+					
+					
+					//得到订单编号
+					//用户自己付邮费
+					if(actWork.getOrderaddressid()!=null&&actWork.getOrderaddressid().longValue()>0){
+						orderAddressId=actWork.getOrderaddressid();
+					}else {//寄到B端地址
+						orderAddressId= getOrderAddressIdByBUserId(param.getSubmitUserId(), Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));
+					}
+					
 					Long producerUserId=getProducerUserId(orderAddressId,work.getProductid(),param.getSubmitUserId());
 					Integer orderindex=producerOrderMapper.getMaxOrderIndexByProducerIdAndUserId(producerUserId, param.getSubmitUserId());
 					if(orderindex==null){
@@ -262,29 +287,20 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					}else{
 						orderindex=orderindex.intValue()+1;
 					}
-//					DecimalFormat df=new DecimalFormat("0000");
-//					String printindex=df.format(orderindex);
+
 					String printindex=orderindex.toString();
-					//订单号
-					String payId = GenUtils.getOrderNo(param.getSubmitUserId());
-					String userOrderId=payId;
-					String orderProductId=userOrderId;
-					
+					//邮寄到客户地址
+					if(actWork.getOrderaddressid()!=null&&actWork.getOrderaddressid().longValue()>0){
+						printindex=printindex+"A";
+					}
 					OProducerordercount producerorder=new OProducerordercount();
 					producerorder.setProduceruserid(producerUserId);
 					producerorder.setUserid(param.getSubmitUserId());
 					producerorder.setUserorderid(userOrderId);
-					//得到订单编号
-					//用户自己付邮费
-					if(actWork.getOrderaddressid()!=null&&actWork.getOrderaddressid().longValue()>0){
-						orderAddressId=actWork.getOrderaddressid();
-						printindex=printindex+"A";
-					}else {//寄到B端地址
-						orderAddressId= getOrderAddressIdByBUserId(param.getSubmitUserId(), Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));
-					}
 					producerorder.setOrderindex(orderindex);
 					producerorder.setPrintindex(printindex);
 					producerOrderMapper.insert(producerorder);
+					
 					
 					if(detailsList!=null&&detailsList.size()>0){
 						for (TiMyartsdetails dd : detailsList) {
@@ -836,24 +852,6 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					
 					//订单收货地址
 					long orderAddressId=0l;
-					Long producerUserId=getProducerUserId(orderAddressId,work.getProductid(),param.getSubmitUserId());
-					Integer orderindex=producerOrderMapper.getMaxOrderIndexByProducerIdAndUserId(producerUserId, param.getSubmitUserId());
-					if(orderindex==null){
-						orderindex=1;
-					}else{
-						orderindex=orderindex.intValue()+1;
-					}
-//					
-					String printindex=orderindex.toString();
-					//订单号
-					String payId = GenUtils.getOrderNo(param.getSubmitUserId());
-					String userOrderId=payId;
-					String orderProductId=userOrderId;
-					
-					OProducerordercount producerorder=new OProducerordercount();
-					producerorder.setProduceruserid(producerUserId);
-					producerorder.setUserid(param.getSubmitUserId());
-					producerorder.setUserorderid(userOrderId);
 					//得到订单编号
 					//手动选择地址下单
 					if(addressParam!=null&&!ObjectUtil.isEmpty(addressParam.getProvince())){
@@ -870,7 +868,6 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 						orderAddressId=orderAddress.getOrderaddressid();
 						//客户地址
 						if(addressParam.getAddresstype()!=null&&addressParam.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.cusaddr.toString())){
-							printindex=printindex+"A";
 							//这种情况是自定义地址
 							if(workcus.getAddresstype()==null||workcus.getAddresstype().intValue()==0){
 								workcus.setAddresstype(Integer.parseInt(AddressTypeEnum.cusaddr.toString()));
@@ -897,10 +894,37 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 						orderAddress.setCreatetime(new Date());
 						orderaddressMapper.insertReturnId(orderAddress);
 						orderAddressId=orderAddress.getOrderaddressid();
-						printindex=printindex+"A";
 					}else {//寄到B端地址
 						orderAddressId= getOrderAddressIdByBUserId(param.getSubmitUserId(), Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));
 					}
+					
+					Long producerUserId=getProducerUserId(orderAddressId,work.getProductid(),param.getSubmitUserId());
+					Integer orderindex=producerOrderMapper.getMaxOrderIndexByProducerIdAndUserId(producerUserId, param.getSubmitUserId());
+					if(orderindex==null){
+						orderindex=1;
+					}else{
+						orderindex=orderindex.intValue()+1;
+					}
+					String printindex=orderindex.toString();
+					if(addressParam!=null&&!ObjectUtil.isEmpty(addressParam.getProvince())){
+						if(addressParam.getAddresstype()!=null&&addressParam.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.cusaddr.toString())){
+							printindex=printindex+"A";
+						}
+					}else if(workcus.getAddresstype()!=null&&workcus.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.cusaddr.toString())){
+						printindex=printindex+"A";
+					}
+						
+					
+					//订单号
+					String payId = GenUtils.getOrderNo(param.getSubmitUserId());
+					String userOrderId=payId;
+					String orderProductId=userOrderId;
+					
+					OProducerordercount producerorder=new OProducerordercount();
+					producerorder.setProduceruserid(producerUserId);
+					producerorder.setUserid(param.getSubmitUserId());
+					producerorder.setUserorderid(userOrderId);
+					
 					producerorder.setOrderindex(orderindex);
 					producerorder.setPrintindex(printindex);
 					producerOrderMapper.insert(producerorder);
@@ -1005,6 +1029,211 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			}
 		} catch (Exception e) {
 			addlog("代客制作下单：workId="+param.getWorkId()+"error:"+e.getMessage()); 
+			throw new RuntimeException(e);
+		}
+		return rq;
+	}
+	
+	
+	
+	
+	/**
+	 * 分销下单
+	 */
+	public ReturnModel submitTiGroupActivityOrder_ibs(TiGroupActivityOrderSubmitParam param) {
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.SystemError);
+		if(param==null||ObjectUtil.isEmpty(param.getSubmitUserId())||ObjectUtil.isEmpty(param.getWorkId())){
+			rq.setStatusreson("参数不能为空！");
+			return rq;
+		}
+		if(param.getCount()<=0){
+			rq.setStatusreson("数量不能小于1！");
+			return rq;
+		}
+		try {
+			TiGroupactivityworks work= groupactworkMapper.selectByPrimaryKey(param.getWorkId());
+			if(work==null){
+				rq.setStatusreson("作品不存在！");
+				return rq;
+			}
+			TiGroupactivity act=groupactMapper.selectByPrimaryKey(work.getGactid());
+			
+			//用户作品对应的产品款式
+			TiProductstyles style=styleMapper.selectByPrimaryKey(work.getSttyleid()==null?work.getProductid():work.getSttyleid());
+			if(style==null){
+				rq.setStatusreson("作品信息不全！");
+				return rq;
+			}
+			
+			List<TiMyartsdetails> detailsList=detailsMapper.findDetailsByWorkId(param.getWorkId());
+			if(detailsList==null||detailsList.size()<style.getImgcount().intValue()){
+				rq.setStatusreson("作品图片数量不够！");
+				return rq;
+			}
+			//是否达到下单的状态
+			Boolean isCompleteBoolean=false;
+			if(work.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.payed.toString())){
+				isCompleteBoolean=true;
+				//检查是否完成集赞，如果完成，下单数量+1
+				
+				if(act!=null&&act.getPraisecount()<=work.getPraisecount()){
+					param.setCount(param.getCount()+1);
+				}
+			}
+			if(isCompleteBoolean){
+				double totalprice=style.getPromoterprice().doubleValue()*param.getCount(); 
+				double incomeprice=0.0; //收入金额 
+				if(work.getTotalprice()!=null&&work.getTotalprice().doubleValue()>0){
+					incomeprice=work.getTotalprice().doubleValue()-totalprice;
+				}
+				UUsers promoter= usersMapper.selectByPrimaryKey( param.getSubmitUserId());
+				if(promoter!=null&&promoter.getIdentity()!=null&&ValidateUtils.isIdentity(promoter.getIdentity(), UserIdentityEnums.ti_promoter)){
+					if(incomeprice<0){//收入小于0的时候,检查余额
+						UAccounts accounts=accountsMapper.selectByPrimaryKey(param.getSubmitUserId());
+						if(accounts==null||accounts.getAvailableamount()==null||accounts.getAvailableamount().doubleValue()<Math.abs(incomeprice)){
+							rq.setStatusreson("您的账户余额不足！");
+							rq.setStatu(ReturnStatus.SystemError);
+							return rq;
+						}
+					}
+				
+					//下单操作------------------
+					if(work.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.promoteraddr.toString())){
+						OOrderaddress orderAddress = new OOrderaddress();
+						orderAddress.setUserid(act.getPromoteruserid());
+						orderAddress.setPhone(act.getMobilephone());
+						orderAddress.setReciver(act.getReciver());
+						orderAddress.setCity(regionService.getCityName(act.getCity()));
+						orderAddress.setProvince(regionService.getProvinceName(act.getProvince()));
+						orderAddress.setDistrict(regionService.getAresName(act.getArea()));
+						orderAddress.setStreetdetail(act.getStreetdetails());
+						orderAddress.setCreatetime(new Date());
+						orderaddressMapper.insertReturnId(orderAddress);						
+						Long orderAddressId=orderAddress.getOrderaddressid();
+						param.setOrderAddressId(orderAddressId);
+						work.setAddressid(orderAddressId);
+					}
+					//订单收货地址
+					Long producerUserId=getProducerUserId(work.getAddressid(),work.getProductid(),param.getSubmitUserId());
+					Integer orderindex=producerOrderMapper.getMaxOrderIndexByProducerIdAndUserId(producerUserId, param.getSubmitUserId());
+					if(orderindex==null){
+						orderindex=1;
+					}else{
+						orderindex=orderindex.intValue()+1;
+					}
+					String printindex=orderindex.toString();
+					//订单号
+					String payId = GenUtils.getOrderNo(param.getSubmitUserId());
+					String userOrderId=payId;
+					String orderProductId=userOrderId;
+					
+					OProducerordercount producerorder=new OProducerordercount();
+					producerorder.setProduceruserid(producerUserId);
+					producerorder.setUserid(param.getSubmitUserId());
+					producerorder.setUserorderid(userOrderId);
+					
+					//邮寄到客户地址
+					if(work.getAddresstype()!=null&&work.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.cusaddr.toString())){
+						printindex=printindex+"A";
+					}
+					producerorder.setOrderindex(orderindex);
+					producerorder.setPrintindex(printindex);
+					producerOrderMapper.insert(producerorder);
+					
+					if(detailsList!=null&&detailsList.size()>0){
+						for (TiMyartsdetails dd : detailsList) {
+							OOrderproductphotos op=new OOrderproductphotos();
+							op.setOrderproductid(orderProductId);
+							op.setImgurl(dd.getImageurl());
+							op.setSort(dd.getSort());
+							op.setCreatetime(new Date());
+							ophotoMapper.insert(op);
+						}
+					}
+					
+					OUserorders userOrder = new OUserorders();
+					Date ordertime = new Date();// 订单操作时间
+					userOrder.setUserorderid(userOrderId);// 用户订单号
+					userOrder.setPayid(payId); // 会写支付单号
+					userOrder.setUserid(param.getSubmitUserId());
+					userOrder.setBranchuserid(param.getSubmitUserId());// 分销商userId
+					userOrder.setRemark(param.getRemark());
+					userOrder.setOrdertype(Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));// 订单类型
+					userOrder.setOrdertime(ordertime);
+					userOrder.setPaytime(ordertime); 
+					userOrder.setStatus(Integer.parseInt(OrderStatusEnum.waitFoSend.toString()));
+					userOrder.setTotalprice(totalprice);
+					userOrder.setOrdertotalprice(totalprice); 
+					userOrder.setOrderaddressid(work.getAddressid()); 
+					userOrder.setProduceruserid(producerUserId); 
+					userOrdersMapper.insert(userOrder);
+					//订单产品
+					TiProducts product=productMapper.selectByPrimaryKey(style.getProductid());
+					OOrderproducts orderProduct = new OOrderproducts();
+					orderProduct.setOrderproductid(orderProductId); 
+					orderProduct.setUserorderid(userOrderId);
+					orderProduct.setBuyeruserid(param.getSubmitUserId()); 
+					orderProduct.setProductid(work.getProductid());
+					orderProduct.setStyleid(style.getStyleid());
+					orderProduct.setPropertystr(style.getDescription());
+					orderProduct.setPrice(style.getPromoterprice());
+					orderProduct.setCount(param.getCount());
+					orderProduct.setProductimg(style.getDefaultimg());
+					orderProduct.setProducttitle(product.getTitle());
+					orderProduct.setCartid(param.getWorkId());
+					oproductMapper.insert(orderProduct);
+					
+					
+					//支付单信息
+					OPayorder payorder = new OPayorder();
+					payorder.setPayid(payId);
+					payorder.setUserorderid(userOrderId);
+					payorder.setUserid(param.getSubmitUserId());
+					payorder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
+					payorder.setTotalprice(totalprice);
+					payorder.setWalletamount(totalprice);
+					payorder.setCashamount(0d);
+					payorder.setCreatetime(new Date());
+					payorder.setOrdertype(Integer.parseInt(PayOrderTypeEnum.ti_gouwu.toString()));
+					payOrderMapper.insert(payorder);  		
+					//红包金额入账
+					accountService.add_accountsLog(param.getSubmitUserId(), Integer.parseInt(AccountLogType.get_ti_redpaket.toString()),incomeprice, payId, "");
+					
+					//反写活动状态
+					work.setStatus(Integer.parseInt(GroupActWorkStatus.completeorder.toString()));
+					groupactworkMapper.updateByPrimaryKey(work);
+					
+					//销量
+					TiProductsext productsext = productextMapper.selectByPrimaryKey(work.getProductid());
+					if (productsext == null) {
+						productsext = new TiProductsext();
+						productsext.setProductid(work.getProductid());
+						productsext.setSales(param.getCount());
+						productsext.setMonthssales(param.getCount());
+						productextMapper.insert(productsext);
+					} else {
+						productsext.setSales((productsext.getSales() == null ? 0 : productsext.getSales().intValue()) + param.getCount());
+						productsext.setMonthssales((productsext.getMonthssales() == null ? 0 : productsext.getMonthssales().intValue()) + param.getCount());
+						productextMapper.updateByPrimaryKeySelective(productsext);
+					}
+					
+					Map<String, Object> mapResult = new HashMap<String, Object>();
+					String orderId = payId;
+					mapResult.put("payId", payId);
+					mapResult.put("orderId", orderId);
+					mapResult.put("productId", product.getProductid());
+					mapResult.put("styleId", style.getStyleid());
+					mapResult.put("totalPrice", totalprice);
+					rq.setBasemodle(mapResult);
+					rq.setStatu(ReturnStatus.Success);
+					rq.setStatusreson("下单成功"); 
+				}
+			}else {
+				rq.setStatusreson("用户作品未完成（不在可下单的状态）！"); 
+			}
+		} catch (Exception e) {
+			addlog("分销下单：workId="+param.getWorkId()+"error:"+e.getMessage()); 
 			throw new RuntimeException(e);
 		}
 		return rq;

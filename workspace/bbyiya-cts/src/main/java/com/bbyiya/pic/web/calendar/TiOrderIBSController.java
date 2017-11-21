@@ -18,6 +18,7 @@ import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.address.OrderaddressParam;
 import com.bbyiya.vo.calendar.TiActivityOrderSubmitParam;
+import com.bbyiya.vo.calendar.TiGroupActivityOrderSubmitParam;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
 
@@ -251,4 +252,43 @@ public class TiOrderIBSController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	
+	
+	/**
+	 * ibs分销活动台历下单
+	 * @param productJsonStr
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/ibsSubmitTiGroupActWorkOrder")
+	public String ibsSubmitTiGroupActWorkOrder(String productJsonStr) throws Exception {
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			TiGroupActivityOrderSubmitParam param = (TiGroupActivityOrderSubmitParam) JsonUtil.jsonStrToObject(productJsonStr, TiGroupActivityOrderSubmitParam.class);
+			if (param != null) {
+				if(ObjectUtil.isEmpty(param.getWorkId())){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("活动参数有误：workId为空");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				param.setSubmitUserId(user.getUserId());
+				if(ObjectUtil.isEmpty(param.getSubmitUserId())){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("参数有误：submitUserId为空");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				rq = basetiorderService.submitTiGroupActivityOrder_ibs(param);
+			} else {
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("参数有误");
+			}
+
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 }

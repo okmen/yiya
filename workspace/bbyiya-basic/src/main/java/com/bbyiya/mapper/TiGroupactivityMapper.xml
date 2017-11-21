@@ -28,6 +28,21 @@
     Reciver, Mobilephone, Province, City, Area, StreetDetails, Address, Status, CreateTime, 
     PraiseCount, Timespare, BrowseCount
   </sql>
+  
+    <select id="findGroupActivityList" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_groupactivity
+    where PromoterUserId = #{promoteruserid,jdbcType=BIGINT}
+    <if test="status != null" >
+       and  Status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="keywords != null and keywords!=''" > 
+       and  (GactId=#{keywords,jdbcType=VARCHAR} OR Title LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) OR Reciver LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) OR Mobilephone LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ))
+    </if>
+    order by CreateTime desc
+  </select>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />

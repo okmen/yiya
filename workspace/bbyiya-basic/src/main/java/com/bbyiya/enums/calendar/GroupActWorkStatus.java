@@ -9,8 +9,13 @@ public enum GroupActWorkStatus {
     /**
      * 已支付
      */
-    payed(1);
-
+    payed(1),
+    
+    /**
+     * 已下单
+     */
+    completeorder(2);
+    
     private final int Type;
 
     private GroupActWorkStatus(int step)

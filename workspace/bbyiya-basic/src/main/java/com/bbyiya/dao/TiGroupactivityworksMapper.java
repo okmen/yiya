@@ -1,8 +1,11 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 import com.bbyiya.model.TiGroupactivityworks;
+import com.bbyiya.vo.calendar.TiGroupActivitysWorksVo;
 
 public interface TiGroupactivityworksMapper {
     int deleteByPrimaryKey(Long workid);
@@ -23,4 +26,29 @@ public interface TiGroupactivityworksMapper {
      * @return
      */
     TiGroupactivityworks getTiGroupactivityworksByActIdAndUserId(@Param("userId")Long userId,@Param("gactId")Integer gactId);
+    
+    /**
+     * 根据活动ID及状态得到各状态的总数
+     * @param gactid
+     * @param status
+     * @return
+     */
+    Integer getCountByGActStatus(@Param("gactid") Integer gactid,@Param("status") Integer status);
+    
+    /**
+     * 根据活动ID得到活动参与情况列表
+     * @param gactid
+     * @param addresstype
+     * @param keywords
+     * @return
+     */
+    List<TiGroupActivitysWorksVo>findGroupActWorkListByActId(@Param("gactid") Integer gactid,@Param("addresstype") Integer addresstype,@Param("keywords") String keywords);
+    
+    /**
+     * 得到可自动下单的分销作品
+     * @param ordertime
+     * @return
+     */
+    List<TiGroupactivityworks> findCanOrderGroupActWork(@Param("ordertime") Integer ordertime);
+
 }

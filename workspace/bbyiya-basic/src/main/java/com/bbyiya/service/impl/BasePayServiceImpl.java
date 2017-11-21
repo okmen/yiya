@@ -51,6 +51,7 @@ import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.PayTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.ActivityWorksStatusEnum;
+import com.bbyiya.enums.calendar.GroupActWorkStatus;
 import com.bbyiya.enums.calendar.RedpacketStatus;
 import com.bbyiya.enums.calendar.TiAmountLogType;
 import com.bbyiya.enums.user.UserIdentityEnums;
@@ -310,6 +311,7 @@ public class BasePayServiceImpl implements IBasePayService{
 						TiGroupactivityworks gwork= gworkMapper.selectByPrimaryKey(ObjectUtil.parseLong(payOrder.getUserorderid()));
 						if(gwork!=null){
 							gwork.setPaytime(new Date());
+							gwork.setStatus(Integer.parseInt(GroupActWorkStatus.payed.toString()));  
 							gworkMapper.updateByPrimaryKeySelective(gwork);
 							TiGroupactivity gact= gActMapper.selectByPrimaryKey(gwork.getGactid());
 							if(gact!=null){

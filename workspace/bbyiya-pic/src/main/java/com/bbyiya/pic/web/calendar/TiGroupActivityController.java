@@ -168,26 +168,32 @@ public class TiGroupActivityController  extends SSOController {
 			if(myworks!=null){
 				TiGroupactivityworks gwork= gworkMapper.selectByPrimaryKey(workId);
 				if(gwork!=null){
-					Map<String, Object> map=new HashMap<String, Object>();
-					map.put("gwork", gwork);
-					TiProductstyles style= styleMapper.selectByPrimaryKey(myworks.getStyleid()==null?myworks.getProductid():myworks.getStyleid());
-					if(style!=null){
-						TiProducts products=productMapper.selectByPrimaryKey(style.getProductid());
-						if(products!=null){
-							List<TiMyartsdetails> details= detailMapper.findDetailsByWorkId(workId);
-							if(details!=null&&details.size()>0){
-								for (TiMyartsdetails dd : details) {
-									dd.setImageurl(ImgDomainUtil.getImageUrl_Full(dd.getImageurl()));
-								} 
+					TiGroupactivity actGroupactivity= gactMapper.selectByPrimaryKey(gwork.getGactid());
+					if(actGroupactivity!=null){
+						Map<String, Object> map=new HashMap<String, Object>();
+						map.put("gwork", gwork);
+						map.put("needPraiseCount", actGroupactivity.getPraisecount());
+						map.put("countDownLong", actGroupactivity.getTimespare());
+						TiProductstyles style= styleMapper.selectByPrimaryKey(myworks.getStyleid()==null?myworks.getProductid():myworks.getStyleid());
+						if(style!=null){
+							TiProducts products=productMapper.selectByPrimaryKey(style.getProductid());
+							if(products!=null){
+								List<TiMyartsdetails> details= detailMapper.findDetailsByWorkId(workId);
+								if(details!=null&&details.size()>0){
+									for (TiMyartsdetails dd : details) {
+										dd.setImageurl(ImgDomainUtil.getImageUrl_Full(dd.getImageurl()));
+									} 
+								}
+								map.put("details", details);
+								map.put("imgCount", style.getImgcount()); 
+								map.put("title", products.getTitle()); 
+								map.put("cateId", products.getCateid());
+								map.put("workInfo", myworks);
 							}
-							map.put("details", details);
-							map.put("imgCount", style.getImgcount()); 
-							map.put("title", products.getTitle()); 
-							map.put("cateId", products.getCateid());
-							map.put("workInfo", myworks);
 						}
+						rq.setBasemodle(map);
 					}
-					rq.setBasemodle(map);
+					
 					rq.setStatu(ReturnStatus.Success);
 				}else {
 					rq.setStatu(ReturnStatus.SystemError);

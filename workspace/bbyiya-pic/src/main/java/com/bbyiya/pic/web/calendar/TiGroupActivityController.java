@@ -143,17 +143,41 @@ public class TiGroupActivityController  extends SSOController {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			TiGroupactivityworks gworkOld= gworkMapper.getTiGroupactivityworksByActIdAndUserId(user.getUserId(), groupId);
-			if(gworkOld!=null&&gworkOld.getStatus()!=null&&gworkOld.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.payed.toString())){
-				rq.setBasemodle(gworkOld);
-				rq.setStatu(ReturnStatus.Success);
-				return JsonUtil.objectToJsonStr(rq); 
+			List<TiGroupactivityworks> gworklist=gworkMapper.findTiGroupactivityworksByActIdAndUserId(user.getUserId(), groupId);			
+			if(gworklist!=null&&gworklist.size()>0){
+				//如果已经选过的产品，不用再新增
+				TiGroupactivityworks result=null;
+				for (TiGroupactivityworks gg : gworklist) {
+					if(gg.getStatus()!=null&&gg.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.payed.toString())){
+						rq.setBasemodle(gg);
+						rq.setStatu(ReturnStatus.Success);
+						return JsonUtil.objectToJsonStr(rq); 
+					}else if(gg.getProductid()!=null&& gg.getProductid().longValue()==productId){
+						result=gg;
+					}
+				}
+				if(result!=null){
+					rq.setBasemodle(result);
+					rq.setStatu(ReturnStatus.Success);
+					return JsonUtil.objectToJsonStr(rq); 
+				}
 			}
+//			TiGroupactivityworks gworkOld= gworkMapper.getTiGroupactivityworksByActIdAndUserId(user.getUserId(), groupId);		
+//			if(gworkOld!=null){
+//				if(gworkOld.getStatus()!=null&&gworkOld.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.payed.toString())){
+//					rq.setBasemodle(gworkOld);
+//					rq.setStatu(ReturnStatus.Success);
+//					return JsonUtil.objectToJsonStr(rq); 
+//				}else {
+//					
+//				}
+//			}
 			long workId = getNewWorkId();
 			TiGroupactivityworks gwork = new TiGroupactivityworks();
 			gwork.setWorkid(workId);
 			gwork.setUserid(user.getUserId());
 			gwork.setGactid(groupId);
+			gwork.setProductid(productId); 
 			gwork.setCreatetime(new Date());
 			gwork.setStatus(Integer.parseInt(GroupActWorkStatus.apply.toString()));
 			gworkMapper.insert(gwork);
@@ -431,7 +455,7 @@ public class TiGroupActivityController  extends SSOController {
 			TiGroupactivityworks gwork = gworkMapper.selectByPrimaryKey(workId);
 			if (gwork != null&&gwork.getSttyleid()!=null) {
 				if(gwork.getAddresstype()!=null){
-					if((gwork.getAddresstype().intValue()==0&&!(ObjectUtil.isEmpty(gwork.getName())||ObjectUtil.isEmpty(gwork.getMobilephone())))
+					if((gwork.getAddresstype().intValue()==0&&(ObjectUtil.isEmpty(gwork.getName())||ObjectUtil.isEmpty(gwork.getMobilephone())))
 					  )
 					{
 						rq.setStatu(ReturnStatus.ParamError);
@@ -571,6 +595,8 @@ public class TiGroupActivityController  extends SSOController {
 		if(user!=null){
 			TiGroupactivityworks gwork = gworkMapper.selectByPrimaryKey(workId);
 			if(gwork!=null){
+				Map<String, Object> resultMap=new HashMap<String, Object>();
+				resultMap.put("addressType", gwork.getAddresstype());
 				UUserAddressResult userAddressResult=new UUserAddressResult();
 				if(gwork.getAddresstype()!=null&&gwork.getAddresstype().intValue()==1){
 					OOrderaddress address= orderaddressMapper.selectByPrimaryKey(gwork.getAddressid());
@@ -600,7 +626,8 @@ public class TiGroupActivityController  extends SSOController {
 						userAddressResult.setReciver(gact.getReciver());
 					} 
 				}
-				rq.setBasemodle(userAddressResult);
+				resultMap.put("address", userAddressResult);
+				rq.setBasemodle(resultMap);
 				rq.setStatu(ReturnStatus.Success); 
 			}
 		}

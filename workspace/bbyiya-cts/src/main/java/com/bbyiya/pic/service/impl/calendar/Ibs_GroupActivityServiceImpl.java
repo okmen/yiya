@@ -205,7 +205,6 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 		HashMap<String, Object> map=new HashMap<String, Object>();
 		TiGroupactivity act=groupactMapper.selectByPrimaryKey(gactid);
 		List<TiGroupactivityproducts> productList=groupproductMapper.findProductsByGActid(gactid);
-		
 		map.put("act", act);
 		map.put("products", productList);
 		rq.setBasemodle(map);
@@ -221,7 +220,6 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 	public ReturnModel getGroupActWorkListByGactid(int index,int size,Integer gactid,Integer addresstype,String keywords){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);
-		
 		PageHelper.startPage(index, size);
 		List<TiGroupActivitysWorksVo> activitylist=groupactworkMapper.findGroupActWorkListByActId(gactid, addresstype, keywords);
 		PageInfo<TiGroupActivitysWorksVo> pageresult=new PageInfo<TiGroupActivitysWorksVo>(activitylist);
@@ -230,13 +228,13 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 				if(!ObjectUtil.isEmpty(ti.getPaytime())){
 					ti.setSubmittimestr(DateUtil.getTimeStr(ti.getPaytime(), "yyyy-MM-dd"));
 				}
-				//如果是上门自提
-				if(ti.getAddresstype()!=null&&ti.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.promoteraddr.toString())){
-					if(!ObjectUtil.isEmpty(ti.getUserorderid())){
-						OUserorders order=orderMapper.selectByPrimaryKey(ti.getUserorderid());
-						ti.setPostage(order.getPostage());
-					}	
-				}
+//				//如果是上门自提
+//				if(ti.getAddresstype()!=null&&ti.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.promoteraddr.toString())){
+//					if(!ObjectUtil.isEmpty(ti.getUserorderid())){
+//						OUserorders order=orderMapper.selectByPrimaryKey(ti.getUserorderid());
+//						ti.setPostage(order.getPostage());
+//					}	
+//				}
 			}
 		}
 		rq.setBasemodle(pageresult);
@@ -244,6 +242,22 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 		rq.setStatusreson("获取列表成功！");
 		return rq;
 	}
+
+	//得到上门自提的总费用
+	public ReturnModel getSumPostAgeByGactid(Integer gactid){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.SystemError);
+		Double postage=groupactworkMapper.getSumPostAgeByGactid(gactid, Integer.parseInt(AddressTypeEnum.promoteraddr.toString()));
+		if(postage==null) postage=0.0;
+		HashMap<String, Double> map=new HashMap<String, Double>();
+		map.put("sumpostage", postage);
+		rq.setBasemodle(map);
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("获取列表成功！");
+		return rq;
+	}
+		
+	
 	/**
 	 * 设置活动的分享广告
 	 */

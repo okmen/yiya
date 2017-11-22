@@ -55,6 +55,10 @@
     </if>
     order by a.CreateTime desc
   </select>
+  <!-- 得到上门自提的总运费 -->
+  <select id="getSumPostAgeByGactid" resultType="java.lang.Integer"  parameterType="java.lang.Integer" >
+    select sum(PostAge) from ti_groupactivityworks where GactId = #{gactid,jdbcType=INTEGER} and AddressType=#{addresstype,jdbcType=INTEGER}
+  </select>
   
    <!-- 根据活动ID及状态得到各状态的总数 -->
   <select id="getCountByGActStatus" resultType="java.lang.Integer"  parameterType="java.lang.Integer" >

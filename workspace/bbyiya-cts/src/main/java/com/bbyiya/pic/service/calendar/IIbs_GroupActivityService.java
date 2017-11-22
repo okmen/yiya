@@ -50,5 +50,11 @@ public interface IIbs_GroupActivityService {
 	 * @return
 	 */
 	ReturnModel getGroupActivityByGactid(Long userid, Integer gactid);
+	/**
+	 * 得到上门自提的费用
+	 * @param gactid
+	 * @return
+	 */
+	ReturnModel getSumPostAgeByGactid(Integer gactid);
 	
 }

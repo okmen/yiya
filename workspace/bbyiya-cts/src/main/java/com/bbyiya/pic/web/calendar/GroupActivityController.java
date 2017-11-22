@@ -179,6 +179,21 @@ public class GroupActivityController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	@ResponseBody
+	@RequestMapping(value = "/getSumPostAgeByGactid")
+	public String getSumPostAgeByGactid(Integer gactid) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=groupActService.getSumPostAgeByGactid(gactid);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 	/**
 	 * 设置活动分享广告
 	 * @param advertinfoJson

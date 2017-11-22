@@ -418,6 +418,16 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 					return rq;
 				}
 				userorders.setPostage(postage);
+				if(userorders.getOrdertype().intValue()==Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())){
+					OOrderproducts product=orderProductMapper.getOProductsByOrderId(userorders.getUserorderid());
+					if(product.getCartid()!=null){
+						TiGroupactivityworks groupwork=tigroupworkMapper.selectByPrimaryKey(product.getCartid());
+						if(groupwork!=null){
+							groupwork.setPostage(postage);
+							tigroupworkMapper.updateByPrimaryKey(groupwork);
+						}
+					}
+				}		
 			}
 			
 			//修改订单状态为已发货状态

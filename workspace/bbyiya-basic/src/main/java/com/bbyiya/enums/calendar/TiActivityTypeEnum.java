@@ -9,7 +9,12 @@ public enum TiActivityTypeEnum {
     /**
      * 一对一
      */
-    toOne(1);
+    toOne(1),
+    /**
+     * 兑换码活动
+     */
+    exchangeCode(2)
+    ;
     
     private final int Type;
 

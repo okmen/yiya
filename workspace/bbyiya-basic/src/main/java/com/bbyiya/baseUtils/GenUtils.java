@@ -19,8 +19,8 @@ public class GenUtils {
 			userId=1l;
 		long temp=userId%10000;
 		DecimalFormat df=new DecimalFormat("0000");
-	    String str2=df.format(temp);
-		String timeStr=DateUtil.getTimeStr(new Date(), "yyyyMMdd"+str2+"HHmmSSS");
+	    String userIdFill0=df.format(temp);
+		String timeStr=DateUtil.getTimeStr(new Date(), "yyyyMMdd"+userIdFill0+"HHmmSSS");
 		return timeStr;
 	}
 	

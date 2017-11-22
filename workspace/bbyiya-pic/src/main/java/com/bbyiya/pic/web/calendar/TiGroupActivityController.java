@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.baseUtils.GenUtils;
+import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.TiGroupactivityMapper;
@@ -30,6 +31,7 @@ import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.GroupActWorkStatus;
+import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.TiGroupactivity;
@@ -248,6 +250,11 @@ public class TiGroupActivityController  extends SSOController {
 				model.setNickname(user.getNickName());
 				model.setCreatetime(new Date());
 				gpraiseMapper.insert(model);
+				TiGroupactivityworks gwork= gworkMapper.selectByPrimaryKey(workId);
+				if(gwork!=null&&gwork.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.payed.toString())){
+					gwork.setPraisecount(gwork.getPraisecount()==null?1:(gwork.getPraisecount().intValue()+1));
+					gworkMapper.updateByPrimaryKeySelective(gwork);
+				}
 			}
 			rq.setStatu(ReturnStatus.Success); 
 		}
@@ -405,6 +412,8 @@ public class TiGroupActivityController  extends SSOController {
 
 	@Autowired
 	private OPayorderMapper payMapper;
+	@Autowired
+	private OOrderaddressMapper orderaddressMapper;
 	/**
 	 * 团购提交
 	 * @param workId
@@ -548,7 +557,55 @@ public class TiGroupActivityController  extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	
+	/**
+	 * 获取团购业务 收货地址信息
+	 * @param workId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getGroupWorkAddress")
+	public String getGroupWorkAddress(@RequestParam(required = false, defaultValue = "0")long workId)throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			TiGroupactivityworks gwork = gworkMapper.selectByPrimaryKey(workId);
+			if(gwork!=null){
+				UUserAddressResult userAddressResult=new UUserAddressResult();
+				if(gwork.getAddresstype()!=null&&gwork.getAddresstype().intValue()==1){
+					OOrderaddress address= orderaddressMapper.selectByPrimaryKey(gwork.getAddressid());
+					if(address!=null){
+						userAddressResult.setProvince(address.getProvincecode());
+						userAddressResult.setCity(address.getCitycode());
+						userAddressResult.setArea(address.getDistrictcode());
+						userAddressResult.setProvinceName(address.getProvince());
+						userAddressResult.setCityName(address.getCity());
+						userAddressResult.setAreaName(address.getDistrict());
+						userAddressResult.setStreetdetail(address.getStreetdetail());
+						userAddressResult.setPhone(address.getPhone()); 
+						userAddressResult.setReciver(address.getReciver());
+					}
+					
+				}else {
+					TiGroupactivity gact= gactMapper.selectByPrimaryKey(gwork.getGactid());
+					if(gact!=null){
+						userAddressResult.setProvince(gact.getProvince());
+						userAddressResult.setCity(gact.getCity());
+						userAddressResult.setArea(gact.getArea());
+						userAddressResult.setProvinceName(regionService.getProvinceName(gact.getProvince()));
+						userAddressResult.setCityName(regionService.getCityName(gact.getCity()));
+						userAddressResult.setAreaName(regionService.getAresName(gact.getArea()));
+						userAddressResult.setStreetdetail(gact.getStreetdetails());
+						userAddressResult.setPhone(gact.getMobilephone()); 
+						userAddressResult.setReciver(gact.getReciver());
+					} 
+				}
+				rq.setBasemodle(userAddressResult);
+				rq.setStatu(ReturnStatus.Success); 
+			}
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	
 	/**
 	 * 生成作品编号

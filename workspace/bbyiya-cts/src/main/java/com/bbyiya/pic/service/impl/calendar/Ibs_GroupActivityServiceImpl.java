@@ -198,6 +198,22 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 		return rq;
 	}
 	
+	public ReturnModel getGroupActivityByGactid(Long userid,Integer gactid){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.SystemError);
+		
+		HashMap<String, Object> map=new HashMap<String, Object>();
+		TiGroupactivity act=groupactMapper.selectByPrimaryKey(gactid);
+		List<TiGroupactivityproducts> productList=groupproductMapper.findProductsByGActid(gactid);
+		
+		map.put("act", act);
+		map.put("products", productList);
+		rq.setBasemodle(map);
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("获取列表成功！");
+		return rq;
+	}
+	
 	
 	/**
 	 * 活动制作进度列表
@@ -215,7 +231,7 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 					ti.setSubmittimestr(DateUtil.getTimeStr(ti.getPaytime(), "yyyy-MM-dd"));
 				}
 				//如果是上门自提
-				if(ti.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.promoteraddr.toString())){
+				if(ti.getAddresstype()!=null&&ti.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.promoteraddr.toString())){
 					if(!ObjectUtil.isEmpty(ti.getUserorderid())){
 						OUserorders order=orderMapper.selectByPrimaryKey(ti.getUserorderid());
 						ti.setPostage(order.getPostage());

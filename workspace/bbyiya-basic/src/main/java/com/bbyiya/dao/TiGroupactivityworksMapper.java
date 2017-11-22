@@ -42,6 +42,7 @@ public interface TiGroupactivityworksMapper {
      */
     Integer getCountByGActStatus(@Param("gactid") Integer gactid,@Param("status") Integer status);
     
+    Double getSumPostAgeByGactid(@Param("gactid") Integer gactid,@Param("addresstype") Integer addresstype);
     /**
      * 根据活动ID得到活动参与情况列表
      * @param gactid

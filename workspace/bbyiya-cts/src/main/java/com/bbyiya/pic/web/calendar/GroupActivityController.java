@@ -119,6 +119,27 @@ public class GroupActivityController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	
+	@ResponseBody
+	@RequestMapping(value = "/getGroupActivityByGactid")
+	public String getGroupActivityByGactid(Integer gactid) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(gactid==null){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("参数为空!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			rq=groupActService.getGroupActivityByGactid(user.getUserId(),gactid);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 	/**
 	 * 保存模板的二维码图片
 	 * @param groupId
@@ -150,6 +171,21 @@ public class GroupActivityController extends SSOController {
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			rq=groupActService.getGroupActWorkListByGactid(index, size, gactid,addresstype,keywords);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/getSumPostAgeByGactid")
+	public String getSumPostAgeByGactid(Integer gactid) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=groupActService.getSumPostAgeByGactid(gactid);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

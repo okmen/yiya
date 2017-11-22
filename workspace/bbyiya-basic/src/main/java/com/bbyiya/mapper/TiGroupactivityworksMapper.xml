@@ -39,11 +39,13 @@
     from ti_groupactivityworks
     where UserId = #{userId,jdbcType=BIGINT} and GactId=#{gactId,jdbcType=INTEGER} order by CreateTime desc Limit 1
   </select>
+  
   <select id="findTiGroupactivityworksByActIdAndUserId" resultMap="BaseResultMap"><!-- 获取 某团购用户参与信息 -->
   	select  <include refid="Base_Column_List" />
     from ti_groupactivityworks
     where UserId = #{userId,jdbcType=BIGINT} and GactId=#{gactId,jdbcType=INTEGER} order by CreateTime desc 
   </select>
+  
   <resultMap id="TiGroupActivityworksVOResult" type="com.bbyiya.vo.calendar.TiGroupActivitysWorksVo" extends="BaseResultMap">  
   </resultMap>
   <!-- 根据活动ID得到活动参与情况列表 -->
@@ -59,7 +61,10 @@
     </if>
     order by a.CreateTime desc
   </select>
-  
+  <!-- 得到上门自提的总运费 -->
+  <select id="getSumPostAgeByGactid" resultType="java.lang.Integer"  parameterType="java.lang.Integer" >
+    select sum(PostAge) from ti_groupactivityworks where GactId = #{gactid,jdbcType=INTEGER} and AddressType=#{addresstype,jdbcType=INTEGER}
+  </select>
    <!-- 根据活动ID及状态得到各状态的总数 -->
   <select id="getCountByGActStatus" resultType="java.lang.Integer"  parameterType="java.lang.Integer" >
     select count(WorkId) from ti_groupactivityworks where GactId = #{gactid,jdbcType=INTEGER} and Status=#{status,jdbcType=INTEGER}
@@ -72,8 +77,7 @@
 	and a.Status=1
   </select>
   
-  
-  
+   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from ti_groupactivityworks
     where WorkId = #{workid,jdbcType=BIGINT}

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiActivityexchangecodesMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiActivityexchangecodes" >
+    <id column="CodeNum" property="codenum" jdbcType="VARCHAR" />
+    <result column="ActId" property="actid" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="UsedTime" property="usedtime" jdbcType="TIMESTAMP" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CodeNum, ActId, CreateTime, UsedTime, UserId, Status
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_activityexchangecodes
+    where CodeNum = #{codenum,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ti_activityexchangecodes
+    where CodeNum = #{codenum,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiActivityexchangecodes" >
+    insert into ti_activityexchangecodes (CodeNum, ActId, CreateTime, 
+      UsedTime, UserId, Status
+      )
+    values (#{codenum,jdbcType=VARCHAR}, #{actid,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{usedtime,jdbcType=TIMESTAMP}, #{userid,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiActivityexchangecodes" >
+    insert into ti_activityexchangecodes
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="codenum != null" >
+        CodeNum,
+      </if>
+      <if test="actid != null" >
+        ActId,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+      <if test="usedtime != null" >
+        UsedTime,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="codenum != null" >
+        #{codenum,jdbcType=VARCHAR},
+      </if>
+      <if test="actid != null" >
+        #{actid,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="usedtime != null" >
+        #{usedtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiActivityexchangecodes" >
+    update ti_activityexchangecodes
+    <set >
+      <if test="actid != null" >
+        ActId = #{actid,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="usedtime != null" >
+        UsedTime = #{usedtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where CodeNum = #{codenum,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiActivityexchangecodes" >
+    update ti_activityexchangecodes
+    set ActId = #{actid,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      UsedTime = #{usedtime,jdbcType=TIMESTAMP},
+      UserId = #{userid,jdbcType=BIGINT},
+      Status = #{status,jdbcType=INTEGER}
+    where CodeNum = #{codenum,jdbcType=VARCHAR}
+  </update>
+</mapper>

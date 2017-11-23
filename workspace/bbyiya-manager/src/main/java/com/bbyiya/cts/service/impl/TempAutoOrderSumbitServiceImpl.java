@@ -38,6 +38,7 @@ import com.bbyiya.service.IBasePayService;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.service.calendar.ITi_OrderMgtService;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
@@ -304,7 +305,8 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 		rq.setStatu(ReturnStatus.Success);
 		
 		//3个小时后自动下单
-		List<TiGroupactivityworks> groupactworklist=groupactworkMapper.findCanOrderGroupActWork(3);
+		int timespan=ObjectUtil.parseInt(ConfigUtil.getPropertyVal("groupactivityOrderTimespan"));
+		List<TiGroupactivityworks> groupactworklist=groupactworkMapper.findCanOrderGroupActWork(timespan);
 		if(groupactworklist!=null&&groupactworklist.size()>0){
 			for (TiGroupactivityworks groupactwork : groupactworklist) {
 				TiGroupactivity act=groupactMapper.selectByPrimaryKey(groupactwork.getGactid());
@@ -323,7 +325,7 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 					//已下过单
 					continue;
 				}else{
-					RedisUtil.setObject(key, workid, 3600);
+					RedisUtil.setObject(key, workid, 300);
 				}
 				rq = basetiorderService.submitTiGroupActivityOrder_ibs(param);
 				

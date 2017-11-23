@@ -18,6 +18,18 @@
     from ti_groupactivitypraiseusers
     where Id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="findlistByWorkId" resultMap="BaseResultMap"  ><!-- 点赞列表 -->
+    select 
+    <include refid="Base_Column_List" />
+    from ti_groupactivitypraiseusers
+    where WorkId = #{workId,jdbcType=BIGINT}
+  </select>
+  <select id="existsByWorkIdAndUserId" resultMap="BaseResultMap"  ><!-- 是否已经点过赞 -->
+    select 
+    <include refid="Base_Column_List" />
+    from ti_groupactivitypraiseusers
+    where WorkId = #{workId,jdbcType=BIGINT} and  UserId= #{userId,jdbcType=BIGINT}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from ti_groupactivitypraiseusers
     where Id = #{id,jdbcType=BIGINT}

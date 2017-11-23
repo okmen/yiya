@@ -196,8 +196,9 @@ public class BasePostMgtServiceImpl implements IBasePostMgtService{
 					}
 				}
 			}
+			return post.getAmount();
 		}
-		return 0d;
+		return 10d;
 	}
 	
 	public PPostmodel getPostmodel(Integer postModelId,Integer areaId){

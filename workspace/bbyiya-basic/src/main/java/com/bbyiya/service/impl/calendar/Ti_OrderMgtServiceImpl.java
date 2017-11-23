@@ -667,6 +667,9 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 				OOrderaddress orderAddress = new OOrderaddress();
 				orderAddress.setUserid(addr.getUserid());
 				orderAddress.setPhone(addr.getPhone());
+				orderAddress.setProvincecode(addr.getProvince());
+				orderAddress.setCitycode(addr.getCity());
+				orderAddress.setDistrictcode(addr.getArea()); 
 				orderAddress.setReciver(addr.getReciver());
 				orderAddress.setCity(regionService.getCityName(addr.getCity()));
 				orderAddress.setProvince(regionService.getProvinceName(addr.getProvince()));
@@ -1077,26 +1080,26 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 				isCompleteBoolean=true;
 				//检查是否完成集赞，如果完成，下单数量+1
 				
-				if(act!=null&&act.getPraisecount()<=work.getPraisecount()){
+				if(act!=null&&act.getPraisecount()!=null&&work.getPraisecount()!=null&& act.getPraisecount().intValue()<=work.getPraisecount().intValue()){
 					param.setCount(param.getCount()+1);
 				}
 			}
 			if(isCompleteBoolean){
 				double totalprice=style.getPromoterprice().doubleValue()*param.getCount(); 
-				double incomeprice=0.0; //收入金额 
-				if(work.getTotalprice()!=null&&work.getTotalprice().doubleValue()>0){
-					incomeprice=work.getTotalprice().doubleValue()-totalprice;
-				}
+//				double incomeprice=0.0; //收入金额 
+//				if(work.getTotalprice()!=null&&work.getTotalprice().doubleValue()>0){
+//					incomeprice=work.getTotalprice().doubleValue()-totalprice;
+//				}
 				UUsers promoter= usersMapper.selectByPrimaryKey( param.getSubmitUserId());
 				if(promoter!=null&&promoter.getIdentity()!=null&&ValidateUtils.isIdentity(promoter.getIdentity(), UserIdentityEnums.ti_promoter)){
-					if(incomeprice<0){//收入小于0的时候,检查余额
+//					if(incomeprice<0){//收入小于0的时候,检查余额
 						UAccounts accounts=accountsMapper.selectByPrimaryKey(param.getSubmitUserId());
-						if(accounts==null||accounts.getAvailableamount()==null||accounts.getAvailableamount().doubleValue()<Math.abs(incomeprice)){
+						if(accounts==null||accounts.getAvailableamount()==null||accounts.getAvailableamount().doubleValue()<Math.abs(totalprice)){
 							rq.setStatusreson("您的账户余额不足！");
 							rq.setStatu(ReturnStatus.SystemError);
 							return rq;
 						}
-					}
+//					}
 				
 					//下单操作------------------
 					if(work.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.promoteraddr.toString())){
@@ -1127,7 +1130,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					String payId = GenUtils.getOrderNo(param.getSubmitUserId());
 					String userOrderId=payId;
 					String orderProductId=userOrderId;
-					
+					work.setUserorderid(payId); 
 					OProducerordercount producerorder=new OProducerordercount();
 					producerorder.setProduceruserid(producerUserId);
 					producerorder.setUserid(param.getSubmitUserId());
@@ -1198,7 +1201,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					payorder.setOrdertype(Integer.parseInt(PayOrderTypeEnum.ti_gouwu.toString()));
 					payOrderMapper.insert(payorder);  		
 					//红包金额入账
-					accountService.add_accountsLog(param.getSubmitUserId(), Integer.parseInt(AccountLogType.get_ti_redpaket.toString()),incomeprice, payId, "");
+					accountService.add_accountsLog(param.getSubmitUserId(), Integer.parseInt(AccountLogType.use_payment.toString()),totalprice, payId, "");
 					
 					//反写活动状态
 					work.setStatus(Integer.parseInt(GroupActWorkStatus.completeorder.toString()));

@@ -26,6 +26,13 @@ public interface TiGroupactivityworksMapper {
      * @return
      */
     TiGroupactivityworks getTiGroupactivityworksByActIdAndUserId(@Param("userId")Long userId,@Param("gactId")Integer gactId);
+    /**
+     * 获取用户参与 某团购的信息
+     * @param userId
+     * @param gactId
+     * @return
+     */
+    List<TiGroupactivityworks> findTiGroupactivityworksByActIdAndUserId(@Param("userId")Long userId,@Param("gactId")Integer gactId);
     
     /**
      * 根据活动ID及状态得到各状态的总数
@@ -34,7 +41,6 @@ public interface TiGroupactivityworksMapper {
      * @return
      */
     Integer getCountByGActStatus(@Param("gactid") Integer gactid,@Param("status") Integer status);
-    
     
     Double getSumPostAgeByGactid(@Param("gactid") Integer gactid,@Param("addresstype") Integer addresstype);
     /**

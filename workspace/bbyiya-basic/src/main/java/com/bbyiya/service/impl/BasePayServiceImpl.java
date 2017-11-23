@@ -35,12 +35,10 @@ import com.bbyiya.dao.TiPromotersMapper;
 import com.bbyiya.dao.TiUserdiscountsMapper;
 import com.bbyiya.dao.UAccountsMapper;
 import com.bbyiya.dao.UAccountslogsMapper;
-import com.bbyiya.dao.UAdminMapper;
 import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.dao.UBranchtransaccountsMapper;
 import com.bbyiya.dao.UBranchtransamountlogMapper;
 import com.bbyiya.dao.UBranchusersMapper;
-import com.bbyiya.dao.UCashlogsMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.AccountLogType;
@@ -50,7 +48,6 @@ import com.bbyiya.enums.PayOrderStatusEnums;
 import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.PayTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
-import com.bbyiya.enums.calendar.ActivityWorksStatusEnum;
 import com.bbyiya.enums.calendar.GroupActWorkStatus;
 import com.bbyiya.enums.calendar.RedpacketStatus;
 import com.bbyiya.enums.calendar.TiAmountLogType;
@@ -315,7 +312,11 @@ public class BasePayServiceImpl implements IBasePayService{
 							gworkMapper.updateByPrimaryKeySelective(gwork);
 							TiGroupactivity gact= gActMapper.selectByPrimaryKey(gwork.getGactid());
 							if(gact!=null){
-								accountService.add_accountsLog(gact.getPromoteruserid(), Integer.parseInt(AccountLogType.get_ti_payment.toString()), payOrder.getTotalprice(), payId, "");
+								double totalPrice=payOrder.getTotalprice();
+								if(gwork.getPostage()!=null&&gwork.getPostage().doubleValue()>0){
+									totalPrice=totalPrice-gwork.getPostage().doubleValue();
+								}
+								accountService.add_accountsLog(gact.getPromoteruserid(), Integer.parseInt(AccountLogType.get_ti_redpaket.toString()), totalPrice , payId, "");
 							}
 						}
 						return true;
@@ -600,24 +601,32 @@ public class BasePayServiceImpl implements IBasePayService{
 						// 如果是影楼自己下单
 						if (userorders.getOrdertype().intValue() == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())) {
 							type=1;
-							//邮费分配-----------------------------
+							//用户自付邮费  邮费分配-----------------------------
 						    OOrderproducts oproduct=oproductMapper.getOProductsByOrderId(userOrderId);
 						    if(oproduct!=null){
+						    	double postageB=0d;
 						    	TiActivityworks actwork= activityworksMapper.selectByPrimaryKey(oproduct.getCartid()) ;
 						    	if(actwork!=null&&actwork.getOrderaddressid()!=null&&actwork.getOrderaddressid().longValue()>0){
 						    		OPayorder postPayorder= payOrderMapper.getpostPayorderByworkId(String.valueOf(actwork.getWorkid()));
 						    		if(postPayorder!=null){
-						    			//生产商分利
-						    			if (producerUid != null && producerUid > 0) {
-//											accountService.add_accountsLog(producerUid, Integer.parseInt(AccountLogType.get_ti_post.toString()), postPayorder.getTotalprice() * 0.9, postPayorder.getPayid(), "");
-						    				accountService.add_accountsLog(producerUid, Integer.parseInt(AccountLogType.get_ti_post.toString()), postPayorder.getTotalprice() * TiAmountProportion.post_A, postPayorder.getPayid(), "");
-											
-						    			}
-						    			//咿呀平台分利
-										accountService.add_accountsLog(yiyaUid, Integer.parseInt(AccountLogType.get_ti_commission.toString()), postPayorder.getTotalprice() * TiAmountProportion.post_D, postPayorder.getPayid(), "");	 //0.05							
-										//幻想馆分利
-										accountService.add_accountsLog(hxgUid, Integer.parseInt(AccountLogType.get_ti_commission.toString()), postPayorder.getTotalprice() * TiAmountProportion.post_E, postPayorder.getPayid(), "");																								
+						    			postageB=postPayorder.getTotalprice();
 						    		}
+						    	}else {
+									TiGroupactivityworks gwork=gworkMapper.selectByPrimaryKey(oproduct.getCartid());
+									if(gwork!=null&&gwork.getPostage()!=null&&gwork.getPostage().doubleValue()>0){
+										postageB=gwork.getPostage();
+									}
+								}
+						    	//B端购买，用户自付邮费 
+						    	if(postageB>0){
+						    		//生产商分利
+					    			if (producerUid != null && producerUid > 0) {
+					    				accountService.add_accountsLog(producerUid, Integer.parseInt(AccountLogType.get_ti_post.toString()), postageB * TiAmountProportion.post_A, userOrderId, "");										
+					    			}
+					    			//咿呀平台分利
+									accountService.add_accountsLog(yiyaUid, Integer.parseInt(AccountLogType.get_ti_commission.toString()), postageB * TiAmountProportion.post_D, userOrderId, "");	 //0.05							
+									//幻想馆分利
+									accountService.add_accountsLog(hxgUid, Integer.parseInt(AccountLogType.get_ti_commission.toString()), postageB * TiAmountProportion.post_E, userOrderId, "");																													    		
 						    	}
 						    }/*----------------------------------------------*/
 						} else {//普通订单（c端购买）
@@ -715,18 +724,18 @@ public class BasePayServiceImpl implements IBasePayService{
 						}
 						//运费分配
 						if(userorders.getPostage()!=null&&userorders.getPostage().doubleValue()>0){
-							//生产商分利
+							//生产商分利（影楼下单，寄到影楼地址，运费不分成，全部给到生产商）
 							if(userorders.getOrdertype().intValue()==Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())){
 								accountService.add_accountsLog(producerUid, Integer.parseInt(AccountLogType.get_ti_post.toString()), userorders.getPostage().doubleValue() , userorders.getPayid(), "");							
 							}
-							//如果寄到影楼
+							//如果寄到影楼（）
 							else if(userorders.getIspromoteraddress()!=null&&userorders.getIspromoteraddress().intValue()==1){
 								accountService.add_accountsLog(producerUid, Integer.parseInt(AccountLogType.get_ti_post.toString()), userorders.getPostage().doubleValue() , userorders.getPayid(), "");							
 							}else{
 								//用户付邮费
-								accountService.add_accountsLog(producerUid, Integer.parseInt(AccountLogType.get_ti_post.toString()), userorders.getPostage().doubleValue() * 0.9, userorders.getPayid(), "");
-								accountService.add_accountsLog(yiyaUid, Integer.parseInt(AccountLogType.get_ti_post.toString()), userorders.getPostage().doubleValue() * 0.05, userorders.getPayid(), "");
-								accountService.add_accountsLog(hxgUid, Integer.parseInt(AccountLogType.get_ti_post.toString()), userorders.getPostage().doubleValue() * 0.05, userorders.getPayid(), "");														
+								accountService.add_accountsLog(producerUid, Integer.parseInt(AccountLogType.get_ti_post.toString()), userorders.getPostage().doubleValue() * TiAmountProportion.post_A, userorders.getPayid(), "");
+								accountService.add_accountsLog(yiyaUid, Integer.parseInt(AccountLogType.get_ti_post.toString()), userorders.getPostage().doubleValue() * TiAmountProportion.post_D, userorders.getPayid(), "");
+								accountService.add_accountsLog(hxgUid, Integer.parseInt(AccountLogType.get_ti_post.toString()), userorders.getPostage().doubleValue() * TiAmountProportion.post_E, userorders.getPayid(), "");														
 							}	
 						}
 					}

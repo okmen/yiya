@@ -109,6 +109,7 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 			isadd=true;
 		}	
 		ti.setTitle(param.getTitle());
+		ti.setAdvertid(param.getAdvertid()); 
 		ti.setDescription(param.getDescription());
 		ti.setCompanyname(param.getCompanyname());
 		ti.setLogo(param.getLogo());

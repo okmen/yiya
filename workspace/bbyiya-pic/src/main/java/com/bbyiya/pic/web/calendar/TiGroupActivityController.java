@@ -26,6 +26,7 @@ import com.bbyiya.dao.TiMyartsdetailsMapper;
 import com.bbyiya.dao.TiMyworksMapper;
 import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
+import com.bbyiya.dao.TiPromoteradvertinfoMapper;
 import com.bbyiya.dao.TiPromotersMapper;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.PayOrderTypeEnum;
@@ -42,6 +43,7 @@ import com.bbyiya.model.TiMyartsdetails;
 import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiProductstyles;
+import com.bbyiya.model.TiPromoteradvertinfo;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.service.calendar.ITi_OrderMgtService;
 import com.bbyiya.service.pic.IBasePostMgtService;
@@ -97,7 +99,7 @@ public class TiGroupActivityController  extends SSOController {
 			}
 			result.put("gActInfo", actInfo);
 			TiGroupactivityworks gwork= gworkMapper.getTiGroupactivityworksByActIdAndUserId(user.getUserId(), groupId);
-			if(gwork!=null&&gwork.getStatus()!=null&&gwork.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.payed.toString())){
+			if(gwork!=null&&gwork.getStatus()!=null&&(gwork.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.payed.toString())||gwork.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.completeorder.toString()))){
 				result.put("gwork", gwork);
 				result.put("exists", 1);//已经参与活动
 			}else {
@@ -162,16 +164,6 @@ public class TiGroupActivityController  extends SSOController {
 					return JsonUtil.objectToJsonStr(rq); 
 				}
 			}
-//			TiGroupactivityworks gworkOld= gworkMapper.getTiGroupactivityworksByActIdAndUserId(user.getUserId(), groupId);		
-//			if(gworkOld!=null){
-//				if(gworkOld.getStatus()!=null&&gworkOld.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.payed.toString())){
-//					rq.setBasemodle(gworkOld);
-//					rq.setStatu(ReturnStatus.Success);
-//					return JsonUtil.objectToJsonStr(rq); 
-//				}else {
-//					
-//				}
-//			}
 			long workId = getNewWorkId();
 			TiGroupactivityworks gwork = new TiGroupactivityworks();
 			gwork.setWorkid(workId);
@@ -197,6 +189,9 @@ public class TiGroupActivityController  extends SSOController {
 	}
 	@Autowired
 	private TiGroupactivitypraiseusersMapper gpraiseMapper;
+
+	@Autowired
+	private TiPromoteradvertinfoMapper advertInfoMapper;
 	/**
 	 * 团购作品详情
 	 * @param workId
@@ -219,6 +214,7 @@ public class TiGroupActivityController  extends SSOController {
 						map.put("gwork", gwork);
 						map.put("needPraiseCount", actGroupactivity.getPraisecount());
 						map.put("countDownLong", actGroupactivity.getTimespare());
+						map.put("nowTime", new Date());
 						TiProductstyles style= styleMapper.selectByPrimaryKey(myworks.getStyleid()==null?myworks.getProductid():myworks.getStyleid());
 						if(style!=null){
 							TiProducts products=productMapper.selectByPrimaryKey(style.getProductid());
@@ -234,10 +230,15 @@ public class TiGroupActivityController  extends SSOController {
 								map.put("title", products.getTitle()); 
 								map.put("cateId", products.getCateid());
 								map.put("workInfo", myworks);
+								
 							}
 						}
-						if(gwork.getStatus()!=null&&gwork.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.payed.toString())){
+						if(gwork.getStatus()!=null&&(gwork.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.payed.toString())||gwork.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.completeorder.toString()))){
 							map.put("praiseUsers", gpraiseMapper.findlistByWorkId(workId));
+							if(actGroupactivity.getAdvertid()!=null&&actGroupactivity.getAdvertid().intValue()>0){
+								TiPromoteradvertinfo advertMod=advertInfoMapper.selectByPrimaryKey(actGroupactivity.getAdvertid());
+								map.put("advert", advertMod);
+							}
 						}
 						rq.setBasemodle(map);
 					}

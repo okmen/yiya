@@ -49,22 +49,18 @@
 		<item styleId="1402" url="http://pic.bbyiya.com/cover-1001-201703210-02.jpg"/>
 	</styleCovers>
 	<backcoordinate><!-- 相册背面文字坐标 -->
-		<item  type="1" contentTop="51.6" contentLeft="25.6" contentRight="71.7"  titleTop="66.4" contentBottom="44" contentSize="34" titleSize="50" color="#3e3c38"/>
-		<item  type="0" contentTop="38.7" contentLeft="23.2" contentRight="76.1"  titleTop="59" contentBottom="48.4" contentSize="30" titleSize="38" color="#3e3c38"/>
+		<item  type="1" contentTop="51.6" contentLeft="25.6" contentRight="71.7"  lineHeight="55" titleTop="66.4" contentBottom="44" contentSize="34" titleSize="50" color="#3e3c38"/>
+		<item  type="0" contentTop="38.7" contentLeft="23.2" contentRight="76.1"  lineHeight="40" titleTop="59" contentBottom="48.4" contentSize="30" titleSize="38" color="#3e3c38"/>
 	</backcoordinate>
 	<frontcoordinate><!-- 相册正面文字坐标 -->
 		<item  type="1" contentSize="33" lineHeight="55"  color="#595857" letterSpacing="5" />
 		<item  type="0" contentSize="30" lineHeight="40"  color="#595857" letterSpacing="0" />
 	</frontcoordinate>
 	<indexImgs>
-		<item index="1" imageurl="http://pic.bbyiya.com/12photo0418-index-1.jpg" />
-		<item index="2" imageurl="http://pic.bbyiya.com/12photo0418-index-2.jpg" />
-		<item index="3" imageurl="http://pic.bbyiya.com/12photo0417-index-3.jpg" />
+		<item index="1" imageurl="http://pic.bbyiya.com/12photo-index0509-11.jpg" />
+		<item index="2" imageurl="http://pic.bbyiya.com/12photo-index0509-2.jpg" />
+		<item index="3" imageurl="http://pic.bbyiya.com/12photo-index0509-33.jpg" />
 	</indexImgs>
-	<o_excludedareas ><!-- 不能下单的区域 -->
-		<item type="1" codes="710000,810000,820000" />
-		<item type="3" codes="460321,460322,460323" />
-	</o_excludedareas>
 	<uploadcdns><!-- 七牛cdn域名 -->
 		<item domain="http://pic.bbyiya.com" bucketname="yiya"  default="1" />
 		<item domain="http://pic1.bbyiya.com" bucketname="yiya1" default="0" />
@@ -72,39 +68,54 @@
 		<item domain="http://pic4.bbyiya.com" bucketname="yiya" default="1" />
 	</uploadcdns>
 	<imguploadcdnsdefault><!-- 七牛cdn域名 -->
-		<item domain="http://pic.bbyiya.com" bucketname="yiya" />
-		<item domain="http://pic2.bbyiya.com" bucketname="yiya"  />
-		<item domain="http://pic4.bbyiya.com" bucketname="yiya"/>
+		<item domain="http://pic.bbyiya.com" source="http://obbepyhga.bkt.clouddn.com" bucketname="yiya" />
+		<item domain="http://pic2.bbyiya.com" source="http://obbepyhga.bkt.clouddn.com" bucketname="yiya"  />
+		<item domain="http://pic4.bbyiya.com" source="http://obbepyhga.bkt.clouddn.com" bucketname="yiya"/>
 	</imguploadcdnsdefault>
+	<o_excludedareas ><!-- 不能下单的区域 -->
+		<item type="1" codes="710000,810000,820000" />
+		<item type="3" codes="460321,460322,460323" />
+	</o_excludedareas>
 	<!-- 物流公司信息 -->
 	<postInfo>
 		<item code="tiantian" name="天天快递"/>
 		<item code="shunfeng" name="顺丰速运"/>
 		<item code="zhongtong" name="中通快递"/>
+		<item code="huitongkuaidi" name="百世汇通"/>
+		<item code="shentong" name="申通"/>	
+		<item code="youshuwuliu" name="优速"/>	
+		<item code="yunda" name="韵达"/>	
+		<item code="debangwuliu" name="德邦"/>	
+		<item code="yuantong" name="圆通"/>	
+		<item code="kuaijiesudi" name="快捷快递"/>		
 	</postInfo>
-	<wxBackUrl  value="https://mpic.bbyiya.com/wxpay/WxPayNotify"/><!-- 微信公众号支付回写地址 -->
-	<wxAppBackUrl  value="https://mpic.bbyiya.com/wxapppay/WxPayNotify"/><!-- 微信app支付回写地址 -->
+	<wxBackUrl  value="https://api.bbyiya.com/wxpay/WxPayNotify"/><!-- 微信公众号支付回写地址 -->
+	<wxAppBackUrl  value="https://api.bbyiya.com/wxapppay/WxPayNotify"/><!-- 微信app支付回写地址 -->
 	<wxQuery value="https://api.mch.weixin.qq.com/pay/orderquery"/><!-- 微信订单查询 -->
-	<loginbackurl value="http://photo.bbyiya.com?v＝1704081/"/>
-	<photo-net-url value="http://photo-net.bbyiya.com"/><!-- c端测试 -->
+	<subwxBackUrl  value="https://api.bbyiya.com/tiwxpay/WxPayNotifySub"/><!-- 台历板块- 微信公众号支付回写地址 -->
+	<loginbackurl value="http://photo-net.bbyiya.com/#/"/>
+	<photo-net-url value="http://photo-net.bbyiya.com/#/"/><!-- c端测试 -->
 	<currentDomain value="http://photo-net.bbyiya.com/#/"/><!-- 当前c端域名 -->
 	<mpic-net-url value="https://api.bbyiya.com/login/wxLoginTest"/><!-- mpic接口测试url -->
 	<loginbackurl_ibs value="http://photo.bbyiya.com/ibs/index.html"/><!-- ibs首页 -->
 	<shareulr-base value="https://mpic.bbyiya.com/login/transfer?m=1&amp;"/>
 	<currentRedisKey-Base value="mpic_net" />
+	<currentApiDomain value="bbyiya.com" />
 	<default-headimg value="http://pic.bbyiya.com/userdefaultimg-2017-0303-01.png" /><!-- 默认头像 -->
-	<default-comments value="咿呀十二官方给你点个赞！"/>
+	<default-comments value="咿呀第一个为小宝宝点赞！感谢你选择咿呀为宝宝打造第一本私人影像记录。愿与你一起见证孩子的成长！"/>
 	<testcode value="yiya123456"  count="50"/>
-	<wxaccessVerion value="170522"/>
+	<defaultproducer value="65" /><!--默认生产商 -->
 	<testcodeNum value="yiya123456" /><!-- 咿呀测试用户 -->
-	<mobileValidate value="^((13[0-9])|(15[^4])|(18[0,2,3,5-9])|(17[0-8])|(147))\\d{8}$"/>
 	<adminUsers>
 		<item userId="37"/>
 		<item userId="35"/>
 		<item userId="991"/>
 	</adminUsers>
 	<tempFrees>
-		<free tempid="45" phones="13854397026,18679989010,18954129719,18210950756,15105198599,13975160315,13926355966,13964462055,13979771097,15982157095,13563506609,18526481782,15005370709,15266077699,13544081082,18636820786,18344145573,13611789544,13352860119,13105088657,18823703658,13403591234,13318611804,13963168819,18501983995,18033293536,18010182919,13558169917,17604326110,18686550921,13093315225,18706692021,15554665302,13632644992,18612595167,13308426762,13543007185,18263361127,15986036580,13061101855,15135082541,13199888030,13632676702,13550289370,13602419459,15940983163,13424976042,13886164395,18863858417,13928219682,13726065452,18933399315,13913906076,15820949611,13726858827,13510694211,13928537199,13864539616,13610813661,13579158205,15880243077,13420996017,13691766799,15863375192,18088849299,18938916848,18266193266,13644905163,13287726028,15801632090,15630258109,18688939870,18741865200,15195443656,13589355224,15011136621,13839803542,18601788729,18641862446,13501231954,13760996230,13534040019,13602622630,15250065819,15166318512,15715739926,13480602156,18263122013,13910141874,13690059428,15019915173,18654619433,13825975182,18611082102,15987173006,13920975660,18671229621,13134419134,13920831158"/>
-		<free tempid="47" phones="15817447911,13920408886,18353969811,15904555116,13516776899,15063822291,18994359080,18610184880,15887150825,15969917337,13518167193,13078969013,13857617122,13927402343,18957730813,15069192570,18934530167,15010842959,13821434773,15014302054,13424777631,13559870513,13311826051,13895382139,18702984424,15511375369,15987090895,15055473519,18930141130,13132288891,15937514117,13654126366,13961120034,13640003790,18202033667,18646724000,18905346470,15592100008,15536283216,18002553656,13736057443,18950596003,18333606446,13434153308,18035263196,13556694186,13650083672,13666676583,13723724214,17732013962"/>
-</tempFrees>
+		<free tempid="72" phones="13854397026,15012703706"/>
+	</tempFrees>
+	<tempNoDiscount>
+    	    <item tempId="413"/>
+        </tempNoDiscount>
+	<adminPhones value="15012703706,13761864164,18823737933,15889735850"/>
 </appSettings>

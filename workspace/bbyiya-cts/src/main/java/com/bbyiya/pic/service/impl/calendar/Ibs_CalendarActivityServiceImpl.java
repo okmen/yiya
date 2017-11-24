@@ -17,9 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbyiya.baseUtils.GenUtils;
 import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductsMapper;
+import com.bbyiya.dao.TiActivityexchangecodesMapper;
 import com.bbyiya.dao.TiActivityoffMapper;
 import com.bbyiya.dao.TiActivitysMapper;
 import com.bbyiya.dao.TiActivitysinglesMapper;
@@ -37,10 +39,13 @@ import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.ActivityWorksStatusEnum;
 import com.bbyiya.enums.calendar.TiActivityTypeEnum;
+import com.bbyiya.enums.pic.ActivityCodeStatusEnum;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OUserorders;
+import com.bbyiya.model.PMyproductactivitycode;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttempusers;
+import com.bbyiya.model.TiActivityexchangecodes;
 import com.bbyiya.model.TiActivityoff;
 import com.bbyiya.model.TiActivitys;
 import com.bbyiya.model.TiMyartsdetails;
@@ -74,7 +79,8 @@ import com.github.pagehelper.PageInfo;
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
 public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivityService{
 	
-	
+	@Autowired
+	private TiActivityexchangecodesMapper exchangecodeMapper;
 	@Autowired
 	private TiActivitysMapper activityMapper;
 	@Autowired
@@ -133,6 +139,28 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 			ti.setAdvertid(advertinfo.getAdvertid());
 		}
 		activityMapper.insertReturnId(ti);
+		
+		//如果是选择兑换码则要生成相应数量的兑换码
+		if(param.getActtype()!=null&&param.getActtype().intValue()==Integer.parseInt(TiActivityTypeEnum.exchangeCode.toString())){
+			//生成活动码
+			for(int i=0;i<param.getFreecount();i++){
+				String idString= GenUtils.generateUuid_Char8();
+				TiActivityexchangecodes code=exchangecodeMapper.selectByPrimaryKey(idString);
+				while(code!=null){
+					idString= GenUtils.generateUuid_Char8();
+					code=exchangecodeMapper.selectByPrimaryKey(idString);
+					if(code==null){
+						break;
+					}
+				}
+				TiActivityexchangecodes	codelast=new TiActivityexchangecodes();
+				codelast.setActid(ti.getActid());
+				codelast.setCodenum(idString);
+				codelast.setCreatetime(new Date());
+				codelast.setStatus(Integer.parseInt(ActivityCodeStatusEnum.notuse.toString()));
+				exchangecodeMapper.insert(codelast);
+			}
+		}
 		HashMap<String, Object> map=new HashMap<String, Object>();
 		map.put("actid", ti.getActid());
 		rq.setBasemodle(map);
@@ -150,18 +178,53 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 		rq.setStatu(ReturnStatus.SystemError);	
 		TiActivitys ti=activityMapper.selectByPrimaryKey(param.getActivityid());
 		if(ti!=null){
+			
+			Integer freecount=(param.getFreecount()==null)?0:param.getFreecount();
+			//得到总报名人数
+			int applycount=(ti.getApplycount()==null?0:ti.getApplycount());
+			
+			//如果兑换码活动，报名数量只能调高
+			if(ti.getActtype()!=null&&ti.getActtype().intValue()==Integer.parseInt(TiActivityTypeEnum.exchangeCode.toString())){
+				if(freecount<ti.getFreecount()){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("邀请总数只能做调高操作！");
+					return rq;
+				}
+				//新增调高的code
+				int count=freecount.intValue()-ti.getFreecount().intValue();
+				if(count>0){
+					//生成活动码
+					for(int i=0;i<count;i++){
+						String idString= GenUtils.generateUuid_Char8();
+						TiActivityexchangecodes code=exchangecodeMapper.selectByPrimaryKey(idString);
+						while(code!=null){
+							idString= GenUtils.generateUuid_Char8();
+							code=exchangecodeMapper.selectByPrimaryKey(idString);
+							if(code==null){
+								break;
+							}
+						}
+						TiActivityexchangecodes	codelast=new TiActivityexchangecodes();
+						codelast.setActid(ti.getActid());
+						codelast.setCodenum(idString);
+						codelast.setCreatetime(new Date());
+						codelast.setStatus(Integer.parseInt(ActivityCodeStatusEnum.notuse.toString()));
+						exchangecodeMapper.insert(codelast);
+					}
+				}
+				
+			}
+			
 			ti.setTitle(param.getTitle());
 			ti.setDescription(param.getDescription());
 			ti.setFreecount(param.getFreecount());//目标参与总数量
 			ti.setAutoaddress(param.getAutoaddress()==null?0:param.getAutoaddress());
-			Integer freecount=(param.getFreecount()==null)?0:param.getFreecount();
-			//得到总报名人数
-			int applycount=(ti.getApplycount()==null?0:ti.getApplycount());
+			
 			if(freecount.intValue()!=0&&freecount.intValue()<applycount){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("邀请总数限制不得小于总报名人数！");
 				return rq;
-			}
+			}			
 			activityMapper.updateByPrimaryKeyWithBLOBs(ti);
 		}
 		rq.setStatu(ReturnStatus.Success);
@@ -649,5 +712,16 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 		rq.setStatu(ReturnStatus.Success);
 		rq.setStatusreson("获取图片成功！");
 		return rq;
+	}
+	
+
+	public List<TiActivityexchangecodes> findTiActivityExchangeCodeList(Integer actid){
+		ReturnModel rq=new ReturnModel();
+		List<TiActivityexchangecodes> list=exchangecodeMapper.findTiActivityExchangeCodeList(actid);
+		rq.setBasemodle(list);
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("获取图片成功！");
+		return list;		
+		
 	}
 }

@@ -18,6 +18,15 @@
     from ti_activityexchangecodes
     where CodeNum = #{codenum,jdbcType=VARCHAR}
   </select>
+  
+  <!-- 根据活动ID得到兑换码 -->
+  <select id="findTiActivityExchangeCodeList" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_activityexchangecodes
+    where ActId = #{actid,jdbcType=VARCHAR}
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from ti_activityexchangecodes
     where CodeNum = #{codenum,jdbcType=VARCHAR}

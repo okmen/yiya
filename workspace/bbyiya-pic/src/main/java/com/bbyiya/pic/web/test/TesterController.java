@@ -75,7 +75,7 @@ public class TesterController  extends SSOController{
 	@RequestMapping(value = "/imgurl")
 	public String imgurl(String imgurl) throws Exception {
 		ReturnModel rq = new ReturnModel();
-		rq.setBasemodle(ImgDomainUtil.getImageUrl_Sourse(imgurl));
+		//rq.setBasemodle(ImgDomainUtil.getImageUrl_Sourse(imgurl));
 		rq.setStatu(ReturnStatus.Success);
 		return JsonUtil.objectToJsonStr(rq);
 	

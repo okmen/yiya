@@ -1,6 +1,12 @@
 package com.bbyiya.pic.web.calendar;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URLEncoder;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -9,20 +15,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bbyiya.baseUtils.ExportExcel;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.AddressTypeEnum;
+import com.bbyiya.enums.calendar.TiActivityTypeEnum;
+import com.bbyiya.model.TiActivityexchangecodes;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.pic.service.calendar.IIbs_CalendarActivityService;
 import com.bbyiya.pic.utils.Json2Objects;
 import com.bbyiya.pic.vo.calendar.CalendarActivityAddParam;
 import com.bbyiya.pic.vo.calendar.WorkForCustomerParam;
+import com.bbyiya.pic.vo.product.ActivityCodeProductVO;
 import com.bbyiya.utils.ConfigUtil;
+import com.bbyiya.utils.FileUtils;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.address.OrderaddressVo;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
+import com.github.pagehelper.PageInfo;
+import com.sdicons.json.mapper.MapperException;
 
 @Controller
 @RequestMapping(value = "/calendar/act/")
@@ -87,7 +100,11 @@ public class CalendarActivityController extends SSOController {
 				rq.setStatusreson("完成条件的分享数必须大于等于5个或选择无条件赠送!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			
+			if(param.getActtype()!=null&&param.getActtype().intValue()==Integer.parseInt(TiActivityTypeEnum.exchangeCode.toString())&&param.getFreecount().intValue()<=0){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("兑换码活动邀请人数不能选择“无限制”!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
 			if(!ObjectUtil.isEmpty(param.getTitle())&&!ObjectUtil.validSqlStr(param.getTitle())){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("活动名称存在危险字符!");
@@ -139,7 +156,13 @@ public class CalendarActivityController extends SSOController {
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("邀请总数不能小于零!");
 				return JsonUtil.objectToJsonStr(rq);
-			}			
+			}		
+			if(param.getActtype()!=null&&param.getActtype().intValue()==Integer.parseInt(TiActivityTypeEnum.exchangeCode.toString())&&param.getFreecount().intValue()<=0){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("兑换码活动邀请人数不能选择“无限制”!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			
 			if(!ObjectUtil.isEmpty(param.getTitle())&&!ObjectUtil.validSqlStr(param.getTitle())){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("活动名称存在危险字符!");
@@ -483,5 +506,55 @@ public class CalendarActivityController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	
+	/**
+	 * 兑换码excel导出
+	 * @param request
+	 * @return
+	 * @throws MapperException 
+	 */
+	@RequestMapping(value="/exchenageCodeExportExcel")
+	@ResponseBody
+	public String exchenageCodeExportExcel(Integer actid) throws Exception {
+		// 列头
+		String[] headers =new String[1];
+		headers[0]="活动码";	
+		String[] fields = new String[1];
+		fields[0]="codenum";
+		//导出格式
+		String format =".xlsx";
+		ReturnModel rq = new ReturnModel();
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			
+			List<TiActivityexchangecodes> list=calendarActivityService.findTiActivityExchangeCodeList(actid);
+			Long seed = System.currentTimeMillis();// 获得系统时间，作为生成随机数的种子
+			// 获取用户的当前工作主目录 
+			String sep=System.getProperty("file.separator");
+			String currentWorkDir = System.getProperty("user.home") +sep+ "imagedownloadtemp"+sep;
+			FileUtils.isDirExists(currentWorkDir);
+			ExportExcel<TiActivityexchangecodes> ex = new ExportExcel<TiActivityexchangecodes>();
+			String filename =  seed + format; ;
+			File file = new File(currentWorkDir + filename);	
+			try { 
+				OutputStream out = new FileOutputStream(file);			
+				ex.exportExcel("活动码"+"-"+actid, headers, fields, list, out, "yyyy-MM-dd");		
+				out.close();				
+				rq.setStatu(ReturnStatus.Success);
+				rq.setBasemodle(file.getPath());
+				return JsonUtil.objectToJsonStr(rq);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				return null;
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
+			}
+		} else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	
 }

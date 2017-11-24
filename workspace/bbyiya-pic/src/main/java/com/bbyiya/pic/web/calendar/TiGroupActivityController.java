@@ -15,29 +15,35 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.baseUtils.GenUtils;
+import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.TiGroupactivityMapper;
+import com.bbyiya.dao.TiGroupactivitypraiseusersMapper;
 import com.bbyiya.dao.TiGroupactivityproductsMapper;
 import com.bbyiya.dao.TiGroupactivityworksMapper;
 import com.bbyiya.dao.TiMyartsdetailsMapper;
 import com.bbyiya.dao.TiMyworksMapper;
 import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
+import com.bbyiya.dao.TiPromoteradvertinfoMapper;
 import com.bbyiya.dao.TiPromotersMapper;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.GroupActWorkStatus;
+import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.TiGroupactivity;
+import com.bbyiya.model.TiGroupactivitypraiseusers;
 import com.bbyiya.model.TiGroupactivityproducts;
 import com.bbyiya.model.TiGroupactivityworks;
 import com.bbyiya.model.TiMyartsdetails;
 import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiProductstyles;
+import com.bbyiya.model.TiPromoteradvertinfo;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.service.calendar.ITi_OrderMgtService;
 import com.bbyiya.service.pic.IBasePostMgtService;
@@ -82,33 +88,43 @@ public class TiGroupActivityController  extends SSOController {
 	@RequestMapping(value = "/gActInfo")
 	public String actInfo(int groupId)throws Exception {
 		ReturnModel rq=new ReturnModel();
-		Map<String, Object> result=new HashMap<String, Object>();
-		TiGroupactivity actInfo= gactMapper.selectByPrimaryKey(groupId);
-		if(actInfo!=null){
-			int browsecount=actInfo.getBrowsecount()==null?1:(actInfo.getBrowsecount().intValue()+1);
-			actInfo.setBrowsecount(browsecount);
-			gactMapper.updateByPrimaryKeySelective(actInfo);
-		}
-		result.put("gActInfo", actInfo);
-		List<TiGroupactivityproducts> gprolist=gactProMapper.findProductsByGActid(groupId);
-		if(gprolist!=null&&gprolist.size()>0){
-			List<Long> proIds=new ArrayList<Long>();
-			for (TiGroupactivityproducts tt : gprolist) {
-				proIds.add(tt.getProductid());
+		LoginSuccessResult user = super.getLoginUser();
+		if (user != null) {
+			Map<String, Object> result = new HashMap<String, Object>();
+			TiGroupactivity actInfo = gactMapper.selectByPrimaryKey(groupId);
+			if (actInfo != null) {
+				int browsecount = actInfo.getBrowsecount() == null ? 1 : (actInfo.getBrowsecount().intValue() + 1);
+				actInfo.setBrowsecount(browsecount);
+				gactMapper.updateByPrimaryKeySelective(actInfo);
 			}
-			List<TiProducts> proList=productMapper.findProductlistByProductIds(proIds);
-			if(proList!=null&&proList.size()>0){
-				for (TiGroupactivityproducts pro : gprolist) {
-					for (TiProducts pp : proList) {
-						if(pro.getProductid().longValue()==pp.getProductid().longValue()){
-							pro.setTitle(pp.getTitle());
-							pro.setOriginPrice(pp.getPrice());
-							pro.setDefaultimg(pp.getDefaultimg());
+			result.put("gActInfo", actInfo);
+			TiGroupactivityworks gwork= gworkMapper.getTiGroupactivityworksByActIdAndUserId(user.getUserId(), groupId);
+			if(gwork!=null&&gwork.getStatus()!=null&&(gwork.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.payed.toString())||gwork.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.completeorder.toString()))){
+				result.put("gwork", gwork);
+				result.put("exists", 1);//已经参与活动
+			}else {
+				result.put("exists", 0);
+				List<TiGroupactivityproducts> gprolist = gactProMapper.findProductsByGActid(groupId);
+				if (gprolist != null && gprolist.size() > 0) {
+					List<Long> proIds = new ArrayList<Long>();
+					for (TiGroupactivityproducts tt : gprolist) {
+						proIds.add(tt.getProductid());
+					}
+					List<TiProducts> proList = productMapper.findProductlistByProductIds(proIds);
+					if (proList != null && proList.size() > 0) {
+						for (TiGroupactivityproducts pro : gprolist) {
+							for (TiProducts pp : proList) {
+								if (pro.getProductid().longValue() == pp.getProductid().longValue()) {
+									pro.setTitle(pp.getTitle());
+									pro.setOriginPrice(pp.getPrice());
+									pro.setDefaultimg(pp.getDefaultimg());
+								}
+							}
 						}
 					}
+					result.put("prolist", gprolist);
 				}
 			}
-			result.put("prolist", gprolist);
 			rq.setBasemodle(result);
 			rq.setStatu(ReturnStatus.Success);
 		}
@@ -129,11 +145,31 @@ public class TiGroupActivityController  extends SSOController {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
+			List<TiGroupactivityworks> gworklist=gworkMapper.findTiGroupactivityworksByActIdAndUserId(user.getUserId(), groupId);			
+			if(gworklist!=null&&gworklist.size()>0){
+				//如果已经选过的产品，不用再新增
+				TiGroupactivityworks result=null;
+				for (TiGroupactivityworks gg : gworklist) {
+					if(gg.getStatus()!=null&&gg.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.payed.toString())){
+						rq.setBasemodle(gg);
+						rq.setStatu(ReturnStatus.Success);
+						return JsonUtil.objectToJsonStr(rq); 
+					}else if(gg.getProductid()!=null&& gg.getProductid().longValue()==productId){
+						result=gg;
+					}
+				}
+				if(result!=null){
+					rq.setBasemodle(result);
+					rq.setStatu(ReturnStatus.Success);
+					return JsonUtil.objectToJsonStr(rq); 
+				}
+			}
 			long workId = getNewWorkId();
 			TiGroupactivityworks gwork = new TiGroupactivityworks();
 			gwork.setWorkid(workId);
 			gwork.setUserid(user.getUserId());
 			gwork.setGactid(groupId);
+			gwork.setProductid(productId); 
 			gwork.setCreatetime(new Date());
 			gwork.setStatus(Integer.parseInt(GroupActWorkStatus.apply.toString()));
 			gworkMapper.insert(gwork);
@@ -151,7 +187,11 @@ public class TiGroupActivityController  extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq); 
 	}
-	
+	@Autowired
+	private TiGroupactivitypraiseusersMapper gpraiseMapper;
+
+	@Autowired
+	private TiPromoteradvertinfoMapper advertInfoMapper;
 	/**
 	 * 团购作品详情
 	 * @param workId
@@ -168,26 +208,41 @@ public class TiGroupActivityController  extends SSOController {
 			if(myworks!=null){
 				TiGroupactivityworks gwork= gworkMapper.selectByPrimaryKey(workId);
 				if(gwork!=null){
-					Map<String, Object> map=new HashMap<String, Object>();
-					map.put("gwork", gwork);
-					TiProductstyles style= styleMapper.selectByPrimaryKey(myworks.getStyleid()==null?myworks.getProductid():myworks.getStyleid());
-					if(style!=null){
-						TiProducts products=productMapper.selectByPrimaryKey(style.getProductid());
-						if(products!=null){
-							List<TiMyartsdetails> details= detailMapper.findDetailsByWorkId(workId);
-							if(details!=null&&details.size()>0){
-								for (TiMyartsdetails dd : details) {
-									dd.setImageurl(ImgDomainUtil.getImageUrl_Full(dd.getImageurl()));
-								} 
+					TiGroupactivity actGroupactivity= gactMapper.selectByPrimaryKey(gwork.getGactid());
+					if(actGroupactivity!=null){
+						Map<String, Object> map=new HashMap<String, Object>();
+						map.put("gwork", gwork);
+						map.put("needPraiseCount", actGroupactivity.getPraisecount());
+						map.put("countDownLong", actGroupactivity.getTimespare());
+						map.put("nowTime", new Date());
+						TiProductstyles style= styleMapper.selectByPrimaryKey(myworks.getStyleid()==null?myworks.getProductid():myworks.getStyleid());
+						if(style!=null){
+							TiProducts products=productMapper.selectByPrimaryKey(style.getProductid());
+							if(products!=null){
+								List<TiMyartsdetails> details= detailMapper.findDetailsByWorkId(workId);
+								if(details!=null&&details.size()>0){
+									for (TiMyartsdetails dd : details) {
+										dd.setImageurl(ImgDomainUtil.getImageUrl_Full(dd.getImageurl()));
+									} 
+								}
+								map.put("details", details);
+								map.put("imgCount", style.getImgcount()); 
+								map.put("title", products.getTitle()); 
+								map.put("cateId", products.getCateid());
+								map.put("workInfo", myworks);
+								
 							}
-							map.put("details", details);
-							map.put("imgCount", style.getImgcount()); 
-							map.put("title", products.getTitle()); 
-							map.put("cateId", products.getCateid());
-							map.put("workInfo", myworks);
 						}
+						if(gwork.getStatus()!=null&&(gwork.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.payed.toString())||gwork.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.completeorder.toString()))){
+							map.put("praiseUsers", gpraiseMapper.findlistByWorkId(workId));
+							if(actGroupactivity.getAdvertid()!=null&&actGroupactivity.getAdvertid().intValue()>0){
+								TiPromoteradvertinfo advertMod=advertInfoMapper.selectByPrimaryKey(actGroupactivity.getAdvertid());
+								map.put("advert", advertMod);
+							}
+						}
+						rq.setBasemodle(map);
 					}
-					rq.setBasemodle(map);
+					
 					rq.setStatu(ReturnStatus.Success);
 				}else {
 					rq.setStatu(ReturnStatus.SystemError);
@@ -195,6 +250,38 @@ public class TiGroupActivityController  extends SSOController {
 			}
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
+		}
+		return JsonUtil.objectToJsonStr(rq); 
+	}
+	
+	/**
+	 * 作品点赞
+	 * @param workId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/addGworkPraise")
+	public String addGworkPraise(long workId)throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			TiGroupactivitypraiseusers model=gpraiseMapper.existsByWorkIdAndUserId(workId, user.getUserId());
+			if(model==null){
+				model=new TiGroupactivitypraiseusers();
+				model.setUserid(user.getUserId());
+				model.setHeadimg(user.getHeadImg());
+				model.setWorkid(workId);
+				model.setNickname(user.getNickName());
+				model.setCreatetime(new Date());
+				gpraiseMapper.insert(model);
+				TiGroupactivityworks gwork= gworkMapper.selectByPrimaryKey(workId);
+				if(gwork!=null&&gwork.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.payed.toString())){
+					gwork.setPraisecount(gwork.getPraisecount()==null?1:(gwork.getPraisecount().intValue()+1));
+					gworkMapper.updateByPrimaryKeySelective(gwork);
+				}
+			}
+			rq.setStatu(ReturnStatus.Success); 
 		}
 		return JsonUtil.objectToJsonStr(rq); 
 	}
@@ -350,6 +437,8 @@ public class TiGroupActivityController  extends SSOController {
 
 	@Autowired
 	private OPayorderMapper payMapper;
+	@Autowired
+	private OOrderaddressMapper orderaddressMapper;
 	/**
 	 * 团购提交
 	 * @param workId
@@ -367,7 +456,7 @@ public class TiGroupActivityController  extends SSOController {
 			TiGroupactivityworks gwork = gworkMapper.selectByPrimaryKey(workId);
 			if (gwork != null&&gwork.getSttyleid()!=null) {
 				if(gwork.getAddresstype()!=null){
-					if((gwork.getAddresstype().intValue()==0&&!(ObjectUtil.isEmpty(gwork.getName())||ObjectUtil.isEmpty(gwork.getMobilephone())))
+					if((gwork.getAddresstype().intValue()==0&&(ObjectUtil.isEmpty(gwork.getName())||ObjectUtil.isEmpty(gwork.getMobilephone())))
 					  )
 					{
 						rq.setStatu(ReturnStatus.ParamError);
@@ -493,7 +582,58 @@ public class TiGroupActivityController  extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	
+	/**
+	 * 获取团购业务 收货地址信息
+	 * @param workId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getGroupWorkAddress")
+	public String getGroupWorkAddress(@RequestParam(required = false, defaultValue = "0")long workId)throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			TiGroupactivityworks gwork = gworkMapper.selectByPrimaryKey(workId);
+			if(gwork!=null){
+				Map<String, Object> resultMap=new HashMap<String, Object>();
+				resultMap.put("addressType", gwork.getAddresstype());
+				UUserAddressResult userAddressResult=new UUserAddressResult();
+				if(gwork.getAddresstype()!=null&&gwork.getAddresstype().intValue()==1){
+					OOrderaddress address= orderaddressMapper.selectByPrimaryKey(gwork.getAddressid());
+					if(address!=null){
+						userAddressResult.setProvince(address.getProvincecode());
+						userAddressResult.setCity(address.getCitycode());
+						userAddressResult.setArea(address.getDistrictcode());
+						userAddressResult.setProvinceName(address.getProvince());
+						userAddressResult.setCityName(address.getCity());
+						userAddressResult.setAreaName(address.getDistrict());
+						userAddressResult.setStreetdetail(address.getStreetdetail());
+						userAddressResult.setPhone(address.getPhone()); 
+						userAddressResult.setReciver(address.getReciver());
+					}
+					
+				}else {
+					TiGroupactivity gact= gactMapper.selectByPrimaryKey(gwork.getGactid());
+					if(gact!=null){
+						userAddressResult.setProvince(gact.getProvince());
+						userAddressResult.setCity(gact.getCity());
+						userAddressResult.setArea(gact.getArea());
+						userAddressResult.setProvinceName(regionService.getProvinceName(gact.getProvince()));
+						userAddressResult.setCityName(regionService.getCityName(gact.getCity()));
+						userAddressResult.setAreaName(regionService.getAresName(gact.getArea()));
+						userAddressResult.setStreetdetail(gact.getStreetdetails());
+						userAddressResult.setPhone(gact.getMobilephone()); 
+						userAddressResult.setReciver(gact.getReciver());
+					} 
+				}
+				resultMap.put("address", userAddressResult);
+				rq.setBasemodle(resultMap);
+				rq.setStatu(ReturnStatus.Success); 
+			}
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
 	
 	/**
 	 * 生成作品编号

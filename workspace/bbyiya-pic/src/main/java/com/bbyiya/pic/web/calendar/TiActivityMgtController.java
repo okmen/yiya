@@ -17,6 +17,7 @@ import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.common.vo.ImageInfo;
 import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.PMyproductsMapper;
+import com.bbyiya.dao.TiActivityexchangecodesMapper;
 import com.bbyiya.dao.TiActivitysMapper;
 import com.bbyiya.dao.TiActivitysinglesMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
@@ -32,6 +33,7 @@ import com.bbyiya.enums.calendar.TiActivityTypeEnum;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.PMyproducts;
+import com.bbyiya.model.TiActivityexchangecodes;
 import com.bbyiya.model.TiActivitys;
 import com.bbyiya.model.TiActivitysingles;
 import com.bbyiya.model.TiActivityworks;
@@ -45,7 +47,6 @@ import com.bbyiya.service.calendar.ITi_OrderMgtService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
-import com.bbyiya.vo.calendar.TiActivityOrderSubmitParam;
 import com.bbyiya.vo.calendar.TiActivitysVo;
 import com.bbyiya.vo.calendar.product.TiProductResult;
 import com.bbyiya.vo.user.LoginSuccessResult;
@@ -99,21 +100,6 @@ public class TiActivityMgtController extends SSOController {
 				actInfo.setYaoqingcount(singMapper.getYaoqingCountByActId(actId));
 				TiProductResult productResult= productMapper.getResultByProductId(actInfo.getProductid());
 				productResult.setDescriptionImglist((List<ImageInfo>)JsonUtil.jsonToList(productResult.getDescriptionimgjson())) ;
-//				if(productResult!=null){
-//					switch (productResult.getCateid()) {
-//					case 1:
-//						productResult.setImgActivity("http://pic.bbyiya.com/20170509Figure-1001.jpg");
-//						break;
-//					case 2:
-//						productResult.setImgActivity("http://pic.bbyiya.com/20170509Figure-1001.jpg");
-//						break;
-//					case 3:
-//						productResult.setImgActivity("http://pic.bbyiya.com/20170509Figure-1001.jpg");
-//						break;
-//					default:
-//						break;
-//					}
-//				}
 				actInfo.setProduct(productResult); 
 				rq.setBasemodle(actInfo); 
 			}
@@ -153,6 +139,9 @@ public class TiActivityMgtController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	
+	@Autowired
+	private TiActivityexchangecodesMapper exchangeMapper;
 		
 	/**
 	 * 参与活动
@@ -162,7 +151,7 @@ public class TiActivityMgtController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/inActivity")
-	public String inActivity(int actId,@RequestParam(required=false,defaultValue="0")long eUid, @RequestParam(required=false,defaultValue="0")long versionId)throws Exception {
+	public String inActivity(int actId,@RequestParam(required=false,defaultValue="0")long eUid, @RequestParam(required=false,defaultValue="0")long versionId,String exCode)throws Exception {
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.ParamError);
 		LoginSuccessResult user= super.getLoginUser();
@@ -177,8 +166,9 @@ public class TiActivityMgtController extends SSOController {
 						return JsonUtil.objectToJsonStr(rq);
 					} 
 				}
-				//一对一活动
-				if(actInfo.getActtype()!=null&&actInfo.getActtype().intValue()==1) {
+				//活动类型
+				int actType=actInfo.getActtype()==null?0:actInfo.getActtype().intValue();
+				if(actType==Integer.parseInt(TiActivityTypeEnum.toOne.toString())) {/**-------一对一活动-------------------------*/
 					if(versionId<=0){
 						rq.setStatusreson("链接无效01");
 						return JsonUtil.objectToJsonStr(rq);
@@ -197,7 +187,35 @@ public class TiActivityMgtController extends SSOController {
 					single.setGetstime(new Date());
 					single.setStatus(1); 
 					singMapper.updateByPrimaryKeySelective(single);
+				}else if (actType==Integer.parseInt(TiActivityTypeEnum.exchangeCode.toString())) {
+					//兑换码活动
+					if(!ObjectUtil.isEmpty(exCode)){
+						TiActivityexchangecodes exmode= exchangeMapper.selectByPrimaryKey(exCode);
+						boolean isOk=false;
+						if(exmode!=null){
+							if((exmode.getUserid()!=null&&exmode.getUserid().longValue()==user.getUserId().longValue())
+									||exmode.getStatus()==null
+									||exmode.getStatus().intValue()==0){
+								isOk=true;
+							}
+						}
+						if(!isOk){
+							rq.setStatu(ReturnStatus.ParamError);
+							rq.setStatusreson("兑换码不可用（已被其他人使用/不存在）");
+							return JsonUtil.objectToJsonStr(rq);
+						}else {
+							exmode.setUsedtime(new Date());
+							exmode.setUserid(user.getUserId());
+							exmode.setStatus(1);
+							exchangeMapper.updateByPrimaryKeySelective(exmode); 
+						}
+					}else {
+						rq.setStatu(ReturnStatus.ParamError);
+						rq.setStatusreson("兑换码不存在");
+						return JsonUtil.objectToJsonStr(rq);
+					}
 				}
+				//我参与的活动作品
 				TiActivityworks activityworks= activityworksMapper.getActWorkListByActIdAndUserId(actId, user.getUserId());
 				if(activityworks!=null){
 					TiMyworks mywork= myworkMapper.selectByPrimaryKey(activityworks.getWorkid());

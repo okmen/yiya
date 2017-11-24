@@ -48,7 +48,7 @@ public class WxAppNotifyController {
 	@RequestMapping(value = "/WxPayNotify", method = { RequestMethod.POST, RequestMethod.GET })
 	public String wxpayNotify(HttpServletRequest request, HttpServletResponse response, Model model){
 		
-		String msg="1";
+		String msg="方法WxPayNotify。";
 		String xmlStr = readReqStr(request);
 		SortedMap<String, String> notifymap = WxUtil.xmlToMap(xmlStr);
 		if (notifymap == null || notifymap.size() < 1) {
@@ -77,9 +77,14 @@ public class WxAppNotifyController {
 		return "error";
 	}
 
+	/**
+	 * 支付处理（包括订单主动查询检验）
+	 * @param transaction_id
+	 * @param payId
+	 * @return
+	 */
 	private String queryWxOrder(String transaction_id, String payId) {
-		SortedMap<String, String> map =  WxAppPayUtils.queryWxOrder(transaction_id, payId);//WxUtil.xmlToMap(xmlResult);
-//		if (WxUtil.isWXsign(map, WxPayAppConfig.AppSecret)) {
+		SortedMap<String, String> map =  WxAppPayUtils.queryWxOrder(transaction_id, payId);
 		if (map != null && map.get("return_code").equals("SUCCESS") && map.get("result_code").equals("SUCCESS") && map.get("trade_state").equals("SUCCESS")) {
 			// 会写订单状态 TODO 回写订单状态
 			boolean paySuccess = orderMgtService.paySuccessProcess(payId);
@@ -89,7 +94,6 @@ public class WxAppNotifyController {
 				return "error";
 			}
 		}
-//		}
 		return "success";
 	}
 	

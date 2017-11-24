@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,7 @@ import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiUserdiscounts;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.calendar.product.TiProductResult;
 import com.bbyiya.vo.user.LoginSuccessResult;
@@ -42,6 +44,20 @@ import com.github.pagehelper.PageInfo;
 @Controller
 @RequestMapping(value = "/ti_product")
 public class Ti_ProductController  extends SSOController {
+	/**
+	 * 所有展示中的产品列表
+	 */
+	private static String KEY_CACHE_PRODUCTS="ti_productlistall_1124";
+	/**
+	 * 评论缓存KEY
+	 */
+	private static String KEY_BASE_CACHE_COMMENTS="ti_productCommets_base_1124";
+	/**
+	 * 缓存时间
+	 */
+	private static int CACHE_LONG=180;
+	/**========================================================================*/
+	
 	@Autowired
 	private TiProductsMapper productsMapper;
 	@Autowired
@@ -66,12 +82,17 @@ public class Ti_ProductController  extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/prolist")
-	public String transferPage() throws Exception {
+	public String prolist() throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			//01产品列表
-			List<TiProductResult> proList=productsMapper.findProductResultlist();
+			//01 获取产品列表
+			List<TiProductResult> proList=(List<TiProductResult>)RedisUtil.getObject(KEY_CACHE_PRODUCTS); 
+			if(proList==null||proList.size()<=0){
+				proList=productsMapper.findProductResultlist();
+				RedisUtil.setObject(KEY_CACHE_PRODUCTS, proList, CACHE_LONG);
+			}
+			
 			//我的优惠
 			TiDiscountmodel disModel= getDiscountList(user.getUserId());
 			if(disModel!=null&&disModel.getDetails()!=null) {
@@ -133,7 +154,7 @@ public class Ti_ProductController  extends SSOController {
 					product.setSaleCount(ext.getSales()==null?0:ext.getSales().intValue());
 					product.setCommentsCount(ext.getCommentcount()==null?0:ext.getCommentcount().intValue());
 				}
-				
+				//产品优惠信息
 				TiDiscountmodel disModel= getDiscountList(user.getUserId());
 				if(disModel!=null&&disModel.getDetails()!=null) {
 					product.setDiscountType(disModel.getType());
@@ -144,7 +165,6 @@ public class Ti_ProductController  extends SSOController {
 							product.setDiscount(dd.getDiscount());
 						}
 					}
-
 				}
 			}
 			rq.setBasemodle(product); 
@@ -157,6 +177,12 @@ public class Ti_ProductController  extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
+	/**
+	 * 产品款式列表
+	 * @param productId
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/productStyleList")
 	public String productStyleList(long productId) throws Exception {
@@ -239,7 +265,6 @@ public class Ti_ProductController  extends SSOController {
 					return model;
 				}
 			}
-			
 		}
 		return null;
 	}
@@ -258,10 +283,20 @@ public class Ti_ProductController  extends SSOController {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			PageHelper.startPage(index, size);
-			List<TiProductcomments> commentlist=commentMapper.findListByProductId(productId);
-			PageInfo<TiProductcomments> resultPage=new PageInfo<TiProductcomments>(commentlist);
-			rq.setBasemodle(resultPage); 
+			String cacheKey=KEY_BASE_CACHE_COMMENTS+"p"+productId+"_index"+index+"_size"+size;
+			//获取缓存数据
+			PageInfo<TiProductcomments> resultPage=(PageInfo<TiProductcomments>)RedisUtil.getObject(cacheKey);
+			if(resultPage!=null&&resultPage.getList()!=null&&resultPage.getList().size()>0){
+				rq.setBasemodle(resultPage);
+			}else {
+				PageHelper.startPage(index, size);
+				List<TiProductcomments> commentlist=commentMapper.findListByProductId(productId);
+				resultPage=new PageInfo<TiProductcomments>(commentlist);
+				if(resultPage!=null&&resultPage.getList()!=null&&resultPage.getList().size()>0){
+					RedisUtil.setObject(cacheKey, resultPage, CACHE_LONG); 
+				}
+				rq.setBasemodle(resultPage); 
+			}
 			rq.setStatu(ReturnStatus.Success);
 		}else { 
 			rq.setStatu(ReturnStatus.LoginError);

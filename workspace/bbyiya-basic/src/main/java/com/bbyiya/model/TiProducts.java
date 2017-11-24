@@ -1,8 +1,11 @@
 package com.bbyiya.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class TiProducts {
+public class TiProducts implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
     private Long productid;
 
     private Integer status;

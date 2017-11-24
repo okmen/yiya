@@ -44,21 +44,24 @@ public class BasePostMgtServiceImpl implements IBasePostMgtService{
 	@Autowired
 	private PProductsMapper productsMapper;
 	
-	public ReturnModel find_postagelist(Long addressId){
-		ReturnModel rq=new ReturnModel();
-		List<PPostmodel> list=null;
-		if(addressId!=null&&addressId>0){
-			UUseraddress addr= addressMapper.get_UUserAddressByKeyId(addressId);
-			if(addr!=null){
-				 list=find_postlist(addr.getArea());
-			}
-		}
-		if(list==null||list.size()<=0)
-			list=find_postlist(null);
-		rq.setStatu(ReturnStatus.Success);
-		rq.setBasemodle(list); 
-		return rq;
-	}
+	@Autowired
+	private TiProductsMapper tiProductsMapper;
+	
+//	public ReturnModel find_postagelist(Long addressId){
+//		ReturnModel rq=new ReturnModel();
+//		List<PPostmodel> list=null;
+//		if(addressId!=null&&addressId>0){
+//			UUseraddress addr= addressMapper.get_UUserAddressByKeyId(addressId);
+//			if(addr!=null){
+//				 list=find_postlist(addr.getArea());
+//			}
+//		}
+//		if(list==null||list.size()<=0)
+//			list=find_postlist(null);
+//		rq.setStatu(ReturnStatus.Success);
+//		rq.setBasemodle(list); 
+//		return rq;
+//	}
 	/**
 	 * 获取运费模块
 	 * @param addressId
@@ -113,9 +116,6 @@ public class BasePostMgtServiceImpl implements IBasePostMgtService{
 		rq.setStatu(ReturnStatus.Success);
 		return rq;
 	}
-	
-	@Autowired
-	private TiProductsMapper tiProductsMapper;
 	
 	/**
 	 * 根据产品获取运费情况

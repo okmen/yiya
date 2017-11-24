@@ -25,12 +25,25 @@ import com.bbyiya.web.base.SSOController;
 @Controller
 @RequestMapping(value = "/region")
 public class RegionController extends SSOController {
-
+	/**
+	 * 所有省列表缓存key
+	 */
+	private static String KEY_PROVINCE_REDIS="provinceAll_list1124";
+	/**
+	 * KEY 所有 省-》市 键值对
+	 */
+	private static String KEY_CITY_REDIS="province_city_list1124";
+	/**
+	 * key 所有 市-》区、县 键值对
+	 */
+	private static String KEY_DISTRICT_REDIS="city_area_list1124";
+	/**
+	 * 缓存时间
+	 */
+	private static int CACHE_LONG=864000;
+	/**----------------------------------------------------*/
 	@Autowired
 	private RegionMapper regionMapper;
-	
-	
-
 	/**
 	 * 
 	 * 获取地区列表
@@ -46,17 +59,17 @@ public class RegionController extends SSOController {
 		ReturnModel rq = new ReturnModel();
 		switch (type) {
 		case 0:
-			if (!ObjectUtil.isEmpty(code)) {// 获取省
+			if (!ObjectUtil.isEmpty(code)) {
+				//查询某个省 model
 				rq.setBasemodle(regionMapper.getProvinceByCode(ObjectUtil.parseInt(code)));
-			} else {
-				String keyCity="cityArea_province_list1";
-				List<RProvince> provincelist=(List<RProvince>)RedisUtil.getObject(keyCity);
+			} else {// case2:获取所有省列表
+				List<RProvince> provincelist=(List<RProvince>)RedisUtil.getObject(KEY_PROVINCE_REDIS);
 				if(provincelist!=null&&provincelist.size()>0){
 					rq.setBasemodle(provincelist);
 				}else {
 					provincelist=regionMapper.findProvincelistAll();
 					if(provincelist!=null&&provincelist.size()>0){
-						RedisUtil.setObject(keyCity, provincelist,36000); 
+						RedisUtil.setObject(KEY_PROVINCE_REDIS, provincelist,CACHE_LONG); 
 					}
 					rq.setBasemodle(provincelist); 
 				}
@@ -64,10 +77,7 @@ public class RegionController extends SSOController {
 			break;
 		case 1:
 			if (!ObjectUtil.isEmpty(code)) {//市 列表
-//				rq.setBasemodle(regionMapper.findCitylistBy_ProvinceCode(ObjectUtil.parseInt(code)));
-				
-				String keyCity="cityArea_province1";
-				Map<String, List<RCity>> mapCity= (Map<String, List<RCity>>)RedisUtil.getObject(keyCity); //new HashMap<Integer, List<RCity>>();
+				Map<String, List<RCity>> mapCity= (Map<String, List<RCity>>)RedisUtil.getObject(KEY_CITY_REDIS); //new HashMap<Integer, List<RCity>>();
 				if(mapCity!=null){//已经有缓存信息了
 					if(mapCity.containsKey(code)){//有该省的所有市级缓存
 						rq.setBasemodle(mapCity.get(code));  
@@ -75,7 +85,7 @@ public class RegionController extends SSOController {
 						List<RCity> list=regionMapper.findCitylistBy_ProvinceCode(ObjectUtil.parseInt(code));
 						if(list!=null&&list.size()>0){
 							mapCity.put(code, list);
-							RedisUtil.setObject(keyCity, mapCity,36000);
+							RedisUtil.setObject(KEY_CITY_REDIS, mapCity,CACHE_LONG);
 						}
 						rq.setBasemodle(list); 
 					}
@@ -84,7 +94,7 @@ public class RegionController extends SSOController {
 					List<RCity> list=regionMapper.findCitylistBy_ProvinceCode(ObjectUtil.parseInt(code));
 					if(list!=null&&list.size()>0){
 						mapCity.put(code, list);
-						RedisUtil.setObject(keyCity, mapCity);
+						RedisUtil.setObject(KEY_CITY_REDIS, mapCity,CACHE_LONG);
 					}
 					rq.setBasemodle(list); 
 				}
@@ -92,10 +102,7 @@ public class RegionController extends SSOController {
 			break;
 		case 2:
 			if (!ObjectUtil.isEmpty(code)) {// 区 列表
-//				rq.setBasemodle(regionMapper.findArealistBy_CityCode(ObjectUtil.parseInt(code)));
-				
-				String keyCity="cityArea_city1";
-				Map<String, List<RAreas>> mapCity= (Map<String, List<RAreas>>)RedisUtil.getObject(keyCity);
+				Map<String, List<RAreas>> mapCity= (Map<String, List<RAreas>>)RedisUtil.getObject(KEY_DISTRICT_REDIS);
 				if(mapCity!=null){//已经有缓存信息了
 					if(mapCity.containsKey(code)){//有该省的所有市级缓存
 						rq.setBasemodle(mapCity.get(code));  
@@ -103,7 +110,7 @@ public class RegionController extends SSOController {
 						List<RAreas> list=regionMapper.findArealistBy_CityCode(ObjectUtil.parseInt(code));
 						if(list!=null&&list.size()>0){
 							mapCity.put(code, list);
-							RedisUtil.setObject(keyCity, mapCity,36000);
+							RedisUtil.setObject(KEY_DISTRICT_REDIS, mapCity,CACHE_LONG);
 						}
 						rq.setBasemodle(list); 
 					}
@@ -112,7 +119,7 @@ public class RegionController extends SSOController {
 					List<RAreas> list=regionMapper.findArealistBy_CityCode(ObjectUtil.parseInt(code));
 					if(list!=null&&list.size()>0){
 						mapCity.put(code, list);
-						RedisUtil.setObject(keyCity, mapCity,36000);
+						RedisUtil.setObject(KEY_DISTRICT_REDIS, mapCity,CACHE_LONG);
 					}
 					rq.setBasemodle(list); 
 				}

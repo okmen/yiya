@@ -2,6 +2,7 @@ package com.bbyiya.pic.service.calendar;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import com.bbyiya.model.TiActivityexchangecodes;
 import com.bbyiya.pic.vo.calendar.CalendarActivityAddParam;
 import com.bbyiya.pic.vo.calendar.WorkForCustomerParam;
 import com.bbyiya.vo.ReturnModel;
@@ -117,6 +118,12 @@ public interface IIbs_CalendarActivityService {
 	 */
 	ReturnModel reviewWorkForCustomer(Long userid,
 			WorkForCustomerParam workparam);
+	/**
+	 * 根据活ID得到兑换码
+	 * @param actid
+	 * @return
+	 */
+	List<TiActivityexchangecodes> findTiActivityExchangeCodeList(Integer actid);
 	
 	
 }

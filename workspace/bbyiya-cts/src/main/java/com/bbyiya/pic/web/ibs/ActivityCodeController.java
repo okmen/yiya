@@ -104,6 +104,7 @@ public class ActivityCodeController extends SSOController {
 				return JsonUtil.objectToJsonStr(rq);
 			}			
 			rq=activitycodeService.addActivityCode(user.getUserId(), param,arealist);
+			
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.jsqlparser.statement.select.Select;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -114,25 +112,6 @@ public class TiCoordinateController  extends SSOController{
 	}
 	
 
-//	oproducerModel= new OProducerordercount();
-//	oproducerModel.setUserorderid(userOrderId);
-//	oproducerModel.setUserid(userorders.getUserid());
-//	oproducerModel.setProduceruserid(userorders.getProduceruserid());
-//	Integer indexCount=oproducerOrderCountMapper.getMaxOrderIndexByProducerIdAndUserId(userorders.getProduceruserid(),userorders.getUserid());
-//	int orderIndex=indexCount==null?1:(indexCount+1);
-//	oproducerModel.setOrderindex(orderIndex);
-//	if(userorders.getOrdertype()!=null&&userorders.getOrdertype()==Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())){
-//		TiActivityworks actwork= actworkMapper.selectByPrimaryKey(workId);
-//		if(actwork!=null&&actwork.getOrderaddressid()!=null&&actwork.getOrderaddressid().longValue()>0){
-//			oproducerModel.setPrintindex(orderIndex+"A"); 
-//		}else {
-//			oproducerModel.setPrintindex(String.valueOf(orderIndex));
-//		}
-//	}else {
-//		oproducerModel.setPrintindex(orderIndex+"A");
-//	}
-//	oproducerOrderCountMapper.insert(oproducerModel);
-	
 	/**
 	 * 订单图片
 	 * @param userOrderId
@@ -145,7 +124,9 @@ public class TiCoordinateController  extends SSOController{
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
+			//获取订单信息
 			OUserorders userorders=userorderMapper.selectByPrimaryKey(userOrderId);
+			//订单产品
 			List<OOrderproducts> oproductlist=oproductMapper.findOProductsByOrderId(userOrderId);
 			if(oproductlist!=null&&oproductlist.size()>0&&userorders!=null&&userorders.getProduceruserid()!=null) {
 				TiProducts products=productsMapper.selectByPrimaryKey(oproductlist.get(0).getProductid());
@@ -259,7 +240,7 @@ public class TiCoordinateController  extends SSOController{
 									resultslist.add(layer);
 									if(index==1){//第一页
 										//第一张影楼广告放在 首页的背面（也就是 第二页）
-										if(adverlist!=null&&adverlist.size()>0){
+										if(products.getAdvertcount()!=null&&products.getAdvertcount().intValue()!=1&& adverlist!=null&&adverlist.size()>0){
 											index++;
 											adverlist.get(0).setPrintNo( getPrintNu(workId, userorders.getUserid(), oproducerModel.getPrintindex(), index));
 											resultslist.add(adverlist.get(0));   

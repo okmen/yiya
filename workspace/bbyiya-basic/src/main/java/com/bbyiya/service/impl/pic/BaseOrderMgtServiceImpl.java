@@ -1618,6 +1618,9 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 				orderAddress.setUserid(addr.getUserid());
 				orderAddress.setPhone(addr.getPhone());
 				orderAddress.setReciver(addr.getReciver());
+				orderAddress.setProvincecode(addr.getProvince());
+				orderAddress.setCitycode(addr.getCity());
+				orderAddress.setDistrictcode(addr.getArea()); 
 				orderAddress.setCity(regionService.getCityName(addr.getCity()));
 				orderAddress.setProvince(regionService.getProvinceName(addr.getProvince()));
 				orderAddress.setDistrict(regionService.getAresName(addr.getArea()));
@@ -1648,6 +1651,9 @@ public class BaseOrderMgtServiceImpl implements IBaseOrderMgtService {
 						orderAddress.setUserid(branches.getBranchuserid());
 						orderAddress.setPhone(branches.getPhone());
 						orderAddress.setReciver(branches.getUsername());
+						orderAddress.setProvincecode(branches.getProvince());
+						orderAddress.setCitycode(branches.getCity());
+						orderAddress.setDistrictcode(branches.getArea()); 
 						orderAddress.setCity(regionService.getCityName(branches.getCity()));
 						orderAddress.setProvince(regionService.getProvinceName(branches.getProvince()));
 						orderAddress.setDistrict(regionService.getAresName(branches.getArea()));

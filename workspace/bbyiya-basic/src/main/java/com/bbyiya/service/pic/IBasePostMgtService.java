@@ -13,18 +13,18 @@ public interface IBasePostMgtService {
 	 * @param addressId
 	 * @return
 	 */
-	ReturnModel find_postagelist(Long addressId);
+//	ReturnModel find_postagelist(Long addressId);
 
 	/**
 	 * 产品的运费模块列表
-	 * @param addressId
+	 * @param addressId 用户地址Id
 	 * @param productId
 	 * @return
 	 */
 	ReturnModel find_postagelist(Long addressId, Long productId);
 	/**
 	 * 产品运费模块
-	 * @param area
+	 * @param area 区域code
 	 * @param productId
 	 * @return
 	 */
@@ -33,8 +33,7 @@ public interface IBasePostMgtService {
 	/**
 	 * 列出快递方式 以及快递费（供用户选择） zy（17-03-30）
 	 * 
-	 * @param area
-	 *            （收货区域）
+	 * @param area （收货区域）
 	 * @return
 	 */
 	List<PPostmodel> find_postlist(Integer area);
@@ -53,10 +52,8 @@ public interface IBasePostMgtService {
 	/**
 	 * 通过 快递方式Id,areaId 确定快递费 zy（17-03-30）
 	 * 
-	 * @param postModelId
-	 *            快递方式
-	 * @param areaId
-	 *            地区id
+	 * @param postModelId 快递方式
+	 * @param areaId 地区id
 	 * @return
 	 */
 	PPostmodel getPostmodel(Integer postModelId, Integer areaId);

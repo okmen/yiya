@@ -409,9 +409,17 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 	}
 	
 	
-	
+	/**
+	 * 获取生产商userId
+	 */
 	public long getProducerUserId(Long orderAddressId,Long productId,Long userId){
 		OOrderaddress addr = orderaddressMapper.selectByPrimaryKey(orderAddressId);
+		if(addr!=null&&addr.getDistrictcode()!=null){
+			List<TiProductareas> list = productareasMapper.findProductAreaListByProductIdAndArea(productId, addr.getDistrictcode());
+			if (list != null && list.size() > 0) {
+				return list.get(0).getProduceruserid();
+			}
+		}
 		if (userId!=null&&userId>0) {
 			if(addr!=null){
 				userId=addr.getUserid();
@@ -631,6 +639,9 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 						orderAddress.setUserid(branches.getBranchuserid());
 						orderAddress.setPhone(branches.getPhone());
 						orderAddress.setReciver(branches.getUsername());
+						orderAddress.setProvincecode(branches.getProvince());
+						orderAddress.setCitycode(branches.getCity());
+						orderAddress.setDistrictcode(branches.getArea()); 
 						orderAddress.setCity(regionService.getCityName(branches.getCity()));
 						orderAddress.setProvince(regionService.getProvinceName(branches.getProvince()));
 						orderAddress.setDistrict(regionService.getAresName(branches.getArea()));
@@ -647,6 +658,9 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					orderAddress.setUserid(promoters.getPromoteruserid());
 					orderAddress.setPhone(promoters.getMobilephone());
 					orderAddress.setReciver(promoters.getContacts());
+					orderAddress.setProvincecode(promoters.getProvince());
+					orderAddress.setCitycode(promoters.getCity());
+					orderAddress.setDistrictcode(promoters.getArea()); 
 					orderAddress.setCity(regionService.getCityName(promoters.getCity()));
 					orderAddress.setProvince(regionService.getProvinceName(promoters.getProvince()));
 					orderAddress.setDistrict(regionService.getAresName(promoters.getArea()));

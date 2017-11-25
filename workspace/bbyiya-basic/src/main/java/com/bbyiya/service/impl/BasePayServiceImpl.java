@@ -196,10 +196,6 @@ public class BasePayServiceImpl implements IBasePayService{
 							String[] phones=adminPhones.split(",");
 							if(phones!=null&&phones.length>0){
 								param.setUserId(payOrder.getUserid()); 
-								//cts充值
-//								if(ObjectUtil.isEmpty(payOrder.getPrepayid())){
-//									param.setRechargeType(1);
-//								}
 								for (String phone : phones) {
 									if(!ObjectUtil.isEmpty(phone)&&ObjectUtil.isMobile(phone)){
 										SendSMSByMobile.sendSmS(Integer.parseInt(SendMsgEnums.recharge_adminUser.toString()),phone, param);
@@ -397,10 +393,15 @@ public class BasePayServiceImpl implements IBasePayService{
 						}	
 					}/*----------购物完~~~~~~~~~~~~~~~*/
 					
-				} else if(payOrder!=null){
-					addlog("payId:"+payId+",方法paySuccessProcess。OPayorder不在可支付的状态！");
-					return false;
 				}else {
+					if(payOrder!=null){
+						if(payOrder.getStatus()!=null&&payOrder.getStatus().intValue()==Integer.parseInt(PayOrderStatusEnums.payed.toString())){
+							return true; 
+						}else {
+							addlog("payId:"+payId+",方法paySuccessProcess。支付单失效！");
+							return true;
+						}
+					}
 					addlog("payId:"+payId+",方法paySuccessProcess。OPayorder找不到此订单！");
 					return false;
 				} 

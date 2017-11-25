@@ -27,10 +27,18 @@ import com.bbyiya.web.base.SSOController;
 @Controller
 @RequestMapping(value = "/product")
 public class ProductController extends SSOController {
+
+	/**
+	 * KEY 所有展示中的产品列表
+	 */
+	private static String KEY_CACHE_PRODUCTS="productlistAll_170328";
+	
+	/**=========================================================*/
 	@Resource(name="baseProductServiceImpl")
 	private IBaseProductService productService;
 	@Autowired
 	private PScenesMapper sceneMapper;
+	
 	
 	/**
 	 * P01 场景列表
@@ -68,12 +76,11 @@ public class ProductController extends SSOController {
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			rq.setStatu(ReturnStatus.Success);
-			String key="productlistAll_170328";
-			List<ProductResult> list=(List<ProductResult>)RedisUtil.getObject(key);
+			List<ProductResult> list=(List<ProductResult>)RedisUtil.getObject(KEY_CACHE_PRODUCTS);
 			if(list==null||list.size()<=0){
 				list=productService.findProductList(uid);
 				if(list!=null&&list.size()>0){
-					RedisUtil.setObject(key, list, 600); 
+					RedisUtil.setObject(KEY_CACHE_PRODUCTS, list, 600); 
 				}
 			}
 			rq.setBasemodle(list);    

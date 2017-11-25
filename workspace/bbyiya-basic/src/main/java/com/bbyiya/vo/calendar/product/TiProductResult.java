@@ -7,6 +7,7 @@ import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiProductstyles;
 
 public class TiProductResult extends TiProducts{
+	private static final long serialVersionUID = 1L;
 	
 	/*-----------实体扩展字段-------------------*/
     /**

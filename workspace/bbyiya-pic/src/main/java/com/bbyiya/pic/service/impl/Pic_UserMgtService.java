@@ -21,6 +21,7 @@ import com.bbyiya.model.UOtherlogin;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.service.IPic_UserMgtService;
 import com.bbyiya.service.IUserLoginService;
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.SendSMSByMobile;
 import com.bbyiya.utils.encrypt.MD5Encrypt;
@@ -63,11 +64,16 @@ public class Pic_UserMgtService implements IPic_UserMgtService {
 							}
 						}
 						if(ObjectUtil.isEmpty(user.getUserimg())||"null".equals(user.getUserimg())){
-							if(!ObjectUtil.isEmpty(param.getHeadImg())&&!"null".equals(param.getHeadImg())){
-								user.setUserimg(param.getHeadImg());
+							if(!ObjectUtil.isEmpty(param.getHeadImg())&&!"null".equals(param.getHeadImg())&&param.getHeadImg().contains("http")){
+								user.setUserimg(param.getHeadImg()); 
 								edit=true;
 							}
-						} 
+						}
+						//默认头像
+						if((ObjectUtil.isEmpty(user.getUserimg())||!user.getUserimg().contains("http"))){
+							user.setUserimg(ConfigUtil.getSingleValue("default-headimg"));  
+							edit=true;
+						}
 						loginSuccessResult = baseLoginService.loginSuccess(user);
 						if(edit){ 
 							userDao.updateByPrimaryKeySelective(user);

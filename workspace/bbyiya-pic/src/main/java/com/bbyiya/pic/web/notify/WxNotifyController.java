@@ -75,7 +75,7 @@ public class WxNotifyController {
 	 */
 	@RequestMapping(value = "/WxPayNotify", method = { RequestMethod.POST, RequestMethod.GET })
 	public String wxpayNotify(HttpServletRequest request, HttpServletResponse response, Model model){
-		String msg="wxpay:";
+		String msg="WxPayNotify:";
 		try {
 			String xmlStr = readReqStr(request);
 			SortedMap<String, String> notifymap = WxUtil.xmlToMap(xmlStr);

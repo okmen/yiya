@@ -55,33 +55,36 @@ public class SubmitOrderMgtController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/findpostlist")
-	public String findpostlist(String area, String addressId,String styleId) throws Exception {
+	public String findpostlist(String area, String addressId,String styleId,String productId) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
 			long addrid = ObjectUtil.parseLong(addressId);
-			//
-			if(!ObjectUtil.isEmpty(styleId)){
+			long proId=ObjectUtil.parseLong(productId);
+			if(proId<=0&&!ObjectUtil.isEmpty(styleId)){
 				PProductstyles stylePProductstyles= styleMapper.selectByPrimaryKey(ObjectUtil.parseLong(styleId));
 				if(stylePProductstyles!=null){
-					if(addrid>0){
-						rq=postMgtService.find_postagelist(addrid, stylePProductstyles.getProductid());
-					}else {
-						rq=postMgtService.find_postlist(ObjectUtil.parseInt(area), stylePProductstyles.getProductid());
-					}
-					return JsonUtil.objectToJsonStr(rq);
+					proId=stylePProductstyles.getProductid();
 				}
 			}
-			//不指定产品
-			if (addrid > 0) {
-				rq = postMgtService.find_postagelist(addrid);
-			} else {
-				List<PPostmodel> postlist = postMgtService.find_postlist(ObjectUtil.parseInt(area));
-				if (postlist != null) {
-					rq.setBasemodle(postlist);
-					rq.setStatu(ReturnStatus.Success);
-				}
+			if(proId<=0)
+				proId=1101l;
+			if(addrid>0){
+				rq=postMgtService.find_postagelist(addrid, proId);
+			}else {
+				rq=postMgtService.find_postlist(ObjectUtil.parseInt(area), proId);
 			}
+			return JsonUtil.objectToJsonStr(rq);
+//			//不指定产品
+//			if (addrid > 0) {
+//				rq = postMgtService.find_postagelist(addrid);
+//			} else {
+//				List<PPostmodel> postlist = postMgtService.find_postlist(ObjectUtil.parseInt(area));
+//				if (postlist != null) {
+//					rq.setBasemodle(postlist);
+//					rq.setStatu(ReturnStatus.Success);
+//				}
+//			}
 		} else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

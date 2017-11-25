@@ -876,6 +876,9 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 						orderAddress.setUserid(addressParam.getUserid());
 						orderAddress.setPhone(addressParam.getPhone());
 						orderAddress.setReciver(addressParam.getReciver());
+						orderAddress.setProvincecode(addressParam.getProvince());
+						orderAddress.setCitycode(addressParam.getCity());
+						orderAddress.setDistrictcode(addressParam.getDistrict()); 
 						orderAddress.setCity(regionService.getCityName(addressParam.getCity()));
 						orderAddress.setProvince(regionService.getProvinceName(addressParam.getProvince()));
 						orderAddress.setDistrict(regionService.getAresName(addressParam.getDistrict()));
@@ -904,6 +907,9 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 						orderAddress.setUserid(workcus.getPromoteruserid());
 						orderAddress.setPhone(workcus.getRecieverphone());
 						orderAddress.setReciver(workcus.getReciever());
+						orderAddress.setProvincecode(workcus.getProvince());
+						orderAddress.setCitycode(workcus.getCity());
+						orderAddress.setDistrictcode(workcus.getDistrict()); 
 						orderAddress.setCity(regionService.getCityName(workcus.getCity()));
 						orderAddress.setProvince(regionService.getProvinceName(workcus.getProvince()));
 						orderAddress.setDistrict(regionService.getAresName(workcus.getDistrict()));

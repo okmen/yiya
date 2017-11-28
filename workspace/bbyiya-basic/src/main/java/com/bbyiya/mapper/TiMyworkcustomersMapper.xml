@@ -5,6 +5,7 @@
     <id column="WorkId" property="workid" jdbcType="BIGINT" />
     <result column="PromoterUserId" property="promoteruserid" jdbcType="BIGINT" />
     <result column="CustomerName" property="customername" jdbcType="VARCHAR" />
+    <result column="BabyNickName" property="babynickname" jdbcType="VARCHAR" />
     <result column="MobilePhone" property="mobilephone" jdbcType="VARCHAR" />
     <result column="NeedShareCount" property="needsharecount" jdbcType="INTEGER" />
     <result column="SharedCount" property="sharedcount" jdbcType="INTEGER" />
@@ -22,9 +23,9 @@
     <result column="AddressType" property="addresstype" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    WorkId, PromoterUserId, CustomerName, MobilePhone, NeedShareCount, SharedCount, NeedRedpacketTotal, 
-    RedpacketAmount, CreateTime, Status, Province, City, District, Streetdetails, Reciever, 
-    RecieverPhone, Address, AddressType
+    WorkId, PromoterUserId, CustomerName, BabyNickName, MobilePhone, NeedShareCount, 
+    SharedCount, NeedRedpacketTotal, RedpacketAmount, CreateTime, Status, Province, City, 
+    District, Streetdetails, Reciever, RecieverPhone, Address, AddressType, IsPromoterAddr
   </sql>
   
   <select id="selectListByPromoterUserId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
@@ -50,19 +51,19 @@
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.TiMyworkcustomers" >
     insert into ti_myworkcustomers (WorkId, PromoterUserId, CustomerName, 
-      MobilePhone, NeedShareCount, SharedCount, 
-      NeedRedpacketTotal, RedpacketAmount, CreateTime, 
-      Status, Province, City, 
-      District, Streetdetails, Reciever, 
-      RecieverPhone, Address, AddressType
-      )
+      BabyNickName, MobilePhone, NeedShareCount, 
+      SharedCount, NeedRedpacketTotal, RedpacketAmount, 
+      CreateTime, Status, Province, 
+      City, District, Streetdetails, 
+      Reciever, RecieverPhone, Address, 
+      AddressType, IsPromoterAddr)
     values (#{workid,jdbcType=BIGINT}, #{promoteruserid,jdbcType=BIGINT}, #{customername,jdbcType=VARCHAR}, 
-      #{mobilephone,jdbcType=VARCHAR}, #{needsharecount,jdbcType=INTEGER}, #{sharedcount,jdbcType=INTEGER}, 
-      #{needredpackettotal,jdbcType=DOUBLE}, #{redpacketamount,jdbcType=DOUBLE}, #{createtime,jdbcType=TIMESTAMP}, 
-      #{status,jdbcType=INTEGER}, #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, 
-      #{district,jdbcType=INTEGER}, #{streetdetails,jdbcType=VARCHAR}, #{reciever,jdbcType=VARCHAR}, 
-      #{recieverphone,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{addresstype,jdbcType=INTEGER}
-      )
+      #{babynickname,jdbcType=VARCHAR}, #{mobilephone,jdbcType=VARCHAR}, #{needsharecount,jdbcType=INTEGER}, 
+      #{sharedcount,jdbcType=INTEGER}, #{needredpackettotal,jdbcType=DOUBLE}, #{redpacketamount,jdbcType=DOUBLE}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{province,jdbcType=INTEGER}, 
+      #{city,jdbcType=INTEGER}, #{district,jdbcType=INTEGER}, #{streetdetails,jdbcType=VARCHAR}, 
+      #{reciever,jdbcType=VARCHAR}, #{recieverphone,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
+      #{addresstype,jdbcType=INTEGER}, #{ispromoteraddr,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiMyworkcustomers" >
     insert into ti_myworkcustomers
@@ -75,6 +76,9 @@
       </if>
       <if test="customername != null" >
         CustomerName,
+      </if>
+      <if test="babynickname != null" >
+        BabyNickName,
       </if>
       <if test="mobilephone != null" >
         MobilePhone,
@@ -121,6 +125,9 @@
       <if test="addresstype != null" >
         AddressType,
       </if>
+      <if test="ispromoteraddr != null" >
+        IsPromoterAddr,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="workid != null" >
@@ -131,6 +138,9 @@
       </if>
       <if test="customername != null" >
         #{customername,jdbcType=VARCHAR},
+      </if>
+      <if test="babynickname != null" >
+        #{babynickname,jdbcType=VARCHAR},
       </if>
       <if test="mobilephone != null" >
         #{mobilephone,jdbcType=VARCHAR},
@@ -177,6 +187,9 @@
       <if test="addresstype != null" >
         #{addresstype,jdbcType=INTEGER},
       </if>
+      <if test="ispromoteraddr != null" >
+        #{ispromoteraddr,jdbcType=INTEGER},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiMyworkcustomers" >
@@ -187,6 +200,9 @@
       </if>
       <if test="customername != null" >
         CustomerName = #{customername,jdbcType=VARCHAR},
+      </if>
+      <if test="babynickname != null" >
+        BabyNickName = #{babynickname,jdbcType=VARCHAR},
       </if>
       <if test="mobilephone != null" >
         MobilePhone = #{mobilephone,jdbcType=VARCHAR},
@@ -233,6 +249,9 @@
       <if test="addresstype != null" >
         AddressType = #{addresstype,jdbcType=INTEGER},
       </if>
+      <if test="ispromoteraddr != null" >
+        IsPromoterAddr = #{ispromoteraddr,jdbcType=INTEGER},
+      </if>
     </set>
     where WorkId = #{workid,jdbcType=BIGINT}
   </update>
@@ -240,6 +259,7 @@
     update ti_myworkcustomers
     set PromoterUserId = #{promoteruserid,jdbcType=BIGINT},
       CustomerName = #{customername,jdbcType=VARCHAR},
+      BabyNickName = #{babynickname,jdbcType=VARCHAR},
       MobilePhone = #{mobilephone,jdbcType=VARCHAR},
       NeedShareCount = #{needsharecount,jdbcType=INTEGER},
       SharedCount = #{sharedcount,jdbcType=INTEGER},
@@ -254,7 +274,8 @@
       Reciever = #{reciever,jdbcType=VARCHAR},
       RecieverPhone = #{recieverphone,jdbcType=VARCHAR},
       Address = #{address,jdbcType=VARCHAR},
-      AddressType = #{addresstype,jdbcType=INTEGER}
+      AddressType = #{addresstype,jdbcType=INTEGER},
+      IsPromoterAddr = #{ispromoteraddr,jdbcType=INTEGER}
     where WorkId = #{workid,jdbcType=BIGINT}
   </update>
 </mapper>

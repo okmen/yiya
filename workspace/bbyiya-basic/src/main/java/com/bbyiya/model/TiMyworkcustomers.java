@@ -9,6 +9,8 @@ public class TiMyworkcustomers {
     private Long promoteruserid;
 
     private String customername;
+    
+    private String babynickname;
 
     private String mobilephone;
 
@@ -94,7 +96,15 @@ public class TiMyworkcustomers {
     public void setCustomername(String customername) {
         this.customername = customername == null ? null : customername.trim();
     }
+    
+    public String getBabynickname() {
+        return babynickname;
+    }
 
+    public void setBabynickname(String babynickname) {
+        this.babynickname = babynickname == null ? null : babynickname.trim();
+    }
+    
     public String getMobilephone() {
         return mobilephone;
     }

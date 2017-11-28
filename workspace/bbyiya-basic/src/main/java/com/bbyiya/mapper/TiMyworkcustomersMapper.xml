@@ -25,7 +25,7 @@
   <sql id="Base_Column_List" >
     WorkId, PromoterUserId, CustomerName, BabyNickName, MobilePhone, NeedShareCount, 
     SharedCount, NeedRedpacketTotal, RedpacketAmount, CreateTime, Status, Province, City, 
-    District, Streetdetails, Reciever, RecieverPhone, Address, AddressType, IsPromoterAddr
+    District, Streetdetails, Reciever, RecieverPhone, Address, AddressType
   </sql>
   
   <select id="selectListByPromoterUserId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
@@ -56,14 +56,14 @@
       CreateTime, Status, Province, 
       City, District, Streetdetails, 
       Reciever, RecieverPhone, Address, 
-      AddressType, IsPromoterAddr)
+      AddressType)
     values (#{workid,jdbcType=BIGINT}, #{promoteruserid,jdbcType=BIGINT}, #{customername,jdbcType=VARCHAR}, 
       #{babynickname,jdbcType=VARCHAR}, #{mobilephone,jdbcType=VARCHAR}, #{needsharecount,jdbcType=INTEGER}, 
       #{sharedcount,jdbcType=INTEGER}, #{needredpackettotal,jdbcType=DOUBLE}, #{redpacketamount,jdbcType=DOUBLE}, 
       #{createtime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{province,jdbcType=INTEGER}, 
       #{city,jdbcType=INTEGER}, #{district,jdbcType=INTEGER}, #{streetdetails,jdbcType=VARCHAR}, 
       #{reciever,jdbcType=VARCHAR}, #{recieverphone,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
-      #{addresstype,jdbcType=INTEGER}, #{ispromoteraddr,jdbcType=INTEGER})
+      #{addresstype,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiMyworkcustomers" >
     insert into ti_myworkcustomers
@@ -125,9 +125,6 @@
       <if test="addresstype != null" >
         AddressType,
       </if>
-      <if test="ispromoteraddr != null" >
-        IsPromoterAddr,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="workid != null" >
@@ -186,9 +183,6 @@
       </if>
       <if test="addresstype != null" >
         #{addresstype,jdbcType=INTEGER},
-      </if>
-      <if test="ispromoteraddr != null" >
-        #{ispromoteraddr,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -249,9 +243,6 @@
       <if test="addresstype != null" >
         AddressType = #{addresstype,jdbcType=INTEGER},
       </if>
-      <if test="ispromoteraddr != null" >
-        IsPromoterAddr = #{ispromoteraddr,jdbcType=INTEGER},
-      </if>
     </set>
     where WorkId = #{workid,jdbcType=BIGINT}
   </update>
@@ -274,8 +265,7 @@
       Reciever = #{reciever,jdbcType=VARCHAR},
       RecieverPhone = #{recieverphone,jdbcType=VARCHAR},
       Address = #{address,jdbcType=VARCHAR},
-      AddressType = #{addresstype,jdbcType=INTEGER},
-      IsPromoterAddr = #{ispromoteraddr,jdbcType=INTEGER}
+      AddressType = #{addresstype,jdbcType=INTEGER}
     where WorkId = #{workid,jdbcType=BIGINT}
   </update>
 </mapper>

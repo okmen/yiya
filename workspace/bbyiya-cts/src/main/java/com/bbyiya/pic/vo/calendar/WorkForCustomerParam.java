@@ -8,6 +8,7 @@ public class WorkForCustomerParam {
 	private String workId;
 	private Long productId;
 	private Long styleId;
+	private String babynickname;
 	private Integer needShareCount;
 	private Double needRedpacketTotal;
 	private List<TiMyartsdetails> details;
@@ -49,6 +50,12 @@ public class WorkForCustomerParam {
 	}
 	public void setWorkId(String workId) {
 		this.workId = workId;
+	}
+	public String getBabynickname() {
+		return babynickname;
+	}
+	public void setBabynickname(String babynickname) {
+		this.babynickname = babynickname;
 	}
 	
 	

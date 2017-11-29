@@ -612,6 +612,7 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 		workcus.setProvince(addressparam.getProvince());
 		workcus.setCreatetime(new Date());
 		workcus.setCustomername(addressparam.getReciver());
+		workcus.setBabynickname(workparam.getBabynickname());
 		workcus.setMobilephone(addressparam.getPhone());
 		workcus.setNeedredpackettotal(workparam.getNeedRedpacketTotal());
 		workcus.setNeedsharecount(workparam.getNeedShareCount());

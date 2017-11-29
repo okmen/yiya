@@ -248,7 +248,16 @@ public class TiCoordinateController  extends SSOController{
 									}
 									index++;
 								 }
-								 if(adverlist.size()>1){
+								 //双月（广告只印在最后面）
+								 if(products.getAdvertcount()!=null&&products.getAdvertcount().intValue()==1){
+									 if(adverlist!=null&&adverlist.size()>0){
+										 for (int j=0;j<adverlist.size(); j++) {
+											 adverlist.get(j).setPrintNo( getPrintNu(workId, userorders.getUserid(), oproducerModel.getPrintindex(), index));
+											 resultslist.add(adverlist.get(j)); 
+											 index++;
+										}
+									 }
+								 }else if(adverlist.size()>1){
 									 //排除第一张广告
 									 for (int j=1;j<adverlist.size(); j++) {
 										 adverlist.get(j).setPrintNo( getPrintNu(workId, userorders.getUserid(), oproducerModel.getPrintindex(), index));
@@ -256,11 +265,6 @@ public class TiCoordinateController  extends SSOController{
 										 index++;
 									}
 								 }
-//								 for(int i=(adverlist.size()-2);i>=0;i--){ 
-//									 adverlist.get(i).setPrintNo( getPrintNu(workId, userorders.getUserid(), oproducerModel.getPrintindex(), index));
-//									 resultslist.add(adverlist.get(i));  
-//									 index++;
-//								 } 
 								 map.put("imgLayList", resultslist);
 							 }else {
 								 map.put("imgLayList", layerList);

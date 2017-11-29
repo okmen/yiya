@@ -17,6 +17,7 @@ import com.bbyiya.dao.TiMyworkcustomersMapper;
 import com.bbyiya.dao.TiMyworkredpacketlogsMapper;
 import com.bbyiya.dao.TiMyworksMapper;
 import com.bbyiya.dao.TiPromoteradvertinfoMapper;
+import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.PayOrderStatusEnums;
 import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
@@ -146,6 +147,8 @@ public class TiRedPacketController extends SSOController {
 	private TiMyartsdetailsMapper detailMapper;
 	@Autowired
 	private TiPromoteradvertinfoMapper advertMapper;
+	@Autowired
+	private UUsersMapper userMapper;
 	/**
 	 * 代客制作详情
 	 * @param workId
@@ -166,6 +169,7 @@ public class TiRedPacketController extends SSOController {
 				map.put("details", details);
 				map.put("actStatus", actMyworkcustomers.getStatus());
 				map.put("workInfo", workMapper.selectByPrimaryKey(workId));
+				map.put("nickName", ObjectUtil.isEmpty(actMyworkcustomers.getBabynickname())?actMyworkcustomers.getCustomername():actMyworkcustomers.getBabynickname());
 				//需要凑多少钱
 				if(actMyworkcustomers.getNeedredpackettotal()!=null&&actMyworkcustomers.getNeedredpackettotal().doubleValue()>0){
 					double amount = actMyworkcustomers.getRedpacketamount() == null ? 0 : actMyworkcustomers.getRedpacketamount().doubleValue();
@@ -182,6 +186,8 @@ public class TiRedPacketController extends SSOController {
 				} else {
 					map.put("isAmountNeed", 0);
 					map.put("amountNeed", 0);
+					map.put("needShareCount", actMyworkcustomers.getNeedsharecount()==null?0:actMyworkcustomers.getNeedsharecount());
+					map.put("zanUsers", userMapper.findUsersByWorkId(workId));
 					TiPromoteradvertinfo advertMod = advertMapper.getModelByPromoterUserId(actMyworkcustomers.getPromoteruserid());
 					if (advertMod != null) {
 						map.put("advert", advertMod);

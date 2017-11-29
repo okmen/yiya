@@ -304,6 +304,8 @@ public class Ti_MyworkController extends SSOController {
 						map.put("title", products.getTitle()); 
 						map.put("cateId", products.getCateid());
 						map.put("workInfo", myworks);
+						UUsers workUsers=userMapper.selectByPrimaryKey(myworks.getUserid()==null?0l:myworks.getUserid()); 
+						map.put("nickName", workUsers==null?"":(ObjectUtil.isEmpty(workUsers.getNickname())?"":workUsers.getNickname()));
 						if(myworks.getActid()!=null&&myworks.getActid().intValue()>0){
 							TiActivitys activitys= actMapper.selectByPrimaryKey(myworks.getActid());
 							if(activitys!=null&&activitys.getProduceruserid()!=null){
@@ -311,12 +313,6 @@ public class Ti_MyworkController extends SSOController {
 									TiPromoteradvertinfo advertMod=advertInfoMapper.selectByPrimaryKey(activitys.getAdvertid());
 									map.put("advert", advertMod);
 								}
-//								else { 
-//									TiPromoteradvertinfo advertMod= advertMapper.getAdvertByPromoterUserId(activitys.getProduceruserid());
-//									if(advertMod!=null){
-//										map.put("advert", advertMod);
-//									}
-//								}
 							}
 							List<UUsers> userList= userMapper.findUsersByWorkId(workId);
 							map.put("users", userList);

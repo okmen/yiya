@@ -33,6 +33,8 @@ import com.bbyiya.model.UOtherlogin;
 import com.bbyiya.service.IBasePayService;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.JsonUtil;
+import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.utils.WechatMsgUtil;
 import com.bbyiya.utils.pay.WxPaySubUtils;
 import com.bbyiya.utils.pay.WxUtil;
@@ -130,7 +132,11 @@ public class WxNotifySubController {
 			if (map != null && map.get("return_code").equals("SUCCESS") && map.get("result_code").equals("SUCCESS") && map.get("trade_state").equals("SUCCESS")) {
 				// 会写订单状态
 				boolean isok= orderMgtService.paySuccessProcess(payId);
-				if(isok){
+				//是否有发送过消息
+				String key_orderPay="orderPay_"+payId;
+				int isSendMsg=ObjectUtil.parseInt(RedisUtil.getString(key_orderPay));
+				if(isok&&isSendMsg<=0){
+					RedisUtil.setString(key_orderPay,"1", 36000);
 					OPayorder payorder= payMapper.selectByPrimaryKey(payId);
 					if(payorder!=null&&payorder.getOrdertype()!=null){
 						if(payorder.getOrdertype().intValue()==Integer.parseInt(PayOrderTypeEnum.ti_gouwu.toString())){

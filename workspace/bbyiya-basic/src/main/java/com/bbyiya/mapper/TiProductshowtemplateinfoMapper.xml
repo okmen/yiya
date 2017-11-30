@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiProductshowtemplateinfoMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiProductshowtemplateinfo" >
+    <id column="TempInfoId" property="tempinfoid" jdbcType="INTEGER" />
+    <result column="TempId" property="tempid" jdbcType="INTEGER" />
+    <result column="ProductId" property="productid" jdbcType="BIGINT" />
+    <result column="ImgJson" property="imgjson" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    TempInfoId, TempId, ProductId, ImgJson
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_productshowtemplateinfo
+    where TempInfoId = #{tempinfoid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ti_productshowtemplateinfo
+    where TempInfoId = #{tempinfoid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiProductshowtemplateinfo" >
+    insert into ti_productshowtemplateinfo (TempInfoId, TempId, ProductId, 
+      ImgJson)
+    values (#{tempinfoid,jdbcType=INTEGER}, #{tempid,jdbcType=INTEGER}, #{productid,jdbcType=BIGINT}, 
+      #{imgjson,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiProductshowtemplateinfo" >
+    insert into ti_productshowtemplateinfo
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="tempinfoid != null" >
+        TempInfoId,
+      </if>
+      <if test="tempid != null" >
+        TempId,
+      </if>
+      <if test="productid != null" >
+        ProductId,
+      </if>
+      <if test="imgjson != null" >
+        ImgJson,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="tempinfoid != null" >
+        #{tempinfoid,jdbcType=INTEGER},
+      </if>
+      <if test="tempid != null" >
+        #{tempid,jdbcType=INTEGER},
+      </if>
+      <if test="productid != null" >
+        #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="imgjson != null" >
+        #{imgjson,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiProductshowtemplateinfo" >
+    update ti_productshowtemplateinfo
+    <set >
+      <if test="tempid != null" >
+        TempId = #{tempid,jdbcType=INTEGER},
+      </if>
+      <if test="productid != null" >
+        ProductId = #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="imgjson != null" >
+        ImgJson = #{imgjson,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where TempInfoId = #{tempinfoid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiProductshowtemplateinfo" >
+    update ti_productshowtemplateinfo
+    set TempId = #{tempid,jdbcType=INTEGER},
+      ProductId = #{productid,jdbcType=BIGINT},
+      ImgJson = #{imgjson,jdbcType=VARCHAR}
+    where TempInfoId = #{tempinfoid,jdbcType=INTEGER}
+  </update>
+</mapper>

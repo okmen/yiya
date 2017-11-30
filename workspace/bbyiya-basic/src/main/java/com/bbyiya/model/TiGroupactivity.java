@@ -42,6 +42,10 @@ public class TiGroupactivity {
     private Long timespare;
 
     private Integer browsecount;
+
+    private Integer type;
+
+    private Integer tempid;
     
     /*****************************VO*************************/
     private Integer sellercount;//销售量
@@ -234,6 +238,22 @@ public class TiGroupactivity {
 
 	public void setCreatetimestr(String createtimestr) {
 		this.createtimestr = createtimestr;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public Integer getTempid() {
+		return tempid;
+	}
+
+	public void setTempid(Integer tempid) {
+		this.tempid = tempid;
 	}
     
     

@@ -15,6 +15,18 @@ public class TiProductshowtemplateinfo {
 
     private Integer cateid;
 
+    /*------------------非数据库字段------------------------------*/
+    /**
+     * 产品类型
+     */
+    private String cateName;
+    /**
+     * 显示款式名称
+     */
+    private String styleName;
+    /**
+     * 图片列表
+     */
     private List<ImageInfo> imglist;
     public Integer getTempinfoid() {
         return tempinfoid;
@@ -62,6 +74,22 @@ public class TiProductshowtemplateinfo {
 
 	public void setCateid(Integer cateid) {
 		this.cateid = cateid;
+	}
+
+	public String getCateName() {
+		return cateName;
+	}
+
+	public void setCateName(String cateName) {
+		this.cateName = cateName;
+	}
+
+	public String getStyleName() {
+		return styleName;
+	}
+
+	public void setStyleName(String styleName) {
+		this.styleName = styleName;
 	}
     
     

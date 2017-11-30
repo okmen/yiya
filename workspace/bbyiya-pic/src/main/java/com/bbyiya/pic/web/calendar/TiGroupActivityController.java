@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.baseUtils.GenUtils;
+import com.bbyiya.common.vo.ImageInfo;
 import com.bbyiya.dao.OOrderaddressMapper;
 import com.bbyiya.dao.OPayorderMapper;
 import com.bbyiya.dao.PMyproductsMapper;
@@ -25,6 +26,9 @@ import com.bbyiya.dao.TiGroupactivityworksMapper;
 import com.bbyiya.dao.TiMyartsdetailsMapper;
 import com.bbyiya.dao.TiMyworksMapper;
 import com.bbyiya.dao.TiProductsMapper;
+import com.bbyiya.dao.TiProductshowproductsMapper;
+import com.bbyiya.dao.TiProductshowtemplateMapper;
+import com.bbyiya.dao.TiProductshowtemplateinfoMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
 import com.bbyiya.dao.TiPromoteradvertinfoMapper;
 import com.bbyiya.dao.TiPromotersMapper;
@@ -32,6 +36,7 @@ import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.GroupActWorkStatus;
+import com.bbyiya.enums.calendar.GroupActivityType;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OPayorder;
 import com.bbyiya.model.PMyproducts;
@@ -42,6 +47,9 @@ import com.bbyiya.model.TiGroupactivityworks;
 import com.bbyiya.model.TiMyartsdetails;
 import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiProducts;
+import com.bbyiya.model.TiProductshowproducts;
+import com.bbyiya.model.TiProductshowtemplate;
+import com.bbyiya.model.TiProductshowtemplateinfo;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiPromoteradvertinfo;
 import com.bbyiya.service.IRegionService;
@@ -77,7 +85,12 @@ public class TiGroupActivityController  extends SSOController {
 	@Autowired
 	private TiMyartsdetailsMapper detailMapper;
 	
-	
+	@Autowired
+	private TiProductshowtemplateMapper tempMapper;
+	@Autowired
+	private TiProductshowtemplateinfoMapper tempInfoMapper;
+	@Autowired
+	private TiProductshowproductsMapper showProductMapper;
 	/**
 	 * 团购活动-详情
 	 * @param gActId
@@ -123,6 +136,47 @@ public class TiGroupActivityController  extends SSOController {
 						}
 					}
 					result.put("prolist", gprolist);
+				}
+				//广告模式
+				if(actInfo.getType()!=null&&actInfo.getType().intValue()==Integer.parseInt(GroupActivityType.advert.toString())){
+					if(actInfo.getAdvertid()!=null){
+						TiPromoteradvertinfo advertMod=advertInfoMapper.selectByPrimaryKey(actInfo.getAdvertid());
+						result.put("advert", advertMod);
+					}
+					if(actInfo.getTempid()!=null){
+						// 产品翻页模板 TODO
+						// 所有款式图片
+						List<TiProductshowtemplateinfo> styleImg = tempInfoMapper.selectByTempId(actInfo.getTempid());
+						if (styleImg != null && styleImg.size() > 0) {
+							for (TiProductshowtemplateinfo pp : styleImg) {
+								if (pp.getImgjson() != null) {
+									List<ImageInfo> imList = (List<ImageInfo>) JsonUtil.jsonToList(pp.getImgjson());
+									if (imList != null && imList.size() > 0) {
+										pp.setImglist(imList);
+									}
+								}
+							}
+							//最重要展示的列表
+							List<TiProductshowproducts> showResult = new ArrayList<TiProductshowproducts>();
+							// 产品列表
+							List<TiProductshowproducts> showCateList = showProductMapper.selectAll();
+							if (showCateList != null && showCateList.size() > 0) {
+								for (TiProductshowproducts cate : showCateList) {
+									List<TiProductshowtemplateinfo> imgs = new ArrayList<TiProductshowtemplateinfo>();
+									for (TiProductshowtemplateinfo ss : styleImg) {
+										if (ss.getCateid().intValue() == cate.getCateid().intValue()) {
+											imgs.add(ss);
+										}
+									}
+									if (imgs != null && imgs.size() > 0) {
+										cate.setStyleList(imgs);
+										showResult.add(cate);
+									}
+								}
+							}
+							result.put("productTempInfo", showResult);
+						}
+					}
 				}
 			}
 			rq.setBasemodle(result);

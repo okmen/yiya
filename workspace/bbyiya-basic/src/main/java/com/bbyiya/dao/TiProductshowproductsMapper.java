@@ -1,5 +1,7 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
 import com.bbyiya.model.TiProductshowproducts;
 
 public interface TiProductshowproductsMapper {
@@ -14,4 +16,6 @@ public interface TiProductshowproductsMapper {
     int updateByPrimaryKeySelective(TiProductshowproducts record);
 
     int updateByPrimaryKey(TiProductshowproducts record);
+    
+    List<TiProductshowproducts> selectAll();
 }

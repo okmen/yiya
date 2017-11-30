@@ -89,6 +89,11 @@ public class GroupActivityController extends SSOController {
 				rq.setStatusreson("请填写详细地址!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
+			if(param.getType()!=null&&param.getType().intValue()==1&&param.getPraisecount().intValue()<5){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("广告模式集赞数量不能小于5!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
 			if(param.getProductlist()==null||param.getProductlist().size()<=0){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("请至少选择一种产品!");

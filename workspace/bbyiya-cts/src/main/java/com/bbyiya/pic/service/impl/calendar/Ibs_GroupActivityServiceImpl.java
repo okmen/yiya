@@ -124,7 +124,12 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 		ti.setPromoteruserid(userid);
 		ti.setCreatetime(new Date());
 		ti.setStatus(1);
-		ti.setPraisecount(5);
+		if(param.getType()!=null&&param.getType().intValue()==1){
+			ti.setPraisecount(param.getPraisecount());
+		}else{
+			ti.setPraisecount(5);
+		}
+		
 		ti.setTimespare(3L);
 		ti.setType(param.getType());
 		ti.setTitleshare(param.getTitleshare());

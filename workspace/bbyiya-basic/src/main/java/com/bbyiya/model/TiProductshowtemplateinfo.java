@@ -1,5 +1,9 @@
 package com.bbyiya.model;
 
+import java.util.List;
+
+import com.bbyiya.common.vo.ImageInfo;
+
 public class TiProductshowtemplateinfo {
     private Integer tempinfoid;
 
@@ -9,6 +13,7 @@ public class TiProductshowtemplateinfo {
 
     private String imgjson;
 
+    private List<ImageInfo> imglist;
     public Integer getTempinfoid() {
         return tempinfoid;
     }
@@ -40,4 +45,14 @@ public class TiProductshowtemplateinfo {
     public void setImgjson(String imgjson) {
         this.imgjson = imgjson == null ? null : imgjson.trim();
     }
+
+	public List<ImageInfo> getImglist() {
+		return imglist;
+	}
+
+	public void setImglist(List<ImageInfo> imglist) {
+		this.imglist = imglist;
+	}
+    
+    
 }

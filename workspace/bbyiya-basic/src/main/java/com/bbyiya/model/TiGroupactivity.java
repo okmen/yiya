@@ -46,6 +46,10 @@ public class TiGroupactivity {
     private Integer type;
 
     private Integer tempid;
+
+    private String titleshare;
+
+    private String titleminshare;
     
     /*****************************VO*************************/
     private Integer sellercount;//销售量
@@ -254,6 +258,22 @@ public class TiGroupactivity {
 
 	public void setTempid(Integer tempid) {
 		this.tempid = tempid;
+	}
+
+	public String getTitleshare() {
+		return titleshare;
+	}
+
+	public void setTitleshare(String titleshare) {
+		this.titleshare = titleshare;
+	}
+
+	public String getTitleminshare() {
+		return titleminshare;
+	}
+
+	public void setTitleminshare(String titleminshare) {
+		this.titleminshare = titleminshare;
 	}
     
     

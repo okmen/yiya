@@ -22,11 +22,13 @@
     <result column="PraiseCount" property="praisecount" jdbcType="INTEGER" />
     <result column="Timespare" property="timespare" jdbcType="BIGINT" />
     <result column="BrowseCount" property="browsecount" jdbcType="INTEGER" />
+    <result column="Type" property="type" jdbcType="INTEGER" />
+    <result column="TempId" property="tempid" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
      GactId, PromoterUserId, LinkUrl, AdvertId, Title, Description, CompanyName, Logo, 
     Reciver, Mobilephone, Province, City, Area, StreetDetails, Address, Status, CreateTime, 
-    PraiseCount, Timespare, BrowseCount
+    PraiseCount, Timespare, BrowseCount, Type, TempId
   </sql>
   
     <select id="findGroupActivityList" resultMap="BaseResultMap"  >
@@ -54,36 +56,40 @@
     where GactId = #{gactid,jdbcType=INTEGER}
   </delete>
   <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="gactid"   parameterType="com.bbyiya.model.TiGroupactivity" >
-     insert into ti_groupactivity (GactId, PromoterUserId, LinkUrl, 
+      insert into ti_groupactivity (GactId, PromoterUserId, LinkUrl, 
       AdvertId, Title, Description, 
       CompanyName, Logo, Reciver, 
       Mobilephone, Province, City, 
       Area, StreetDetails, Address, 
       Status, CreateTime, PraiseCount, 
-      Timespare, BrowseCount)
+      Timespare, BrowseCount, Type, 
+      TempId)
     values (#{gactid,jdbcType=INTEGER}, #{promoteruserid,jdbcType=BIGINT}, #{linkurl,jdbcType=VARCHAR}, 
       #{advertid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
       #{companyname,jdbcType=VARCHAR}, #{logo,jdbcType=VARCHAR}, #{reciver,jdbcType=VARCHAR}, 
       #{mobilephone,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, 
       #{area,jdbcType=INTEGER}, #{streetdetails,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
       #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{praisecount,jdbcType=INTEGER}, 
-      #{timespare,jdbcType=BIGINT}, #{browsecount,jdbcType=INTEGER})
+      #{timespare,jdbcType=BIGINT}, #{browsecount,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, 
+      #{tempid,jdbcType=INTEGER})
   </insert>
-  <insert id="insert" parameterType="com.bbyiya.model.TiGroupactivity" >
+   <insert id="insert" parameterType="com.bbyiya.model.TiGroupactivity" >
     insert into ti_groupactivity (GactId, PromoterUserId, LinkUrl, 
       AdvertId, Title, Description, 
       CompanyName, Logo, Reciver, 
       Mobilephone, Province, City, 
       Area, StreetDetails, Address, 
       Status, CreateTime, PraiseCount, 
-      Timespare, BrowseCount)
+      Timespare, BrowseCount, Type, 
+      TempId)
     values (#{gactid,jdbcType=INTEGER}, #{promoteruserid,jdbcType=BIGINT}, #{linkurl,jdbcType=VARCHAR}, 
       #{advertid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
       #{companyname,jdbcType=VARCHAR}, #{logo,jdbcType=VARCHAR}, #{reciver,jdbcType=VARCHAR}, 
       #{mobilephone,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, 
       #{area,jdbcType=INTEGER}, #{streetdetails,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
       #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{praisecount,jdbcType=INTEGER}, 
-      #{timespare,jdbcType=BIGINT}, #{browsecount,jdbcType=INTEGER})
+      #{timespare,jdbcType=BIGINT}, #{browsecount,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, 
+      #{tempid,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiGroupactivity" >
     insert into ti_groupactivity
@@ -148,6 +154,12 @@
       <if test="browsecount != null" >
         BrowseCount,
       </if>
+      <if test="type != null" >
+        Type,
+      </if>
+      <if test="tempid != null" >
+        TempId,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="gactid != null" >
@@ -209,6 +221,12 @@
       </if>
       <if test="browsecount != null" >
         #{browsecount,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="tempid != null" >
+        #{tempid,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -272,6 +290,12 @@
       <if test="browsecount != null" >
         BrowseCount = #{browsecount,jdbcType=INTEGER},
       </if>
+      <if test="type != null" >
+        Type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="tempid != null" >
+        TempId = #{tempid,jdbcType=INTEGER},
+      </if>
     </set>
     where GactId = #{gactid,jdbcType=INTEGER}
   </update>
@@ -295,7 +319,9 @@
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
       PraiseCount = #{praisecount,jdbcType=INTEGER},
       Timespare = #{timespare,jdbcType=BIGINT},
-      BrowseCount = #{browsecount,jdbcType=INTEGER}
+      BrowseCount = #{browsecount,jdbcType=INTEGER},
+      Type = #{type,jdbcType=INTEGER},
+      TempId = #{tempid,jdbcType=INTEGER}
     where GactId = #{gactid,jdbcType=INTEGER}
   </update>
 </mapper>

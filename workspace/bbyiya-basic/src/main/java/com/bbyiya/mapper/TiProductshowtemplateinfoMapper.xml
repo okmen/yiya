@@ -2,13 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.bbyiya.dao.TiProductshowtemplateinfoMapper" >
   <resultMap id="BaseResultMap" type="com.bbyiya.model.TiProductshowtemplateinfo" >
-    <id column="TempInfoId" property="tempinfoid" jdbcType="INTEGER" />
+     <id column="TempInfoId" property="tempinfoid" jdbcType="INTEGER" />
     <result column="TempId" property="tempid" jdbcType="INTEGER" />
-    <result column="ProductId" property="productid" jdbcType="BIGINT" />
+    <result column="ShowStyleId" property="showstyleid" jdbcType="INTEGER" />
     <result column="ImgJson" property="imgjson" jdbcType="VARCHAR" />
+    <result column="CateId" property="cateid" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    TempInfoId, TempId, ProductId, ImgJson
+    TempInfoId, TempId, ShowStyleId, ImgJson, CateId
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -16,7 +17,7 @@
     from ti_productshowtemplateinfo
     where TempInfoId = #{tempinfoid,jdbcType=INTEGER}
   </select>
-   <select id="selectByTempId" resultMap="BaseResultMap"  >
+  <select id="selectByTempId" resultMap="BaseResultMap"  >
     select 
     <include refid="Base_Column_List" />
     from ti_productshowtemplateinfo
@@ -28,10 +29,10 @@
     where TempInfoId = #{tempinfoid,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.TiProductshowtemplateinfo" >
-    insert into ti_productshowtemplateinfo (TempInfoId, TempId, ProductId, 
-      ImgJson)
-    values (#{tempinfoid,jdbcType=INTEGER}, #{tempid,jdbcType=INTEGER}, #{productid,jdbcType=BIGINT}, 
-      #{imgjson,jdbcType=VARCHAR})
+    insert into ti_productshowtemplateinfo (TempInfoId, TempId, ShowStyleId, 
+      ImgJson, CateId)
+    values (#{tempinfoid,jdbcType=INTEGER}, #{tempid,jdbcType=INTEGER}, #{showstyleid,jdbcType=INTEGER}, 
+      #{imgjson,jdbcType=VARCHAR}, #{cateid,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiProductshowtemplateinfo" >
     insert into ti_productshowtemplateinfo
@@ -42,11 +43,14 @@
       <if test="tempid != null" >
         TempId,
       </if>
-      <if test="productid != null" >
-        ProductId,
+      <if test="showstyleid != null" >
+        ShowStyleId,
       </if>
       <if test="imgjson != null" >
         ImgJson,
+      </if>
+      <if test="cateid != null" >
+        CateId,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -56,11 +60,14 @@
       <if test="tempid != null" >
         #{tempid,jdbcType=INTEGER},
       </if>
-      <if test="productid != null" >
-        #{productid,jdbcType=BIGINT},
+      <if test="showstyleid != null" >
+        #{showstyleid,jdbcType=INTEGER},
       </if>
       <if test="imgjson != null" >
         #{imgjson,jdbcType=VARCHAR},
+      </if>
+      <if test="cateid != null" >
+        #{cateid,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -70,11 +77,14 @@
       <if test="tempid != null" >
         TempId = #{tempid,jdbcType=INTEGER},
       </if>
-      <if test="productid != null" >
-        ProductId = #{productid,jdbcType=BIGINT},
+      <if test="showstyleid != null" >
+        ShowStyleId = #{showstyleid,jdbcType=INTEGER},
       </if>
       <if test="imgjson != null" >
         ImgJson = #{imgjson,jdbcType=VARCHAR},
+      </if>
+      <if test="cateid != null" >
+        CateId = #{cateid,jdbcType=INTEGER},
       </if>
     </set>
     where TempInfoId = #{tempinfoid,jdbcType=INTEGER}
@@ -82,8 +92,9 @@
   <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiProductshowtemplateinfo" >
     update ti_productshowtemplateinfo
     set TempId = #{tempid,jdbcType=INTEGER},
-      ProductId = #{productid,jdbcType=BIGINT},
-      ImgJson = #{imgjson,jdbcType=VARCHAR}
+      ShowStyleId = #{showstyleid,jdbcType=INTEGER},
+      ImgJson = #{imgjson,jdbcType=VARCHAR},
+      CateId = #{cateid,jdbcType=INTEGER}
     where TempInfoId = #{tempinfoid,jdbcType=INTEGER}
   </update>
 </mapper>

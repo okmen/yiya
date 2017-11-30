@@ -125,6 +125,10 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 		ti.setStatus(1);
 		ti.setPraisecount(5);
 		ti.setTimespare(3L);
+		ti.setType(param.getType());
+		ti.setTitleshare(param.getTitleshare());
+		ti.setTitleminshare(param.getTitleminshare());
+		ti.setTempid(param.getTempid());
 		ti.setStatus(1);//默认就是已开启的活动	
 		if(isadd){
 			groupactMapper.insertReturnId(ti);

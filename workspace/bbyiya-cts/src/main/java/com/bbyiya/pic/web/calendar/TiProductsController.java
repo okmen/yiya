@@ -12,14 +12,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bbyiya.common.vo.ImageInfo;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.calendar.AddressTypeEnum;
 import com.bbyiya.model.PStylecoordinateitem;
+import com.bbyiya.model.TiProductshowtemplate;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiProductstyleslayers;
 import com.bbyiya.pic.service.calendar.ICts_TiProductsService;
 import com.bbyiya.pic.utils.Json2Objects;
+import com.bbyiya.pic.vo.calendar.WorkForCustomerParam;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.address.OrderaddressVo;
 import com.bbyiya.vo.calendar.product.TiProductResult;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
@@ -434,6 +438,61 @@ public class TiProductsController extends SSOController {
 			}
 			rq=productservice.setStyleStatus(ObjectUtil.parseLong(styleid),status);
 		}else { 
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	/**
+	 * 新增翻页效果
+	 * @param myproductTempJson
+	 * @param productstyleJson
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/addOrEditProductPageturn")
+	public String addOrEditProductPageturn(String productJson) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			TiProductshowtemplate workparam = (TiProductshowtemplate)JsonUtil.jsonStrToObject(productJson,TiProductshowtemplate.class);
+			
+			if (workparam == null) {
+				rq.setStatu(ReturnStatus.ParamError_1);
+				rq.setStatusreson("参数不全");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			if(ObjectUtil.isEmpty(workparam.getTempname())){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("模板名称不能为空!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			
+			if(workparam.getTemplateinfos()==null||workparam.getTemplateinfos().size()<=0){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("请上传图片!");
+				return JsonUtil.objectToJsonStr(rq);
+			}
+			rq=productservice.addOrEditProductPageturn(user.getUserId(),workparam);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/getProductShowTempList")
+	public String getProductShowTempList(int index,int size) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=productservice.getProductShowTempList(user.getUserId(),index,size);
+		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");
 			return JsonUtil.objectToJsonStr(rq);

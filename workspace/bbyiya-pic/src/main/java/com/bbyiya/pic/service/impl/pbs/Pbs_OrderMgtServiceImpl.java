@@ -174,6 +174,7 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 				UBranches branch=null;
 				TiMyworks mywork=null;
 				TiActivityworks work=null;
+				//TiGroupactivityworks groupwork=null;
 				int orderType = order.getOrdertype() == null ? 0 : order.getOrdertype();
 				order.setOrdertype(orderType);
 				//默认到关联账户流水的关键字为订单号
@@ -271,26 +272,52 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 							}
 						}
 					}else{
-						//如果是老客户回顾活动订单-邮寄到客户地址
-						if(work!=null&&work.getAddresstype()!=null&&work.getAddresstype().intValue()==1){
-							product.setReciver(address.getReciver());
-							product.setBuyerPhone(address.getPhone());
-							product.setBuyerprovince(address.getProvince());
-							product.setBuyercity(address.getCity());
-							product.setBuyerdistrict(address.getDistrict());
-							product.setBuyerstreetdetail(address.getProvince()+address.getCity()+address.getDistrict()+address.getStreetdetail());
+						//分销活动
+						if(work==null){
+							TiGroupactivityworks groupwork=tigroupworkMapper.selectByPrimaryKey(product.getCartid());
+							//分销活动寄到客户地址
+							if(groupwork!=null&&groupwork.getAddresstype()!=null&&groupwork.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.cusaddr.toString())){
+								product.setReciver(address.getReciver());
+								product.setBuyerPhone(address.getPhone());
+								product.setBuyerprovince(address.getProvince());
+								product.setBuyercity(address.getCity());
+								product.setBuyerdistrict(address.getDistrict());
+								product.setBuyerstreetdetail(address.getProvince()+address.getCity()+address.getDistrict()+address.getStreetdetail());
+							}else{//分销活动寄到地影楼址
+								product.setBranchesprovince(address.getProvince());
+								product.setBranchesrcity(address.getCity());
+								product.setBranchesdistrict(address.getDistrict());
+								product.setBranchesAddress(address.getProvince()+address.getCity()+address.getDistrict()+address.getStreetdetail());
+								product.setBranchesPhone(address.getPhone());
+								product.setBranchesUserName(address.getReciver());
+								if(groupwork!=null){
+									product.setReciver(groupwork.getName());
+									product.setBuyerPhone(groupwork.getMobilephone());
+								}
+							}
 						}else{
-							product.setBranchesprovince(address.getProvince());
-							product.setBranchesrcity(address.getCity());
-							product.setBranchesdistrict(address.getDistrict());
-							product.setBranchesAddress(address.getProvince()+address.getCity()+address.getDistrict()+address.getStreetdetail());
-							product.setBranchesPhone(address.getPhone());
-							product.setBranchesUserName(address.getReciver());
-							if(work!=null){
-								product.setReciver(work.getReciever());
-								product.setBuyerPhone(work.getMobiephone());
+							//如果是老客户回顾活动订单-邮寄到客户地址
+							if(work!=null&&work.getAddresstype()!=null&&work.getAddresstype().intValue()==1){
+								product.setReciver(address.getReciver());
+								product.setBuyerPhone(address.getPhone());
+								product.setBuyerprovince(address.getProvince());
+								product.setBuyercity(address.getCity());
+								product.setBuyerdistrict(address.getDistrict());
+								product.setBuyerstreetdetail(address.getProvince()+address.getCity()+address.getDistrict()+address.getStreetdetail());
+							}else{
+								product.setBranchesprovince(address.getProvince());
+								product.setBranchesrcity(address.getCity());
+								product.setBranchesdistrict(address.getDistrict());
+								product.setBranchesAddress(address.getProvince()+address.getCity()+address.getDistrict()+address.getStreetdetail());
+								product.setBranchesPhone(address.getPhone());
+								product.setBranchesUserName(address.getReciver());
+								if(work!=null){
+									product.setReciver(work.getReciever());
+									product.setBuyerPhone(work.getMobiephone());
+								}
 							}
 						}
+						
 					}
 				}else if (orderType == Integer.parseInt(OrderTypeEnum.ti_nomal.toString())) {
 					if(order.getIspromoteraddress()!=null&&order.getIspromoteraddress().intValue()==1){

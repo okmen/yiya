@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bbyiya.common.vo.ImageInfo;
 import com.bbyiya.dao.PStylecoordinateitemMapper;
 import com.bbyiya.dao.TiProductsMapper;
+import com.bbyiya.dao.TiProductshowtemplateMapper;
+import com.bbyiya.dao.TiProductshowtemplateinfoMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
 import com.bbyiya.dao.TiProductstyleslayersMapper;
 import com.bbyiya.dao.TiStylecoordinateMapper;
@@ -20,7 +22,10 @@ import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ProductStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.PStylecoordinateitem;
+import com.bbyiya.model.TiGroupactivity;
 import com.bbyiya.model.TiProducts;
+import com.bbyiya.model.TiProductshowtemplate;
+import com.bbyiya.model.TiProductshowtemplateinfo;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiProductstyleslayers;
 import com.bbyiya.model.TiStylecoordinate;
@@ -30,6 +35,8 @@ import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.calendar.product.TiProductResult;
 import com.bbyiya.vo.calendar.product.TiStyleLayerResult;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.sdicons.json.mapper.MapperException;
 
 
@@ -49,6 +56,11 @@ public class Cts_TiProductsServiceImpl implements ICts_TiProductsService{
 	private TiStylecoordinateMapper stylecoordMapper;
 	@Autowired
 	private PStylecoordinateitemMapper pstylecoorditemMapper;
+	
+	@Autowired
+	private TiProductshowtemplateMapper tishwotempMapper;
+	@Autowired
+	private TiProductshowtemplateinfoMapper tishwotempinfoMapper;
 	
 	/*-------------------用户信息------------------------------------------------*/
 	@Autowired
@@ -328,4 +340,66 @@ public class Cts_TiProductsServiceImpl implements ICts_TiProductsService{
 		}
 		return rqModel;
 	}
+	
+	/**
+	 * 新增或修改分页效果
+	 * @param userid
+	 * @param tempinfo
+	 * @return
+	 * @throws Exception
+	 */
+	public ReturnModel addOrEditProductPageturn(Long userid,TiProductshowtemplate param) throws Exception{
+		ReturnModel rqModel=new ReturnModel();
+		rqModel.setStatu(ReturnStatus.ParamError);	
+		TiProductshowtemplate newtempinfo=null;
+		boolean isadd=false;
+		if(!ObjectUtil.isEmpty(param.getTempid())){
+			newtempinfo=tishwotempMapper.selectByPrimaryKey(param.getTempid());
+		}
+		if(newtempinfo==null){
+			newtempinfo=new TiProductshowtemplate();
+			isadd=true;
+		}
+		newtempinfo.setIsdefault(0);
+		newtempinfo.setTempname(param.getTempname());
+		if(isadd){
+			tishwotempMapper.insertReturnId(newtempinfo);
+		}else{
+			tishwotempMapper.updateByPrimaryKey(newtempinfo);
+		}
+		
+		List<TiProductshowtemplateinfo> infolist=tishwotempinfoMapper.selectByTempId(param.getTempid());
+		if(infolist!=null&&infolist.size()>0){
+			for (TiProductshowtemplateinfo info : infolist) {
+				tishwotempinfoMapper.deleteByPrimaryKey(info.getTempinfoid());
+			}
+		}
+		if(param.getTemplateinfos()!=null&&param.getTemplateinfos().size()>0){
+			for (TiProductshowtemplateinfo infoparam : param.getTemplateinfos()) {
+				TiProductshowtemplateinfo newinfo=new TiProductshowtemplateinfo();
+				newinfo.setImgjson(JsonUtil.objectToJsonStr(infoparam.getImglist()));
+				newinfo.setImglist(infoparam.getImglist());
+				newinfo.setProductid(infoparam.getProductid());
+				newinfo.setTempid(newtempinfo.getTempid());
+				tishwotempinfoMapper.insert(newinfo);
+			}
+		}
+		rqModel.setStatu(ReturnStatus.Success);
+		rqModel.setStatusreson("新增成功！");
+		return rqModel;
+	}
+	
+	public ReturnModel getProductShowTempList(Long userid,int index,int size) throws Exception{
+		ReturnModel rqModel=new ReturnModel();
+		rqModel.setStatu(ReturnStatus.ParamError);	
+		PageHelper.startPage(index, size);
+		List<TiProductshowtemplate> list=tishwotempMapper.selectByAll(null);
+		PageInfo<TiProductshowtemplate> pageresult=new PageInfo<TiProductshowtemplate>(list);	
+		rqModel.setBasemodle(pageresult);
+		rqModel.setStatu(ReturnStatus.Success); 		
+		rqModel.setStatusreson("操作成功！");
+		return rqModel;
+		
+	}
+	
 }

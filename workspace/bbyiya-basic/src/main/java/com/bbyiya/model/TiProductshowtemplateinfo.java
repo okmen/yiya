@@ -5,13 +5,15 @@ import java.util.List;
 import com.bbyiya.common.vo.ImageInfo;
 
 public class TiProductshowtemplateinfo {
-    private Integer tempinfoid;
+	private Integer tempinfoid;
 
     private Integer tempid;
 
-    private Long productid;
+    private Integer showstyleid;
 
     private String imgjson;
+
+    private Integer cateid;
 
     private List<ImageInfo> imglist;
     public Integer getTempinfoid() {
@@ -30,14 +32,6 @@ public class TiProductshowtemplateinfo {
         this.tempid = tempid;
     }
 
-    public Long getProductid() {
-        return productid;
-    }
-
-    public void setProductid(Long productid) {
-        this.productid = productid;
-    }
-
     public String getImgjson() {
         return imgjson;
     }
@@ -52,6 +46,22 @@ public class TiProductshowtemplateinfo {
 
 	public void setImglist(List<ImageInfo> imglist) {
 		this.imglist = imglist;
+	}
+
+	public Integer getShowstyleid() {
+		return showstyleid;
+	}
+
+	public void setShowstyleid(Integer showstyleid) {
+		this.showstyleid = showstyleid;
+	}
+
+	public Integer getCateid() {
+		return cateid;
+	}
+
+	public void setCateid(Integer cateid) {
+		this.cateid = cateid;
 	}
     
     

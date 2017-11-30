@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiProductshowproductsMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiProductshowproducts" >
+    <id column="CateId" property="cateid" jdbcType="INTEGER" />
+    <result column="CateName" property="catename" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CateId, CateName
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_productshowproducts
+    where CateId = #{cateid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ti_productshowproducts
+    where CateId = #{cateid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiProductshowproducts" >
+    insert into ti_productshowproducts (CateId, CateName)
+    values (#{cateid,jdbcType=INTEGER}, #{catename,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiProductshowproducts" >
+    insert into ti_productshowproducts
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="cateid != null" >
+        CateId,
+      </if>
+      <if test="catename != null" >
+        CateName,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="cateid != null" >
+        #{cateid,jdbcType=INTEGER},
+      </if>
+      <if test="catename != null" >
+        #{catename,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiProductshowproducts" >
+    update ti_productshowproducts
+    <set >
+      <if test="catename != null" >
+        CateName = #{catename,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where CateId = #{cateid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiProductshowproducts" >
+    update ti_productshowproducts
+    set CateName = #{catename,jdbcType=VARCHAR}
+    where CateId = #{cateid,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -16,6 +16,9 @@ public class TiProductshowtemplateinfo {
     private Integer cateid;
 
     private List<ImageInfo> imglist;
+    
+    /*****************************vo**************************/
+    private String tempname;
     public Integer getTempinfoid() {
         return tempinfoid;
     }
@@ -62,6 +65,14 @@ public class TiProductshowtemplateinfo {
 
 	public void setCateid(Integer cateid) {
 		this.cateid = cateid;
+	}
+
+	public String getTempname() {
+		return tempname;
+	}
+
+	public void setTempname(String tempname) {
+		this.tempname = tempname;
 	}
     
     

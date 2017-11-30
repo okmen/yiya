@@ -55,7 +55,8 @@ public class TiGroupactivity {
     private Integer sellercount;//销售量
     private Integer advertbrowsecount;//广告浏览量
     private String createtimestr;
-    
+    private double shareratio; //用户分享率
+    private double sellratio; //销售转化率
     public Integer getGactid() {
         return gactid;
     }
@@ -274,6 +275,22 @@ public class TiGroupactivity {
 
 	public void setTitleminshare(String titleminshare) {
 		this.titleminshare = titleminshare;
+	}
+
+	public double getShareratio() {
+		return shareratio;
+	}
+
+	public double getSellratio() {
+		return sellratio;
+	}
+
+	public void setShareratio(double shareratio) {
+		this.shareratio = shareratio;
+	}
+
+	public void setSellratio(double sellratio) {
+		this.sellratio = sellratio;
 	}
     
     

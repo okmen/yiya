@@ -58,5 +58,20 @@ public interface TiGroupactivityworksMapper {
      * @return
      */
     List<TiGroupactivityworks> findCanOrderGroupActWork(@Param("ordertime") Integer ordertime);
+    
+    /**
+     * 得到活动赠送总数
+     * @param gactid
+     * @param actcpraisecount
+     * @return
+     */
+    Integer getCompltePraiseCountByGactid(@Param("gactid") Integer gactid,@Param("actcpraisecount") Integer actcpraisecount);
+    
+    /**
+     * 得到有效点赞总数
+     * @param gactid
+     * @return
+     */
+    Integer getSumPraiseCountByGactid(@Param("gactid") Integer gactid);
 
 }

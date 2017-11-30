@@ -15,6 +15,7 @@ import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.AddressTypeEnum;
 import com.bbyiya.model.PStylecoordinateitem;
 import com.bbyiya.model.TiProductshowtemplate;
+import com.bbyiya.model.TiProductshowtemplateinfo;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiProductstyleslayers;
 import com.bbyiya.pic.service.calendar.ICts_TiProductsService;
@@ -458,7 +459,7 @@ public class TiProductsController extends SSOController {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			TiProductshowtemplate workparam = (TiProductshowtemplate)JsonUtil.jsonStrToObject(productJson,TiProductshowtemplate.class);
+			TiProductshowtemplateinfo workparam = (TiProductshowtemplateinfo)JsonUtil.jsonStrToObject(productJson,TiProductshowtemplateinfo.class);
 			
 			if (workparam == null) {
 				rq.setStatu(ReturnStatus.ParamError_1);
@@ -471,7 +472,7 @@ public class TiProductsController extends SSOController {
 				return JsonUtil.objectToJsonStr(rq);
 			}
 			
-			if(workparam.getTemplateinfos()==null||workparam.getTemplateinfos().size()<=0){
+			if(workparam.getImglist()==null||workparam.getImglist().size()<=0){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("请上传图片!");
 				return JsonUtil.objectToJsonStr(rq);
@@ -492,6 +493,38 @@ public class TiProductsController extends SSOController {
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
 			rq=productservice.getProductShowTempList(user.getUserId(),index,size);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+
+
+	@ResponseBody
+	@RequestMapping(value = "/getproductshowstyles")
+	public String getproductshowstyles() throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=productservice.getproductshowstyles();
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/getproductshowproducts")
+	public String getproductshowproducts() throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq=productservice.getproductshowproducts();
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

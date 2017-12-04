@@ -15,6 +15,18 @@ public class TiProductshowtemplateinfo {
 
     private Integer cateid;
 
+    /*------------------非数据库字段------------------------------*/
+    /**
+     * 产品类型
+     */
+    private String cateName;
+    /**
+     * 显示款式名称
+     */
+    private String styleName;
+    /**
+     * 图片列表
+     */
     private List<ImageInfo> imglist;
     
     /*****************************vo**************************/

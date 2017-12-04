@@ -1098,14 +1098,14 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			Boolean isCompleteBoolean=false;
 			if(work.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.payed.toString())){
 				isCompleteBoolean=true;
-				//检查是否完成集赞，如果完成，下单数量+1
 				
-				if(act!=null&&act.getPraisecount()!=null&&work.getPraisecount()!=null&& act.getPraisecount().intValue()<=work.getPraisecount().intValue()){
-					param.setCount(param.getCount()+1);
-				}
 			}
 			if(isCompleteBoolean){
 				double totalprice=style.getPromoterprice().doubleValue()*param.getCount(); 
+				//检查是否完成集赞，如果完成，下单数量+1 属于赠送的
+				if(act!=null&&act.getPraisecount()!=null&&work.getPraisecount()!=null&& act.getPraisecount().intValue()<=work.getPraisecount().intValue()){
+					param.setCount(param.getCount()+1);
+				}
 //				double incomeprice=0.0; //收入金额 
 //				if(work.getTotalprice()!=null&&work.getTotalprice().doubleValue()>0){
 //					incomeprice=work.getTotalprice().doubleValue()-totalprice;

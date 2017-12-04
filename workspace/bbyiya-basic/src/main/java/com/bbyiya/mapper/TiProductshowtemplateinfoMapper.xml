@@ -18,10 +18,10 @@
     where TempInfoId = #{tempinfoid,jdbcType=INTEGER}
   </select>
   <select id="selectByTempId" resultMap="BaseResultMap"  >
-    select 
-    <include refid="Base_Column_List" />
-    from ti_productshowtemplateinfo
-    where TempId = #{tempId,jdbcType=INTEGER}
+    select a.*,b.CateName as cateName,c.StyleName as styleName 
+    from ti_productshowtemplateinfo as a left join ti_productshowproducts as b on a.CateId=b.CateId 
+    left join ti_productshowstyles as c on a.ShowStyleId=c.ShowStyleId
+    where a.TempId = #{tempId,jdbcType=INTEGER}
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >

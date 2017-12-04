@@ -18,4 +18,6 @@ public interface TiProductshowproductsMapper {
     int updateByPrimaryKeySelective(TiProductshowproducts record);
 
     int updateByPrimaryKey(TiProductshowproducts record);
+    
+    List<TiProductshowproducts> selectAll();
 }

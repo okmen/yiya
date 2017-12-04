@@ -168,8 +168,14 @@ public class Pbs_OrderMgtServiceImpl implements IPbs_OrderMgtService{
 			for (PbsUserOrderResultVO product : reuslt.getList()) {
 				OUserorders order=userOrdersMapper.selectByPrimaryKey(product.getUserorderid());
 				product.setOrder(order);
-				if(order.getPaytime()!=null)
-					product.setPayTimeStr(DateUtil.getTimeStr(order.getPaytime(), "yyyy-MM-dd HH:mm:ss"));
+				if(order.getUploadtime()!=null){
+					product.setPayTimeStr(DateUtil.getTimeStr(order.getUploadtime(), "yyyy-MM-dd HH:mm:ss"));
+				}
+				else{
+					if(order.getPaytime()!=null){
+						product.setPayTimeStr(DateUtil.getTimeStr(order.getPaytime(), "yyyy-MM-dd HH:mm:ss"));
+					}
+				}
 				OOrderaddress address= addressMapper.selectByPrimaryKey(order.getOrderaddressid());
 				UBranches branch=null;
 				TiMyworks mywork=null;

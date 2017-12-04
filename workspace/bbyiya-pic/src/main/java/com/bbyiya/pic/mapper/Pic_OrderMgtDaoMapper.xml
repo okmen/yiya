@@ -22,6 +22,7 @@
     <result column="ExpressCode" property="expresscode" jdbcType="VARCHAR" />
     <result column="DeliveryTime" property="deliverytime" jdbcType="TIMESTAMP" />
     <result column="ProducerUserId" property="produceruserid" jdbcType="BIGINT" />
+    <result column="UploadTime" property="uploadtime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
      UserOrderId, UserId, TotalPrice, Status, BranchUserId, OrderAddressId, PayId, Remark, 
@@ -148,10 +149,10 @@
         AND (b.UserOrderId LIKE  CONCAT('%', #{orderNo,jdbcType=VARCHAR},'%' ) OR a.CartId LIKE  CONCAT('%', #{orderNo,jdbcType=VARCHAR},'%' ) OR c.Phone LIKE  CONCAT('%', #{orderNo,jdbcType=VARCHAR},'%' ) ) 
     </if>
     <if test="startTimeStr != null  and startTimeStr !='' " ><!--  #{startTime,jdbcType=TIMESTAMP}  -->
-        AND b.PayTime &gt;= #{startTimeStr,jdbcType=VARCHAR}
+        AND b.UploadTime &gt;= #{startTimeStr,jdbcType=VARCHAR}
     </if>
     <if test="endTimeStr != null  and endTimeStr !=''" ><!-- #{endTime,jdbcType=TIMESTAMP}  -->
-        AND b.PayTime &lt;= #{endTimeStr,jdbcType=VARCHAR}
+        AND b.UploadTime &lt;= #{endTimeStr,jdbcType=VARCHAR}
     </if>
     <if test="status != null" >
         AND b.Status = #{status,jdbcType=INTEGER}

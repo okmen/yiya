@@ -323,6 +323,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					userOrder.setOrdertype(Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));// 订单类型
 					userOrder.setOrdertime(ordertime);
 					userOrder.setPaytime(ordertime); 
+					userOrder.setUploadtime(new Date()); 
 					userOrder.setStatus(Integer.parseInt(OrderStatusEnum.waitFoSend.toString()));
 					userOrder.setTotalprice(totalprice);
 					userOrder.setOrdertotalprice(totalprice); 
@@ -464,10 +465,10 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 		userOrder.setOrdertype(param.getOrderType());// 订单类型
 		userOrder.setOrdertime(ordertime);
 		userOrder.setPaytime(ordertime);
+		userOrder.setUploadtime(new Date()); 
 		userOrder.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
 		userOrder.setIsbranch(0);
 		userOrder.setPostmodelid(param.getPostModelId());
-	
 		if (param.getOrderAddressId() != null && param.getOrderAddressId() > 0) {
 			userOrder.setOrderaddressid(param.getOrderAddressId());
 		} else {
@@ -973,6 +974,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					userOrder.setOrdertype(Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));// 订单类型
 					userOrder.setOrdertime(ordertime);
 					userOrder.setPaytime(ordertime); 
+					userOrder.setUploadtime(new Date()); 
 					userOrder.setStatus(Integer.parseInt(OrderStatusEnum.waitFoSend.toString()));
 					userOrder.setTotalprice(totalprice);
 					userOrder.setOrdertotalprice(totalprice); 
@@ -1185,6 +1187,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					userOrder.setOrdertype(Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));// 订单类型
 					userOrder.setOrdertime(ordertime);
 					userOrder.setPaytime(ordertime); 
+					userOrder.setUploadtime(new Date()); 
 					userOrder.setStatus(Integer.parseInt(OrderStatusEnum.waitFoSend.toString()));
 					userOrder.setTotalprice(totalprice);
 					userOrder.setOrdertotalprice(totalprice); 

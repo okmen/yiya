@@ -114,6 +114,7 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 		ti.setDescription(param.getDescription());
 		ti.setCompanyname(param.getCompanyname());
 		ti.setLogo(param.getLogo());
+		ti.setAddresstype(param.getAddresstype()==null?0:param.getAddresstype());
 		ti.setReciver(param.getReciver());
 		ti.setMobilephone(param.getMobilephone());
 		ti.setProvince(param.getProvince());

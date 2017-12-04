@@ -35,6 +35,7 @@ import com.bbyiya.dao.TiPromotersMapper;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.calendar.AddressTypeEnum;
 import com.bbyiya.enums.calendar.GroupActWorkStatus;
 import com.bbyiya.enums.calendar.GroupActivityType;
 import com.bbyiya.model.OOrderaddress;
@@ -613,9 +614,8 @@ public class TiGroupActivityController  extends SSOController {
 			TiGroupactivityworks gwork = gworkMapper.selectByPrimaryKey(workId);
 			if (gwork != null&&gwork.getSttyleid()!=null) {
 				TiGroupactivity gact= gactMapper.selectByPrimaryKey(gwork.getGactid());
-//				TiPromoters promoters = tipromoterMapper.selectByPrimaryKey(gact.getPromoteruserid());
-				if (gact != null) {
-					Map<String, Object> mapResult = new HashMap<String, Object>();
+				if (gact != null&&!ObjectUtil.isEmpty(gact.getProvince())&&gact.getProvince().intValue()>0) {
+					Map<String, Object> mapResult = new HashMap<String, Object>();  
 					mapResult.put("myAddress", addressService.getUserAddressResult(user.getUserId(),addrid));
 					mapResult.put("promoterName", gact.getCompanyname());
 					mapResult.put("promoterUserId", gact.getPromoteruserid());
@@ -629,9 +629,9 @@ public class TiGroupActivityController  extends SSOController {
 					userAddressResult.setStreetdetail(gact.getStreetdetails());
 					userAddressResult.setPhone(gact.getMobilephone()); 
 					mapResult.put("promoterAddress", userAddressResult);
-					rq.setStatu(ReturnStatus.Success);
 					rq.setBasemodle(mapResult); 
 				}
+				rq.setStatu(ReturnStatus.Success);
 			}
 		}
 		return JsonUtil.objectToJsonStr(rq);
@@ -653,7 +653,8 @@ public class TiGroupActivityController  extends SSOController {
 				Map<String, Object> resultMap=new HashMap<String, Object>();
 				resultMap.put("addressType", gwork.getAddresstype());
 				UUserAddressResult userAddressResult=new UUserAddressResult();
-				if(gwork.getAddresstype()!=null&&gwork.getAddresstype().intValue()==1){
+				//寄到自己的地址
+				if(gwork.getAddresstype()!=null&&gwork.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.cusaddr.toString())){
 					OOrderaddress address= orderaddressMapper.selectByPrimaryKey(gwork.getAddressid());
 					if(address!=null){
 						userAddressResult.setProvince(address.getProvincecode());

@@ -10,13 +10,13 @@ public enum ActivityAddressType {
      */
     auto(0),
     /**
-     * 只能寄到用户自己
-     */
-    customerAddr(1),
-    /**
      * 只能寄到影楼
      */
-    promoterAddr(2)
+    promoterAddr(1),
+    /**
+     * 只能寄到用户自己
+     */
+    customerAddr(2)
     ;
     
     private final int Type;

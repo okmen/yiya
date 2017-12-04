@@ -28,6 +28,9 @@ public class TiProductshowtemplateinfo {
      * 图片列表
      */
     private List<ImageInfo> imglist;
+    
+    /*****************************vo**************************/
+    private String tempname;
     public Integer getTempinfoid() {
         return tempinfoid;
     }
@@ -76,20 +79,12 @@ public class TiProductshowtemplateinfo {
 		this.cateid = cateid;
 	}
 
-	public String getCateName() {
-		return cateName;
+	public String getTempname() {
+		return tempname;
 	}
 
-	public void setCateName(String cateName) {
-		this.cateName = cateName;
-	}
-
-	public String getStyleName() {
-		return styleName;
-	}
-
-	public void setStyleName(String styleName) {
-		this.styleName = styleName;
+	public void setTempname(String tempname) {
+		this.tempname = tempname;
 	}
     
     

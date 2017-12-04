@@ -69,26 +69,30 @@ public class GroupActivityController extends SSOController {
 				rq.setStatusreson("公司名称不能为空!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			if(ObjectUtil.isEmpty(param.getProvince())||ObjectUtil.isEmpty(param.getCity())||ObjectUtil.isEmpty(param.getArea())){
-				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("请选择省市区!");
-				return JsonUtil.objectToJsonStr(rq);
+			//如果地址选项不是只能选客户地址，则检查地址选项
+			if(param.getAddresstype()!=null&&param.getAddresstype().intValue()!=2){
+				if(ObjectUtil.isEmpty(param.getProvince())||ObjectUtil.isEmpty(param.getCity())||ObjectUtil.isEmpty(param.getArea())){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("请选择省市区!");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				if(ObjectUtil.isEmpty(param.getReciver())){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("请填写收货人姓名!");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				if(ObjectUtil.isEmpty(param.getMobilephone())){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("请填写收货人电话!");
+					return JsonUtil.objectToJsonStr(rq);
+				}
+				if(ObjectUtil.isEmpty(param.getStreetdetails())){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("请填写详细地址!");
+					return JsonUtil.objectToJsonStr(rq);
+				}
 			}
-			if(ObjectUtil.isEmpty(param.getReciver())){
-				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("请填写收货人姓名!");
-				return JsonUtil.objectToJsonStr(rq);
-			}
-			if(ObjectUtil.isEmpty(param.getMobilephone())){
-				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("请填写收货人电话!");
-				return JsonUtil.objectToJsonStr(rq);
-			}
-			if(ObjectUtil.isEmpty(param.getStreetdetails())){
-				rq.setStatu(ReturnStatus.ParamError);
-				rq.setStatusreson("请填写详细地址!");
-				return JsonUtil.objectToJsonStr(rq);
-			}
+			
 			if(param.getType()!=null&&param.getType().intValue()==1&&param.getPraisecount().intValue()<5){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("广告模式集赞数量不能小于5!");

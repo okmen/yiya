@@ -26,11 +26,12 @@
     <result column="TempId" property="tempid" jdbcType="INTEGER" />
     <result column="TitleShare" property="titleshare" jdbcType="VARCHAR" />
     <result column="TitleMinShare" property="titleminshare" jdbcType="VARCHAR" />
+    <result column="AddressType" property="addresstype" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
      GactId, PromoterUserId, LinkUrl, AdvertId, Title, Description, CompanyName, Logo, 
     Reciver, Mobilephone, Province, City, Area, StreetDetails, Address, Status, CreateTime, 
-    PraiseCount, Timespare, BrowseCount, Type, TempId, TitleShare, TitleMinShare
+    PraiseCount, Timespare, BrowseCount, Type, TempId, TitleShare, TitleMinShare, AddressType
   </sql>
   
     <select id="findGroupActivityList" resultMap="BaseResultMap"  >
@@ -58,15 +59,15 @@
     where GactId = #{gactid,jdbcType=INTEGER}
   </delete>
   <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="gactid"   parameterType="com.bbyiya.model.TiGroupactivity" >
-       insert into ti_groupactivity (GactId, PromoterUserId, LinkUrl, 
+      insert into ti_groupactivity (GactId, PromoterUserId, LinkUrl, 
       AdvertId, Title, Description, 
       CompanyName, Logo, Reciver, 
       Mobilephone, Province, City, 
       Area, StreetDetails, Address, 
       Status, CreateTime, PraiseCount, 
       Timespare, BrowseCount, Type, 
-      TempId, TitleShare, TitleMinShare
-      )
+      TempId, TitleShare, TitleMinShare, 
+      AddressType)
     values (#{gactid,jdbcType=INTEGER}, #{promoteruserid,jdbcType=BIGINT}, #{linkurl,jdbcType=VARCHAR}, 
       #{advertid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
       #{companyname,jdbcType=VARCHAR}, #{logo,jdbcType=VARCHAR}, #{reciver,jdbcType=VARCHAR}, 
@@ -74,8 +75,8 @@
       #{area,jdbcType=INTEGER}, #{streetdetails,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
       #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{praisecount,jdbcType=INTEGER}, 
       #{timespare,jdbcType=BIGINT}, #{browsecount,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, 
-      #{tempid,jdbcType=INTEGER}, #{titleshare,jdbcType=VARCHAR}, #{titleminshare,jdbcType=VARCHAR}
-      )
+      #{tempid,jdbcType=INTEGER}, #{titleshare,jdbcType=VARCHAR}, #{titleminshare,jdbcType=VARCHAR}, 
+      #{addresstype,jdbcType=INTEGER})
   </insert>
   <insert id="insert" parameterType="com.bbyiya.model.TiGroupactivity" >
     insert into ti_groupactivity (GactId, PromoterUserId, LinkUrl, 
@@ -85,8 +86,8 @@
       Area, StreetDetails, Address, 
       Status, CreateTime, PraiseCount, 
       Timespare, BrowseCount, Type, 
-      TempId, TitleShare, TitleMinShare
-      )
+      TempId, TitleShare, TitleMinShare, 
+      AddressType)
     values (#{gactid,jdbcType=INTEGER}, #{promoteruserid,jdbcType=BIGINT}, #{linkurl,jdbcType=VARCHAR}, 
       #{advertid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
       #{companyname,jdbcType=VARCHAR}, #{logo,jdbcType=VARCHAR}, #{reciver,jdbcType=VARCHAR}, 
@@ -94,8 +95,8 @@
       #{area,jdbcType=INTEGER}, #{streetdetails,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
       #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{praisecount,jdbcType=INTEGER}, 
       #{timespare,jdbcType=BIGINT}, #{browsecount,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, 
-      #{tempid,jdbcType=INTEGER}, #{titleshare,jdbcType=VARCHAR}, #{titleminshare,jdbcType=VARCHAR}
-      )
+      #{tempid,jdbcType=INTEGER}, #{titleshare,jdbcType=VARCHAR}, #{titleminshare,jdbcType=VARCHAR}, 
+      #{addresstype,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiGroupactivity" >
     insert into ti_groupactivity
@@ -172,6 +173,9 @@
       <if test="titleminshare != null" >
         TitleMinShare,
       </if>
+      <if test="addresstype != null" >
+        AddressType,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="gactid != null" >
@@ -245,6 +249,9 @@
       </if>
       <if test="titleminshare != null" >
         #{titleminshare,jdbcType=VARCHAR},
+      </if>
+      <if test="addresstype != null" >
+        #{addresstype,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -320,6 +327,9 @@
       <if test="titleminshare != null" >
         TitleMinShare = #{titleminshare,jdbcType=VARCHAR},
       </if>
+      <if test="addresstype != null" >
+        AddressType = #{addresstype,jdbcType=INTEGER},
+      </if>
     </set>
     where GactId = #{gactid,jdbcType=INTEGER}
   </update>
@@ -347,7 +357,8 @@
       Type = #{type,jdbcType=INTEGER},
       TempId = #{tempid,jdbcType=INTEGER},
       TitleShare = #{titleshare,jdbcType=VARCHAR},
-      TitleMinShare = #{titleminshare,jdbcType=VARCHAR}
+      TitleMinShare = #{titleminshare,jdbcType=VARCHAR},
+      AddressType = #{addresstype,jdbcType=INTEGER}
     where GactId = #{gactid,jdbcType=INTEGER}
   </update>
 </mapper>

@@ -9,7 +9,8 @@ public enum AddressTypeEnum {
     /**
      * 客户地址
      */
-    cusaddr(1);
+    cusaddr(1)
+    ;
     
     private final int Type;
 

@@ -51,6 +51,8 @@ public class TiGroupactivity {
 
     private String titleminshare;
     
+    private Integer addresstype;
+    
     /*****************************VO*************************/
     private Integer sellercount;//销售量
     private Integer advertbrowsecount;//广告浏览量
@@ -291,6 +293,14 @@ public class TiGroupactivity {
 
 	public void setSellratio(double sellratio) {
 		this.sellratio = sellratio;
+	}
+
+	public Integer getAddresstype() {
+		return addresstype;
+	}
+
+	public void setAddresstype(Integer addresstype) {
+		this.addresstype = addresstype;
 	}
     
     

@@ -86,6 +86,22 @@ public class TiProductshowtemplateinfo {
 	public void setTempname(String tempname) {
 		this.tempname = tempname;
 	}
+
+	public String getCateName() {
+		return cateName;
+	}
+
+	public void setCateName(String cateName) {
+		this.cateName = cateName;
+	}
+
+	public String getStyleName() {
+		return styleName;
+	}
+
+	public void setStyleName(String styleName) {
+		this.styleName = styleName;
+	}
     
     
 }

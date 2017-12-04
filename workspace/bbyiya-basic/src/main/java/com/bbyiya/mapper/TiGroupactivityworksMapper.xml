@@ -76,6 +76,18 @@
     </if>
   </select>
   
+  <!-- 得到活动赠送总数-->
+  <select id="getCompltePraiseCountByGactid" resultType="java.lang.Integer"  parameterType="java.lang.Integer" >
+    select count(WorkId) from ti_groupactivityworks where GactId = #{gactid,jdbcType=INTEGER} and PraiseCount>=#{actcpraisecount,jdbcType=INTEGER}
+    	and Status in(1,2)
+  </select>
+  
+  <!-- 得到有效点赞总数-->
+  <select id="getSumPraiseCountByGactid" resultType="java.lang.Integer"  parameterType="java.lang.Integer" >
+    select Sum(PraiseCount) from ti_groupactivityworks where GactId = #{gactid,jdbcType=INTEGER}
+  </select>
+  
+  
   <!-- 获取可自动下单的活动作品 -->
   <select id="findCanOrderGroupActWork" resultMap="BaseResultMap" >
 	select a.* from ti_groupactivityworks a  

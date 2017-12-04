@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.bbyiya.common.vo.ImageInfo;
 import com.bbyiya.model.PStylecoordinateitem;
+import com.bbyiya.model.TiProductshowtemplate;
+import com.bbyiya.model.TiProductshowtemplateinfo;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiProductstyleslayers;
 import com.bbyiya.vo.ReturnModel;
@@ -100,6 +102,35 @@ public interface ICts_TiProductsService {
 	 * @throws Exception
 	 */
 	ReturnModel setStyleStatus(Long styleid, Integer status) throws Exception;
+	/**
+	 * 新增或修改分页效果
+	 * @param userid
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	ReturnModel addOrEditProductPageturn(Long userid,
+			TiProductshowtemplateinfo param) throws Exception;
+	/**
+	 * 产品翻页列表
+	 * @param userid
+	 * @param index
+	 * @param size
+	 * @return
+	 * @throws Exception
+	 */
+	ReturnModel getProductShowTempList(Long userid, int index, int size)
+			throws Exception;
+	/**
+	 * 展示款示列表
+	 * @return
+	 */
+	ReturnModel getproductshowstyles();
+	/**
+	 * 产品分类
+	 * @return
+	 */
+	ReturnModel getproductshowproducts();
 	
 	
 }

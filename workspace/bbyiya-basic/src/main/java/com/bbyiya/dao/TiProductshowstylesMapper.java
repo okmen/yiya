@@ -1,5 +1,7 @@
 package com.bbyiya.dao;
 
+import java.util.List;
+
 import com.bbyiya.model.TiProductshowstyles;
 
 public interface TiProductshowstylesMapper {
@@ -10,6 +12,8 @@ public interface TiProductshowstylesMapper {
     int insertSelective(TiProductshowstyles record);
 
     TiProductshowstyles selectByPrimaryKey(Integer showstyleid);
+    
+    List<TiProductshowstyles>selectByAll();
 
     int updateByPrimaryKeySelective(TiProductshowstyles record);
 

@@ -13,6 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bbyiya.common.vo.ImageInfo;
 import com.bbyiya.dao.PStylecoordinateitemMapper;
 import com.bbyiya.dao.TiProductsMapper;
+import com.bbyiya.dao.TiProductshowproductsMapper;
+import com.bbyiya.dao.TiProductshowstylesMapper;
+import com.bbyiya.dao.TiProductshowtemplateMapper;
+import com.bbyiya.dao.TiProductshowtemplateinfoMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
 import com.bbyiya.dao.TiProductstyleslayersMapper;
 import com.bbyiya.dao.TiStylecoordinateMapper;
@@ -20,7 +24,12 @@ import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ProductStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.PStylecoordinateitem;
+import com.bbyiya.model.TiGroupactivity;
 import com.bbyiya.model.TiProducts;
+import com.bbyiya.model.TiProductshowproducts;
+import com.bbyiya.model.TiProductshowstyles;
+import com.bbyiya.model.TiProductshowtemplate;
+import com.bbyiya.model.TiProductshowtemplateinfo;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiProductstyleslayers;
 import com.bbyiya.model.TiStylecoordinate;
@@ -30,6 +39,8 @@ import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.calendar.product.TiProductResult;
 import com.bbyiya.vo.calendar.product.TiStyleLayerResult;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.sdicons.json.mapper.MapperException;
 
 
@@ -49,6 +60,17 @@ public class Cts_TiProductsServiceImpl implements ICts_TiProductsService{
 	private TiStylecoordinateMapper stylecoordMapper;
 	@Autowired
 	private PStylecoordinateitemMapper pstylecoorditemMapper;
+	
+	@Autowired
+	private TiProductshowtemplateMapper tishowtempMapper;
+	@Autowired
+	private TiProductshowtemplateinfoMapper tishowtempinfoMapper;
+	@Autowired
+	private TiProductshowstylesMapper tishowstyleMapper;
+	
+	@Autowired
+	private TiProductshowproductsMapper tishowproductMapper;
+	
 	
 	/*-------------------用户信息------------------------------------------------*/
 	@Autowired
@@ -326,6 +348,103 @@ public class Cts_TiProductsServiceImpl implements ICts_TiProductsService{
 			}
 			styleMapper.updateByPrimaryKey(style);
 		}
+		return rqModel;
+	}
+	
+	/**
+	 * 新增或修改分页效果
+	 * @param userid
+	 * @param tempinfo
+	 * @return
+	 * @throws Exception
+	 */
+	public ReturnModel addOrEditProductPageturn(Long userid,TiProductshowtemplateinfo param) throws Exception{
+		ReturnModel rqModel=new ReturnModel();
+		rqModel.setStatu(ReturnStatus.ParamError);	
+		TiProductshowtemplate newtempinfo=null;
+		boolean isadd=false;
+		if(!ObjectUtil.isEmpty(param.getTempid())){
+			newtempinfo=tishowtempMapper.selectByPrimaryKey(param.getTempid());
+		}
+		if(newtempinfo==null){
+			newtempinfo=new TiProductshowtemplate();
+			isadd=true;
+		}
+		//默认为通用模板
+		if(param.getTempname()!=null&&param.getTempname().equals("通用模板")){
+			newtempinfo.setIsdefault(1);
+		}else{
+			newtempinfo.setIsdefault(0);
+		}
+		
+		newtempinfo.setTempname(param.getTempname());
+		if(isadd){
+			tishowtempMapper.insertReturnId(newtempinfo);
+		}else{
+			tishowtempMapper.updateByPrimaryKey(newtempinfo);
+		}
+		
+		List<TiProductshowtemplateinfo> infolist=tishowtempinfoMapper.selectByTempId(param.getTempid());
+		if(infolist!=null&&infolist.size()>0){
+			for (TiProductshowtemplateinfo info : infolist) {
+				tishowtempinfoMapper.deleteByPrimaryKey(info.getTempinfoid());
+			}
+		}
+		if(param.getImglist()!=null&&param.getImglist().size()>0){
+				TiProductshowtemplateinfo newinfo=new TiProductshowtemplateinfo();
+				newinfo.setImgjson(JsonUtil.objectToJsonStr(param.getImglist()));
+				newinfo.setImglist(param.getImglist());
+				newinfo.setCateid(param.getCateid());
+				newinfo.setShowstyleid(param.getShowstyleid());
+				newinfo.setTempid(newtempinfo.getTempid());
+				tishowtempinfoMapper.insert(newinfo);
+			
+		}
+		rqModel.setStatu(ReturnStatus.Success);
+		rqModel.setStatusreson("新增成功！");
+		return rqModel;
+	}
+	
+	public ReturnModel getProductShowTempList(Long userid,int index,int size) throws Exception{
+		ReturnModel rqModel=new ReturnModel();
+		rqModel.setStatu(ReturnStatus.ParamError);	
+		PageHelper.startPage(index, size);
+		List<TiProductshowtemplate> list=tishowtempMapper.selectByAll(null);
+		PageInfo<TiProductshowtemplate> pageresult=new PageInfo<TiProductshowtemplate>(list);
+		if(pageresult!=null&&pageresult.getList()!=null&&pageresult.getList().size()>0){
+			for (TiProductshowtemplate temp : pageresult.getList()) {
+				List<TiProductshowtemplateinfo> infolist=tishowtempinfoMapper.selectByTempId(temp.getTempid());
+				for (TiProductshowtemplateinfo infotemp : infolist) {
+					infotemp.setImglist((List<ImageInfo>)JsonUtil.jsonToList(infotemp.getImgjson()));
+				}
+				temp.setTemplateinfos(infolist);
+			}
+		}
+		rqModel.setBasemodle(pageresult);
+		rqModel.setStatu(ReturnStatus.Success); 		
+		rqModel.setStatusreson("操作成功！");
+		return rqModel;
+	}
+	
+
+	public ReturnModel getproductshowstyles(){
+		ReturnModel rqModel=new ReturnModel();
+		rqModel.setStatu(ReturnStatus.ParamError);
+		List<TiProductshowstyles> styleList=tishowstyleMapper.selectByAll();
+		rqModel.setBasemodle(styleList);
+		rqModel.setStatu(ReturnStatus.Success); 		
+		rqModel.setStatusreson("操作成功！");
+		return rqModel;
+	}
+	
+
+	public ReturnModel getproductshowproducts(){
+		ReturnModel rqModel=new ReturnModel();
+		rqModel.setStatu(ReturnStatus.ParamError);
+		List<TiProductshowproducts> productList=tishowproductMapper.selectByAll();
+		rqModel.setBasemodle(productList);
+		rqModel.setStatu(ReturnStatus.Success); 		
+		rqModel.setStatusreson("操作成功！");
 		return rqModel;
 	}
 }

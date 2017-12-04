@@ -12,6 +12,8 @@ public interface TiProductshowproductsMapper {
     int insertSelective(TiProductshowproducts record);
 
     TiProductshowproducts selectByPrimaryKey(Integer cateid);
+    
+    List<TiProductshowproducts> selectByAll();
 
     int updateByPrimaryKeySelective(TiProductshowproducts record);
 

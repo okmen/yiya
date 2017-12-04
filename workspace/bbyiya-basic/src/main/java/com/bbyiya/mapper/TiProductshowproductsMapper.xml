@@ -14,8 +14,9 @@
     from ti_productshowproducts
     where CateId = #{cateid,jdbcType=INTEGER}
   </select>
-   <select id="selectAll" resultMap="BaseResultMap"  >
-    select <include refid="Base_Column_List" />
+  <select id="selectByAll" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
     from ti_productshowproducts
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >

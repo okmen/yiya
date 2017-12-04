@@ -4,6 +4,7 @@ package com.bbyiya.pic.service.impl.calendar;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -123,8 +124,17 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 		ti.setPromoteruserid(userid);
 		ti.setCreatetime(new Date());
 		ti.setStatus(1);
-		ti.setPraisecount(5);
+		if(param.getType()!=null&&param.getType().intValue()==1){
+			ti.setPraisecount(param.getPraisecount());
+		}else{
+			ti.setPraisecount(5);
+		}
+		
 		ti.setTimespare(3L);
+		ti.setType(param.getType());
+		ti.setTitleshare(param.getTitleshare());
+		ti.setTitleminshare(param.getTitleminshare());
+		ti.setTempid(param.getTempid());
 		ti.setStatus(1);//默认就是已开启的活动	
 		if(isadd){
 			groupactMapper.insertReturnId(ti);
@@ -180,7 +190,23 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 		PageInfo<TiGroupactivity> pageresult=new PageInfo<TiGroupactivity>(activitylist);
 		for (TiGroupactivity ti : pageresult.getList()) {
 			ti.setCreatetimestr(DateUtil.getTimeStr(ti.getCreatetime(), "yyyy-MM-dd"));
+			//得到销量
 			Integer sellcount=groupactworkMapper.getCountByGActStatus(ti.getGactid(), 1);
+			if(sellcount==null)sellcount=0;
+			//得到有效点赞量
+			Integer praisecount=groupactworkMapper.getSumPraiseCountByGactid(ti.getGactid());
+			if(praisecount==null)praisecount=0;
+			//得到赠送数量，即活完成完了点赞数量
+			Integer freecount=groupactworkMapper.getCompltePraiseCountByGactid(ti.getGactid(), ti.getPraisecount());
+			if(freecount==null)freecount=0;
+			DecimalFormat    df   = new DecimalFormat("######0.00"); 
+			double sellratio=(praisecount==0)?1:sellcount/praisecount;
+			sellratio=Double.parseDouble(df.format(sellratio));
+			
+			double shareratio=(praisecount==0)?1:freecount/sellcount;
+			shareratio=Double.parseDouble(df.format(shareratio));
+			ti.setSellratio(sellratio);//销售转化率
+			ti.setShareratio(shareratio);//用户分享率
 			ti.setSellercount(sellcount);
 			if(ti.getAdvertid()!=null){
 				TiPromoteradvertinfo advertinfo=advertinfoMapper.selectByPrimaryKey(ti.getAdvertid());

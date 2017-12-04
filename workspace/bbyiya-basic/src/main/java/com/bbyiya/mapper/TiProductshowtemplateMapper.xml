@@ -15,10 +15,27 @@
     from ti_productshowtemplate
     where TempId = #{tempid,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectByAll" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_productshowtemplate
+    <if test="keywords != null and keywords!=''" > 
+       and  TempName LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' )
+    </if>
+    
+    
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from ti_productshowtemplate
     where TempId = #{tempid,jdbcType=INTEGER}
   </delete>
+  <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="tempid"  parameterType="com.bbyiya.model.TiProductshowtemplate" >
+    insert into ti_productshowtemplate (TempId, TempName, IsDefault
+      )
+    values (#{tempid,jdbcType=INTEGER}, #{tempname,jdbcType=VARCHAR}, #{isdefault,jdbcType=INTEGER}
+      )
+  </insert>
   <insert id="insert" parameterType="com.bbyiya.model.TiProductshowtemplate" >
     insert into ti_productshowtemplate (TempId, TempName, IsDefault
       )

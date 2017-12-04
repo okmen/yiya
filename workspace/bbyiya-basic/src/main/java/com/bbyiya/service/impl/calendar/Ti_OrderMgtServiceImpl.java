@@ -323,6 +323,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					userOrder.setOrdertype(Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));// 订单类型
 					userOrder.setOrdertime(ordertime);
 					userOrder.setPaytime(ordertime); 
+					userOrder.setUploadtime(new Date()); 
 					userOrder.setStatus(Integer.parseInt(OrderStatusEnum.waitFoSend.toString()));
 					userOrder.setTotalprice(totalprice);
 					userOrder.setOrdertotalprice(totalprice); 
@@ -464,10 +465,10 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 		userOrder.setOrdertype(param.getOrderType());// 订单类型
 		userOrder.setOrdertime(ordertime);
 		userOrder.setPaytime(ordertime);
+		userOrder.setUploadtime(new Date()); 
 		userOrder.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
 		userOrder.setIsbranch(0);
 		userOrder.setPostmodelid(param.getPostModelId());
-	
 		if (param.getOrderAddressId() != null && param.getOrderAddressId() > 0) {
 			userOrder.setOrderaddressid(param.getOrderAddressId());
 		} else {
@@ -973,6 +974,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					userOrder.setOrdertype(Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));// 订单类型
 					userOrder.setOrdertime(ordertime);
 					userOrder.setPaytime(ordertime); 
+					userOrder.setUploadtime(new Date()); 
 					userOrder.setStatus(Integer.parseInt(OrderStatusEnum.waitFoSend.toString()));
 					userOrder.setTotalprice(totalprice);
 					userOrder.setOrdertotalprice(totalprice); 
@@ -1098,14 +1100,14 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			Boolean isCompleteBoolean=false;
 			if(work.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.payed.toString())){
 				isCompleteBoolean=true;
-				//检查是否完成集赞，如果完成，下单数量+1
 				
-				if(act!=null&&act.getPraisecount()!=null&&work.getPraisecount()!=null&& act.getPraisecount().intValue()<=work.getPraisecount().intValue()){
-					param.setCount(param.getCount()+1);
-				}
 			}
 			if(isCompleteBoolean){
 				double totalprice=style.getPromoterprice().doubleValue()*param.getCount(); 
+				//检查是否完成集赞，如果完成，下单数量+1 属于赠送的
+				if(act!=null&&act.getPraisecount()!=null&&work.getPraisecount()!=null&& act.getPraisecount().intValue()<=work.getPraisecount().intValue()){
+					param.setCount(param.getCount()+1);
+				}
 //				double incomeprice=0.0; //收入金额 
 //				if(work.getTotalprice()!=null&&work.getTotalprice().doubleValue()>0){
 //					incomeprice=work.getTotalprice().doubleValue()-totalprice;
@@ -1185,6 +1187,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					userOrder.setOrdertype(Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));// 订单类型
 					userOrder.setOrdertime(ordertime);
 					userOrder.setPaytime(ordertime); 
+					userOrder.setUploadtime(new Date()); 
 					userOrder.setStatus(Integer.parseInt(OrderStatusEnum.waitFoSend.toString()));
 					userOrder.setTotalprice(totalprice);
 					userOrder.setOrdertotalprice(totalprice); 

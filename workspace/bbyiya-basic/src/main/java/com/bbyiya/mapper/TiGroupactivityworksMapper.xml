@@ -82,6 +82,13 @@
     	and Status in(1,2)
   </select>
   
+  <!-- 得到总销售量-->
+  <select id="getAllSellCountByGactid" resultType="java.lang.Integer"  parameterType="java.lang.Integer" >
+    select sum(Count) from ti_groupactivityworks where GactId = #{gactid,jdbcType=INTEGER} 
+    	and Status in(1,2)
+  </select>
+  
+  
   <!-- 得到有效点赞总数-->
   <select id="getSumPraiseCountByGactid" resultType="java.lang.Integer"  parameterType="java.lang.Integer" >
     select Sum(PraiseCount) from ti_groupactivityworks where GactId = #{gactid,jdbcType=INTEGER}

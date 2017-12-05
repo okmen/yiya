@@ -557,6 +557,11 @@ public class TiGroupActivityController  extends SSOController {
 								gwork.setActprice(priceSingle);
 								totalPrice+=priceSingle*count;
 								gwork.setTotalprice(totalPrice);
+								//如果
+								if(totalPrice<0.01d){
+									gwork.setPaytime(new Date());
+									gwork.setStatus(Integer.parseInt(GroupActWorkStatus.payed.toString()));  
+								}
 								gworkMapper.updateByPrimaryKeySelective(gwork);
 								
 								//创建支付订单
@@ -570,12 +575,24 @@ public class TiGroupActivityController  extends SSOController {
 								if(postAge!=null&&postAge.doubleValue()>0){
 									payorder.setExtobject(gwork.getAddressid().toString());  
 								}
-								payorder.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
-								payMapper.insert(payorder);
-								Map<String, Object> resultMap=new HashMap<String, Object>();
-								resultMap.put("payId", payorder.getPayid());
-								rq.setStatu(ReturnStatus.Success);
-								rq.setBasemodle(resultMap); 
+								if(totalPrice<0.01d){
+									payorder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
+									payMapper.insert(payorder);
+									
+									Map<String, Object> resultMap=new HashMap<String, Object>();
+									resultMap.put("payId", payorder.getPayid());
+									resultMap.put("payed", 1);
+									rq.setStatu(ReturnStatus.Success);
+									rq.setBasemodle(resultMap); 
+								}else {
+									payorder.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
+									payMapper.insert(payorder);
+									Map<String, Object> resultMap=new HashMap<String, Object>();
+									resultMap.put("payId", payorder.getPayid());
+									rq.setStatu(ReturnStatus.Success);
+									rq.setBasemodle(resultMap); 
+								}
+								
 								return JsonUtil.objectToJsonStr(rq);
 							}
 						}

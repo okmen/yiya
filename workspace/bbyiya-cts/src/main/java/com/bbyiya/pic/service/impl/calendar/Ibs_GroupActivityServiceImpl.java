@@ -192,7 +192,7 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 		for (TiGroupactivity ti : pageresult.getList()) {
 			ti.setCreatetimestr(DateUtil.getTimeStr(ti.getCreatetime(), "yyyy-MM-dd"));
 			//得到销量
-			Integer sellcount=groupactworkMapper.getCountByGActStatus(ti.getGactid(), 1);
+			Integer sellcount=groupactworkMapper.getAllSellCountByGactid(ti.getGactid(), 1);
 			if(sellcount==null)sellcount=0;
 			//得到有效点赞量
 			Integer praisecount=groupactworkMapper.getSumPraiseCountByGactid(ti.getGactid());
@@ -201,10 +201,10 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 			Integer freecount=groupactworkMapper.getCompltePraiseCountByGactid(ti.getGactid(), ti.getPraisecount());
 			if(freecount==null)freecount=0;
 			DecimalFormat    df   = new DecimalFormat("######0.00"); 
-			double sellratio=(praisecount==0)?0:(sellcount/praisecount)*100;
+			double sellratio=(praisecount==0)?0:(sellcount.doubleValue()/praisecount.doubleValue())*100;
 			sellratio=Double.parseDouble(df.format(sellratio));
 			
-			double shareratio=(praisecount==0)?0:(freecount/sellcount)*100;
+			double shareratio=(praisecount==0)?0:(freecount.doubleValue()/(sellcount.doubleValue()+freecount.doubleValue()))*100;
 			shareratio=Double.parseDouble(df.format(shareratio));
 			ti.setSellratio(sellratio);//销售转化率
 			ti.setShareratio(shareratio);//用户分享率

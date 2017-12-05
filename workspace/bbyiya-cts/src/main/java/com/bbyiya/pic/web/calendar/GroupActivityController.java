@@ -93,7 +93,7 @@ public class GroupActivityController extends SSOController {
 				}
 			}
 			
-			if(param.getType()!=null&&param.getType().intValue()==1&&param.getPraisecount().intValue()<5){
+			if(param.getType()!=null&&param.getType().intValue()==1&&param.getPraisecount()!=null&&param.getPraisecount().intValue()<5){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("广告模式集赞数量不能小于5!");
 				return JsonUtil.objectToJsonStr(rq);

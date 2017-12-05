@@ -201,10 +201,10 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 			Integer freecount=groupactworkMapper.getCompltePraiseCountByGactid(ti.getGactid(), ti.getPraisecount());
 			if(freecount==null)freecount=0;
 			DecimalFormat    df   = new DecimalFormat("######0.00"); 
-			double sellratio=(praisecount==0)?1:sellcount/praisecount;
+			double sellratio=(praisecount==0)?0:(sellcount/praisecount)*100;
 			sellratio=Double.parseDouble(df.format(sellratio));
 			
-			double shareratio=(praisecount==0)?1:freecount/sellcount;
+			double shareratio=(praisecount==0)?0:(freecount/sellcount)*100;
 			shareratio=Double.parseDouble(df.format(shareratio));
 			ti.setSellratio(sellratio);//销售转化率
 			ti.setShareratio(shareratio);//用户分享率

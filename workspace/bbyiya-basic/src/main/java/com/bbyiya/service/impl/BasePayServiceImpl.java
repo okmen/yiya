@@ -48,6 +48,7 @@ import com.bbyiya.enums.PayOrderStatusEnums;
 import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.PayTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.calendar.AddressTypeEnum;
 import com.bbyiya.enums.calendar.GroupActWorkStatus;
 import com.bbyiya.enums.calendar.RedpacketStatus;
 import com.bbyiya.enums.calendar.TiAmountLogType;
@@ -614,7 +615,7 @@ public class BasePayServiceImpl implements IBasePayService{
 						    		}
 						    	}else {
 									TiGroupactivityworks gwork=gworkMapper.selectByPrimaryKey(oproduct.getCartid());
-									if(gwork!=null&&gwork.getPostage()!=null&&gwork.getPostage().doubleValue()>0){
+									if(gwork!=null&&gwork.getAddresstype()!=null&&gwork.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.cusaddr.toString())&& gwork.getPostage()!=null&&gwork.getPostage().doubleValue()>0){
 										postageB=gwork.getPostage();
 									}
 								}

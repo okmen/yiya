@@ -283,6 +283,8 @@ public class TiGroupActivityController  extends SSOController {
 						map.put("gwork", gwork);
 						map.put("needPraiseCount", actGroupactivity.getPraisecount());
 						map.put("countDownLong", actGroupactivity.getTimespare());
+						map.put("titleShare", actGroupactivity.getTitleshare());
+						map.put("minTitleShare", actGroupactivity.getTitleminshare());
 						map.put("nowTime", new Date());
 						TiProductstyles style= styleMapper.selectByPrimaryKey(myworks.getStyleid()==null?myworks.getProductid():myworks.getStyleid());
 						if(style!=null){

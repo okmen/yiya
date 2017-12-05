@@ -362,7 +362,8 @@ public class Cts_TiProductsServiceImpl implements ICts_TiProductsService{
 		ReturnModel rqModel=new ReturnModel();
 		rqModel.setStatu(ReturnStatus.ParamError);	
 		TiProductshowtemplate newtempinfo=null;
-		boolean isadd=false;
+		//是否是新增模板
+		boolean isadd=false ;
 		if(!ObjectUtil.isEmpty(param.getTempid())){
 			newtempinfo=tishowtempMapper.selectByPrimaryKey(param.getTempid());
 		}
@@ -376,32 +377,46 @@ public class Cts_TiProductsServiceImpl implements ICts_TiProductsService{
 		}else{
 			newtempinfo.setIsdefault(0);
 		}
-		
-		newtempinfo.setTempname(param.getTempname());
+		if(!ObjectUtil.isEmpty(param.getTempname())){
+			newtempinfo.setTempname(param.getTempname());
+		}
 		if(isadd){
 			tishowtempMapper.insertReturnId(newtempinfo);
 		}else{
 			tishowtempMapper.updateByPrimaryKey(newtempinfo);
 		}
-		
+		//是否是新增款式图集
+		boolean isNew=true;
 		List<TiProductshowtemplateinfo> infolist=tishowtempinfoMapper.selectByTempId(param.getTempid());
 		if(infolist!=null&&infolist.size()>0){
 			for (TiProductshowtemplateinfo info : infolist) {
-				tishowtempinfoMapper.deleteByPrimaryKey(info.getTempinfoid());
+				if(info.getCateid().intValue()==param.getCateid().intValue()&& info.getShowstyleid().intValue()==param.getShowstyleid().intValue()){
+					if(!ObjectUtil.isEmpty(param.getImglist())){
+						info.setImgjson(JsonUtil.objectToJsonStr(param.getImglist()));
+						tishowtempinfoMapper.updateByPrimaryKeySelective(info);
+						isNew=false;
+					}
+				}
 			}
 		}
-		if(param.getImglist()!=null&&param.getImglist().size()>0){
-				TiProductshowtemplateinfo newinfo=new TiProductshowtemplateinfo();
-				newinfo.setImgjson(JsonUtil.objectToJsonStr(param.getImglist()));
-				newinfo.setImglist(param.getImglist());
-				newinfo.setCateid(param.getCateid());
-				newinfo.setShowstyleid(param.getShowstyleid());
-				newinfo.setTempid(newtempinfo.getTempid());
-				tishowtempinfoMapper.insert(newinfo);
-			
+		if(isNew){
+			if(ObjectUtil.isEmpty(param.getShowstyleid())||ObjectUtil.isEmpty(param.getTempid())||ObjectUtil.isEmpty(param.getImglist())){
+				rqModel.setStatu(ReturnStatus.ParamError);
+				rqModel.setStatusreson("参数不全！(款式/模板Id/图片是否为空)");
+				return rqModel;
+			}
+			TiProductshowtemplateinfo newinfo = new TiProductshowtemplateinfo();
+			newinfo.setImgjson(JsonUtil.objectToJsonStr(param.getImglist()));
+			newinfo.setImglist(param.getImglist());
+			newinfo.setCateid(param.getCateid());
+			newinfo.setShowstyleid(param.getShowstyleid());
+			newinfo.setTempid(newtempinfo.getTempid());
+			tishowtempinfoMapper.insert(newinfo);
+			rqModel.setStatusreson("新增成功！");
+		}else {
+			rqModel.setStatusreson("修改成功！");
 		}
 		rqModel.setStatu(ReturnStatus.Success);
-		rqModel.setStatusreson("新增成功！");
 		return rqModel;
 	}
 	

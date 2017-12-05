@@ -1,5 +1,6 @@
 package com.bbyiya.pic.web.calendar;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -7,12 +8,14 @@ import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.common.vo.ImageInfo;
+import com.bbyiya.dao.TiProductshowtemplateMapper;
+import com.bbyiya.dao.TiProductshowtemplateinfoMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
-import com.bbyiya.enums.calendar.AddressTypeEnum;
 import com.bbyiya.model.PStylecoordinateitem;
 import com.bbyiya.model.TiProductshowtemplate;
 import com.bbyiya.model.TiProductshowtemplateinfo;
@@ -20,11 +23,9 @@ import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiProductstyleslayers;
 import com.bbyiya.pic.service.calendar.ICts_TiProductsService;
 import com.bbyiya.pic.utils.Json2Objects;
-import com.bbyiya.pic.vo.calendar.WorkForCustomerParam;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
-import com.bbyiya.vo.address.OrderaddressVo;
 import com.bbyiya.vo.calendar.product.TiProductResult;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
@@ -39,6 +40,10 @@ public class TiProductsController extends SSOController {
 	
 	@Autowired
 	private UUsersMapper userMapper;
+	@Autowired
+	private TiProductshowtemplateinfoMapper tishowtempinfoMapper;
+	@Autowired
+	private TiProductshowtemplateMapper tishowtempMapper;
 	
 	/**
 	 * 产品列表
@@ -461,7 +466,7 @@ public class TiProductsController extends SSOController {
 		if(user!=null){
 			TiProductshowtemplateinfo workparam = (TiProductshowtemplateinfo)JsonUtil.jsonStrToObject(productJson,TiProductshowtemplateinfo.class);
 			
-			if (workparam == null) {
+			if (workparam == null||ObjectUtil.isEmpty(workparam.getCateid())||ObjectUtil.isEmpty(workparam.getShowstyleid())) { 
 				rq.setStatu(ReturnStatus.ParamError_1);
 				rq.setStatusreson("参数不全");
 				return JsonUtil.objectToJsonStr(rq);
@@ -471,8 +476,19 @@ public class TiProductsController extends SSOController {
 				rq.setStatusreson("模板名称不能为空!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-			
-			if(workparam.getImglist()==null||workparam.getImglist().size()<=0){
+			//图集
+			List<ImageInfo> imglist = new ArrayList<ImageInfo>();
+			if (!ObjectUtil.isEmpty(workparam.getImglist())) {
+				for (ImageInfo img : workparam.getImglist()) {
+					if (!(ObjectUtil.isEmpty(img) || ObjectUtil.isEmpty(img.getUrl()))) {
+						imglist.add(img);
+					}
+				}
+			}
+			if (imglist != null && imglist.size() > 0) {
+				workparam.setImglist(imglist);
+				workparam.setImgjson(JsonUtil.objectToJsonStr(imglist));
+			} else {
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("请上传图片!");
 				return JsonUtil.objectToJsonStr(rq);
@@ -485,6 +501,34 @@ public class TiProductsController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
+
+
+	@ResponseBody
+	@RequestMapping(value = "/productShowInfo")
+	public String productShowInfo(@RequestParam(required = false, defaultValue = "0")int  tempid) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			if(tempid>0){
+				TiProductshowtemplate newtempinfo= tishowtempMapper.selectByPrimaryKey(tempid);
+				if(newtempinfo!=null){
+					List<TiProductshowtemplateinfo> infolist=tishowtempinfoMapper.selectByTempId(tempid);
+					for (TiProductshowtemplateinfo infotemp : infolist) {
+						infotemp.setImglist((List<ImageInfo>)JsonUtil.jsonToList(infotemp.getImgjson()));
+					}
+					newtempinfo.setTemplateinfos(infolist); 
+				}
+				rq.setBasemodle(newtempinfo); 
+			}
+			rq.setStatu(ReturnStatus.Success); 
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
 	
 	@ResponseBody
 	@RequestMapping(value = "/getProductShowTempList")

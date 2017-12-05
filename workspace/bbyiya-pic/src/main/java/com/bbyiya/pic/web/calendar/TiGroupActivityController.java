@@ -27,6 +27,7 @@ import com.bbyiya.dao.TiMyartsdetailsMapper;
 import com.bbyiya.dao.TiMyworksMapper;
 import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiProductshowproductsMapper;
+import com.bbyiya.dao.TiProductshowstylesMapper;
 import com.bbyiya.dao.TiProductshowtemplateMapper;
 import com.bbyiya.dao.TiProductshowtemplateinfoMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
@@ -35,6 +36,8 @@ import com.bbyiya.dao.TiPromotersMapper;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.PayOrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.calendar.ActivityAddressType;
+import com.bbyiya.enums.calendar.AddressTypeEnum;
 import com.bbyiya.enums.calendar.GroupActWorkStatus;
 import com.bbyiya.enums.calendar.GroupActivityType;
 import com.bbyiya.model.OOrderaddress;
@@ -48,6 +51,7 @@ import com.bbyiya.model.TiMyartsdetails;
 import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiProductshowproducts;
+import com.bbyiya.model.TiProductshowstyles;
 import com.bbyiya.model.TiProductshowtemplate;
 import com.bbyiya.model.TiProductshowtemplateinfo;
 import com.bbyiya.model.TiProductstyles;
@@ -91,6 +95,8 @@ public class TiGroupActivityController  extends SSOController {
 	private TiProductshowtemplateinfoMapper tempInfoMapper;
 	@Autowired
 	private TiProductshowproductsMapper showProductMapper;
+	@Autowired
+	private TiProductshowstylesMapper showStyleMapper;
 	/**
 	 * 团购活动-详情
 	 * @param gActId
@@ -160,11 +166,20 @@ public class TiGroupActivityController  extends SSOController {
 							List<TiProductshowproducts> showResult = new ArrayList<TiProductshowproducts>();
 							// 产品列表
 							List<TiProductshowproducts> showCateList = showProductMapper.selectAll();
+							//款式列表
+							List<TiProductshowstyles> showStylelist= showStyleMapper.selectByAll();
 							if (showCateList != null && showCateList.size() > 0) {
 								for (TiProductshowproducts cate : showCateList) {
 									List<TiProductshowtemplateinfo> imgs = new ArrayList<TiProductshowtemplateinfo>();
 									for (TiProductshowtemplateinfo ss : styleImg) {
 										if (ss.getCateid().intValue() == cate.getCateid().intValue()) {
+											if(showStylelist!=null&&showStylelist.size()>0){
+												for (TiProductshowstyles sty : showStylelist) {
+													if(sty.getShowstyleid().intValue()==ss.getShowstyleid().intValue()){
+														ss.setStyleName(sty.getStylename()); 
+													}
+												}
+											}
 											imgs.add(ss);
 										}
 									}
@@ -542,6 +557,11 @@ public class TiGroupActivityController  extends SSOController {
 								gwork.setActprice(priceSingle);
 								totalPrice+=priceSingle*count;
 								gwork.setTotalprice(totalPrice);
+								//如果
+								if(totalPrice<0.01d){
+									gwork.setPaytime(new Date());
+									gwork.setStatus(Integer.parseInt(GroupActWorkStatus.payed.toString()));  
+								}
 								gworkMapper.updateByPrimaryKeySelective(gwork);
 								
 								//创建支付订单
@@ -555,12 +575,24 @@ public class TiGroupActivityController  extends SSOController {
 								if(postAge!=null&&postAge.doubleValue()>0){
 									payorder.setExtobject(gwork.getAddressid().toString());  
 								}
-								payorder.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
-								payMapper.insert(payorder);
-								Map<String, Object> resultMap=new HashMap<String, Object>();
-								resultMap.put("payId", payorder.getPayid());
-								rq.setStatu(ReturnStatus.Success);
-								rq.setBasemodle(resultMap); 
+								if(totalPrice<0.01d){
+									payorder.setStatus(Integer.parseInt(OrderStatusEnum.payed.toString()));
+									payMapper.insert(payorder);
+									
+									Map<String, Object> resultMap=new HashMap<String, Object>();
+									resultMap.put("payId", payorder.getPayid());
+									resultMap.put("payed", 1);
+									rq.setStatu(ReturnStatus.Success);
+									rq.setBasemodle(resultMap); 
+								}else {
+									payorder.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
+									payMapper.insert(payorder);
+									Map<String, Object> resultMap=new HashMap<String, Object>();
+									resultMap.put("payId", payorder.getPayid());
+									rq.setStatu(ReturnStatus.Success);
+									rq.setBasemodle(resultMap); 
+								}
+								
 								return JsonUtil.objectToJsonStr(rq);
 							}
 						}
@@ -613,25 +645,31 @@ public class TiGroupActivityController  extends SSOController {
 			TiGroupactivityworks gwork = gworkMapper.selectByPrimaryKey(workId);
 			if (gwork != null&&gwork.getSttyleid()!=null) {
 				TiGroupactivity gact= gactMapper.selectByPrimaryKey(gwork.getGactid());
-//				TiPromoters promoters = tipromoterMapper.selectByPrimaryKey(gact.getPromoteruserid());
-				if (gact != null) {
-					Map<String, Object> mapResult = new HashMap<String, Object>();
-					mapResult.put("myAddress", addressService.getUserAddressResult(user.getUserId(),addrid));
-					mapResult.put("promoterName", gact.getCompanyname());
-					mapResult.put("promoterUserId", gact.getPromoteruserid());
-					UUserAddressResult userAddressResult = new UUserAddressResult();
-					userAddressResult.setProvince(gact.getProvince());
-					userAddressResult.setCity(gact.getCity());
-					userAddressResult.setArea(gact.getArea());
-					userAddressResult.setProvinceName(regionService.getProvinceName(gact.getProvince()));
-					userAddressResult.setCityName(regionService.getCityName(gact.getCity()));
-					userAddressResult.setAreaName(regionService.getAresName(gact.getArea()));
-					userAddressResult.setStreetdetail(gact.getStreetdetails());
-					userAddressResult.setPhone(gact.getMobilephone()); 
-					mapResult.put("promoterAddress", userAddressResult);
-					rq.setStatu(ReturnStatus.Success);
+				if (gact != null&&!ObjectUtil.isEmpty(gact.getProvince())&&gact.getProvince().intValue()>0) {
+					Map<String, Object> mapResult = new HashMap<String, Object>(); 
+					//是否可以寄到自己地址
+					if(gact.getAddresstype()==null||gact.getAddresstype().intValue()==Integer.parseInt(ActivityAddressType.auto.toString())
+							||gact.getAddresstype().intValue()==Integer.parseInt(ActivityAddressType.customerAddr.toString())){
+						mapResult.put("myAddress", addressService.getUserAddressResult(user.getUserId(),addrid));
+					}
+					if(gact.getAddresstype()!=null&&(gact.getAddresstype().intValue()==Integer.parseInt(ActivityAddressType.auto.toString())||
+							gact.getAddresstype().intValue()==Integer.parseInt(ActivityAddressType.promoterAddr.toString()))){
+						mapResult.put("promoterName", gact.getCompanyname());
+						mapResult.put("promoterUserId", gact.getPromoteruserid());
+						UUserAddressResult userAddressResult = new UUserAddressResult();
+						userAddressResult.setProvince(gact.getProvince());
+						userAddressResult.setCity(gact.getCity());
+						userAddressResult.setArea(gact.getArea());
+						userAddressResult.setProvinceName(regionService.getProvinceName(gact.getProvince()));
+						userAddressResult.setCityName(regionService.getCityName(gact.getCity()));
+						userAddressResult.setAreaName(regionService.getAresName(gact.getArea()));
+						userAddressResult.setStreetdetail(gact.getStreetdetails());
+						userAddressResult.setPhone(gact.getMobilephone()); 
+						mapResult.put("promoterAddress", userAddressResult);
+					}
 					rq.setBasemodle(mapResult); 
 				}
+				rq.setStatu(ReturnStatus.Success);
 			}
 		}
 		return JsonUtil.objectToJsonStr(rq);
@@ -653,7 +691,8 @@ public class TiGroupActivityController  extends SSOController {
 				Map<String, Object> resultMap=new HashMap<String, Object>();
 				resultMap.put("addressType", gwork.getAddresstype());
 				UUserAddressResult userAddressResult=new UUserAddressResult();
-				if(gwork.getAddresstype()!=null&&gwork.getAddresstype().intValue()==1){
+				//寄到自己的地址
+				if(gwork.getAddresstype()!=null&&gwork.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.cusaddr.toString())){
 					OOrderaddress address= orderaddressMapper.selectByPrimaryKey(gwork.getAddressid());
 					if(address!=null){
 						userAddressResult.setProvince(address.getProvincecode());

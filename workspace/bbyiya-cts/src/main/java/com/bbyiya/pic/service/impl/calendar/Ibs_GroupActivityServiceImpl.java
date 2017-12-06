@@ -204,7 +204,7 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 			double sellratio=(praisecount==0)?0:(sellcount.doubleValue()/praisecount.doubleValue())*100;
 			sellratio=Double.parseDouble(df.format(sellratio));
 			
-			double shareratio=(praisecount==0)?0:(freecount.doubleValue()/(sellcount.doubleValue()+freecount.doubleValue()))*100;
+			double shareratio=(sellcount==0)?0:(freecount.doubleValue()/(sellcount.doubleValue()+freecount.doubleValue()))*100;
 			shareratio=Double.parseDouble(df.format(shareratio));
 			ti.setSellratio(sellratio);//销售转化率
 			ti.setShareratio(shareratio);//用户分享率

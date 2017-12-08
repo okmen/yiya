@@ -129,6 +129,7 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 		ti.setExtcount(param.getExtCount());//目标分享人数
 		ti.setFreecount(param.getFreecount());//目标参与总数量
 		ti.setProductid(param.getProductid());
+		ti.setAdvertid(param.getActivityid()); 
 		ti.setProduceruserid(userid);//推广者Id
 		ti.setStatus(1);//默认就是已开启的活动	
 		ti.setAutoaddress(param.getAutoaddress()==null?0:param.getAutoaddress());

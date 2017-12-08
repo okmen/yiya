@@ -52,7 +52,6 @@ import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiProductshowproducts;
 import com.bbyiya.model.TiProductshowstyles;
-import com.bbyiya.model.TiProductshowtemplate;
 import com.bbyiya.model.TiProductshowtemplateinfo;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiPromoteradvertinfo;
@@ -63,6 +62,7 @@ import com.bbyiya.service.pic.IBaseUserAddressService;
 import com.bbyiya.utils.ImgDomainUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.vo.user.UUserAddressResult;
@@ -150,9 +150,9 @@ public class TiGroupActivityController  extends SSOController {
 						result.put("advert", advertMod);
 					}
 					if(actInfo.getTempid()!=null){
-						// 产品翻页模板 TODO
+						// 产品翻页模板 
 						// 所有款式图片
-						List<TiProductshowtemplateinfo> styleImg = tempInfoMapper.selectByTempId(actInfo.getTempid());
+						List<TiProductshowtemplateinfo> styleImg = getTiProductshowtemplateinfo(actInfo.getTempid());  //tempInfoMapper.selectByTempId(actInfo.getTempid());
 						if (styleImg != null && styleImg.size() > 0) {
 							for (TiProductshowtemplateinfo pp : styleImg) {
 								if (pp.getImgjson() != null) {
@@ -165,9 +165,9 @@ public class TiGroupActivityController  extends SSOController {
 							//最重要展示的列表
 							List<TiProductshowproducts> showResult = new ArrayList<TiProductshowproducts>();
 							// 产品列表
-							List<TiProductshowproducts> showCateList = showProductMapper.selectAll();
+							List<TiProductshowproducts> showCateList = getTiProductshowproductsAll();
 							//款式列表
-							List<TiProductshowstyles> showStylelist= showStyleMapper.selectByAll();
+							List<TiProductshowstyles> showStylelist= getshowStylelistAll();
 							if (showCateList != null && showCateList.size() > 0) {
 								for (TiProductshowproducts cate : showCateList) {
 									List<TiProductshowtemplateinfo> imgs = new ArrayList<TiProductshowtemplateinfo>();
@@ -200,7 +200,52 @@ public class TiGroupActivityController  extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-
+	/**
+	 * 翻页的产品类型列表
+	 * @return
+	 */
+	private List<TiProductshowproducts> getTiProductshowproductsAll(){
+		String key="TiProductshowproductsAll1208";
+		List<TiProductshowproducts>  resultList=(List<TiProductshowproducts>)RedisUtil.getObject(key);
+		if(resultList==null||resultList.size()<=0){
+			resultList=showProductMapper.selectAll();
+			if(resultList!=null){
+				RedisUtil.setObject(key, resultList, 600);
+			}
+		} 
+		return resultList;
+	}
+	/**
+	 * 翻页展示 所有款式列表
+	 * @return
+	 */
+	private List<TiProductshowstyles> getshowStylelistAll(){
+		String key="TiProductshowstylesAll1208";
+		List<TiProductshowstyles>  showStylelist=(List<TiProductshowstyles>)RedisUtil.getObject(key);
+		if(showStylelist==null||showStylelist.size()<=0){
+			showStylelist= showStyleMapper.selectByAll();
+			if(showStylelist!=null){
+				RedisUtil.setObject(key, showStylelist, 600);
+			}
+		} 
+		return showStylelist;
+	}
+	/**
+	 * 翻页模板照片
+	 * @param tempId
+	 * @return
+	 */
+	private List<TiProductshowtemplateinfo> getTiProductshowtemplateinfo(Integer tempId){
+		String key="TiProductshowtemplateinfo1208_"+tempId; 
+		List<TiProductshowtemplateinfo>  showStylelist=(List<TiProductshowtemplateinfo>)RedisUtil.getObject(key);
+		if(showStylelist==null||showStylelist.size()<=0){
+			showStylelist= tempInfoMapper.selectByTempId(tempId);
+			if(showStylelist!=null){
+				RedisUtil.setObject(key, showStylelist, 600);
+			}
+		} 
+		return showStylelist;
+	}
 	
 	/**
 	 * 参与 团购
@@ -649,13 +694,14 @@ public class TiGroupActivityController  extends SSOController {
 				TiGroupactivity gact= gactMapper.selectByPrimaryKey(gwork.getGactid());
 				if (gact != null&&!ObjectUtil.isEmpty(gact.getProvince())&&gact.getProvince().intValue()>0) {
 					Map<String, Object> mapResult = new HashMap<String, Object>(); 
+					mapResult.put("addressType", gact.getAddresstype());
 					//是否可以寄到自己地址
 					if(gact.getAddresstype()==null||gact.getAddresstype().intValue()==Integer.parseInt(ActivityAddressType.auto.toString())
 							||gact.getAddresstype().intValue()==Integer.parseInt(ActivityAddressType.customerAddr.toString())){
 						mapResult.put("myAddress", addressService.getUserAddressResult(user.getUserId(),addrid));
 					}
-					if(gact.getAddresstype()!=null&&(gact.getAddresstype().intValue()==Integer.parseInt(ActivityAddressType.auto.toString())||
-							gact.getAddresstype().intValue()==Integer.parseInt(ActivityAddressType.promoterAddr.toString()))){
+					if(gact.getAddresstype()==null||(gact.getAddresstype()!=null&&(gact.getAddresstype().intValue()==Integer.parseInt(ActivityAddressType.auto.toString())||
+							gact.getAddresstype().intValue()==Integer.parseInt(ActivityAddressType.promoterAddr.toString())))){
 						mapResult.put("promoterName", gact.getCompanyname());
 						mapResult.put("promoterUserId", gact.getPromoteruserid());
 						UUserAddressResult userAddressResult = new UUserAddressResult();

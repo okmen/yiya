@@ -3,6 +3,7 @@ import java.util.Date;
 
 import com.bbyiya.model.TiActivitys;
 import com.bbyiya.model.TiActivityworks;
+import com.bbyiya.model.TiPromoteradvertinfo;
 import com.bbyiya.vo.calendar.product.TiProductResult;
 
 
@@ -19,6 +20,7 @@ public class TiActivitysVo extends TiActivitys{
 	private Date completeTime;
 	private String adverttitle;//广告名称
 	private TiActivityworks myactInfo;
+	private TiPromoteradvertinfo advert;
 	public String getProductName() {
 		return productName;
 	}
@@ -114,6 +116,14 @@ public class TiActivitysVo extends TiActivitys{
 
 	public void setAdverttitle(String adverttitle) {
 		this.adverttitle = adverttitle;
+	}
+
+	public TiPromoteradvertinfo getAdvert() {
+		return advert;
+	}
+
+	public void setAdvert(TiPromoteradvertinfo advert) {
+		this.advert = advert;
 	}
 
 	

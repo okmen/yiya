@@ -24,6 +24,7 @@ import com.bbyiya.dao.TiActivityworksMapper;
 import com.bbyiya.dao.TiDiscountmodelMapper;
 import com.bbyiya.dao.TiMyworksMapper;
 import com.bbyiya.dao.TiProductsMapper;
+import com.bbyiya.dao.TiPromoteradvertinfoMapper;
 import com.bbyiya.dao.TiPromoteremployeesMapper;
 import com.bbyiya.dao.TiPromotersMapper;
 import com.bbyiya.dao.TiUserdiscountsMapper;
@@ -39,6 +40,7 @@ import com.bbyiya.model.TiActivitysingles;
 import com.bbyiya.model.TiActivityworks;
 import com.bbyiya.model.TiDiscountmodel;
 import com.bbyiya.model.TiMyworks;
+import com.bbyiya.model.TiPromoteradvertinfo;
 import com.bbyiya.model.TiPromoteremployees;
 import com.bbyiya.model.TiPromoters;
 import com.bbyiya.model.TiUserdiscounts;
@@ -72,7 +74,12 @@ public class TiActivityMgtController extends SSOController {
 	@Autowired
 	private TiDiscountmodelMapper dismodelMapper;
 	
-	
+	@Autowired
+	private TiPromotersMapper promoterMapper;
+	@Resource(name = "regionServiceImpl")
+	private IRegionService regionService;
+	@Autowired
+	private TiPromoteradvertinfoMapper advertInfoMapper;
 	/**
 	 * 活动详情
 	 * @param actId
@@ -87,6 +94,14 @@ public class TiActivityMgtController extends SSOController {
 		if(user!=null){
 			TiActivitysVo actInfo=actMapper.getResultByActId(actId);
 			if(actInfo!=null){
+				//
+				if (actInfo.getAdvertid() != null && actInfo.getAdvertid().intValue() > 0) {
+					TiPromoteradvertinfo advertMod = advertInfoMapper.selectByPrimaryKey(actInfo.getAdvertid());
+					if (advertMod != null) {
+						actInfo.setAdvert(advertMod);
+					}
+				}
+				
 				TiActivityworks myActWork= activityworksMapper.getActWorkListByActIdAndUserId(actId, user.getUserId());
 				if(myActWork!=null){
 					actInfo.setMyactInfo(myActWork); 
@@ -303,6 +318,12 @@ public class TiActivityMgtController extends SSOController {
 						rq.setStatusreson("自己不能参与！");
 						return JsonUtil.objectToJsonStr(rq);
 					}
+					if (actInfo.getAdvertid() != null && actInfo.getAdvertid().intValue() > 0) {
+						TiPromoteradvertinfo advertMod = advertInfoMapper.selectByPrimaryKey(actInfo.getAdvertid());
+						if (advertMod != null) {
+							map.put("advert", advertMod);
+						}
+					}
 				}else {
 					return JsonUtil.objectToJsonStr(rq);
 				}
@@ -497,10 +518,7 @@ public class TiActivityMgtController extends SSOController {
 		} 
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	@Autowired
-	private TiPromotersMapper promoterMapper;
-	@Resource(name = "regionServiceImpl")
-	private IRegionService regionService;
+
 	
 	@ResponseBody
 	@RequestMapping(value = "/getPromoterAddress")

@@ -1,6 +1,11 @@
 package com.bbyiya.pic.web.test;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ResourceBundle;
+
+import javassist.expr.NewArray;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,20 +14,33 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.baseUtils.GenUtils;
 import com.bbyiya.baseUtils.ValidateUtils;
+import com.bbyiya.common.enums.WechatMsgEnums;
+import com.bbyiya.common.vo.wechatmsg.ShippingParam;
+import com.bbyiya.common.vo.wechatmsg.ShippingParamNew;
 import com.bbyiya.dao.UAccountsMapper;
 import com.bbyiya.dao.UCashlogsMapper;
+import com.bbyiya.dao.UOtherloginMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.AmountType;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UCashlogs;
+import com.bbyiya.model.UOtherlogin;
 import com.bbyiya.model.UUsers;
+import com.bbyiya.pic.utils.WxPublicUtils;
+import com.bbyiya.utils.ConfigUtil;
+import com.bbyiya.utils.HttpRequestHelper;
 import com.bbyiya.utils.ImgDomainUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
+import com.bbyiya.utils.WechatMsgUtil;
+import com.bbyiya.utils.WechatUtils;
+import com.bbyiya.utils.encrypt.UrlEncodeUtils;
+import com.bbyiya.utils.upload.FileUploadUtils_qiniu;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.calendar.TiAmountProportion;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
 
@@ -71,14 +89,27 @@ public class TesterController  extends SSOController{
 	
 	}
 	
+	@Autowired
+	private UOtherloginMapper otherMapper;
+	
 	@ResponseBody 
 	@RequestMapping(value = "/imgurl")
-	public String imgurl(String imgurl) throws Exception {
+	public String imgurl(String imgurl,String amount,String userId) throws Exception {
 		ReturnModel rq = new ReturnModel();
-		//rq.setBasemodle(ImgDomainUtil.getImageUrl_Sourse(imgurl));
-		rq.setStatu(ReturnStatus.Success);
-		return JsonUtil.objectToJsonStr(rq);
-	
+		UOtherlogin uOtherlogin= otherMapper.getWxloginByUserId(ObjectUtil.parseLong(userId));
+		if(uOtherlogin!=null){
+//			ShippingParamNew param=new ShippingParamNew();
+//			param.setOrderId("123456479880");
+//			param.setTransCompany("顺丰");
+//			param.setTransOrderId("21312312");
+//			param.setLinkUrl("http://photo.bbyiya.com/#/index");
+//			WechatMsgUtil.sendMsg_Shipping(uOtherlogin.getOpenid(), param);
+			
+		}
+ 
+		rq.setBasemodle( new Date().getTime());
+//		rq.setStatusreson(ConfigUtil.getPropertyVal(imgurl)); ;
+		return JsonUtil.objectToJsonStr(rq); 
 	}
 	
 	@Autowired

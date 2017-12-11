@@ -6,6 +6,7 @@ public class CalendarActivityAddParam {
 	private Long productid;	//产品ID
 	private Long styleId;	//款示ID
 	private String description; //详情内容
+	private Integer advertid;
 	private Integer acttype;	//赠送方式
 	private Integer freecount;	//最大参与人数
 	private Integer extCount;//目标分享人数
@@ -71,6 +72,12 @@ public class CalendarActivityAddParam {
 	}
 	public void setAutoaddress(Integer autoaddress) {
 		this.autoaddress = autoaddress;
+	}
+	public Integer getAdvertid() {
+		return advertid;
+	}
+	public void setAdvertid(Integer advertid) {
+		this.advertid = advertid;
 	}
 	
 	

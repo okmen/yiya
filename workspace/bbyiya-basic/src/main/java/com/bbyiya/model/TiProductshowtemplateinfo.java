@@ -1,10 +1,13 @@
 package com.bbyiya.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.bbyiya.common.vo.ImageInfo;
 
-public class TiProductshowtemplateinfo {
+public class TiProductshowtemplateinfo implements Serializable{
+	private static final long serialVersionUID = 1L;
+	
 	private Integer tempinfoid;
 
     private Integer tempid;

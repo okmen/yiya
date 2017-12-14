@@ -1132,6 +1132,9 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 						orderAddress.setCity(regionService.getCityName(act.getCity()));
 						orderAddress.setProvince(regionService.getProvinceName(act.getProvince()));
 						orderAddress.setDistrict(regionService.getAresName(act.getArea()));
+						orderAddress.setProvincecode(act.getProvince());
+						orderAddress.setCitycode(act.getCity());
+						orderAddress.setDistrictcode(act.getArea()); 
 						orderAddress.setStreetdetail(act.getStreetdetails());
 						orderAddress.setCreatetime(new Date());
 						orderaddressMapper.insertReturnId(orderAddress);						

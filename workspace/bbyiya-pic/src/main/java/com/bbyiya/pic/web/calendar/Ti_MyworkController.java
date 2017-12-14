@@ -44,12 +44,12 @@ import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiPromoteradvertcoustomer;
-import com.bbyiya.model.TiPromoteradvertimgs;
 import com.bbyiya.model.TiPromoteradvertinfo;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.vo.calendar.MyworkDetailsParam;
 import com.bbyiya.service.IRegionService;
 import com.bbyiya.service.calendar.ITi_OrderMgtService;
+import com.bbyiya.service.calendar.ITi_PromoterAdvertService;
 import com.bbyiya.utils.ImgDomainUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
@@ -79,13 +79,31 @@ public class Ti_MyworkController extends SSOController {
 
 	@Autowired
 	private OProducerordercountMapper oproducerOrderCountMapper;
-	
+
+	@Autowired
+	private TiActivitysMapper actMapper;
 	@Autowired
 	private TiProductsMapper productMapper;
 	@Autowired
-	private TiPromoteradvertinfoMapper advertMapper;
-	@Autowired
 	private UUsersMapper userMapper;
+	//商家分享广告Info 
+	@Autowired
+	private TiPromoteradvertinfoMapper advertInfoMapper;
+	@Autowired
+	private TiPromoteradvertimgsMapper advertImgMapper;
+	@Autowired
+	private TiPromoteradvertcoustomerMapper advertCustomerMapper;
+	@Resource(name = "regionServiceImpl")
+	private IRegionService regionService;
+	//订单处理service
+	@Resource(name = "tiOrderMgtServiceImpl")
+	private ITi_OrderMgtService orderMgtService;
+	//分享广告service
+	@Resource(name = "ti_PromoterAdvertService")
+	private ITi_PromoterAdvertService advertService;
+
+	@Autowired
+	private EErrorsMapper logMapper;
 	/**
 	 * 参与活动 -图片上传
 	 * @param detailJson
@@ -206,8 +224,6 @@ public class Ti_MyworkController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	@Resource(name = "tiOrderMgtServiceImpl")
-	private ITi_OrderMgtService orderMgtService;
 	
 	/**
 	 * 门店自提
@@ -271,8 +287,6 @@ public class Ti_MyworkController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
-	@Autowired
-	private TiPromoteradvertinfoMapper advertInfoMapper;
 	/**
 	 * 作品详情
 	 * @param workId
@@ -304,6 +318,7 @@ public class Ti_MyworkController extends SSOController {
 						map.put("title", products.getTitle()); 
 						map.put("cateId", products.getCateid());
 						map.put("workInfo", myworks);
+						//作品拥有者昵称
 						UUsers workUsers=userMapper.selectByPrimaryKey(myworks.getUserid()==null?0l:myworks.getUserid()); 
 						map.put("nickName", workUsers==null?"":(ObjectUtil.isEmpty(workUsers.getNickname())?"":workUsers.getNickname()));
 						if(myworks.getActid()!=null&&myworks.getActid().intValue()>0){
@@ -312,6 +327,8 @@ public class Ti_MyworkController extends SSOController {
 								if(activitys.getAdvertid()!=null&&activitys.getAdvertid().intValue()>0){
 									TiPromoteradvertinfo advertMod=advertInfoMapper.selectByPrimaryKey(activitys.getAdvertid());
 									map.put("advert", advertMod);
+									//广告送达记录
+									advertService.addViews(user, activitys.getAdvertid());
 								}
 							}
 							List<UUsers> userList= userMapper.findUsersByWorkId(workId);
@@ -329,10 +346,6 @@ public class Ti_MyworkController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	@Autowired
-	private TiActivityworksMapper activityworksMapper;
-	@Autowired
-	private TiActivitysMapper actMapper;
 	
 	@ResponseBody
 	@RequestMapping(value = "/myactInfo")
@@ -365,12 +378,7 @@ public class Ti_MyworkController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-	@Autowired
-	private TiPromoteradvertimgsMapper advertImgMapper;
-	@Autowired
-	private TiPromoteradvertcoustomerMapper advertCustomerMapper;
-	@Resource(name = "regionServiceImpl")
-	private IRegionService regionService;
+	
 	/**
 	 * 获取广告信息详细
 	 * @param advertid
@@ -381,16 +389,16 @@ public class Ti_MyworkController extends SSOController {
 	@RequestMapping(value = "/advertinfo")
 	public String advertinfo(int advertid)throws Exception {
 		ReturnModel rq=new ReturnModel();
-		TiPromoteradvertinfo advertInfo= advertMapper.selectByPrimaryKey(advertid);
-		if(advertInfo!=null){
-			List<TiPromoteradvertimgs> advertImgs= advertImgMapper.findImgsByAdvertId(advertid);
-			if(advertImgs!=null&&advertImgs.size()>0){
-				advertInfo.setImglist(advertImgs);
+		LoginSuccessResult user=super.getLoginUser();
+		if(user!=null){
+			//分享广告详情
+			TiPromoteradvertinfo advertInfo=advertService.getTiPromoteradvertinfo(advertid);
+			if(advertInfo!=null){
+				rq.setBasemodle(advertInfo);
+				//新增浏览记录信息
+				advertService.addClicks(super.getLoginUser(), advertid); 
 			}
-			int readcount=advertInfo.getReadcount()==null?1:(advertInfo.getReadcount().intValue()+1);
-			advertInfo.setReadcount(readcount);
-			advertMapper.updateByPrimaryKeySelective(advertInfo);
-			rq.setBasemodle(advertInfo);
+			rq.setStatu(ReturnStatus.Success);
 		}
 		rq.setStatu(ReturnStatus.Success);
 		return JsonUtil.objectToJsonStr(rq);
@@ -412,12 +420,6 @@ public class Ti_MyworkController extends SSOController {
 			rq.setStatusreson("手机号不正确！");
 			return JsonUtil.objectToJsonStr(rq);
 		}
-//		TiPromoteradvertcoustomer cus= advertCustomerMapper.getCustomerByPhone(advertId, phone);
-//		if(cus!=null){
-//			rq.setStatusreson("此手机号已经提交！");
-//			rq.setStatu(ReturnStatus.ParamError);
-//			return JsonUtil.objectToJsonStr(rq);
-//		}
 		TiPromoteradvertcoustomer customer=new TiPromoteradvertcoustomer();
 		customer.setAdvertid(advertId);
 		customer.setName(name);
@@ -434,8 +436,6 @@ public class Ti_MyworkController extends SSOController {
 	}
 	
 	
-	@Autowired
-	private EErrorsMapper logMapper;
 	public void addlog(String msg) {
 		EErrors errors = new EErrors();
 		errors.setClassname(this.getClass().getName());

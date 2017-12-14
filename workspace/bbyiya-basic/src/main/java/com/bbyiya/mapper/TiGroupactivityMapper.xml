@@ -27,11 +27,14 @@
     <result column="TitleShare" property="titleshare" jdbcType="VARCHAR" />
     <result column="TitleMinShare" property="titleminshare" jdbcType="VARCHAR" />
     <result column="AddressType" property="addresstype" jdbcType="INTEGER" />
+    <result column="QRcode" property="qrcode" jdbcType="VARCHAR" />
+    <result column="QRcodeDesc" property="qrcodedesc" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
      GactId, PromoterUserId, LinkUrl, AdvertId, Title, Description, CompanyName, Logo, 
     Reciver, Mobilephone, Province, City, Area, StreetDetails, Address, Status, CreateTime, 
-    PraiseCount, Timespare, BrowseCount, Type, TempId, TitleShare, TitleMinShare, AddressType
+    PraiseCount, Timespare, BrowseCount, Type, TempId, TitleShare, TitleMinShare, AddressType, 
+    QRcode, QRcodeDesc
   </sql>
   
     <select id="findGroupActivityList" resultMap="BaseResultMap"  >
@@ -59,7 +62,7 @@
     where GactId = #{gactid,jdbcType=INTEGER}
   </delete>
   <insert id="insertReturnId" useGeneratedKeys="true" keyProperty="gactid"   parameterType="com.bbyiya.model.TiGroupactivity" >
-      insert into ti_groupactivity (GactId, PromoterUserId, LinkUrl, 
+     insert into ti_groupactivity (GactId, PromoterUserId, LinkUrl, 
       AdvertId, Title, Description, 
       CompanyName, Logo, Reciver, 
       Mobilephone, Province, City, 
@@ -67,7 +70,8 @@
       Status, CreateTime, PraiseCount, 
       Timespare, BrowseCount, Type, 
       TempId, TitleShare, TitleMinShare, 
-      AddressType)
+      AddressType, QRcode, QRcodeDesc
+      )
     values (#{gactid,jdbcType=INTEGER}, #{promoteruserid,jdbcType=BIGINT}, #{linkurl,jdbcType=VARCHAR}, 
       #{advertid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
       #{companyname,jdbcType=VARCHAR}, #{logo,jdbcType=VARCHAR}, #{reciver,jdbcType=VARCHAR}, 
@@ -76,7 +80,8 @@
       #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{praisecount,jdbcType=INTEGER}, 
       #{timespare,jdbcType=BIGINT}, #{browsecount,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, 
       #{tempid,jdbcType=INTEGER}, #{titleshare,jdbcType=VARCHAR}, #{titleminshare,jdbcType=VARCHAR}, 
-      #{addresstype,jdbcType=INTEGER})
+      #{addresstype,jdbcType=INTEGER}, #{qrcode,jdbcType=VARCHAR}, #{qrcodedesc,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insert" parameterType="com.bbyiya.model.TiGroupactivity" >
     insert into ti_groupactivity (GactId, PromoterUserId, LinkUrl, 
@@ -87,7 +92,8 @@
       Status, CreateTime, PraiseCount, 
       Timespare, BrowseCount, Type, 
       TempId, TitleShare, TitleMinShare, 
-      AddressType)
+      AddressType, QRcode, QRcodeDesc
+      )
     values (#{gactid,jdbcType=INTEGER}, #{promoteruserid,jdbcType=BIGINT}, #{linkurl,jdbcType=VARCHAR}, 
       #{advertid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
       #{companyname,jdbcType=VARCHAR}, #{logo,jdbcType=VARCHAR}, #{reciver,jdbcType=VARCHAR}, 
@@ -96,7 +102,8 @@
       #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{praisecount,jdbcType=INTEGER}, 
       #{timespare,jdbcType=BIGINT}, #{browsecount,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, 
       #{tempid,jdbcType=INTEGER}, #{titleshare,jdbcType=VARCHAR}, #{titleminshare,jdbcType=VARCHAR}, 
-      #{addresstype,jdbcType=INTEGER})
+      #{addresstype,jdbcType=INTEGER}, #{qrcode,jdbcType=VARCHAR}, #{qrcodedesc,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiGroupactivity" >
     insert into ti_groupactivity
@@ -176,6 +183,12 @@
       <if test="addresstype != null" >
         AddressType,
       </if>
+      <if test="qrcode != null" >
+        QRcode,
+      </if>
+      <if test="qrcodedesc != null" >
+        QRcodeDesc,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="gactid != null" >
@@ -252,6 +265,12 @@
       </if>
       <if test="addresstype != null" >
         #{addresstype,jdbcType=INTEGER},
+      </if>
+      <if test="qrcode != null" >
+        #{qrcode,jdbcType=VARCHAR},
+      </if>
+      <if test="qrcodedesc != null" >
+        #{qrcodedesc,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -330,6 +349,12 @@
       <if test="addresstype != null" >
         AddressType = #{addresstype,jdbcType=INTEGER},
       </if>
+      <if test="qrcode != null" >
+        QRcode = #{qrcode,jdbcType=VARCHAR},
+      </if>
+      <if test="qrcodedesc != null" >
+        QRcodeDesc = #{qrcodedesc,jdbcType=VARCHAR},
+      </if>
     </set>
     where GactId = #{gactid,jdbcType=INTEGER}
   </update>
@@ -358,7 +383,9 @@
       TempId = #{tempid,jdbcType=INTEGER},
       TitleShare = #{titleshare,jdbcType=VARCHAR},
       TitleMinShare = #{titleminshare,jdbcType=VARCHAR},
-      AddressType = #{addresstype,jdbcType=INTEGER}
+      AddressType = #{addresstype,jdbcType=INTEGER},
+      QRcode = #{qrcode,jdbcType=VARCHAR},
+      QRcodeDesc = #{qrcodedesc,jdbcType=VARCHAR}
     where GactId = #{gactid,jdbcType=INTEGER}
   </update>
 </mapper>

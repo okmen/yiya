@@ -86,8 +86,8 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 	public ReturnModel addorEditGroupActivity(Long userid,GroupActivityAddParam param){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);	
-		for (TiGroupactivityproducts pp : param.getProductlist()) {
-			TiProductstyles style=styleMapper.selectByPrimaryKey(pp.getProductid());
+//		for (TiGroupactivityproducts pp : param.getProductlist()) {
+//			TiProductstyles style=styleMapper.selectByPrimaryKey(pp.getProductid());
 //			//所有产品只能输入高于惊爆价的2倍，低于全价
 //			if(pp.getPrice().doubleValue()>=style.getPrice()){
 //				rq.setStatu(ReturnStatus.ParamError);
@@ -99,7 +99,7 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 //				rq.setStatusreson("产品价格必须高于惊爆价的2倍！");
 //				return rq;
 //			}
-		}
+//		}
 		boolean isadd=false;
 		TiGroupactivity ti=null;
 		if(!ObjectUtil.isEmpty(param.getGactid())){
@@ -124,6 +124,10 @@ public class Ibs_GroupActivityServiceImpl implements IIbs_GroupActivityService{
 		ti.setAddress(regionService.getProvinceName(param.getProvince())+regionService.getCityName(param.getCity())+regionService.getAresName(param.getArea())+param.getStreetdetails());
 		ti.setPromoteruserid(userid);
 		ti.setCreatetime(new Date());
+		if(!(ObjectUtil.isEmpty(param.getQrcode())||ObjectUtil.isEmpty(param.getQrcodedesc()))){
+			ti.setQrcode(param.getQrcode());
+			ti.setQrcodedesc(param.getQrcodedesc());
+		} 
 		ti.setStatus(1);
 		if(param.getType()!=null&&param.getType().intValue()==1){
 			ti.setPraisecount(param.getPraisecount());

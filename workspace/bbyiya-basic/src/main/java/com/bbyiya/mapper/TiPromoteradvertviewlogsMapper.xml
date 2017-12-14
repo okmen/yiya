@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiPromoteradvertviewlogsMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiPromoteradvertviewlogs" >
+    <id column="LogId" property="logid" jdbcType="BIGINT" />
+    <result column="AdvertId" property="advertid" jdbcType="INTEGER" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="NickName" property="nickname" jdbcType="VARCHAR" />
+    <result column="HeadImg" property="headimg" jdbcType="VARCHAR" />
+    <result column="ViewCount" property="viewcount" jdbcType="INTEGER" />
+    <result column="ViewTime" property="viewtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    LogId, AdvertId, UserId, NickName, HeadImg, ViewCount, ViewTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_promoteradvertviewlogs
+    where LogId = #{logid,jdbcType=BIGINT}
+  </select>
+  <select id="getByAdIdAndUid" resultMap="BaseResultMap"  ><!-- 01 找到某广告，某人的浏览记录 -->
+    select 
+    <include refid="Base_Column_List" />
+    from ti_promoteradvertviewlogs
+    where UserId = #{userId,jdbcType=BIGINT} and AdvertId=#{adverId,jdbcType=INTEGER}
+  </select>
+   <select id="findlistByAdvertId" resultMap="BaseResultMap"  ><!-- 02 找到某广告的浏览记录列表 -->
+    select  <include refid="Base_Column_List" />
+    from ti_promoteradvertviewlogs
+    where  AdvertId=#{advertId,jdbcType=INTEGER} order by ViewTime desc
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ti_promoteradvertviewlogs
+    where LogId = #{logid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiPromoteradvertviewlogs" >
+    insert into ti_promoteradvertviewlogs (LogId, AdvertId, UserId, 
+      NickName, HeadImg, ViewCount, 
+      ViewTime)
+    values (#{logid,jdbcType=BIGINT}, #{advertid,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, 
+      #{nickname,jdbcType=VARCHAR}, #{headimg,jdbcType=VARCHAR}, #{viewcount,jdbcType=INTEGER}, 
+      #{viewtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiPromoteradvertviewlogs" >
+    insert into ti_promoteradvertviewlogs
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="logid != null" >
+        LogId,
+      </if>
+      <if test="advertid != null" >
+        AdvertId,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="nickname != null" >
+        NickName,
+      </if>
+      <if test="headimg != null" >
+        HeadImg,
+      </if>
+      <if test="viewcount != null" >
+        ViewCount,
+      </if>
+      <if test="viewtime != null" >
+        ViewTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="logid != null" >
+        #{logid,jdbcType=BIGINT},
+      </if>
+      <if test="advertid != null" >
+        #{advertid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="nickname != null" >
+        #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="headimg != null" >
+        #{headimg,jdbcType=VARCHAR},
+      </if>
+      <if test="viewcount != null" >
+        #{viewcount,jdbcType=INTEGER},
+      </if>
+      <if test="viewtime != null" >
+        #{viewtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiPromoteradvertviewlogs" >
+    update ti_promoteradvertviewlogs
+    <set >
+      <if test="advertid != null" >
+        AdvertId = #{advertid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="nickname != null" >
+        NickName = #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="headimg != null" >
+        HeadImg = #{headimg,jdbcType=VARCHAR},
+      </if>
+      <if test="viewcount != null" >
+        ViewCount = #{viewcount,jdbcType=INTEGER},
+      </if>
+      <if test="viewtime != null" >
+        ViewTime = #{viewtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where LogId = #{logid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiPromoteradvertviewlogs" >
+    update ti_promoteradvertviewlogs
+    set AdvertId = #{advertid,jdbcType=INTEGER},
+      UserId = #{userid,jdbcType=BIGINT},
+      NickName = #{nickname,jdbcType=VARCHAR},
+      HeadImg = #{headimg,jdbcType=VARCHAR},
+      ViewCount = #{viewcount,jdbcType=INTEGER},
+      ViewTime = #{viewtime,jdbcType=TIMESTAMP}
+    where LogId = #{logid,jdbcType=BIGINT}
+  </update>
+</mapper>

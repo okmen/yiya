@@ -25,6 +25,7 @@ import com.bbyiya.model.TiMyworkcustomers;
 import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiUserdiscounts;
 import com.bbyiya.pic.vo.calendar.GetDiscountParam;
+import com.bbyiya.service.calendar.ITi_MyworksZansService;
 import com.bbyiya.service.calendar.ITi_OrderMgtService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
@@ -51,11 +52,12 @@ public class TiDiscountController extends SSOController {
 	private TiActivityworksMapper activityworksMapper;
 	@Autowired
 	private TiMyworksMapper myworkMapper;
-//	
-//	@Resource(name = "tiOrderMgtServiceImpl")
-//	private ITi_OrderMgtService orderMgtService;
+	
 	@Resource(name = "tiOrderMgtServiceImpl")
 	private  ITi_OrderMgtService basetiorderService;
+
+	@Resource(name = "ti_myworksZansServiceImpl")
+	private  ITi_MyworksZansService zanService;
 	/**
 	 * 领取优惠券--代客制作优惠券
 	 * @param workId
@@ -111,6 +113,10 @@ public class TiDiscountController extends SSOController {
 					if(!isOrdered){
 						workcustomerMapper.updateByPrimaryKeySelective(actMyworkcustomers);
 					}
+					//点赞
+					if(!ObjectUtil.isEmpty(param.getSourceWorkId())){
+						zanService.addZan(user, param.getSourceWorkId());
+					}
 					rq.setStatu(ReturnStatus.Success);
 					rq.setStatusreson("恭喜获得3张5折优惠券（下单时自动使用）");
 				}
@@ -128,7 +134,7 @@ public class TiDiscountController extends SSOController {
 				getMyDiscounts( param,actInfo.getProduceruserid(),user.getUserId());
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("恭喜获得3张5折优惠券（下单时自动使用）");
-
+				
 			}
 			//普通作品分享领取
 			else if (param.getSourceType() == 3) {
@@ -142,6 +148,10 @@ public class TiDiscountController extends SSOController {
 					getMyDiscounts(param, null, user.getUserId());
 					rq.setStatu(ReturnStatus.Success);
 					rq.setStatusreson("恭喜获得3张5折优惠券（下单时自动使用）");
+					//点赞
+					if(!ObjectUtil.isEmpty(param.getSourceWorkId())){
+						zanService.addZan(user, param.getSourceWorkId());
+					}
 				}
 			} 
 			else {// 活动作品分享后领取
@@ -181,6 +191,10 @@ public class TiDiscountController extends SSOController {
 							
 							rq.setStatu(ReturnStatus.Success);
 							rq.setStatusreson("恭喜获得3张5折优惠券（下单时自动使用）");
+							//点赞
+							if(!ObjectUtil.isEmpty(param.getSourceWorkId())){
+								zanService.addZan(user, param.getSourceWorkId());
+							}
 						}
 					}else {
 						rq.setStatu(ReturnStatus.SystemError);
@@ -216,6 +230,7 @@ public class TiDiscountController extends SSOController {
 		return true;
 	}
 	
+
 
 	
 }

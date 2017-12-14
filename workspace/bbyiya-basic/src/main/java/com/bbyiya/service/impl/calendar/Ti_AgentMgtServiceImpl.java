@@ -262,17 +262,20 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 			rq.setStatusreson("推广代理商咿呀号未通过审核或还在审核中！");
 			return rq;
 		}
-		TiAgents agents=agentsMapper.selectByPrimaryKey(userId);		
-		if(agents!=null&&agents.getStatus()!=null&&agents.getStatus().intValue()==Integer.parseInt(TiAgentStatusEnum.ok.toString())){
-			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("你已经为推广代理商身份，不能再申请为活动参与单位！");
-			return rq;
-		}
+//		TiAgents agents=agentsMapper.selectByPrimaryKey(userId);		
+//		if(agents!=null&&agents.getStatus()!=null&&agents.getStatus().intValue()==Integer.parseInt(TiAgentStatusEnum.ok.toString())){
+//			rq.setStatu(ReturnStatus.ParamError);
+//			rq.setStatusreson("你已经为推广代理商身份，不能再申请为活动参与单位！");
+//			return rq;
+//		}
+		//如果自己是别人的员工，清除掉员工信息
 		TiPromoteremployees promoteremployee=promoteremployeeMapper.selectByPrimaryKey(userId);
 		if(promoteremployee!=null&&promoteremployee.getUserid().longValue()!=promoteremployee.getPromoteruserid().longValue()){
-			rq.setStatu(ReturnStatus.ParamError);
-			rq.setStatusreson("你已经成为其它活动参与单位的员工，活动参与单位ID为["+promoteremployee.getPromoteruserid()+"]，不能再申请为活动参与单位！");
-			return rq;
+//			rq.setStatu(ReturnStatus.ParamError);
+//			rq.setStatusreson("你已经成为其它活动参与单位的员工，活动参与单位ID为["+promoteremployee.getPromoteruserid()+"]，不能再申请为活动参与单位！");
+//			return rq;
+			promoteremployeeMapper.deleteByPrimaryKey(userId);
+			//TODO 用户的员工标识更新
 		}
 		if(apply!=null){
 			//如果是已通过审核的推广者
@@ -840,7 +843,8 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 		if(tiagent==null){
 			tiagent=agentapplyMapper.getUAgentapplyVOByAgentUserId(agentUserId);	
 			if(tiagent!=null){
-				tiagent.setProvinceName(regionService.getProvinceName(tiagent.getProvince())) ;
+				tiagent.setPromotionUrl("https://mpic.bbyiya.com/login/transfer?m=1&redirct_url=http%3a%2f%2fapply.bbyiya.net%2f%3fproduct%3dcalendar");
+				tiagent.setProvinceName(regionService.getProvinceName(tiagent.getProvince())) ; 
 				tiagent.setCityName(regionService.getCityName(tiagent.getCity())) ;
 				tiagent.setAreaName(regionService.getAresName(tiagent.getArea())) ;	
 			}

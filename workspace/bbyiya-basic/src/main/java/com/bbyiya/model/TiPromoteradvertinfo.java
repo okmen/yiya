@@ -24,6 +24,10 @@ public class TiPromoteradvertinfo {
 
     private Integer readcount;
 
+    private Integer viewcount;
+
+    private Integer viewpersoncount;
+
 	private List<TiPromoteradvertimgs> imglist;
 
 	private String updatetimestr;
@@ -123,6 +127,22 @@ public class TiPromoteradvertinfo {
 
 	public void setReadcount(Integer readcount) {
 		this.readcount = readcount;
+	}
+
+	public Integer getViewcount() {
+		return viewcount;
+	}
+
+	public Integer getViewpersoncount() {
+		return viewpersoncount;
+	}
+
+	public void setViewcount(Integer viewcount) {
+		this.viewcount = viewcount;
+	}
+
+	public void setViewpersoncount(Integer viewpersoncount) {
+		this.viewpersoncount = viewpersoncount;
 	}
 
 

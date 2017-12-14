@@ -129,16 +129,15 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 		ti.setExtcount(param.getExtCount());//目标分享人数
 		ti.setFreecount(param.getFreecount());//目标参与总数量
 		ti.setProductid(param.getProductid());
-		ti.setAdvertid(param.getActivityid()); 
 		ti.setProduceruserid(userid);//推广者Id
 		ti.setStatus(1);//默认就是已开启的活动	
 		ti.setAutoaddress(param.getAutoaddress()==null?0:param.getAutoaddress());
-
+		ti.setAdvertid(param.getAdvertid()); 
 		//得到影楼默认分享广告
-		TiPromoteradvertinfo advertinfo=advertinfoMapper.getAdvertByPromoterUserId(userid);
-		if(advertinfo!=null){
-			ti.setAdvertid(advertinfo.getAdvertid());
-		}
+//		TiPromoteradvertinfo advertinfo=advertinfoMapper.getAdvertByPromoterUserId(userid);
+//		if(advertinfo!=null){
+//			ti.setAdvertid(advertinfo.getAdvertid());
+//		}
 		activityMapper.insertReturnId(ti);
 		
 		//如果是选择兑换码则要生成相应数量的兑换码

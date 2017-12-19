@@ -11,7 +11,10 @@ public class CalendarActivityAddParam {
 	private Integer freecount;	//最大参与人数
 	private Integer extCount;//目标分享人数
 	private String actimg;	//活动图片
+	private String qrcode;
+	private String qrcodeDesc;
 	private Integer autoaddress;
+	private Integer applylimitcount;
 	
 	public Integer getActivityid() {
 		return activityid;
@@ -78,6 +81,24 @@ public class CalendarActivityAddParam {
 	}
 	public void setAdvertid(Integer advertid) {
 		this.advertid = advertid;
+	}
+	public String getQrcode() {
+		return qrcode;
+	}
+	public String getQrcodeDesc() {
+		return qrcodeDesc;
+	}
+	public void setQrcode(String qrcode) {
+		this.qrcode = qrcode;
+	}
+	public void setQrcodeDesc(String qrcodeDesc) {
+		this.qrcodeDesc = qrcodeDesc;
+	}
+	public Integer getApplylimitcount() {
+		return applylimitcount;
+	}
+	public void setApplylimitcount(Integer applylimitcount) {
+		this.applylimitcount = applylimitcount;
 	}
 	
 	

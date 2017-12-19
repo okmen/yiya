@@ -54,8 +54,8 @@ import com.bbyiya.model.TiProductshowproducts;
 import com.bbyiya.model.TiProductshowstyles;
 import com.bbyiya.model.TiProductshowtemplateinfo;
 import com.bbyiya.model.TiProductstyles;
-import com.bbyiya.model.TiPromoteradvertinfo;
 import com.bbyiya.service.IRegionService;
+import com.bbyiya.service.calendar.ITi_MyworksZansService;
 import com.bbyiya.service.calendar.ITi_OrderMgtService;
 import com.bbyiya.service.calendar.ITi_PromoterAdvertService;
 import com.bbyiya.service.pic.IBasePostMgtService;
@@ -133,7 +133,10 @@ public class TiGroupActivityController  extends SSOController {
 	 */
 	@Resource(name = "basePostMgtServiceImpl")
 	private IBasePostMgtService postMgtService;
-
+	//点赞处理
+	@Resource(name = "ti_myworksZansServiceImpl")
+	private  ITi_MyworksZansService zanService;
+	
 	/**
 	 * 团购活动-详情
 	 * @param gActId
@@ -154,10 +157,12 @@ public class TiGroupActivityController  extends SSOController {
 				gactMapper.updateByPrimaryKeySelective(actInfo);
 			}
 			result.put("gActInfo", actInfo);
+			boolean inAct=false;
 			TiGroupactivityworks gwork= gworkMapper.getTiGroupactivityworksByActIdAndUserId(user.getUserId(), groupId);
 			if(gwork!=null&&gwork.getStatus()!=null&&(gwork.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.payed.toString())||gwork.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.completeorder.toString()))){
 				result.put("gwork", gwork);
 				result.put("exists", 1);//已经参与活动
+				inAct=true;
 			}else {
 				result.put("exists", 0);
 				List<TiGroupactivityproducts> gprolist = gactProMapper.findProductsByGActid(groupId);
@@ -180,13 +185,15 @@ public class TiGroupActivityController  extends SSOController {
 					}
 					result.put("prolist", gprolist);
 				}
-				//广告模式
-				if(actInfo.getType()!=null&&actInfo.getType().intValue()==Integer.parseInt(GroupActivityType.advert.toString())){
-					if(actInfo.getAdvertid()!=null){
-						TiPromoteradvertinfo advertMod=advertInfoMapper.selectByPrimaryKey(actInfo.getAdvertid());						
-						result.put("advert", advertMod);
-						advertService.addViews(user, actInfo.getAdvertid().intValue()); 
-					}
+				//广告模式  活动首页广告展示
+				if(!inAct&&actInfo.getType()!=null&&actInfo.getType().intValue()==Integer.parseInt(GroupActivityType.advert.toString())){
+//					if(actInfo.getAdvertid()!=null){
+//						TiPromoteradvertinfo advertMod=advertInfoMapper.selectByPrimaryKey(actInfo.getAdvertid());						
+//						result.put("advert", advertMod);
+//						advertService.addViews(user, actInfo.getAdvertid().intValue()); 
+//					}
+					result.put("advert", advertService.addViewCountReurnTiPromoteradvertinfo(user,actInfo.getAdvertid()));
+//					
 					if(actInfo.getTempid()!=null){
 						// 产品翻页模板 
 						// 所有款式图片
@@ -253,6 +260,7 @@ public class TiGroupActivityController  extends SSOController {
 		} 
 		return resultList;
 	}
+	
 	/**
 	 * 翻页展示 所有款式列表
 	 * @return
@@ -389,13 +397,14 @@ public class TiGroupActivityController  extends SSOController {
 							}
 						}
 						if(gwork.getStatus()!=null&&(gwork.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.payed.toString())||gwork.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.completeorder.toString()))){
-							map.put("praiseUsers", gpraiseMapper.findlistByWorkId(workId));
-							if(actGroupactivity.getAdvertid()!=null&&actGroupactivity.getAdvertid().intValue()>0){
-								TiPromoteradvertinfo advertMod=advertInfoMapper.selectByPrimaryKey(actGroupactivity.getAdvertid());
-								map.put("advert", advertMod);
-								
-								advertService.addViews(user, actGroupactivity.getAdvertid().intValue()); 
-							}
+							map.put("praiseUsers", gpraiseMapper.findlistByWorkId(workId));//zanService.findZansList(workId)
+							map.put("advert", advertService.addViewCountReurnTiPromoteradvertinfo(user, actGroupactivity.getAdvertid()));
+//							if(actGroupactivity.getAdvertid()!=null&&actGroupactivity.getAdvertid().intValue()>0){
+//								TiPromoteradvertinfo advertMod=advertInfoMapper.selectByPrimaryKey(actGroupactivity.getAdvertid());
+//								map.put("advert", advertMod);
+//								
+//								advertService.addViews(user, actGroupactivity.getAdvertid().intValue()); 
+//							}
 						}
 						rq.setBasemodle(map);
 					}

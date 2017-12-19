@@ -12,7 +12,6 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +32,6 @@ import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
 import com.bbyiya.dao.TiPromoteradvertinfoMapper;
 import com.bbyiya.dao.TiPromoteremployeesMapper;
-import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
@@ -42,9 +40,7 @@ import com.bbyiya.enums.calendar.TiActivityTypeEnum;
 import com.bbyiya.enums.pic.ActivityCodeStatusEnum;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OUserorders;
-import com.bbyiya.model.PMyproductactivitycode;
 import com.bbyiya.model.PMyproducts;
-import com.bbyiya.model.PMyproducttempusers;
 import com.bbyiya.model.TiActivityexchangecodes;
 import com.bbyiya.model.TiActivityoff;
 import com.bbyiya.model.TiActivitys;
@@ -132,12 +128,14 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 		ti.setProduceruserid(userid);//推广者Id
 		ti.setStatus(1);//默认就是已开启的活动	
 		ti.setAutoaddress(param.getAutoaddress()==null?0:param.getAutoaddress());
-		ti.setAdvertid(param.getAdvertid()); 
-		//得到影楼默认分享广告
-//		TiPromoteradvertinfo advertinfo=advertinfoMapper.getAdvertByPromoterUserId(userid);
-//		if(advertinfo!=null){
-//			ti.setAdvertid(advertinfo.getAdvertid());
-//		}
+		ti.setAdvertid(param.getAdvertid());
+		if(!(ObjectUtil.isEmpty(param.getQrcode())||ObjectUtil.isEmpty(param.getQrcodeDesc()))){
+			ti.setQrcode(param.getQrcode());
+			ti.setQrcodedesc(param.getQrcodeDesc());
+		}
+		//活动免费领取人数
+		ti.setApplylimitcount(param.getApplylimitcount()==null?0:param.getApplylimitcount());
+		
 		activityMapper.insertReturnId(ti);
 		
 		//如果是选择兑换码则要生成相应数量的兑换码
@@ -222,11 +220,24 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 			if(!ObjectUtil.isEmpty(param.getActivityid())){
 				ti.setAdvertid(param.getAdvertid()); 
 			}
+			if(!(ObjectUtil.isEmpty(param.getQrcode())||ObjectUtil.isEmpty(param.getQrcodeDesc()))){
+				ti.setQrcode(param.getQrcode());
+				ti.setQrcodedesc(param.getQrcodeDesc()); 
+			}
 			if(freecount.intValue()!=0&&freecount.intValue()<applycount){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("邀请总数限制不得小于总报名人数！");
 				return rq;
-			}			
+			}	
+			int limitFreeCount=(param.getApplylimitcount()==null)?0:param.getApplylimitcount();
+			if(limitFreeCount>0){
+				int applyCountFree=ti.getApplyingcount()==null?0:ti.getApplyingcount().intValue();
+				if(limitFreeCount<=applyCountFree){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("免费领取总数不得小于或等于已经领取的人数！");
+					return rq;
+				}
+			}
 			activityMapper.updateByPrimaryKeyWithBLOBs(ti);
 		}
 		rq.setStatu(ReturnStatus.Success);

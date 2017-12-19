@@ -15,6 +15,7 @@ import com.bbyiya.model.TiPromoteradvertinfo;
 import com.bbyiya.model.TiPromoteradvertviewlogs;
 import com.bbyiya.service.calendar.ITi_PromoterAdvertService;
 import com.bbyiya.utils.DateUtil;
+import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -66,7 +67,7 @@ public class Ti_PromoterAdvertServiceImpl implements ITi_PromoterAdvertService{
 	}
 
 	/**
-	 * 广告详情
+	 * 广告详情(包含图片)
 	 * @param advertId
 	 * @return
 	 */
@@ -80,6 +81,36 @@ public class Ti_PromoterAdvertServiceImpl implements ITi_PromoterAdvertService{
 		}
 		return advertInfo;
 	}
+	/**
+	 * 新增广告曝光，并返回广告详情
+	 * @param user
+	 * @param advertId
+	 * @return TiPromoteradvertinfo
+	 */
+	public TiPromoteradvertinfo addViewCountReurnTiPromoteradvertinfo(LoginSuccessResult user,Integer advertId){
+		if(ObjectUtil.isEmpty(advertId)||user==null)
+			return null;
+		//广告基本信息
+		TiPromoteradvertinfo advertInfo= this.getTiPromoteradvertinfo(advertId.intValue());
+		if(advertInfo!=null){
+			this.addViews(user, advertId);
+		}
+		return advertInfo;
+	}
+	/**
+	 * 点击广告-返回广告详情
+	 */
+	public TiPromoteradvertinfo addClickCountReurnTiPromoteradvertinfo(LoginSuccessResult user,Integer advertId){
+		if(ObjectUtil.isEmpty(advertId)||user==null)
+			return null;
+		//广告基本信息
+		TiPromoteradvertinfo advertInfo= this.getTiPromoteradvertinfo(advertId.intValue());
+		if(advertInfo!=null){
+			this.addClicks(user, advertId);
+		}
+		return advertInfo;
+	}
+	
 	/**
 	 * 获取分享广告的浏览记录 翻页
 	 * @param advertId

@@ -38,6 +38,12 @@ public class Ti_MyworksZansServiceImpl implements ITi_MyworksZansService{
 	 * 获取作品点赞列表
 	 */
 	public List<TiMyworkszanlogs> findZansList(long workId){
-		return zanMapper.findListByWorkId(workId);
+		List<TiMyworkszanlogs> list= zanMapper.findListByWorkId(workId);
+		if(list!=null){
+			for (TiMyworkszanlogs log : list) {
+				log.setHeadimg(log.getUserimg());
+			}
+		}
+		return list;
 	}
 }

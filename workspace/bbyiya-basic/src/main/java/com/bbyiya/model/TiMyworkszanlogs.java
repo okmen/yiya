@@ -14,7 +14,8 @@ public class TiMyworkszanlogs {
     private String nickname;
 
     private Date createtime;
-
+    //=================================
+    private String headimg;
     public Long getLogid() {
         return logid;
     }
@@ -62,4 +63,14 @@ public class TiMyworkszanlogs {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+
+	public String getHeadimg() {
+		return headimg;
+	}
+
+	public void setHeadimg(String headimg) {
+		this.headimg = headimg;
+	}
+    
+    
 }

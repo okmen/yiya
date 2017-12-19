@@ -26,6 +26,20 @@ public interface ITi_PromoterAdvertService {
 	 */
 	TiPromoteradvertinfo getTiPromoteradvertinfo(int advertId);
 	/**
+	 * 曝光广告，并返回广告详情
+	 * @param user
+	 * @param advertId
+	 * @return
+	 */
+	TiPromoteradvertinfo addViewCountReurnTiPromoteradvertinfo(LoginSuccessResult user,Integer advertId);
+	/**
+	 * 广告详情页-详情信息
+	 * @param user
+	 * @param advertId
+	 * @return
+	 */
+	TiPromoteradvertinfo addClickCountReurnTiPromoteradvertinfo(LoginSuccessResult user,Integer advertId);
+	/**
 	 * 获取广告的用户浏览记录
 	 * @param advertId
 	 * @param index

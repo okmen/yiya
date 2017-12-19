@@ -25,7 +25,6 @@ import com.bbyiya.dao.TiMyartsdetailsMapper;
 import com.bbyiya.dao.TiMyworksMapper;
 import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
-import com.bbyiya.dao.TiPromoteradvertcoustomerMapper;
 import com.bbyiya.dao.TiPromoteradvertimgsMapper;
 import com.bbyiya.dao.TiPromoteradvertinfoMapper;
 import com.bbyiya.dao.UUsersMapper;
@@ -43,11 +42,10 @@ import com.bbyiya.model.TiMyartsdetails;
 import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiProductstyles;
-import com.bbyiya.model.TiPromoteradvertcoustomer;
 import com.bbyiya.model.TiPromoteradvertinfo;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.vo.calendar.MyworkDetailsParam;
-import com.bbyiya.service.IRegionService;
+import com.bbyiya.service.calendar.ITi_MyworksZansService;
 import com.bbyiya.service.calendar.ITi_OrderMgtService;
 import com.bbyiya.service.calendar.ITi_PromoterAdvertService;
 import com.bbyiya.utils.ImgDomainUtil;
@@ -91,16 +89,17 @@ public class Ti_MyworkController extends SSOController {
 	private TiPromoteradvertinfoMapper advertInfoMapper;
 	@Autowired
 	private TiPromoteradvertimgsMapper advertImgMapper;
-	@Autowired
-	private TiPromoteradvertcoustomerMapper advertCustomerMapper;
-	@Resource(name = "regionServiceImpl")
-	private IRegionService regionService;
+
+	
 	//订单处理service
 	@Resource(name = "tiOrderMgtServiceImpl")
 	private ITi_OrderMgtService orderMgtService;
 	//分享广告service
 	@Resource(name = "ti_PromoterAdvertService")
 	private ITi_PromoterAdvertService advertService;
+	//点赞处理
+	@Resource(name = "ti_myworksZansServiceImpl")
+	private  ITi_MyworksZansService zanService;
 
 	@Autowired
 	private EErrorsMapper logMapper;
@@ -154,13 +153,28 @@ public class Ti_MyworkController extends SSOController {
 							if(isOk>0&&style.getImgcount().intValue()==param.getDetails().size()){
 								myworks.setCompletetime(new Date());
 								workMapper.updateByPrimaryKeySelective(myworks);
-								//活动提交
+								//活动作品提交
 								if(myworks.getActid()!=null&&myworks.getActid().intValue()>0){
 									TiActivityworks activityworks= activityworkMapper.selectByPrimaryKey(myworks.getWorkid());
 									if(activityworks!=null){
+										if(activityworks.getStatus()==null||activityworks.getStatus()==Integer.parseInt(ActivityWorksStatusEnum.apply.toString())){
+											TiActivitys actInfo=actMapper.selectByPrimaryKey(myworks.getActid());
+											//参与人数
+											if(actInfo!=null){
+												int applyingCount=actInfo.getApplyingcount()==null?0:actInfo.getApplyingcount().intValue();
+												if(actInfo.getApplylimitcount()!=null&&actInfo.getApplylimitcount()>0&&actInfo.getApplylimitcount().intValue()<=applyingCount){
+													rq.setStatu(ReturnStatus.ParamError);
+													rq.setStatusreson("不好意思，领取名额已经领完！");
+													return JsonUtil.objectToJsonStr(rq);
+												}
+												actInfo.setApplycount(applyingCount+1);
+												actMapper.updateByPrimaryKeySelective(actInfo);
+											}
+										}
 										activityworks.setStatus(Integer.parseInt(ActivityWorksStatusEnum.imagesubmit.toString()));
 										activityworkMapper.updateByPrimaryKeySelective(activityworks);
 									}
+									
 								}
 								
 								//图片上传时间
@@ -324,15 +338,10 @@ public class Ti_MyworkController extends SSOController {
 						if(myworks.getActid()!=null&&myworks.getActid().intValue()>0){
 							TiActivitys activitys= actMapper.selectByPrimaryKey(myworks.getActid());
 							if(activitys!=null&&activitys.getProduceruserid()!=null){
-								if(activitys.getAdvertid()!=null&&activitys.getAdvertid().intValue()>0){
-									TiPromoteradvertinfo advertMod=advertInfoMapper.selectByPrimaryKey(activitys.getAdvertid());
-									map.put("advert", advertMod);
-									//广告送达记录
-									advertService.addViews(user, activitys.getAdvertid());
-								}
+								map.put("advert", advertService.addViewCountReurnTiPromoteradvertinfo(user,  activitys.getAdvertid()));
+								map.put("activity", activitys);
 							}
-							List<UUsers> userList= userMapper.findUsersByWorkId(workId);
-							map.put("users", userList);
+							map.put("users", zanService.findZansList(workId));
 						}
 						rq.setStatu(ReturnStatus.Success);
 						rq.setBasemodle(map); 
@@ -379,24 +388,23 @@ public class Ti_MyworkController extends SSOController {
 	}
 	
 	
+	
 	/**
-	 * 获取广告信息详细
+	 * 获取广告banner信息，新增浏览次数
 	 * @param advertid
 	 * @return
 	 * @throws Exception
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/advertinfo")
-	public String advertinfo(int advertid)throws Exception {
+	@RequestMapping(value = "/advertBannerInfo")
+	public String advertBannerInfo(int advertid)throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user=super.getLoginUser();
 		if(user!=null){
 			//分享广告详情
-			TiPromoteradvertinfo advertInfo=advertService.getTiPromoteradvertinfo(advertid);
+			TiPromoteradvertinfo advertInfo=advertService.addViewCountReurnTiPromoteradvertinfo(user, advertid); //advertService.getTiPromoteradvertinfo(advertid);
 			if(advertInfo!=null){
 				rq.setBasemodle(advertInfo);
-				//新增浏览记录信息
-				advertService.addClicks(super.getLoginUser(), advertid); 
 			}
 			rq.setStatu(ReturnStatus.Success);
 		}
@@ -404,36 +412,7 @@ public class Ti_MyworkController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-	@ResponseBody
-	@RequestMapping(value = "/addAdvertcustomer")
-	public String addAdvertcustomer(String name,String phone,int advertId, int province,int city,int district,String streetDetail)throws Exception {
-		ReturnModel rq=new ReturnModel();
-		if(advertId<=0){
-			rq.setStatusreson("参数有误");
-			return JsonUtil.objectToJsonStr(rq);
-		}
-		if(ObjectUtil.isEmpty(name)){
-			rq.setStatusreson("姓名不能为空！");
-			return JsonUtil.objectToJsonStr(rq);
-		}
-		if(!ObjectUtil.isMobile(phone)){
-			rq.setStatusreson("手机号不正确！");
-			return JsonUtil.objectToJsonStr(rq);
-		}
-		TiPromoteradvertcoustomer customer=new TiPromoteradvertcoustomer();
-		customer.setAdvertid(advertId);
-		customer.setName(name);
-		customer.setMobilephone(phone);
-		customer.setProvince(province);
-		customer.setCity(city);
-		customer.setDistrict(district);
-		customer.setStreetdetail(streetDetail);
-		customer.setCreatetime(new Date()); 
-		customer.setAddress(regionService.getProvinceName(province)+regionService.getCityName(city)+regionService.getAresName(district)+streetDetail);
-		advertCustomerMapper.insert(customer); 
-		rq.setStatu(ReturnStatus.Success);
-		return JsonUtil.objectToJsonStr(rq);
-	}
+	
 	
 	
 	public void addlog(String msg) {

@@ -19,12 +19,19 @@
     <result column="Description" property="description" jdbcType="LONGVARCHAR" />
     <result column="AdvertId" property="advertid" jdbcType="INTEGER" />
     <result column="AutoAddress" property="autoaddress" jdbcType="INTEGER" />
+    <result column="QRcode" property="qrcode" jdbcType="VARCHAR" />
+    <result column="QRcodeDesc" property="qrcodedesc" jdbcType="VARCHAR" />
+    <result column="ApplyingCount" property="applyingcount" jdbcType="INTEGER" />
+    <result column="ApplyLimitCount" property="applylimitcount" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.bbyiya.model.TiActivitys" extends="BaseResultMap" >
+    <result column="Description" property="description" jdbcType="LONGVARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     ActId, Title, ProducerUserId, ProductId, StyleId, FreeCount, ActType, ExtCount, ApplyCount, 
-    CompleteCount, Status, CreateTime, Remark, ActImg, Description, AdvertId, AutoAddress
+    CompleteCount, Status, CreateTime, Remark, ActImg, AdvertId, AutoAddress, QRcode, 
+    QRcodeDesc, ApplyingCount, ApplyLimitCount,Description
   </sql>
-
   <resultMap id="TiActivitysVOResult" type="com.bbyiya.vo.calendar.TiActivitysVo" extends="BaseResultMap">  
   </resultMap>  
   
@@ -68,8 +75,6 @@
     update  ti_activitys set AdvertId=null 
     where AdvertId = #{advertid,jdbcType=INTEGER}
   </update>
-  
-  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from ti_activitys
     where ActId = #{actid,jdbcType=INTEGER}
@@ -81,28 +86,35 @@
       ActType, ExtCount, ApplyCount, 
       CompleteCount, Status, CreateTime, 
       Remark, ActImg, AdvertId, 
-      AutoAddress, Description)
+      AutoAddress, QRcode, QRcodeDesc, 
+      ApplyingCount, ApplyLimitCount, Description
+      )
     values (#{actid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{produceruserid,jdbcType=BIGINT}, 
       #{productid,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, #{freecount,jdbcType=INTEGER}, 
       #{acttype,jdbcType=INTEGER}, #{extcount,jdbcType=INTEGER}, #{applycount,jdbcType=INTEGER}, 
       #{completecount,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
       #{remark,jdbcType=VARCHAR}, #{actimg,jdbcType=VARCHAR}, #{advertid,jdbcType=INTEGER}, 
-      #{autoaddress,jdbcType=INTEGER}, #{description,jdbcType=LONGVARCHAR})
+      #{autoaddress,jdbcType=INTEGER}, #{qrcode,jdbcType=VARCHAR}, #{qrcodedesc,jdbcType=VARCHAR}, 
+      #{applyingcount,jdbcType=INTEGER}, #{applylimitcount,jdbcType=INTEGER}, #{description,jdbcType=LONGVARCHAR}
+      )
   </insert>
-  
    <insert id="insert" parameterType="com.bbyiya.model.TiActivitys" >
     insert into ti_activitys (ActId, Title, ProducerUserId, 
       ProductId, StyleId, FreeCount, 
       ActType, ExtCount, ApplyCount, 
       CompleteCount, Status, CreateTime, 
       Remark, ActImg, AdvertId, 
-      AutoAddress, Description)
+      AutoAddress, QRcode, QRcodeDesc, 
+      ApplyingCount, ApplyLimitCount, Description
+      )
     values (#{actid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{produceruserid,jdbcType=BIGINT}, 
       #{productid,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, #{freecount,jdbcType=INTEGER}, 
       #{acttype,jdbcType=INTEGER}, #{extcount,jdbcType=INTEGER}, #{applycount,jdbcType=INTEGER}, 
       #{completecount,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
       #{remark,jdbcType=VARCHAR}, #{actimg,jdbcType=VARCHAR}, #{advertid,jdbcType=INTEGER}, 
-      #{autoaddress,jdbcType=INTEGER}, #{description,jdbcType=LONGVARCHAR})
+      #{autoaddress,jdbcType=INTEGER}, #{qrcode,jdbcType=VARCHAR}, #{qrcodedesc,jdbcType=VARCHAR}, 
+      #{applyingcount,jdbcType=INTEGER}, #{applylimitcount,jdbcType=INTEGER}, #{description,jdbcType=LONGVARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiActivitys" >
     insert into ti_activitys
@@ -154,6 +166,18 @@
       </if>
       <if test="autoaddress != null" >
         AutoAddress,
+      </if>
+      <if test="qrcode != null" >
+        QRcode,
+      </if>
+      <if test="qrcodedesc != null" >
+        QRcodeDesc,
+      </if>
+      <if test="applyingcount != null" >
+        ApplyingCount,
+      </if>
+      <if test="applylimitcount != null" >
+        ApplyLimitCount,
       </if>
       <if test="description != null" >
         Description,
@@ -208,6 +232,18 @@
       <if test="autoaddress != null" >
         #{autoaddress,jdbcType=INTEGER},
       </if>
+      <if test="qrcode != null" >
+        #{qrcode,jdbcType=VARCHAR},
+      </if>
+      <if test="qrcodedesc != null" >
+        #{qrcodedesc,jdbcType=VARCHAR},
+      </if>
+      <if test="applyingcount != null" >
+        #{applyingcount,jdbcType=INTEGER},
+      </if>
+      <if test="applylimitcount != null" >
+        #{applylimitcount,jdbcType=INTEGER},
+      </if>
       <if test="description != null" >
         #{description,jdbcType=LONGVARCHAR},
       </if>
@@ -261,6 +297,18 @@
       <if test="autoaddress != null" >
         AutoAddress = #{autoaddress,jdbcType=INTEGER},
       </if>
+      <if test="qrcode != null" >
+        QRcode = #{qrcode,jdbcType=VARCHAR},
+      </if>
+      <if test="qrcodedesc != null" >
+        QRcodeDesc = #{qrcodedesc,jdbcType=VARCHAR},
+      </if>
+      <if test="applyingcount != null" >
+        ApplyingCount = #{applyingcount,jdbcType=INTEGER},
+      </if>
+      <if test="applylimitcount != null" >
+        ApplyLimitCount = #{applylimitcount,jdbcType=INTEGER},
+      </if>
       <if test="description != null" >
         Description = #{description,jdbcType=LONGVARCHAR},
       </if>
@@ -284,6 +332,10 @@
       ActImg = #{actimg,jdbcType=VARCHAR},
       AdvertId = #{advertid,jdbcType=INTEGER},
       AutoAddress = #{autoaddress,jdbcType=INTEGER},
+      QRcode = #{qrcode,jdbcType=VARCHAR},
+      QRcodeDesc = #{qrcodedesc,jdbcType=VARCHAR},
+      ApplyingCount = #{applyingcount,jdbcType=INTEGER},
+      ApplyLimitCount = #{applylimitcount,jdbcType=INTEGER},
       Description = #{description,jdbcType=LONGVARCHAR}
     where ActId = #{actid,jdbcType=INTEGER}
   </update>
@@ -303,7 +355,11 @@
       Remark = #{remark,jdbcType=VARCHAR},
       ActImg = #{actimg,jdbcType=VARCHAR},
       AdvertId = #{advertid,jdbcType=INTEGER},
-      AutoAddress = #{autoaddress,jdbcType=INTEGER}
+      AutoAddress = #{autoaddress,jdbcType=INTEGER},
+      QRcode = #{qrcode,jdbcType=VARCHAR},
+      QRcodeDesc = #{qrcodedesc,jdbcType=VARCHAR},
+      ApplyingCount = #{applyingcount,jdbcType=INTEGER},
+      ApplyLimitCount = #{applylimitcount,jdbcType=INTEGER}
     where ActId = #{actid,jdbcType=INTEGER}
   </update>
 </mapper>

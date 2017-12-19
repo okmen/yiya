@@ -40,7 +40,6 @@ import com.bbyiya.model.TiActivitysingles;
 import com.bbyiya.model.TiActivityworks;
 import com.bbyiya.model.TiDiscountmodel;
 import com.bbyiya.model.TiMyworks;
-import com.bbyiya.model.TiPromoteradvertinfo;
 import com.bbyiya.model.TiPromoteremployees;
 import com.bbyiya.model.TiPromoters;
 import com.bbyiya.model.TiUserdiscounts;
@@ -116,13 +115,7 @@ public class TiActivityMgtController extends SSOController {
 		if(user!=null){
 			TiActivitysVo actInfo=actMapper.getResultByActId(actId);
 			if(actInfo!=null){
-				if (actInfo.getAdvertid() != null && actInfo.getAdvertid().intValue() > 0) {
-					TiPromoteradvertinfo advertMod =advertService.getTiPromoteradvertinfo(actInfo.getAdvertid()); //advertInfoMapper.selectByPrimaryKey(actInfo.getAdvertid());
-					if (advertMod != null) {
-						actInfo.setAdvert(advertMod);
-						advertService.addViews(user, actInfo.getAdvertid().intValue()); 
-					}
-				}
+				boolean showAdvert=false;
 				//参与活动情况
 				TiActivityworks myActWork= activityworksMapper.getActWorkListByActIdAndUserId(actId, user.getUserId());
 				if(myActWork!=null){
@@ -134,6 +127,16 @@ public class TiActivityMgtController extends SSOController {
 					if(workMyworks!=null&&!ObjectUtil.isEmpty(workMyworks.getCompletetime())){
 						actInfo.setCompleteTime(workMyworks.getCompletetime()); 
 					}
+					//作品未提交 显示活动首页，显示广告
+					if(myActWork.getStatus()!=null&&!(myActWork.getStatus().intValue()==Integer.parseInt(ActivityWorksStatusEnum.imagesubmit.toString())||myActWork.getStatus().intValue()==Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString())||myActWork.getStatus().intValue()==Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString()))){
+						showAdvert = true;
+					}
+				}else{
+					//还未参与活动，显示广告
+					showAdvert=true;
+				}
+				if(showAdvert){
+					actInfo.setAdvert(advertService.addViewCountReurnTiPromoteradvertinfo(user, actInfo.getAdvertid()));					
 				}
 				//一对一活动
 				if(actInfo.getActtype()!=null&&actInfo.getActtype().intValue()==Integer.parseInt(TiActivityTypeEnum.toOne.toString())){
@@ -198,9 +201,21 @@ public class TiActivityMgtController extends SSOController {
 			// 1活动信息
 			TiActivitys actInfo=actMapper.selectByPrimaryKey(actId);
 			if(actInfo!=null){
+				/**
+				 * 限制参与人数
+				 */
 				if(actInfo.getFreecount()!=null&&actInfo.getFreecount().intValue()>0){
 					if(actInfo.getApplycount()!=null&&actInfo.getApplycount().intValue()>=actInfo.getFreecount().intValue()){
-						rq.setStatusreson("不好意思，您来晚了，活动名额已满！");
+						rq.setStatusreson("不好意思，您来晚了，活动已经领取名额已经满了！");
+						return JsonUtil.objectToJsonStr(rq);
+					} 
+				}
+				/**
+				 * 限制领取人数
+				 */
+				if(actInfo.getApplylimitcount()!=null&&actInfo.getApplylimitcount().intValue()>0){
+					if(actInfo.getApplyingcount()!=null&&actInfo.getApplyingcount().intValue()>=actInfo.getApplylimitcount().intValue()){
+						rq.setStatusreson("不好意思，您来晚了，活动参与人数已经满了！");
 						return JsonUtil.objectToJsonStr(rq);
 					} 
 				}
@@ -288,7 +303,10 @@ public class TiActivityMgtController extends SSOController {
 					activityworksMapper.insert(activityworks);
 					
 					// 5更新参与人数
-					actInfo.setApplycount((actInfo.getApplycount()==null?0:actInfo.getApplycount().intValue())+1); 
+					actInfo.setApplycount((actInfo.getApplycount()==null?0:actInfo.getApplycount().intValue())+1);
+					//参与中的人数
+//					int applyingcount=actInfo.getApplyingcount()==null?(actInfo.getApplycount()==null?0:actInfo.getApplycount().intValue()):actInfo.getApplyingcount().intValue();
+//					actInfo.setApplyingcount(applyingcount+1); 
 					actMapper.updateByPrimaryKeySelective(actInfo);
 					
 					

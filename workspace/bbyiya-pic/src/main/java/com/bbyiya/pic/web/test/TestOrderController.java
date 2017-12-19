@@ -28,7 +28,7 @@ import com.bbyiya.web.base.SSOController;
 import com.qiniu.storage.model.FetchRet;
 
 @Controller
-@RequestMapping(value = "/test")
+@RequestMapping(value = "/test2")
 public class TestOrderController  extends SSOController{
 	@Resource(name = "basePayServiceImpl")
 	private IBasePayService orderMgtService;

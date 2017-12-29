@@ -6,8 +6,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import net.sf.json.JSONObject;
-
 import com.bbyiya.common.enums.MsgStatusEnums;
 import com.bbyiya.common.enums.SendMsgEnums;
 import com.bbyiya.common.vo.ResultMsg;
@@ -71,7 +69,6 @@ public class SendSMSByMobile {
 			map.put("mobile", mobiles);
 			map.put("text",contents);
 			returnMsg = HttpRequestHelper.post_httpClient("https://sms.yunpian.com/v2/sms/batch_send.json", map);
-//			System.out.println(returnMsg); 
 		} catch (Exception e) {
 			loger.error(e); 
 		}
@@ -80,32 +77,14 @@ public class SendSMSByMobile {
 	
 	
 	
-	
-//	/**
-//	 * 新增云片短信模板
-//	 * @return
-//	 */
-//	public static String addTemp_yunpian() {
-//		String returnMsg = "";
-//		Map<String, String> map = new HashMap<String, String>();
-//		map.put("apikey", APIKEY);
-//		try {
-//			String content="【咿呀科技】您的验证码是#code#";
-//			map.put("tpl_content",content);
-//			returnMsg = HttpRequestHelper.post_httpClient(ADD_URL, map);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		return returnMsg;
-//	}
 
 	/**
-	 * 发送短信
-	 * @param type
+	 * 发送验证码-短信
+	 * @param type 枚举SendMsgEnums
 	 * @param moblie
 	 * @return
 	 */
-	public static String sendSmsReturnJson(int type, String moblie) {
+	public static String sendVCodeReturnJson(int type, String moblie) {
 		if (type>=0) {
 			String verifyCode = String.valueOf(Math.random()).substring(2, 6);
 			String key=moblie+"-"+type;
@@ -117,23 +96,16 @@ public class SendSMSByMobile {
 	
 	/**
 	 * 短信发送
-	 * @param msgType
+	 * @param msgType 枚举SendMsgEnums
 	 * @param mobile
 	 * @param param
 	 * @return
 	 */
 	public static boolean sendSmS(int msgType,String mobile,SmsParam param){
 		String msg="";
-		//验证码 类 短信-- 参数（type）
+		// 注册验证码
 		if(msgType==Integer.parseInt(SendMsgEnums.register.toString())){
-			//验证码
-			String verifyCode = String.valueOf(Math.random()).substring(2, 6);
-			msg="【咿呀科技】您的验证码是"+verifyCode;
-			//注册验证码
-			String key=mobile+"-"+msgType;
-			//验证码5分钟有效
-			RedisUtil.setObject(key, verifyCode,300); 
-			String returnMsg=sendSMS_yunpian(mobile, msg);
+			String returnMsg=sendVCodeReturnJson(msgType,mobile);
 			if(ObjectUtil.isEmpty(returnMsg)){
 				return false;
 			}
@@ -145,10 +117,10 @@ public class SendSMSByMobile {
 		}
 		//通知- 用户充值 cts管理员收（参数：param: amount, rechargeType， userId）
 		else if (msgType==Integer.parseInt(SendMsgEnums.recharge_adminUser.toString())) {
-			if(param.getRechargeType()==0){
+			if(param.getRechargeType()==0){//用户自己充值
 				msg = "【咿呀科技】帐号["+param.getUserId().toString()+"]"+param.getUserName()+"于" + DateUtil.getTimeStr(new Date(), "yyyy-MM-dd HH:mm") + "通过微信支付成功充值" + param.getAmount() + "元。";
 				batchSend(mobile, msg);	
-			}else if (param.getRechargeType()==1) {
+			}else if (param.getRechargeType()==1) {//cts充值
 				msg = "【咿呀科技】帐号["+param.getUserId().toString()+"]"+param.getUserName()+"于" + DateUtil.getTimeStr(new Date(), "yyyy-MM-dd HH:mm") + "通过cts管理员成功充值" + param.getAmount() + "元。";
 				batchSend(mobile, msg);	
 			}
@@ -179,10 +151,8 @@ public class SendSMSByMobile {
 					}
 				}
 			}
-			
 		}
 		else if (msgType==Integer.parseInt(SendMsgEnums.remind_chongzhi.toString())) {
-			//String userId=param==null?mobile:(param.getUserId()==null?mobile:param.getUserId().toString());
 			msg="【咿呀科技】尊敬的用户，您的账户余额小于100元，请及时充值！";
 			batchSend(mobile, msg);
 		}
@@ -193,34 +163,8 @@ public class SendSMSByMobile {
 		return true;
 	}
 	
-	/**
-	 * 短信群发
-	 * @param msgType
-	 * @param mobiles
-	 * @param param
-	 * @return
-	 */
-//	public static String sendSms(int msgType,String[] mobiles,SmsParam param){
-//		return "";
-//	}
 	
 	
-	/**
-	 * 短信发送
-	 * @param type SendMsgEnums
-	 * @param moblie
-	 * @return JSONObject （{code:0 发送成功，msg:失败的原因}）
-	 */
-//	public static JSONObject sendSmsReturnObject(SendMsgEnums type, String moblie) {
-//		if (type.equals(SendMsgEnums.register)) {
-//			String verifyCode = String.valueOf(Math.random()).substring(2, 6);
-//			String key=moblie+"-"+Integer.parseInt(type.toString());
-//			RedisUtil.setObject(key, verifyCode,300); 
-//			String resultString= sendSMS_yunpian(moblie, "【咿呀科技】您的验证码是"+verifyCode);
-//			return JSONObject.fromObject(resultString);
-//		}
-//		return null;
-//	}
 	
 	/**
 	 * 验证码验证

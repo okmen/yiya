@@ -10,22 +10,22 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.baseUtils.ExportExcel;
+import com.bbyiya.dao.UAccountsMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.AddressTypeEnum;
 import com.bbyiya.enums.calendar.TiActivityTypeEnum;
 import com.bbyiya.model.TiActivityexchangecodes;
-import com.bbyiya.model.TiProductstyles;
+import com.bbyiya.model.UAccounts;
 import com.bbyiya.pic.service.calendar.IIbs_CalendarActivityService;
-import com.bbyiya.pic.utils.Json2Objects;
 import com.bbyiya.pic.vo.calendar.CalendarActivityAddParam;
 import com.bbyiya.pic.vo.calendar.WorkForCustomerParam;
-import com.bbyiya.pic.vo.product.ActivityCodeProductVO;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.FileUtils;
 import com.bbyiya.utils.JsonUtil;
@@ -34,7 +34,6 @@ import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.address.OrderaddressVo;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.web.base.SSOController;
-import com.github.pagehelper.PageInfo;
 import com.sdicons.json.mapper.MapperException;
 
 @Controller
@@ -43,7 +42,8 @@ public class CalendarActivityController extends SSOController {
 	
 	@Resource(name = "ibs_CalendarActivityService")
 	private IIbs_CalendarActivityService calendarActivityService;
-	
+	@Autowired
+	private UAccountsMapper accountMapper;
 	
 	
 	/**
@@ -115,7 +115,13 @@ public class CalendarActivityController extends SSOController {
 				rq.setStatusreson("活动详情存在危险字符!");
 				return JsonUtil.objectToJsonStr(rq);
 			}
-					
+			UAccounts account= accountMapper.selectByPrimaryKey(user.getUserId());
+			double amount=account==null?0d:(account.getAvailableamount()==null?0d:account.getAvailableamount().doubleValue());
+			if(amount<50d){
+				rq.setStatu(ReturnStatus.ParamError);
+				rq.setStatusreson("您的账户余额："+amount+",低于50元暂时不能开此活动！"); 
+				return JsonUtil.objectToJsonStr(rq);
+			}
 			rq=calendarActivityService.addCalendarActivity(user.getUserId(),param);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);

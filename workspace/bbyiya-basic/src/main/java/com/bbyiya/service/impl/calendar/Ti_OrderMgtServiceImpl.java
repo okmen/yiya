@@ -1,6 +1,5 @@
 package com.bbyiya.service.impl.calendar;
 
-import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -63,8 +62,6 @@ import com.bbyiya.model.OUserorderext;
 import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PPostmodel;
-import com.bbyiya.model.PProducts;
-import com.bbyiya.model.PProductstyles;
 import com.bbyiya.model.TiActivitys;
 import com.bbyiya.model.TiActivityworks;
 import com.bbyiya.model.TiDiscountdetails;
@@ -74,7 +71,6 @@ import com.bbyiya.model.TiGroupactivityworks;
 import com.bbyiya.model.TiMyartsdetails;
 import com.bbyiya.model.TiMyworkcustomers;
 import com.bbyiya.model.TiMyworks;
-import com.bbyiya.model.TiProductareas;
 import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiProductsext;
 import com.bbyiya.model.TiProductstyles;
@@ -82,15 +78,13 @@ import com.bbyiya.model.TiPromoteremployees;
 import com.bbyiya.model.TiPromoters;
 import com.bbyiya.model.TiUserdiscounts;
 import com.bbyiya.model.UAccounts;
-import com.bbyiya.model.UBranches;
-import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUseraddress;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.service.IBaseUserAccountService;
 import com.bbyiya.service.IRegionService;
+import com.bbyiya.service.calendar.IOrderAddressMgtService;
 import com.bbyiya.service.calendar.ITi_OrderMgtService;
 import com.bbyiya.service.pic.IBasePostMgtService;
-import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.address.OrderaddressParam;
@@ -177,6 +171,8 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 	//--------------------
 	@Autowired
 	private EErrorsMapper logMapper;
+	@Resource(name = "ti_OrderAddressMgtServiceImpl")
+	private IOrderAddressMgtService orderAddressMgtService;
 	
 	
 	public ReturnModel submitOrder(UserOrderSubmitParam param) {
@@ -189,14 +185,27 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			int orderType = param.getOrderType() == null ? 0 : param.getOrderType();
 			// 订单收货地址
 			long orderAddressId = 0;
+			OOrderaddress orderAddressModel=null;
 			if (orderType == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())) {// 影楼订单
-				orderAddressId = getOrderAddressIdByBUserId(param.getBranchUserId(), orderType);
+//				orderAddressId = getOrderAddressIdByBUserId(param.getBranchUserId(), orderType);
+				orderAddressModel=orderAddressMgtService.addOrderAddressReturnOOrderaddressModel_promoterAddress(param.getBranchUserId());
+				if(orderAddressModel!=null&&!ObjectUtil.isEmpty(orderAddressModel.getOrderaddressid())){
+					orderAddressId=orderAddressModel.getOrderaddressid();
+				}
 			} else {// 普通购买
-				//通过用户下单，地址寄到影楼
+				//通过用户下单，地址寄到影楼 
 				if(param.getBranchUserId()!=null&&param.getOrderExt()!=null&&!ObjectUtil.isEmpty(param.getOrderExt().getPhone())){
-					orderAddressId = getOrderAddressIdByBUserId(param.getBranchUserId(), Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));
+//					orderAddressId = getOrderAddressIdByBUserId(param.getBranchUserId(), Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));
+					orderAddressModel=orderAddressMgtService.addOrderAddressReturnOOrderaddressModel_promoterAddress(param.getBranchUserId());
+					if(orderAddressModel!=null&&!ObjectUtil.isEmpty(orderAddressModel.getOrderaddressid())){
+						orderAddressId=orderAddressModel.getOrderaddressid();
+					}
 				}else {
-					orderAddressId = addOrderAddressReturnId(param.getAddrId());
+//					orderAddressId = addOrderAddressReturnId(param.getAddrId());
+					orderAddressModel=orderAddressMgtService.addOrderAddressReturnOOrderaddressModel(param.getAddrId());
+					if(orderAddressModel!=null&&!ObjectUtil.isEmpty(orderAddressModel.getOrderaddressid())){
+						orderAddressId=orderAddressModel.getOrderaddressid();
+					}
 				}
 			}
 			if (orderAddressId > 0) {
@@ -265,22 +274,31 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					
 					//订单收货地址
 					long orderAddressId=0l;
+					//生产商userId
+					Long producerUserId=0l;
 					
 					//订单号
 					String payId = GenUtils.getOrderNo(param.getSubmitUserId());
 					String userOrderId=payId;
 					String orderProductId=userOrderId;
-					
-					
+//					boolean isAddressC=false;
 					//得到订单编号
 					//用户自己付邮费
 					if(actWork.getOrderaddressid()!=null&&actWork.getOrderaddressid().longValue()>0){
 						orderAddressId=actWork.getOrderaddressid();
+						producerUserId=orderAddressMgtService.getProducerUserIdByOrderAddressId(orderAddressId, work.getProductid());
 					}else {//寄到B端地址
-						orderAddressId= getOrderAddressIdByBUserId(param.getSubmitUserId(), Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));
+//						isAddressC=true;
+						OOrderaddress orderAddr=orderAddressMgtService.addOrderAddressReturnOOrderaddressModel_promoterAddress(param.getSubmitUserId());
+						if(orderAddr!=null&&orderAddr.getOrderaddressid()!=null){
+							orderAddressId=orderAddr.getOrderaddressid();
+							producerUserId=orderAddressMgtService.getProducerUserId(orderAddr.getDistrictcode(),orderAddr.getCitycode(),orderAddr.getProvincecode(), work.getProductid());
+						}
+//						orderAddressId= getOrderAddressIdByBUserId(param.getSubmitUserId(), Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));
+						
 					}
 					
-					Long producerUserId=getProducerUserId(orderAddressId,work.getProductid(),param.getSubmitUserId());
+//					Long producerUserId=isAddressC?getProducerUserIdFromC(work.getProductid(),param.getSubmitUserId()):getProducerUserId(orderAddressId,work.getProductid(),param.getSubmitUserId());
 					Integer orderindex=producerOrderMapper.getMaxOrderIndexByProducerIdAndUserId(producerUserId, param.getSubmitUserId());
 					if(orderindex==null){
 						orderindex=1;
@@ -409,44 +427,15 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 		return rq;
 	}
 	
-	
-	/**
-	 * 获取生产商userId
-	 */
-	public long getProducerUserId(Long orderAddressId,Long productId,Long userId){
-		OOrderaddress addr = orderaddressMapper.selectByPrimaryKey(orderAddressId);
-		if(addr!=null&&addr.getDistrictcode()!=null){
-			List<TiProductareas> list = productareasMapper.findProductAreaListByProductIdAndArea(productId, addr.getDistrictcode());
-			if (list != null && list.size() > 0) {
-				return list.get(0).getProduceruserid();
-			}
-		}
-		if (userId!=null&&userId>0) {
-			if(addr!=null){
-				userId=addr.getUserid();
-			}
-			UUseraddress useraddress = addressMapper.get_UUserAddressDefault(userId);
-			if (useraddress != null) {
-				List<TiProductareas> list = productareasMapper.findProductAreaListByProductIdAndArea(productId, useraddress.getArea());
-				if (list != null && list.size() > 0) {
-					return list.get(0).getProduceruserid();
-				}
-			} else {
-				TiPromoters promoters = promotersMapper.selectByPrimaryKey(userId);
-				if (promoters != null) {
-					List<TiProductareas> list = productareasMapper.findProductAreaListByProductIdAndArea(productId, promoters.getArea());
-					if (list != null && list.size() > 0) {
-						return list.get(0).getProduceruserid();
-					}
-				}
-			}
-		}
-		long defaultproducer = ObjectUtil.parseLong(ConfigUtil.getSingleValue("defaultproducer"));
-		if (defaultproducer <= 0)
-			defaultproducer = 65l;
-		return defaultproducer;
-	}
 
+	
+
+	/**
+	 * 普通用户下单
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
 	private ReturnModel submitOrder_common(UserOrderSubmitParam param) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		Map<String, Object> mapResult = new HashMap<String, Object>();
@@ -476,7 +465,14 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			rq.setStatusreson("收货地址有误");
 			return rq;
 		}
-		userOrder.setProduceruserid(getProducerUserId(userOrder.getOrderaddressid(),param.getOrderproducts().getProductid(),param.getUserId())); 
+		// 获取产品信息
+		int orderType = param.getOrderType() == null ? 0 : param.getOrderType();
+		long producerUserId=0l;
+		if(!ObjectUtil.isEmpty(userOrder.getOrderaddressid())){
+			producerUserId=orderAddressMgtService.getProducerUserIdByOrderAddressId(userOrder.getOrderaddressid(), param.getOrderproducts().getProductid());
+		}
+		userOrder.setProduceruserid(producerUserId);
+//		userOrder.setProduceruserid(getProducerUserId(userOrder.getOrderaddressid(),param.getOrderproducts().getProductid(),param.getUserId())); 
 		if (param.getOrderproducts() != null) {
 			// 实际需要付款的总价（包括邮费）
 			Double orderTotalPrice = 0d;
@@ -487,8 +483,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			orderProduct.setOrderproductid(orderId); 
 			orderProduct.setUserorderid(orderId);
 			orderProduct.setBuyeruserid(param.getUserId()); 
-			// 获取产品信息
-			int orderType = param.getOrderType() == null ? 0 : param.getOrderType();
+			
 			//------------------台历、挂历、年历 板块----------------------------------------
 			if (orderType == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()) || orderType == Integer.parseInt(OrderTypeEnum.ti_nomal.toString())) {
 				TiProductstyles style = styleMapper.selectByPrimaryKey(orderProduct.getStyleid());
@@ -620,6 +615,11 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 		}
 		return null;
 	}
+	/**
+	 * 获取我的优惠券
+	 * @param userId
+	 * @return
+	 */
 	private TiUserdiscounts getMydiscount(Long userId){
 		List<TiUserdiscounts> discounts = mydiscountMapper.findMyDiscounts(userId);
 		if (discounts != null && discounts.size() > 0) {
@@ -628,72 +628,109 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 		return null;
 	}
 
-	private long getOrderAddressIdByBUserId(Long userId, int orderType) {
-		UUsers users = usersMapper.selectByPrimaryKey(userId);
-		if (users != null) {
-			if (orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
-				UBranchusers branchusers = branchusersMapper.selectByPrimaryKey(userId);
-				if (branchusers != null && branchusers.getBranchuserid() != null) {
-					UBranches branches = branchesMapper.selectByPrimaryKey(branchusers.getBranchuserid());
-					if (branches != null) {
-						OOrderaddress orderAddress = new OOrderaddress();
-						orderAddress.setUserid(branches.getBranchuserid());
-						orderAddress.setPhone(branches.getPhone());
-						orderAddress.setReciver(branches.getUsername());
-						orderAddress.setProvincecode(branches.getProvince());
-						orderAddress.setCitycode(branches.getCity());
-						orderAddress.setDistrictcode(branches.getArea()); 
-						orderAddress.setCity(regionService.getCityName(branches.getCity()));
-						orderAddress.setProvince(regionService.getProvinceName(branches.getProvince()));
-						orderAddress.setDistrict(regionService.getAresName(branches.getArea()));
-						orderAddress.setStreetdetail(branches.getStreetdetail());
-						orderAddress.setCreatetime(new Date());
-						orderaddressMapper.insertReturnId(orderAddress);
-						return orderAddress.getOrderaddressid();
-					}
-				}
-			} else if (orderType == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())) {
-				TiPromoters promoters = promotersMapper.selectByPrimaryKey(userId);
-				if (promoters != null) {
-					OOrderaddress orderAddress = new OOrderaddress();
-					orderAddress.setUserid(promoters.getPromoteruserid());
-					orderAddress.setPhone(promoters.getMobilephone());
-					orderAddress.setReciver(promoters.getContacts());
-					orderAddress.setProvincecode(promoters.getProvince());
-					orderAddress.setCitycode(promoters.getCity());
-					orderAddress.setDistrictcode(promoters.getArea()); 
-					orderAddress.setCity(regionService.getCityName(promoters.getCity()));
-					orderAddress.setProvince(regionService.getProvinceName(promoters.getProvince()));
-					orderAddress.setDistrict(regionService.getAresName(promoters.getArea()));
-					orderAddress.setStreetdetail(promoters.getStreetdetails());
-					orderAddress.setCreatetime(new Date());
-					orderaddressMapper.insertReturnId(orderAddress);
-					return orderAddress.getOrderaddressid();
-				}
-			}
-		}
-		return 0;
-	}
+//	private long getOrderAddressIdByBUserId(Long userId, int orderType) {
+//		UUsers users = usersMapper.selectByPrimaryKey(userId);
+//		if (users != null) {
+//			if (orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
+//				UBranchusers branchusers = branchusersMapper.selectByPrimaryKey(userId);
+//				if (branchusers != null && branchusers.getBranchuserid() != null) {
+//					UBranches branches = branchesMapper.selectByPrimaryKey(branchusers.getBranchuserid());
+//					if (branches != null) {
+//						OOrderaddress orderAddress = new OOrderaddress();
+//						orderAddress.setUserid(branches.getBranchuserid());
+//						orderAddress.setPhone(branches.getPhone());
+//						orderAddress.setReciver(branches.getUsername());
+//						orderAddress.setProvincecode(branches.getProvince());
+//						orderAddress.setCitycode(branches.getCity());
+//						orderAddress.setDistrictcode(branches.getArea()); 
+//						orderAddress.setCity(regionService.getCityName(branches.getCity()));
+//						orderAddress.setProvince(regionService.getProvinceName(branches.getProvince()));
+//						orderAddress.setDistrict(regionService.getAresName(branches.getArea()));
+//						orderAddress.setStreetdetail(branches.getStreetdetail());
+//						orderAddress.setCreatetime(new Date());
+//						orderaddressMapper.insertReturnId(orderAddress);
+//						return orderAddress.getOrderaddressid();
+//					}
+//				}
+//			} else if (orderType == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())) {
+//				TiPromoters promoters = promotersMapper.selectByPrimaryKey(userId);
+//				if (promoters != null) {
+//					OOrderaddress orderAddress = new OOrderaddress();
+//					orderAddress.setUserid(promoters.getPromoteruserid());
+//					orderAddress.setPhone(promoters.getMobilephone());
+//					orderAddress.setReciver(promoters.getContacts());
+//					orderAddress.setProvincecode(promoters.getProvince());
+//					orderAddress.setCitycode(promoters.getCity());
+//					orderAddress.setDistrictcode(promoters.getArea()); 
+//					orderAddress.setCity(regionService.getCityName(promoters.getCity()));
+//					orderAddress.setProvince(regionService.getProvinceName(promoters.getProvince()));
+//					orderAddress.setDistrict(regionService.getAresName(promoters.getArea()));
+//					orderAddress.setStreetdetail(promoters.getStreetdetails());
+//					orderAddress.setCreatetime(new Date());
+//					orderaddressMapper.insertReturnId(orderAddress);
+//					return orderAddress.getOrderaddressid();
+//				}
+//			}
+//		}
+//		return 0;
+//	}
+	
+	/**
+	 * C角活动下单时 邮寄地址到自己默认地址
+	 * @param userId
+	 * @param orderType
+	 * @return
+	 */
+//	private OOrderaddress addOrderAddressReturnModel(Long userId, int orderType) {
+//		UUsers users = usersMapper.selectByPrimaryKey(userId);
+//		if (users != null) {
+//			if (orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
+//				UBranchusers branchusers = branchusersMapper.selectByPrimaryKey(userId);
+//				if (branchusers != null && branchusers.getBranchuserid() != null) {
+//					UBranches branches = branchesMapper.selectByPrimaryKey(branchusers.getBranchuserid());
+//					if (branches != null) {
+//						OOrderaddress orderAddress = new OOrderaddress();
+//						orderAddress.setUserid(branches.getBranchuserid());
+//						orderAddress.setPhone(branches.getPhone());
+//						orderAddress.setReciver(branches.getUsername());
+//						orderAddress.setProvincecode(branches.getProvince());
+//						orderAddress.setCitycode(branches.getCity());
+//						orderAddress.setDistrictcode(branches.getArea()); 
+//						orderAddress.setCity(regionService.getCityName(branches.getCity()));
+//						orderAddress.setProvince(regionService.getProvinceName(branches.getProvince()));
+//						orderAddress.setDistrict(regionService.getAresName(branches.getArea()));
+//						orderAddress.setStreetdetail(branches.getStreetdetail());
+//						orderAddress.setCreatetime(new Date());
+//						orderaddressMapper.insertReturnId(orderAddress);
+//						return orderAddress;
+//					}
+//				}
+//			} else if (orderType == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())) {
+//				TiPromoters promoters = promotersMapper.selectByPrimaryKey(userId);
+//				if (promoters != null) {
+//					OOrderaddress orderAddress = new OOrderaddress();
+//					orderAddress.setUserid(promoters.getPromoteruserid());
+//					orderAddress.setPhone(promoters.getMobilephone());
+//					orderAddress.setReciver(promoters.getContacts());
+//					orderAddress.setProvincecode(promoters.getProvince());
+//					orderAddress.setCitycode(promoters.getCity());
+//					orderAddress.setDistrictcode(promoters.getArea()); 
+//					orderAddress.setCity(regionService.getCityName(promoters.getCity()));
+//					orderAddress.setProvince(regionService.getProvinceName(promoters.getProvince()));
+//					orderAddress.setDistrict(regionService.getAresName(promoters.getArea()));
+//					orderAddress.setStreetdetail(promoters.getStreetdetails());
+//					orderAddress.setCreatetime(new Date());
+//					orderaddressMapper.insertReturnId(orderAddress);
+//					return orderAddress;
+//				}
+//			}
+//		}
+//		return null;
+//	}
 
 	public long addOrderAddressReturnId(Long userAddrId) {
 		if (userAddrId != null && userAddrId > 0) {
-			UUseraddress addr = addressMapper.get_UUserAddressByKeyId(userAddrId);
-			if (addr != null) {
-				OOrderaddress orderAddress = new OOrderaddress();
-				orderAddress.setUserid(addr.getUserid());
-				orderAddress.setPhone(addr.getPhone());
-				orderAddress.setProvincecode(addr.getProvince());
-				orderAddress.setCitycode(addr.getCity());
-				orderAddress.setDistrictcode(addr.getArea()); 
-				orderAddress.setReciver(addr.getReciver());
-				orderAddress.setCity(regionService.getCityName(addr.getCity()));
-				orderAddress.setProvince(regionService.getProvinceName(addr.getProvince()));
-				orderAddress.setDistrict(regionService.getAresName(addr.getArea()));
-				orderAddress.setStreetdetail(addr.getStreetdetail());
-				orderAddress.setCreatetime(new Date());
-				orderaddressMapper.insertReturnId(orderAddress);
-				return orderAddress.getOrderaddressid();
-			}
+			return orderAddressMgtService.addOrderAddressReturnOrderAddressId(userAddrId);
 		}
 		return 0;
 	}
@@ -867,26 +904,32 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					}
 					
 					//下单操作------------------
-					
+//					boolean isAddressC=false;
 					//订单收货地址
 					long orderAddressId=0l;
+					//生产商
+					long producerUserId=0l;
+					OOrderaddress orderAddress=null;
 					//得到订单编号
 					//手动选择地址下单
 					if(addressParam!=null&&!ObjectUtil.isEmpty(addressParam.getProvince())){
-						OOrderaddress orderAddress = new OOrderaddress();
-						orderAddress.setUserid(addressParam.getUserid());
-						orderAddress.setPhone(addressParam.getPhone());
-						orderAddress.setReciver(addressParam.getReciver());
-						orderAddress.setProvincecode(addressParam.getProvince());
-						orderAddress.setCitycode(addressParam.getCity());
-						orderAddress.setDistrictcode(addressParam.getDistrict()); 
-						orderAddress.setCity(regionService.getCityName(addressParam.getCity()));
-						orderAddress.setProvince(regionService.getProvinceName(addressParam.getProvince()));
-						orderAddress.setDistrict(regionService.getAresName(addressParam.getDistrict()));
-						orderAddress.setStreetdetail(addressParam.getStreetdetail());
-						orderAddress.setCreatetime(new Date());
-						orderaddressMapper.insertReturnId(orderAddress);
-						orderAddressId=orderAddress.getOrderaddressid();
+//						OOrderaddress orderAddress = new OOrderaddress();
+//						orderAddress.setUserid(addressParam.getUserid());
+//						orderAddress.setPhone(addressParam.getPhone());
+//						orderAddress.setReciver(addressParam.getReciver());
+//						orderAddress.setProvincecode(addressParam.getProvince());
+//						orderAddress.setCitycode(addressParam.getCity());
+//						orderAddress.setDistrictcode(addressParam.getDistrict()); 
+//						orderAddress.setCity(regionService.getCityName(addressParam.getCity()));
+//						orderAddress.setProvince(regionService.getProvinceName(addressParam.getProvince()));
+//						orderAddress.setDistrict(regionService.getAresName(addressParam.getDistrict()));
+//						orderAddress.setStreetdetail(addressParam.getStreetdetail());
+//						orderAddress.setCreatetime(new Date());
+//						orderaddressMapper.insertReturnId(orderAddress);
+						orderAddress=orderAddressMgtService.addOrderAddress(addressParam);
+						if(orderAddress!=null&&!ObjectUtil.isEmpty(orderAddress.getOrderaddressid())){
+							orderAddressId=orderAddress.getOrderaddressid();
+						}
 						//客户地址
 						if(addressParam.getAddresstype()!=null&&addressParam.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.cusaddr.toString())){
 							//这种情况是自定义地址
@@ -904,7 +947,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					}
 					//邮寄到客户地址
 					else if(workcus.getAddresstype()!=null&&workcus.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.cusaddr.toString())){
-						OOrderaddress orderAddress = new OOrderaddress();
+						orderAddress = new OOrderaddress();
 						orderAddress.setUserid(workcus.getPromoteruserid());
 						orderAddress.setPhone(workcus.getRecieverphone());
 						orderAddress.setReciver(workcus.getReciever());
@@ -919,10 +962,16 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 						orderaddressMapper.insertReturnId(orderAddress);
 						orderAddressId=orderAddress.getOrderaddressid();
 					}else {//寄到B端地址
-						orderAddressId= getOrderAddressIdByBUserId(param.getSubmitUserId(), Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));
+						orderAddress=orderAddressMgtService.addOrderAddressReturnOOrderaddressModel_promoterAddress(param.getSubmitUserId());
+						if(orderAddress!=null&&!ObjectUtil.isEmpty(orderAddress.getOrderaddressid())){
+							orderAddressId=orderAddress.getOrderaddressid();
+						}
+//						orderAddressId= getOrderAddressIdByBUserId(param.getSubmitUserId(), Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));
 					}
-					
-					Long producerUserId=getProducerUserId(orderAddressId,work.getProductid(),param.getSubmitUserId());
+//					Long producerUserId=isAddressC?getProducerUserIdFromC(work.getProductid(),param.getSubmitUserId()):getProducerUserId(orderAddressId,work.getProductid(),param.getSubmitUserId());
+					if(orderAddress!=null&&orderAddress.getDistrict()!=null){
+						producerUserId=orderAddressMgtService.getProducerUserId(orderAddress.getDistrictcode(), orderAddress.getCitycode(),orderAddress.getProvincecode(),work.getProductid());
+					}
 					Integer orderindex=producerOrderMapper.getMaxOrderIndexByProducerIdAndUserId(producerUserId, param.getSubmitUserId());
 					if(orderindex==null){
 						orderindex=1;
@@ -1108,10 +1157,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 				if(act!=null&&act.getPraisecount()!=null&&work.getPraisecount()!=null&& act.getPraisecount().intValue()<=work.getPraisecount().intValue()){
 					param.setCount(param.getCount()+1);
 				}
-//				double incomeprice=0.0; //收入金额 
-//				if(work.getTotalprice()!=null&&work.getTotalprice().doubleValue()>0){
-//					incomeprice=work.getTotalprice().doubleValue()-totalprice;
-//				}
+//				
 				UUsers promoter= usersMapper.selectByPrimaryKey( param.getSubmitUserId());
 				if(promoter!=null&&promoter.getIdentity()!=null&&ValidateUtils.isIdentity(promoter.getIdentity(), UserIdentityEnums.ti_promoter)){
 //					if(incomeprice<0){//收入小于0的时候,检查余额
@@ -1122,7 +1168,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 							return rq;
 						}
 //					}
-				
+					long producerUserId=0l;
 					//下单操作------------------
 					if(work.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.promoteraddr.toString())){
 						OOrderaddress orderAddress = new OOrderaddress();
@@ -1141,9 +1187,13 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 						Long orderAddressId=orderAddress.getOrderaddressid();
 						param.setOrderAddressId(orderAddressId);
 						work.setAddressid(orderAddressId);
+						producerUserId=orderAddressMgtService.getProducerUserId(orderAddress.getDistrictcode(),orderAddress.getCitycode(),orderAddress.getProvincecode(), work.getProductid());
+						
+					}else if (!ObjectUtil.isEmpty(work.getAddressid())) {
+						producerUserId=orderAddressMgtService.getProducerUserIdByOrderAddressId(work.getAddressid(), work.getProductid());
 					}
 					//订单收货地址
-					Long producerUserId=getProducerUserId(work.getAddressid(),work.getProductid(),param.getSubmitUserId());
+//					Long producerUserId=getProducerUserId(work.getAddressid(),work.getProductid(),param.getSubmitUserId());
 					Integer orderindex=producerOrderMapper.getMaxOrderIndexByProducerIdAndUserId(producerUserId, param.getSubmitUserId());
 					if(orderindex==null){
 						orderindex=1;

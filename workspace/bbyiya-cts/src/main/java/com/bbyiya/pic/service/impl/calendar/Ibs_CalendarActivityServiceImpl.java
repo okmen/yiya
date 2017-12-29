@@ -135,7 +135,7 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 		}
 		//活动免费领取人数
 		ti.setApplylimitcount(param.getApplylimitcount()==null?0:param.getApplylimitcount());
-		
+		ti.setHourseffective(param.getHoursEffective()); 
 		activityMapper.insertReturnId(ti);
 		
 		//如果是选择兑换码则要生成相应数量的兑换码
@@ -238,6 +238,7 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 					return rq;
 				}
 			}
+			ti.setApplylimitcount(limitFreeCount);
 			activityMapper.updateByPrimaryKeyWithBLOBs(ti);
 		}
 		rq.setStatu(ReturnStatus.Success);
@@ -350,8 +351,6 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 	public ReturnModel getActWorkListByActId(int index,int size,Integer actid,Integer status,String keywords){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);
-		
-		
 		TiActivitys act=activityMapper.selectByPrimaryKey(actid);
 		PageHelper.startPage(index, size);
 		List<TiActivitysWorkVo> activitylist=actworkMapper.findActWorkListByActId(actid, status, keywords);
@@ -369,7 +368,7 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 					}
 					
 				}
-				ti.setCreateTimestr(DateUtil.getTimeStr(ti.getCreatetime(), "yyyy-MM-dd"));
+				ti.setCreateTimestr(DateUtil.getTimeStr(ti.getCreatetime(), "yyyy-MM-dd HH:mm"));
 				UUsers user=usersMapper.selectByPrimaryKey(ti.getUserid());
 				if(user!=null){
 					ti.setWeiNickName(user.getNickname());

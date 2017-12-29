@@ -93,6 +93,8 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 	private IBasePayService basepayService;
 	
 	
+	
+	
 	/**
 	 * 自动下单的功能
 	 */
@@ -343,6 +345,7 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 		}
 		return rq;
 	}
+	
 	
 	
 	public void addSysLog(String msg,String jobid,String jobname){

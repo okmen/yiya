@@ -142,6 +142,7 @@ public class TiActivityMgtController extends SSOController {
 				if(actInfo.getActtype()!=null&&actInfo.getActtype().intValue()==Integer.parseInt(TiActivityTypeEnum.toOne.toString())){
 					actInfo.setYaoqingcount(singMapper.getYaoqingCountByActId(actId));
 				}
+				//产品信息
 				TiProductResult productResult= productMapper.getResultByProductId(actInfo.getProductid());
 				productResult.setDescriptionImglist((List<ImageInfo>)JsonUtil.jsonToList(productResult.getDescriptionimgjson())) ;
 				actInfo.setProduct(productResult); 
@@ -206,19 +207,19 @@ public class TiActivityMgtController extends SSOController {
 				 */
 				if(actInfo.getFreecount()!=null&&actInfo.getFreecount().intValue()>0){
 					if(actInfo.getApplycount()!=null&&actInfo.getApplycount().intValue()>=actInfo.getFreecount().intValue()){
-						rq.setStatusreson("不好意思，您来晚了，活动已经领取名额已经满了！");
+						rq.setStatusreson("不好意思，您来晚了，活动参与人数已经满了！");
 						return JsonUtil.objectToJsonStr(rq);
 					} 
 				}
 				/**
 				 * 限制领取人数
 				 */
-				if(actInfo.getApplylimitcount()!=null&&actInfo.getApplylimitcount().intValue()>0){
-					if(actInfo.getApplyingcount()!=null&&actInfo.getApplyingcount().intValue()>=actInfo.getApplylimitcount().intValue()){
-						rq.setStatusreson("不好意思，您来晚了，活动参与人数已经满了！");
-						return JsonUtil.objectToJsonStr(rq);
-					} 
-				}
+//				if(actInfo.getApplylimitcount()!=null&&actInfo.getApplylimitcount().intValue()>0){
+//					if(actInfo.getApplyingcount()!=null&&actInfo.getApplyingcount().intValue()>=actInfo.getApplylimitcount().intValue()){
+//						rq.setStatusreson("不好意思，您来晚了，活动参与人数已经满了！");
+//						return JsonUtil.objectToJsonStr(rq);
+//					} 
+//				}
 				//活动类型
 				int actType=actInfo.getActtype()==null?0:actInfo.getActtype().intValue();
 				if(actType==Integer.parseInt(TiActivityTypeEnum.toOne.toString())) {/**-------一对一活动-------------------------*/
@@ -242,26 +243,32 @@ public class TiActivityMgtController extends SSOController {
 					singMapper.updateByPrimaryKeySelective(single);
 				}else if (actType==Integer.parseInt(TiActivityTypeEnum.exchangeCode.toString())) {
 					//兑换码活动
+					rq.setStatu(ReturnStatus.ParamError);
 					if(!ObjectUtil.isEmpty(exCode)){
+						//查询兑换码信息
 						TiActivityexchangecodes exmode= exchangeMapper.selectByPrimaryKey(exCode);
-						boolean isOk=false;
+
 						if(exmode!=null){
+							//兑换码有效
 							if((exmode.getUserid()!=null&&exmode.getUserid().longValue()==user.getUserId().longValue())
 									||exmode.getStatus()==null
 									||exmode.getStatus().intValue()==0){
-								isOk=true;
+								//兑换码还未使用
+								if(ObjectUtil.isEmpty(exmode.getUserid())){
+									exmode.setUsedtime(new Date());
+									exmode.setUserid(user.getUserId());
+									exmode.setStatus(1);
+									exchangeMapper.updateByPrimaryKeySelective(exmode); 
+								}
+							}else{
+								rq.setStatusreson("兑换码已被使用！");
+								return JsonUtil.objectToJsonStr(rq);
 							}
-						}
-						if(!isOk){
-							rq.setStatu(ReturnStatus.ParamError);
-							rq.setStatusreson("兑换码不可用（已被其他人使用/不存在）");
+						}else{
+							rq.setStatusreson("兑换码输入错误！（注意I与l的的区别哦~）");
 							return JsonUtil.objectToJsonStr(rq);
-						}else {
-							exmode.setUsedtime(new Date());
-							exmode.setUserid(user.getUserId());
-							exmode.setStatus(1);
-							exchangeMapper.updateByPrimaryKeySelective(exmode); 
 						}
+						
 					}else {
 						rq.setStatu(ReturnStatus.ParamError);
 						rq.setStatusreson("兑换码不存在");

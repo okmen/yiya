@@ -33,7 +33,7 @@ public interface ITi_OrderMgtService {
 	 * @param userId
 	 * @return
 	 */
-	long getProducerUserId(Long orderAddressId,Long productId,Long userId);
+//	long getProducerUserId(Long orderAddressId,Long productId,Long userId);
 	/**
 	 * 代客制作自动下单
 	 * @param param
@@ -45,6 +45,5 @@ public interface ITi_OrderMgtService {
 	 * @param param
 	 * @return
 	 */
-	ReturnModel submitTiGroupActivityOrder_ibs(
-			TiGroupActivityOrderSubmitParam param);
+	ReturnModel submitTiGroupActivityOrder_ibs(TiGroupActivityOrderSubmitParam param);
 }

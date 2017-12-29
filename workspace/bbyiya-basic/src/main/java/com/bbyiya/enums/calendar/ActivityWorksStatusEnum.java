@@ -21,7 +21,11 @@ public enum ActivityWorksStatusEnum {
     /**
      * 已完成（已下单）
      */
-    completeorder(3);
+    completeorder(3),
+    /**
+     * 活动领取失败
+     */
+    fail(4);
     
     private final int Type;
 

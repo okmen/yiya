@@ -12,10 +12,11 @@
     <result column="Reciever" property="reciever" jdbcType="VARCHAR" />
     <result column="Mobiephone" property="mobiephone" jdbcType="VARCHAR" />
     <result column="OrderAddressId" property="orderaddressid" jdbcType="BIGINT" />
+    <result column="SubmitTime" property="submittime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     WorkId, UserId, ActId, Status, ExtCount, CreateTime, AddressType, Reciever, Mobiephone, 
-    OrderAddressId
+    OrderAddressId, SubmitTime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -28,7 +29,13 @@
   <select id="getCountByActStatus" resultType="java.lang.Integer"  parameterType="java.lang.Integer" >
     select count(WorkId) from ti_activityworks where ActId = #{actid,jdbcType=INTEGER} and Status=#{status,jdbcType=INTEGER}
   </select>
-  
+   <!-- 根据活动ID及状态得到各状态的总数 -->
+  <select id="countByActIdAndStatus" resultType="java.lang.Integer"  >
+    select count(WorkId) from ti_activityworks where ActId = #{actid,jdbcType=INTEGER} 
+    <if test="statusArrs != null" >
+        and Status in  <foreach collection="statusArrs" item="item" index="index" open="(" separator="," close=")">#{item}</foreach>
+    </if>
+  </select>
   <resultMap id="TiActivityworksVOResult" type="com.bbyiya.vo.calendar.TiActivitysWorkVo" extends="BaseResultMap">  
   </resultMap> 
    <!-- 根据活动ID得到活动参与情况列表 -->
@@ -51,20 +58,31 @@
     from ti_activityworks
     where  ActId = #{actid,jdbcType=BIGINT} and UserId=#{userId,jdbcType=BIGINT} limit 1
   </select>
-  
+  <select id="getActWorkListNeedShared" resultMap="TiActivityworksVOResult"  ><!-- 获取需要分享的，未完成分享的作品 -->
+    SELECT a.* from ti_activityworks as a LEFT JOIN ti_activitys as b on a.ActId=b.ActId
+    WHERE b.ApplyLimitCount>0 and b.ExtCount>0 and b.ActType=0  and a.`Status` in(0,1) ORDER BY a.CreateTime asc 
+  </select>
+  <update id="failActivityWorkByStatus"  ><!-- 置活动作品参与失败 -->
+    update ti_activityworks
+    set Status = #{toStatus,jdbcType=INTEGER}
+    where ActId = #{actId,jdbcType=INTEGER} and  OrderAddressId is null 
+    <if test="statusArrs != null" >
+        and Status in  <foreach collection="statusArrs" item="item" index="index" open="(" separator="," close=")">#{item}</foreach>
+    </if>
+  </update>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from ti_activityworks
     where WorkId = #{workid,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.bbyiya.model.TiActivityworks" >
+ <insert id="insert" parameterType="com.bbyiya.model.TiActivityworks" >
     insert into ti_activityworks (WorkId, UserId, ActId, 
       Status, ExtCount, CreateTime, 
       AddressType, Reciever, Mobiephone, 
-      OrderAddressId)
+      OrderAddressId, SubmitTime)
     values (#{workid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{actid,jdbcType=INTEGER}, 
       #{status,jdbcType=INTEGER}, #{extcount,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
       #{addresstype,jdbcType=INTEGER}, #{reciever,jdbcType=VARCHAR}, #{mobiephone,jdbcType=VARCHAR}, 
-      #{orderaddressid,jdbcType=BIGINT})
+      #{orderaddressid,jdbcType=BIGINT}, #{submittime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiActivityworks" >
     insert into ti_activityworks
@@ -99,6 +117,9 @@
       <if test="orderaddressid != null" >
         OrderAddressId,
       </if>
+      <if test="submittime != null" >
+        SubmitTime,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="workid != null" >
@@ -130,6 +151,9 @@
       </if>
       <if test="orderaddressid != null" >
         #{orderaddressid,jdbcType=BIGINT},
+      </if>
+      <if test="submittime != null" >
+        #{submittime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -163,6 +187,9 @@
       <if test="orderaddressid != null" >
         OrderAddressId = #{orderaddressid,jdbcType=BIGINT},
       </if>
+      <if test="submittime != null" >
+        SubmitTime = #{submittime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where WorkId = #{workid,jdbcType=BIGINT}
   </update>
@@ -176,7 +203,8 @@
       AddressType = #{addresstype,jdbcType=INTEGER},
       Reciever = #{reciever,jdbcType=VARCHAR},
       Mobiephone = #{mobiephone,jdbcType=VARCHAR},
-      OrderAddressId = #{orderaddressid,jdbcType=BIGINT}
+      OrderAddressId = #{orderaddressid,jdbcType=BIGINT},
+      SubmitTime = #{submittime,jdbcType=TIMESTAMP}
     where WorkId = #{workid,jdbcType=BIGINT}
   </update>
 </mapper>

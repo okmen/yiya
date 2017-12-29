@@ -83,9 +83,7 @@
     where AgentUserId = #{agentUserId,jdbcType=BIGINT}  and Status=2  and IsBranch=0 order by PayTime desc
   </select>
   <select id="findOrdersByBranchUserId" resultMap="BaseResultMap"  ><!-- 03 获取本店的订单 （代理） -->
-    select 
-    a.*
-    from o_userorders a left join o_orderproducts b on a.UserOrderId=b.UserOrderId 
+    select a.* from o_userorders a left join o_orderproducts b on a.UserOrderId=b.UserOrderId 
     where a.BranchUserId = #{branchUserId,jdbcType=BIGINT} 
     <if test="ordertype != null" >
        and a.OrderType=#{ordertype,jdbcType=INTEGER}

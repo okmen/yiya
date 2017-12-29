@@ -20,6 +20,8 @@ public class TiMyworks {
     private Integer actid;
 
     private Integer isinstead;
+    
+    private Date expireTime;
 
     public Long getWorkid() {
         return workid;
@@ -91,6 +93,14 @@ public class TiMyworks {
 
 	public void setIsinstead(Integer isinstead) {
 		this.isinstead = isinstead;
+	}
+
+	public Date getExpireTime() {
+		return expireTime;
+	}
+
+	public void setExpireTime(Date expireTime) {
+		this.expireTime = expireTime;
 	}
     
     

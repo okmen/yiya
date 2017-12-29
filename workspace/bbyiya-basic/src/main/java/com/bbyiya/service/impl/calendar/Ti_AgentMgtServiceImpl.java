@@ -235,6 +235,10 @@ public class Ti_AgentMgtServiceImpl implements ITi_AgentMgtService{
 			rq.setStatusreson("请选择省市区！");
 			return rq;
 		} 
+		if(applyInfo.getProvince()<=0||applyInfo.getCity()<=0||applyInfo.getArea()<=0){
+			rq.setStatusreson("请选择省市区！");
+			return rq;
+		} 
 		if(ObjectUtil.isEmpty(applyInfo.getStreetdetails())){
 			rq.setStatusreson("地址必须填");
 			return rq;

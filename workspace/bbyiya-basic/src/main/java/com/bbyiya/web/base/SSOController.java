@@ -3,6 +3,7 @@ package com.bbyiya.web.base;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Date;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -10,11 +11,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.bbyiya.model.EErrors;
 import com.bbyiya.service.IUserInfoMgtService;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.vo.user.LoginSuccessResult;
 import com.bbyiya.baseUtils.CookieUtils;
+import com.bbyiya.dao.EErrorsMapper;
 
 /**
  * 用户登陆验证（farther class）
@@ -42,6 +45,10 @@ public class SSOController {
 	 */
 	@Resource(name = "userInfoMgtService")
 	public IUserInfoMgtService userInfoMgtService;
+
+	@Autowired
+	private EErrorsMapper logMapper;
+	
 
 	/**
 	 * 用户
@@ -134,6 +141,18 @@ public class SSOController {
 		}
 	}
 
+	/**
+	 * 插入错误信息
+	 * @param msg
+	 * @param className
+	 */
+	public void addErrorLog(String msg,String className) {
+		EErrors errors = new EErrors();
+		errors.setClassname(this.getClass().getName());
+		errors.setMsg(msg);
+		errors.setCreatetime(new Date());
+		logMapper.insert(errors);
+	}
 	/**
 	 * 获取用户ip
 	 * @return

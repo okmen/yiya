@@ -15,7 +15,8 @@ public class CalendarActivityAddParam {
 	private String qrcodeDesc;
 	private Integer autoaddress;
 	private Integer applylimitcount;
-	
+	//集赞的时间限制（小时）
+	private Integer hoursEffective;
 	public Integer getActivityid() {
 		return activityid;
 	}
@@ -99,6 +100,12 @@ public class CalendarActivityAddParam {
 	}
 	public void setApplylimitcount(Integer applylimitcount) {
 		this.applylimitcount = applylimitcount;
+	}
+	public Integer getHoursEffective() {
+		return hoursEffective;
+	}
+	public void setHoursEffective(Integer hoursEffective) {
+		this.hoursEffective = hoursEffective;
 	}
 	
 	

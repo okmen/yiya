@@ -25,8 +25,10 @@ import com.bbyiya.model.TiMyworkcustomers;
 import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiUserdiscounts;
 import com.bbyiya.pic.vo.calendar.GetDiscountParam;
+import com.bbyiya.service.calendar.ISmsMgtService;
 import com.bbyiya.service.calendar.ITi_MyworksZansService;
 import com.bbyiya.service.calendar.ITi_OrderMgtService;
+import com.bbyiya.service.calendar.ItiAcitivityMgtService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -58,6 +60,13 @@ public class TiDiscountController extends SSOController {
 
 	@Resource(name = "ti_myworksZansServiceImpl")
 	private  ITi_MyworksZansService zanService;
+	/**
+	 * 活动
+	 */
+	@Resource(name = "ti_AcitivityMgtServiceImpl")
+	private  ItiAcitivityMgtService actService;
+	@Resource(name = "sms_MgtServiceImpl")
+	private  ISmsMgtService msgService;
 	/**
 	 * 领取优惠券--代客制作优惠券
 	 * @param workId
@@ -164,6 +173,7 @@ public class TiDiscountController extends SSOController {
 				if(myworks!=null){
 					if(myworks.getActid()!=null) {
 						param.setActityId(myworks.getActid()); 
+						//活动作品
 						TiActivityworks activityworks=activityworksMapper.selectByPrimaryKey(param.getSourceWorkId());
 						TiActivitys actInfo = actMapper.selectByPrimaryKey(param.getActityId());
 						if(activityworks!=null&&actInfo!=null){
@@ -172,11 +182,16 @@ public class TiDiscountController extends SSOController {
 							 
 							//如果活动目标达到，直接下单
 							int extcount=actInfo.getExtcount()==null?0:actInfo.getExtcount();
-							if(activityworks.getExtcount().intValue()>=extcount&&activityworks.getStatus().intValue()!=Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString())){
-								//更新参与活动状态
-								activityworks.setStatus(Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString()));
-								activityworksMapper.updateByPrimaryKeySelective(activityworks);
-							
+							if(activityworks.getExtcount().intValue()>=extcount&&activityworks.getStatus().intValue()!=Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString())&&activityworks.getStatus().intValue()!=Integer.parseInt(ActivityWorksStatusEnum.fail.toString())){
+								//完成分享操作
+								if(activityworks.getStatus().intValue()!=Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString())){
+									actService.updateActivitylimitCountByActId(actInfo.getActid());
+									//更新参与活动状态
+									activityworks.setStatus(Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString()));
+									activityworksMapper.updateByPrimaryKeySelective(activityworks);
+									//短信通知
+									msgService.sendMsg_ActivityCompleteShare(activityworks.getWorkid());
+								}
 								if(actInfo.getAutoaddress()!=null&&actInfo.getAutoaddress().intValue()==1){
 									//自动下单
 									TiActivityOrderSubmitParam OrderParam=new TiActivityOrderSubmitParam();

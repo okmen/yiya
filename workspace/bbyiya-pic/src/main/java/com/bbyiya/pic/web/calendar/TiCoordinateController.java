@@ -207,7 +207,7 @@ public class TiCoordinateController  extends SSOController{
 								layerList.get(i).setWorkImgUrl(ImgDomainUtil.getImageUrl_Full(photoList.get(i).getImgurl()));  
 								//---打印号---
 								layerList.get(i).setPrintNo(getPrintNu(workId, userorders.getUserid(), oproducerModel.getPrintindex(), i+1));
-								layerList.get(i).setPrintNo(workId+"-"+(i+1)+"-"+userorders.getUserid()+"-"+oproducerModel.getPrintindex()); 
+//								layerList.get(i).setPrintNo(workId+"-"+(i+1)+"-"+userorders.getUserid()+"-"+oproducerModel.getPrintindex()); 
 							}
 						}
 						//如果是台历，单独广告页

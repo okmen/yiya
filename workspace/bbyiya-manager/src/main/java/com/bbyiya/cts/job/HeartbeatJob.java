@@ -51,10 +51,10 @@ public class HeartbeatJob extends QuartzJobBean {
 						autoOrderService.doGroupActivityAutoOrderSumbit();
 						Log.info("doGroupActivityAutoOrderSumbit执行自动下单操作完成！");
 					}
-					if(ObjectUtil.parseInt(job.get("seton"))==1&&job.get("id").equalsIgnoreCase("doOrderPhotoImgsLimit")){
-						photoService.orderPhotosLimitReplace();
-						Log.info("doOrderPhotoImgsLimit不合格订单图片处理完成！");
-					}
+//					if(ObjectUtil.parseInt(job.get("seton"))==1&&job.get("id").equalsIgnoreCase("doOrderPhotoImgsLimit")){
+//						photoService.orderPhotosLimitReplace();
+//						Log.info("doOrderPhotoImgsLimit不合格订单图片处理完成！");
+//					}
 				}	
 				
 			}

@@ -45,6 +45,10 @@ public class TiActivitys {
 
     private Integer applylimitcount;
 
+    private Integer isfreestyle;
+
+    private Integer hourseffective;
+
     public String getQrcode() {
 		return qrcode;
 	}
@@ -211,6 +215,22 @@ public class TiActivitys {
 
 	public void setApplylimitcount(Integer applylimitcount) {
 		this.applylimitcount = applylimitcount;
+	}
+
+	public Integer getIsfreestyle() {
+		return isfreestyle;
+	}
+
+	public void setIsfreestyle(Integer isfreestyle) {
+		this.isfreestyle = isfreestyle;
+	}
+
+	public Integer getHourseffective() {
+		return hourseffective;
+	}
+
+	public void setHourseffective(Integer hourseffective) {
+		this.hourseffective = hourseffective;
 	}
     
     

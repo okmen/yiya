@@ -110,12 +110,12 @@ public class TiDiscountController extends SSOController {
 								actMyworkcustomers.setStatus(Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString()));
 								workcustomerMapper.updateByPrimaryKeySelective(actMyworkcustomers);
 								// 自动下单操作
-								TiActivityOrderSubmitParam orderParam = new TiActivityOrderSubmitParam();
-								orderParam.setSubmitUserId(actMyworkcustomers.getPromoteruserid());
-								orderParam.setWorkId(actMyworkcustomers.getWorkid());
-								orderParam.setCount(1);
-								basetiorderService.submitTiCustomerOrder_ibs(orderParam, null);
-								isOrdered=true;
+//								TiActivityOrderSubmitParam orderParam = new TiActivityOrderSubmitParam();
+//								orderParam.setSubmitUserId(actMyworkcustomers.getPromoteruserid());
+//								orderParam.setWorkId(actMyworkcustomers.getWorkid());
+//								orderParam.setCount(1);
+//								basetiorderService.submitTiCustomerOrder_ibs(orderParam, null);
+//								isOrdered=true;
 							}
 						}
 					}
@@ -192,14 +192,14 @@ public class TiDiscountController extends SSOController {
 									//短信通知
 									msgService.sendMsg_ActivityCompleteShare(activityworks.getWorkid());
 								}
-								if(actInfo.getAutoaddress()!=null&&actInfo.getAutoaddress().intValue()==1){
-									//自动下单
-									TiActivityOrderSubmitParam OrderParam=new TiActivityOrderSubmitParam();
-									OrderParam.setCount(1);
-									OrderParam.setSubmitUserId(actInfo.getProduceruserid());
-									OrderParam.setWorkId(param.getSourceWorkId());
-									basetiorderService.submitOrder_ibs(OrderParam); 
-								}
+//								if(actInfo.getAutoaddress()!=null&&actInfo.getAutoaddress().intValue()==1){
+//									//自动下单
+//									TiActivityOrderSubmitParam OrderParam=new TiActivityOrderSubmitParam();
+//									OrderParam.setCount(1);
+//									OrderParam.setSubmitUserId(actInfo.getProduceruserid());
+//									OrderParam.setWorkId(param.getSourceWorkId());
+//									basetiorderService.submitOrder_ibs(OrderParam); 
+//								}
 							}else {
 								activityworksMapper.updateByPrimaryKeySelective(activityworks);
 							}

@@ -48,6 +48,8 @@ public class TiActivitys {
     private Integer isfreestyle;
 
     private Integer hourseffective;
+    
+    private String companyname;
 
     public String getQrcode() {
 		return qrcode;
@@ -231,6 +233,14 @@ public class TiActivitys {
 
 	public void setHourseffective(Integer hourseffective) {
 		this.hourseffective = hourseffective;
+	}
+
+	public String getCompanyname() {
+		return companyname;
+	}
+
+	public void setCompanyname(String companyname) {
+		this.companyname = companyname;
 	}
     
     

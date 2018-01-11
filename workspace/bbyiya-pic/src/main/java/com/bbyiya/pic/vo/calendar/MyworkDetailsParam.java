@@ -7,6 +7,7 @@ import com.bbyiya.model.TiMyartsdetails;
 public class MyworkDetailsParam {
 	private Long workId;
 	private String orderproductId;
+	private Long styleId;
 	private List<TiMyartsdetails> details;
 	public Long getWorkId() {
 		return workId;
@@ -25,6 +26,12 @@ public class MyworkDetailsParam {
 	}
 	public void setOrderproductId(String orderproductId) {
 		this.orderproductId = orderproductId;
+	}
+	public Long getStyleId() {
+		return styleId;
+	}
+	public void setStyleId(Long styleId) {
+		this.styleId = styleId;
 	}
 	
 	

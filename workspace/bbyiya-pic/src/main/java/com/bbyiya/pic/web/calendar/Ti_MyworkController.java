@@ -309,6 +309,8 @@ public class Ti_MyworkController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
+	@Resource(name = "ti_AcitivityMgtServiceImpl")
+	private ItiAcitivityMgtService activityService;
 	/**
 	 * 作品详情
 	 * @param workId
@@ -356,6 +358,12 @@ public class Ti_MyworkController extends SSOController {
 									myworks.setExpireTime(DateUtil.getDate(myworks.getCompletetime().getTime()+activitys.getHourseffective()*60*60*1000, "yyyy-MM-dd HH:mm:ss"));
 								}else if(!ObjectUtil.isEmpty(myworks.getCompletetime())){
 									myworks.setExpireTime(DateUtil.getDate(myworks.getCompletetime().getTime()+24*7*60*60*1000, "yyyy-MM-dd HH:mm:ss"));									
+								}
+								//到期时间
+								if(!ObjectUtil.isEmpty(myworks.getExpireTime())){
+									if(new Date().getTime()>myworks.getExpireTime().getTime()){
+//										activityService.updateActivityWorkTofailse(activitys.getProduceruserid(), workId);
+									}
 								}
 							}
 							map.put("users", zanService.findZansList(workId));//点赞的用户列表

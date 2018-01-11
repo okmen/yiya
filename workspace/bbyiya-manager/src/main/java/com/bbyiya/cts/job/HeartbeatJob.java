@@ -15,6 +15,7 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 import com.bbyiya.cts.service.ITempAutoOrderSumbitService;
 import com.bbyiya.dao.SysLogsMapper;
 import com.bbyiya.service.calendar.IPhotosMgtService;
+import com.bbyiya.service.calendar.ItiAcitivityMgtService;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.ObjectUtil;
 
@@ -28,6 +29,9 @@ public class HeartbeatJob extends QuartzJobBean {
 	
 	@Resource(name = "photosMgtServiceImpl")
 	private IPhotosMgtService photoService;
+	
+	@Resource(name = "ti_AcitivityMgtServiceImpl")
+	private ItiAcitivityMgtService actService;
 	
 	@Override
 	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
@@ -50,6 +54,10 @@ public class HeartbeatJob extends QuartzJobBean {
 					if(ObjectUtil.parseInt(job.get("seton"))==1&&job.get("id").equalsIgnoreCase("doGroupActivityAutoOrderSumbit")){
 						autoOrderService.doGroupActivityAutoOrderSumbit();
 						Log.info("doGroupActivityAutoOrderSumbit执行自动下单操作完成！");
+					}
+					if(ObjectUtil.parseInt(job.get("seton"))==1&&job.get("id").equalsIgnoreCase("doActivityAutoOrderSumbit")){
+						actService.timeToSubmitOrders();
+						Log.info("doActivityAutoOrderSumbit执行老客户回馈自动下单操作完成！");
 					}
 //					if(ObjectUtil.parseInt(job.get("seton"))==1&&job.get("id").equalsIgnoreCase("doOrderPhotoImgsLimit")){
 //						photoService.orderPhotosLimitReplace();

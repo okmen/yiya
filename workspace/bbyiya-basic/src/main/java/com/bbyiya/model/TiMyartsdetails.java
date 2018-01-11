@@ -15,6 +15,8 @@ public class TiMyartsdetails {
 
     private Date createtime;
 
+    private String title;
+
     public Long getDetailid() {
         return detailid;
     }
@@ -62,4 +64,13 @@ public class TiMyartsdetails {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+    
 }

@@ -7,7 +7,7 @@ public class OPayorder implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	private String payid;
-
+	//订单号/作品id
 	private String userorderid;
 
 	private Long userid;
@@ -31,8 +31,14 @@ public class OPayorder implements Serializable {
 	private Double walletamount;
 	
     private Double cashamount;
-    
+    /**
+     * 扩展字段
+     */
     private String extobject;
+    /**
+     * 扩展字段2
+     */
+    private String extobject2;
 	
 	public String getExtobject() {
 		return extobject;
@@ -144,6 +150,14 @@ public class OPayorder implements Serializable {
 
 	public void setCashamount(Double cashamount) {
 		this.cashamount = cashamount;
+	}
+
+	public String getExtobject2() {
+		return extobject2;
+	}
+
+	public void setExtobject2(String extobject2) {
+		this.extobject2 = extobject2;
 	}
 	
 }

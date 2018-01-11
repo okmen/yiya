@@ -4,13 +4,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.bbyiya.baseUtils.GenUtils;
 import com.bbyiya.baseUtils.ValidateUtils;
 import com.bbyiya.dao.EErrorsMapper;
@@ -91,17 +88,18 @@ import com.bbyiya.vo.address.OrderaddressParam;
 import com.bbyiya.vo.calendar.TiActivityOrderSubmitParam;
 import com.bbyiya.vo.calendar.TiGroupActivityOrderSubmitParam;
 import com.bbyiya.vo.order.UserOrderSubmitParam;
+
 @Service("tiOrderMgtServiceImpl")
 @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
 public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
-	//------------------------产品---------------------------------------------
+	// ------------------------产品---------------------------------------------
 	@Autowired
 	private TiProductstylesMapper styleMapper;
 	@Autowired
 	private TiProductsMapper productMapper;
 	@Autowired
 	private TiProductsextMapper productextMapper;
-	//-------------------------用户模块-----------------------------------------------
+	// -------------------------用户模块-----------------------------------------------
 	@Autowired
 	private UUsersMapper usersMapper;
 	@Autowired
@@ -121,10 +119,10 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 
 	@Resource(name = "basePostMgtServiceImpl")
 	private IBasePostMgtService postMgtService;
-	
+
 	@Resource(name = "baseUserAccountService")
 	private IBaseUserAccountService accountService;
-	//---------------------订单模块------------------------------------------------------
+	// ---------------------订单模块------------------------------------------------------
 	@Autowired
 	private OPayorderMapper payOrderMapper;// 支付单
 	@Autowired
@@ -137,13 +135,13 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 	private OOrderaddressMapper orderaddressMapper;
 	@Autowired
 	private OProducerordercountMapper producerOrderMapper;
-	
+
 	@Autowired
 	private TiProductareasMapper productareasMapper;
 	@Autowired
 	private OUserorderextMapper userorderExtMapper;
 
-	//---------------------------作品、活动------------------------------------------------------
+	// ---------------------------作品、活动------------------------------------------------------
 	@Autowired
 	private TiMyworksMapper myworksMapper;
 	@Autowired
@@ -154,27 +152,26 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 	private TiMyartsdetailsMapper detailsMapper;
 	@Autowired
 	private PMyproductsMapper mycartMapper;
-	
+
 	@Autowired
 	private TiMyworkcustomersMapper workcusMapper;
 	@Autowired
 	private TiGroupactivityworksMapper groupactworkMapper;
 	@Autowired
 	private TiGroupactivityMapper groupactMapper;
-	//------------------------优惠信息-------------------------------------------
+	// ------------------------优惠信息-------------------------------------------
 	@Autowired
 	private TiUserdiscountsMapper mydiscountMapper;
 	@Autowired
 	private TiDiscountmodelMapper disModelMapper;
 	@Autowired
 	private TiDiscountdetailsMapper discountDetailsMapper;
-	//--------------------
+	// --------------------
 	@Autowired
 	private EErrorsMapper logMapper;
 	@Resource(name = "ti_OrderAddressMgtServiceImpl")
 	private IOrderAddressMgtService orderAddressMgtService;
-	
-	
+
 	public ReturnModel submitOrder(UserOrderSubmitParam param) {
 		ReturnModel rq = new ReturnModel();
 		try {
@@ -185,26 +182,23 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			int orderType = param.getOrderType() == null ? 0 : param.getOrderType();
 			// 订单收货地址
 			long orderAddressId = 0;
-			OOrderaddress orderAddressModel=null;
+			OOrderaddress orderAddressModel = null;
 			if (orderType == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())) {// 影楼订单
-//				orderAddressId = getOrderAddressIdByBUserId(param.getBranchUserId(), orderType);
-				orderAddressModel=orderAddressMgtService.addOrderAddressReturnOOrderaddressModel_promoterAddress(param.getBranchUserId());
-				if(orderAddressModel!=null&&!ObjectUtil.isEmpty(orderAddressModel.getOrderaddressid())){
-					orderAddressId=orderAddressModel.getOrderaddressid();
+				orderAddressModel = orderAddressMgtService.addOrderAddressReturnOOrderaddressModel_promoterAddress(param.getBranchUserId());
+				if (orderAddressModel != null && !ObjectUtil.isEmpty(orderAddressModel.getOrderaddressid())) {
+					orderAddressId = orderAddressModel.getOrderaddressid();
 				}
 			} else {// 普通购买
-				//通过用户下单，地址寄到影楼 
-				if(param.getBranchUserId()!=null&&param.getOrderExt()!=null&&!ObjectUtil.isEmpty(param.getOrderExt().getPhone())){
-//					orderAddressId = getOrderAddressIdByBUserId(param.getBranchUserId(), Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));
-					orderAddressModel=orderAddressMgtService.addOrderAddressReturnOOrderaddressModel_promoterAddress(param.getBranchUserId());
-					if(orderAddressModel!=null&&!ObjectUtil.isEmpty(orderAddressModel.getOrderaddressid())){
-						orderAddressId=orderAddressModel.getOrderaddressid();
+				// 通过用户下单，地址寄到影楼
+				if (param.getBranchUserId() != null && param.getOrderExt() != null && !ObjectUtil.isEmpty(param.getOrderExt().getPhone())) {
+					orderAddressModel = orderAddressMgtService.addOrderAddressReturnOOrderaddressModel_promoterAddress(param.getBranchUserId());
+					if (orderAddressModel != null && !ObjectUtil.isEmpty(orderAddressModel.getOrderaddressid())) {
+						orderAddressId = orderAddressModel.getOrderaddressid();
 					}
-				}else {
-//					orderAddressId = addOrderAddressReturnId(param.getAddrId());
-					orderAddressModel=orderAddressMgtService.addOrderAddressReturnOOrderaddressModel(param.getAddrId());
-					if(orderAddressModel!=null&&!ObjectUtil.isEmpty(orderAddressModel.getOrderaddressid())){
-						orderAddressId=orderAddressModel.getOrderaddressid();
+				} else {
+					orderAddressModel = orderAddressMgtService.addOrderAddressReturnOOrderaddressModel(param.getAddrId());
+					if (orderAddressModel != null && !ObjectUtil.isEmpty(orderAddressModel.getOrderaddressid())) {
+						orderAddressId = orderAddressModel.getOrderaddressid();
 					}
 				}
 			}
@@ -217,120 +211,117 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			throw new RuntimeException(e.getMessage());
 		}
 	}
-	
-	
-	
+
+	/**
+	 * 老客户活动 下单
+	 */
 	public ReturnModel submitOrder_ibs(TiActivityOrderSubmitParam param) {
-		ReturnModel rq=new ReturnModel();
+		ReturnModel rq = new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);
-		if(param==null||ObjectUtil.isEmpty(param.getSubmitUserId())||ObjectUtil.isEmpty(param.getWorkId())){
+		if (param == null || ObjectUtil.isEmpty(param.getSubmitUserId()) || ObjectUtil.isEmpty(param.getWorkId())) {
 			rq.setStatusreson("参数不能为空！");
 			return rq;
 		}
-		if(param.getCount()<=0){
+		if (param.getCount() <= 0) {
 			rq.setStatusreson("数量不能小于1！");
 			return rq;
 		}
 		try {
-			//用户作品
-			TiMyworks work= myworksMapper.selectByPrimaryKey(param.getWorkId());
-			if(work==null){
+			// 用户作品
+			TiMyworks work = myworksMapper.selectByPrimaryKey(param.getWorkId());
+			if (work == null) {
 				rq.setStatusreson("作品不存在！");
 				return rq;
 			}
-			//用户作品对应的产品款式
-			TiProductstyles style=styleMapper.selectByPrimaryKey(work.getStyleid()==null?work.getProductid():work.getStyleid());
-			if(style==null){
+			// 用户作品对应的产品款式
+			TiProductstyles style = styleMapper.selectByPrimaryKey(work.getStyleid() == null ? work.getProductid() : work.getStyleid());
+			if (style == null) {
 				rq.setStatusreson("作品信息不全！");
 				return rq;
 			}
-			
-			List<TiMyartsdetails> detailsList=detailsMapper.findDetailsByWorkId(param.getWorkId());
-			if(detailsList==null||detailsList.size()<style.getImgcount().intValue()){
+
+			List<TiMyartsdetails> detailsList = detailsMapper.findDetailsByWorkId(param.getWorkId());
+			if (detailsList == null || detailsList.size() < style.getImgcount().intValue()) {
 				rq.setStatusreson("作品图片数量不够！");
 				return rq;
 			}
-			//是否达到下单的状态
-			Boolean isCompleteBoolean=false;
-			TiActivityworks actWork= activityworksMapper.selectByPrimaryKey(param.getWorkId());
-			if(actWork!=null&&actWork.getStatus()!=null){
-				if(actWork.getStatus()==Integer.parseInt(ActivityWorksStatusEnum.imagesubmit.toString())||
-						actWork.getStatus()==Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString())||
-						actWork.getStatus()==Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString())){
-					isCompleteBoolean=true;
+			// 是否达到下单的状态
+			Boolean isCompleteBoolean = false;
+			TiActivityworks actWork = activityworksMapper.selectByPrimaryKey(param.getWorkId());
+			if (actWork != null && actWork.getStatus() != null) {
+				if (actWork.getStatus() == Integer.parseInt(ActivityWorksStatusEnum.imagesubmit.toString()) || actWork.getStatus() == Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString()) || actWork.getStatus() == Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString())) {
+					isCompleteBoolean = true;
 				}
 			}
-			if(isCompleteBoolean){
-				UUsers promoter= usersMapper.selectByPrimaryKey( param.getSubmitUserId());
-				if(promoter!=null&&promoter.getIdentity()!=null&&ValidateUtils.isIdentity(promoter.getIdentity(), UserIdentityEnums.ti_promoter)){
-					UAccounts accounts=accountsMapper.selectByPrimaryKey(param.getSubmitUserId());
-					double totalprice=style.getPromoterprice().doubleValue()*param.getCount(); 
-					if(accounts==null||accounts.getAvailableamount()==null||accounts.getAvailableamount().doubleValue()<totalprice){
+			if (isCompleteBoolean) {
+				UUsers promoter = usersMapper.selectByPrimaryKey(param.getSubmitUserId());
+				if (promoter != null && promoter.getIdentity() != null && ValidateUtils.isIdentity(promoter.getIdentity(), UserIdentityEnums.ti_promoter)) {
+					UAccounts accounts = accountsMapper.selectByPrimaryKey(param.getSubmitUserId());
+					// 影楼需要出的货款
+					int orderCount = param.getCount() + (actWork.getCountmore() == null ? 0 : actWork.getCountmore());
+					double totalprice = style.getPromoterprice().doubleValue() * orderCount;
+					if (accounts == null || accounts.getAvailableamount() == null || accounts.getAvailableamount().doubleValue() < totalprice) {
 						rq.setStatusreson("您的账户余额不足！");
 						rq.setStatu(ReturnStatus.SystemError);
 						return rq;
 					}
-					//下单操作------------------
-					
-					//订单收货地址
-					long orderAddressId=0l;
-					//生产商userId
-					Long producerUserId=0l;
-					
-					//订单号
+					// 下单操作------------------
+
+					// 订单收货地址
+					long orderAddressId = 0l;
+					// 生产商userId
+					Long producerUserId = 0l;
+
+					// 订单号
 					String payId = GenUtils.getOrderNo(param.getSubmitUserId());
-					String userOrderId=payId;
-					String orderProductId=userOrderId;
-//					boolean isAddressC=false;
-					//得到订单编号
-					//用户自己付邮费
-					if(actWork.getOrderaddressid()!=null&&actWork.getOrderaddressid().longValue()>0){
-						orderAddressId=actWork.getOrderaddressid();
-						producerUserId=orderAddressMgtService.getProducerUserIdByOrderAddressId(orderAddressId, work.getProductid());
-					}else {//寄到B端地址
-//						isAddressC=true;
-						OOrderaddress orderAddr=orderAddressMgtService.addOrderAddressReturnOOrderaddressModel_promoterAddress(param.getSubmitUserId());
-						if(orderAddr!=null&&orderAddr.getOrderaddressid()!=null){
-							orderAddressId=orderAddr.getOrderaddressid();
-							producerUserId=orderAddressMgtService.getProducerUserId(orderAddr.getDistrictcode(),orderAddr.getCitycode(),orderAddr.getProvincecode(), work.getProductid());
+					String userOrderId = payId;
+					String orderProductId = userOrderId;
+					// boolean isAddressC=false;
+					// 得到订单编号
+					// 用户自己付邮费
+					if (actWork.getOrderaddressid() != null && actWork.getOrderaddressid().longValue() > 0) {
+						orderAddressId = actWork.getOrderaddressid();
+						producerUserId = orderAddressMgtService.getProducerUserIdByOrderAddressId(orderAddressId, work.getProductid());
+					} else {// 寄到B端地址
+						OOrderaddress orderAddr = orderAddressMgtService.addOrderAddressReturnOOrderaddressModel_promoterAddress(param.getSubmitUserId());
+						if (orderAddr != null && orderAddr.getOrderaddressid() != null) {
+							orderAddressId = orderAddr.getOrderaddressid();
+							producerUserId = orderAddressMgtService.getProducerUserId(orderAddr.getDistrictcode(), orderAddr.getCitycode(), orderAddr.getProvincecode(), work.getProductid());
 						}
-//						orderAddressId= getOrderAddressIdByBUserId(param.getSubmitUserId(), Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));
-						
 					}
-					
-//					Long producerUserId=isAddressC?getProducerUserIdFromC(work.getProductid(),param.getSubmitUserId()):getProducerUserId(orderAddressId,work.getProductid(),param.getSubmitUserId());
-					Integer orderindex=producerOrderMapper.getMaxOrderIndexByProducerIdAndUserId(producerUserId, param.getSubmitUserId());
-					if(orderindex==null){
-						orderindex=1;
-					}else{
-						orderindex=orderindex.intValue()+1;
+					Integer orderindex = producerOrderMapper.getMaxOrderIndexByProducerIdAndUserId(producerUserId, param.getSubmitUserId());
+					if (orderindex == null) {
+						orderindex = 1;
+					} else {
+						orderindex = orderindex.intValue() + 1;
 					}
 
-					String printindex=orderindex.toString();
-					//邮寄到客户地址
-					if(actWork.getOrderaddressid()!=null&&actWork.getOrderaddressid().longValue()>0){
-						printindex=printindex+"A";
+					String printindex = orderindex.toString();
+					// 邮寄到客户地址
+					if (actWork.getOrderaddressid() != null && actWork.getOrderaddressid().longValue() > 0) {
+						printindex = printindex + "A";
 					}
-					OProducerordercount producerorder=new OProducerordercount();
+					OProducerordercount producerorder = new OProducerordercount();
 					producerorder.setProduceruserid(producerUserId);
 					producerorder.setUserid(param.getSubmitUserId());
 					producerorder.setUserorderid(userOrderId);
 					producerorder.setOrderindex(orderindex);
 					producerorder.setPrintindex(printindex);
 					producerOrderMapper.insert(producerorder);
-					
-					
-					if(detailsList!=null&&detailsList.size()>0){
+
+					if (detailsList != null && detailsList.size() > 0) {
 						for (TiMyartsdetails dd : detailsList) {
-							OOrderproductphotos op=new OOrderproductphotos();
+							OOrderproductphotos op = new OOrderproductphotos();
 							op.setOrderproductid(orderProductId);
 							op.setImgurl(dd.getImageurl());
+							op.setTitle(dd.getTitle());
+							op.setContent(dd.getContent());
 							op.setSort(dd.getSort());
 							op.setCreatetime(new Date());
 							ophotoMapper.insert(op);
 						}
 					}
-					
+
 					OUserorders userOrder = new OUserorders();
 					Date ordertime = new Date();// 订单操作时间
 					userOrder.setUserorderid(userOrderId);// 用户订单号
@@ -340,30 +331,38 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					userOrder.setRemark(param.getRemark());
 					userOrder.setOrdertype(Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));// 订单类型
 					userOrder.setOrdertime(ordertime);
-					userOrder.setPaytime(ordertime); 
-					userOrder.setUploadtime(new Date()); 
+					userOrder.setPaytime(ordertime);
+					userOrder.setUploadtime(ordertime);
 					userOrder.setStatus(Integer.parseInt(OrderStatusEnum.waitFoSend.toString()));
 					userOrder.setTotalprice(totalprice);
-					userOrder.setOrdertotalprice(totalprice); 
-					userOrder.setOrderaddressid(orderAddressId); 
-					userOrder.setProduceruserid(producerUserId); 
+					userOrder.setOrdertotalprice(totalprice);
+					userOrder.setOrderaddressid(orderAddressId);
+					// 是否用户 邮寄到家
+					if (actWork.getAddresstype() != null && actWork.getAddresstype().intValue() == Integer.parseInt(AddressTypeEnum.cusaddr.toString())) {
+						userOrder.setIspromoteraddress(1);
+						if (actWork.getPostage() != null) {
+							userOrder.setPostage(actWork.getPostage());
+						}
+					}
+					userOrder.setProduceruserid(producerUserId);
 					userOrdersMapper.insert(userOrder);
-					//订单产品
-					TiProducts product=productMapper.selectByPrimaryKey(style.getProductid());
+					// 订单产品
+
+					TiProducts product = productMapper.selectByPrimaryKey(style.getProductid());
 					OOrderproducts orderProduct = new OOrderproducts();
-					orderProduct.setOrderproductid(orderProductId); 
+					orderProduct.setOrderproductid(orderProductId);
 					orderProduct.setUserorderid(userOrderId);
-					orderProduct.setBuyeruserid(param.getSubmitUserId()); 
+					orderProduct.setBuyeruserid(param.getSubmitUserId());
 					orderProduct.setProductid(work.getProductid());
 					orderProduct.setStyleid(style.getStyleid());
 					orderProduct.setPropertystr(style.getDescription());
 					orderProduct.setPrice(style.getPromoterprice());
-					orderProduct.setCount(param.getCount());
+					orderProduct.setCount(orderCount);// 总共需要下几份
 					orderProduct.setProductimg(style.getDefaultimg());
 					orderProduct.setProducttitle(product.getTitle());
 					orderProduct.setCartid(param.getWorkId());
 					oproductMapper.insert(orderProduct);
-					//支付单信息
+					// 支付单信息
 					OPayorder payorder = new OPayorder();
 					payorder.setPayid(payId);
 					payorder.setUserorderid(userOrderId);
@@ -374,25 +373,25 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					payorder.setCashamount(0d);
 					payorder.setCreatetime(new Date());
 					payorder.setOrdertype(Integer.parseInt(PayOrderTypeEnum.ti_gouwu.toString()));
-					payOrderMapper.insert(payorder);  
-					//账户结算
+					payOrderMapper.insert(payorder);
+					// 账户结算
 					accountService.add_accountsLog(param.getSubmitUserId(), Integer.parseInt(AccountLogType.use_payment.toString()), totalprice, payId, "");
-					
-					//反写活动状态
-					if(actWork!=null&&actWork.getStatus()!=null){
-						TiActivitys act=myactMapper.selectByPrimaryKey(actWork.getActid());
-						if(act!=null){
-							//反写已下单人数
-							if(actWork.getStatus().intValue()!=Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString())){
-								act.setCompletecount(act.getCompletecount()==null?1:act.getCompletecount().intValue()+1);
+
+					// 反写活动状态
+					if (actWork != null && actWork.getStatus() != null) {
+						TiActivitys act = myactMapper.selectByPrimaryKey(actWork.getActid());
+						if (act != null) {
+							// 反写已下单人数
+							if (actWork.getStatus().intValue() != Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString())) {
+								act.setCompletecount(act.getCompletecount() == null ? 1 : act.getCompletecount().intValue() + 1);
 								myactMapper.updateByPrimaryKey(act);
 							}
 						}
 						actWork.setStatus(Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString()));
 						activityworksMapper.updateByPrimaryKey(actWork);
 					}
-					
-					//销量
+
+					// 销量
 					TiProductsext productsext = productextMapper.selectByPrimaryKey(work.getProductid());
 					if (productsext == null) {
 						productsext = new TiProductsext();
@@ -405,7 +404,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 						productsext.setMonthssales((productsext.getMonthssales() == null ? 0 : productsext.getMonthssales().intValue()) + param.getCount());
 						productextMapper.updateByPrimaryKeySelective(productsext);
 					}
-					
+
 					Map<String, Object> mapResult = new HashMap<String, Object>();
 					String orderId = payId;
 					mapResult.put("payId", payId);
@@ -415,23 +414,21 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					mapResult.put("totalPrice", totalprice);
 					rq.setBasemodle(mapResult);
 					rq.setStatu(ReturnStatus.Success);
-					rq.setStatusreson("下单成功"); 
+					rq.setStatusreson("下单成功");
 				}
-			}else {
-				rq.setStatusreson("用户作品未完成（不在可下单的状态）！"); 
+			} else {
+				rq.setStatusreson("用户作品未完成（不在可下单的状态）！");
 			}
 		} catch (Exception e) {
-			addlog("活动下单：workId="+param.getWorkId()+"error:"+e.getMessage()); 
+			addlog("活动下单：workId=" + param.getWorkId() + "error:" + e.getMessage());
 			throw new RuntimeException(e);
 		}
 		return rq;
 	}
-	
-
-	
 
 	/**
 	 * 普通用户下单
+	 * 
 	 * @param param
 	 * @return
 	 * @throws Exception
@@ -454,7 +451,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 		userOrder.setOrdertype(param.getOrderType());// 订单类型
 		userOrder.setOrdertime(ordertime);
 		userOrder.setPaytime(ordertime);
-		userOrder.setUploadtime(new Date()); 
+		userOrder.setUploadtime(new Date());
 		userOrder.setStatus(Integer.parseInt(OrderStatusEnum.noPay.toString()));
 		userOrder.setIsbranch(0);
 		userOrder.setPostmodelid(param.getPostModelId());
@@ -467,12 +464,12 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 		}
 		// 获取产品信息
 		int orderType = param.getOrderType() == null ? 0 : param.getOrderType();
-		long producerUserId=0l;
-		if(!ObjectUtil.isEmpty(userOrder.getOrderaddressid())){
-			producerUserId=orderAddressMgtService.getProducerUserIdByOrderAddressId(userOrder.getOrderaddressid(), param.getOrderproducts().getProductid());
+		long producerUserId = 0l;
+		if (!ObjectUtil.isEmpty(userOrder.getOrderaddressid())) {
+			producerUserId = orderAddressMgtService.getProducerUserIdByOrderAddressId(userOrder.getOrderaddressid(), param.getOrderproducts().getProductid());
 		}
 		userOrder.setProduceruserid(producerUserId);
-//		userOrder.setProduceruserid(getProducerUserId(userOrder.getOrderaddressid(),param.getOrderproducts().getProductid(),param.getUserId())); 
+		// userOrder.setProduceruserid(getProducerUserId(userOrder.getOrderaddressid(),param.getOrderproducts().getProductid(),param.getUserId()));
 		if (param.getOrderproducts() != null) {
 			// 实际需要付款的总价（包括邮费）
 			Double orderTotalPrice = 0d;
@@ -480,20 +477,21 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			Double totalPrice = 0d;
 			// 订单产品
 			OOrderproducts orderProduct = param.getOrderproducts();
-			orderProduct.setOrderproductid(orderId); 
+			orderProduct.setOrderproductid(orderId);
 			orderProduct.setUserorderid(orderId);
-			orderProduct.setBuyeruserid(param.getUserId()); 
-			
-			//------------------台历、挂历、年历 板块----------------------------------------
+			orderProduct.setBuyeruserid(param.getUserId());
+
+			// ------------------台历、挂历、年历
+			// 板块----------------------------------------
 			if (orderType == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()) || orderType == Integer.parseInt(OrderTypeEnum.ti_nomal.toString())) {
 				TiProductstyles style = styleMapper.selectByPrimaryKey(orderProduct.getStyleid());
 				if (style != null) {
-					orderProduct.setPropertystr(style.getDescription()); 
+					orderProduct.setPropertystr(style.getDescription());
 					totalPrice = style.getPrice() * orderProduct.getCount();
 					if (orderType == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())) {
 						orderProduct.setPrice(style.getPromoterprice());
 					} else if (orderType == Integer.parseInt(OrderTypeEnum.ti_nomal.toString())) {
-						//普通用户下单
+						// 普通用户下单
 						orderProduct.setPrice(style.getPrice());
 						// 优惠、折扣处理----
 						TiDiscountmodel discountmodel = getDiscountList(param.getUserId());
@@ -502,8 +500,8 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 								if (discountdetails.getProductid().longValue() == style.getProductid().longValue()) {
 									if (discountmodel.getType() == 1) {
 										orderProduct.setPrice(style.getPrice() * discountdetails.getDiscount());
-										TiUserdiscounts mydis= getMydiscount(param.getUserId());
-										if(mydis!=null){
+										TiUserdiscounts mydis = getMydiscount(param.getUserId());
+										if (mydis != null) {
 											mydis.setStatus(1);
 											mydis.setUserorderid(orderId);
 											mydiscountMapper.updateByPrimaryKeySelective(mydis);
@@ -519,7 +517,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					userOrder.setPostage(param.getPostPrice());
 					orderTotalPrice += param.getPostPrice();
 				}
-			}else if (orderType == Integer.parseInt(OrderTypeEnum.nomal.toString()) || orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
+			} else if (orderType == Integer.parseInt(OrderTypeEnum.nomal.toString()) || orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
 				// 12photos 购物订单
 				rq.setStatusreson("12photos订单暂不提供下单！");
 				return rq;
@@ -531,53 +529,53 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 			} else {
 				addPayOrder(param.getUserId(), payId, payId, orderTotalPrice, 0d);
 			}
-			//作品id 通过 原作品表来获取
-			PMyproducts mycart=new PMyproducts();
+			// 作品id 通过 原作品表来获取
+			PMyproducts mycart = new PMyproducts();
 			mycart.setUserid(0l);
 			mycart.setCreatetime(new Date());
 			mycartMapper.insertReturnId(mycart);
-			//获取
+			// 获取
 			TiMyworks myworks = new TiMyworks();
 			myworks.setUserid(param.getUserId());
 			myworks.setCreatetime(new Date());
 			myworks.setWorkid(mycart.getCartid());
 			myworks.setProductid(orderProduct.getProductid());
-			myworks.setStyleid(orderProduct.getStyleid()); 
+			myworks.setStyleid(orderProduct.getStyleid());
 			myworksMapper.insert(myworks);
 
 			// 插入订单
 			orderProduct.setCartid(myworks.getWorkid());
-			//邮寄到影楼地址（用户收货联系方式 备注信息）
-			if(param.getOrderExt()!=null&&!ObjectUtil.isEmpty(param.getOrderExt().getPhone())){
-				userOrder.setIspromoteraddress(1); 
-				OUserorderext userorderext=param.getOrderExt();
+			// 邮寄到影楼地址（用户收货联系方式 备注信息）
+			if (param.getOrderExt() != null && !ObjectUtil.isEmpty(param.getOrderExt().getPhone())) {
+				userOrder.setIspromoteraddress(1);
+				OUserorderext userorderext = param.getOrderExt();
 				userorderext.setUserorderid(userOrder.getUserorderid());
 				userorderExtMapper.insert(userorderext);
 			}
 			userOrdersMapper.insert(userOrder);
-			
+
 			// 插入订单产品
 			oproductMapper.insert(orderProduct);
 			// 插入--订单打印号
-			OProducerordercount oproducerModel=new OProducerordercount();
+			OProducerordercount oproducerModel = new OProducerordercount();
 			oproducerModel.setUserorderid(orderId);
 			oproducerModel.setProduceruserid(userOrder.getProduceruserid());
-			Integer indexCount=0;
-			//寄到影楼
-			if(userOrder.getBranchuserid()!=null&& userOrder.getIspromoteraddress()!=null&&userOrder.getIspromoteraddress().intValue()>0){
-				oproducerModel.setUserid(userOrder.getBranchuserid()); 
-				indexCount=producerOrderMapper.getMaxOrderIndexByProducerIdAndUserId(userOrder.getProduceruserid(),userOrder.getBranchuserid());
-				int orderIndex=indexCount==null?1:(indexCount+1);
+			Integer indexCount = 0;
+			// 寄到影楼
+			if (userOrder.getBranchuserid() != null && userOrder.getIspromoteraddress() != null && userOrder.getIspromoteraddress().intValue() > 0) {
+				oproducerModel.setUserid(userOrder.getBranchuserid());
+				indexCount = producerOrderMapper.getMaxOrderIndexByProducerIdAndUserId(userOrder.getProduceruserid(), userOrder.getBranchuserid());
+				int orderIndex = indexCount == null ? 1 : (indexCount + 1);
 				oproducerModel.setOrderindex(orderIndex);
 				oproducerModel.setPrintindex(String.valueOf(orderIndex));
-			}else {//寄到用户自己
-				oproducerModel.setUserid(userOrder.getUserid()); 
-				indexCount=producerOrderMapper.getMaxOrderIndexByProducerIdAndUserId(userOrder.getProduceruserid(),userOrder.getUserid());
-				int orderIndex=indexCount==null?1:(indexCount+1);
-				oproducerModel.setPrintindex(orderIndex+"A");
+			} else {// 寄到用户自己
+				oproducerModel.setUserid(userOrder.getUserid());
+				indexCount = producerOrderMapper.getMaxOrderIndexByProducerIdAndUserId(userOrder.getProduceruserid(), userOrder.getUserid());
+				int orderIndex = indexCount == null ? 1 : (indexCount + 1);
+				oproducerModel.setPrintindex(orderIndex + "A");
 			}
 			producerOrderMapper.insert(oproducerModel);
-			
+
 			mapResult.put("totalPrice", orderTotalPrice);
 			rq.setStatu(ReturnStatus.Success);
 			rq.setBasemodle(mapResult);
@@ -596,9 +594,8 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 		payorder.setCashamount(totalPrice.doubleValue() - walletAmount.doubleValue());
 		payorder.setCreatetime(new Date());
 		payorder.setOrdertype(Integer.parseInt(PayOrderTypeEnum.ti_gouwu.toString()));
-		payOrderMapper.insert(payorder);  
+		payOrderMapper.insert(payorder);
 	}
-
 
 	private TiDiscountmodel getDiscountList(Long userId) {
 		List<TiUserdiscounts> discounts = mydiscountMapper.findMyDiscounts(userId);
@@ -615,118 +612,20 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 		}
 		return null;
 	}
+
 	/**
 	 * 获取我的优惠券
+	 * 
 	 * @param userId
 	 * @return
 	 */
-	private TiUserdiscounts getMydiscount(Long userId){
+	private TiUserdiscounts getMydiscount(Long userId) {
 		List<TiUserdiscounts> discounts = mydiscountMapper.findMyDiscounts(userId);
 		if (discounts != null && discounts.size() > 0) {
 			return discounts.get(0);
 		}
 		return null;
 	}
-
-//	private long getOrderAddressIdByBUserId(Long userId, int orderType) {
-//		UUsers users = usersMapper.selectByPrimaryKey(userId);
-//		if (users != null) {
-//			if (orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
-//				UBranchusers branchusers = branchusersMapper.selectByPrimaryKey(userId);
-//				if (branchusers != null && branchusers.getBranchuserid() != null) {
-//					UBranches branches = branchesMapper.selectByPrimaryKey(branchusers.getBranchuserid());
-//					if (branches != null) {
-//						OOrderaddress orderAddress = new OOrderaddress();
-//						orderAddress.setUserid(branches.getBranchuserid());
-//						orderAddress.setPhone(branches.getPhone());
-//						orderAddress.setReciver(branches.getUsername());
-//						orderAddress.setProvincecode(branches.getProvince());
-//						orderAddress.setCitycode(branches.getCity());
-//						orderAddress.setDistrictcode(branches.getArea()); 
-//						orderAddress.setCity(regionService.getCityName(branches.getCity()));
-//						orderAddress.setProvince(regionService.getProvinceName(branches.getProvince()));
-//						orderAddress.setDistrict(regionService.getAresName(branches.getArea()));
-//						orderAddress.setStreetdetail(branches.getStreetdetail());
-//						orderAddress.setCreatetime(new Date());
-//						orderaddressMapper.insertReturnId(orderAddress);
-//						return orderAddress.getOrderaddressid();
-//					}
-//				}
-//			} else if (orderType == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())) {
-//				TiPromoters promoters = promotersMapper.selectByPrimaryKey(userId);
-//				if (promoters != null) {
-//					OOrderaddress orderAddress = new OOrderaddress();
-//					orderAddress.setUserid(promoters.getPromoteruserid());
-//					orderAddress.setPhone(promoters.getMobilephone());
-//					orderAddress.setReciver(promoters.getContacts());
-//					orderAddress.setProvincecode(promoters.getProvince());
-//					orderAddress.setCitycode(promoters.getCity());
-//					orderAddress.setDistrictcode(promoters.getArea()); 
-//					orderAddress.setCity(regionService.getCityName(promoters.getCity()));
-//					orderAddress.setProvince(regionService.getProvinceName(promoters.getProvince()));
-//					orderAddress.setDistrict(regionService.getAresName(promoters.getArea()));
-//					orderAddress.setStreetdetail(promoters.getStreetdetails());
-//					orderAddress.setCreatetime(new Date());
-//					orderaddressMapper.insertReturnId(orderAddress);
-//					return orderAddress.getOrderaddressid();
-//				}
-//			}
-//		}
-//		return 0;
-//	}
-	
-	/**
-	 * C角活动下单时 邮寄地址到自己默认地址
-	 * @param userId
-	 * @param orderType
-	 * @return
-	 */
-//	private OOrderaddress addOrderAddressReturnModel(Long userId, int orderType) {
-//		UUsers users = usersMapper.selectByPrimaryKey(userId);
-//		if (users != null) {
-//			if (orderType == Integer.parseInt(OrderTypeEnum.brachOrder.toString())) {
-//				UBranchusers branchusers = branchusersMapper.selectByPrimaryKey(userId);
-//				if (branchusers != null && branchusers.getBranchuserid() != null) {
-//					UBranches branches = branchesMapper.selectByPrimaryKey(branchusers.getBranchuserid());
-//					if (branches != null) {
-//						OOrderaddress orderAddress = new OOrderaddress();
-//						orderAddress.setUserid(branches.getBranchuserid());
-//						orderAddress.setPhone(branches.getPhone());
-//						orderAddress.setReciver(branches.getUsername());
-//						orderAddress.setProvincecode(branches.getProvince());
-//						orderAddress.setCitycode(branches.getCity());
-//						orderAddress.setDistrictcode(branches.getArea()); 
-//						orderAddress.setCity(regionService.getCityName(branches.getCity()));
-//						orderAddress.setProvince(regionService.getProvinceName(branches.getProvince()));
-//						orderAddress.setDistrict(regionService.getAresName(branches.getArea()));
-//						orderAddress.setStreetdetail(branches.getStreetdetail());
-//						orderAddress.setCreatetime(new Date());
-//						orderaddressMapper.insertReturnId(orderAddress);
-//						return orderAddress;
-//					}
-//				}
-//			} else if (orderType == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())) {
-//				TiPromoters promoters = promotersMapper.selectByPrimaryKey(userId);
-//				if (promoters != null) {
-//					OOrderaddress orderAddress = new OOrderaddress();
-//					orderAddress.setUserid(promoters.getPromoteruserid());
-//					orderAddress.setPhone(promoters.getMobilephone());
-//					orderAddress.setReciver(promoters.getContacts());
-//					orderAddress.setProvincecode(promoters.getProvince());
-//					orderAddress.setCitycode(promoters.getCity());
-//					orderAddress.setDistrictcode(promoters.getArea()); 
-//					orderAddress.setCity(regionService.getCityName(promoters.getCity()));
-//					orderAddress.setProvince(regionService.getProvinceName(promoters.getProvince()));
-//					orderAddress.setDistrict(regionService.getAresName(promoters.getArea()));
-//					orderAddress.setStreetdetail(promoters.getStreetdetails());
-//					orderAddress.setCreatetime(new Date());
-//					orderaddressMapper.insertReturnId(orderAddress);
-//					return orderAddress;
-//				}
-//			}
-//		}
-//		return null;
-//	}
 
 	public long addOrderAddressReturnId(Long userAddrId) {
 		if (userAddrId != null && userAddrId > 0) {
@@ -735,6 +634,13 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 		return 0;
 	}
 
+	/**
+	 * 验证下单操作的参数是否有误
+	 * 
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
 	private ReturnModel checkOrderParam(UserOrderSubmitParam param) throws Exception {
 		ReturnModel rq = new ReturnModel();
 		rq.setStatu(ReturnStatus.ParamError);
@@ -766,10 +672,10 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 		if (orderType == Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString())) {// 影楼订单
 			UUsers users = usersMapper.selectByPrimaryKey(param.getUserId());
 			if (users != null) {
-				//推广者
-				TiPromoters promoter=null;
+				// 推广者
+				TiPromoters promoter = null;
 				// case1: 下单人就是推广者
-				if(ValidateUtils.isIdentity(users.getIdentity(), UserIdentityEnums.ti_promoter)){
+				if (ValidateUtils.isIdentity(users.getIdentity(), UserIdentityEnums.ti_promoter)) {
 					promoter = promotersMapper.selectByPrimaryKey(users.getUserid());
 				}
 				// case2:下单人是推广者 员工
@@ -779,38 +685,36 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 						promoter = promotersMapper.selectByPrimaryKey(employee.getPromoteruserid());
 					}
 				}
-//				TiPromoteremployees employee = ePromoteremployeesMapper.selectByPrimaryKey(users.getUserid());
-//				if (employee != null && employee.getPromoteruserid() != null) {
-//					promoter = promotersMapper.selectByPrimaryKey(employee.getPromoteruserid());
-					if (promoter != null) {
-						UAccounts accounts = accountsMapper.selectByPrimaryKey(promoter.getPromoteruserid());
-						if (accounts != null && accounts.getAvailableamount() != null) {
-							totalprice = style.getPromoterprice().doubleValue() * count;
-							if (accounts.getAvailableamount().doubleValue() >= totalprice) {
-								param.setBranchUserId(promoter.getPromoteruserid());
-								param.setAgentUserId(promoter.getAgentuserid());
-								param.setPostPrice(0d); 
-								rq.setStatu(ReturnStatus.Success);
-								rq.setBasemodle(param);
-								oproduct.setPrice(style.getPromoterprice());
-								rq.setStatu(ReturnStatus.Success); 
-								return rq;
-							}
+
+				if (promoter != null) {
+					UAccounts accounts = accountsMapper.selectByPrimaryKey(promoter.getPromoteruserid());
+					if (accounts != null && accounts.getAvailableamount() != null) {
+						totalprice = style.getPromoterprice().doubleValue() * count;
+						if (accounts.getAvailableamount().doubleValue() >= totalprice) {
+							param.setBranchUserId(promoter.getPromoteruserid());
+							param.setAgentUserId(promoter.getAgentuserid());
+							param.setPostPrice(0d);
+							rq.setStatu(ReturnStatus.Success);
+							rq.setBasemodle(param);
+							oproduct.setPrice(style.getPromoterprice());
+							rq.setStatu(ReturnStatus.Success);
+							return rq;
 						}
-						rq.setStatusreson("账户可用余额不足！");
-						return rq;
-					}else {
-						rq.setStatusreson("非法操作！");
-						return rq;
 					}
-//				}
+					rq.setStatusreson("账户可用余额不足！");
+					return rq;
+				} else {
+					rq.setStatusreson("非法操作！");
+					return rq;
+				}
+				// }
 			}
 		} else if (orderType == Integer.parseInt(OrderTypeEnum.ti_nomal.toString())) {
-			if(param.getBranchUserId()!=null&&param.getOrderExt()!=null&&!ObjectUtil.isEmpty(param.getOrderExt().getPhone())){
-				//普通用户下单，寄到影楼
+			if (param.getBranchUserId() != null && param.getOrderExt() != null && !ObjectUtil.isEmpty(param.getOrderExt().getPhone())) {
+				// 普通用户下单，寄到影楼
 				param.setPostModelId(0);
-				param.setPostPrice(0d); 
-			}else {
+				param.setPostPrice(0d);
+			} else {
 				UUseraddress addr = addressMapper.get_UUserAddressByKeyId(param.getAddrId());// 用户收货地址
 				if (addr != null) {
 					if (param.getPostModelId() == null || param.getPostModelId() <= 0) {
@@ -828,10 +732,9 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 				}
 			}
 		}
-		rq.setStatu(ReturnStatus.Success); 
+		rq.setStatu(ReturnStatus.Success);
 		return rq;
 	}
-	
 
 	public void addlog(String msg) {
 		EErrors errors = new EErrors();
@@ -840,100 +743,98 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 		errors.setCreatetime(new Date());
 		logMapper.insert(errors);
 	}
-	
+
 	/**
 	 * 代客制作下单
 	 */
-	public ReturnModel submitTiCustomerOrder_ibs(TiActivityOrderSubmitParam param,OrderaddressParam addressParam) {
-		ReturnModel rq=new ReturnModel();
+	public ReturnModel submitTiCustomerOrder_ibs(TiActivityOrderSubmitParam param, OrderaddressParam addressParam) {
+		ReturnModel rq = new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);
-		if(param==null||ObjectUtil.isEmpty(param.getSubmitUserId())||ObjectUtil.isEmpty(param.getWorkId())){
+		if (param == null || ObjectUtil.isEmpty(param.getSubmitUserId()) || ObjectUtil.isEmpty(param.getWorkId())) {
 			rq.setStatusreson("参数不能为空！");
 			return rq;
 		}
-		if(param.getCount()<=0){
+		if (param.getCount() <= 0) {
 			rq.setStatusreson("数量不能小于1！");
 			return rq;
 		}
 		try {
-			//用户作品
-			TiMyworks work= myworksMapper.selectByPrimaryKey(param.getWorkId());
-			if(work==null){
+			// 用户作品
+			TiMyworks work = myworksMapper.selectByPrimaryKey(param.getWorkId());
+			if (work == null) {
 				rq.setStatusreson("作品不存在！");
 				return rq;
 			}
-			//用户作品对应的产品款式
-			TiProductstyles style=styleMapper.selectByPrimaryKey(work.getStyleid()==null?work.getProductid():work.getStyleid());
-			if(style==null){
+			// 用户作品对应的产品款式
+			TiProductstyles style = styleMapper.selectByPrimaryKey(work.getStyleid() == null ? work.getProductid() : work.getStyleid());
+			if (style == null) {
 				rq.setStatusreson("作品信息不全！");
 				return rq;
 			}
-			
-			List<TiMyartsdetails> detailsList=detailsMapper.findDetailsByWorkId(param.getWorkId());
-			if(detailsList==null||detailsList.size()<style.getImgcount().intValue()){
+
+			List<TiMyartsdetails> detailsList = detailsMapper.findDetailsByWorkId(param.getWorkId());
+			if (detailsList == null || detailsList.size() < style.getImgcount().intValue()) {
 				rq.setStatusreson("作品图片数量不够！");
 				return rq;
 			}
-			//是否达到下单的状态
-			Boolean isCompleteBoolean=false;
-			TiMyworkcustomers workcus=workcusMapper.selectByPrimaryKey(param.getWorkId());
-			if(workcus!=null&&workcus.getStatus()!=null){
-				if(workcus.getStatus()==Integer.parseInt(ActivityWorksStatusEnum.imagesubmit.toString())||
-						workcus.getStatus()==Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString())||
-								workcus.getStatus()==Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString())){
-					isCompleteBoolean=true;
+			// 是否达到下单的状态
+			Boolean isCompleteBoolean = false;
+			TiMyworkcustomers workcus = workcusMapper.selectByPrimaryKey(param.getWorkId());
+			if (workcus != null && workcus.getStatus() != null) {
+				if (workcus.getStatus() == Integer.parseInt(ActivityWorksStatusEnum.imagesubmit.toString()) || workcus.getStatus() == Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString()) || workcus.getStatus() == Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString())) {
+					isCompleteBoolean = true;
 				}
 			}
-			if(isCompleteBoolean){
-				double totalprice=style.getPromoterprice().doubleValue()*param.getCount(); 
-				double needpayprice=totalprice;
-				
-				//判断如果是红包筹集
-				if(workcus.getNeedredpackettotal()!=null&&workcus.getNeedredpackettotal().doubleValue()>0){
-					needpayprice=totalprice-(workcus.getRedpacketamount()==null?0:workcus.getRedpacketamount());
+			if (isCompleteBoolean) {
+				double totalprice = style.getPromoterprice().doubleValue() * param.getCount();
+				double needpayprice = totalprice;
+
+				// 判断如果是红包筹集
+				if (workcus.getNeedredpackettotal() != null && workcus.getNeedredpackettotal().doubleValue() > 0) {
+					needpayprice = totalprice - (workcus.getRedpacketamount() == null ? 0 : workcus.getRedpacketamount());
 				}
-				UUsers promoter= usersMapper.selectByPrimaryKey( param.getSubmitUserId());
-				if(promoter!=null&&promoter.getIdentity()!=null&&ValidateUtils.isIdentity(promoter.getIdentity(), UserIdentityEnums.ti_promoter)){
-					if(needpayprice>0){
-						UAccounts accounts=accountsMapper.selectByPrimaryKey(param.getSubmitUserId());
-						if(accounts==null||accounts.getAvailableamount()==null||accounts.getAvailableamount().doubleValue()<needpayprice){
+				UUsers promoter = usersMapper.selectByPrimaryKey(param.getSubmitUserId());
+				if (promoter != null && promoter.getIdentity() != null && ValidateUtils.isIdentity(promoter.getIdentity(), UserIdentityEnums.ti_promoter)) {
+					if (needpayprice > 0) {
+						UAccounts accounts = accountsMapper.selectByPrimaryKey(param.getSubmitUserId());
+						if (accounts == null || accounts.getAvailableamount() == null || accounts.getAvailableamount().doubleValue() < needpayprice) {
 							rq.setStatusreson("您的账户余额不足！");
 							rq.setStatu(ReturnStatus.SystemError);
 							return rq;
 						}
 					}
-					
-					//下单操作------------------
-//					boolean isAddressC=false;
-					//订单收货地址
-					long orderAddressId=0l;
-					//生产商
-					long producerUserId=0l;
-					OOrderaddress orderAddress=null;
-					//得到订单编号
-					//手动选择地址下单
-					if(addressParam!=null&&!ObjectUtil.isEmpty(addressParam.getProvince())){
-//						OOrderaddress orderAddress = new OOrderaddress();
-//						orderAddress.setUserid(addressParam.getUserid());
-//						orderAddress.setPhone(addressParam.getPhone());
-//						orderAddress.setReciver(addressParam.getReciver());
-//						orderAddress.setProvincecode(addressParam.getProvince());
-//						orderAddress.setCitycode(addressParam.getCity());
-//						orderAddress.setDistrictcode(addressParam.getDistrict()); 
-//						orderAddress.setCity(regionService.getCityName(addressParam.getCity()));
-//						orderAddress.setProvince(regionService.getProvinceName(addressParam.getProvince()));
-//						orderAddress.setDistrict(regionService.getAresName(addressParam.getDistrict()));
-//						orderAddress.setStreetdetail(addressParam.getStreetdetail());
-//						orderAddress.setCreatetime(new Date());
-//						orderaddressMapper.insertReturnId(orderAddress);
-						orderAddress=orderAddressMgtService.addOrderAddress(addressParam);
-						if(orderAddress!=null&&!ObjectUtil.isEmpty(orderAddress.getOrderaddressid())){
-							orderAddressId=orderAddress.getOrderaddressid();
+
+					// 下单操作------------------
+					// boolean isAddressC=false;
+					// 订单收货地址
+					long orderAddressId = 0l;
+					// 生产商
+					long producerUserId = 0l;
+					OOrderaddress orderAddress = null;
+					// 得到订单编号
+					// 手动选择地址下单
+					if (addressParam != null && !ObjectUtil.isEmpty(addressParam.getProvince())) {
+						// OOrderaddress orderAddress = new OOrderaddress();
+						// orderAddress.setUserid(addressParam.getUserid());
+						// orderAddress.setPhone(addressParam.getPhone());
+						// orderAddress.setReciver(addressParam.getReciver());
+						// orderAddress.setProvincecode(addressParam.getProvince());
+						// orderAddress.setCitycode(addressParam.getCity());
+						// orderAddress.setDistrictcode(addressParam.getDistrict());
+						// orderAddress.setCity(regionService.getCityName(addressParam.getCity()));
+						// orderAddress.setProvince(regionService.getProvinceName(addressParam.getProvince()));
+						// orderAddress.setDistrict(regionService.getAresName(addressParam.getDistrict()));
+						// orderAddress.setStreetdetail(addressParam.getStreetdetail());
+						// orderAddress.setCreatetime(new Date());
+						// orderaddressMapper.insertReturnId(orderAddress);
+						orderAddress = orderAddressMgtService.addOrderAddress(addressParam);
+						if (orderAddress != null && !ObjectUtil.isEmpty(orderAddress.getOrderaddressid())) {
+							orderAddressId = orderAddress.getOrderaddressid();
 						}
-						//客户地址
-						if(addressParam.getAddresstype()!=null&&addressParam.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.cusaddr.toString())){
-							//这种情况是自定义地址
-							if(workcus.getAddresstype()==null||workcus.getAddresstype().intValue()==0){
+						// 客户地址
+						if (addressParam.getAddresstype() != null && addressParam.getAddresstype().intValue() == Integer.parseInt(AddressTypeEnum.cusaddr.toString())) {
+							// 这种情况是自定义地址
+							if (workcus.getAddresstype() == null || workcus.getAddresstype().intValue() == 0) {
 								workcus.setAddresstype(Integer.parseInt(AddressTypeEnum.cusaddr.toString()));
 								workcus.setStreetdetails(addressParam.getStreetdetail());
 								workcus.setProvince(addressParam.getProvince());
@@ -945,66 +846,68 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 							}
 						}
 					}
-					//邮寄到客户地址
-					else if(workcus.getAddresstype()!=null&&workcus.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.cusaddr.toString())){
+					// 邮寄到客户地址
+					else if (workcus.getAddresstype() != null && workcus.getAddresstype().intValue() == Integer.parseInt(AddressTypeEnum.cusaddr.toString())) {
 						orderAddress = new OOrderaddress();
 						orderAddress.setUserid(workcus.getPromoteruserid());
 						orderAddress.setPhone(workcus.getRecieverphone());
 						orderAddress.setReciver(workcus.getReciever());
 						orderAddress.setProvincecode(workcus.getProvince());
 						orderAddress.setCitycode(workcus.getCity());
-						orderAddress.setDistrictcode(workcus.getDistrict()); 
+						orderAddress.setDistrictcode(workcus.getDistrict());
 						orderAddress.setCity(regionService.getCityName(workcus.getCity()));
 						orderAddress.setProvince(regionService.getProvinceName(workcus.getProvince()));
 						orderAddress.setDistrict(regionService.getAresName(workcus.getDistrict()));
 						orderAddress.setStreetdetail(workcus.getStreetdetails());
 						orderAddress.setCreatetime(new Date());
 						orderaddressMapper.insertReturnId(orderAddress);
-						orderAddressId=orderAddress.getOrderaddressid();
-					}else {//寄到B端地址
-						orderAddress=orderAddressMgtService.addOrderAddressReturnOOrderaddressModel_promoterAddress(param.getSubmitUserId());
-						if(orderAddress!=null&&!ObjectUtil.isEmpty(orderAddress.getOrderaddressid())){
-							orderAddressId=orderAddress.getOrderaddressid();
+						orderAddressId = orderAddress.getOrderaddressid();
+					} else {// 寄到B端地址
+						orderAddress = orderAddressMgtService.addOrderAddressReturnOOrderaddressModel_promoterAddress(param.getSubmitUserId());
+						if (orderAddress != null && !ObjectUtil.isEmpty(orderAddress.getOrderaddressid())) {
+							orderAddressId = orderAddress.getOrderaddressid();
 						}
-//						orderAddressId= getOrderAddressIdByBUserId(param.getSubmitUserId(), Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));
+						// orderAddressId=
+						// getOrderAddressIdByBUserId(param.getSubmitUserId(),
+						// Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));
 					}
-//					Long producerUserId=isAddressC?getProducerUserIdFromC(work.getProductid(),param.getSubmitUserId()):getProducerUserId(orderAddressId,work.getProductid(),param.getSubmitUserId());
-					if(orderAddress!=null&&orderAddress.getDistrict()!=null){
-						producerUserId=orderAddressMgtService.getProducerUserId(orderAddress.getDistrictcode(), orderAddress.getCitycode(),orderAddress.getProvincecode(),work.getProductid());
+					// Long
+					// producerUserId=isAddressC?getProducerUserIdFromC(work.getProductid(),param.getSubmitUserId()):getProducerUserId(orderAddressId,work.getProductid(),param.getSubmitUserId());
+					if (orderAddress != null && orderAddress.getDistrict() != null) {
+						producerUserId = orderAddressMgtService.getProducerUserId(orderAddress.getDistrictcode(), orderAddress.getCitycode(), orderAddress.getProvincecode(), work.getProductid());
 					}
-					Integer orderindex=producerOrderMapper.getMaxOrderIndexByProducerIdAndUserId(producerUserId, param.getSubmitUserId());
-					if(orderindex==null){
-						orderindex=1;
-					}else{
-						orderindex=orderindex.intValue()+1;
+					Integer orderindex = producerOrderMapper.getMaxOrderIndexByProducerIdAndUserId(producerUserId, param.getSubmitUserId());
+					if (orderindex == null) {
+						orderindex = 1;
+					} else {
+						orderindex = orderindex.intValue() + 1;
 					}
-					String printindex=orderindex.toString();
-					if(addressParam!=null&&!ObjectUtil.isEmpty(addressParam.getProvince())){
-						if(addressParam.getAddresstype()!=null&&addressParam.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.cusaddr.toString())){
-							printindex=printindex+"A";
+					String printindex = orderindex.toString();
+					if (addressParam != null && !ObjectUtil.isEmpty(addressParam.getProvince())) {
+						if (addressParam.getAddresstype() != null && addressParam.getAddresstype().intValue() == Integer.parseInt(AddressTypeEnum.cusaddr.toString())) {
+							printindex = printindex + "A";
 						}
-					}else if(workcus.getAddresstype()!=null&&workcus.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.cusaddr.toString())){
-						printindex=printindex+"A";
+					} else if (workcus.getAddresstype() != null && workcus.getAddresstype().intValue() == Integer.parseInt(AddressTypeEnum.cusaddr.toString())) {
+						printindex = printindex + "A";
 					}
-						
-					
-					//订单号
+
+					// 订单号
 					String payId = GenUtils.getOrderNo(param.getSubmitUserId());
-					String userOrderId=payId;
-					String orderProductId=userOrderId;
-					
-					OProducerordercount producerorder=new OProducerordercount();
+					String userOrderId = payId;
+					String orderProductId = userOrderId;
+
+					OProducerordercount producerorder = new OProducerordercount();
 					producerorder.setProduceruserid(producerUserId);
 					producerorder.setUserid(param.getSubmitUserId());
 					producerorder.setUserorderid(userOrderId);
-					
+
 					producerorder.setOrderindex(orderindex);
 					producerorder.setPrintindex(printindex);
 					producerOrderMapper.insert(producerorder);
-					
-					if(detailsList!=null&&detailsList.size()>0){
+
+					if (detailsList != null && detailsList.size() > 0) {
 						for (TiMyartsdetails dd : detailsList) {
-							OOrderproductphotos op=new OOrderproductphotos();
+							OOrderproductphotos op = new OOrderproductphotos();
 							op.setOrderproductid(orderProductId);
 							op.setImgurl(dd.getImageurl());
 							op.setSort(dd.getSort());
@@ -1012,7 +915,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 							ophotoMapper.insert(op);
 						}
 					}
-					
+
 					OUserorders userOrder = new OUserorders();
 					Date ordertime = new Date();// 订单操作时间
 					userOrder.setUserorderid(userOrderId);// 用户订单号
@@ -1022,20 +925,20 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					userOrder.setRemark(param.getRemark());
 					userOrder.setOrdertype(Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));// 订单类型
 					userOrder.setOrdertime(ordertime);
-					userOrder.setPaytime(ordertime); 
-					userOrder.setUploadtime(new Date()); 
+					userOrder.setPaytime(ordertime);
+					userOrder.setUploadtime(new Date());
 					userOrder.setStatus(Integer.parseInt(OrderStatusEnum.waitFoSend.toString()));
 					userOrder.setTotalprice(totalprice);
-					userOrder.setOrdertotalprice(totalprice); 
-					userOrder.setOrderaddressid(orderAddressId); 
-					userOrder.setProduceruserid(producerUserId); 
+					userOrder.setOrdertotalprice(totalprice);
+					userOrder.setOrderaddressid(orderAddressId);
+					userOrder.setProduceruserid(producerUserId);
 					userOrdersMapper.insert(userOrder);
-					//订单产品
-					TiProducts product=productMapper.selectByPrimaryKey(style.getProductid());
+					// 订单产品
+					TiProducts product = productMapper.selectByPrimaryKey(style.getProductid());
 					OOrderproducts orderProduct = new OOrderproducts();
-					orderProduct.setOrderproductid(orderProductId); 
+					orderProduct.setOrderproductid(orderProductId);
 					orderProduct.setUserorderid(userOrderId);
-					orderProduct.setBuyeruserid(param.getSubmitUserId()); 
+					orderProduct.setBuyeruserid(param.getSubmitUserId());
 					orderProduct.setProductid(work.getProductid());
 					orderProduct.setStyleid(style.getStyleid());
 					orderProduct.setPropertystr(style.getDescription());
@@ -1045,9 +948,8 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					orderProduct.setProducttitle(product.getTitle());
 					orderProduct.setCartid(param.getWorkId());
 					oproductMapper.insert(orderProduct);
-					
-					
-					//支付单信息
+
+					// 支付单信息
 					OPayorder payorder = new OPayorder();
 					payorder.setPayid(payId);
 					payorder.setUserorderid(userOrderId);
@@ -1058,22 +960,22 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					payorder.setCashamount(0d);
 					payorder.setCreatetime(new Date());
 					payorder.setOrdertype(Integer.parseInt(PayOrderTypeEnum.ti_gouwu.toString()));
-					payOrderMapper.insert(payorder);  		
-					//红包金额入账
-					if(workcus.getRedpacketamount()!=null&&workcus.getRedpacketamount().doubleValue()>0){
+					payOrderMapper.insert(payorder);
+					// 红包金额入账
+					if (workcus.getRedpacketamount() != null && workcus.getRedpacketamount().doubleValue() > 0) {
 						accountService.add_accountsLog(param.getSubmitUserId(), Integer.parseInt(AccountLogType.get_ti_redpaket.toString()), workcus.getRedpacketamount(), payId, "");
 					}
-					
-					//账户结算
+
+					// 账户结算
 					accountService.add_accountsLog(param.getSubmitUserId(), Integer.parseInt(AccountLogType.use_payment.toString()), totalprice, payId, "");
-					
-					//反写活动状态
-					if(workcus!=null&&workcus.getStatus()!=null){
+
+					// 反写活动状态
+					if (workcus != null && workcus.getStatus() != null) {
 						workcus.setStatus(Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString()));
 						workcusMapper.updateByPrimaryKey(workcus);
 					}
-					
-					//销量
+
+					// 销量
 					TiProductsext productsext = productextMapper.selectByPrimaryKey(work.getProductid());
 					if (productsext == null) {
 						productsext = new TiProductsext();
@@ -1086,7 +988,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 						productsext.setMonthssales((productsext.getMonthssales() == null ? 0 : productsext.getMonthssales().intValue()) + param.getCount());
 						productextMapper.updateByPrimaryKeySelective(productsext);
 					}
-					
+
 					Map<String, Object> mapResult = new HashMap<String, Object>();
 					String orderId = payId;
 					mapResult.put("payId", payId);
@@ -1096,81 +998,78 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					mapResult.put("totalPrice", totalprice);
 					rq.setBasemodle(mapResult);
 					rq.setStatu(ReturnStatus.Success);
-					rq.setStatusreson("下单成功"); 
+					rq.setStatusreson("下单成功");
 				}
-			}else {
-				rq.setStatusreson("用户作品未完成（不在可下单的状态）！"); 
+			} else {
+				rq.setStatusreson("用户作品未完成（不在可下单的状态）！");
 			}
 		} catch (Exception e) {
-			addlog("代客制作下单：workId="+param.getWorkId()+"error:"+e.getMessage()); 
+			addlog("代客制作下单：workId=" + param.getWorkId() + "error:" + e.getMessage());
 			throw new RuntimeException(e);
 		}
 		return rq;
 	}
-	
-	
-	
-	
+
 	/**
 	 * 分销下单
 	 */
 	public ReturnModel submitTiGroupActivityOrder_ibs(TiGroupActivityOrderSubmitParam param) {
-		ReturnModel rq=new ReturnModel();
+		ReturnModel rq = new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);
-		if(param==null||ObjectUtil.isEmpty(param.getSubmitUserId())||ObjectUtil.isEmpty(param.getWorkId())){
+		if (param == null || ObjectUtil.isEmpty(param.getSubmitUserId()) || ObjectUtil.isEmpty(param.getWorkId())) {
 			rq.setStatusreson("参数不能为空！");
 			return rq;
 		}
-		if(param.getCount()<=0){
+		if (param.getCount() <= 0) {
 			rq.setStatusreson("数量不能小于1！");
 			return rq;
 		}
 		try {
-			TiGroupactivityworks work= groupactworkMapper.selectByPrimaryKey(param.getWorkId());
-			if(work==null){
+			TiGroupactivityworks work = groupactworkMapper.selectByPrimaryKey(param.getWorkId());
+			if (work == null) {
 				rq.setStatusreson("作品不存在！");
 				return rq;
 			}
-			TiGroupactivity act=groupactMapper.selectByPrimaryKey(work.getGactid());
-			
-			//用户作品对应的产品款式
-			TiProductstyles style=styleMapper.selectByPrimaryKey(work.getSttyleid()==null?work.getProductid():work.getSttyleid());
-			if(style==null){
+			TiGroupactivity act = groupactMapper.selectByPrimaryKey(work.getGactid());
+
+			// 用户作品对应的产品款式
+			TiProductstyles style = styleMapper.selectByPrimaryKey(work.getSttyleid() == null ? work.getProductid() : work.getSttyleid());
+			if (style == null) {
 				rq.setStatusreson("作品信息不全！");
 				return rq;
 			}
-			
-			List<TiMyartsdetails> detailsList=detailsMapper.findDetailsByWorkId(param.getWorkId());
-			if(detailsList==null||detailsList.size()<style.getImgcount().intValue()){
+
+			List<TiMyartsdetails> detailsList = detailsMapper.findDetailsByWorkId(param.getWorkId());
+			if (detailsList == null || detailsList.size() < style.getImgcount().intValue()) {
 				rq.setStatusreson("作品图片数量不够！");
 				return rq;
 			}
-			//是否达到下单的状态
-			Boolean isCompleteBoolean=false;
-			if(work.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.payed.toString())){
-				isCompleteBoolean=true;
-				
+			// 是否达到下单的状态
+			Boolean isCompleteBoolean = false;
+			if (work.getStatus().intValue() == Integer.parseInt(GroupActWorkStatus.payed.toString())) {
+				isCompleteBoolean = true;
+
 			}
-			if(isCompleteBoolean){
-				double totalprice=style.getPromoterprice().doubleValue()*param.getCount(); 
-				//检查是否完成集赞，如果完成，下单数量+1 属于赠送的
-				if(act!=null&&act.getPraisecount()!=null&&work.getPraisecount()!=null&& act.getPraisecount().intValue()<=work.getPraisecount().intValue()){
-					param.setCount(param.getCount()+1);
+			if (isCompleteBoolean) {
+				double totalprice = style.getPromoterprice().doubleValue() * param.getCount();
+				// 检查是否完成集赞，如果完成，下单数量+1 属于赠送的
+				if (act != null && act.getPraisecount() != null && work.getPraisecount() != null && act.getPraisecount().intValue() <= work.getPraisecount().intValue()) {
+					param.setCount(param.getCount() + 1);
 				}
-//				
-				UUsers promoter= usersMapper.selectByPrimaryKey( param.getSubmitUserId());
-				if(promoter!=null&&promoter.getIdentity()!=null&&ValidateUtils.isIdentity(promoter.getIdentity(), UserIdentityEnums.ti_promoter)){
-//					if(incomeprice<0){//收入小于0的时候,检查余额
-						UAccounts accounts=accountsMapper.selectByPrimaryKey(param.getSubmitUserId());
-						if(accounts==null||accounts.getAvailableamount()==null||accounts.getAvailableamount().doubleValue()<Math.abs(totalprice)){
-							rq.setStatusreson("您的账户余额不足！");
-							rq.setStatu(ReturnStatus.SystemError);
-							return rq;
-						}
-//					}
-					long producerUserId=0l;
-					//下单操作------------------
-					if(work.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.promoteraddr.toString())){
+				//
+				UUsers promoter = usersMapper.selectByPrimaryKey(param.getSubmitUserId());
+				if (promoter != null && promoter.getIdentity() != null && ValidateUtils.isIdentity(promoter.getIdentity(), UserIdentityEnums.ti_promoter)) {
+					// if(incomeprice<0){//收入小于0的时候,检查余额
+					UAccounts accounts = accountsMapper.selectByPrimaryKey(param.getSubmitUserId());
+					if (accounts == null || accounts.getAvailableamount() == null || accounts.getAvailableamount().doubleValue() < Math.abs(totalprice)) {
+						rq.setStatusreson("您的账户余额不足！");
+						rq.setStatu(ReturnStatus.SystemError);
+						return rq;
+					}
+					// }
+					long producerUserId = 0l;
+					// 下单操作------------------
+					if (work.getAddresstype().intValue() == Integer.parseInt(AddressTypeEnum.promoteraddr.toString())) {
 						OOrderaddress orderAddress = new OOrderaddress();
 						orderAddress.setUserid(act.getPromoteruserid());
 						orderAddress.setPhone(act.getMobilephone());
@@ -1180,56 +1079,59 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 						orderAddress.setDistrict(regionService.getAresName(act.getArea()));
 						orderAddress.setProvincecode(act.getProvince());
 						orderAddress.setCitycode(act.getCity());
-						orderAddress.setDistrictcode(act.getArea()); 
+						orderAddress.setDistrictcode(act.getArea());
 						orderAddress.setStreetdetail(act.getStreetdetails());
 						orderAddress.setCreatetime(new Date());
-						orderaddressMapper.insertReturnId(orderAddress);						
-						Long orderAddressId=orderAddress.getOrderaddressid();
+						orderaddressMapper.insertReturnId(orderAddress);
+						Long orderAddressId = orderAddress.getOrderaddressid();
 						param.setOrderAddressId(orderAddressId);
 						work.setAddressid(orderAddressId);
-						producerUserId=orderAddressMgtService.getProducerUserId(orderAddress.getDistrictcode(),orderAddress.getCitycode(),orderAddress.getProvincecode(), work.getProductid());
-						
-					}else if (!ObjectUtil.isEmpty(work.getAddressid())) {
-						producerUserId=orderAddressMgtService.getProducerUserIdByOrderAddressId(work.getAddressid(), work.getProductid());
+						producerUserId = orderAddressMgtService.getProducerUserId(orderAddress.getDistrictcode(), orderAddress.getCitycode(), orderAddress.getProvincecode(), work.getProductid());
+
+					} else if (!ObjectUtil.isEmpty(work.getAddressid())) {
+						producerUserId = orderAddressMgtService.getProducerUserIdByOrderAddressId(work.getAddressid(), work.getProductid());
 					}
-					//订单收货地址
-//					Long producerUserId=getProducerUserId(work.getAddressid(),work.getProductid(),param.getSubmitUserId());
-					Integer orderindex=producerOrderMapper.getMaxOrderIndexByProducerIdAndUserId(producerUserId, param.getSubmitUserId());
-					if(orderindex==null){
-						orderindex=1;
-					}else{
-						orderindex=orderindex.intValue()+1;
+					// 订单收货地址
+					// Long
+					// producerUserId=getProducerUserId(work.getAddressid(),work.getProductid(),param.getSubmitUserId());
+					Integer orderindex = producerOrderMapper.getMaxOrderIndexByProducerIdAndUserId(producerUserId, param.getSubmitUserId());
+					if (orderindex == null) {
+						orderindex = 1;
+					} else {
+						orderindex = orderindex.intValue() + 1;
 					}
-					String printindex=orderindex.toString();
-					//订单号
+					String printindex = orderindex.toString();
+					// 订单号
 					String payId = GenUtils.getOrderNo(param.getSubmitUserId());
-					String userOrderId=payId;
-					String orderProductId=userOrderId;
-					work.setUserorderid(payId); 
-					OProducerordercount producerorder=new OProducerordercount();
+					String userOrderId = payId;
+					String orderProductId = userOrderId;
+					work.setUserorderid(payId);
+					OProducerordercount producerorder = new OProducerordercount();
 					producerorder.setProduceruserid(producerUserId);
 					producerorder.setUserid(param.getSubmitUserId());
 					producerorder.setUserorderid(userOrderId);
-					
-					//邮寄到客户地址
-					if(work.getAddresstype()!=null&&work.getAddresstype().intValue()==Integer.parseInt(AddressTypeEnum.cusaddr.toString())){
-						printindex=printindex+"A";
+
+					// 邮寄到客户地址
+					if (work.getAddresstype() != null && work.getAddresstype().intValue() == Integer.parseInt(AddressTypeEnum.cusaddr.toString())) {
+						printindex = printindex + "A";
 					}
 					producerorder.setOrderindex(orderindex);
 					producerorder.setPrintindex(printindex);
 					producerOrderMapper.insert(producerorder);
-					
-					if(detailsList!=null&&detailsList.size()>0){
+
+					if (detailsList != null && detailsList.size() > 0) {
 						for (TiMyartsdetails dd : detailsList) {
-							OOrderproductphotos op=new OOrderproductphotos();
+							OOrderproductphotos op = new OOrderproductphotos();
 							op.setOrderproductid(orderProductId);
 							op.setImgurl(dd.getImageurl());
+							op.setTitle(dd.getTitle());
+							op.setContent(dd.getContent());
 							op.setSort(dd.getSort());
 							op.setCreatetime(new Date());
 							ophotoMapper.insert(op);
 						}
 					}
-					
+
 					OUserorders userOrder = new OUserorders();
 					Date ordertime = new Date();// 订单操作时间
 					userOrder.setUserorderid(userOrderId);// 用户订单号
@@ -1239,20 +1141,20 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					userOrder.setRemark(param.getRemark());
 					userOrder.setOrdertype(Integer.parseInt(OrderTypeEnum.ti_branchOrder.toString()));// 订单类型
 					userOrder.setOrdertime(ordertime);
-					userOrder.setPaytime(ordertime); 
-					userOrder.setUploadtime(new Date()); 
+					userOrder.setPaytime(ordertime);
+					userOrder.setUploadtime(new Date());
 					userOrder.setStatus(Integer.parseInt(OrderStatusEnum.waitFoSend.toString()));
 					userOrder.setTotalprice(totalprice);
-					userOrder.setOrdertotalprice(totalprice); 
-					userOrder.setOrderaddressid(work.getAddressid()); 
-					userOrder.setProduceruserid(producerUserId); 
+					userOrder.setOrdertotalprice(totalprice);
+					userOrder.setOrderaddressid(work.getAddressid());
+					userOrder.setProduceruserid(producerUserId);
 					userOrdersMapper.insert(userOrder);
-					//订单产品
-					TiProducts product=productMapper.selectByPrimaryKey(style.getProductid());
+					// 订单产品
+					TiProducts product = productMapper.selectByPrimaryKey(style.getProductid());
 					OOrderproducts orderProduct = new OOrderproducts();
-					orderProduct.setOrderproductid(orderProductId); 
+					orderProduct.setOrderproductid(orderProductId);
 					orderProduct.setUserorderid(userOrderId);
-					orderProduct.setBuyeruserid(param.getSubmitUserId()); 
+					orderProduct.setBuyeruserid(param.getSubmitUserId());
 					orderProduct.setProductid(work.getProductid());
 					orderProduct.setStyleid(style.getStyleid());
 					orderProduct.setPropertystr(style.getDescription());
@@ -1262,9 +1164,8 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					orderProduct.setProducttitle(product.getTitle());
 					orderProduct.setCartid(param.getWorkId());
 					oproductMapper.insert(orderProduct);
-					
-					
-					//支付单信息
+
+					// 支付单信息
 					OPayorder payorder = new OPayorder();
 					payorder.setPayid(payId);
 					payorder.setUserorderid(userOrderId);
@@ -1275,15 +1176,15 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					payorder.setCashamount(0d);
 					payorder.setCreatetime(new Date());
 					payorder.setOrdertype(Integer.parseInt(PayOrderTypeEnum.ti_gouwu.toString()));
-					payOrderMapper.insert(payorder);  		
-					//红包金额入账
-					accountService.add_accountsLog(param.getSubmitUserId(), Integer.parseInt(AccountLogType.use_payment.toString()),totalprice, payId, "");
-					
-					//反写活动状态
+					payOrderMapper.insert(payorder);
+					// 红包货款消耗
+					accountService.add_accountsLog(param.getSubmitUserId(), Integer.parseInt(AccountLogType.use_payment.toString()), totalprice, payId, "");
+
+					// 反写活动状态
 					work.setStatus(Integer.parseInt(GroupActWorkStatus.completeorder.toString()));
 					groupactworkMapper.updateByPrimaryKey(work);
-					
-					//销量
+
+					// 销量
 					TiProductsext productsext = productextMapper.selectByPrimaryKey(work.getProductid());
 					if (productsext == null) {
 						productsext = new TiProductsext();
@@ -1296,7 +1197,7 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 						productsext.setMonthssales((productsext.getMonthssales() == null ? 0 : productsext.getMonthssales().intValue()) + param.getCount());
 						productextMapper.updateByPrimaryKeySelective(productsext);
 					}
-					
+
 					Map<String, Object> mapResult = new HashMap<String, Object>();
 					String orderId = payId;
 					mapResult.put("payId", payId);
@@ -1306,16 +1207,16 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					mapResult.put("totalPrice", totalprice);
 					rq.setBasemodle(mapResult);
 					rq.setStatu(ReturnStatus.Success);
-					rq.setStatusreson("下单成功"); 
+					rq.setStatusreson("下单成功");
 				}
-			}else {
-				rq.setStatusreson("用户作品未完成（不在可下单的状态）！"); 
+			} else {
+				rq.setStatusreson("用户作品未完成（不在可下单的状态）！");
 			}
 		} catch (Exception e) {
-			addlog("分销下单：workId="+param.getWorkId()+"error:"+e.getMessage()); 
+			addlog("分销下单：workId=" + param.getWorkId() + "error:" + e.getMessage());
 			throw new RuntimeException(e);
 		}
 		return rq;
 	}
-	
+
 }

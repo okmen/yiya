@@ -29,6 +29,8 @@ import com.bbyiya.dao.TiGroupactivityMapper;
 import com.bbyiya.dao.TiGroupactivityworksMapper;
 import com.bbyiya.dao.TiMyworkcustomersMapper;
 import com.bbyiya.dao.TiMyworkredpacketlogsMapper;
+import com.bbyiya.dao.TiMyworksMapper;
+import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiProductsextMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
 import com.bbyiya.dao.TiPromotersMapper;
@@ -67,6 +69,8 @@ import com.bbyiya.model.TiGroupactivity;
 import com.bbyiya.model.TiGroupactivityworks;
 import com.bbyiya.model.TiMyworkcustomers;
 import com.bbyiya.model.TiMyworkredpacketlogs;
+import com.bbyiya.model.TiMyworks;
+import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiProductsext;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiPromoters;
@@ -123,6 +127,8 @@ public class BasePayServiceImpl implements IBasePayService{
 	private PProductstyleexpMapper styltExpMapper;
 	@Autowired
 	private PProductstylesMapper styleMapper;
+	@Autowired
+	private TiProductsMapper tiproductMapper;
 	
 	/*-- ---------------------错误日志记录-------------------------------------------*/
 	@Autowired
@@ -139,9 +145,8 @@ public class BasePayServiceImpl implements IBasePayService{
 	@Autowired
 	private UAccountslogsMapper accountslogsMapper;
 	
-//	@Resource(name="basePostMgtServiceImpl")
-//	private IBasePostMgtService postService;
-	
+	@Autowired
+	private TiMyworksMapper workMapper;
 	@Autowired
 	private TiActivityworksMapper activityworksMapper;
 	@Autowired
@@ -315,6 +320,54 @@ public class BasePayServiceImpl implements IBasePayService{
 								}
 								accountService.add_accountsLog(gact.getPromoteruserid(), Integer.parseInt(AccountLogType.get_ti_redpaket.toString()), totalPrice , payId, "");
 							}
+						}
+						return true;
+					}
+					//半价追加购买
+					else if(orderType==Integer.parseInt(PayOrderTypeEnum.ti_halfPriceBuy.toString())){
+						//更新支付状态
+						payOrderMapper.updateByPrimaryKeySelective(payOrder);
+						//活动作品
+						TiActivityworks actwork= activityworksMapper.selectByPrimaryKey(ObjectUtil.parseLong(payOrder.getUserorderid()) );
+						if(actwork!=null){
+							//追加购买的数量
+							int count=ObjectUtil.parseInt(payOrder.getExtobject2());
+							if(count>0)  {
+								//追加购买数量
+								actwork.setCountmore((actwork.getCountmore() == null ? 0: actwork.getCountmore().intValue())+ count);
+								//用户作品信息
+								TiMyworks work = workMapper.selectByPrimaryKey(actwork.getWorkid());
+								if (work != null && work.getStyleid() != null) {
+									TiProductstyles style = tistyleMapper.selectByPrimaryKey(work.getStyleid());
+									
+									TiActivitys actinfo= activitysMapper.selectByPrimaryKey(actwork.getActid());
+									//将货款 按照广告主价格打到广告主账户
+									if(actinfo!=null&&style!=null){
+										accountService.add_accountsLog(actinfo.getProduceruserid(), Integer.parseInt(AccountLogType.get_ti_commission.toString()), style.getPromoterprice().doubleValue()*count , payId, "");							
+									}
+									// 作品还未选择地址
+									if (actwork.getAddresstype() == null|| actwork.getAddresstype().intValue() < 0) {
+										// 用户收收货地址（假如还未选择收货地址）
+										long orderaddressId = ObjectUtil.parseLong(payOrder.getExtobject());
+										if (orderaddressId > 0) {
+											actwork.setAddresstype(Integer.parseInt(AddressTypeEnum.cusaddr.toString()));
+											actwork.setOrderaddressid(orderaddressId);
+											if (style != null) {
+												double proAmount = (style.getPrice() * count) / 2;
+												double postage = payOrder.getTotalprice().doubleValue()- proAmount;
+												if (postage >= 0.01d) {
+													actwork.setPostage(postage);
+												}
+											}
+										}
+									} else {
+										actwork.setAddresstype(Integer.parseInt(AddressTypeEnum.promoteraddr.toString()));
+									}
+								}
+							}
+							
+							//更新活动作品的 购买数量/收货地址
+							activityworksMapper.updateByPrimaryKeySelective(actwork);
 						}
 						return true;
 					}
@@ -608,10 +661,14 @@ public class BasePayServiceImpl implements IBasePayService{
 						    if(oproduct!=null){
 						    	double postageB=0d;
 						    	TiActivityworks actwork= activityworksMapper.selectByPrimaryKey(oproduct.getCartid()) ;
-						    	if(actwork!=null&&actwork.getOrderaddressid()!=null&&actwork.getOrderaddressid().longValue()>0){
-						    		OPayorder postPayorder= payOrderMapper.getpostPayorderByworkId(String.valueOf(actwork.getWorkid()));
-						    		if(postPayorder!=null){
-						    			postageB=postPayorder.getTotalprice();
+						    	if(actwork!=null&&actwork.getAddresstype()!=null&&actwork.getAddresstype()==Integer.parseInt(AddressTypeEnum.cusaddr.toString()) &&actwork.getOrderaddressid()!=null&&actwork.getOrderaddressid().longValue()>0){
+						    		if(actwork.getPostage()!=null&&actwork.getPostage().doubleValue()>0){
+						    			postageB=actwork.getPostage();
+						    		}else{
+						    			OPayorder postPayorder= payOrderMapper.getpostPayorderByworkId(String.valueOf(actwork.getWorkid()));
+							    		if(postPayorder!=null){
+							    			postageB=postPayorder.getTotalprice();
+							    		}
 						    		}
 						    	}else {
 									TiGroupactivityworks gwork=gworkMapper.selectByPrimaryKey(oproduct.getCartid());

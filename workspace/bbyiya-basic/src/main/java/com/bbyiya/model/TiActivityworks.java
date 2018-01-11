@@ -25,6 +25,10 @@ public class TiActivityworks {
 
     private Date submittime;
 
+    private Integer countmore;
+
+    private Double postage;
+
     public Long getWorkid() {
         return workid;
     }
@@ -111,6 +115,22 @@ public class TiActivityworks {
 
 	public void setSubmittime(Date submittime) {
 		this.submittime = submittime;
+	}
+
+	public Integer getCountmore() {
+		return countmore;
+	}
+
+	public Double getPostage() {
+		return postage;
+	}
+
+	public void setCountmore(Integer countmore) {
+		this.countmore = countmore;
+	}
+
+	public void setPostage(Double postage) {
+		this.postage = postage;
 	}
 	
     

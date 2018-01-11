@@ -62,6 +62,7 @@ import com.bbyiya.utils.ImgDomainUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.PageInfoUtil;
 import com.bbyiya.utils.QRCodeUtil;
+import com.bbyiya.utils.encrypt.UrlEncodeUtils;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.address.OrderaddressVo;
 import com.bbyiya.vo.calendar.TiActivitysVo;
@@ -330,6 +331,11 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 				Integer yaoqingcount=actworksingleMapper.getYaoqingCountByActId(ti.getActid());
 				ti.setYaoqingcount(yaoqingcount==null?0:yaoqingcount);
 			}
+			//活动入口二维码
+			String redirct_url="feedbackAct?actId="+ti.getActid(); 
+			String urlstr= ConfigUtil.getSingleValue("shareulr-base")+"uid="+userid+"&redirct_url="+UrlEncodeUtils.urlEncode(redirct_url,"utf-8");
+			String url="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+UrlEncodeUtils.urlEncode(urlstr,"utf-8");
+			ti.setCodeurl(url);
 			if(ti.getAdvertid()!=null){
 				TiPromoteradvertinfo advertinfo=advertinfoMapper.selectByPrimaryKey(ti.getAdvertid());
 				if(advertinfo!=null){

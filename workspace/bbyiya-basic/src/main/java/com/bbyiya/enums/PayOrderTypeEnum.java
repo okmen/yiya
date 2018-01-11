@@ -22,7 +22,7 @@ public enum PayOrderTypeEnum {
      */
     ti_gouwu(5),
     /**
-     * 
+     * 台历运费
      */
     ti_postage(6),
     /**
@@ -32,7 +32,11 @@ public enum PayOrderTypeEnum {
     /**
      * 台历团购业务
      */
-    ti_groupAct(8)
+    ti_groupAct(8),
+    /**
+     * 活动直接优惠买（多买几本）
+     */
+    ti_halfPriceBuy(9)
     ;
 
     private final int Type;

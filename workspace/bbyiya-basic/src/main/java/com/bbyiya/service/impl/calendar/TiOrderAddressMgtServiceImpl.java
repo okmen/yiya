@@ -104,14 +104,14 @@ public class TiOrderAddressMgtServiceImpl implements IOrderAddressMgtService{
 			List<TiProductareas> list =null;
 			if(districtcode!=null)
 				list=productareasMapper.findProductAreaListByProductIdAndArea(productId, districtcode);
-			if (list==null||list.size()<=0){
-				if(cityCode!=null)
-					list=productareasMapper.findProductAreaListByCityCode(productId, cityCode);
-				if(list==null||list.size()<=0){
-					if(provinceCode!=null)
-						list=productareasMapper.findProductAreaListByProvinceCode(productId, provinceCode);
-				}
-			}
+//			if (list==null||list.size()<=0){
+//				if(cityCode!=null)
+//					list=productareasMapper.findProductAreaListByCityCode(productId, cityCode);
+//				if(list==null||list.size()<=0){
+//					if(provinceCode!=null)
+//						list=productareasMapper.findProductAreaListByProvinceCode(productId, provinceCode);
+//				}
+//			}
 			if (list != null && list.size() > 0) {
 				return list.get(0).getProduceruserid();
 			}
@@ -124,12 +124,12 @@ public class TiOrderAddressMgtServiceImpl implements IOrderAddressMgtService{
 			OOrderaddress addr = orderaddressMapper.selectByPrimaryKey(orderAddressId);
 			if(addr!=null&&addr.getDistrictcode()!=null){
 				List<TiProductareas> list = productareasMapper.findProductAreaListByProductIdAndArea(productId, addr.getDistrictcode());
-				if (list==null||list.size()<=0){
-					list=productareasMapper.findProductAreaListByCityCode(productId, addr.getCitycode());
-					if(list==null||list.size()<=0){
-						list=productareasMapper.findProductAreaListByProvinceCode(productId, addr.getProvincecode());
-					}
-				}
+//				if (list==null||list.size()<=0){
+//					list=productareasMapper.findProductAreaListByCityCode(productId, addr.getCitycode());
+//					if(list==null||list.size()<=0){
+//						list=productareasMapper.findProductAreaListByProvinceCode(productId, addr.getProvincecode());
+//					}
+//				}
 				if (list != null && list.size() > 0) {
 					return list.get(0).getProduceruserid();
 				}

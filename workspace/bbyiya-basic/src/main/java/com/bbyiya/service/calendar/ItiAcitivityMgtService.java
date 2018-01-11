@@ -9,9 +9,16 @@ public interface ItiAcitivityMgtService {
 	 */
 	void updateActivitylimitCountByActId(Integer actId);
 	/**
-	 * 7天未完成分享的 置未名额失效
+	 * 活动时间到，自动下单、自动名额失效
 	 */
-	void updateWorkTofailse();
+	void timeToSubmitOrders();
+	/**
+	 * 直接下单
+	 * @param userId
+	 * @param workId
+	 * @return
+	 */
+	ReturnModel timeToSubmitOrder(long userId,long workId);
 	/**
 	 * 作废活动
 	 * @param workId

@@ -56,4 +56,9 @@ public interface TiActivityworksMapper {
      * @return
      */
     TiActivityworks getActWorkListByActIdAndUserId(@Param("actid") Integer actid,@Param("userId") Long userId);
+    /**
+     * 获取已经到期的活动作品
+     * @return
+     */
+    List<TiActivityworks> findActworklistExpired();
 }

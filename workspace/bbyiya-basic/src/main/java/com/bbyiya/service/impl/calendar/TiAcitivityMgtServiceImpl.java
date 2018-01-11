@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,9 +24,11 @@ import com.bbyiya.model.TiActivityworks;
 import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.UAccounts;
+import com.bbyiya.service.calendar.ITi_OrderMgtService;
 import com.bbyiya.service.calendar.ItiAcitivityMgtService;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
+import com.bbyiya.vo.calendar.TiActivityOrderSubmitParam;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
@@ -39,6 +43,13 @@ public class TiAcitivityMgtServiceImpl implements ItiAcitivityMgtService{
 	private TiActivityworksMapper activityworksMapper;
 	@Autowired
 	private UAccountsMapper accountMapper;
+	@Autowired 
+	private TiProductsMapper productMapper;
+	@Autowired
+	private TiProductstylesMapper styleMapper;
+
+	@Resource(name = "tiOrderMgtServiceImpl")
+	private  ITi_OrderMgtService basetiorderService;
 	/**
 	 * 作品完成分享
 	 * @param actId
@@ -63,26 +74,44 @@ public class TiAcitivityMgtServiceImpl implements ItiAcitivityMgtService{
 		 }
 	}
 	
-	public void updateWorkTofailse(){
+	
+	public void timeToSubmitOrders(){
 		//1需要积攒的活动
 		//2、作品状态（已提交的作品、未提交的作品）
 		//3、提交时间超过3天
-		PageHelper.startPage(1, 50);
-		//查询需要积攒的作品
-		List<TiActivityworks> actworks=activityworksMapper.getActWorkListNeedShared();
+		PageHelper.startPage(1, 100);
+		//查询积攒时间到了的活动
+		List<TiActivityworks> actworks=activityworksMapper.findActworklistExpired();
 		PageInfo<TiActivityworks> resultPage = new PageInfo<TiActivityworks>(actworks);
 		if(resultPage!=null&&resultPage.getList()!=null&&resultPage.getList().size()>0){
-			long nowtimelong=new Date().getTime();
 			//作品
 			List<Integer> actIds=new ArrayList<Integer>();
 			for (TiActivityworks ww : resultPage.getList()) {
-				long createTimelong=ww.getCreatetime().getTime(); 
-				long betimeMinutes=(nowtimelong-createTimelong)/(1000*60);
-				if(betimeMinutes>(7*24*60)){
-					ww.setStatus(Integer.parseInt(ActivityWorksStatusEnum.fail.toString()));
-					activityworksMapper.updateByPrimaryKeySelective(ww);
-					actIds.add(ww.getActid());
+				//活动信息
+				TiActivitys act= myactMapper.selectByPrimaryKey(ww.getActid());
+				if(act!=null){
+					if (act.getExtcount() != null && act.getExtcount().intValue() > 0) {
+						// 需要积攒
+						if (ww.getExtcount() != null && ww.getExtcount().intValue() >= act.getExtcount().intValue()) {
+							// 完成积攒 --下单的数量 自己购买 +1
+							TiActivityOrderSubmitParam orderParam = new TiActivityOrderSubmitParam();
+							orderParam.setSubmitUserId(act.getProduceruserid());
+							orderParam.setWorkId(ww.getWorkid());
+							orderParam.setCount(1 + (ww.getCountmore() == null ? 0 : ww.getCountmore().intValue()));
+							basetiorderService.submitTiCustomerOrder_ibs(orderParam, null);
+						} else if(ww.getCountmore()!=null&&ww.getCountmore().intValue()>0){// 没有完成
+							TiActivityOrderSubmitParam orderParam = new TiActivityOrderSubmitParam();
+							orderParam.setSubmitUserId(act.getProduceruserid());
+							orderParam.setWorkId(ww.getWorkid());
+							orderParam.setCount((ww.getCountmore() == null ? 0 : ww.getCountmore().intValue()));
+							basetiorderService.submitTiCustomerOrder_ibs(orderParam, null);
+						}else {
+							ww.setStatus(Integer.parseInt(ActivityWorksStatusEnum.fail.toString()));
+							activityworksMapper.updateByPrimaryKeySelective(ww);
+						}
+					}
 				}
+				actIds.add(ww.getActid());
 			}
 			if(actIds!=null&&actIds.size()>0){
 				for (Integer id : actIds) {
@@ -90,6 +119,55 @@ public class TiAcitivityMgtServiceImpl implements ItiAcitivityMgtService{
 				}
 			}
 		}
+	}
+	
+	/**
+	 * 
+	 * @param workId
+	 * @return
+	 */
+	public ReturnModel timeToSubmitOrder(long userId,long workId){
+		ReturnModel rq=new ReturnModel();
+		//我参与的活动作品
+		TiActivityworks ww=activityworksMapper.selectByPrimaryKey(workId);
+		if(ww==null){
+			rq.setStatu(ReturnStatus.ParamError);
+			return rq;
+		}
+		if(ww.getUserid().longValue()!=userId){
+			rq.setStatu(ReturnStatus.ParamError);
+			rq.setStatusreson("不是本人，无权此操作！");
+			return rq;
+		} 
+		//活动信息
+		TiActivitys act= myactMapper.selectByPrimaryKey(ww.getActid());
+		if(act!=null){
+			if (act.getExtcount() != null && act.getExtcount().intValue() > 0) {
+				// 需要积攒
+				if (ww.getExtcount() != null && ww.getExtcount().intValue() >= act.getExtcount().intValue()) {
+					// 完成积攒 --下单的数量 自己购买 +1
+					TiActivityOrderSubmitParam orderParam = new TiActivityOrderSubmitParam();
+					orderParam.setSubmitUserId(act.getProduceruserid());
+					orderParam.setWorkId(ww.getWorkid());
+					orderParam.setCount(1 + (ww.getCountmore() == null ? 0 : ww.getCountmore().intValue()));
+					basetiorderService.submitTiCustomerOrder_ibs(orderParam, null);
+				} else if(ww.getCountmore()!=null&&ww.getCountmore().intValue()>0){// 没有完成
+					TiActivityOrderSubmitParam orderParam = new TiActivityOrderSubmitParam();
+					orderParam.setSubmitUserId(act.getProduceruserid());
+					orderParam.setWorkId(ww.getWorkid());
+					orderParam.setCount((ww.getCountmore() == null ? 0 : ww.getCountmore().intValue()));
+					basetiorderService.submitTiCustomerOrder_ibs(orderParam, null);
+				}else {
+					rq.setStatu(ReturnStatus.SystemError);
+					rq.setStatusreson("您还未获得产品！");
+					return rq;
+				}
+			}
+			updateActivitylimitCountByActId(act.getActid());
+		}
+		rq.setStatu(ReturnStatus.Success);
+		rq.setStatusreson("ok"); 
+		return rq;
 	}
 	
 	/**
@@ -135,12 +213,19 @@ public class TiAcitivityMgtServiceImpl implements ItiAcitivityMgtService{
 		rq.setStatu(ReturnStatus.ParamError);
 		TiActivityworks myactWork= activityworksMapper.selectByPrimaryKey(workId);
 		if(myactWork!=null){
+			//只能让失效的状态有效
+			if(myactWork.getStatus()!=null&&myactWork.getStatus()!=Integer.parseInt(ActivityWorksStatusEnum.fail.toString())){
+				rq.setStatusreson("此状态不可操作！"); 
+				return rq;
+			}
+		    //活动信息
 			TiActivitys act=myactMapper.selectByPrimaryKey(myactWork.getActid());
 			if(act!=null&&act.getApplylimitcount()!=null&&act.getApplylimitcount().intValue()>0){
 				if(act.getProduceruserid().longValue()!=userId){
 					rq.setStatusreson("非您开的活动，无权限！"); 
 					return rq;
 				}
+				//作品
 				TiMyworks workInfo= myworksMapper.selectByPrimaryKey(workId);
 				if(workInfo!=null&&!ObjectUtil.isEmpty(workInfo.getCompletetime())){
 					//已经提交过作品
@@ -151,7 +236,11 @@ public class TiAcitivityMgtServiceImpl implements ItiAcitivityMgtService{
 							activityworksMapper.updateByPrimaryKeySelective(myactWork);
 						}else{//已经提交作品未完成积攒
 							myactWork.setStatus(Integer.parseInt(ActivityWorksStatusEnum.imagesubmit.toString()));
+							myactWork.setSubmittime(new Date()); 
 							activityworksMapper.updateByPrimaryKeySelective(myactWork);
+							//我的作品
+							workInfo.setCompletetime(new Date());
+							myworksMapper.updateByPrimaryKeySelective(workInfo);
 						}
 					}else{//不需要积攒
 						rq.setStatusreson("不需要积攒的活动，暂时无法重新激活！"); 
@@ -175,11 +264,15 @@ public class TiAcitivityMgtServiceImpl implements ItiAcitivityMgtService{
 		}
 		return rq;
 	}
-	@Autowired 
-	private TiProductsMapper productMapper;
-	@Autowired
-	private TiProductstylesMapper styleMapper;
 	
+	
+	/**
+	 * 检测账户金额是否足够
+	 * @param promoterUserId
+	 * @param productId
+	 * @param count
+	 * @return
+	 */
 	public boolean checkAccount(long promoterUserId,long productId,int count){
 		UAccounts account= accountMapper.selectByPrimaryKey(promoterUserId);
 		if(account!=null&&account.getAvailableamount()!=null&&account.getAvailableamount()>0){

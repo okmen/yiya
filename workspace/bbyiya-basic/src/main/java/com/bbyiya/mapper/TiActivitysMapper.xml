@@ -16,7 +16,6 @@
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="Remark" property="remark" jdbcType="VARCHAR" />
     <result column="ActImg" property="actimg" jdbcType="VARCHAR" />
-    <result column="Description" property="description" jdbcType="LONGVARCHAR" />
     <result column="AdvertId" property="advertid" jdbcType="INTEGER" />
     <result column="AutoAddress" property="autoaddress" jdbcType="INTEGER" />
     <result column="QRcode" property="qrcode" jdbcType="VARCHAR" />
@@ -25,6 +24,7 @@
     <result column="ApplyLimitCount" property="applylimitcount" jdbcType="INTEGER" />
     <result column="IsFreeStyle" property="isfreestyle" jdbcType="INTEGER" />
     <result column="HoursEffective" property="hourseffective" jdbcType="INTEGER" />
+    <result column="CompanyName" property="companyname" jdbcType="VARCHAR" />
   </resultMap>
   <resultMap id="ResultMapWithBLOBs" type="com.bbyiya.model.TiActivitys" extends="BaseResultMap" >
     <result column="Description" property="description" jdbcType="LONGVARCHAR" />
@@ -32,15 +32,13 @@
   <sql id="Base_Column_List" >
     ActId, Title, ProducerUserId, ProductId, StyleId, FreeCount, ActType, ExtCount, ApplyCount, 
     CompleteCount, Status, CreateTime, Remark, ActImg, AdvertId, AutoAddress, QRcode, 
-    QRcodeDesc, ApplyingCount, ApplyLimitCount, IsFreeStyle, HoursEffective
+    QRcodeDesc, ApplyingCount, ApplyLimitCount, IsFreeStyle, HoursEffective, CompanyName
   </sql>
   <resultMap id="TiActivitysVOResult" type="com.bbyiya.vo.calendar.TiActivitysVo" extends="BaseResultMap">  
   </resultMap>  
   
   <select id="findCalenderActivityList" resultMap="TiActivitysVOResult"  >
-    select 
-    <include refid="Base_Column_List" />
-    from ti_activitys
+    select   <include refid="Base_Column_List" /> from ti_activitys
     where ProducerUserId = #{produceruserid,jdbcType=BIGINT}
     <if test="type != null" >
        and  ActType = #{type,jdbcType=INTEGER}
@@ -89,7 +87,8 @@
       Remark, ActImg, AdvertId, 
       AutoAddress, QRcode, QRcodeDesc, 
       ApplyingCount, ApplyLimitCount, IsFreeStyle, 
-      HoursEffective, Description)
+      HoursEffective, CompanyName, Description
+      )
     values (#{actid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{produceruserid,jdbcType=BIGINT}, 
       #{productid,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, #{freecount,jdbcType=INTEGER}, 
       #{acttype,jdbcType=INTEGER}, #{extcount,jdbcType=INTEGER}, #{applycount,jdbcType=INTEGER}, 
@@ -97,7 +96,8 @@
       #{remark,jdbcType=VARCHAR}, #{actimg,jdbcType=VARCHAR}, #{advertid,jdbcType=INTEGER}, 
       #{autoaddress,jdbcType=INTEGER}, #{qrcode,jdbcType=VARCHAR}, #{qrcodedesc,jdbcType=VARCHAR}, 
       #{applyingcount,jdbcType=INTEGER}, #{applylimitcount,jdbcType=INTEGER}, #{isfreestyle,jdbcType=INTEGER}, 
-      #{hourseffective,jdbcType=INTEGER}, #{description,jdbcType=LONGVARCHAR})
+      #{hourseffective,jdbcType=INTEGER}, #{companyname,jdbcType=VARCHAR}, #{description,jdbcType=LONGVARCHAR}
+      )
   </insert>
    <insert id="insert" parameterType="com.bbyiya.model.TiActivitys" >
     insert into ti_activitys (ActId, Title, ProducerUserId, 
@@ -107,7 +107,8 @@
       Remark, ActImg, AdvertId, 
       AutoAddress, QRcode, QRcodeDesc, 
       ApplyingCount, ApplyLimitCount, IsFreeStyle, 
-      HoursEffective, Description)
+      HoursEffective, CompanyName, Description
+      )
     values (#{actid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{produceruserid,jdbcType=BIGINT}, 
       #{productid,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, #{freecount,jdbcType=INTEGER}, 
       #{acttype,jdbcType=INTEGER}, #{extcount,jdbcType=INTEGER}, #{applycount,jdbcType=INTEGER}, 
@@ -115,7 +116,8 @@
       #{remark,jdbcType=VARCHAR}, #{actimg,jdbcType=VARCHAR}, #{advertid,jdbcType=INTEGER}, 
       #{autoaddress,jdbcType=INTEGER}, #{qrcode,jdbcType=VARCHAR}, #{qrcodedesc,jdbcType=VARCHAR}, 
       #{applyingcount,jdbcType=INTEGER}, #{applylimitcount,jdbcType=INTEGER}, #{isfreestyle,jdbcType=INTEGER}, 
-      #{hourseffective,jdbcType=INTEGER}, #{description,jdbcType=LONGVARCHAR})
+      #{hourseffective,jdbcType=INTEGER}, #{companyname,jdbcType=VARCHAR}, #{description,jdbcType=LONGVARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiActivitys" >
     insert into ti_activitys
@@ -185,6 +187,9 @@
       </if>
       <if test="hourseffective != null" >
         HoursEffective,
+      </if>
+      <if test="companyname != null" >
+        CompanyName,
       </if>
       <if test="description != null" >
         Description,
@@ -257,6 +262,9 @@
       <if test="hourseffective != null" >
         #{hourseffective,jdbcType=INTEGER},
       </if>
+      <if test="companyname != null" >
+        #{companyname,jdbcType=VARCHAR},
+      </if>
       <if test="description != null" >
         #{description,jdbcType=LONGVARCHAR},
       </if>
@@ -328,6 +336,9 @@
       <if test="hourseffective != null" >
         HoursEffective = #{hourseffective,jdbcType=INTEGER},
       </if>
+      <if test="companyname != null" >
+        CompanyName = #{companyname,jdbcType=VARCHAR},
+      </if>
       <if test="description != null" >
         Description = #{description,jdbcType=LONGVARCHAR},
       </if>
@@ -357,6 +368,7 @@
       ApplyLimitCount = #{applylimitcount,jdbcType=INTEGER},
       IsFreeStyle = #{isfreestyle,jdbcType=INTEGER},
       HoursEffective = #{hourseffective,jdbcType=INTEGER},
+      CompanyName = #{companyname,jdbcType=VARCHAR},
       Description = #{description,jdbcType=LONGVARCHAR}
     where ActId = #{actid,jdbcType=INTEGER}
   </update>
@@ -382,7 +394,8 @@
       ApplyingCount = #{applyingcount,jdbcType=INTEGER},
       ApplyLimitCount = #{applylimitcount,jdbcType=INTEGER},
       IsFreeStyle = #{isfreestyle,jdbcType=INTEGER},
-      HoursEffective = #{hourseffective,jdbcType=INTEGER}
+      HoursEffective = #{hourseffective,jdbcType=INTEGER},
+      CompanyName = #{companyname,jdbcType=VARCHAR}
     where ActId = #{actid,jdbcType=INTEGER}
   </update>
 </mapper>

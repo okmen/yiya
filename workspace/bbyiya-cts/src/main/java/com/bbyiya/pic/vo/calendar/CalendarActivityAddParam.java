@@ -14,6 +14,7 @@ public class CalendarActivityAddParam {
 	private String qrcode;
 	private String qrcodeDesc;
 	private Integer autoaddress;
+	private String companyname;
 	private Integer applylimitcount;
 	//集赞的时间限制（小时）
 	private Integer hoursEffective;
@@ -106,6 +107,12 @@ public class CalendarActivityAddParam {
 	}
 	public void setHoursEffective(Integer hoursEffective) {
 		this.hoursEffective = hoursEffective;
+	}
+	public String getCompanyname() {
+		return companyname;
+	}
+	public void setCompanyname(String companyname) {
+		this.companyname = companyname;
 	}
 	
 	

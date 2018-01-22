@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.OUserorderpushMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.OUserorderpush" >
+    <id column="UserOrderId" property="userorderid" jdbcType="VARCHAR" />
+    <result column="IsPushed" property="ispushed" jdbcType="INTEGER" />
+    <result column="PushTime" property="pushtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <!-- 订单待推送的 result -->
+  <resultMap id="RedPackeUserOrderResultMap" type="com.bbyiya.vo.order.UserOrderRedpackgeResult" >
+    <result column="UserOrderId" property="userorderid" jdbcType="VARCHAR" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="TotalPrice" property="totalprice" jdbcType="DECIMAL" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="BranchUserId" property="branchuserid" jdbcType="BIGINT" />
+    <result column="OrderAddressId" property="orderaddressid" jdbcType="BIGINT" />
+    <result column="PayId" property="payid" jdbcType="VARCHAR" />
+    <result column="Remark" property="remark" jdbcType="VARCHAR" />
+    <result column="OrderTime" property="ordertime" jdbcType="TIMESTAMP" />
+    <result column="PayTime" property="paytime" jdbcType="TIMESTAMP" />
+    <result column="OrderTotalPrice" property="ordertotalprice" jdbcType="DECIMAL" />
+    <result column="PayType" property="paytype" jdbcType="INTEGER" />
+    <result column="OrderType" property="ordertype" jdbcType="INTEGER" />
+    <result column="AgentUserId" property="agentuserid" jdbcType="BIGINT" />
+    <result column="IsBranch" property="isbranch" jdbcType="INTEGER" />
+    <result column="ExpressCom" property="expresscom" jdbcType="VARCHAR" />
+    <result column="ExpressCode" property="expresscode" jdbcType="VARCHAR" />
+    <result column="ExpressOrder" property="expressorder" jdbcType="VARCHAR" />
+    <result column="Postage" property="postage" jdbcType="DECIMAL" />
+    <result column="UploadTime" property="uploadtime" jdbcType="TIMESTAMP" />
+    <result column="PostModelId" property="postmodelid" jdbcType="INTEGER" />
+    <result column="DeliveryTime" property="deliverytime" jdbcType="TIMESTAMP" />
+    <result column="ProducerUserId" property="produceruserid" jdbcType="BIGINT" />
+    <result column="IsPromoterAddress" jdbcType="INTEGER" property="ispromoteraddress" />
+    
+    <result column="ProductId" property="productId" jdbcType="BIGINT" />
+    <result column="StyleId" property="styleId" jdbcType="BIGINT" />
+    <result column="WorkId" property="workId" jdbcType="BIGINT" />
+    <result column="Copys" property="Copys" jdbcType="INTEGER" />
+    <result column="KhName" property="khName" jdbcType="VARCHAR" />
+    <result column="KhPhone" property="khPhone" jdbcType="VARCHAR" />
+    <result column="KhName1" property="khName1" jdbcType="VARCHAR" />
+    <result column="KhPhone1" property="khPhone1" jdbcType="VARCHAR" />
+    <result column="ReciverName" property="reciverName" jdbcType="VARCHAR" />
+    <result column="ReciverPhone" property="reciverPhone" jdbcType="VARCHAR" />
+    <result column="Province" property="province" jdbcType="VARCHAR" />
+    <result column="City" property="city" jdbcType="VARCHAR" />
+    <result column="District" property="district" jdbcType="VARCHAR" />
+    <result column="StreetDetail" property="streetDetail" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    UserOrderId, IsPushed, PushTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from o_userorderpush
+    where UserOrderId = #{userorderid,jdbcType=VARCHAR}
+  </select>
+  <select id="findUserorderForPushList"  resultMap="RedPackeUserOrderResultMap"><!-- 获取待推送 第三方生产的 红包订单 -->
+  	SELECT a.*,b.IsPushed,b.PushTime,c.ProductId,c.StyleId,d.ContactName as khName,d.Phone as khPhone,f.Reciever as khName1,f.Mobiephone as khPhone1,
+	e.Reciver as reciverName,e.Phone as reciverPhone,e.Province,e.City,e.District,e.StreetDetail,f.WorkId,c.count as Copys
+	FROM o_userorders as a LEFT JOIN o_userorderpush as b on a.UserOrderId=b.UserOrderId
+	LEFT JOIN o_orderproducts as c on a.UserOrderId=c.UserOrderId
+	LEFT JOIN ti_activityworks as f on c.CartId=f.WorkId
+	LEFT JOIN o_userorderext as d on a.UserOrderId=d.UserOrderId
+	LEFT JOIN o_orderaddress as e on a.OrderAddressId=e.OrderAddressId
+	WHERE c.ProductId=2801 and (b.UserOrderId is null or b.IsPushed !=1)  ORDER BY a.UploadTime ASC  
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from o_userorderpush
+    where UserOrderId = #{userorderid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.OUserorderpush" >
+    insert into o_userorderpush (UserOrderId, IsPushed, PushTime
+      )
+    values (#{userorderid,jdbcType=VARCHAR}, #{ispushed,jdbcType=INTEGER}, #{pushtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.OUserorderpush" >
+    insert into o_userorderpush
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userorderid != null" >
+        UserOrderId,
+      </if>
+      <if test="ispushed != null" >
+        IsPushed,
+      </if>
+      <if test="pushtime != null" >
+        PushTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userorderid != null" >
+        #{userorderid,jdbcType=VARCHAR},
+      </if>
+      <if test="ispushed != null" >
+        #{ispushed,jdbcType=INTEGER},
+      </if>
+      <if test="pushtime != null" >
+        #{pushtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.OUserorderpush" >
+    update o_userorderpush
+    <set >
+      <if test="ispushed != null" >
+        IsPushed = #{ispushed,jdbcType=INTEGER},
+      </if>
+      <if test="pushtime != null" >
+        PushTime = #{pushtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where UserOrderId = #{userorderid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.OUserorderpush" >
+    update o_userorderpush
+    set IsPushed = #{ispushed,jdbcType=INTEGER},
+      PushTime = #{pushtime,jdbcType=TIMESTAMP}
+    where UserOrderId = #{userorderid,jdbcType=VARCHAR}
+  </update>
+</mapper>

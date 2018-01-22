@@ -58,7 +58,7 @@
   <select id="getActWorkListByActIdAndUserId" resultMap="TiActivityworksVOResult"  ><!-- 获取用户参与的活动 -->
   	select <include refid="Base_Column_List" />
     from ti_activityworks
-    where  ActId = #{actid,jdbcType=BIGINT} and UserId=#{userId,jdbcType=BIGINT} limit 1
+    where  ActId = #{actid,jdbcType=BIGINT} and UserId=#{userId,jdbcType=BIGINT}  ORDER BY WorkId DESC limit 1
   </select>
   <select id="getActWorkListNeedShared" resultMap="BaseResultMap"  ><!-- 获取需要分享的，未完成分享的作品 -->
     SELECT a.* from ti_activityworks as a LEFT JOIN ti_activitys as b on a.ActId=b.ActId
@@ -72,7 +72,7 @@
 	and b.HoursEffective is not null
 	and now()> DATE_ADD(a.CompleteTime,INTERVAL b.HoursEffective HOUR)
 	and c.`Status`in(1,2)
-	and b.ExtCount>0
+	and b.ExtCount>0 AND  c.`ExtCount` >=b.`ExtCount` and c.`AddressType` in(0,1)
 	ORDER BY  DATE_ADD(a.CompleteTime,INTERVAL b.HoursEffective HOUR) asc
   </select>
   <update id="failActivityWorkByStatus"  ><!-- 置活动作品参与失败 -->

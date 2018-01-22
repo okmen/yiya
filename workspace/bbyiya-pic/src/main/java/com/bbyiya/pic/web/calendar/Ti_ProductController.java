@@ -11,6 +11,7 @@ import java.util.Map;
 
 
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +36,7 @@ import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiProductsext;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiUserdiscounts;
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
@@ -96,11 +98,18 @@ public class Ti_ProductController  extends SSOController {
 				proList=productsMapper.findProductResultlist();
 				RedisUtil.setObject(KEY_CACHE_PRODUCTS, proList, CACHE_LONG);
 			}
-			
+			List<TiProductResult> proListReulst=proList;// new ArrayList<TiProductResult>();
+//			if(proList!=null&&proList.size()>0){
+//				for (TiProductResult pp : proList) {
+//					if(pp.getCateid()!=null&&pp.getCateid().intValue()!=5){
+//						proListReulst.add(pp);
+//					}
+//				}
+//			}
 			//我的优惠
 			TiDiscountmodel disModel= getDiscountList(user.getUserId());
 			if(disModel!=null&&disModel.getDetails()!=null) {
-				for (TiProductResult pro : proList) {
+				for (TiProductResult pro : proListReulst) {
 					pro.setDiscountType(disModel.getType());
 					pro.setDiscountName(disModel.getTitle()); 
 					for (TiDiscountdetails dd : disModel.getDetails()) {
@@ -111,7 +120,7 @@ public class Ti_ProductController  extends SSOController {
 					}
 				}
 			}
-			rq.setBasemodle(proList); 
+			rq.setBasemodle(proListReulst); 
 			rq.setStatu(ReturnStatus.Success);
 		}else { 
 			rq.setStatu(ReturnStatus.LoginError);
@@ -229,26 +238,18 @@ public class Ti_ProductController  extends SSOController {
 				if(product.getCateid()!=null){
 					if(product.getCateid()==5){
 						mapResult.put("blessinglist", blessMapper.findAll());
+						List<Map<String, String>> styleImgs=ConfigUtil.getMaplist("redpackgePreviewImg");
+						
 						for (TiProductstyles ss : styleList) {
-							if(ss.getStyleid().longValue()==2801){
 								List<Map<String, String>> imglist=new ArrayList<Map<String,String>>();
-								for(int i=1;i<=4;i++){
-									Map<String, String> map=new HashMap<String, String>();
-									map.put("frontImg", "http://document.bbyiya.com/editfrontStyle2801_2018_0105_"+i+".jpg");
-									map.put("bgImg", "http://document.bbyiya.com/editbgStyle2801_2018_0105_"+i+".jpg");
-									imglist.add(map);
+								if(styleImgs!=null&&styleImgs.size()>0){
+									for (Map<String, String> map : styleImgs) {
+										if(map.get("styleId").equals(ss.getStyleid().toString())){
+											imglist.add(map);
+										}
+									}
 								}
 								ss.setBgImglist(imglist);
-							}else if(ss.getStyleid().longValue()==2802){
-								List<Map<String, String>> imglist=new ArrayList<Map<String,String>>();
-								for(int i=1;i<=4;i++){
-									Map<String, String> map=new HashMap<String, String>();
-									map.put("frontImg", "http://document.bbyiya.com/editfrontStyle2802_2018_0105_"+i+".jpg");
-									map.put("bgImg", "http://document.bbyiya.com/editbgStyle2802_2018_0105_"+i+".jpg");
-									imglist.add(map);
-								}
-								ss.setBgImglist(imglist);
-							}
 						}
 					}
 				}

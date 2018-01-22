@@ -192,14 +192,16 @@ public class TiDiscountController extends SSOController {
 									//短信通知
 									msgService.sendMsg_ActivityCompleteShare(activityworks.getWorkid());
 								}
-//								if(actInfo.getAutoaddress()!=null&&actInfo.getAutoaddress().intValue()==1){
-//									//自动下单
-//									TiActivityOrderSubmitParam OrderParam=new TiActivityOrderSubmitParam();
-//									OrderParam.setCount(1);
-//									OrderParam.setSubmitUserId(actInfo.getProduceruserid());
-//									OrderParam.setWorkId(param.getSourceWorkId());
-//									basetiorderService.submitOrder_ibs(OrderParam); 
-//								}
+								if(actInfo.getAutoaddress()!=null&&actInfo.getAutoaddress().intValue()==1){
+									if(actInfo.getProductid()!=null&&actInfo.getProductid().longValue()!=2801){
+										//自动下单
+										TiActivityOrderSubmitParam OrderParam=new TiActivityOrderSubmitParam();
+										OrderParam.setCount(1);
+										OrderParam.setSubmitUserId(actInfo.getProduceruserid());
+										OrderParam.setWorkId(param.getSourceWorkId());
+										basetiorderService.submitOrder_ibs(OrderParam);
+									}
+								}
 							}else {
 								activityworksMapper.updateByPrimaryKeySelective(activityworks);
 							}

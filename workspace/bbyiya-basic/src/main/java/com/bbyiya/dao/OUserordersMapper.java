@@ -83,5 +83,12 @@ public interface OUserordersMapper {
 	 * @return
 	 */
 	List<OUserorders> findOrderListByCartIdAndBranchUserID(@Param("cartid") Long cartid,@Param("branchuserid") Long branchuserid);
-	
+	/**
+	 * 获取广告主的  用户自己在商城购买的订单列表
+	 * @param promoterUserId
+	 * @param status
+	 * @param keywords
+	 * @return
+	 */
+	List<OUserorders> findTiOrderBuyList(@Param("promoterUserId")Long promoterUserId ,@Param("status") Integer status,@Param("keywords") String keywords);
 }

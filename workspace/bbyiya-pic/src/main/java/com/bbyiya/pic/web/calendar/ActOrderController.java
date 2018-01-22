@@ -107,10 +107,10 @@ public class ActOrderController  extends SSOController {
 					}
 					//邮寄到自己
 					else if(addressType==Integer.parseInt(AddressTypeEnum.cusaddr.toString())){
-						if(addressId<=0){
-							rq.setStatusreson("收货地址有误！");
-							return JsonUtil.objectToJsonStr(rq);
-						}
+//						if(addressId<=0){
+//							rq.setStatusreson("收货地址有误！");
+//							return JsonUtil.objectToJsonStr(rq);
+//						}
 						UUserAddressResult address=addressService.getUserAddressResult(user.getUserId(), null);
 						if(address!=null&&address.getAddrid()!=null){
 							addressId=address.getAddrid();
@@ -119,6 +119,15 @@ public class ActOrderController  extends SSOController {
 							postage=postMgtService.getPostAge_ti(addressId, myworks.getProductid());
 						}
 					}
+//					else if(addressType==Integer.parseInt(AddressTypeEnum.promoteraddr.toString())){
+//						actWork.setAddresstype(addressType);
+//						actworkMapper.updateByPrimaryKeySelective(actWork);
+//					}
+//					else{
+//						rq.setStatu(ReturnStatus.ParamError);
+//						rq.setStatusreson("收货地址有误");
+//						return JsonUtil.objectToJsonStr(rq);
+//					}
 					//支付单总价
 					double orderTotalPrice=(products.getPrice().doubleValue()/2)*count+postage;
 					//新增 追加购买的总金额
@@ -137,6 +146,8 @@ public class ActOrderController  extends SSOController {
 					payMapper.insert(payorder);
 					Map<String, Object> resultMap = new HashMap<String, Object>();
 					resultMap.put("payId", payorder.getPayid());
+					resultMap.put("totalPrice", orderTotalPrice);
+					
 					rq.setStatu(ReturnStatus.Success);
 					rq.setBasemodle(resultMap);
 				}

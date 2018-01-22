@@ -31,7 +31,7 @@
   </resultMap>
   <sql id="Base_Column_List" >
     ActId, Title, ProducerUserId, ProductId, StyleId, FreeCount, ActType, ExtCount, ApplyCount, 
-    CompleteCount, Status, CreateTime, Remark, ActImg, AdvertId, AutoAddress, QRcode, 
+    CompleteCount, Status, CreateTime, Remark, ActImg, AdvertId, AutoAddress, QRcode, Description,
     QRcodeDesc, ApplyingCount, ApplyLimitCount, IsFreeStyle, HoursEffective, CompanyName
   </sql>
   <resultMap id="TiActivitysVOResult" type="com.bbyiya.vo.calendar.TiActivitysVo" extends="BaseResultMap">  

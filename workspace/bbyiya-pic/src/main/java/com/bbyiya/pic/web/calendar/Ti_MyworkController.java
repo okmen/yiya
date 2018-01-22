@@ -343,6 +343,16 @@ public class Ti_MyworkController extends SSOController {
 						map.put("imgCount", style.getImgcount()); //需要上传图片数量
 						map.put("title", products.getTitle()); 
 						map.put("cateId", products.getCateid());
+						if(products.getCateid()!=null&&products.getCateid().intValue()==5){
+							map.put("shareTitle", "这是我定做的压岁红包，来看看里面有没有你的一份！");//我抢先get到了DIY新年红包技能，快来给我疯狂打Call！
+							map.put("shareContent", "DIY新年红包，自己写祝福语，送长辈送孩子绝佳，快帮我领回家！");
+							map.put("shareImg","http://document.bbyiya.com/styledefault201801141-2801.jpg");
+						}else{
+							map.put("shareTitle", "我抢先get到了新年最炫的晒照技能，快来给我疯狂打Call！");
+							map.put("shareContent", "DIY自己的个性日历，你也有份哦~");
+							map.put("shareImg","http://document.bbyiya.com/shareLogo.jpg");
+						}
+						
 						map.put("nowTime",new Date());
 						//作品拥有者昵称
 						UUsers workUsers=userMapper.selectByPrimaryKey(myworks.getUserid()==null?0l:myworks.getUserid()); 

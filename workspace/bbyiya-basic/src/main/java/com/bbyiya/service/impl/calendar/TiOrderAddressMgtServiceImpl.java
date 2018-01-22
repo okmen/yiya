@@ -101,6 +101,8 @@ public class TiOrderAddressMgtServiceImpl implements IOrderAddressMgtService{
 	
 	public long getProducerUserId(Integer districtcode,Integer cityCode,Integer provinceCode, Long productId){
 		if(districtcode!=null&&productId!=null){
+			if(productId==2801)
+				return 3;
 			List<TiProductareas> list =null;
 			if(districtcode!=null)
 				list=productareasMapper.findProductAreaListByProductIdAndArea(productId, districtcode);
@@ -121,6 +123,8 @@ public class TiOrderAddressMgtServiceImpl implements IOrderAddressMgtService{
 	
 	public long getProducerUserIdByOrderAddressId(Long orderAddressId, Long productId){
 		if(orderAddressId!=null&&productId!=null){
+			if(productId==2801)
+				return 3;
 			OOrderaddress addr = orderaddressMapper.selectByPrimaryKey(orderAddressId);
 			if(addr!=null&&addr.getDistrictcode()!=null){
 				List<TiProductareas> list = productareasMapper.findProductAreaListByProductIdAndArea(productId, addr.getDistrictcode());

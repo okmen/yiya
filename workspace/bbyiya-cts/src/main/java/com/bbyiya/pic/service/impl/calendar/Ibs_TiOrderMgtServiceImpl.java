@@ -1,7 +1,6 @@
 package com.bbyiya.pic.service.impl.calendar;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -12,40 +11,31 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.dao.OOrderaddressMapper;
-import com.bbyiya.dao.OOrderproductdetailsMapper;
-import com.bbyiya.dao.OOrderproductphotosMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
+import com.bbyiya.dao.OUserorderextMapper;
 import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.TiActivityworksMapper;
-import com.bbyiya.dao.TiMyartsdetailsMapper;
 import com.bbyiya.dao.TiMyworkcustomersMapper;
 import com.bbyiya.dao.TiMyworksMapper;
 import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
 import com.bbyiya.dao.TiPromotersMapper;
 import com.bbyiya.dao.UUsersMapper;
-import com.bbyiya.enums.MyProductTempType;
-import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.AddressTypeEnum;
-import com.bbyiya.enums.pic.InviteStatus;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OOrderproducts;
+import com.bbyiya.model.OUserorderext;
 import com.bbyiya.model.OUserorders;
-import com.bbyiya.model.PMyproducts;
-import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.TiActivityworks;
 import com.bbyiya.model.TiMyworkcustomers;
 import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiPromoters;
-import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.service.calendar.IIbs_TiOrderMgtService;
 import com.bbyiya.pic.vo.calendar.TiOrderVo;
 import com.bbyiya.service.IRegionService;
-import com.bbyiya.service.calendar.ITi_OrderMgtService;
-import com.bbyiya.service.pic.IBaseUserAddressService;
 import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.PageInfoUtil;
@@ -64,6 +54,8 @@ public class Ibs_TiOrderMgtServiceImpl implements IIbs_TiOrderMgtService{
 	private OOrderproductsMapper orderProductMapper;
 	@Autowired
 	private OOrderaddressMapper orderaddressMapper;
+	@Autowired
+	private OUserorderextMapper orderExtMapper;
 	//------------------------产品---------------------------------------------
 	@Autowired
 	private TiProductstylesMapper styleMapper;
@@ -88,6 +80,64 @@ public class Ibs_TiOrderMgtServiceImpl implements IIbs_TiOrderMgtService{
 	
 	@Resource(name = "regionServiceImpl")
 	private IRegionService regionService;
+	
+	public ReturnModel findTiOrderBuyList(Long branchUserId,String keywords,Integer status, int index,int size){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.Success);
+		PageHelper.startPage(index, size);
+		//订单列表
+		List<OUserorders> userorders= orderMapper.findTiOrderBuyList(branchUserId,status,keywords);
+		PageInfo<OUserorders> resultPage=new PageInfo<OUserorders>(userorders); 
+		if(resultPage!=null&&resultPage.getList()!=null&&resultPage.getList().size()>0){
+			List<Long> ids = new ArrayList<Long>();
+			for (OUserorders oo : resultPage.getList()) {
+				ids.add(oo.getOrderaddressid());
+			}
+			//订单的收货地址
+			List<OOrderaddress> addressList = addressMapper.findListByIds(ids);
+			List<TiOrderVo> resultlist = new ArrayList<TiOrderVo>();
+			for (OUserorders order : userorders) {
+				TiOrderVo vo = new TiOrderVo();
+				vo.setUserorderid(order.getUserorderid());
+				vo.setStatus(order.getStatus());
+				vo.setUserid(order.getUserid());
+				vo.setBranchuserid(order.getBranchuserid());
+				if(order.getPaytime()!=null){
+					vo.setPaytime(DateUtil.getTimeStr(order.getPaytime(), "yyyy-MM-dd HH:mm:ss"));
+				}else{
+					vo.setPaytime(DateUtil.getTimeStr(order.getOrdertime(), "yyyy-MM-dd HH:mm:ss"));
+				}
+				for (OOrderaddress addr : addressList) {
+					if (addr.getOrderaddressid().longValue() == order.getOrderaddressid().longValue()) {
+						vo.setAddress(addr);
+					}
+				}
+				if(order.getIspromoteraddress()!=null&&order.getIspromoteraddress()==1){
+					//TODO
+					OUserorderext orderExt= orderExtMapper.selectByPrimaryKey(order.getUserorderid());
+					if(orderExt!=null){
+						vo.setActkhmc(orderExt.getContactname());
+						vo.setActkhphone(orderExt.getPhone()); 
+					}
+				}
+				UUsers user=usersMapper.selectByPrimaryKey(order.getUserid());
+				if(user!=null){
+					vo.setUsernickname(user.getNickname());
+				}
+				OOrderproducts product= orderProductMapper.getOProductsByOrderId(order.getUserorderid());
+				if(product!=null){
+					vo.setProducttitle(product.getProducttitle());
+					vo.setPropertystr(product.getPropertystr());
+					vo.setPrice(product.getPrice());
+					vo.setCartid(product.getCartid());
+				}
+				resultlist.add(vo);
+			}	
+			PageInfoUtil<TiOrderVo> resultPagelist=new PageInfoUtil<TiOrderVo>(resultPage, resultlist);
+			rq.setBasemodle(resultPagelist);
+		}	
+		return rq;
+	}
 
 	public ReturnModel findTiMyOrderlist(Long branchUserId,Integer ordertype,Integer status,String keywords,int index,int size){
 		ReturnModel rq=new ReturnModel();

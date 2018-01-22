@@ -102,6 +102,8 @@ public class Ti_ActivityAddressController extends SSOController {
 					rq.setStatusreson("姓名不能为空/手机号不正确");
 					return JsonUtil.objectToJsonStr(rq);
 				}
+				address.setUserid(user.getUserId()); 
+				rq = addressService.addOrEdit_UserAddressReturnAddressId(address);
 			}else{
 				rq.setStatusreson("参数有误！");
 				return JsonUtil.objectToJsonStr(rq);
@@ -215,9 +217,11 @@ public class Ti_ActivityAddressController extends SSOController {
 			TiActivityworks work=activityworkMapper.selectByPrimaryKey(workId);
 			//活动信息
 			TiActivitys actInfo=null;
-			if(work!=null){
+			if(work!=null) {
 				actInfo= actMapper.selectByPrimaryKey(work.getActid());
 				if(actInfo!=null&&actInfo.getAutoaddress()!=null&&(actInfo.getAutoaddress().intValue()==Integer.parseInt(ActivityAddressType.auto.toString())||actInfo.getAutoaddress().intValue()==Integer.parseInt(ActivityAddressType.customerAddr.toString()))){
+					selfAddr=true;
+				}else if(actInfo!=null&&actInfo.getAutoaddress()==null){
 					selfAddr=true;
 				}
 			}else{//没有参加活动，是否用了优惠券购买
@@ -233,6 +237,9 @@ public class Ti_ActivityAddressController extends SSOController {
 			//影楼用户userId
 			long promoterUserId=0l;
 			if(actInfo!=null&&actInfo.getAutoaddress()!=null&&(actInfo.getAutoaddress().intValue()==Integer.parseInt(ActivityAddressType.auto.toString())||actInfo.getAutoaddress().intValue()==Integer.parseInt(ActivityAddressType.promoterAddr.toString()))){
+				promoterAddr=true;
+				promoterUserId=actInfo.getProduceruserid();
+			}else if(actInfo!=null&&actInfo.getAutoaddress()==null){
 				promoterAddr=true;
 				promoterUserId=actInfo.getProduceruserid();
 			}
@@ -262,8 +269,10 @@ public class Ti_ActivityAddressController extends SSOController {
 					UUserAddressResult selfAddress=addressService.getUserAddressResult(user.getUserId(),null);
 					//如果运费还未付，计算邮寄到家的运费
 					if((mywork!=null&&work!=null&&work.getOrderaddressid()==null)||work==null){
-						double postage= postMgtService.getPostAge_ti(selfAddress.getAddrid(), mywork.getProductid());
-						selfAddress.setPostage(postage);
+						if(selfAddress!=null){
+							double postage= postMgtService.getPostAge_ti(selfAddress.getAddrid(), mywork.getProductid());
+							selfAddress.setPostage(postage);
+						}
 					}
 					mapResult.put("selfAddress", 1);
 					mapResult.put("myAddress", selfAddress );

@@ -49,15 +49,36 @@ public class HeartbeatJob extends QuartzJobBean {
 				for (Map<String, String> job : joblist) {
 					if(ObjectUtil.parseInt(job.get("seton"))==1&&job.get("id").equalsIgnoreCase("dotempAutoOrderSumbit")){
 						autoOrderService.dotempAutoOrderSumbit();
-						Log.info("dotempAutoOrderSumbit执行自动下单操作完成！");
+						Log.info("dotempAutoOrderSumbit执行参与活动的达到条件的作品自动下单！");
 					}
 					if(ObjectUtil.parseInt(job.get("seton"))==1&&job.get("id").equalsIgnoreCase("doGroupActivityAutoOrderSumbit")){
-						autoOrderService.doGroupActivityAutoOrderSumbit();
-						Log.info("doGroupActivityAutoOrderSumbit执行自动下单操作完成！");
+						try {
+							autoOrderService.doGroupActivityAutoOrderSumbit();
+							Log.info("doGroupActivityAutoOrderSumbit分销自动下单的功能完成！");
+						} catch (Exception e) {
+							// TODO: handle exception
+							Log.info("doGroupActivityAutoOrderSumbit分销自动下单的功能操作报错！error:"+e);
+						}
 					}
 					if(ObjectUtil.parseInt(job.get("seton"))==1&&job.get("id").equalsIgnoreCase("doActivityAutoOrderSumbit")){
-						actService.timeToSubmitOrders();
-						Log.info("doActivityAutoOrderSumbit执行老客户回馈自动下单操作完成！");
+						try {
+							actService.timeToSubmitOrders();
+							Log.info("doActivityAutoOrderSumbit执行老客户回馈自动下单操作完成！");
+						} catch (Exception e) {
+							// TODO: handle exception
+							Log.info("doActivityAutoOrderSumbit执行老客户回馈自动下单报错！error:"+e);
+						}
+						
+					}
+					if(ObjectUtil.parseInt(job.get("seton"))==1&&job.get("id").equalsIgnoreCase("doHongbaoOrderPush")){
+						try {
+							actService.sendOrderToRedpacket();
+							Log.info("doHongbaoOrderPush执行红包第三方生产推送操作完成！");
+						} catch (Exception e) {
+							// TODO: handle exception
+							Log.info("doHongbaoOrderPush执行红包第三方生产推送操作报错！error:"+e);
+						}
+						
 					}
 //					if(ObjectUtil.parseInt(job.get("seton"))==1&&job.get("id").equalsIgnoreCase("doOrderPhotoImgsLimit")){
 //						photoService.orderPhotosLimitReplace();

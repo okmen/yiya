@@ -70,7 +70,6 @@ import com.bbyiya.model.TiGroupactivityworks;
 import com.bbyiya.model.TiMyworkcustomers;
 import com.bbyiya.model.TiMyworkredpacketlogs;
 import com.bbyiya.model.TiMyworks;
-import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiProductsext;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiPromoters;
@@ -359,9 +358,9 @@ public class BasePayServiceImpl implements IBasePayService{
 													actwork.setPostage(postage);
 												}
 											}
+										}else{
+											actwork.setAddresstype(Integer.parseInt(AddressTypeEnum.promoteraddr.toString()));
 										}
-									} else {
-										actwork.setAddresstype(Integer.parseInt(AddressTypeEnum.promoteraddr.toString()));
 									}
 								}
 							}

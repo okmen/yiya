@@ -32,4 +32,9 @@ public interface ItiAcitivityMgtService {
 	 * @return
 	 */
 	ReturnModel invokeActivityWorkStatus(long userId,long workId);
+	
+	/**
+	 * 插入有效订单
+	 */
+	void sendOrderToRedpacket();
 }

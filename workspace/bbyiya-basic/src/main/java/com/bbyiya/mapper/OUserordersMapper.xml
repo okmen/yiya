@@ -111,7 +111,18 @@
    <select id="findOrderListByCartIdAndBranchUserID" resultMap="BaseResultMap"  parameterType="java.lang.Long" >
     select a.* from o_userorders a,o_orderproducts b where a.UserOrderId=b.UserOrderId and b.CartId=#{cartid,jdbcType=BIGINT}  and a.UserId=#{branchuserid,jdbcType=BIGINT}
   </select>
-  
+  <select id="findTiOrderBuyList" resultMap="BaseResultMap"  ><!-- 05 获取广告主 的商城订单  -->
+    SELECT a.* FROM o_userorders as a LEFT JOIN ti_userdiscounts as b on a.UserOrderId=b.UserOrderId
+    LEFT JOIN o_orderproducts as c on a.UserOrderId=c.UserOrderId
+	WHERE b.UserOrderId is NOT null  and b.promoteruserid=#{promoterUserId,jdbcType=BIGINT}
+    <if test="status != null" >
+       and a.Status=#{status,jdbcType=INTEGER}
+    </if>
+    <if test="keywords != null and keywords!=''" >
+        and  (a.UserOrderId  LIKE  CONCAT('%', #{keywords,jdbcType=VARCHAR},'%' ) or c.CartId=#{keywords,jdbcType=VARCHAR}  )
+    </if>
+    order by a.PayTime desc,a.OrderTime desc
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from o_userorders
     where UserOrderId = #{userorderid,jdbcType=VARCHAR}

@@ -814,19 +814,6 @@ public class Ti_OrderMgtServiceImpl implements ITi_OrderMgtService {
 					// 得到订单编号
 					// 手动选择地址下单
 					if (addressParam != null && !ObjectUtil.isEmpty(addressParam.getProvince())) {
-						// OOrderaddress orderAddress = new OOrderaddress();
-						// orderAddress.setUserid(addressParam.getUserid());
-						// orderAddress.setPhone(addressParam.getPhone());
-						// orderAddress.setReciver(addressParam.getReciver());
-						// orderAddress.setProvincecode(addressParam.getProvince());
-						// orderAddress.setCitycode(addressParam.getCity());
-						// orderAddress.setDistrictcode(addressParam.getDistrict());
-						// orderAddress.setCity(regionService.getCityName(addressParam.getCity()));
-						// orderAddress.setProvince(regionService.getProvinceName(addressParam.getProvince()));
-						// orderAddress.setDistrict(regionService.getAresName(addressParam.getDistrict()));
-						// orderAddress.setStreetdetail(addressParam.getStreetdetail());
-						// orderAddress.setCreatetime(new Date());
-						// orderaddressMapper.insertReturnId(orderAddress);
 						orderAddress = orderAddressMgtService.addOrderAddress(addressParam);
 						if (orderAddress != null && !ObjectUtil.isEmpty(orderAddress.getOrderaddressid())) {
 							orderAddressId = orderAddress.getOrderaddressid();

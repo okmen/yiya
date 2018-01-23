@@ -12,7 +12,7 @@ public interface IIbs_TiAdvertimgsService {
 	 * @return
 	 */
 	ReturnModel addOrEditAdvertimgs(Long promoterUserId, Long productid,
-			String advertimgjson);
+			String advertimgjson,String content);
 	
 	/**
 	 * 得到产品的广告位信息

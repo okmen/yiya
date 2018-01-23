@@ -5,6 +5,10 @@ import java.util.Date;
 import javax.annotation.Resource;
 
 
+
+
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,12 +22,15 @@ import com.bbyiya.dao.UOtherloginMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.AmountType;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.calendar.AddressTypeEnum;
 import com.bbyiya.enums.user.UserIdentityEnums;
 import com.bbyiya.model.UAccounts;
 import com.bbyiya.model.UCashlogs;
 import com.bbyiya.model.UOtherlogin;
 import com.bbyiya.model.UUsers;
+import com.bbyiya.service.IBaseMyworkDao;
 import com.bbyiya.service.calendar.IPhotosMgtService;
+import com.bbyiya.service.calendar.ItiAcitivityMgtService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
@@ -37,6 +44,9 @@ import com.bbyiya.web.base.SSOController;
 public class TesterController  extends SSOController{
 	@Resource(name = "photosMgtServiceImpl")
 	private IPhotosMgtService photoService;
+	
+	@Resource(name = "ti_AcitivityMgtServiceImpl")
+	private ItiAcitivityMgtService actService;
 	
 	@ResponseBody
 	@RequestMapping(value = "/send")
@@ -57,11 +67,14 @@ public class TesterController  extends SSOController{
 		rq.setStatu(ReturnStatus.Success);
 		return JsonUtil.objectToJsonStr(rq);
 	}
+	@Resource(name = "baseMyworkDao")
+	private IBaseMyworkDao myworkDao;
 	@ResponseBody
-	@RequestMapping(value = "/orderImgs")
+	@RequestMapping(value = "/pushOrder")
 	public String downloadorder() throws Exception {
-		photoService.orderPhotosLimitReplace();
-		return "";
+//		actService.timeToSubmitOrders();
+		AddressTypeEnum.cusaddr.getValue();
+		return "";//String.valueOf( myworkDao.getNewWorkId());
 	}
 	
 	@ResponseBody 

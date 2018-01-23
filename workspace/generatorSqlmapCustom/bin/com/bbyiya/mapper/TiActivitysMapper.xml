@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiActivitysMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiActivitys" >
+    <id column="ActId" property="actid" jdbcType="INTEGER" />
+    <result column="Title" property="title" jdbcType="VARCHAR" />
+    <result column="ProducerUserId" property="produceruserid" jdbcType="BIGINT" />
+    <result column="ProductId" property="productid" jdbcType="BIGINT" />
+    <result column="StyleId" property="styleid" jdbcType="BIGINT" />
+    <result column="FreeCount" property="freecount" jdbcType="INTEGER" />
+    <result column="ActType" property="acttype" jdbcType="INTEGER" />
+    <result column="ExtCount" property="extcount" jdbcType="INTEGER" />
+    <result column="ApplyCount" property="applycount" jdbcType="INTEGER" />
+    <result column="CompleteCount" property="completecount" jdbcType="INTEGER" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="Remark" property="remark" jdbcType="VARCHAR" />
+    <result column="ActImg" property="actimg" jdbcType="VARCHAR" />
+    <result column="AdvertId" property="advertid" jdbcType="INTEGER" />
+    <result column="AutoAddress" property="autoaddress" jdbcType="INTEGER" />
+    <result column="QRcode" property="qrcode" jdbcType="VARCHAR" />
+    <result column="QRcodeDesc" property="qrcodedesc" jdbcType="VARCHAR" />
+    <result column="ApplyingCount" property="applyingcount" jdbcType="INTEGER" />
+    <result column="ApplyLimitCount" property="applylimitcount" jdbcType="INTEGER" />
+    <result column="IsFreeStyle" property="isfreestyle" jdbcType="INTEGER" />
+    <result column="HoursEffective" property="hourseffective" jdbcType="INTEGER" />
+    <result column="CompanyName" property="companyname" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.bbyiya.model.TiActivitys" extends="BaseResultMap" >
+    <result column="Description" property="description" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ActId, Title, ProducerUserId, ProductId, StyleId, FreeCount, ActType, ExtCount, ApplyCount, 
+    CompleteCount, Status, CreateTime, Remark, ActImg, AdvertId, AutoAddress, QRcode, 
+    QRcodeDesc, ApplyingCount, ApplyLimitCount, IsFreeStyle, HoursEffective, CompanyName
+  </sql>
+  <sql id="Blob_Column_List" >
+    Description
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from ti_activitys
+    where ActId = #{actid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ti_activitys
+    where ActId = #{actid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiActivitys" >
+    insert into ti_activitys (ActId, Title, ProducerUserId, 
+      ProductId, StyleId, FreeCount, 
+      ActType, ExtCount, ApplyCount, 
+      CompleteCount, Status, CreateTime, 
+      Remark, ActImg, AdvertId, 
+      AutoAddress, QRcode, QRcodeDesc, 
+      ApplyingCount, ApplyLimitCount, IsFreeStyle, 
+      HoursEffective, CompanyName, Description
+      )
+    values (#{actid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{produceruserid,jdbcType=BIGINT}, 
+      #{productid,jdbcType=BIGINT}, #{styleid,jdbcType=BIGINT}, #{freecount,jdbcType=INTEGER}, 
+      #{acttype,jdbcType=INTEGER}, #{extcount,jdbcType=INTEGER}, #{applycount,jdbcType=INTEGER}, 
+      #{completecount,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{remark,jdbcType=VARCHAR}, #{actimg,jdbcType=VARCHAR}, #{advertid,jdbcType=INTEGER}, 
+      #{autoaddress,jdbcType=INTEGER}, #{qrcode,jdbcType=VARCHAR}, #{qrcodedesc,jdbcType=VARCHAR}, 
+      #{applyingcount,jdbcType=INTEGER}, #{applylimitcount,jdbcType=INTEGER}, #{isfreestyle,jdbcType=INTEGER}, 
+      #{hourseffective,jdbcType=INTEGER}, #{companyname,jdbcType=VARCHAR}, #{description,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiActivitys" >
+    insert into ti_activitys
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="actid != null" >
+        ActId,
+      </if>
+      <if test="title != null" >
+        Title,
+      </if>
+      <if test="produceruserid != null" >
+        ProducerUserId,
+      </if>
+      <if test="productid != null" >
+        ProductId,
+      </if>
+      <if test="styleid != null" >
+        StyleId,
+      </if>
+      <if test="freecount != null" >
+        FreeCount,
+      </if>
+      <if test="acttype != null" >
+        ActType,
+      </if>
+      <if test="extcount != null" >
+        ExtCount,
+      </if>
+      <if test="applycount != null" >
+        ApplyCount,
+      </if>
+      <if test="completecount != null" >
+        CompleteCount,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+      <if test="remark != null" >
+        Remark,
+      </if>
+      <if test="actimg != null" >
+        ActImg,
+      </if>
+      <if test="advertid != null" >
+        AdvertId,
+      </if>
+      <if test="autoaddress != null" >
+        AutoAddress,
+      </if>
+      <if test="qrcode != null" >
+        QRcode,
+      </if>
+      <if test="qrcodedesc != null" >
+        QRcodeDesc,
+      </if>
+      <if test="applyingcount != null" >
+        ApplyingCount,
+      </if>
+      <if test="applylimitcount != null" >
+        ApplyLimitCount,
+      </if>
+      <if test="isfreestyle != null" >
+        IsFreeStyle,
+      </if>
+      <if test="hourseffective != null" >
+        HoursEffective,
+      </if>
+      <if test="companyname != null" >
+        CompanyName,
+      </if>
+      <if test="description != null" >
+        Description,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="actid != null" >
+        #{actid,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="produceruserid != null" >
+        #{produceruserid,jdbcType=BIGINT},
+      </if>
+      <if test="productid != null" >
+        #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="styleid != null" >
+        #{styleid,jdbcType=BIGINT},
+      </if>
+      <if test="freecount != null" >
+        #{freecount,jdbcType=INTEGER},
+      </if>
+      <if test="acttype != null" >
+        #{acttype,jdbcType=INTEGER},
+      </if>
+      <if test="extcount != null" >
+        #{extcount,jdbcType=INTEGER},
+      </if>
+      <if test="applycount != null" >
+        #{applycount,jdbcType=INTEGER},
+      </if>
+      <if test="completecount != null" >
+        #{completecount,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="actimg != null" >
+        #{actimg,jdbcType=VARCHAR},
+      </if>
+      <if test="advertid != null" >
+        #{advertid,jdbcType=INTEGER},
+      </if>
+      <if test="autoaddress != null" >
+        #{autoaddress,jdbcType=INTEGER},
+      </if>
+      <if test="qrcode != null" >
+        #{qrcode,jdbcType=VARCHAR},
+      </if>
+      <if test="qrcodedesc != null" >
+        #{qrcodedesc,jdbcType=VARCHAR},
+      </if>
+      <if test="applyingcount != null" >
+        #{applyingcount,jdbcType=INTEGER},
+      </if>
+      <if test="applylimitcount != null" >
+        #{applylimitcount,jdbcType=INTEGER},
+      </if>
+      <if test="isfreestyle != null" >
+        #{isfreestyle,jdbcType=INTEGER},
+      </if>
+      <if test="hourseffective != null" >
+        #{hourseffective,jdbcType=INTEGER},
+      </if>
+      <if test="companyname != null" >
+        #{companyname,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiActivitys" >
+    update ti_activitys
+    <set >
+      <if test="title != null" >
+        Title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="produceruserid != null" >
+        ProducerUserId = #{produceruserid,jdbcType=BIGINT},
+      </if>
+      <if test="productid != null" >
+        ProductId = #{productid,jdbcType=BIGINT},
+      </if>
+      <if test="styleid != null" >
+        StyleId = #{styleid,jdbcType=BIGINT},
+      </if>
+      <if test="freecount != null" >
+        FreeCount = #{freecount,jdbcType=INTEGER},
+      </if>
+      <if test="acttype != null" >
+        ActType = #{acttype,jdbcType=INTEGER},
+      </if>
+      <if test="extcount != null" >
+        ExtCount = #{extcount,jdbcType=INTEGER},
+      </if>
+      <if test="applycount != null" >
+        ApplyCount = #{applycount,jdbcType=INTEGER},
+      </if>
+      <if test="completecount != null" >
+        CompleteCount = #{completecount,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null" >
+        Remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="actimg != null" >
+        ActImg = #{actimg,jdbcType=VARCHAR},
+      </if>
+      <if test="advertid != null" >
+        AdvertId = #{advertid,jdbcType=INTEGER},
+      </if>
+      <if test="autoaddress != null" >
+        AutoAddress = #{autoaddress,jdbcType=INTEGER},
+      </if>
+      <if test="qrcode != null" >
+        QRcode = #{qrcode,jdbcType=VARCHAR},
+      </if>
+      <if test="qrcodedesc != null" >
+        QRcodeDesc = #{qrcodedesc,jdbcType=VARCHAR},
+      </if>
+      <if test="applyingcount != null" >
+        ApplyingCount = #{applyingcount,jdbcType=INTEGER},
+      </if>
+      <if test="applylimitcount != null" >
+        ApplyLimitCount = #{applylimitcount,jdbcType=INTEGER},
+      </if>
+      <if test="isfreestyle != null" >
+        IsFreeStyle = #{isfreestyle,jdbcType=INTEGER},
+      </if>
+      <if test="hourseffective != null" >
+        HoursEffective = #{hourseffective,jdbcType=INTEGER},
+      </if>
+      <if test="companyname != null" >
+        CompanyName = #{companyname,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        Description = #{description,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where ActId = #{actid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.bbyiya.model.TiActivitys" >
+    update ti_activitys
+    set Title = #{title,jdbcType=VARCHAR},
+      ProducerUserId = #{produceruserid,jdbcType=BIGINT},
+      ProductId = #{productid,jdbcType=BIGINT},
+      StyleId = #{styleid,jdbcType=BIGINT},
+      FreeCount = #{freecount,jdbcType=INTEGER},
+      ActType = #{acttype,jdbcType=INTEGER},
+      ExtCount = #{extcount,jdbcType=INTEGER},
+      ApplyCount = #{applycount,jdbcType=INTEGER},
+      CompleteCount = #{completecount,jdbcType=INTEGER},
+      Status = #{status,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      Remark = #{remark,jdbcType=VARCHAR},
+      ActImg = #{actimg,jdbcType=VARCHAR},
+      AdvertId = #{advertid,jdbcType=INTEGER},
+      AutoAddress = #{autoaddress,jdbcType=INTEGER},
+      QRcode = #{qrcode,jdbcType=VARCHAR},
+      QRcodeDesc = #{qrcodedesc,jdbcType=VARCHAR},
+      ApplyingCount = #{applyingcount,jdbcType=INTEGER},
+      ApplyLimitCount = #{applylimitcount,jdbcType=INTEGER},
+      IsFreeStyle = #{isfreestyle,jdbcType=INTEGER},
+      HoursEffective = #{hourseffective,jdbcType=INTEGER},
+      CompanyName = #{companyname,jdbcType=VARCHAR},
+      Description = #{description,jdbcType=LONGVARCHAR}
+    where ActId = #{actid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiActivitys" >
+    update ti_activitys
+    set Title = #{title,jdbcType=VARCHAR},
+      ProducerUserId = #{produceruserid,jdbcType=BIGINT},
+      ProductId = #{productid,jdbcType=BIGINT},
+      StyleId = #{styleid,jdbcType=BIGINT},
+      FreeCount = #{freecount,jdbcType=INTEGER},
+      ActType = #{acttype,jdbcType=INTEGER},
+      ExtCount = #{extcount,jdbcType=INTEGER},
+      ApplyCount = #{applycount,jdbcType=INTEGER},
+      CompleteCount = #{completecount,jdbcType=INTEGER},
+      Status = #{status,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      Remark = #{remark,jdbcType=VARCHAR},
+      ActImg = #{actimg,jdbcType=VARCHAR},
+      AdvertId = #{advertid,jdbcType=INTEGER},
+      AutoAddress = #{autoaddress,jdbcType=INTEGER},
+      QRcode = #{qrcode,jdbcType=VARCHAR},
+      QRcodeDesc = #{qrcodedesc,jdbcType=VARCHAR},
+      ApplyingCount = #{applyingcount,jdbcType=INTEGER},
+      ApplyLimitCount = #{applylimitcount,jdbcType=INTEGER},
+      IsFreeStyle = #{isfreestyle,jdbcType=INTEGER},
+      HoursEffective = #{hourseffective,jdbcType=INTEGER},
+      CompanyName = #{companyname,jdbcType=VARCHAR}
+    where ActId = #{actid,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -48,6 +48,24 @@
 		<item styleId="1401" url="http://pic.bbyiya.com/cover-1001-201703210-01.jpg"/>
 		<item styleId="1402" url="http://pic.bbyiya.com/cover-1001-201703210-02.jpg"/>
 	</styleCovers>
+	<redpackgePreviewImg>
+		<item styleId="2801" frontImg="http://document.bbyiya.com/editfrontStyle2801_201801151_1.jpg"  bgImg="http://document.bbyiya.com/editbackStyle2801_201801151_1.jpg"/>
+		<item styleId="2801" frontImg="http://document.bbyiya.com/editfrontStyle2801_201801151_2.jpg"  bgImg="http://document.bbyiya.com/editbackStyle2801_201801151_2.jpg"/>
+		<item styleId="2801" frontImg="http://document.bbyiya.com/editfrontStyle2801_201801151_3.jpg"  bgImg="http://document.bbyiya.com/editbackStyle2801_201801151_3.jpg"/>
+		<item styleId="2801" frontImg="http://document.bbyiya.com/editfrontStyle2801_201801151_4.jpg"  bgImg="http://document.bbyiya.com/editbackStyle2801_201801151_4.jpg"/>
+		<item styleId="2802" frontImg="http://document.bbyiya.com/editfrontStyle2802_20180115_1.jpg"  bgImg="http://document.bbyiya.com/editbackStyle2802_20180115_1.jpg"/>
+		<item styleId="2802" frontImg="http://document.bbyiya.com/editfrontStyle2802_20180115_2.jpg"  bgImg="http://document.bbyiya.com/editbackStyle2802_20180115_2.jpg"/>
+		<item styleId="2802" frontImg="http://document.bbyiya.com/editfrontStyle2802_20180115_3.jpg"  bgImg="http://document.bbyiya.com/editbackStyle2802_20180115_3.jpg"/>
+		<item styleId="2802" frontImg="http://document.bbyiya.com/editfrontStyle2802_20180115_4.jpg"  bgImg="http://document.bbyiya.com/editbackStyle2802_20180115_4.jpg"/>
+		<item styleId="2803" frontImg="http://document.bbyiya.com/editfrontStyle2803_20180117_1.jpg"  bgImg="http://document.bbyiya.com/editbackStyle2803_20180117_1.jpg"/>
+		<item styleId="2803" frontImg="http://document.bbyiya.com/editfrontStyle2803_20180117_2.jpg"  bgImg="http://document.bbyiya.com/editbackStyle2803_20180117_2.jpg"/>
+		<item styleId="2803" frontImg="http://document.bbyiya.com/editfrontStyle2803_20180117_3.jpg"  bgImg="http://document.bbyiya.com/editbackStyle2803_20180117_3.jpg"/>
+		<item styleId="2803" frontImg="http://document.bbyiya.com/editfrontStyle2803_20180117_4.jpg"  bgImg="http://document.bbyiya.com/editbackStyle2803_20180117_4.jpg"/>
+		<item styleId="2804" frontImg="http://document.bbyiya.com/editfrontStyle2805_201801201_1.jpg"  bgImg="http://document.bbyiya.com/editbackStyle2808_201801201_1.jpg"/>
+		<item styleId="2804" frontImg="http://document.bbyiya.com/editfrontStyle2805_201801201_2.jpg"  bgImg="http://document.bbyiya.com/editbackStyle2808_201801201_2.jpg"/>
+		<item styleId="2804" frontImg="http://document.bbyiya.com/editfrontStyle2805_201801201_3.jpg"  bgImg="http://document.bbyiya.com/editbackStyle2808_201801201_3.jpg"/>
+		<item styleId="2804" frontImg="http://document.bbyiya.com/editfrontStyle2805_201801201_4.jpg"  bgImg="http://document.bbyiya.com/editbackStyle2808_201801201_4.jpg"/>	
+	</redpackgePreviewImg>
 	<backcoordinate><!-- 相册背面文字坐标 -->
 		<item  type="1" contentTop="51.6" contentLeft="25.6" contentRight="71.7"  lineHeight="55" titleTop="66.4" contentBottom="44" contentSize="34" titleSize="50" color="#3e3c38"/>
 		<item  type="0" contentTop="38.7" contentLeft="23.2" contentRight="76.1"  lineHeight="40" titleTop="59" contentBottom="48.4" contentSize="30" titleSize="38" color="#3e3c38"/>

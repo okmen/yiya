@@ -14,6 +14,17 @@ public interface IIbs_TiOrderMgtService {
 	 */
 	ReturnModel findTiMyOrderlist(Long branchUserId,Integer ordertype, Integer status,
 			String keywords, int index, int size);
+	
+	/**
+	 * 广告主商城购买的 订单列表
+	 * @param branchUserId
+	 * @param keywords
+	 * @param status
+	 * @param index
+	 * @param size
+	 * @return
+	 */
+	ReturnModel findTiOrderBuyList(Long branchUserId,String keywords,Integer status, int index,int size);
 	/**
 	 * ibs台历下单前得到地址信息
 	 * @param submitUserId

@@ -1,15 +1,13 @@
 package com.bbyiya.pic.web.calendar;
 
-
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbyiya.common.vo.ImageInfo;
@@ -19,6 +17,7 @@ import com.bbyiya.model.TiPromoteradvertimgs;
 import com.bbyiya.model.TiPromoteradvertinfo;
 import com.bbyiya.pic.service.calendar.IIbs_TiPromoterAdvertShareService;
 import com.bbyiya.pic.utils.Json2Objects;
+import com.bbyiya.service.calendar.ITi_PromoterAdvertService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.user.LoginSuccessResult;
@@ -32,6 +31,9 @@ public class TiPromoterAdvertShareController extends SSOController {
 	private IIbs_TiPromoterAdvertShareService advertshareService;
 	@Autowired
 	private UUsersMapper userMapper;
+	//分享广告service
+	@Resource(name = "ti_PromoterAdvertService")
+	private ITi_PromoterAdvertService advertService;
 	
 	/**
 	 * 添加或编辑影楼分享广告
@@ -182,6 +184,26 @@ public class TiPromoterAdvertShareController extends SSOController {
 			if(index==null) index=1;
 			if(size==null) size=20;
 			rq=advertshareService.getShareAdvertList(user.getUserId(),keywords,index,size);
+		}else {
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	/**
+	 * ibs 分享广告浏览详情
+	 * @param advertId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getShareAdvertViewLogs")
+	public String getShareAdvertInfoDetails(Integer advertId,@RequestParam(required=false,defaultValue="1")Integer index,@RequestParam(required=false,defaultValue="10")Integer size) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			rq.setStatu(ReturnStatus.Success);
+			rq.setBasemodle(advertService.findTiPromoteradvertviewlogsPage(advertId, index, size));
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

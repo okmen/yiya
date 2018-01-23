@@ -12,7 +12,6 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +32,6 @@ import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
 import com.bbyiya.dao.TiPromoteradvertinfoMapper;
 import com.bbyiya.dao.TiPromoteremployeesMapper;
-import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.OrderTypeEnum;
 import com.bbyiya.enums.ReturnStatus;
@@ -42,9 +40,7 @@ import com.bbyiya.enums.calendar.TiActivityTypeEnum;
 import com.bbyiya.enums.pic.ActivityCodeStatusEnum;
 import com.bbyiya.model.OOrderaddress;
 import com.bbyiya.model.OUserorders;
-import com.bbyiya.model.PMyproductactivitycode;
 import com.bbyiya.model.PMyproducts;
-import com.bbyiya.model.PMyproducttempusers;
 import com.bbyiya.model.TiActivityexchangecodes;
 import com.bbyiya.model.TiActivityoff;
 import com.bbyiya.model.TiActivitys;
@@ -66,6 +62,7 @@ import com.bbyiya.utils.ImgDomainUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.PageInfoUtil;
 import com.bbyiya.utils.QRCodeUtil;
+import com.bbyiya.utils.encrypt.UrlEncodeUtils;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.address.OrderaddressVo;
 import com.bbyiya.vo.calendar.TiActivitysVo;
@@ -129,16 +126,18 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 		ti.setExtcount(param.getExtCount());//目标分享人数
 		ti.setFreecount(param.getFreecount());//目标参与总数量
 		ti.setProductid(param.getProductid());
-		ti.setAdvertid(param.getActivityid()); 
 		ti.setProduceruserid(userid);//推广者Id
 		ti.setStatus(1);//默认就是已开启的活动	
 		ti.setAutoaddress(param.getAutoaddress()==null?0:param.getAutoaddress());
-
-		//得到影楼默认分享广告
-		TiPromoteradvertinfo advertinfo=advertinfoMapper.getAdvertByPromoterUserId(userid);
-		if(advertinfo!=null){
-			ti.setAdvertid(advertinfo.getAdvertid());
+		ti.setAdvertid(param.getAdvertid());
+		if(!(ObjectUtil.isEmpty(param.getQrcode())||ObjectUtil.isEmpty(param.getQrcodeDesc()))){
+			ti.setQrcode(param.getQrcode());
+			ti.setQrcodedesc(param.getQrcodeDesc());
 		}
+		//活动免费领取人数
+		ti.setApplylimitcount(param.getApplylimitcount()==null?0:param.getApplylimitcount());
+		ti.setHourseffective(param.getHoursEffective()); 
+		ti.setCompanyname(param.getCompanyname()); 
 		activityMapper.insertReturnId(ti);
 		
 		//如果是选择兑换码则要生成相应数量的兑换码
@@ -220,12 +219,31 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 			ti.setDescription(param.getDescription());
 			ti.setFreecount(param.getFreecount());//目标参与总数量
 			ti.setAutoaddress(param.getAutoaddress()==null?0:param.getAutoaddress());
-			
+			if(!ObjectUtil.isEmpty(param.getActivityid())){
+				ti.setAdvertid(param.getAdvertid()); 
+			}
+			if(!(ObjectUtil.isEmpty(param.getQrcode())||ObjectUtil.isEmpty(param.getQrcodeDesc()))){
+				ti.setQrcode(param.getQrcode());
+				ti.setQrcodedesc(param.getQrcodeDesc()); 
+			}
+			if(!ObjectUtil.isEmpty(param.getCompanyname())){
+				ti.setCompanyname(param.getCompanyname());
+			} 
 			if(freecount.intValue()!=0&&freecount.intValue()<applycount){
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("邀请总数限制不得小于总报名人数！");
 				return rq;
-			}			
+			}	
+			int limitFreeCount=(param.getApplylimitcount()==null)?0:param.getApplylimitcount();
+			if(limitFreeCount>0){
+				int applyCountFree=ti.getApplyingcount()==null?0:ti.getApplyingcount().intValue();
+				if(limitFreeCount<=applyCountFree){
+					rq.setStatu(ReturnStatus.ParamError);
+					rq.setStatusreson("免费领取总数不得小于或等于已经领取的人数！");
+					return rq;
+				}
+			}
+			ti.setApplylimitcount(limitFreeCount);
 			activityMapper.updateByPrimaryKeyWithBLOBs(ti);
 		}
 		rq.setStatu(ReturnStatus.Success);
@@ -317,6 +335,11 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 				Integer yaoqingcount=actworksingleMapper.getYaoqingCountByActId(ti.getActid());
 				ti.setYaoqingcount(yaoqingcount==null?0:yaoqingcount);
 			}
+			//活动入口二维码
+			String redirct_url="feedbackAct?actId="+ti.getActid(); 
+			String urlstr= ConfigUtil.getSingleValue("shareulr-base")+"uid="+userid+"&redirct_url="+UrlEncodeUtils.urlEncode(redirct_url,"utf-8");
+			String url="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+UrlEncodeUtils.urlEncode(urlstr,"utf-8");
+			ti.setCodeurl(url);
 			if(ti.getAdvertid()!=null){
 				TiPromoteradvertinfo advertinfo=advertinfoMapper.selectByPrimaryKey(ti.getAdvertid());
 				if(advertinfo!=null){
@@ -338,8 +361,6 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 	public ReturnModel getActWorkListByActId(int index,int size,Integer actid,Integer status,String keywords){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.SystemError);
-		
-		
 		TiActivitys act=activityMapper.selectByPrimaryKey(actid);
 		PageHelper.startPage(index, size);
 		List<TiActivitysWorkVo> activitylist=actworkMapper.findActWorkListByActId(actid, status, keywords);
@@ -357,7 +378,7 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 					}
 					
 				}
-				ti.setCreateTimestr(DateUtil.getTimeStr(ti.getCreatetime(), "yyyy-MM-dd"));
+				ti.setCreateTimestr(DateUtil.getTimeStr(ti.getCreatetime(), "yyyy-MM-dd HH:mm"));
 				UUsers user=usersMapper.selectByPrimaryKey(ti.getUserid());
 				if(user!=null){
 					ti.setWeiNickName(user.getNickname());

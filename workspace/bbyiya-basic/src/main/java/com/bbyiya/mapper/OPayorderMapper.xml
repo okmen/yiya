@@ -16,10 +16,11 @@
     <result column="WalletAmount" property="walletamount" jdbcType="DOUBLE" />
     <result column="CashAmount" property="cashamount" jdbcType="DOUBLE" />
     <result column="ExtObject" property="extobject" jdbcType="VARCHAR" />
+    <result column="ExtObject2" property="extobject2" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
       PayId, UserOrderId, UserId, PrepayId, Status, TotalPrice, CreateTime, PrepayTime, 
-    PayTime, PayType, OrderType, WalletAmount, CashAmount, ExtObject
+    PayTime, PayType, OrderType, WalletAmount, CashAmount, ExtObject, ExtObject2
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -42,12 +43,14 @@
       PrepayId, Status, TotalPrice, 
       CreateTime, PrepayTime, PayTime, 
       PayType, OrderType, WalletAmount, 
-      CashAmount, ExtObject)
+      CashAmount, ExtObject, ExtObject2
+      )
     values (#{payid,jdbcType=VARCHAR}, #{userorderid,jdbcType=VARCHAR}, #{userid,jdbcType=BIGINT}, 
       #{prepayid,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{totalprice,jdbcType=DOUBLE}, 
       #{createtime,jdbcType=TIMESTAMP}, #{prepaytime,jdbcType=TIMESTAMP}, #{paytime,jdbcType=TIMESTAMP}, 
       #{paytype,jdbcType=INTEGER}, #{ordertype,jdbcType=INTEGER}, #{walletamount,jdbcType=DOUBLE}, 
-      #{cashamount,jdbcType=DOUBLE}, #{extobject,jdbcType=VARCHAR})
+      #{cashamount,jdbcType=DOUBLE}, #{extobject,jdbcType=VARCHAR}, #{extobject2,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.OPayorder" >
     insert into o_payorder
@@ -94,6 +97,9 @@
       <if test="extobject != null" >
         ExtObject,
       </if>
+      <if test="extobject2 != null" >
+        ExtObject2,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="payid != null" >
@@ -137,6 +143,9 @@
       </if>
       <if test="extobject != null" >
         #{extobject,jdbcType=VARCHAR},
+      </if>
+      <if test="extobject2 != null" >
+        #{extobject2,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -182,6 +191,9 @@
       <if test="extobject != null" >
         ExtObject = #{extobject,jdbcType=VARCHAR},
       </if>
+      <if test="extobject2 != null" >
+        ExtObject2 = #{extobject2,jdbcType=VARCHAR},
+      </if>
     </set>
     where PayId = #{payid,jdbcType=VARCHAR}
   </update>
@@ -199,7 +211,8 @@
       OrderType = #{ordertype,jdbcType=INTEGER},
       WalletAmount = #{walletamount,jdbcType=DOUBLE},
       CashAmount = #{cashamount,jdbcType=DOUBLE},
-      ExtObject = #{extobject,jdbcType=VARCHAR}
+      ExtObject = #{extobject,jdbcType=VARCHAR},
+      ExtObject2 = #{extobject2,jdbcType=VARCHAR}
     where PayId = #{payid,jdbcType=VARCHAR}
   </update>
 </mapper>

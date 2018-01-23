@@ -23,6 +23,12 @@ public class TiActivityworks {
     
     private Long orderaddressid;
 
+    private Date submittime;
+
+    private Integer countmore;
+
+    private Double postage;
+
     public Long getWorkid() {
         return workid;
     }
@@ -102,5 +108,30 @@ public class TiActivityworks {
 	public void setOrderaddressid(Long orderaddressid) {
 		this.orderaddressid = orderaddressid;
 	}
+
+	public Date getSubmittime() {
+		return submittime;
+	}
+
+	public void setSubmittime(Date submittime) {
+		this.submittime = submittime;
+	}
+
+	public Integer getCountmore() {
+		return countmore;
+	}
+
+	public Double getPostage() {
+		return postage;
+	}
+
+	public void setCountmore(Integer countmore) {
+		this.countmore = countmore;
+	}
+
+	public void setPostage(Double postage) {
+		this.postage = postage;
+	}
+	
     
 }

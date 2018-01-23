@@ -31,7 +31,7 @@ public class UAdminService implements IUAdminService{
 	public ReturnModel loginProcess(String username,String pwd){
 		ReturnModel rqModel=new ReturnModel();
 		String pwdMd5=MD5Encrypt.encrypt(pwd);
-		//adminÓÃ»§²»´æÊı¾İ¿â
+		//adminç”¨æˆ·ä¸å­˜æ•°æ®åº“
 		List<Map<String, String>> users= ConfigUtil.getMaplist("users");
 		if(users!=null&&users.size()>0){
 			for (Map<String, String> map : users) {
@@ -41,13 +41,13 @@ public class UAdminService implements IUAdminService{
 					user.setUsername((map.get("username")));
 					rqModel.setStatu(ReturnStatus.Success);
 					rqModel.setBasemodle(getAdminLoginSuccessResult(user)); 
-					rqModel.setStatusreson("µÇÂ¼³É¹¦");
+					rqModel.setStatusreson("ç™»å½•æˆåŠŸ");
 					return rqModel;
 				}
 			}
 		}
 		rqModel.setStatu(ReturnStatus.LoginError_1);
-		rqModel.setStatusreson("ÓÃ»§Ãû»òÃÜÂë´íÎó");
+		rqModel.setStatusreson("ç”¨æˆ·åæˆ–å¯†ç é”™è¯¯");
 		return rqModel;
 	}
 	

@@ -52,11 +52,16 @@ public class TiProductsController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/tiprolist")
-	public String getTiproductlist(Long productid,String advertImgJson) throws Exception {
+	public String getTiproductlist(@RequestParam(required=false,defaultValue="0")int isAll) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq=productservice.getTiProList();
+			if(isAll>0){
+				rq=productservice.getTiProListAll();
+			}else{
+				rq=productservice.getTiProList();
+			}
+			
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

@@ -37,7 +37,37 @@ public class TiActivitys {
 
     private Integer autoaddress;
 
-    public Integer getActid() {
+    private String qrcode;
+
+    private String qrcodedesc;
+    
+    private Integer applyingcount;
+
+    private Integer applylimitcount;
+
+    private Integer isfreestyle;
+
+    private Integer hourseffective;
+    
+    private String companyname;
+
+    public String getQrcode() {
+		return qrcode;
+	}
+
+	public String getQrcodedesc() {
+		return qrcodedesc;
+	}
+
+	public void setQrcode(String qrcode) {
+		this.qrcode = qrcode;
+	}
+
+	public void setQrcodedesc(String qrcodedesc) {
+		this.qrcodedesc = qrcodedesc;
+	}
+
+	public Integer getActid() {
         return actid;
     }
 
@@ -171,6 +201,46 @@ public class TiActivitys {
 
 	public void setAutoaddress(Integer autoaddress) {
 		this.autoaddress = autoaddress;
+	}
+
+	public Integer getApplyingcount() {
+		return applyingcount;
+	}
+
+	public void setApplyingcount(Integer applyingcount) {
+		this.applyingcount = applyingcount;
+	}
+
+	public Integer getApplylimitcount() {
+		return applylimitcount;
+	}
+
+	public void setApplylimitcount(Integer applylimitcount) {
+		this.applylimitcount = applylimitcount;
+	}
+
+	public Integer getIsfreestyle() {
+		return isfreestyle;
+	}
+
+	public void setIsfreestyle(Integer isfreestyle) {
+		this.isfreestyle = isfreestyle;
+	}
+
+	public Integer getHourseffective() {
+		return hourseffective;
+	}
+
+	public void setHourseffective(Integer hourseffective) {
+		this.hourseffective = hourseffective;
+	}
+
+	public String getCompanyname() {
+		return companyname;
+	}
+
+	public void setCompanyname(String companyname) {
+		this.companyname = companyname;
 	}
     
     

@@ -27,10 +27,22 @@ public interface IBaseUserAddressService {
 	 */
 	UUserAddressResult getUserAddressResult(Long userId, Long addressId);
 	/**
+	 * 根据订单地址id获取收货信息
+	 * @param orderAddressId
+	 * @return
+	 */
+	UUserAddressResult getUserAddressResultByOrderAddressId(Long orderAddressId) ;
+	/**
 	 * 获取分销影楼地址
 	 * @param userId
 	 * @return
 	 */
 	UUserAddressResult getBranchAddressResult(Long userId);
+	/**
+	 * 获取广告主地址信息
+	 * @param promoterUserId
+	 * @return
+	 */
+	UUserAddressResult getPromoterAddressResult(Long promoterUserId);
 	
 }

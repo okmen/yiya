@@ -58,8 +58,8 @@ public class Ibs_TiPromoterAdvertShareServiceImpl implements IIbs_TiPromoterAdve
 		PageInfo<TiPromoteradvertinfo> result=new PageInfo<TiPromoteradvertinfo>(shareadvertlist);
 		if(result!=null&&result.getList()!=null&&result.getList().size()>0){
 			for (TiPromoteradvertinfo advertinfo :result.getList()) {
-				//广告分享页的浏览数x2倍
-				Integer readcount=(advertinfo.getReadcount()==null?0:advertinfo.getReadcount().intValue())*2;
+				//广告分享页的浏览数
+				Integer readcount=(advertinfo.getReadcount()==null?0:advertinfo.getReadcount().intValue());
 				advertinfo.setReadcount(readcount);
 				advertinfo.setUpdatetimestr(DateUtil.getTimeStr(advertinfo.getCreatetime(), "yyyy-MM-dd"));
 			}

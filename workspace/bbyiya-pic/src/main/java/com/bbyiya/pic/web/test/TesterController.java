@@ -7,6 +7,9 @@ import java.util.ResourceBundle;
 
 import javassist.expr.NewArray;
 
+import javax.annotation.Resource;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +34,7 @@ import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.utils.WxPublicUtils;
 import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.HttpRequestHelper;
-import com.bbyiya.utils.ImgDomainUtil;
+import com.bbyiya.service.calendar.IPhotosMgtService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
@@ -48,7 +51,9 @@ import com.bbyiya.web.base.SSOController;
 @Controller
 @RequestMapping(value = "/test")
 public class TesterController  extends SSOController{
-
+	@Resource(name = "photosMgtServiceImpl")
+	private IPhotosMgtService photoService;
+	
 	@ResponseBody
 	@RequestMapping(value = "/send")
 	public String download(String url,int count,int pageSize) throws Exception {
@@ -68,9 +73,11 @@ public class TesterController  extends SSOController{
 		rq.setStatu(ReturnStatus.Success);
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	@RequestMapping(value = "/export")
+	@ResponseBody
+	@RequestMapping(value = "/orderImgs")
 	public String downloadorder() throws Exception {
-		return "exportOrder";
+		photoService.orderPhotosLimitReplace();
+		return "";
 	}
 	
 	@ResponseBody 

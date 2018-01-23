@@ -9,12 +9,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bbyiya.baseUtils.ValidateUtils;
+import com.bbyiya.dao.OOrderaddressMapper;
+import com.bbyiya.dao.TiPromotersMapper;
 import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.dao.UBranchusersMapper;
 import com.bbyiya.dao.UUseraddressMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.user.UserIdentityEnums;
+import com.bbyiya.model.OOrderaddress;
+import com.bbyiya.model.TiPromoters;
 import com.bbyiya.model.UBranches;
 import com.bbyiya.model.UBranchusers;
 import com.bbyiya.model.UUseraddress;
@@ -209,7 +213,29 @@ public class BaseUserAddressServiceImpl implements IBaseUserAddressService {
 			return null;
 		}
 	}
+	@Autowired
+	private  OOrderaddressMapper orderAddressMapper;
 	
+	
+	public UUserAddressResult getUserAddressResultByOrderAddressId(Long orderAddressId) {
+		if (orderAddressId != null && orderAddressId.longValue()> 0) {
+		    OOrderaddress orderAddress=orderAddressMapper.selectByPrimaryKey(orderAddressId);
+		    if(orderAddress!=null){
+		    	UUserAddressResult userAddressResult =new UUserAddressResult();
+		    	userAddressResult.setProvinceName(orderAddress.getProvince());
+		    	userAddressResult.setCityName(orderAddress.getCity());
+		    	userAddressResult.setAreaName(orderAddress.getDistrict());
+		    	userAddressResult.setReciver(orderAddress.getReciver());
+		    	userAddressResult.setStreetdetail(orderAddress.getStreetdetail());
+		    	userAddressResult.setPhone(orderAddress.getPhone());
+		    	return userAddressResult;
+		    }
+			
+		} 
+	
+		return null;
+		
+	}
 
 	public UUserAddressResult getBranchAddressResult(Long userId){
 		UUsers users = usersMapper.selectByPrimaryKey(userId);
@@ -235,6 +261,28 @@ public class BaseUserAddressServiceImpl implements IBaseUserAddressService {
 				return orderAddress;
 			}
 		}
+		return null;
+	}
+	
+	@Autowired
+	private TiPromotersMapper promoterMapper;
+	/**
+	 * 获取广告主地址信息
+	 * @param promoterUserId
+	 * @return
+	 */
+	public UUserAddressResult getPromoterAddressResult(Long promoterUserId){
+			TiPromoters promoters = promoterMapper.selectByPrimaryKey(promoterUserId);
+			if (promoters != null) {
+				UUserAddressResult userAddressResult = new UUserAddressResult();
+				userAddressResult.setProvinceName(regionService.getProvinceName(promoters.getProvince()));
+				userAddressResult.setCityName(regionService.getCityName(promoters.getCity()));
+				userAddressResult.setAreaName(regionService.getAresName(promoters.getArea()));
+				userAddressResult.setStreetdetail(promoters.getStreetdetails());
+				userAddressResult.setReciver(promoters.getContacts());
+				userAddressResult.setPhone(promoters.getMobilephone()); 
+				return userAddressResult;
+			}
 		return null;
 	}
 

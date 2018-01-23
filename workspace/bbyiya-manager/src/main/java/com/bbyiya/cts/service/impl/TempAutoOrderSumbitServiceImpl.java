@@ -5,29 +5,47 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import net.sf.json.JSONObject;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bbyiya.cts.job.HeartbeatJob;
 import com.bbyiya.cts.service.ITempAutoOrderSumbitService;
+import com.bbyiya.dao.OUserordersMapper;
 import com.bbyiya.dao.PMyproductsMapper;
 import com.bbyiya.dao.PMyproducttempMapper;
 import com.bbyiya.dao.PMyproducttempapplyMapper;
 import com.bbyiya.dao.SysLogsMapper;
-import com.bbyiya.dao.UAdminactionlogsMapper;
+import com.bbyiya.dao.TiGroupactivityMapper;
+import com.bbyiya.dao.TiGroupactivityworksMapper;
+import com.bbyiya.dao.UBranchesMapper;
 import com.bbyiya.enums.MyProductTempStatusEnum;
+import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
+import com.bbyiya.enums.pic.YiyeAddressType;
 import com.bbyiya.model.OOrderproducts;
+import com.bbyiya.model.OUserorders;
 import com.bbyiya.model.PMyproducts;
 import com.bbyiya.model.PMyproducttemp;
 import com.bbyiya.model.PMyproducttempapply;
 import com.bbyiya.model.SysLogs;
+import com.bbyiya.model.TiGroupactivity;
+import com.bbyiya.model.TiGroupactivityworks;
+import com.bbyiya.model.UBranches;
+import com.bbyiya.service.IBasePayService;
+import com.bbyiya.service.IRegionService;
+import com.bbyiya.service.calendar.ITi_OrderMgtService;
 import com.bbyiya.service.pic.IBaseOrderMgtService;
+import com.bbyiya.utils.ConfigUtil;
+import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
+import com.bbyiya.utils.RedisUtil;
+import com.bbyiya.utils.logistics.LogisticsQuery;
 import com.bbyiya.vo.ReturnModel;
 import com.bbyiya.vo.address.OrderaddressParam;
+import com.bbyiya.vo.calendar.TiGroupActivityOrderSubmitParam;
 import com.bbyiya.vo.order.SubmitOrderProductParam;
 import com.bbyiya.vo.order.UserOrderSubmitParam;
 
@@ -47,59 +65,135 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 	private PMyproducttempapplyMapper applyMapper;
 	
 	@Autowired
+	private UBranchesMapper branchesMapper;
+
+	@Autowired
 	private SysLogsMapper syslogMapper;
+	
+	@Autowired
+	private OUserordersMapper userorderMapper;
+	
+	@Autowired
+	private TiGroupactivityworksMapper groupactworkMapper;
+	
+	@Autowired
+	private TiGroupactivityMapper groupactMapper;
+	
+	@Resource(name = "regionServiceImpl")
+	private IRegionService regionService;
 
 	
 	@Resource(name = "baseOrderMgtServiceImpl")
 	private IBaseOrderMgtService orderMgtService;
 	
+	@Resource(name = "tiOrderMgtServiceImpl")
+	private  ITi_OrderMgtService basetiorderService;
+	
+	@Resource(name = "basePayServiceImpl")
+	private IBasePayService basepayService;
+	
+	
+	
+	
+	/**
+	 * 自动下单的功能
+	 */
 	public ReturnModel dotempAutoOrderSumbit(){
 		ReturnModel rq=new ReturnModel();
 		rq.setStatu(ReturnStatus.Success);
-		//�õ������ѿ����Ļ�б�
+		//得到所有已开启的活动列表
 		List<PMyproducttemp> templist=tempMapper.findAllAutoOrderTempByStatus(Integer.parseInt(MyProductTempStatusEnum.enable.toString()));
 		if(templist!=null&&templist.size()>0){
 			for (PMyproducttemp temp : templist) {
-				//���orderhoursΪ����Ĭ��Ϊ48Сʱ
+				//如果orderhours为空则默认为48小时
 				if(temp.getOrderhours()==null) temp.setOrderhours(48);
-				//�õ�������п��µ�����Ʒ�б�
+				//得到活动下所有可下单的作品列表
 				List<PMyproducts> productlist=myproductMapper.findCanOrderMyProducts(temp.getTempid(), temp.getOrderhours());
 				for (PMyproducts myproduct : productlist) {
-					//�����µ��ӿ�
+					//避免重复下单操作
+					String key="cartid_"+myproduct.getCartid();
+					String cartid=(String)RedisUtil.getObject(key);
+					if(cartid!=null){
+						//已下过单
+						continue;
+					}else{
+						RedisUtil.setObject(key, cartid, 3600);
+					}
+					PMyproducttempapply tempapply=applyMapper.getMyProducttempApplyByCartId(myproduct.getCartid());					
+					
+					//调用下单接口
 					SubmitOrderProductParam productParam=new SubmitOrderProductParam();
 					productParam.setProductId(myproduct.getProductid());
-					Long styleId=temp.getStyleid();
-					//���Ϊ�գ�Ĭ��Ϊ����
-					if(ObjectUtil.isEmpty(styleId)) styleId=myproduct.getProductid();
+					Long styleId=null;
+					if(tempapply!=null&&tempapply.getStyleid()!=null){
+						styleId=tempapply.getStyleid();
+					}else{
+						styleId=temp.getStyleid();
+					}
+					//如果为空，默认为竖板
+					//if(ObjectUtil.isEmpty(styleId)) styleId=myproduct.getProductid();
 					productParam.setStyleId(styleId);
 					productParam.setCount(1);
 					productParam.setCartId(myproduct.getCartid());
 					
-					PMyproducttempapply tempapply=applyMapper.getMyProducttempApplyByCartId(myproduct.getCartid());
 					OrderaddressParam addressParam=new OrderaddressParam();
-					addressParam.setUserid(tempapply.getUserid());
-					addressParam.setCity(tempapply.getCity());
-					addressParam.setDistrict(tempapply.getArea());
-					addressParam.setPhone(tempapply.getMobilephone());
-					addressParam.setProvince(tempapply.getProvince());
-					addressParam.setReciver(tempapply.getReceiver());
-					addressParam.setStreetdetail(tempapply.getStreet());
+					//使用门店自选地址
+					if(temp.getIsbranchaddress()!=null&&temp.getIsbranchaddress().intValue()==Integer.parseInt(YiyeAddressType.branchList.toString())){
+						if(tempapply!=null&&tempapply.getAddrbranchuserid()!=null&&tempapply.getAddrbranchuserid().doubleValue()>0){
+							UBranches branches=branchesMapper.selectByPrimaryKey(tempapply.getAddrbranchuserid());
+							if (branches != null) {
+								addressParam.setUserid(branches.getBranchuserid());
+								addressParam.setPhone(branches.getPhone());
+								addressParam.setReciver(branches.getContactname());
+								addressParam.setCity(branches.getCity());
+								addressParam.setProvince(branches.getProvince());
+								addressParam.setDistrict(branches.getArea());
+								addressParam.setStreetdetail(branches.getStreetdetail());
+							}
+						}
+						
+					}else if(temp.getIsbranchaddress()!=null&&temp.getIsbranchaddress().intValue()==Integer.parseInt(YiyeAddressType.branchSelf.toString())){
+						UBranches branches=branchesMapper.selectByPrimaryKey(temp.getBranchuserid());
+						if (branches != null) {
+							addressParam.setUserid(branches.getBranchuserid());
+							addressParam.setPhone(branches.getPhone());
+							addressParam.setReciver(branches.getContactname());
+							addressParam.setCity(branches.getCity());
+							addressParam.setProvince(branches.getProvince());
+							addressParam.setDistrict(branches.getArea());
+							addressParam.setStreetdetail(branches.getStreetdetail());
+						}
+					}else{
+						//用户报名地址
+						if(tempapply!=null){
+							addressParam.setUserid(tempapply.getUserid());
+							addressParam.setCity(tempapply.getCity());
+							addressParam.setDistrict(tempapply.getArea());
+							addressParam.setPhone(tempapply.getMobilephone());
+							addressParam.setProvince(tempapply.getProvince());
+							addressParam.setReciver(tempapply.getReceiver());
+							addressParam.setStreetdetail(tempapply.getStreet());
+						}
+						
+					}
+					
+					
 					if (productParam != null&&addressParam!=null) {
 						OOrderproducts product = new OOrderproducts();
 						product.setProductid(productParam.getProductId());
 						product.setStyleid(productParam.getStyleId());
 						product.setCount(productParam.getCount());
 						
-						// �µ�����
+						// 下单参数
 						UserOrderSubmitParam param = new UserOrderSubmitParam();
 						
 						param.setUserId(myproduct.getUserid());
-						param.setRemark("ϵͳ�Զ��µ�");
+						param.setRemark("系统自动下单");
 						
 						if (productParam.getCartId() != null && productParam.getCartId() > 0) {
 							param.setCartId(productParam.getCartId());
 						}
-						//ΪӰ¥����
+						//为影楼订单
 						param.setOrderType(1);
 						if(productParam.getPostModelId()!=null){
 							param.setPostModelId(productParam.getPostModelId()); 
@@ -107,52 +201,56 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 						param.setOrderproducts(product);
 						if(addressParam.getCity()==null){
 							rq.setStatu(ReturnStatus.ParamError);
-							rq.setStatusreson("��ַ��������cityΪ��");
-							return rq;
+							rq.setStatusreson("地址参数有误：city为空");
+							
 						}
 						if(addressParam.getProvince()==null){
 							rq.setStatu(ReturnStatus.ParamError);
-							rq.setStatusreson("��ַ��������provinceΪ��");
-							return rq;
+							rq.setStatusreson("地址参数有误：province为空");
+							
 						}
 						if(addressParam.getDistrict()==null){
 							rq.setStatu(ReturnStatus.ParamError);
-							rq.setStatusreson("��ַ��������districtΪ��");
-							return rq;
+							rq.setStatusreson("地址参数有误：district为空");
+							
 						}
 						if(addressParam.getStreetdetail()==null){
 							rq.setStatu(ReturnStatus.ParamError);
-							rq.setStatusreson("��ַ��������streetdetailΪ��");
-							return rq;
+							rq.setStatusreson("地址参数有误：streetdetail为空");
+							
 						}
 						if(addressParam.getPhone()==null){
 							rq.setStatu(ReturnStatus.ParamError);
-							rq.setStatusreson("��������,�ֻ���Ϊ��");
-							return rq;
+							rq.setStatusreson("参数有误,手机号为空");
+							
 						}
 						if(!ObjectUtil.isEmpty(addressParam.getPhone())&&!ObjectUtil.isMobile(addressParam.getPhone())){
 							rq.setStatu(ReturnStatus.ParamError_2);
-							rq.setStatusreson("�ֻ��Ÿ�ʽ���ԣ�");
-							return rq;
+							rq.setStatusreson("手机号格式不对！");
+							
 						}
 						if(addressParam.getReciver()==null){
 							rq.setStatu(ReturnStatus.ParamError);
-							rq.setStatusreson("��������,��ϵ��Ϊ��");
-							return rq;
+							rq.setStatusreson("参数有误,联系人为空");
+							
 						}
 						param.setAddressparam(addressParam);
 						rq = orderMgtService.submitOrder_IBS(param);
 					} else {
 						rq.setStatu(ReturnStatus.ParamError);
-						rq.setStatusreson("��������");
+						rq.setStatusreson("参数有误");
+						
 					}
-					if(!rq.getStatu().equals(ReturnStatus.Success))//δͨ��������֤
-					{
-						addSysLog("��Ʒ"+productParam.getCartId()+"�Զ��µ�ʧ�ܣ�ԭ��"+rq.getStatusreson(),"dotempAutoOrderSumbit","�µ�ʧ��");
-						Log.error("��Ʒ"+productParam.getCartId()+"�Զ��µ�ʧ�ܣ�ԭ��"+rq.getStatusreson());
+					
+					
+					if(!rq.getStatu().equals(ReturnStatus.Success))//未通过参数验证
+					{	
+						RedisUtil.delete(key);
+						addSysLog("作品"+productParam.getCartId()+"自动下单失败！原因："+rq.getStatusreson(),"dotempAutoOrderSumbit","下单失败");
+						Log.error("作品"+productParam.getCartId()+"自动下单失败！原因："+rq.getStatusreson());
 					}else{
-						Log.info("��Ʒ"+productParam.getCartId()+"�Զ��µ��ɹ���");
-						addSysLog("��Ʒ"+productParam.getCartId()+"�Զ��µ��ɹ���","dotempAutoOrderSumbit","�µ��ɹ�");
+						Log.info("作品"+productParam.getCartId()+"自动下单成功！");
+						addSysLog("作品"+productParam.getCartId()+"自动下单成功！","dotempAutoOrderSumbit","下单成功");
 					}
 					
 				}//end For 1
@@ -163,6 +261,92 @@ public class TempAutoOrderSumbitServiceImpl implements ITempAutoOrderSumbitServi
 		
 		return rq;
 	}
+	
+	/**
+	 * 自动签收的功能
+	 * @return
+	 */
+	public void doAutoReceiving(){
+		//查询所有已发货的订单
+		List<OUserorders> orderlist=userorderMapper.findOrderByStatus(Integer.parseInt(OrderStatusEnum.send.toString()));
+		if(orderlist!=null&&orderlist.size()>0){
+			for (OUserorders order : orderlist) {
+				if(!ObjectUtil.isEmpty(order.getExpresscode())&&!ObjectUtil.isEmpty(order.getExpressorder())){
+					String resultStr=LogisticsQuery.getLogisticsQueryByNum(order.getExpresscode(), order.getExpressorder());
+					JSONObject model = JSONObject.fromObject(resultStr);		
+					if (model != null) {
+						String message = String.valueOf(model.get("message"));
+						if(!ObjectUtil.isEmpty(message)&&message.equalsIgnoreCase("ok")){
+							String state = String.valueOf(model.get("state"));
+							/*快递单当前签收状态，包括0在途中、1已揽收、2疑难、3已签收、4退签、5同城派送中、6退回、7转单等7个状态，其中4-7需要另外开通才有效，详见章3.1.3 */
+							if(state!=null&&ObjectUtil.parseInt(state).intValue()==3){
+								order.setStatus(Integer.parseInt(OrderStatusEnum.recived.toString()));
+								userorderMapper.updateByPrimaryKey(order);
+								Log.info("订单【"+order.getUserorderid()+"】自动签收成功！");
+								
+								//分配订单分成
+								basepayService.distributeOrderAmount(order.getUserorderid());
+							}
+						}
+					}
+				}
+				
+			}
+		}else{
+			Log.info("暂无待签收的订单！");
+		}
+	}
+	
+	
+	
+	/**
+	 * 分销自动下单的功能
+	 */
+	public ReturnModel doGroupActivityAutoOrderSumbit(){
+		ReturnModel rq=new ReturnModel();
+		rq.setStatu(ReturnStatus.Success);
+		
+		//3个小时后自动下单
+		int timespan=ObjectUtil.parseInt(ConfigUtil.getPropertyVal("groupactivityOrderTimespan"));
+		List<TiGroupactivityworks> groupactworklist=groupactworkMapper.findCanOrderGroupActWork(timespan);
+		if(groupactworklist!=null&&groupactworklist.size()>0){
+			for (TiGroupactivityworks groupactwork : groupactworklist) {
+				TiGroupactivity act=groupactMapper.selectByPrimaryKey(groupactwork.getGactid());
+				TiGroupActivityOrderSubmitParam param=new TiGroupActivityOrderSubmitParam();
+				
+				param.setCount(groupactwork.getCount());
+				param.setOrderAddressId(groupactwork.getAddressid());
+				param.setSubmitUserId(act.getPromoteruserid());
+				param.setWorkId(groupactwork.getWorkid());
+				param.setRemark("分销作品自动下单");
+				
+				//避免重复下单操作
+				String key="workid"+groupactwork.getWorkid();
+				String workid=(String)RedisUtil.getObject(key);
+				if(workid!=null){
+					//已下过单
+					continue;
+				}else{
+					RedisUtil.setObject(key, workid, 300);
+				}
+				rq = basetiorderService.submitTiGroupActivityOrder_ibs(param);
+				
+				if(!rq.getStatu().equals(ReturnStatus.Success))//未通过参数验证
+				{	
+					RedisUtil.delete(key);
+					addSysLog("作品"+param.getWorkId()+"自动下单失败！原因："+rq.getStatusreson(),"doGroupActivityAutoOrderSumbit","下单失败");
+					Log.error("作品"+param.getWorkId()+"自动下单失败！原因："+rq.getStatusreson());
+				}else{
+					Log.info("作品"+param.getWorkId()+"自动下单成功！");
+					addSysLog("作品"+param.getWorkId()+"自动下单成功！","doGroupActivityAutoOrderSumbit","下单成功");
+				}
+				
+			}
+		}
+		return rq;
+	}
+	
+	
 	
 	public void addSysLog(String msg,String jobid,String jobname){
 		SysLogs log=new SysLogs();

@@ -7,7 +7,7 @@ import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
 import com.bbyiya.baseUtils.CookieUtils;
 /**
- * managerÓÃ»§µÇÂ¼ÑéÖ¤»ùÀà
+ * managerç”¨æˆ·ç™»å½•éªŒè¯åŸºç±»
  * @author Administrator
  *
  */
@@ -15,20 +15,20 @@ public class CtsSSOController {
 	@Autowired
 	HttpServletRequest request;
 	/**
-	 * ¹ÜÀíÔ±µÇÂ¼ cookie»º´æÃû
+	 * ç®¡ç†å‘˜ç™»å½• cookieç¼“å­˜å
 	 */
 	protected static String token="token_user";
 	 /**
-     * Î¢µêÓÃ»§
+     * å¾®åº—ç”¨æˆ·
      */
     public AdminLoginSuccessResult getLoginUser()
     {
     	String ticket = request.getHeader("ticket");
 		if (ObjectUtil.isEmpty(ticket)) {
 			ticket = request.getParameter("ticket");
-			// ÅĞ¶ÏtiektÊÇ·ñÎª¿Õ
+			// åˆ¤æ–­tiektæ˜¯å¦ä¸ºç©º
 			if (ObjectUtil.isEmpty(ticket)) {
-				// »ñÈ¡cookieµÄtiketµÄÖµ
+				// è·å–cookieçš„tiketçš„å€¼
 //				ticket = CookieUtils.getCookieByName(request, "ticket");
 				ticket = CookieUtils.getCookie_web(request);
 				if (ObjectUtil.isEmpty(ticket)) {
@@ -37,11 +37,11 @@ public class CtsSSOController {
 			}
 		}
         Object userObject = RedisUtil.getObject(ticket);
-        if(userObject != null)// Èç¹û´æÔÚ
+        if(userObject != null)// å¦‚æœå­˜åœ¨
         {
-            RedisUtil.setExpire(ticket,1800);// ÑÓ³¤Ê±¼ä
+            RedisUtil.setExpire(ticket,1800);// å»¶é•¿æ—¶é—´
             return (AdminLoginSuccessResult) userObject;
         }
-        return null;// ÓÃ»§¹ıÆÚ
+        return null;// ç”¨æˆ·è¿‡æœŸ
     }
 }

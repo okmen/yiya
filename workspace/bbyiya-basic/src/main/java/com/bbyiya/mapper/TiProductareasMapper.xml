@@ -26,6 +26,17 @@
     from ti_productareas
     where ProductId = #{productId,jdbcType=INTEGER} and  AreaCode=#{areaCode,jdbcType=INTEGER} 
   </select>
+   <select id="findProductAreaListByCityCode" resultMap="BaseResultMap"><!-- CityCode -->
+    select 
+    <include refid="Base_Column_List" />
+    from ti_productareas
+    where ProductId = #{productId,jdbcType=INTEGER} and  CityCode=#{cityCode,jdbcType=INTEGER} 
+  </select>
+   <select id="findProductAreaListByProvinceCode" resultMap="BaseResultMap"><!-- province -->
+    select <include refid="Base_Column_List" />
+    from ti_productareas
+    where ProductId = #{productId,jdbcType=INTEGER} and  ProvinceCode=#{provinceCode,jdbcType=INTEGER} 
+  </select>
   <!-- 得到其它生产商该产品是否代理该地区 -->
   <select id="getIfExistProductAreaByOtherIds" resultMap="BaseResultMap" >
     select 

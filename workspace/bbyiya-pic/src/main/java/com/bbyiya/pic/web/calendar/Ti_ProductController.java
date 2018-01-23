@@ -1,10 +1,14 @@
 package com.bbyiya.pic.web.calendar;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+
+
 
 
 
@@ -17,6 +21,7 @@ import com.bbyiya.common.vo.ImageInfo;
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.TiDiscountdetailsMapper;
 import com.bbyiya.dao.TiDiscountmodelMapper;
+import com.bbyiya.dao.TiProductblessingsMapper;
 import com.bbyiya.dao.TiProductcommentsMapper;
 import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiProductsextMapper;
@@ -31,6 +36,7 @@ import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiProductsext;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiUserdiscounts;
+import com.bbyiya.utils.ConfigUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.utils.RedisUtil;
@@ -92,11 +98,18 @@ public class Ti_ProductController  extends SSOController {
 				proList=productsMapper.findProductResultlist();
 				RedisUtil.setObject(KEY_CACHE_PRODUCTS, proList, CACHE_LONG);
 			}
-			
+			List<TiProductResult> proListReulst=proList;// new ArrayList<TiProductResult>();
+//			if(proList!=null&&proList.size()>0){
+//				for (TiProductResult pp : proList) {
+//					if(pp.getCateid()!=null&&pp.getCateid().intValue()!=5){
+//						proListReulst.add(pp);
+//					}
+//				}
+//			}
 			//我的优惠
 			TiDiscountmodel disModel= getDiscountList(user.getUserId());
 			if(disModel!=null&&disModel.getDetails()!=null) {
-				for (TiProductResult pro : proList) {
+				for (TiProductResult pro : proListReulst) {
 					pro.setDiscountType(disModel.getType());
 					pro.setDiscountName(disModel.getTitle()); 
 					for (TiDiscountdetails dd : disModel.getDetails()) {
@@ -107,7 +120,7 @@ public class Ti_ProductController  extends SSOController {
 					}
 				}
 			}
-			rq.setBasemodle(proList); 
+			rq.setBasemodle(proListReulst); 
 			rq.setStatu(ReturnStatus.Success);
 		}else { 
 			rq.setStatu(ReturnStatus.LoginError);
@@ -192,6 +205,56 @@ public class Ti_ProductController  extends SSOController {
 			//产品的款式列表
 			List<TiProductstyles> styleList=styleMapper.findStylelistByProductId(productId);
 			rq.setBasemodle(styleList);
+			rq.setStatu(ReturnStatus.Success); 
+		}else { 
+			rq.setStatu(ReturnStatus.LoginError);
+			rq.setStatusreson("登录过期");
+			return JsonUtil.objectToJsonStr(rq);
+		}
+		return JsonUtil.objectToJsonStr(rq);
+	}
+	
+	@Autowired
+	private TiProductblessingsMapper blessMapper;
+	
+	/**
+	 * 产品的款式信息 （制作红包用）
+	 * @param productId
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getTiProductInfo")
+	public String getTiProductInfo(long productId) throws Exception {
+		ReturnModel rq=new ReturnModel();
+		LoginSuccessResult user= super.getLoginUser();
+		if(user!=null){
+			//产品的款式列表
+			List<TiProductstyles> styleList=styleMapper.findStylelistByProductId(productId);
+			Map<String, Object> mapResult=new HashMap<String, Object>();
+			mapResult.put("stylelist", styleList);
+			TiProducts product= productsMapper.selectByPrimaryKey(productId);
+			if(product!=null){
+				if(product.getCateid()!=null){
+					if(product.getCateid()==5){
+						mapResult.put("blessinglist", blessMapper.findAll());
+						List<Map<String, String>> styleImgs=ConfigUtil.getMaplist("redpackgePreviewImg");
+						
+						for (TiProductstyles ss : styleList) {
+								List<Map<String, String>> imglist=new ArrayList<Map<String,String>>();
+								if(styleImgs!=null&&styleImgs.size()>0){
+									for (Map<String, String> map : styleImgs) {
+										if(map.get("styleId").equals(ss.getStyleid().toString())){
+											imglist.add(map);
+										}
+									}
+								}
+								ss.setBgImglist(imglist);
+						}
+					}
+				}
+			}
+			rq.setBasemodle(mapResult);
 			rq.setStatu(ReturnStatus.Success); 
 		}else { 
 			rq.setStatu(ReturnStatus.LoginError);

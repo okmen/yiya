@@ -12,10 +12,13 @@
     <result column="Reciever" property="reciever" jdbcType="VARCHAR" />
     <result column="Mobiephone" property="mobiephone" jdbcType="VARCHAR" />
     <result column="OrderAddressId" property="orderaddressid" jdbcType="BIGINT" />
+    <result column="SubmitTime" property="submittime" jdbcType="TIMESTAMP" />
+    <result column="CountMore" property="countmore" jdbcType="INTEGER" />
+    <result column="Postage" property="postage" jdbcType="DOUBLE" />
   </resultMap>
   <sql id="Base_Column_List" >
     WorkId, UserId, ActId, Status, ExtCount, CreateTime, AddressType, Reciever, Mobiephone, 
-    OrderAddressId
+    OrderAddressId, SubmitTime, CountMore, Postage
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -28,7 +31,13 @@
   <select id="getCountByActStatus" resultType="java.lang.Integer"  parameterType="java.lang.Integer" >
     select count(WorkId) from ti_activityworks where ActId = #{actid,jdbcType=INTEGER} and Status=#{status,jdbcType=INTEGER}
   </select>
-  
+   <!-- 根据活动ID及状态得到各状态的总数 -->
+  <select id="countByActIdAndStatus" resultType="java.lang.Integer"  >
+    select count(WorkId) from ti_activityworks where ActId = #{actid,jdbcType=INTEGER} 
+    <if test="statusArrs != null" >
+        and Status in  <foreach collection="statusArrs" item="item" index="index" open="(" separator="," close=")">#{item}</foreach>
+    </if>
+  </select>
   <resultMap id="TiActivityworksVOResult" type="com.bbyiya.vo.calendar.TiActivitysWorkVo" extends="BaseResultMap">  
   </resultMap> 
    <!-- 根据活动ID得到活动参与情况列表 -->
@@ -49,9 +58,31 @@
   <select id="getActWorkListByActIdAndUserId" resultMap="TiActivityworksVOResult"  ><!-- 获取用户参与的活动 -->
   	select <include refid="Base_Column_List" />
     from ti_activityworks
-    where  ActId = #{actid,jdbcType=BIGINT} and UserId=#{userId,jdbcType=BIGINT} limit 1
+    where  ActId = #{actid,jdbcType=BIGINT} and UserId=#{userId,jdbcType=BIGINT}  ORDER BY WorkId DESC limit 1
   </select>
-  
+  <select id="getActWorkListNeedShared" resultMap="BaseResultMap"  ><!-- 获取需要分享的，未完成分享的作品 -->
+    SELECT a.* from ti_activityworks as a LEFT JOIN ti_activitys as b on a.ActId=b.ActId
+    WHERE b.ApplyLimitCount>0 and b.ExtCount>0 and b.ActType=0  and a.`Status` in(0,1) ORDER BY a.CreateTime asc 
+  </select>
+  <select id="findActworklistExpired" resultMap="BaseResultMap"  ><!-- 时间到期的活动作品  -->
+    SELECT c.* from ti_myworks as a
+	LEFT JOIN ti_activitys as b on a.ActId=b.ActId
+	LEFT JOIN ti_activityworks as c on a.WorkId=c.WorkId
+ 	WHERE a.ActId is not null 
+	and b.HoursEffective is not null
+	and now()> DATE_ADD(a.CompleteTime,INTERVAL b.HoursEffective HOUR)
+	and c.`Status`in(1,2)
+	and b.ExtCount>0 AND  c.`ExtCount` >=b.`ExtCount` and c.`AddressType` in(0,1)
+	ORDER BY  DATE_ADD(a.CompleteTime,INTERVAL b.HoursEffective HOUR) asc
+  </select>
+  <update id="failActivityWorkByStatus"  ><!-- 置活动作品参与失败 -->
+    update ti_activityworks
+    set Status = #{toStatus,jdbcType=INTEGER}
+    where ActId = #{actId,jdbcType=INTEGER} and  OrderAddressId is null 
+    <if test="statusArrs != null" >
+        and Status in  <foreach collection="statusArrs" item="item" index="index" open="(" separator="," close=")">#{item}</foreach>
+    </if>
+  </update>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from ti_activityworks
     where WorkId = #{workid,jdbcType=BIGINT}
@@ -60,11 +91,13 @@
     insert into ti_activityworks (WorkId, UserId, ActId, 
       Status, ExtCount, CreateTime, 
       AddressType, Reciever, Mobiephone, 
-      OrderAddressId)
+      OrderAddressId, SubmitTime, CountMore, 
+      Postage)
     values (#{workid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{actid,jdbcType=INTEGER}, 
       #{status,jdbcType=INTEGER}, #{extcount,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
       #{addresstype,jdbcType=INTEGER}, #{reciever,jdbcType=VARCHAR}, #{mobiephone,jdbcType=VARCHAR}, 
-      #{orderaddressid,jdbcType=BIGINT})
+      #{orderaddressid,jdbcType=BIGINT}, #{submittime,jdbcType=TIMESTAMP}, #{countmore,jdbcType=INTEGER}, 
+      #{postage,jdbcType=DOUBLE})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiActivityworks" >
     insert into ti_activityworks
@@ -99,6 +132,15 @@
       <if test="orderaddressid != null" >
         OrderAddressId,
       </if>
+      <if test="submittime != null" >
+        SubmitTime,
+      </if>
+      <if test="countmore != null" >
+        CountMore,
+      </if>
+      <if test="postage != null" >
+        Postage,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="workid != null" >
@@ -130,6 +172,15 @@
       </if>
       <if test="orderaddressid != null" >
         #{orderaddressid,jdbcType=BIGINT},
+      </if>
+      <if test="submittime != null" >
+        #{submittime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="countmore != null" >
+        #{countmore,jdbcType=INTEGER},
+      </if>
+      <if test="postage != null" >
+        #{postage,jdbcType=DOUBLE},
       </if>
     </trim>
   </insert>
@@ -163,6 +214,15 @@
       <if test="orderaddressid != null" >
         OrderAddressId = #{orderaddressid,jdbcType=BIGINT},
       </if>
+      <if test="submittime != null" >
+        SubmitTime = #{submittime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="countmore != null" >
+        CountMore = #{countmore,jdbcType=INTEGER},
+      </if>
+      <if test="postage != null" >
+        Postage = #{postage,jdbcType=DOUBLE},
+      </if>
     </set>
     where WorkId = #{workid,jdbcType=BIGINT}
   </update>
@@ -176,7 +236,10 @@
       AddressType = #{addresstype,jdbcType=INTEGER},
       Reciever = #{reciever,jdbcType=VARCHAR},
       Mobiephone = #{mobiephone,jdbcType=VARCHAR},
-      OrderAddressId = #{orderaddressid,jdbcType=BIGINT}
+      OrderAddressId = #{orderaddressid,jdbcType=BIGINT},
+      SubmitTime = #{submittime,jdbcType=TIMESTAMP},
+      CountMore = #{countmore,jdbcType=INTEGER},
+      Postage = #{postage,jdbcType=DOUBLE}
     where WorkId = #{workid,jdbcType=BIGINT}
   </update>
 </mapper>

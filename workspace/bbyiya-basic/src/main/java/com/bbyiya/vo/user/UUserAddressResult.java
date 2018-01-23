@@ -9,6 +9,7 @@ public class UUserAddressResult extends UUseraddress{
 	private String provinceName;
 	private String cityName;
 	private String areaName;
+	private Double postage;
 	public String getProvinceName() {
 		return provinceName;
 	}
@@ -26,6 +27,12 @@ public class UUserAddressResult extends UUseraddress{
 	}
 	public void setAreaName(String areaName) {
 		this.areaName = areaName;
+	}
+	public Double getPostage() {
+		return postage;
+	}
+	public void setPostage(Double postage) {
+		this.postage = postage;
 	}
 	
 	

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.dao.TiMyworkszanlogsMapper" >
+  <resultMap id="BaseResultMap" type="com.bbyiya.model.TiMyworkszanlogs" >
+    <id column="LogId" property="logid" jdbcType="BIGINT" />
+    <result column="WorkId" property="workid" jdbcType="BIGINT" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="UserImg" property="userimg" jdbcType="VARCHAR" />
+    <result column="NickName" property="nickname" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    LogId, WorkId, UserId, UserImg, NickName, CreateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ti_myworkszanlogs
+    where LogId = #{logid,jdbcType=BIGINT}
+  </select>
+  <select id="findListByWorkId" resultMap="BaseResultMap"  ><!-- 01 获取作品点赞列表 -->
+    select  <include refid="Base_Column_List" />
+    from ti_myworkszanlogs
+    where WorkId = #{workId,jdbcType=BIGINT} order by LogId desc
+  </select>
+   <select id="countByWorkIdAndUserId" resultType="java.lang.Integer"   ><!-- 02 是否存在点赞记录 -->
+    select count(*) from ti_myworkszanlogs
+    where WorkId = #{workId,jdbcType=BIGINT} and UserId= #{userId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ti_myworkszanlogs
+    where LogId = #{logid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.bbyiya.model.TiMyworkszanlogs" >
+    insert into ti_myworkszanlogs (LogId, WorkId, UserId, 
+      UserImg, NickName, CreateTime
+      )
+    values (#{logid,jdbcType=BIGINT}, #{workid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, 
+      #{userimg,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bbyiya.model.TiMyworkszanlogs" >
+    insert into ti_myworkszanlogs
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="logid != null" >
+        LogId,
+      </if>
+      <if test="workid != null" >
+        WorkId,
+      </if>
+      <if test="userid != null" >
+        UserId,
+      </if>
+      <if test="userimg != null" >
+        UserImg,
+      </if>
+      <if test="nickname != null" >
+        NickName,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="logid != null" >
+        #{logid,jdbcType=BIGINT},
+      </if>
+      <if test="workid != null" >
+        #{workid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="userimg != null" >
+        #{userimg,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null" >
+        #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bbyiya.model.TiMyworkszanlogs" >
+    update ti_myworkszanlogs
+    <set >
+      <if test="workid != null" >
+        WorkId = #{workid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        UserId = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="userimg != null" >
+        UserImg = #{userimg,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null" >
+        NickName = #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where LogId = #{logid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bbyiya.model.TiMyworkszanlogs" >
+    update ti_myworkszanlogs
+    set WorkId = #{workid,jdbcType=BIGINT},
+      UserId = #{userid,jdbcType=BIGINT},
+      UserImg = #{userimg,jdbcType=VARCHAR},
+      NickName = #{nickname,jdbcType=VARCHAR},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+    where LogId = #{logid,jdbcType=BIGINT}
+  </update>
+</mapper>

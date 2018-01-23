@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bbyiya.dao.EErrorsMapper;
 import com.bbyiya.dao.OOrderproductphotosMapper;
 import com.bbyiya.dao.OOrderproductsMapper;
 import com.bbyiya.dao.OProducerordercountMapper;
@@ -25,14 +24,12 @@ import com.bbyiya.dao.TiMyartsdetailsMapper;
 import com.bbyiya.dao.TiMyworksMapper;
 import com.bbyiya.dao.TiProductsMapper;
 import com.bbyiya.dao.TiProductstylesMapper;
-import com.bbyiya.dao.TiPromoteradvertcoustomerMapper;
 import com.bbyiya.dao.TiPromoteradvertimgsMapper;
 import com.bbyiya.dao.TiPromoteradvertinfoMapper;
 import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.OrderStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.enums.calendar.ActivityWorksStatusEnum;
-import com.bbyiya.model.EErrors;
 import com.bbyiya.model.OOrderproductphotos;
 import com.bbyiya.model.OOrderproducts;
 import com.bbyiya.model.OProducerordercount;
@@ -43,13 +40,14 @@ import com.bbyiya.model.TiMyartsdetails;
 import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiProductstyles;
-import com.bbyiya.model.TiPromoteradvertcoustomer;
-import com.bbyiya.model.TiPromoteradvertimgs;
 import com.bbyiya.model.TiPromoteradvertinfo;
 import com.bbyiya.model.UUsers;
 import com.bbyiya.pic.vo.calendar.MyworkDetailsParam;
-import com.bbyiya.service.IRegionService;
+import com.bbyiya.service.calendar.ITi_MyworksZansService;
 import com.bbyiya.service.calendar.ITi_OrderMgtService;
+import com.bbyiya.service.calendar.ITi_PromoterAdvertService;
+import com.bbyiya.service.calendar.ItiAcitivityMgtService;
+import com.bbyiya.utils.DateUtil;
 import com.bbyiya.utils.ImgDomainUtil;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
@@ -79,13 +77,34 @@ public class Ti_MyworkController extends SSOController {
 
 	@Autowired
 	private OProducerordercountMapper oproducerOrderCountMapper;
-	
+
+	@Autowired
+	private TiActivitysMapper actMapper;
 	@Autowired
 	private TiProductsMapper productMapper;
 	@Autowired
-	private TiPromoteradvertinfoMapper advertMapper;
-	@Autowired
 	private UUsersMapper userMapper;
+	//商家分享广告Info 
+	@Autowired
+	private TiPromoteradvertinfoMapper advertInfoMapper;
+	@Autowired
+	private TiPromoteradvertimgsMapper advertImgMapper;
+
+	
+	//订单处理service
+	@Resource(name = "tiOrderMgtServiceImpl")
+	private ITi_OrderMgtService orderMgtService;
+	//分享广告service
+	@Resource(name = "ti_PromoterAdvertService")
+	private ITi_PromoterAdvertService advertService;
+	//点赞处理
+	@Resource(name = "ti_myworksZansServiceImpl")
+	private  ITi_MyworksZansService zanService;
+	/**
+	 * 活动
+	 */
+	@Resource(name = "ti_AcitivityMgtServiceImpl")
+	private  ItiAcitivityMgtService actService;
 	/**
 	 * 参与活动 -图片上传
 	 * @param detailJson
@@ -136,13 +155,29 @@ public class Ti_MyworkController extends SSOController {
 							if(isOk>0&&style.getImgcount().intValue()==param.getDetails().size()){
 								myworks.setCompletetime(new Date());
 								workMapper.updateByPrimaryKeySelective(myworks);
-								//活动提交
+								//活动作品提交
 								if(myworks.getActid()!=null&&myworks.getActid().intValue()>0){
 									TiActivityworks activityworks= activityworkMapper.selectByPrimaryKey(myworks.getWorkid());
 									if(activityworks!=null){
+										if(activityworks.getStatus()==null||activityworks.getStatus()==Integer.parseInt(ActivityWorksStatusEnum.apply.toString())){
+											TiActivitys actInfo=actMapper.selectByPrimaryKey(myworks.getActid());
+											//参与人数
+											if(actInfo!=null){
+												int applyingCount=actInfo.getApplyingcount()==null?0:actInfo.getApplyingcount().intValue();
+												if(actInfo.getApplylimitcount()!=null&&actInfo.getApplylimitcount()>0&&actInfo.getApplylimitcount().intValue()<=applyingCount){
+													rq.setStatu(ReturnStatus.ParamError);
+													rq.setStatusreson("不好意思，领取名额已经领完！");
+													return JsonUtil.objectToJsonStr(rq);
+												}
+												actInfo.setApplyingcount(applyingCount+1);
+												actMapper.updateByPrimaryKeySelective(actInfo);
+											}
+										}
 										activityworks.setStatus(Integer.parseInt(ActivityWorksStatusEnum.imagesubmit.toString()));
+										activityworks.setSubmittime(new Date()); 
 										activityworkMapper.updateByPrimaryKeySelective(activityworks);
 									}
+									
 								}
 								
 								//图片上传时间
@@ -206,9 +241,8 @@ public class Ti_MyworkController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	@Resource(name = "tiOrderMgtServiceImpl")
-	private ITi_OrderMgtService orderMgtService;
 	
+
 	/**
 	 * 门店自提
 	 * @param detailJson
@@ -230,12 +264,12 @@ public class Ti_MyworkController extends SSOController {
 			if(work!=null&&work.getUserid()!=null&&user.getUserId().longValue()==work.getUserid().longValue()){
 				work.setReciever(reciever);
 				work.setMobiephone(phone);
-				if(addressType>=0)
-					work.setAddresstype(addressType); 
+//				if(addressType>=0)
+				work.setAddresstype(addressType); 
 				activityworkMapper.updateByPrimaryKey(work);
 				
 				//是否可以直接下单
-				boolean canOrder=false;
+				boolean canOrder=false; 
 				TiActivitys activitys=actMapper.selectByPrimaryKey(work.getActid());
 				if(activitys!=null&&work.getStatus()!=null&&work.getStatus().intValue()==Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString()))
 					canOrder=true;
@@ -252,6 +286,10 @@ public class Ti_MyworkController extends SSOController {
 					OrderParam.setWorkId(workId);
 					ReturnModel orderResult = orderMgtService.submitOrder_ibs(OrderParam);
 					if (ReturnStatus.Success.equals(orderResult.getStatu())) {
+						// 不需要分享，直接下单，更新领取名额
+						if(activitys!=null&&activitys.getExtcount()==null||activitys.getExtcount().intValue()==0){
+							actService.updateActivitylimitCountByActId(activitys.getActid());
+						}
 						rq.setStatu(ReturnStatus.Success);
 						rq.setStatusreson("下单成功！");
 						return JsonUtil.objectToJsonStr(rq);
@@ -271,8 +309,8 @@ public class Ti_MyworkController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 
-	@Autowired
-	private TiPromoteradvertinfoMapper advertInfoMapper;
+	@Resource(name = "ti_AcitivityMgtServiceImpl")
+	private ItiAcitivityMgtService activityService;
 	/**
 	 * 作品详情
 	 * @param workId
@@ -288,8 +326,10 @@ public class Ti_MyworkController extends SSOController {
 		if(user!=null){
 			TiMyworks myworks= workMapper.selectByPrimaryKey(workId);
 			if(myworks!=null){
+				//款式信息
 				TiProductstyles style= styleMapper.selectByPrimaryKey(myworks.getStyleid()==null?myworks.getProductid():myworks.getStyleid());
 				if(style!=null){
+					//产品信息
 					TiProducts products=productMapper.selectByPrimaryKey(style.getProductid());
 					if(products!=null){
 						List<TiMyartsdetails> details= detailMapper.findDetailsByWorkId(workId);
@@ -299,24 +339,46 @@ public class Ti_MyworkController extends SSOController {
 							} 
 						}
 						Map<String, Object> map=new HashMap<String, Object>();
-						map.put("details", details);
-						map.put("imgCount", style.getImgcount()); 
+						map.put("details", details);//作品图片
+						map.put("imgCount", style.getImgcount()); //需要上传图片数量
 						map.put("title", products.getTitle()); 
 						map.put("cateId", products.getCateid());
-						map.put("workInfo", myworks);
+						if(products.getCateid()!=null&&products.getCateid().intValue()==5){
+							map.put("shareTitle", "这是我定做的压岁红包，来看看里面有没有你的一份！");//我抢先get到了DIY新年红包技能，快来给我疯狂打Call！
+							map.put("shareContent", "DIY新年红包，自己写祝福语，送长辈送孩子绝佳，快帮我领回家！");
+							map.put("shareImg","http://document.bbyiya.com/styledefault201801141-2801.jpg");
+						}else{
+							map.put("shareTitle", "我抢先get到了新年最炫的晒照技能，快来给我疯狂打Call！");
+							map.put("shareContent", "DIY自己的个性日历，你也有份哦~");
+							map.put("shareImg","http://document.bbyiya.com/shareLogo.jpg");
+						}
+						
+						map.put("nowTime",new Date());
+						//作品拥有者昵称
 						UUsers workUsers=userMapper.selectByPrimaryKey(myworks.getUserid()==null?0l:myworks.getUserid()); 
 						map.put("nickName", workUsers==null?"":(ObjectUtil.isEmpty(workUsers.getNickname())?"":workUsers.getNickname()));
 						if(myworks.getActid()!=null&&myworks.getActid().intValue()>0){
 							TiActivitys activitys= actMapper.selectByPrimaryKey(myworks.getActid());
 							if(activitys!=null&&activitys.getProduceruserid()!=null){
-								if(activitys.getAdvertid()!=null&&activitys.getAdvertid().intValue()>0){
-									TiPromoteradvertinfo advertMod=advertInfoMapper.selectByPrimaryKey(activitys.getAdvertid());
-									map.put("advert", advertMod);
+								//广告信息
+								map.put("advert", advertService.addViewCountReurnTiPromoteradvertinfo(user,  activitys.getAdvertid()));
+								map.put("activity", activitys);//参与的活动信息
+								//集赞到期时间
+								if(!ObjectUtil.isEmpty(myworks.getCompletetime())&& activitys.getHourseffective()!=null&&activitys.getHourseffective().intValue()>0){
+									myworks.setExpireTime(DateUtil.getDate(myworks.getCompletetime().getTime()+activitys.getHourseffective()*60*60*1000, "yyyy-MM-dd HH:mm:ss"));
+								}else if(!ObjectUtil.isEmpty(myworks.getCompletetime())){
+									myworks.setExpireTime(DateUtil.getDate(myworks.getCompletetime().getTime()+24*7*60*60*1000, "yyyy-MM-dd HH:mm:ss"));									
+								}
+								//到期时间
+								if(!ObjectUtil.isEmpty(myworks.getExpireTime())){
+									if(new Date().getTime()>myworks.getExpireTime().getTime()){
+//										activityService.updateActivityWorkTofailse(activitys.getProduceruserid(), workId);
+									}
 								}
 							}
-							List<UUsers> userList= userMapper.findUsersByWorkId(workId);
-							map.put("users", userList);
+							map.put("users", zanService.findZansList(workId));//点赞的用户列表
 						}
+						map.put("workInfo", myworks);
 						rq.setStatu(ReturnStatus.Success);
 						rq.setBasemodle(map); 
 					}
@@ -329,11 +391,13 @@ public class Ti_MyworkController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	@Autowired
-	private TiActivityworksMapper activityworksMapper;
-	@Autowired
-	private TiActivitysMapper actMapper;
 	
+	/**
+	 * 获取活动作品集赞情况
+	 * @param workId
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/myactInfo")
 	public String myactInfo(long workId)throws Exception {
@@ -351,10 +415,10 @@ public class Ti_MyworkController extends SSOController {
 						map.put("needCount", actInfo.getExtcount());
 						map.put("extCount", myactInfo.getExtcount());
 						map.put("userId", myactInfo.getUserid());
-						map.put("actStatus", myactInfo.getStatus());
-						rq.setStatu(ReturnStatus.Success);
+						map.put("actStatus", myactInfo.getStatus()); 
 						rq.setBasemodle(map); 
 					}
+					rq.setStatu(ReturnStatus.Success);
 				}
 			}
 		}else { 
@@ -365,82 +429,33 @@ public class Ti_MyworkController extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-	@Autowired
-	private TiPromoteradvertimgsMapper advertImgMapper;
-	@Autowired
-	private TiPromoteradvertcoustomerMapper advertCustomerMapper;
-	@Resource(name = "regionServiceImpl")
-	private IRegionService regionService;
+	
+	
 	/**
-	 * 获取广告信息详细
+	 * 获取广告banner信息，新增浏览次数
 	 * @param advertid
 	 * @return
 	 * @throws Exception
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/advertinfo")
-	public String advertinfo(int advertid)throws Exception {
+	@RequestMapping(value = "/advertBannerInfo")
+	public String advertBannerInfo(int advertid)throws Exception {
 		ReturnModel rq=new ReturnModel();
-		TiPromoteradvertinfo advertInfo= advertMapper.selectByPrimaryKey(advertid);
-		if(advertInfo!=null){
-			List<TiPromoteradvertimgs> advertImgs= advertImgMapper.findImgsByAdvertId(advertid);
-			if(advertImgs!=null&&advertImgs.size()>0){
-				advertInfo.setImglist(advertImgs);
+		LoginSuccessResult user=super.getLoginUser();
+		if(user!=null){
+			//分享广告详情
+			TiPromoteradvertinfo advertInfo=advertService.addViewCountReurnTiPromoteradvertinfo(user, advertid); //advertService.getTiPromoteradvertinfo(advertid);
+			if(advertInfo!=null){
+				rq.setBasemodle(advertInfo);
 			}
-			int readcount=advertInfo.getReadcount()==null?1:(advertInfo.getReadcount().intValue()+1);
-			advertInfo.setReadcount(readcount);
-			advertMapper.updateByPrimaryKeySelective(advertInfo);
-			rq.setBasemodle(advertInfo);
+			rq.setStatu(ReturnStatus.Success);
 		}
 		rq.setStatu(ReturnStatus.Success);
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-	@ResponseBody
-	@RequestMapping(value = "/addAdvertcustomer")
-	public String addAdvertcustomer(String name,String phone,int advertId, int province,int city,int district,String streetDetail)throws Exception {
-		ReturnModel rq=new ReturnModel();
-		if(advertId<=0){
-			rq.setStatusreson("参数有误");
-			return JsonUtil.objectToJsonStr(rq);
-		}
-		if(ObjectUtil.isEmpty(name)){
-			rq.setStatusreson("姓名不能为空！");
-			return JsonUtil.objectToJsonStr(rq);
-		}
-		if(!ObjectUtil.isMobile(phone)){
-			rq.setStatusreson("手机号不正确！");
-			return JsonUtil.objectToJsonStr(rq);
-		}
-//		TiPromoteradvertcoustomer cus= advertCustomerMapper.getCustomerByPhone(advertId, phone);
-//		if(cus!=null){
-//			rq.setStatusreson("此手机号已经提交！");
-//			rq.setStatu(ReturnStatus.ParamError);
-//			return JsonUtil.objectToJsonStr(rq);
-//		}
-		TiPromoteradvertcoustomer customer=new TiPromoteradvertcoustomer();
-		customer.setAdvertid(advertId);
-		customer.setName(name);
-		customer.setMobilephone(phone);
-		customer.setProvince(province);
-		customer.setCity(city);
-		customer.setDistrict(district);
-		customer.setStreetdetail(streetDetail);
-		customer.setCreatetime(new Date()); 
-		customer.setAddress(regionService.getProvinceName(province)+regionService.getCityName(city)+regionService.getAresName(district)+streetDetail);
-		advertCustomerMapper.insert(customer); 
-		rq.setStatu(ReturnStatus.Success);
-		return JsonUtil.objectToJsonStr(rq);
-	}
 	
 	
-	@Autowired
-	private EErrorsMapper logMapper;
-	public void addlog(String msg) {
-		EErrors errors = new EErrors();
-		errors.setClassname(this.getClass().getName());
-		errors.setMsg("下单失败：" + msg);
-		errors.setCreatetime(new Date());
-		logMapper.insert(errors);
-	}
+	
+	
 }

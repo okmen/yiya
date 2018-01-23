@@ -52,6 +52,10 @@ public class TiGroupactivity {
     private String titleminshare;
     
     private Integer addresstype;
+
+    private String qrcode;
+
+    private String qrcodedesc;
     
     /*****************************VO*************************/
     private Integer sellercount;//销售量
@@ -301,6 +305,22 @@ public class TiGroupactivity {
 
 	public void setAddresstype(Integer addresstype) {
 		this.addresstype = addresstype;
+	}
+
+	public String getQrcode() {
+		return qrcode;
+	}
+
+	public String getQrcodedesc() {
+		return qrcodedesc;
+	}
+
+	public void setQrcode(String qrcode) {
+		this.qrcode = qrcode;
+	}
+
+	public void setQrcodedesc(String qrcodedesc) {
+		this.qrcodedesc = qrcodedesc;
 	}
     
     

@@ -24,11 +24,11 @@ public class CtsMusicServiceImpl implements ICtsMusicService{
 			if(model.getMusicid()!=null&&model.getMusicid()>0){
 				musicsMapper.updateByPrimaryKeySelective(model);
 				rqModel.setStatu(ReturnStatus.Success);
-				rqModel.setStatusreson("修改成功");  
+				rqModel.setStatusreson("淇敼鎴愬姛");  
 			}else {
 				musicsMapper.insert(model);
 				rqModel.setStatu(ReturnStatus.Success);
-				rqModel.setStatusreson("添加成功"); 
+				rqModel.setStatusreson("娣诲姞鎴愬姛"); 
 			}
 		} catch (Exception e) {
 			rqModel.setStatu(ReturnStatus.SystemError);

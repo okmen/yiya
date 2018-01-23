@@ -13,14 +13,14 @@ import org.springframework.scheduling.quartz.AdaptableJobFactory;
 
 public class JobFactory extends AdaptableJobFactory {
 
-    //Õâ¸ö¶ÔÏóSpring»á°ïÎÒÃÇ×Ô¶¯×¢Èë½øÀ´,Ò²ÊôÓÚSpring¼¼Êõ·¶³ë.
+    //è¿™ä¸ªå¯¹è±¡Springä¼šå¸®æˆ‘ä»¬è‡ªåŠ¨æ³¨å…¥è¿›æ¥,ä¹Ÿå±äºSpringæŠ€æœ¯èŒƒç•´.
     @Autowired
     private AutowireCapableBeanFactory capableBeanFactory;
 
     protected Object createJobInstance(TriggerFiredBundle bundle) throws Exception {
-        //µ÷ÓÃ¸¸ÀàµÄ·½·¨
+        //è°ƒç”¨çˆ¶ç±»çš„æ–¹æ³•
         Object jobInstance = super.createJobInstance(bundle);
-        //½øĞĞ×¢Èë,ÕâÊôÓÚSpringµÄ¼¼Êõ,²»Çå³şµÄ¿ÉÒÔ²é¿´SpringµÄAPI.
+        //è¿›è¡Œæ³¨å…¥,è¿™å±äºSpringçš„æŠ€æœ¯,ä¸æ¸…æ¥šçš„å¯ä»¥æŸ¥çœ‹Springçš„API.
         capableBeanFactory.autowireBean(jobInstance);
         return jobInstance;
     }

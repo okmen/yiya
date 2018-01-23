@@ -27,14 +27,6 @@ public interface ITi_OrderMgtService {
 	 */
 	long addOrderAddressReturnId(Long userAddressId);
 	/**
-	 * 获取生产商userId
-	 * @param orderAddressId
-	 * @param productId
-	 * @param userId
-	 * @return
-	 */
-	long getProducerUserId(Long orderAddressId,Long productId,Long userId);
-	/**
 	 * 代客制作自动下单
 	 * @param param
 	 * @return
@@ -45,6 +37,5 @@ public interface ITi_OrderMgtService {
 	 * @param param
 	 * @return
 	 */
-	ReturnModel submitTiGroupActivityOrder_ibs(
-			TiGroupActivityOrderSubmitParam param);
+	ReturnModel submitTiGroupActivityOrder_ibs(TiGroupActivityOrderSubmitParam param);
 }

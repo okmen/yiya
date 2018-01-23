@@ -7,6 +7,8 @@ public class TiAgentApplyVo extends TiAgentsapply{
 	private String areaName;
 	private String bindphone;
 	private Double availableAmount; //可用余额
+	//推广链接地址
+	private String promotionUrl;
 	public String getProvinceName() {
 		return provinceName;
 	}
@@ -36,6 +38,12 @@ public class TiAgentApplyVo extends TiAgentsapply{
 	}
 	public void setAvailableAmount(Double availableAmount) {
 		this.availableAmount = availableAmount;
+	}
+	public String getPromotionUrl() {
+		return promotionUrl;
+	}
+	public void setPromotionUrl(String promotionUrl) {
+		this.promotionUrl = promotionUrl;
 	}
 	
 	

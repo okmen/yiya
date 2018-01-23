@@ -5,7 +5,7 @@ import com.bbyiya.vo.ReturnModel;
 public interface IUAdminService {
 
 	/**
-	 * ÓÃ»§ÃûµÇÂ¼
+	 * ç”¨æˆ·åç™»å½•
 	 * @param username
 	 * @param pwd
 	 * @return

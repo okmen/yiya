@@ -35,6 +35,8 @@ public class FileUploadUtils_qiniu {
 
 	// 默认的七牛存储空间
 	public static String BUCKETNAME_DEFULT = "yiya";
+	//超过4M的图片存储
+	public static String BUCKETNAME_BIGIMG="yiya1";
 	// 七牛 密钥配置
 	static Auth auth = Auth.create(ACCESS_KEY, SECRET_KEY);
 
@@ -99,6 +101,23 @@ public class FileUploadUtils_qiniu {
 		// 图片key
 		String key = DateUtil.getTimeStr(new Date(), "yyyyMMdd")+"/"+UUID.randomUUID().toString().replace("-", "") + ".jpg";
 		FetchRet fetchRet = bucketManager.fetch(remoteUrl, BUCKETNAME_DEFULT, key);
+		return fetchRet; 
+	}
+	/**
+	 * 大图存储
+	 * @param remoteUrl
+	 * @return
+	 * @throws QiniuException
+	 */
+	public static FetchRet fetchBigIMG(String remoteUrl) throws QiniuException {
+		Configuration cfg = new Configuration(Zone.autoZone()); 
+		BucketManager bucketManager = new BucketManager(auth,cfg);
+		// 图片key
+		String key = DateUtil.getTimeStr(new Date(), "yyyyMMdd")+"/"+UUID.randomUUID().toString().replace("-", "") + ".jpg";
+		FetchRet fetchRet = bucketManager.fetch(remoteUrl, BUCKETNAME_BIGIMG, key);
+		if(fetchRet!=null){
+			fetchRet.key="http://pic1.bbyiya.com/"+key;
+		}
 		return fetchRet; 
 	}
 	

@@ -47,7 +47,7 @@ public enum SendMsgEnums {
      */
     bindPhone(10),
     /**
-     * 
+     * 京东众筹
      */
     jd_exchangCode(11)
     ;

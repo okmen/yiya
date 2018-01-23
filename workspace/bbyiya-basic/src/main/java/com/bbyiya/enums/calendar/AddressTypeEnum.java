@@ -24,4 +24,9 @@ public enum AddressTypeEnum {
     {
         return String.valueOf(this.Type);
     }
+    
+    public int getValue()
+    {
+        return this.Type;
+    }
 }

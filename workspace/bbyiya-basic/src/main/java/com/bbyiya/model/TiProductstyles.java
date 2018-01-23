@@ -1,5 +1,8 @@
 package com.bbyiya.model;
 
+import java.util.List;
+import java.util.Map;
+
 public class TiProductstyles {
     private Long styleid;
 
@@ -24,6 +27,9 @@ public class TiProductstyles {
     private Double width;
 
     private Double hight;
+    
+    private Object bgImglist;
+   
 
     public Long getStyleid() {
         return styleid;
@@ -119,6 +125,14 @@ public class TiProductstyles {
 
 	public void setHight(Double hight) {
 		this.hight = hight;
+	}
+
+	public Object getBgImglist() {
+		return bgImglist;
+	}
+
+	public void setBgImglist(Object bgImglist) {
+		this.bgImglist = bgImglist;
 	}
     
 }

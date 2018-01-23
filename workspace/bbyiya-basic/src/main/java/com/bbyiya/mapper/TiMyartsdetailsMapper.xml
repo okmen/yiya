@@ -8,9 +8,10 @@
     <result column="ImageUrl" property="imageurl" jdbcType="VARCHAR" />
     <result column="Content" property="content" jdbcType="VARCHAR" />
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="Title" property="title" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    DetailId, WorkId, Sort, ImageUrl, Content, CreateTime
+    DetailId, WorkId, Sort, ImageUrl, Content, CreateTime, Title
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -30,11 +31,11 @@
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.TiMyartsdetails" >
     insert into ti_myartsdetails (DetailId, WorkId, Sort, 
-      ImageUrl, Content, CreateTime
-      )
+      ImageUrl, Content, CreateTime, 
+      Title)
     values (#{detailid,jdbcType=BIGINT}, #{workid,jdbcType=BIGINT}, #{sort,jdbcType=INTEGER}, 
-      #{imageurl,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}
-      )
+      #{imageurl,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{title,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiMyartsdetails" >
     insert into ti_myartsdetails
@@ -57,6 +58,9 @@
       <if test="createtime != null" >
         CreateTime,
       </if>
+      <if test="title != null" >
+        Title,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="detailid != null" >
@@ -76,6 +80,9 @@
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -97,6 +104,9 @@
       <if test="createtime != null" >
         CreateTime = #{createtime,jdbcType=TIMESTAMP},
       </if>
+      <if test="title != null" >
+        Title = #{title,jdbcType=VARCHAR},
+      </if>
     </set>
     where DetailId = #{detailid,jdbcType=BIGINT}
   </update>
@@ -106,7 +116,8 @@
       Sort = #{sort,jdbcType=INTEGER},
       ImageUrl = #{imageurl,jdbcType=VARCHAR},
       Content = #{content,jdbcType=VARCHAR},
-      CreateTime = #{createtime,jdbcType=TIMESTAMP}
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      Title = #{title,jdbcType=VARCHAR}
     where DetailId = #{detailid,jdbcType=BIGINT}
   </update>
 </mapper>

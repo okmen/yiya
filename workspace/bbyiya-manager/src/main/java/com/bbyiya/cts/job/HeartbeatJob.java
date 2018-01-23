@@ -1,8 +1,5 @@
 package com.bbyiya.cts.job;
 
-
-
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -16,18 +13,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import com.bbyiya.cts.service.ITempAutoOrderSumbitService;
-import com.bbyiya.cts.vo.job.JobTime;
 import com.bbyiya.dao.SysLogsMapper;
-import com.bbyiya.model.SysLogs;
+import com.bbyiya.service.calendar.IPhotosMgtService;
+import com.bbyiya.service.calendar.ItiAcitivityMgtService;
 import com.bbyiya.utils.ConfigUtil;
-import com.bbyiya.utils.DateUtil;
-import com.bbyiya.utils.HttpRequestHelper;
 import com.bbyiya.utils.ObjectUtil;
-import com.bbyiya.utils.RedisUtil;
 
 public class HeartbeatJob extends QuartzJobBean {
 	
 	private Logger Log = Logger.getLogger(HeartbeatJob.class);
+	@Resource(name = "tempAutoOrderSumbitService")
+	private ITempAutoOrderSumbitService autoOrderService;
+	@Autowired
+	private SysLogsMapper syslogMapper;
+	
+	@Resource(name = "photosMgtServiceImpl")
+	private IPhotosMgtService photoService;
+	
+	@Resource(name = "ti_AcitivityMgtServiceImpl")
+	private ItiAcitivityMgtService actService;
 	
 	@Override
 	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
@@ -35,85 +39,65 @@ public class HeartbeatJob extends QuartzJobBean {
 	}
 	
 	/**
-	 * ¹«ÓÃjob
+	 * å…¬ç”¨jobï¼šæ¯5åˆ†é’Ÿæ‰§è¡Œä¸€æ¬¡
 	 */
 	private void JobRun(){
-		
-		synchronized(this){
-			//»ñÈ¡¹«ÓÃjobµÄ·şÎñÁĞ±í
+		try {
 			List<Map<String, String>> joblist=ConfigUtil.getMaplist("jobs");
+			//åŠ ä¸€ä¸ªå¼€å…³
 			if(joblist!=null&&joblist.size()>0){
-				String keyBase=ConfigUtil.getSingleValue("currentRedisKey-Base")+"_job";
-				Date nowtime =new Date();
 				for (Map<String, String> job : joblist) {
-					if(ObjectUtil.parseInt(job.get("seton"))==1 ){
-						//·şÎñµÄ keyid
-						String key=keyBase+"_"+job.get("id");
-						JobTime timeMod=  (JobTime)RedisUtil.getObject(key);
-						if(timeMod!=null&&timeMod.getLastTime()!=null){
-							long timeSpanLong= nowtime.getTime()-timeMod.getLastTime().getTime();
-							long timeSpan=timeSpanLong/1000;
-							if(timeSpan>ObjectUtil.parseLong(job.get("timespan"))){
-								//´ïµ½jobµÄÖ´ĞĞÊ±¼ä
-								if(ObjectUtil.parseInt(job.get("ispost"))==1){
-									HttpRequestHelper.sendPost(job.get("posturl"),""); 
-								}else{
-									//µ÷È¥±¾µØ
-									doLocalServiceMothod(job.get("id"));
-								}
-								//´ïµ½jobÆô¶¯Ìõ¼ş£¬Ö´ĞĞjobÈÎÎñ
-								timeMod.setLastTime(nowtime);
-								RedisUtil.setObject(key, timeMod);
-							}
-						}else {//¸Õ½øÀ´Ê±²»Ö´ĞĞjob
-							timeMod=new JobTime();
-							timeMod.setLastTime(nowtime);
-							RedisUtil.setObject(key, timeMod);
+					if(ObjectUtil.parseInt(job.get("seton"))==1&&job.get("id").equalsIgnoreCase("dotempAutoOrderSumbit")){
+						autoOrderService.dotempAutoOrderSumbit();
+						Log.info("dotempAutoOrderSumbitæ‰§è¡Œå‚ä¸æ´»åŠ¨çš„è¾¾åˆ°æ¡ä»¶çš„ä½œå“è‡ªåŠ¨ä¸‹å•ï¼");
+					}
+					if(ObjectUtil.parseInt(job.get("seton"))==1&&job.get("id").equalsIgnoreCase("doGroupActivityAutoOrderSumbit")){
+						try {
+							autoOrderService.doGroupActivityAutoOrderSumbit();
+							Log.info("doGroupActivityAutoOrderSumbitåˆ†é”€è‡ªåŠ¨ä¸‹å•çš„åŠŸèƒ½å®Œæˆï¼");
+						} catch (Exception e) {
+							// TODO: handle exception
+							Log.info("doGroupActivityAutoOrderSumbitåˆ†é”€è‡ªåŠ¨ä¸‹å•çš„åŠŸèƒ½æ“ä½œæŠ¥é”™ï¼error:"+e);
 						}
 					}
-				}
-			}
-		}
-	}
-
-	@Resource(name = "tempAutoOrderSumbitService")
-	private ITempAutoOrderSumbitService autoOrderService;
-	@Autowired
-	private  SysLogsMapper syslogMapper;
-	
-	
-	public synchronized void doLocalServiceMothod(String serviceId){	
-		try {
-			String keyString=ConfigUtil.getSingleValue("currentRedisKey-Base")+"_jobutil_"+serviceId;
-			int isrun= ObjectUtil.parseInt(RedisUtil.getString(keyString));
-			if(isrun>0){
-				Log.error("jobÈë¿Ú×èÀ¹"+DateUtil.getTimeStr(new Date(), "yyyyMMdd HH:mm:ss")); 
-				return;
-			}else {
-				RedisUtil.setString(keyString, "1", 30);  
+					if(ObjectUtil.parseInt(job.get("seton"))==1&&job.get("id").equalsIgnoreCase("doActivityAutoOrderSumbit")){
+						try {
+							actService.timeToSubmitOrders();
+							Log.info("doActivityAutoOrderSumbitæ‰§è¡Œè€å®¢æˆ·å›é¦ˆè‡ªåŠ¨ä¸‹å•æ“ä½œå®Œæˆï¼");
+						} catch (Exception e) {
+							// TODO: handle exception
+							Log.info("doActivityAutoOrderSumbitæ‰§è¡Œè€å®¢æˆ·å›é¦ˆè‡ªåŠ¨ä¸‹å•æŠ¥é”™ï¼error:"+e);
+						}
+						
+					}
+					if(ObjectUtil.parseInt(job.get("seton"))==1&&job.get("id").equalsIgnoreCase("doHongbaoOrderPush")){
+						try {
+							actService.sendOrderToRedpacket();
+							Log.info("doHongbaoOrderPushæ‰§è¡Œçº¢åŒ…ç¬¬ä¸‰æ–¹ç”Ÿäº§æ¨é€æ“ä½œå®Œæˆï¼");
+						} catch (Exception e) {
+							// TODO: handle exception
+							Log.info("doHongbaoOrderPushæ‰§è¡Œçº¢åŒ…ç¬¬ä¸‰æ–¹ç”Ÿäº§æ¨é€æ“ä½œæŠ¥é”™ï¼error:"+e);
+						}
+						
+					}
+//					if(ObjectUtil.parseInt(job.get("seton"))==1&&job.get("id").equalsIgnoreCase("doOrderPhotoImgsLimit")){
+//						photoService.orderPhotosLimitReplace();
+//						Log.info("doOrderPhotoImgsLimitä¸åˆæ ¼è®¢å•å›¾ç‰‡å¤„ç†å®Œæˆï¼");
+//					}
+				}	
+				
 			}
 			
-			if(serviceId.equalsIgnoreCase("dotempAutoOrderSumbit")){
-				autoOrderService.dotempAutoOrderSumbit();	
-				Log.info(serviceId+"Ö´ĞĞ×Ô¶¯µ¥ÏÂµ¥²Ù×÷£¡");
-			}else{
-				//System.out.println("ÎŞ·½·¨Ö´ĞĞ£¡");
-			}
 		} catch (Exception e) {
-			Log.error(serviceId+"·½·¨Ö´ĞĞ³ö´í£¡");
-			addSysLog(serviceId+"·½·¨Ö´ĞĞ³ö´í£¡",serviceId,"×Ô¶¯ÏÂµ¥");
+			Log.error(e.toString());
+			Log.error("dotempAutoOrderSumbitæ–¹æ³•æ‰§è¡Œå‡ºé”™ï¼"+e.getMessage());
+			e.printStackTrace();
 		}
-		
-		
+			
+
 	}
 	
-	public void addSysLog(String msg,String jobid,String jobname){
-		SysLogs log=new SysLogs();
-		log.setContent(msg);
-		log.setJobid(jobid);
-		log.setJobname(jobname);
-		log.setCreatetime(new Date());
-		syslogMapper.insert(log);
-	}
+	
+
 	
 }

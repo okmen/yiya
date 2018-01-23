@@ -21,7 +21,26 @@ public interface TiActivityworksMapper {
     int updateByPrimaryKey(TiActivityworks record);
     
     Integer getCountByActStatus(@Param("actid") Integer actid,@Param("status") Integer status);
-    
+    /**
+     * 查询活动参与数
+     * @param actid
+     * @param statusArrs
+     * @return
+     */
+    int countByActIdAndStatus(@Param("actid") Integer actid,@Param("statusArrs") List<Integer> statusArrs);
+    /**
+     * 活动名额满了，置未拿到名额的作品 活动失败
+     * @param actid
+     * @param toStatus
+     * @param statusArrs
+     * @return
+     */
+    int failActivityWorkByStatus(@Param("actId") Integer actid,@Param("toStatus") Integer toStatus,@Param("statusArrs") List<Integer> statusArrs);
+    /**
+     * 获取需要分享、公开活动、但是为完成分享
+     * @return
+     */
+    List<TiActivityworks> getActWorkListNeedShared();
     /**
      * 根据活动ID得到活动制作情况
      * @param actid
@@ -37,4 +56,9 @@ public interface TiActivityworksMapper {
      * @return
      */
     TiActivityworks getActWorkListByActIdAndUserId(@Param("actid") Integer actid,@Param("userId") Long userId);
+    /**
+     * 获取已经到期的活动作品
+     * @return
+     */
+    List<TiActivityworks> findActworklistExpired();
 }

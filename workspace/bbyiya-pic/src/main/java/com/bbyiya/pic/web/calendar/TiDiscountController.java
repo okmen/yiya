@@ -25,7 +25,10 @@ import com.bbyiya.model.TiMyworkcustomers;
 import com.bbyiya.model.TiMyworks;
 import com.bbyiya.model.TiUserdiscounts;
 import com.bbyiya.pic.vo.calendar.GetDiscountParam;
+import com.bbyiya.service.calendar.ISmsMgtService;
+import com.bbyiya.service.calendar.ITi_MyworksZansService;
 import com.bbyiya.service.calendar.ITi_OrderMgtService;
+import com.bbyiya.service.calendar.ItiAcitivityMgtService;
 import com.bbyiya.utils.JsonUtil;
 import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
@@ -51,11 +54,19 @@ public class TiDiscountController extends SSOController {
 	private TiActivityworksMapper activityworksMapper;
 	@Autowired
 	private TiMyworksMapper myworkMapper;
-//	
-//	@Resource(name = "tiOrderMgtServiceImpl")
-//	private ITi_OrderMgtService orderMgtService;
+	
 	@Resource(name = "tiOrderMgtServiceImpl")
 	private  ITi_OrderMgtService basetiorderService;
+
+	@Resource(name = "ti_myworksZansServiceImpl")
+	private  ITi_MyworksZansService zanService;
+	/**
+	 * 活动
+	 */
+	@Resource(name = "ti_AcitivityMgtServiceImpl")
+	private  ItiAcitivityMgtService actService;
+	@Resource(name = "sms_MgtServiceImpl")
+	private  ISmsMgtService msgService;
 	/**
 	 * 领取优惠券--代客制作优惠券
 	 * @param workId
@@ -99,17 +110,21 @@ public class TiDiscountController extends SSOController {
 								actMyworkcustomers.setStatus(Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString()));
 								workcustomerMapper.updateByPrimaryKeySelective(actMyworkcustomers);
 								// 自动下单操作
-								TiActivityOrderSubmitParam orderParam = new TiActivityOrderSubmitParam();
-								orderParam.setSubmitUserId(actMyworkcustomers.getPromoteruserid());
-								orderParam.setWorkId(actMyworkcustomers.getWorkid());
-								orderParam.setCount(1);
-								basetiorderService.submitTiCustomerOrder_ibs(orderParam, null);
-								isOrdered=true;
+//								TiActivityOrderSubmitParam orderParam = new TiActivityOrderSubmitParam();
+//								orderParam.setSubmitUserId(actMyworkcustomers.getPromoteruserid());
+//								orderParam.setWorkId(actMyworkcustomers.getWorkid());
+//								orderParam.setCount(1);
+//								basetiorderService.submitTiCustomerOrder_ibs(orderParam, null);
+//								isOrdered=true;
 							}
 						}
 					}
 					if(!isOrdered){
 						workcustomerMapper.updateByPrimaryKeySelective(actMyworkcustomers);
+					}
+					//点赞
+					if(!ObjectUtil.isEmpty(param.getSourceWorkId())){
+						zanService.addZan(user, param.getSourceWorkId());
 					}
 					rq.setStatu(ReturnStatus.Success);
 					rq.setStatusreson("恭喜获得3张5折优惠券（下单时自动使用）");
@@ -128,7 +143,7 @@ public class TiDiscountController extends SSOController {
 				getMyDiscounts( param,actInfo.getProduceruserid(),user.getUserId());
 				rq.setStatu(ReturnStatus.Success);
 				rq.setStatusreson("恭喜获得3张5折优惠券（下单时自动使用）");
-
+				
 			}
 			//普通作品分享领取
 			else if (param.getSourceType() == 3) {
@@ -142,6 +157,10 @@ public class TiDiscountController extends SSOController {
 					getMyDiscounts(param, null, user.getUserId());
 					rq.setStatu(ReturnStatus.Success);
 					rq.setStatusreson("恭喜获得3张5折优惠券（下单时自动使用）");
+					//点赞
+					if(!ObjectUtil.isEmpty(param.getSourceWorkId())){
+						zanService.addZan(user, param.getSourceWorkId());
+					}
 				}
 			} 
 			else {// 活动作品分享后领取
@@ -154,6 +173,7 @@ public class TiDiscountController extends SSOController {
 				if(myworks!=null){
 					if(myworks.getActid()!=null) {
 						param.setActityId(myworks.getActid()); 
+						//活动作品
 						TiActivityworks activityworks=activityworksMapper.selectByPrimaryKey(param.getSourceWorkId());
 						TiActivitys actInfo = actMapper.selectByPrimaryKey(param.getActityId());
 						if(activityworks!=null&&actInfo!=null){
@@ -162,18 +182,25 @@ public class TiDiscountController extends SSOController {
 							 
 							//如果活动目标达到，直接下单
 							int extcount=actInfo.getExtcount()==null?0:actInfo.getExtcount();
-							if(activityworks.getExtcount().intValue()>=extcount&&activityworks.getStatus().intValue()!=Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString())){
-								//更新参与活动状态
-								activityworks.setStatus(Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString()));
-								activityworksMapper.updateByPrimaryKeySelective(activityworks);
-							
+							if(activityworks.getExtcount().intValue()>=extcount&&activityworks.getStatus().intValue()!=Integer.parseInt(ActivityWorksStatusEnum.completeorder.toString())&&activityworks.getStatus().intValue()!=Integer.parseInt(ActivityWorksStatusEnum.fail.toString())){
+								//完成分享操作
+								if(activityworks.getStatus().intValue()!=Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString())){
+									actService.updateActivitylimitCountByActId(actInfo.getActid());
+									//更新参与活动状态
+									activityworks.setStatus(Integer.parseInt(ActivityWorksStatusEnum.completeshare.toString()));
+									activityworksMapper.updateByPrimaryKeySelective(activityworks);
+									//短信通知
+									msgService.sendMsg_ActivityCompleteShare(activityworks.getWorkid());
+								}
 								if(actInfo.getAutoaddress()!=null&&actInfo.getAutoaddress().intValue()==1){
-									//自动下单
-									TiActivityOrderSubmitParam OrderParam=new TiActivityOrderSubmitParam();
-									OrderParam.setCount(1);
-									OrderParam.setSubmitUserId(actInfo.getProduceruserid());
-									OrderParam.setWorkId(param.getSourceWorkId());
-									basetiorderService.submitOrder_ibs(OrderParam); 
+									if(actInfo.getProductid()!=null&&actInfo.getProductid().longValue()!=2801){
+										//自动下单
+										TiActivityOrderSubmitParam OrderParam=new TiActivityOrderSubmitParam();
+										OrderParam.setCount(1);
+										OrderParam.setSubmitUserId(actInfo.getProduceruserid());
+										OrderParam.setWorkId(param.getSourceWorkId());
+										basetiorderService.submitOrder_ibs(OrderParam);
+									}
 								}
 							}else {
 								activityworksMapper.updateByPrimaryKeySelective(activityworks);
@@ -181,6 +208,10 @@ public class TiDiscountController extends SSOController {
 							
 							rq.setStatu(ReturnStatus.Success);
 							rq.setStatusreson("恭喜获得3张5折优惠券（下单时自动使用）");
+							//点赞
+							if(!ObjectUtil.isEmpty(param.getSourceWorkId())){
+								zanService.addZan(user, param.getSourceWorkId());
+							}
 						}
 					}else {
 						rq.setStatu(ReturnStatus.SystemError);
@@ -216,6 +247,7 @@ public class TiDiscountController extends SSOController {
 		return true;
 	}
 	
+
 
 	
 }

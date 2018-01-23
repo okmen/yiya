@@ -140,7 +140,7 @@ public class Ti_OrderSubmitController extends SSOController {
 		LoginSuccessResult user = super.getLoginUser();
 		if (user != null) {
 			//影楼userId
-			long promoterUserId=getPromoterUserid(user);
+			long promoterUserId=getPromoterUserid(user); 
 			Map<String, Object> mapResult = new HashMap<String, Object>();
 			mapResult.put("myAddress", addressService.getUserAddressResult(user.getUserId(),addrid));
 			if (promoterUserId > 0) {
@@ -158,7 +158,6 @@ public class Ti_OrderSubmitController extends SSOController {
 					userAddressResult.setStreetdetail(promoters.getStreetdetails());
 					userAddressResult.setPhone(promoters.getMobilephone()); 
 					mapResult.put("promoterAddress", userAddressResult);
-					
 				}
 			}
 			rq.setBasemodle(mapResult);
@@ -323,7 +322,6 @@ public class Ti_OrderSubmitController extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-	
 	
 	
 }

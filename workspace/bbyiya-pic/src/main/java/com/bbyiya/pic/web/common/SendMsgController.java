@@ -62,7 +62,7 @@ public class SendMsgController {
 			rq.setStatusreson("参数有误");
 			return JsonUtil.objectToJsonStr(rq);
 		}
-		String result= SendSMSByMobile.sendSmsReturnJson(codeType, phone);
+		String result= SendSMSByMobile.sendVCodeReturnJson(codeType, phone);
 		if(ObjectUtil.isEmpty(result)){
 			rq.setStatusreson("参数有误");
 			return JsonUtil.objectToJsonStr(rq);

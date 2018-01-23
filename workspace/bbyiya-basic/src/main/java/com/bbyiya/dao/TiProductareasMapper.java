@@ -45,4 +45,19 @@ public interface TiProductareasMapper {
      * @return
      */
     List<TiProductareas> findProductAreaListByProductIdAndArea(@Param("productId")Long productId,@Param("areaCode")Integer areaCode);
+    /**
+     * 通过市级获取生产商
+     * @param productId
+     * @param cityCode
+     * @return
+     */
+    List<TiProductareas> findProductAreaListByCityCode(@Param("productId")Long productId,@Param("cityCode")Integer cityCode);
+    /**
+     * 通过省获取生产商
+     * @param productId
+     * @param provinceCode
+     * @return
+     */
+    List<TiProductareas> findProductAreaListByProvinceCode(@Param("productId")Long productId,@Param("provinceCode")Integer provinceCode);
+    
 }

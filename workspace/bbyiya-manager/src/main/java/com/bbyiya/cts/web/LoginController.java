@@ -35,7 +35,7 @@ public class LoginController  extends CtsSSOController{
 		return "login";
 	}  
 	/**
-	 * µÇÂ¼³É¹¦·µ»ØÒ³
+	 * ç™»å½•æˆåŠŸè¿”å›é¡µ
 	 * @param model
 	 * @return
 	 * @throws Exception
@@ -46,14 +46,14 @@ public class LoginController  extends CtsSSOController{
 		if(user!=null){
 			model.addAttribute("msg", user.getUsername());
 		}else {
-			model.addAttribute("msg", "ÓÃ»§Ãû»òÃÜÂë´íÎó");
+			model.addAttribute("msg", "ç”¨æˆ·åæˆ–å¯†ç é”™è¯¯");
 			return "login";
 		}
 		return "msg";
 	}
 	
 	/**
-	 * ÓÃ»§µÇÂ¼
+	 * ç”¨æˆ·ç™»å½•
 	 * @param model
 	 * @param username
 	 * @param pwd

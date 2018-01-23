@@ -17,7 +17,7 @@ import com.bbyiya.utils.ObjectUtil;
 import com.bbyiya.vo.ReturnModel;
 
 /**
- * 乐库管理
+ * 涔愬簱绠＄悊
  * @author Administrator
  *
  */
@@ -28,7 +28,7 @@ public class MusicMgtController extends CtsSSOController {
 	private ICtsMusicService musicService;
 
 	/**
-	 * Music 01 乐库-新增/修改音乐
+	 * Music 01 涔愬簱-鏂板/淇敼闊充箰
 	 * 
 	 * @param model
 	 * @param musicJson
@@ -53,7 +53,7 @@ public class MusicMgtController extends CtsSSOController {
 			}
 		} else {
 			rqModel.setStatu(ReturnStatus.LoginError);
-			rqModel.setStatusreson("登录过期");
+			rqModel.setStatusreson("鐧诲綍杩囨湡");
 		}
 		return JsonUtil.objectToJsonStr(rqModel);
 	}

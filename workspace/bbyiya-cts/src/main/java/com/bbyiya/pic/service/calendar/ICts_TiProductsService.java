@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.bbyiya.common.vo.ImageInfo;
 import com.bbyiya.model.PStylecoordinateitem;
-import com.bbyiya.model.TiProductshowtemplate;
 import com.bbyiya.model.TiProductshowtemplateinfo;
 import com.bbyiya.model.TiProductstyles;
 import com.bbyiya.model.TiProductstyleslayers;
@@ -18,6 +17,11 @@ public interface ICts_TiProductsService {
 	 * @return
 	 */
 	ReturnModel getTiProList();
+	/**
+	 * 台历、挂历、年历、红包
+	 * @return
+	 */
+	ReturnModel getTiProListAll();
 	/**
 	 * 修改产品
 	 * @param product

@@ -1,7 +1,5 @@
 package com.bbyiya.pic.service.impl.calendar;
-
-
-
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +22,6 @@ import com.bbyiya.dao.UUsersMapper;
 import com.bbyiya.enums.ProductStatusEnum;
 import com.bbyiya.enums.ReturnStatus;
 import com.bbyiya.model.PStylecoordinateitem;
-import com.bbyiya.model.TiGroupactivity;
 import com.bbyiya.model.TiProducts;
 import com.bbyiya.model.TiProductshowproducts;
 import com.bbyiya.model.TiProductshowstyles;
@@ -41,9 +38,6 @@ import com.bbyiya.vo.calendar.product.TiProductResult;
 import com.bbyiya.vo.calendar.product.TiStyleLayerResult;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.sdicons.json.mapper.MapperException;
-
-
 
 
 @Service("cts_TiProductsService")
@@ -76,6 +70,22 @@ public class Cts_TiProductsServiceImpl implements ICts_TiProductsService{
 	@Autowired
 	private UUsersMapper usersMapper;
 	
+	
+	public ReturnModel getTiProListAll(){
+		ReturnModel rqModel=new ReturnModel();
+		rqModel.setStatu(ReturnStatus.ParamError);
+		//01产品列表
+		List<TiProductResult> proList=productsMapper.findProductResultlist();
+		if(proList!=null&&proList.size()>0){
+			for (TiProductResult product : proList) {
+				product=getProductResult(product);
+			}
+		}
+		rqModel.setBasemodle(proList); 
+		rqModel.setStatu(ReturnStatus.Success);
+		rqModel.setStatusreson("操作成功！");
+		return rqModel;
+	}
 	/**
 	 * 得到台历产品列表
 	 */
@@ -85,31 +95,40 @@ public class Cts_TiProductsServiceImpl implements ICts_TiProductsService{
 		//01产品列表
 		List<TiProductResult> proList=productsMapper.findProductResultlist();
 		if(proList!=null&&proList.size()>0){
+			List<TiProductResult> productListResult=new ArrayList<TiProductResult>();
 			for (TiProductResult product : proList) {
-				//产品展示图集
-				if(!ObjectUtil.isEmpty(product.getImgjson())){
-					List<ImageInfo> imList= (List<ImageInfo>)JsonUtil.jsonToList(product.getImgjson());
-					if(imList!=null&&imList.size()>0){
-						product.setImglist(imList); 
-					}
+				if(product.getCateid()!=null&&product.getCateid()!=5){
+					productListResult.add(getProductResult(product));
 				}
-				//产品描述图集
-				if(!ObjectUtil.isEmpty(product.getDescriptionimgjson())){
-					List<ImageInfo> imList= (List<ImageInfo>)JsonUtil.jsonToList(product.getDescriptionimgjson());
-					if(imList!=null&&imList.size()>0){
-						product.setDescriptionImglist(imList); 
-					}
-				}
-				//产品的款式列表
-				List<TiProductstyles> styleList=styleMapper.findStylelistByProductId(product.getProductid());
-				product.setStylelist(styleList);  
-
 			}
+			rqModel.setBasemodle(productListResult); 
 		}
-		rqModel.setBasemodle(proList); 
+		
 		rqModel.setStatu(ReturnStatus.Success);
 		rqModel.setStatusreson("操作成功！");
 		return rqModel;
+	}
+	
+	private TiProductResult getProductResult(TiProductResult product) {
+		// 产品展示图集
+		if (!ObjectUtil.isEmpty(product.getImgjson())) {
+			List<ImageInfo> imList = (List<ImageInfo>) JsonUtil.jsonToList(product.getImgjson());
+			if (imList != null && imList.size() > 0) {
+				product.setImglist(imList);
+			}
+		}
+		// 产品描述图集
+		if (!ObjectUtil.isEmpty(product.getDescriptionimgjson())) {
+			List<ImageInfo> imList = (List<ImageInfo>) JsonUtil.jsonToList(product.getDescriptionimgjson());
+			if (imList != null && imList.size() > 0) {
+				product.setDescriptionImglist(imList);
+			}
+		}
+		// 产品的款式列表
+		List<TiProductstyles> styleList = styleMapper.findStylelistByProductId(product.getProductid());
+		product.setStylelist(styleList);
+
+		return product;
 	}
 	
 

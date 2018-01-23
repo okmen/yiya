@@ -30,6 +30,7 @@ public class HeartbeatJob extends QuartzJobBean {
 	@Resource(name = "photosMgtServiceImpl")
 	private IPhotosMgtService photoService;
 	
+	
 	@Resource(name = "ti_AcitivityMgtServiceImpl")
 	private ItiAcitivityMgtService actService;
 	

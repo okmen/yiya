@@ -9,6 +9,8 @@ public class TiAdvertimgs {
 
     private String advertimgjson;
 
+    private String advertcontent;
+
     public Long getId() {
         return id;
     }
@@ -40,4 +42,13 @@ public class TiAdvertimgs {
     public void setAdvertimgjson(String advertimgjson) {
         this.advertimgjson = advertimgjson == null ? null : advertimgjson.trim();
     }
+
+	public String getAdvertcontent() {
+		return advertcontent;
+	}
+
+	public void setAdvertcontent(String advertcontent) {
+		this.advertcontent = advertcontent;
+	}
+    
 }

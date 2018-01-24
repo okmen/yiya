@@ -51,6 +51,8 @@ public class TiActivitys {
     
     private String companyname;
 
+    private Integer zantype;
+
     public String getQrcode() {
 		return qrcode;
 	}
@@ -241,6 +243,14 @@ public class TiActivitys {
 
 	public void setCompanyname(String companyname) {
 		this.companyname = companyname;
+	}
+
+	public Integer getZantype() {
+		return zantype;
+	}
+
+	public void setZantype(Integer zantype) {
+		this.zantype = zantype;
 	}
     
     

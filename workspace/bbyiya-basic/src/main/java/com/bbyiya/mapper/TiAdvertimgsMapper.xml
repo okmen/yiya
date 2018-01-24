@@ -6,11 +6,11 @@
     <result column="ProductId" property="productid" jdbcType="BIGINT" />
     <result column="PromoterUserId" property="promoteruserid" jdbcType="BIGINT" />
     <result column="AdvertImgJson" property="advertimgjson" jdbcType="VARCHAR" />
+    <result column="AdvertContent" property="advertcontent" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    Id, ProductId, PromoterUserId, AdvertImgJson
+    Id, ProductId, PromoterUserId, AdvertImgJson, AdvertContent
   </sql>
-  
   <select id="getAdvertByProductIdAndPromoterId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -30,9 +30,9 @@
   </delete>
   <insert id="insert" parameterType="com.bbyiya.model.TiAdvertimgs" >
     insert into ti_advertimgs (Id, ProductId, PromoterUserId, 
-      AdvertImgJson)
+      AdvertImgJson, AdvertContent)
     values (#{id,jdbcType=BIGINT}, #{productid,jdbcType=BIGINT}, #{promoteruserid,jdbcType=BIGINT}, 
-      #{advertimgjson,jdbcType=VARCHAR})
+      #{advertimgjson,jdbcType=VARCHAR}, #{advertcontent,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bbyiya.model.TiAdvertimgs" >
     insert into ti_advertimgs
@@ -49,6 +49,9 @@
       <if test="advertimgjson != null" >
         AdvertImgJson,
       </if>
+      <if test="advertcontent != null" >
+        AdvertContent,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -62,6 +65,9 @@
       </if>
       <if test="advertimgjson != null" >
         #{advertimgjson,jdbcType=VARCHAR},
+      </if>
+      <if test="advertcontent != null" >
+        #{advertcontent,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -77,6 +83,9 @@
       <if test="advertimgjson != null" >
         AdvertImgJson = #{advertimgjson,jdbcType=VARCHAR},
       </if>
+      <if test="advertcontent != null" >
+        AdvertContent = #{advertcontent,jdbcType=VARCHAR},
+      </if>
     </set>
     where Id = #{id,jdbcType=BIGINT}
   </update>
@@ -84,7 +93,8 @@
     update ti_advertimgs
     set ProductId = #{productid,jdbcType=BIGINT},
       PromoterUserId = #{promoteruserid,jdbcType=BIGINT},
-      AdvertImgJson = #{advertimgjson,jdbcType=VARCHAR}
+      AdvertImgJson = #{advertimgjson,jdbcType=VARCHAR},
+      AdvertContent = #{advertcontent,jdbcType=VARCHAR}
     where Id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

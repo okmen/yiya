@@ -34,11 +34,11 @@ public class TiAdvertimgsController extends SSOController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/addorEditAdvertimgs")
-	public String addorEditAdvertimgs(Long productid,String advertImgJson) throws Exception {
+	public String addorEditAdvertimgs(Long productid,String advertImgJson,String advertContent) throws Exception {
 		ReturnModel rq=new ReturnModel();
 		LoginSuccessResult user= super.getLoginUser();
 		if(user!=null){
-			rq=advertimgsService.addOrEditAdvertimgs(user.getUserId(),productid,advertImgJson);
+			rq=advertimgsService.addOrEditAdvertimgs(user.getUserId(),productid,advertImgJson,advertContent);
 		}else {
 			rq.setStatu(ReturnStatus.LoginError);
 			rq.setStatusreson("登录过期");

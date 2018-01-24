@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.pic.dao.ICts_OrderMgtDao" >
+   <resultMap id="BaseResultMap" type="com.bbyiya.model.OUserorders" >
+    <id column="UserOrderId" property="userorderid" jdbcType="VARCHAR" />
+    <result column="UserId" property="userid" jdbcType="BIGINT" />
+    <result column="TotalPrice" property="totalprice" jdbcType="DECIMAL" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="BranchUserId" property="branchuserid" jdbcType="BIGINT" />
+    <result column="OrderAddressId" property="orderaddressid" jdbcType="BIGINT" />
+    <result column="PayId" property="payid" jdbcType="VARCHAR" />
+    <result column="Remark" property="remark" jdbcType="VARCHAR" />
+    <result column="OrderTime" property="ordertime" jdbcType="TIMESTAMP" />
+    <result column="PayTime" property="paytime" jdbcType="TIMESTAMP" />
+    <result column="OrderTotalPrice" property="ordertotalprice" jdbcType="DECIMAL" />
+    <result column="PayType" property="paytype" jdbcType="INTEGER" />
+    <result column="OrderType" property="ordertype" jdbcType="INTEGER" />
+    <result column="AgentUserId" property="agentuserid" jdbcType="BIGINT" />
+    <result column="IsBranch" property="isbranch" jdbcType="INTEGER" />
+    <result column="ExpressCom" property="expresscom" jdbcType="VARCHAR" />
+    <result column="ExpressOrder" property="expressorder" jdbcType="VARCHAR" />
+    <result column="ExpressCode" property="expresscode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List"  >
+    UserOrderId, UserId, TotalPrice, Status, OrderAddressId, PayId, Remark, OrderTime, 
+    PayTime, BranchUserId, OrderTotalPrice, PayType, OrderType, AgentUserId, IsBranch, 
+    ExpressCom,  ExpressCode,ExpressOrder
+  </sql>
+  <resultMap id="OProductDetailMap" type="com.bbyiya.model.OOrderproductdetails" >
+    <id column="OProductDetailId" property="oproductdetailid" jdbcType="BIGINT" />
+    <result column="OrderProductId" property="orderproductid" jdbcType="VARCHAR" />
+    <result column="PrintNo" property="printno" jdbcType="VARCHAR" />
+    <result column="Position" property="position" jdbcType="INTEGER" />
+    <result column="ImageUrl" property="imageurl" jdbcType="VARCHAR" />
+    <result column="BackImageUrl" property="backimageurl" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="OOrderproductdetails_Column_List" > 
+    OProductDetailId, OrderProductId, PrintNo, Position, ImageUrl, CreateTime,BackImageUrl
+  </sql>
+  
+  <resultMap id="OOrderproductsMap" type="com.bbyiya.model.OOrderproducts" >
+    <id column="OrderProductId" property="orderproductid" jdbcType="VARCHAR" />
+    <result column="UserOrderId" property="userorderid" jdbcType="VARCHAR" />
+    <result column="ProductId" property="productid" jdbcType="BIGINT" />
+    <result column="StyleId" property="styleid" jdbcType="BIGINT" />
+    <result column="BuyerUserId" property="buyeruserid" jdbcType="BIGINT" />
+    <result column="ProductTitle" property="producttitle" jdbcType="VARCHAR" />
+    <result column="Price" property="price" jdbcType="DECIMAL" />
+    <result column="BranchUserId" property="branchuserid" jdbcType="BIGINT" />
+    <result column="SalesUserId" property="salesuserid" jdbcType="BIGINT" />
+    <result column="PropertyStr" property="propertystr" jdbcType="VARCHAR" />
+    <result column="Count" property="count" jdbcType="INTEGER" />
+    <result column="ProductImg" property="productimg" jdbcType="VARCHAR" />
+    <result column="CartId" property="cartid" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="OOrderproducts_Column_List" >
+    OrderProductId, UserOrderId, ProductId, StyleId, BuyerUserId, ProductTitle, Price, 
+    BranchUserId, SalesUserId, PropertyStr, Count,ProductImg,CartId
+  </sql>
+  <!-- 用 户订单结果类Result -->
+  <resultMap id="UserOrderResult" type="com.bbyiya.vo.order.UserOrderResultVO" extends="BaseResultMap">  
+  </resultMap>  
+ 
+  <!-- 搜索订单列表作品 --> 
+  <select id="find_CtsUserOrders" resultMap="UserOrderResult" parameterType="com.bbyiya.vo.order.SearchOrderParam"  >
+    select  a.*
+    from o_userorders as a left join o_orderaddress b on a.OrderAddressId=b.OrderAddressId  where 1=1  
+    <if test="orderNo != null and orderNo !=''"  >
+        AND (a.UserOrderId LIKE  CONCAT('%', #{orderNo,jdbcType=VARCHAR},'%' ) or b.Reciver  LIKE  CONCAT('%', #{orderNo,jdbcType=VARCHAR},'%' ) or b.Phone LIKE  CONCAT('%', #{orderNo,jdbcType=VARCHAR},'%' ))  
+    </if>
+    <if test="startTimeStr != null  and startTimeStr !='' " ><!--  #{startTime,jdbcType=TIMESTAMP}  -->
+        AND b.PayTime &gt;= #{startTimeStr,jdbcType=VARCHAR}
+    </if>
+    <if test="endTimeStr != null  and endTimeStr !=''" ><!-- #{endTime,jdbcType=TIMESTAMP}  -->
+        AND b.PayTime &lt;= #{endTimeStr,jdbcType=VARCHAR}
+    </if>
+    
+     <if test="ordertype != null" >
+        AND a.OrderType = #{ordertype,jdbcType=INTEGER}
+    </if>
+    <if test="status != null" >
+        AND a.Status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="agentUserId != null" >
+        AND (a.AgentUserId = #{agentUserId,jdbcType=BIGINT} or a.BranchUserId=#{agentUserId,jdbcType=BIGINT})
+    </if>
+    <if test="userId != null" >
+        AND a.UserId = #{userId,jdbcType=INTEGER}
+    </if>
+     order by a.OrderTime desc
+  </select>
+  
+ 
+  
+</mapper>

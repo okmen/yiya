@@ -138,6 +138,7 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 		ti.setApplylimitcount(param.getApplylimitcount()==null?0:param.getApplylimitcount());
 		ti.setHourseffective(param.getHoursEffective()); 
 		ti.setCompanyname(param.getCompanyname()); 
+		ti.setZantype(param.getZanType()); 
 		activityMapper.insertReturnId(ti);
 		
 		//如果是选择兑换码则要生成相应数量的兑换码
@@ -233,7 +234,10 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 				rq.setStatu(ReturnStatus.ParamError);
 				rq.setStatusreson("邀请总数限制不得小于总报名人数！");
 				return rq;
-			}	
+			}
+			if(param.getZanType()!=null){
+				ti.setZantype(param.getZanType()); 
+			}
 			int limitFreeCount=(param.getApplylimitcount()==null)?0:param.getApplylimitcount();
 			if(limitFreeCount>0){
 				int applyCountFree=ti.getApplyingcount()==null?0:ti.getApplyingcount().intValue();

@@ -16,6 +16,7 @@ public class CalendarActivityAddParam {
 	private Integer autoaddress;
 	private String companyname;
 	private Integer applylimitcount;
+	private Integer zanType;
 	//集赞的时间限制（小时）
 	private Integer hoursEffective;
 	public Integer getActivityid() {
@@ -113,6 +114,12 @@ public class CalendarActivityAddParam {
 	}
 	public void setCompanyname(String companyname) {
 		this.companyname = companyname;
+	}
+	public Integer getZanType() {
+		return zanType;
+	}
+	public void setZanType(Integer zanType) {
+		this.zanType = zanType;
 	}
 	
 	

@@ -21,6 +21,7 @@ public class TiActivitysVo extends TiActivitys{
 	private String adverttitle;//广告名称
 	private TiActivityworks myactInfo;
 	private TiPromoteradvertinfo advert;
+	private String shareImg;
 	public String getProductName() {
 		return productName;
 	}
@@ -124,6 +125,14 @@ public class TiActivitysVo extends TiActivitys{
 
 	public void setAdvert(TiPromoteradvertinfo advert) {
 		this.advert = advert;
+	}
+
+	public String getShareImg() {
+		return shareImg;
+	}
+
+	public void setShareImg(String shareImg) {
+		this.shareImg = shareImg;
 	}
 
 	

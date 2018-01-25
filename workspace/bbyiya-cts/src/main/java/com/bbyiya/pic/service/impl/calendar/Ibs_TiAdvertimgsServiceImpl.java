@@ -55,7 +55,7 @@ public class Ibs_TiAdvertimgsServiceImpl implements IIbs_TiAdvertimgsService{
 	/**
 	 * 添加推广商广告位
 	 */
-	public ReturnModel addOrEditAdvertimgs(Long promoterUserId,Long productid,String advertimgjson ,String advertContent){
+	public ReturnModel addOrEditAdvertimgs(Long promoterUserId,Long productid,String advertimgjson,String content ){
 		ReturnModel rqModel=new ReturnModel();
 		rqModel.setStatu(ReturnStatus.ParamError);
 		TiAdvertimgs advert=advertimgMapper.getAdvertByProductIdAndPromoterId(productid, promoterUserId);
@@ -64,10 +64,10 @@ public class Ibs_TiAdvertimgsServiceImpl implements IIbs_TiAdvertimgsService{
 			advert=new TiAdvertimgs();
 			isadd=true;
 		}
-		if(!ObjectUtil.isEmpty(advertContent)){
-			advert.setAdvertcontent(advertContent);
-		} 
 		advert.setAdvertimgjson(advertimgjson);
+		if(!ObjectUtil.isEmpty(content)){
+			advert.setAdvertcontent(content);
+		}
 		advert.setProductid(productid);
 		advert.setPromoteruserid(promoterUserId);
 		if(isadd){

@@ -28,7 +28,7 @@
     delete from ti_advertimgs
     where Id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.bbyiya.model.TiAdvertimgs" >
+   <insert id="insert" parameterType="com.bbyiya.model.TiAdvertimgs" >
     insert into ti_advertimgs (Id, ProductId, PromoterUserId, 
       AdvertImgJson, AdvertContent)
     values (#{id,jdbcType=BIGINT}, #{productid,jdbcType=BIGINT}, #{promoteruserid,jdbcType=BIGINT}, 

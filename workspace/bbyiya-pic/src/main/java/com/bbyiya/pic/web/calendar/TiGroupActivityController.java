@@ -54,9 +54,10 @@ import com.bbyiya.model.TiProductshowproducts;
 import com.bbyiya.model.TiProductshowstyles;
 import com.bbyiya.model.TiProductshowtemplateinfo;
 import com.bbyiya.model.TiProductstyles;
-import com.bbyiya.model.TiPromoteradvertinfo;
 import com.bbyiya.service.IRegionService;
+import com.bbyiya.service.calendar.ITi_MyworksZansService;
 import com.bbyiya.service.calendar.ITi_OrderMgtService;
+import com.bbyiya.service.calendar.ITi_PromoterAdvertService;
 import com.bbyiya.service.pic.IBasePostMgtService;
 import com.bbyiya.service.pic.IBaseUserAddressService;
 import com.bbyiya.utils.ImgDomainUtil;
@@ -96,7 +97,46 @@ public class TiGroupActivityController  extends SSOController {
 	@Autowired
 	private TiProductshowproductsMapper showProductMapper;
 	@Autowired
-	private TiProductshowstylesMapper showStyleMapper;
+	private TiProductshowstylesMapper showStyleMapper;	
+	@Autowired
+	private TiPromotersMapper tipromoterMapper;
+	/*=======================订单==============================*/
+	@Autowired
+	private OPayorderMapper payMapper;
+	@Autowired
+	private OOrderaddressMapper orderaddressMapper;
+	/**
+	 * 获取点赞
+	 */
+	@Autowired
+	private TiGroupactivitypraiseusersMapper gpraiseMapper;
+	//广告详情
+	@Autowired
+	private TiPromoteradvertinfoMapper advertInfoMapper;
+	@Resource(name = "tiOrderMgtServiceImpl")
+	private ITi_OrderMgtService orderMgtService;
+	//分享广告service
+	@Resource(name = "ti_PromoterAdvertService")
+	private ITi_PromoterAdvertService advertService;
+	/**
+	 * 省市区
+	 */
+	@Resource(name = "regionServiceImpl")
+	private IRegionService regionService;
+	/**
+	 * 用户地址
+	 */
+	@Resource(name = "baseUserAddressServiceImpl")
+	private IBaseUserAddressService addressService;
+	/**
+	 * 订单收货service
+	 */
+	@Resource(name = "basePostMgtServiceImpl")
+	private IBasePostMgtService postMgtService;
+	//点赞处理
+	@Resource(name = "ti_myworksZansServiceImpl")
+	private  ITi_MyworksZansService zanService;
+	
 	/**
 	 * 团购活动-详情
 	 * @param gActId
@@ -117,10 +157,12 @@ public class TiGroupActivityController  extends SSOController {
 				gactMapper.updateByPrimaryKeySelective(actInfo);
 			}
 			result.put("gActInfo", actInfo);
+			boolean inAct=false;
 			TiGroupactivityworks gwork= gworkMapper.getTiGroupactivityworksByActIdAndUserId(user.getUserId(), groupId);
 			if(gwork!=null&&gwork.getStatus()!=null&&(gwork.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.payed.toString())||gwork.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.completeorder.toString()))){
 				result.put("gwork", gwork);
 				result.put("exists", 1);//已经参与活动
+				inAct=true;
 			}else {
 				result.put("exists", 0);
 				List<TiGroupactivityproducts> gprolist = gactProMapper.findProductsByGActid(groupId);
@@ -143,12 +185,15 @@ public class TiGroupActivityController  extends SSOController {
 					}
 					result.put("prolist", gprolist);
 				}
-				//广告模式
-				if(actInfo.getType()!=null&&actInfo.getType().intValue()==Integer.parseInt(GroupActivityType.advert.toString())){
-					if(actInfo.getAdvertid()!=null){
-						TiPromoteradvertinfo advertMod=advertInfoMapper.selectByPrimaryKey(actInfo.getAdvertid());
-						result.put("advert", advertMod);
-					}
+				//广告模式  活动首页广告展示
+				if(!inAct&&actInfo.getType()!=null&&actInfo.getType().intValue()==Integer.parseInt(GroupActivityType.advert.toString())){
+//					if(actInfo.getAdvertid()!=null){
+//						TiPromoteradvertinfo advertMod=advertInfoMapper.selectByPrimaryKey(actInfo.getAdvertid());						
+//						result.put("advert", advertMod);
+//						advertService.addViews(user, actInfo.getAdvertid().intValue()); 
+//					}
+					result.put("advert", advertService.addViewCountReurnTiPromoteradvertinfo(user,actInfo.getAdvertid()));
+//					
 					if(actInfo.getTempid()!=null){
 						// 产品翻页模板 
 						// 所有款式图片
@@ -215,6 +260,7 @@ public class TiGroupActivityController  extends SSOController {
 		} 
 		return resultList;
 	}
+	
 	/**
 	 * 翻页展示 所有款式列表
 	 * @return
@@ -301,11 +347,6 @@ public class TiGroupActivityController  extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq); 
 	}
-	@Autowired
-	private TiGroupactivitypraiseusersMapper gpraiseMapper;
-
-	@Autowired
-	private TiPromoteradvertinfoMapper advertInfoMapper;
 	/**
 	 * 团购作品详情
 	 * @param workId
@@ -330,6 +371,13 @@ public class TiGroupActivityController  extends SSOController {
 						map.put("countDownLong", actGroupactivity.getTimespare());
 						map.put("titleShare", actGroupactivity.getTitleshare());
 						map.put("minTitleShare", actGroupactivity.getTitleminshare());
+						//如果是自己的作品，给出分销活动主办方二维码
+						if(user.getUserId().longValue()==gwork.getUserid().longValue()){
+							if(!ObjectUtil.isEmpty(actGroupactivity.getQrcode())&&!ObjectUtil.isEmpty(actGroupactivity.getQrcodedesc())){
+								map.put("QRcode", actGroupactivity.getQrcode());
+								map.put("QRcodeDesc", actGroupactivity.getQrcodedesc());
+							}
+						}
 						map.put("nowTime", new Date());
 						TiProductstyles style= styleMapper.selectByPrimaryKey(myworks.getStyleid()==null?myworks.getProductid():myworks.getStyleid());
 						if(style!=null){
@@ -346,15 +394,17 @@ public class TiGroupActivityController  extends SSOController {
 								map.put("title", products.getTitle()); 
 								map.put("cateId", products.getCateid());
 								map.put("workInfo", myworks);
-								
 							}
 						}
 						if(gwork.getStatus()!=null&&(gwork.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.payed.toString())||gwork.getStatus().intValue()==Integer.parseInt(GroupActWorkStatus.completeorder.toString()))){
-							map.put("praiseUsers", gpraiseMapper.findlistByWorkId(workId));
-							if(actGroupactivity.getAdvertid()!=null&&actGroupactivity.getAdvertid().intValue()>0){
-								TiPromoteradvertinfo advertMod=advertInfoMapper.selectByPrimaryKey(actGroupactivity.getAdvertid());
-								map.put("advert", advertMod);
-							}
+							map.put("praiseUsers", gpraiseMapper.findlistByWorkId(workId));//zanService.findZansList(workId)
+							map.put("advert", advertService.addViewCountReurnTiPromoteradvertinfo(user, actGroupactivity.getAdvertid()));
+//							if(actGroupactivity.getAdvertid()!=null&&actGroupactivity.getAdvertid().intValue()>0){
+//								TiPromoteradvertinfo advertMod=advertInfoMapper.selectByPrimaryKey(actGroupactivity.getAdvertid());
+//								map.put("advert", advertMod);
+//								
+//								advertService.addViews(user, actGroupactivity.getAdvertid().intValue()); 
+//							}
 						}
 						rq.setBasemodle(map);
 					}
@@ -437,9 +487,6 @@ public class TiGroupActivityController  extends SSOController {
 	}
 	
 	
-
-	@Resource(name = "tiOrderMgtServiceImpl")
-	private ITi_OrderMgtService orderMgtService;
 	
 	/**
 	 * 团购收货地址选择
@@ -492,9 +539,7 @@ public class TiGroupActivityController  extends SSOController {
 		}
 		return JsonUtil.objectToJsonStr(rq);
 	}
-//	
-//	@Autowired
-//	private TiProductstylesMapper styleMapper;
+
 	
 	/**
 	 * 团购订单提交信息展示信息
@@ -547,14 +592,6 @@ public class TiGroupActivityController  extends SSOController {
 		return JsonUtil.objectToJsonStr(rq);
 	}
 	
-
-	@Resource(name = "basePostMgtServiceImpl")
-	private IBasePostMgtService postMgtService;
-
-	@Autowired
-	private OPayorderMapper payMapper;
-	@Autowired
-	private OOrderaddressMapper orderaddressMapper;
 	/**
 	 * 团购提交
 	 * @param workId
@@ -584,7 +621,6 @@ public class TiGroupActivityController  extends SSOController {
 					if(addressId>0){
 						gwork.setAddresstype(1);
 						gwork.setAddressid(orderMgtService.addOrderAddressReturnId(addressId)); 
-//						gworkMapper.updateByPrimaryKeySelective(gwork);
 						postAge=postMgtService.getPostAge_ti(addressId, gwork.getProductid());
 						if(postAge!=null&&postAge.doubleValue()>0){
 							totalPrice+=postAge;
@@ -664,19 +700,6 @@ public class TiGroupActivityController  extends SSOController {
 	}
 	
 	
-
-	@Autowired
-	private TiPromotersMapper tipromoterMapper;
-	/**
-	 * 省市区
-	 */
-	@Resource(name = "regionServiceImpl")
-	private IRegionService regionService;
-	/**
-	 * 用户地址
-	 */
-	@Resource(name = "baseUserAddressServiceImpl")
-	private IBaseUserAddressService addressService;
 	/**
 	 * 影楼地址
 	 * @param workId

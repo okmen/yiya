@@ -101,7 +101,7 @@
       #{hourseffective,jdbcType=INTEGER}, #{companyname,jdbcType=VARCHAR}, #{zantype,jdbcType=INTEGER}, 
       #{description,jdbcType=LONGVARCHAR})
   </insert>
-   <insert id="insert" parameterType="com.bbyiya.model.TiActivitys" >
+  <insert id="insert" parameterType="com.bbyiya.model.TiActivitys" >
     insert into ti_activitys (ActId, Title, ProducerUserId, 
       ProductId, StyleId, FreeCount, 
       ActType, ExtCount, ApplyCount, 

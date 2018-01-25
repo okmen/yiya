@@ -340,7 +340,10 @@ public class Ibs_CalendarActivityServiceImpl implements IIbs_CalendarActivitySer
 				ti.setYaoqingcount(yaoqingcount==null?0:yaoqingcount);
 			}
 			//活动入口二维码
-			String redirct_url="feedbackAct?actId="+ti.getActid(); 
+			String redirct_url="feedbackAct?actId="+ti.getActid();
+			if(ti.getActtype()!=null&&ti.getActtype().intValue()==Integer.parseInt(TiActivityTypeEnum.toOne.toString())){
+				redirct_url+="&fromActList=true";
+			}
 			String urlstr= ConfigUtil.getSingleValue("shareulr-base")+"uid="+userid+"&redirct_url="+UrlEncodeUtils.urlEncode(redirct_url,"utf-8");
 			String url="https://mpic.bbyiya.com/common/generateQRcode?urlstr="+UrlEncodeUtils.urlEncode(urlstr,"utf-8");
 			ti.setCodeurl(url);

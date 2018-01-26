@@ -22,6 +22,8 @@ public class TiActivitysVo extends TiActivitys{
 	private TiActivityworks myactInfo;
 	private TiPromoteradvertinfo advert;
 	private String shareImg;
+	private int isPromoteremployees;
+	
 	public String getProductName() {
 		return productName;
 	}
@@ -135,11 +137,13 @@ public class TiActivitysVo extends TiActivitys{
 		this.shareImg = shareImg;
 	}
 
-	
-	
-	
-	
-	
+	public int getIsPromoteremployees() {
+		return isPromoteremployees;
+	}
+
+	public void setIsPromoteremployees(int isPromoteremployees) {
+		this.isPromoteremployees = isPromoteremployees;
+	}
 	
 	
 }

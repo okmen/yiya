@@ -152,6 +152,14 @@ public class TiActivityMgtController extends SSOController {
 				//一对一活动
 				if(actInfo.getActtype()!=null&&actInfo.getActtype().intValue()==Integer.parseInt(TiActivityTypeEnum.toOne.toString())){
 					actInfo.setYaoqingcount(singMapper.getYaoqingCountByActId(actId));
+					//TODO 是不是员工、、
+					if(ValidateUtils.isIdentity(user.getIdentity(), UserIdentityEnums.ti_employees)){
+						TiPromoteremployees employee= employeeMapper.selectByPrimaryKey(user.getUserId());
+						TiActivitys activitys= actMapper.selectByPrimaryKey(actId);
+						if(activitys!=null&&employee!=null&&employee.getPromoteruserid().longValue()==activitys.getProduceruserid().longValue()){
+							actInfo.setIsPromoteremployees(1); 
+						}
+					}
 				}
 				//产品信息
 				TiProductResult productResult= productMapper.getResultByProductId(actInfo.getProductid());

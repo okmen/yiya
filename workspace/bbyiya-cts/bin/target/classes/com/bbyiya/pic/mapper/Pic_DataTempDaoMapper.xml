@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.pic.dao.IPic_DataTempDao" >
+   <resultMap id="BaseResultMap" type="com.bbyiya.pic.vo.AgentDateVO" >
+    <id column="AgentUserId" property="agentUserId" jdbcType="BIGINT" />
+    <result column="AgentCompanyName" property="agentCompanyName" jdbcType="VARCHAR" />
+    <result column="ApplyCount" property="applyCount" jdbcType="INTEGER" />
+    <result column="CompleteCount" property="completeCount" jdbcType="INTEGER" />
+    <result column="ApplyCountNew" property="applyCountNew" jdbcType="INTEGER" />
+    <result column="CompleteCountNew" property="completeCountNew" jdbcType="INTEGER" />
+    <result column="OrderCountNew" property="orderCountNew" jdbcType="INTEGER" />
+    <result column="CartCountNew" property="cartCountNew" jdbcType="INTEGER" />
+    <result column="UpdateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List"  >
+    AgentUserId, AgentCompanyName, ApplyCount, CompleteCount, ApplyCountNew, CompleteCountNew, OrderCountNew, CartCountNew, 
+    UpdateTime
+  </sql>
+  <delete id="clearPagentmyproducttempview" parameterType="java.lang.Integer" ><!-- 清除昨日统计数据 -->
+    delete from p_agentmyproducttempview  
+  </delete>
+  <select id="findActslist" resultMap="BaseResultMap"  > <!-- 01 数据总览 cts -->
+    SELECT d.AgentUserId,SUM(c.ApplyCount) as ApplyCount,SUM(c.CompleteCount) as CompleteCount ,d.AgentCompanyName ,e.ApplyCountNew ,e.CompleteCountNew,e.OrderCountNew,e.CartCountNew,e.updateTime 
+    from (SELECT a.TempId, a.ApplyCount,a.CompleteCount,a.BranchUserId,b.AgentUserId,b.BranchCompanyName FROM p_myproducttemp as a LEFT JOIN u_branches as b   on a.BranchUserId=b.BranchUserId)as c 
+	LEFT JOIN u_agents as d on c.AgentUserId=d.AgentUserId LEFT JOIN p_agentmyproducttempview as e on d.AgentUserId=e.AgentUserId WHERE d.AgentUserId is not null
+	<if test="branchcompanyname != null" ><!-- 名称搜索 -->
+       and (d.AgentUserId=#{branchcompanyname,jdbcType=VARCHAR} OR d.AgentCompanyName LIKE  CONCAT('%', #{branchcompanyname,jdbcType=VARCHAR},'%' ))
+    </if>
+	GROUP BY c.AgentUserId 
+	
+	<if test="type == 1" ><!-- 申请人数 降序 -->
+       ORDER BY e.ApplyCountNew desc
+    </if>
+    <if test="type == 2" ><!-- 申请人数 降序 -->
+       ORDER BY e.ApplyCountNew asc
+    </if>
+    <if test="type == 3" ><!-- 完成人数 降序 -->
+       ORDER BY e.CompleteCountNew desc
+    </if>
+    <if test="type == 4" ><!-- 完成人数 升序 -->
+       ORDER BY e.CompleteCountNew asc
+    </if>
+    <if test="type == 5" ><!-- 下单数 降序 -->
+       ORDER BY e.OrderCountNew desc
+    </if>
+    <if test="type == 6" ><!-- 下单数 升序 -->
+       ORDER BY e.OrderCountNew asc
+    </if>
+    <if test="type == 7" ><!-- 作品数 降序 -->
+       ORDER BY e.CartCountNew desc
+    </if>
+    <if test="type == 8" ><!-- 作品数 升序 -->
+       ORDER BY e.CartCountNew asc
+    </if>
+    <if test="type == 9" ><!-- 代理商userId 降序 -->
+       ORDER BY c.AgentUserId desc
+    </if>
+    <if test="type == 0" ><!-- 代理商userId 升序 -->
+       ORDER BY c.AgentUserId asc
+    </if>
+  </select>
+  
+  <select id="findMyProductTempVo" resultMap="BaseResultMap"><!-- 02 代理商 活动申请情况 -->
+  	SELECT c.AgentUserId, Count(c.AgentUserId) as ApplyCountNew from p_myproducttempapply as a LEFT JOIN p_myproducttemp as b on a.TempId=b.TempId LEFT JOIN u_branches as c on b.BranchUserId=c.BranchUserId	
+	WHERE c.AgentUserId is not null
+	<if test="agentUserId != null" >
+       and c.AgentUserId= #{agentUserId,jdbcType=BIGINT} 
+    </if>
+	<if test="startTime != null " >
+       and a.CreateTime &gt;= #{startTime,jdbcType=TIMESTAMP} 
+    </if>
+    <if test="endTime != null" >
+      and a.CreateTime &lt;= #{endTime,jdbcType=TIMESTAMP}    
+    </if>
+	GROUP BY c.AgentUserId  
+    </select>
+    
+    
+   <select id="findMyProductTempCompleteVo" resultMap="BaseResultMap"><!-- 03 代理商 活动完成 情况 -->
+  	SELECT c.AgentUserId, Count(AgentUserId) as CompleteCountNew from p_myproducttempapply as a LEFT JOIN p_myproducttemp as b on a.TempId=b.TempId LEFT JOIN u_branches as c on b.BranchUserId=c.BranchUserId
+	WHERE c.AgentUserId is not null and a.`Status`in(3,6,5)
+	<if test="agentUserId != null " >
+      and c.AgentUserId= #{agentUserId,jdbcType=BIGINT} 
+    </if>
+	<if test="startTime != null " >
+      and a.CompleteTime &gt;= #{startTime,jdbcType=TIMESTAMP}  
+    </if>
+    <if test="endTime != null" >
+      and a.CompleteTime &lt;= #{endTime,jdbcType=TIMESTAMP}    
+    </if>
+	 GROUP BY c.AgentUserId
+   </select>
+   
+   <select id="findOrderVO" resultMap="BaseResultMap"><!-- 04 代理商 xi 情况 -->
+   	 SELECT AgentUserId,COUNT(AgentUserId) as orderCountNew FROM o_userorders 
+     WHERE AgentUserId is not null 
+     <if test="agentUserId != null " >
+      and AgentUserId= #{agentUserId,jdbcType=BIGINT} 
+     </if>
+	 <if test="startTime != null " >
+      and PayTime &gt;= #{startTime,jdbcType=TIMESTAMP} 
+     </if>
+     <if test="endTime != null" >
+      and PayTime &lt;= #{endTime,jdbcType=TIMESTAMP}   
+     </if>
+	  GROUP BY AgentUserId 
+   </select>
+   
+   <select id="findInviteMycartNewlist" resultMap="BaseResultMap"><!-- 05 代理商 作品新增（客户被邀请的作品） -->
+   	 SELECT a.AgentUserId,COUNT(a.AgentUserId) as cartCountNew FROM u_agentcustomers as a LEFT JOIN  p_myproductsinvites as b on a.UserId=b.InviteUserId  LEFT JOIN u_users as c on b.UserId=c.UserID 
+	 WHERE b.CartId is not null
+     <if test="agentUserId != null " >
+      and a.AgentUserId= #{agentUserId,jdbcType=BIGINT} 
+     </if>
+	 <if test="startTime != null " >
+       and b.CreateTime &gt;= #{startTime,jdbcType=TIMESTAMP}  
+     </if>
+     <if test="endTime != null" >
+       and b.CreateTime &lt;= #{endTime,jdbcType=TIMESTAMP}    
+     </if>
+	 GROUP BY a.AgentUserId
+   </select>
+   
+   <select id="findSelfMycartNewlist" resultMap="BaseResultMap"><!-- 06 代理商 作品新增（客户主动制作的作品） -->
+   	 <!--  SELECT a.AgentUserId,COUNT(a.AgentUserId) as cartCountNew FROM u_agentcustomers as a LEFT JOIN  p_myproducts as b on a.UserId=b.UserId  LEFT JOIN u_users as c on b.UserId=c.UserID 
+	 WHERE b.CartId is not null -->
+	 SELECT b.AgentUserId,COUNT(b.AgentUserId) as cartCountNew from u_users as a LEFT JOIN u_branches as b on a.SourseUserId=b.BranchUserId LEFT JOIN p_myproducts as c on a.UserID=c.UserId
+	 WHERE a.SourseUserId is not null  and c.CartId is not null and b.AgentUserId is not null
+     <if test="agentUserId != null " >
+      and  b.AgentUserId= #{agentUserId,jdbcType=BIGINT} 
+     </if>
+	 <if test="startTime != null " >
+       and c.CreateTime &gt;= #{startTime,jdbcType=TIMESTAMP} 
+     </if>
+     <if test="endTime != null" >
+       and c.CreateTime &lt;= #{endTime,jdbcType=TIMESTAMP}    
+     </if>
+	  GROUP BY b.AgentUserId
+    </select>
+</mapper>

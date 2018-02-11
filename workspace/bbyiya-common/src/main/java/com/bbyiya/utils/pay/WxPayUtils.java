@@ -125,7 +125,7 @@ public class WxPayUtils {
 			packageParams.add(new BasicNameValuePair("appid", WxPayConfig.APPID));
 			packageParams.add(new BasicNameValuePair("mch_id", WxPayConfig.PARNER));// 商户号
 			packageParams.add(new BasicNameValuePair("nonce_str", nonceStr));
-			packageParams.add(new BasicNameValuePair("body", "yiya-12pic"));// "订单:"+orderNo
+			packageParams.add(new BasicNameValuePair("body", "咿呀十二"));// "订单:"+orderNo
 			packageParams.add(new BasicNameValuePair("out_trade_no", orderNo));
 			packageParams.add(new BasicNameValuePair("total_fee", totalFee));
 			packageParams.add(new BasicNameValuePair("spbill_create_ip", ipStr));

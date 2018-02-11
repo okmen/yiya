@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bbyiya.pic.dao.IAgentOrderReportDao" >
+   <resultMap id="BaseResultMap" type="com.bbyiya.pic.vo.order.BranchOrderReportVO" >
+    <id column="AgentUserId" property="agentUserId" jdbcType="BIGINT" />
+    <result column="BranchUserId" property="branchUserId" jdbcType="BIGINT" />
+    <result column="branchCompanyName" property="branchCompanyName" jdbcType="VARCHAR" />
+    <result column="totalOrdercount" property="totalOrdercount" jdbcType="INTEGER" />
+    <result column="orderPercent" property="orderPercent" jdbcType="DECIMAL" />
+  </resultMap>
+  
+  <!-- 01 得到代理商的分店总数 -->
+  <select id="getBranchCountByagentUserId" resultType="java.lang.Integer">
+  	SELECT Count(BranchUserId) as totalbranchcount from u_branches 	WHERE AgentUserId=#{agentUserId,jdbcType=BIGINT} 
+  </select>
+  
+  <!-- 02 得到代理商分店订单的总数-->
+  <select id="findBranchOrderReportVo" resultMap="BaseResultMap">
+   	 SELECT AgentUserId,BranchUserId,COUNT(BranchUserId) as totalOrdercount,(select BranchCompanyName from u_branches   where u_branches.BranchUserId=o_userorders.BranchUserId ) as branchCompanyName  FROM o_userorders 
+     WHERE agentUserId is not null  and BranchUserId is not null
+     <if test="agentUserId != null " >
+      and AgentUserId= #{agentUserId,jdbcType=BIGINT} 
+     </if>
+	 <if test="startTime != null " >
+      and date(PayTime) &gt;= date(#{startTime,jdbcType=TIMESTAMP})  
+     </if>
+     <if test="endTime != null" >
+      and date(PayTime)&lt;= date(#{endTime,jdbcType=TIMESTAMP})    
+     </if>
+	  GROUP BY AgentUserId,BranchUserId 
+   </select>
+   
+  
+    
+</mapper>
